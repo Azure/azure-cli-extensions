@@ -38,42 +38,42 @@ class Authv2ScenarioTest(ScenarioTest):
                     JMESPathCheck('platform', "{'enabled': True, 'runtimeVersion': '1.2.8'}")
         ])
         
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --client-secret and --client-secret-setting-name cannot both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --client-secret and --client-secret-setting-name cannot both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret test --client-secret-setting-name test2'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret-setting-name test --thumbprint test2'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --client-secret and --thumbprint cannot both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --client-secret and --thumbprint cannot both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret test --thumbprint test2'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --client-secret and --san cannot both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --client-secret and --san cannot both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret test --san test2'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --client-secret-setting-name and --san cannot both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --client-secret-setting-name and --san cannot both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret-setting-name test --san test2'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --thumbprint and --san cannot both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --thumbprint and --san cannot both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --thumbprint test --san test2'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --san and --certificate-issuer must both be '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --san and --certificate-issuer must both be '
                        'configured to non empty strings'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --san test'
                 .format(resource_group, webapp_name))
 
-        with self.assertRaisesRegexp(ArgumentUsageError, 'Usage Error: --issuer and --tenant-id cannot be configured '
+        with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --issuer and --tenant-id cannot be configured '
                        'to non empty strings at the same time.'):
             self.cmd('webapp auth Microsoft update -g {} -n {} --issuer test --tenant-id test2'
                 .format(resource_group, webapp_name))

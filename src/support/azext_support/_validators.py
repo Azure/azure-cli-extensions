@@ -9,7 +9,7 @@ from azext_support._utils import is_technical_ticket, parse_support_area_path
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 import os
 
 logger = get_logger(__name__)

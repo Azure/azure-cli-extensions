@@ -36,7 +36,8 @@ or GitHub source control definition (--git-hub) should be set."""
 
 
 def validate_pool_create(
-    virtual_network_type, network_connection_name, managed_virtual_network_regions
+    virtual_network_type, network_connection_name, managed_virtual_network_regions,
+    devbox_definition_image_reference, devbox_definition_sku, devbox_definition_type, devbox_definition_name
 ):
     if (
         not has_value(managed_virtual_network_regions)
@@ -56,6 +57,18 @@ a network connection name (--network-connection) should be set."""
     ):
         error_message = """When virtual-network-type is not used or set to "Unmanaged", \
 managed virtual network regions (--managed-virtual-network-regions) should not be set."""
+        raise RequiredArgumentMissingError(error_message)
+    if has_value(devbox_definition_type) and devbox_definition_type == "Value" and (
+        not has_value(devbox_definition_image_reference) or not has_value(devbox_definition_sku)
+    ):
+        error_message = """When devbox-definition-type is set to "Value", \
+dev box definition sku (--devbox-definition-sku) and image reference \
+(--devbox-definition-image-reference) should be set."""
+        raise RequiredArgumentMissingError(error_message)
+    if (not has_value(devbox_definition_type) or devbox_definition_type == "Reference") and \
+            not has_value(devbox_definition_name):
+        error_message = """When devbox-definition-type is set to "Reference" or not provided, \
+dev box definition name (--devbox-definition-name) should be set."""
         raise RequiredArgumentMissingError(error_message)
 
 

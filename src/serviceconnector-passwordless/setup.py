@@ -15,7 +15,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 
-VERSION = '3.1.2'
+VERSION = '3.1.3'
 try:
     from azext_serviceconnector_passwordless.config import VERSION
 except ImportError:
@@ -40,7 +40,7 @@ DEPENDENCIES = [
     'PyMySQL==1.1.1',
     'pyodbc==5.1.0',
     'psycopg2-binary==2.9.9',
-    'azure-mgmt-servicelinker==1.2.0b2'
+    'azure-mgmt-servicelinker==1.2.0b3'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

@@ -466,7 +466,6 @@ def extract_allow_privilege_escalation(container_json: Any) -> bool:
     allow_privilege_escalation = True
     # assumes that securityContext field is optional
     if security_context:
-
         # get the field for allow privilege escalation, default to true
         temp_privilege_escalation = case_insensitive_dict_get(
             security_context,
@@ -595,18 +594,13 @@ class ContainerImage:
         self._user = user or {}
         self._capabilities = capabilities
         self._allow_privilege_escalation = allowPrivilegeEscalation
-        self._policy_json = None
-        self._policy_json_str = None
-        self._policy_json_str_pp = None
         self._identifier = id_val
         self._exec_processes = execProcesses or []
         self._signals = signals or []
         self._extraEnvironmentRules = extraEnvironmentRules
 
-    def get_policy_json(self) -> str:
-        if not self._policy_json:
-            self._policy_json_serialization()
-        return self._policy_json
+    def get_policy_json(self, omit_id: bool = False) -> str:
+        return self._populate_policy_json_elements(omit_id=omit_id)
 
     def get_id(self) -> str:
         return self._identifier
@@ -707,7 +701,6 @@ class ContainerImage:
             return []
 
         mounts = []
-
         for m in self._mounts:
             mount = copy.deepcopy(config.DEFAULT_MOUNT_POLICY)
             mount[
@@ -735,10 +728,8 @@ class ContainerImage:
 
         return mounts
 
-    def _populate_policy_json_elements(self) -> Dict[str, Any]:
-
+    def _populate_policy_json_elements(self, omit_id: bool = False) -> Dict[str, Any]:
         elements = {
-            config.POLICY_FIELD_CONTAINERS_ID: self._identifier,
             config.POLICY_FIELD_CONTAINERS_NAME: self.get_name(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS: self._layers,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS: self._command,
@@ -754,17 +745,14 @@ class ContainerImage:
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS: self._allow_stdio_access,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_NO_NEW_PRIVILEGES: not self._allow_privilege_escalation
         }
-        self._policy_json = elements
 
-        return self._policy_json
+        if not omit_id:
+            elements[config.POLICY_FIELD_CONTAINERS_ID] = self._identifier
+        # if we are omitting the id, we should remove the id value from the policy if it's in the name field
+        elif omit_id and self.get_name() == self._identifier:
+            del elements[config.POLICY_FIELD_CONTAINERS_NAME]
 
-    def _policy_json_serialization(self):
-        policy = self._populate_policy_json_elements()
-        # serialize json policy to object, compact string and pretty print string
-        self._policy_json_str, self._policy_json_str_pp = (
-            json.dumps(policy, separators=(",", ":"), sort_keys=True),
-            json.dumps(policy, indent=2, sort_keys=True),
-        )
+        return elements
 
 
 class UserContainerImage(ContainerImage):
@@ -784,17 +772,12 @@ class UserContainerImage(ContainerImage):
 
         # Start with the customer environment rules
         env_rules = _INJECTED_CUSTOMER_ENV_RULES
-
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES
 
         image.set_extra_environment_rules(env_rules)
-
         return image
 
-    def _populate_policy_json_elements(self) -> Dict[str, Any]:
-        elements = super()._populate_policy_json_elements()
-        self._policy_json = elements
-
-        return self._policy_json
+    def _populate_policy_json_elements(self, omit_id: bool = False) -> Dict[str, Any]:
+        return super()._populate_policy_json_elements(omit_id=omit_id)
