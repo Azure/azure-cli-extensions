@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import AzCLIError, CLIError, InvalidArgumentValue
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait, send_raw_request
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from azure.core.exceptions import HttpResponseError
 
 from ..vendored_sdks.models import Extension

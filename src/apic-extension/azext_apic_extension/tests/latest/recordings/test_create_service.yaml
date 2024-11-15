@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clirg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001","name":"clirg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_create_service","date":"2024-06-17T06:09:44Z","module":"apic-extension"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001","name":"clirg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_create_service","date":"2024-10-09T08:19:50Z","module":"apic-extension"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:29 GMT
+      - Wed, 09 Oct 2024 08:19:52 GMT
       expires:
       - '-1'
       pragma:
@@ -41,12 +41,12 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 2100C3E33B2E4ACC806E49B4EFBD69C7 Ref B: MAA201060515027 Ref C: 2024-06-17T06:09:29Z'
+      - 'Ref A: E1F0A1E604FF44E2A4395A3C4FDBFC9E Ref B: MAA201060515029 Ref C: 2024-10-09T08:19:52Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus"}'
+    body: '{"location": "eastus", "sku": {"name": "Free"}}'
     headers:
       Accept:
       - application/json
@@ -57,29 +57,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '22'
+      - '47'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{},"systemData":{"createdAt":"2024-06-17T06:09:33.9247632Z","lastModifiedAt":"2024-06-17T06:09:33.924756Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{},"systemData":{"createdAt":"2024-10-09T08:19:55.7865503Z","lastModifiedAt":"2024-10-09T08:19:55.7865422Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '366'
+      - '367'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:34 GMT
+      - Wed, 09 Oct 2024 08:19:55 GMT
       expires:
       - '-1'
       pragma:
@@ -97,7 +97,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: AB91D452FB034142A73752354A35624F Ref B: MAA201060513033 Ref C: 2024-06-17T06:09:30Z'
+      - 'Ref A: 933740399FE74B248F4FE134B5F6F17F Ref B: MAA201060513049 Ref C: 2024-10-09T08:19:52Z'
       x-powered-by:
       - ASP.NET
     status:

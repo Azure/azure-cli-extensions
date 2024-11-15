@@ -127,8 +127,8 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
+    CONST_GPU_DRIVER_TYPE_CUDA,
+    CONST_GPU_DRIVER_TYPE_GRID,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -415,9 +415,9 @@ app_routing_nginx_configs = [
     CONST_APP_ROUTING_NONE_NGINX
 ]
 
-tls_management_types = [
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
+gpu_driver_types = [
+    CONST_GPU_DRIVER_TYPE_CUDA,
+    CONST_GPU_DRIVER_TYPE_GRID,
 ]
 
 
@@ -556,13 +556,6 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--uptime-sla", redirect="--tier", hide=True
-            ),
-        )
-        c.argument(
             "sku", is_preview=True, arg_type=get_enum_type(sku_names)
         )
         c.argument(
@@ -582,18 +575,6 @@ def load_arguments(self, _):
         )
         c.argument("enable_aad", action="store_true")
         c.argument("enable_azure_rbac", action="store_true")
-        c.argument(
-            "aad_client_app_id",
-            deprecate_info=c.deprecate(target="--aad-client-app-id", hide=True),
-        )
-        c.argument(
-            "aad_server_app_id",
-            deprecate_info=c.deprecate(target="--aad-server-app-id", hide=True),
-        )
-        c.argument(
-            "aad_server_app_secret",
-            deprecate_info=c.deprecate(target="--aad-server-app-secret", hide=True),
-        )
         c.argument("aad_tenant_id")
         c.argument("aad_admin_group_object_ids")
         c.argument("enable_oidc_issuer", action="store_true")
@@ -830,23 +811,17 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "enable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            default=CONST_TLS_MANAGEMENT_MANAGED,
-            is_preview=True,
-        )
-        c.argument(
-            "enable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
             "enable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_observability",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_security",
             action="store_true",
             is_preview=True,
         )
@@ -1062,20 +1037,6 @@ def load_arguments(self, _):
             help=(
                 "Space-separated list of key=value pairs for configuring cluster autoscaler. "
                 "Pass an empty string to clear the profile."
-            ),
-        )
-        c.argument(
-            "uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--uptime-sla", redirect="--tier", hide=True
-            ),
-        )
-        c.argument(
-            "no_uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--no-uptime-sla", redirect="--tier", hide=True
             ),
         )
         c.argument(
@@ -1327,37 +1288,22 @@ def load_arguments(self, _):
         c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
-            "enable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "disable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            is_preview=True,
-        )
-        c.argument(
-            "enable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "disable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
             "enable_acns",
             action="store_true",
             is_preview=True,
         )
         c.argument(
             "disable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_observability",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_security",
             action="store_true",
             is_preview=True,
         )
@@ -1589,6 +1535,11 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        c.argument(
+            "driver_type",
+            arg_type=get_enum_type(gpu_driver_types),
+            is_preview=True,
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
@@ -2257,11 +2208,6 @@ def load_arguments(self, _):
         )
         c.argument(
             "source_resource_id",
-            options_list=[
-                "--source-resource-id",
-                c.deprecate(target="-s", redirect="--source-resource-id", hide=True),
-                c.deprecate(target="-r", redirect="--source-resource-id", hide=True),
-            ],
             help="The source resource id of the binding",
         )
 

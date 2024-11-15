@@ -15,6 +15,7 @@ class AllowedFileTypes(str, Enum):
     ADDITIONAL_ARTIFACTS = "ADDITIONAL_ARTIFACTS"
     JMX_FILE = "JMX_FILE"
     USER_PROPERTIES = "USER_PROPERTIES"
+    ZIPPED_ARTIFACTS = "ZIPPED_ARTIFACTS"
 
 
 class AllowedIntervals(str, Enum):

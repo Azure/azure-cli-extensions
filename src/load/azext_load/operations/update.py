@@ -9,7 +9,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError
 )
 
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 
 from ..aaz.latest.load._update import Update
 

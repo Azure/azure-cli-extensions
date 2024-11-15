@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/trunkednetworks/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/trunkednetworks/{}", "2024-07-01"],
         ]
     }
 
@@ -75,12 +75,18 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The list of resource IDs representing the Network Fabric isolation domains. It can be any combination of l2IsolationDomain and l3IsolationDomain resources.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.vlans = AAZListArg(
             options=["--vlans"],
             arg_group="Properties",
             help="The list of vlans that are selected from the isolation domains for trunking.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         isolation_domain_ids = cls._args_schema.isolation_domain_ids
@@ -209,7 +215,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }

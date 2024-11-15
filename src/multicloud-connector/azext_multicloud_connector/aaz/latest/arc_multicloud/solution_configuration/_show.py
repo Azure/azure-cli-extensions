@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a SolutionConfiguration
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: SolutionConfigurations_Get
-        az arc-multicloud solution-configuration show --connector-id ymuj --name tks
+        az arc-multicloud solution-configuration show --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig
     """
 
     _aaz_info = {

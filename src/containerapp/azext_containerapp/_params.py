@@ -257,6 +257,10 @@ def load_arguments(self, _):
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
+    with self.argument_context('containerapp up', arg_group='Identity') as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
@@ -364,6 +368,13 @@ def load_arguments(self, _):
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
         c.argument('min_replicas', type=int, help="Minimum number of replicas to run for the Java component.")
         c.argument('max_replicas', type=int, help="Maximum number of replicas to run for the Java component.")
+        c.argument('route_yaml', options_list=['--route-yaml', '--yaml'], help="Path to a .yaml file with the configuration of a Spring Cloud Gateway route. For an example, see https://aka.ms/gateway-for-spring-routes-yaml")
+
+    with self.argument_context('containerapp env maintenance-config') as c:
+        c.argument('weekday', options_list=['--weekday', '-w'], arg_type=get_enum_type(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]), help="The weekday to schedule the maintenance configuration.")
+        c.argument('start_hour_utc', options_list=['--start-hour-utc', '-s'], type=int, help="The hour to start the maintenance configuration. Valid value from 0 to 23.")
+        c.argument('duration', options_list=['--duration', '-d'], type=int, help="The duration in hours of the maintenance configuration.  Minimum value: 8.  Maximum value: 24")
+        c.argument('env_name', options_list=['--environment'], help="The environment name.")
 
     with self.argument_context('containerapp job logs show') as c:
         c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
@@ -393,6 +404,8 @@ def load_arguments(self, _):
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('mi_system_assigned', help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
+        c.argument('mi_user_assigned', nargs='+', help='Space-separated user identities to be assigned.')
 
     with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
         c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
@@ -419,6 +432,7 @@ def load_arguments(self, _):
         c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
+        c.argument('registry_identity', validator=validate_registry_user, help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-assigned identity, use a resource ID for a user-assigned identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
     # sessions code interpreter commands
     with self.argument_context('containerapp session code-interpreter') as c:
@@ -430,7 +444,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
         c.argument('filename', help="The file to delete or show from the session")
         c.argument('filepath', help="The local path to the file to upload to the session")
-        c.argument('path', help="The path to list files from the session")
+        c.argument('path', help="The path of files in the session")
 
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")

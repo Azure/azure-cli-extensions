@@ -1485,7 +1485,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgo7hr2gtepzh2dxlmouw3b/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"FE/ID6pHrpopsk21v2GSIiHn5MODD50gor5wxJxMel5D9RP+8HPjTueAOuTrui42ynfs7EjPvn/7z98/J5HGmQ==","secondarySharedKey":"2H1F70TA+iyEw6PTZZ3ClqExz/Q46CXocSPDlHxwjyL5DG6fDWseoeJSS58Tt7+9BywK+gdPAQEABci5oLqlCg=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1569,8 +1569,8 @@ interactions:
 - request:
     body: '{"location": "centraluseuap", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "73d25f48-f041-474c-9d75-d2553271e7ad",
-      "sharedKey": "FE/ID6pHrpopsk21v2GSIiHn5MODD50gor5wxJxMel5D9RP+8HPjTueAOuTrui42ynfs7EjPvn/7z98/J5HGmQ==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -3090,7 +3090,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000004/listCredentials?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"username":"containerapp000004","passwords":[{"name":"password","value":"x2/xrqSF5kg/OxhS7aFINAHJ2MbPNyrUoDfy7P9KAZ+ACRAto7b8"},{"name":"password2","value":"vzuVJK2Gu5rXBNpL6O+AX72QbeQ9McxPy3BsX80xZH+ACRAQx8/a"}]}'
+      string: '{"username":"containerapp000004","passwords":[{"name":"password","value":"abc123"},{"name":"password2","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2023-11-01-preview
@@ -6354,7 +6354,7 @@ interactions:
     body: '{"location": "Central US EUAP", "identity": {"type": "None", "userAssignedIdentities":
       null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000003",
       "configuration": {"secrets": [{"name": "containerapp000004azurecrio-containerapp000004",
-      "value": "x2/xrqSF5kg/OxhS7aFINAHJ2MbPNyrUoDfy7P9KAZ+ACRAto7b8"}], "activeRevisionsMode":
+      "value": "***"}], "activeRevisionsMode":
       "single", "ingress": {"fqdn": null, "external": true, "targetPort": 80, "transport":
       "auto", "exposedPort": null, "allowInsecure": false, "traffic": null, "customDomains":
       null, "ipSecurityRestrictions": null, "stickySessions": null}, "dapr": null,

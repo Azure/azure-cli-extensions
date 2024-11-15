@@ -18,13 +18,13 @@ class DetachAndDeleteTrafficFilter(AAZCommand):
     """Detach and delete traffic filter
 
     :example: Detach and delete traffic filter
-        az elastic monitor detach-and-delete-traffic-filter --monitor-name -g rg --ruleset-id id
+        az elastic monitor detach-and-delete-traffic-filter --monitor-name name -g rg --ruleset-id id
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/detachanddeletetrafficfilter", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/detachanddeletetrafficfilter", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class DetachAndDeleteTrafficFilter(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -123,7 +126,7 @@ class DetachAndDeleteTrafficFilter(AAZCommand):
                     "rulesetId", self.ctx.args.ruleset_id,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }

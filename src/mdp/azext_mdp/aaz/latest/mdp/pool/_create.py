@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a pool
@@ -29,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-04-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -457,7 +456,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-04-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }

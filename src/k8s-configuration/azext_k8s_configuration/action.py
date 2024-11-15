@@ -6,7 +6,7 @@
 
 import argparse
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .vendored_sdks.v2022_03_01.models import (
+from .vendored_sdks.v2024_04_01_preview.models import (
     KustomizationDefinition,
     KustomizationPatchDefinition,
 )
@@ -41,6 +41,7 @@ class KustomizationAddAction(argparse._AppendAction):
         sync_interval = None
         retry_interval = None
         timeout = None
+        wait = None
         kwargs = {}
         for item in values:
             try:
@@ -53,6 +54,8 @@ class KustomizationAddAction(argparse._AppendAction):
                     retry_interval = value
                 elif key in consts.TIMEOUT_KEYS:
                     timeout = value
+                elif key in consts.WAIT_KUSTOMIZATION_KEYS:
+                    wait = value != "true"
                 else:
                     kwargs[key] = value
             except ValueError as ex:
@@ -67,6 +70,7 @@ class KustomizationAddAction(argparse._AppendAction):
                 sync_interval_in_seconds=parse_duration(sync_interval),
                 retry_interval_in_seconds=parse_duration(retry_interval),
                 timeout_in_seconds=parse_duration(timeout),
+                wait=wait,
                 **kwargs
             ),
             option_string,

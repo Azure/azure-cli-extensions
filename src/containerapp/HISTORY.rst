@@ -6,6 +6,27 @@ upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 
+1.1.0b1
+++++++
+* 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
+*  Upgrade api-version to 2024-10-02-preview
+* 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
+* 'az containerapp session code-interpreter upload-file/list-files/show-file-content/show-file-metadata/delete-file': Support `--path` to specify the path of code interpreter session file resource
+* 'az containerapp session code-interpreter': Update response payload format for api-version 2024-10-02-preview
+* 'az containerapp env maintenance-config add/update/list/remove': Support environment maintenance config management 
+* 'az containerapp sessionpool create': Support managed identity when create session pool with --mi-system-assigned --mi-user-assigned
+
+1.0.0b4
+++++++
+* 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
+* 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
+* 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
+* 'az containerapp env java-component gateway-for-spring': Support create/update/show/delete Gateway for spring.
+
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
 1.0.0b2
 ++++++
 * 'az containerapp create': Fix container app create with registry msi

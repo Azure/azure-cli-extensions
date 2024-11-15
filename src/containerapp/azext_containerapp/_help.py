@@ -1619,6 +1619,83 @@ helps['containerapp env java-component nacos update'] = """
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
 
+helps['containerapp env java-component gateway-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Gateway for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component gateway-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Gateway for Spring.
+    examples:
+    - name: Create a Gateway for Spring with default configuration.
+      text: |
+          az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath
+    - name: Create a Gateway for Spring with custom configurations.
+      text: |
+          az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create a Gateway for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath \\
+              --min-replicas 2 --max-replicas 2
+"""
+
+helps['containerapp env java-component gateway-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Gateway for Spring.
+    examples:
+    - name: Delete a Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component gateway-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Gateway for Spring.
+    examples:
+    - name: Show Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component gateway-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Gateway for Spring.
+    examples:
+    - name: Update a Gateway for Spring with new routes.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath
+    - name: Delete all configurations of the Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Gateway for Spring with custom configurations.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
 # Container Apps Telemetry Commands
 
 helps['containerapp env telemetry'] = """
@@ -1820,6 +1897,20 @@ helps['containerapp sessionpool create'] = """
               --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
               --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
               --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer and Managed Identity to authenticate Azure container registry
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
+              --registry-identity  MyUserIdentityResourceId \\
+              --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with system assigned and user assigned identity.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
+              --cpu 0.5 --memory 1Gi --target-port 80 \\
+              --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId \\
+              --location eastasia
     - name: Create or update a Session Pool with container type CustomContainer with cooldown period 360s
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
@@ -1893,7 +1984,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     - name: Upload a file to a session.
       text: |
           az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filepath example.txt
+              --filepath example.txt --path /
 """
 
 helps['containerapp session code-interpreter show-file-content'] = """
@@ -1902,7 +1993,7 @@ helps['containerapp session code-interpreter show-file-content'] = """
     examples:
     - name: Show content of file.
       text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt
+              --filename example.txt --path /
 """
 
 helps['containerapp session code-interpreter show-file-metadata'] = """
@@ -1911,7 +2002,7 @@ helps['containerapp session code-interpreter show-file-metadata'] = """
     examples:
     - name: Show the meta-data details of a file uploaded to a session.
       text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt
+              --filename example.txt --path /
 """
 
 helps['containerapp session code-interpreter delete-file'] = """
@@ -1920,7 +2011,7 @@ helps['containerapp session code-interpreter delete-file'] = """
     examples:
     - name: Delete a file .
       text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt
+              --filename example.txt --path /
 """
 
 helps['containerapp session code-interpreter list-files'] = """
@@ -1929,7 +2020,7 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path /
 """
 
 helps['containerapp java'] = """
@@ -2053,6 +2144,50 @@ helps['containerapp job registry set'] = """
       text: |
           az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
               --server MyContainerappJobRegistry.azurecr.io --identity system-environment
+"""
+
+# Maintenance Config Commands
+helps['containerapp env maintenance-config'] = """
+    type: group
+    short-summary: Commands to manage Planned Maintenance for Container Apps
+"""
+
+helps['containerapp env maintenance-config add'] = """
+    type: command
+    short-summary: Add Planned Maintenance to a Container App Environment
+    examples:
+    - name: Configure a Container App Environment to use a Planned Maintenance
+      text: |
+          az containerapp env maintenance-config add --environment myEnv -g MyResourceGroup \\
+              --duration 10 --start-hour-utc 11 --weekday Sunday
+"""
+
+helps['containerapp env maintenance-config update'] = """
+    type: command
+    short-summary: Update Planned Maintenance in a Container App Environment
+    examples:
+    - name: Update the Planned Maintenance in a Container App Environment
+      text: |
+          az containerapp env maintenance-config update --environment myEnv -g MyResourceGroup \\
+              --duration 8 --start-hour-utc 12 --weekday Thursday
+"""
+
+helps['containerapp env maintenance-config list'] = """
+    type: command
+    short-summary: List Planned Maintenance in a Container App Environment
+    examples:
+    - name: List Planned Maintenance
+      text: |
+          az containerapp env maintenance-config list --environment myEnv -g MyResourceGroup
+"""
+
+helps['containerapp env maintenance-config remove'] = """
+    type: command
+    short-summary: Remove Planned Maintenance in a Container App Environment
+    examples:
+    - name: Remove Planned Maintenance
+      text: |
+          az containerapp env maintenance-config remove --environment myEnv -g MyResourceGroup
 """
 
 helps['containerapp debug'] = """

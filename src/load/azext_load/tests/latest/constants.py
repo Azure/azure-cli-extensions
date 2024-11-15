@@ -11,13 +11,27 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 class LoadConstants:
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-true.yaml")
     INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config.yaml"
+    )
+    INVALID_ZIP_ARTIFACT_LOAD_TEST_CONFIG_FILE = os.path.join(
+        TEST_RESOURCES_DIR, r"invalid-config-with-zip-artifacts.yaml"
     )
     TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
     ADDITIONAL_FILE = os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
     FILE_TYPE = "JMX_FILE"
+    ZIP_ARTIFACT_TYPE = "ZIPPED_ARTIFACTS"
+    ZIP_ARTIFACT_NAME = "sample-ZIP-artifact.zip"
+    ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact.zip")
+    
+    # Constants for UT which is commented due to large test resource
+    # INVALID_ZIP_ARTIFACT_NAME = "sample-ZIP-artifact-oversize.zip"
+    # INVALID_ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-oversize.zip")
+    INVALID_ZIP_ARTIFACT_WITH_SUBDIR_NAME = "sample-ZIP-artifact-subdir.zip"
+    INVALID_ZIP_ARTIFACT_WITH_SUBDIR_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-subdir.zip")
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
@@ -35,6 +49,9 @@ class LoadConstants:
 
     SPLIT_CSV_TRUE = "true"
     SPLIT_CSV_FALSE = "false"
+
+    DISABLE_PUBLIC_IP_TRUE = "true"
+    DISABLE_PUBLIC_IP_FALSE = "false"
 
     INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
     KEYVAULT_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
@@ -59,6 +76,7 @@ class LoadConstants:
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
     UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
+    CREATE_AND_UPDATE_VNET_TEST_ID = "create-update-vnet-test-case"
     DELETE_TEST_ID = "delete-test-case"
     CREATE_TEST_ID = "create-test-case"
     UPDATE_TEST_ID = "update-test-case"
@@ -72,6 +90,8 @@ class LoadTestConstants(LoadConstants):
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
+    INVALID_ZIP_COUNT_TEST_ID = "invalid-zip-count-test-case"
+    INVALID_DISABLED_PUBLIC_IP_TEST_ID = "invalid-disable-public-ip-test-case"
 
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"

@@ -6,7 +6,7 @@ This is an extension to Azure CLI to manage Microsoft Fabric resources.
 Install the latest version of the extension:
 
 ```cli
-az extension add --name fabric
+az extension add --name microsoft-fabric
 ```
 
 Validate that the extension is installed correctly:
@@ -15,12 +15,12 @@ Validate that the extension is installed correctly:
 az fabric --help
 ```
 
-For list of available versions, see [the extension release history][https://github.com/Azure/azure-cli-extensions/blob/main/src/microsoft-fabric/HISTORY.rst].
+For list of available versions, see [the extension release history](https://github.com/Azure/azure-cli-extensions/blob/main/src/microsoft-fabric/HISTORY.rst).
 
 To install a specific version of the fabric CLI extension, add `--version` parameter to the command. For example, below installs 1.0.0
 
 ```cli
-az extension add --name fabric --version 1.0.0
+az extension add --name microsoft-fabric --version 1.0.0
 ```
 
 ## Included Features ##

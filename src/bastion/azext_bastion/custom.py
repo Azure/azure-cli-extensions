@@ -21,8 +21,8 @@ import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
     UnrecognizedArgumentError, CLIInternalError, ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
-from msrestazure.tools import is_valid_resource_id
 from .BastionServiceConstants import BastionSku
 from .aaz.latest.network.bastion import Create as _BastionCreate
 
@@ -60,9 +60,11 @@ class BastionCreate(_BastionCreate):
                     f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}/subnets/AzureBastionSubnet"
         args.ip_configurations = [{
             "name": "bastion_ip_config",
-            "subnet": {"id": subnet_id},
-            "public_ip_address": {"id": args.public_ip_address}
+            "subnet": {"id": subnet_id}
         }]
+
+        if args.public_ip_address is not None:
+            args.ip_configurations[0]['public_ip_address'] = {"id": args.public_ip_address}
 
 
 SSH_EXTENSION_NAME = "ssh"

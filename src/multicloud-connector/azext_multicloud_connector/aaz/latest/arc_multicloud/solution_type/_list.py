@@ -15,10 +15,12 @@ from azure.cli.core.aaz import *
     "arc-multicloud solution-type list",
 )
 class List(AAZCommand):
-    """List SolutionTypeResource resources by subscription ID
+    """List SolutionTypeResource within the current subscription, and limit to the specified resource group if one is provided.
+
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
 
     :example: SolutionTypes_ListBySubscription
-        az arc-multicloud solution-type list --resource-group dfgsd --subscription trtjvcvbst
+        az arc-multicloud solution-type list --resource-group multiCloudRG --subscription 2c60e476-6048-5ff0-9635-373175a378d9
     """
 
     _aaz_info = {
