@@ -47,7 +47,7 @@ _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 def list(cmd, resource_group_name, workspace_name, location, job_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
-         skip=None, jobs_per_page=None):
+         skip=None, jobs_per_page=None, orderby=None, order=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
@@ -66,32 +66,25 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
     query = _parse_pagination_param_values("Name", query, job_name, "startswith")
 
-    # TODO?
-    # Construct an orderby query on only one property [Would need a CLI command argument]
-
-    # DEBUG:
-    # Get these filters to work...
-    # query = "CreationTime ge '2024-11-06'"
-    # query = "Name startswith 'Generate'"
-    # They get this error:
-    #    "The Azure Quantum endpoint you called cannot process requests with given filter query parameter. Please provide the correct pagination filter query parameter."
-    #
-    # The filter query "State eq 'Succeeded' or State eq 'Failed'" did not have the desired effect.
-    # The service accepts this query, but no jobs are listed
-    # It doesn't like "Status" either: That gets the "cannot process requests with given filter" error
-    #
-    # "top" doesn't work -- no error, but it has no effect: Is it implemented?
-
+    # Construct the orderby expression
+    orderby_expression = orderby
+    if orderby_expression is not None and order is not None:
+        orderby_expression += " " + order
+  
     pagination_params = {'filter': query,
                          'skip': skip,
                          'top': jobs_per_page,
-                         'orderby': None}         # <--- Tried "Name desc", "Target asc"... What's the correct syntax for an orderby value?
+                         'orderby': orderby_expression}
+
     return client.list(info.location, pagination_params)
 
     # # FOR DEV TESTING (Comment-out the "return" above)
     # print()
     # print("query = " + query)
     # print()
+    # if orderby_expression is not None:
+    #     print("orderby = " + orderby_expression)
+    #     print()
     # return
 
 
@@ -99,6 +92,10 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
     if raw_values is not None:
         if len(query) > 0:
             query += " and "
+
+        if param_name == "Name":
+            query += logic_operator + "(Name, '" + raw_values + "')"
+            return query
 
         if logic_operator is None:
             logic_operator = "eq"
