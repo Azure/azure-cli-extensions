@@ -22,15 +22,15 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}", "2023-07-01-preview"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
 
-    AZ_SUPPORT_GENERIC_UPDATE = False
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -60,8 +60,13 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
+            arg_group="Parameters",
             help="Space-separated tags: key[=value] [key[=value] ...].",
             nullable=True,
         )
@@ -71,16 +76,34 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        # define Arg Group "Parameters"
-
         # define Arg Group "Properties"
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.DnsForwardingRulesetsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.DnsForwardingRulesetsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -134,7 +157,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -165,7 +188,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_dns_forwarding_ruleset_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_dns_forwarding_ruleset_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -233,7 +256,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -279,7 +302,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_dns_forwarding_ruleset_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_dns_forwarding_ruleset_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -312,108 +335,104 @@ class Update(AAZCommand):
             )
 
 
-_schema_dns_forwarding_ruleset_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_dns_forwarding_ruleset_read = None
 
-def _build_schema_dns_forwarding_ruleset_read(_schema):
-    global _schema_dns_forwarding_ruleset_read
-    if _schema_dns_forwarding_ruleset_read is not None:
-        _schema.etag = _schema_dns_forwarding_ruleset_read.etag
-        _schema.id = _schema_dns_forwarding_ruleset_read.id
-        _schema.location = _schema_dns_forwarding_ruleset_read.location
-        _schema.name = _schema_dns_forwarding_ruleset_read.name
-        _schema.properties = _schema_dns_forwarding_ruleset_read.properties
-        _schema.system_data = _schema_dns_forwarding_ruleset_read.system_data
-        _schema.tags = _schema_dns_forwarding_ruleset_read.tags
-        _schema.type = _schema_dns_forwarding_ruleset_read.type
-        return
+    @classmethod
+    def _build_schema_dns_forwarding_ruleset_read(cls, _schema):
+        if cls._schema_dns_forwarding_ruleset_read is not None:
+            _schema.etag = cls._schema_dns_forwarding_ruleset_read.etag
+            _schema.id = cls._schema_dns_forwarding_ruleset_read.id
+            _schema.location = cls._schema_dns_forwarding_ruleset_read.location
+            _schema.name = cls._schema_dns_forwarding_ruleset_read.name
+            _schema.properties = cls._schema_dns_forwarding_ruleset_read.properties
+            _schema.system_data = cls._schema_dns_forwarding_ruleset_read.system_data
+            _schema.tags = cls._schema_dns_forwarding_ruleset_read.tags
+            _schema.type = cls._schema_dns_forwarding_ruleset_read.type
+            return
 
-    _schema_dns_forwarding_ruleset_read = AAZObjectType()
+        cls._schema_dns_forwarding_ruleset_read = _schema_dns_forwarding_ruleset_read = AAZObjectType()
 
-    dns_forwarding_ruleset_read = _schema_dns_forwarding_ruleset_read
-    dns_forwarding_ruleset_read.etag = AAZStrType(
-        flags={"read_only": True},
-    )
-    dns_forwarding_ruleset_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    dns_forwarding_ruleset_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    dns_forwarding_ruleset_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    dns_forwarding_ruleset_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    dns_forwarding_ruleset_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    dns_forwarding_ruleset_read.tags = AAZDictType()
-    dns_forwarding_ruleset_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        dns_forwarding_ruleset_read = _schema_dns_forwarding_ruleset_read
+        dns_forwarding_ruleset_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_forwarding_ruleset_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_forwarding_ruleset_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        dns_forwarding_ruleset_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_forwarding_ruleset_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        dns_forwarding_ruleset_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        dns_forwarding_ruleset_read.tags = AAZDictType()
+        dns_forwarding_ruleset_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_dns_forwarding_ruleset_read.properties
-    properties.dns_resolver_outbound_endpoints = AAZListType(
-        serialized_name="dnsResolverOutboundEndpoints",
-        flags={"required": True},
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.resource_guid = AAZStrType(
-        serialized_name="resourceGuid",
-        flags={"read_only": True},
-    )
+        properties = _schema_dns_forwarding_ruleset_read.properties
+        properties.dns_resolver_outbound_endpoints = AAZListType(
+            serialized_name="dnsResolverOutboundEndpoints",
+            flags={"required": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
+            flags={"read_only": True},
+        )
 
-    dns_resolver_outbound_endpoints = _schema_dns_forwarding_ruleset_read.properties.dns_resolver_outbound_endpoints
-    dns_resolver_outbound_endpoints.Element = AAZObjectType()
+        dns_resolver_outbound_endpoints = _schema_dns_forwarding_ruleset_read.properties.dns_resolver_outbound_endpoints
+        dns_resolver_outbound_endpoints.Element = AAZObjectType()
 
-    _element = _schema_dns_forwarding_ruleset_read.properties.dns_resolver_outbound_endpoints.Element
-    _element.id = AAZStrType(
-        flags={"required": True},
-    )
+        _element = _schema_dns_forwarding_ruleset_read.properties.dns_resolver_outbound_endpoints.Element
+        _element.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    system_data = _schema_dns_forwarding_ruleset_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        system_data = _schema_dns_forwarding_ruleset_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_dns_forwarding_ruleset_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_dns_forwarding_ruleset_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.etag = _schema_dns_forwarding_ruleset_read.etag
-    _schema.id = _schema_dns_forwarding_ruleset_read.id
-    _schema.location = _schema_dns_forwarding_ruleset_read.location
-    _schema.name = _schema_dns_forwarding_ruleset_read.name
-    _schema.properties = _schema_dns_forwarding_ruleset_read.properties
-    _schema.system_data = _schema_dns_forwarding_ruleset_read.system_data
-    _schema.tags = _schema_dns_forwarding_ruleset_read.tags
-    _schema.type = _schema_dns_forwarding_ruleset_read.type
+        _schema.etag = cls._schema_dns_forwarding_ruleset_read.etag
+        _schema.id = cls._schema_dns_forwarding_ruleset_read.id
+        _schema.location = cls._schema_dns_forwarding_ruleset_read.location
+        _schema.name = cls._schema_dns_forwarding_ruleset_read.name
+        _schema.properties = cls._schema_dns_forwarding_ruleset_read.properties
+        _schema.system_data = cls._schema_dns_forwarding_ruleset_read.system_data
+        _schema.tags = cls._schema_dns_forwarding_ruleset_read.tags
+        _schema.type = cls._schema_dns_forwarding_ruleset_read.type
 
 
 __all__ = ["Update"]

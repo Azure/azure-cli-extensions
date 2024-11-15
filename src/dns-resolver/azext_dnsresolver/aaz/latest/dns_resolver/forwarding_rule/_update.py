@@ -22,13 +22,13 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}/forwardingrules/{}", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsforwardingrulesets/{}/forwardingrules/{}", "2023-07-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = False
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -65,19 +65,26 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
         _args_schema.forwarding_rule_state = AAZStrArg(
             options=["--forwarding-rule-state"],
+            arg_group="Properties",
             help="The state of forwarding rule.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.metadata = AAZDictArg(
             options=["--metadata"],
+            arg_group="Properties",
             help="Metadata attached to the forwarding rule. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...",
             nullable=True,
         )
         _args_schema.target_dns_servers = AAZListArg(
             options=["--target-dns-servers"],
+            arg_group="Properties",
             help={"short-summary": "DNS servers to forward the DNS query to.", "long-summary": "Usage: --target-dns-servers [{ip-address:XX,port:XX}]\nip-address: DNS server IP address.\nport: DNS server port.\nMultiple actions can be specified by using more than one --target-dns-servers argument."},
         )
 
@@ -101,15 +108,33 @@ class Update(AAZCommand):
             help="DNS server port.",
             nullable=True,
         )
-
-        # define Arg Group "Properties"
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ForwardingRulesGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.ForwardingRulesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -167,7 +192,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -198,7 +223,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_forwarding_rule_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_forwarding_rule_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -254,7 +279,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -300,7 +325,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_forwarding_rule_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_forwarding_rule_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -347,106 +372,102 @@ class Update(AAZCommand):
             )
 
 
-_schema_forwarding_rule_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_forwarding_rule_read = None
 
-def _build_schema_forwarding_rule_read(_schema):
-    global _schema_forwarding_rule_read
-    if _schema_forwarding_rule_read is not None:
-        _schema.etag = _schema_forwarding_rule_read.etag
-        _schema.id = _schema_forwarding_rule_read.id
-        _schema.name = _schema_forwarding_rule_read.name
-        _schema.properties = _schema_forwarding_rule_read.properties
-        _schema.system_data = _schema_forwarding_rule_read.system_data
-        _schema.type = _schema_forwarding_rule_read.type
-        return
+    @classmethod
+    def _build_schema_forwarding_rule_read(cls, _schema):
+        if cls._schema_forwarding_rule_read is not None:
+            _schema.etag = cls._schema_forwarding_rule_read.etag
+            _schema.id = cls._schema_forwarding_rule_read.id
+            _schema.name = cls._schema_forwarding_rule_read.name
+            _schema.properties = cls._schema_forwarding_rule_read.properties
+            _schema.system_data = cls._schema_forwarding_rule_read.system_data
+            _schema.type = cls._schema_forwarding_rule_read.type
+            return
 
-    _schema_forwarding_rule_read = AAZObjectType()
+        cls._schema_forwarding_rule_read = _schema_forwarding_rule_read = AAZObjectType()
 
-    forwarding_rule_read = _schema_forwarding_rule_read
-    forwarding_rule_read.etag = AAZStrType(
-        flags={"read_only": True},
-    )
-    forwarding_rule_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    forwarding_rule_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    forwarding_rule_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    forwarding_rule_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    forwarding_rule_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        forwarding_rule_read = _schema_forwarding_rule_read
+        forwarding_rule_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        forwarding_rule_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        forwarding_rule_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        forwarding_rule_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        forwarding_rule_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        forwarding_rule_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_forwarding_rule_read.properties
-    properties.domain_name = AAZStrType(
-        serialized_name="domainName",
-        flags={"required": True},
-    )
-    properties.forwarding_rule_state = AAZStrType(
-        serialized_name="forwardingRuleState",
-    )
-    properties.metadata = AAZDictType()
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.target_dns_servers = AAZListType(
-        serialized_name="targetDnsServers",
-        flags={"required": True},
-    )
+        properties = _schema_forwarding_rule_read.properties
+        properties.domain_name = AAZStrType(
+            serialized_name="domainName",
+            flags={"required": True},
+        )
+        properties.forwarding_rule_state = AAZStrType(
+            serialized_name="forwardingRuleState",
+        )
+        properties.metadata = AAZDictType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.target_dns_servers = AAZListType(
+            serialized_name="targetDnsServers",
+            flags={"required": True},
+        )
 
-    metadata = _schema_forwarding_rule_read.properties.metadata
-    metadata.Element = AAZStrType()
+        metadata = _schema_forwarding_rule_read.properties.metadata
+        metadata.Element = AAZStrType()
 
-    target_dns_servers = _schema_forwarding_rule_read.properties.target_dns_servers
-    target_dns_servers.Element = AAZObjectType()
+        target_dns_servers = _schema_forwarding_rule_read.properties.target_dns_servers
+        target_dns_servers.Element = AAZObjectType()
 
-    _element = _schema_forwarding_rule_read.properties.target_dns_servers.Element
-    _element.ip_address = AAZStrType(
-        serialized_name="ipAddress",
-        flags={"required": True},
-    )
-    _element.port = AAZIntType()
+        _element = _schema_forwarding_rule_read.properties.target_dns_servers.Element
+        _element.ip_address = AAZStrType(
+            serialized_name="ipAddress",
+            flags={"required": True},
+        )
+        _element.port = AAZIntType()
 
-    system_data = _schema_forwarding_rule_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        system_data = _schema_forwarding_rule_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    _schema.etag = _schema_forwarding_rule_read.etag
-    _schema.id = _schema_forwarding_rule_read.id
-    _schema.name = _schema_forwarding_rule_read.name
-    _schema.properties = _schema_forwarding_rule_read.properties
-    _schema.system_data = _schema_forwarding_rule_read.system_data
-    _schema.type = _schema_forwarding_rule_read.type
+        _schema.etag = cls._schema_forwarding_rule_read.etag
+        _schema.id = cls._schema_forwarding_rule_read.id
+        _schema.name = cls._schema_forwarding_rule_read.name
+        _schema.properties = cls._schema_forwarding_rule_read.properties
+        _schema.system_data = cls._schema_forwarding_rule_read.system_data
+        _schema.type = cls._schema_forwarding_rule_read.type
 
 
 __all__ = ["Update"]

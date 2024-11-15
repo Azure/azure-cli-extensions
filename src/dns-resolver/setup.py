@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
+VERSION = '1.0.0'
 try:
     from azext_dnsresolver.manual.version import VERSION
 except ImportError:
@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='dns_resolver',
+    name='dns-resolver',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools DnsResolverManagementClient Extension',
     author='Microsoft Corporation',
