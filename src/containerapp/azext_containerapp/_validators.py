@@ -240,6 +240,15 @@ def _set_debug_defaults(cmd, namespace):
     app = ContainerAppPreviewClient.show(cmd, namespace.resource_group_name, namespace.name)
     if not app:
         raise ResourceNotFoundError("Could not find a container app")
+
+    from azure.mgmt.core.tools import parse_resource_id
+    parsed_env = parse_resource_id(safe_get(app, "properties", "environmentId"))
+    resource_type = parsed_env.get("resource_type")
+    if resource_type:
+        if CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+            raise ValidationError(
+                "The app belongs to ConnectedEnvironment, which is not support debug console. Please use the apps belong to ManagedEnvironment.")
+
     if not namespace.revision:
         namespace.revision = app.get("properties", {}).get("latestRevisionName")
         if not namespace.revision:
