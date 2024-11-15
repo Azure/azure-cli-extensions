@@ -34,10 +34,23 @@ ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-out
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 
-# Job types
+# Job Types for the submit function
 QIO_JOB = 1
 QIR_JOB = 2
 PASS_THROUGH_JOB = 3
+
+# Job States for the list function, as defined in JobScheduler/JobScheduler.Domain/Enum/JobState.cs
+job_state_code = {'None': 0,
+                  'TranslatingInput': 20,
+                  'Queued': 30,
+                  'Estimating': 35,
+                  'Executing': 40,
+                  'TranslatingOutput': 45,
+                  'Completed': 50,
+                  'Cancelling': 60,
+                  'CancellingTarget': 70,
+                  'Cancelled': 80,
+                  'Failed': 90}
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -60,7 +73,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     query = _parse_pagination_param_values("JobType", query, job_type)
     query = _parse_pagination_param_values("ProviderId", query, provider_id)
     query = _parse_pagination_param_values("Target", query, target_id)
-    query = _parse_pagination_param_values("State", query, job_status)
+    query = _parse_pagination_param_values("State", query, job_state_code.get(job_status))
 
     query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
     query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
@@ -95,6 +108,10 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
 
         if param_name == "Name":
             query += logic_operator + "(Name, '" + raw_values + "')"
+            return query
+
+        if isinstance(raw_values, int):
+            query += param_name + " eq " + str(raw_values)
             return query
 
         if logic_operator is None:
