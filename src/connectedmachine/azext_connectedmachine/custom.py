@@ -16,6 +16,7 @@ from .aaz.latest.connectedmachine.license_profile import Update as _ProfileUpdat
 from .aaz.latest.connectedmachine.license_profile import Show as _ProfileShow
 from .aaz.latest.connectedmachine.license_profile import Delete as _ProfileDelete
 
+
 # hide license_profile_name from user and always set it to be 'Default'
 class ProfileCreate(_ProfileCreate):
     @classmethod
@@ -32,6 +33,7 @@ class ProfileCreate(_ProfileCreate):
         args = self.ctx.args
         args.license_profile_name = "Default"
 
+
 class ProfileUpdate(_ProfileUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -47,6 +49,7 @@ class ProfileUpdate(_ProfileUpdate):
         args = self.ctx.args
         args.license_profile_name = "Default"
 
+
 class ProfileShow(_ProfileShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -61,6 +64,7 @@ class ProfileShow(_ProfileShow):
     def pre_operations(self):
         args = self.ctx.args
         args.license_profile_name = "Default"
+
 
 class ProfileDelete(_ProfileDelete):
     @classmethod

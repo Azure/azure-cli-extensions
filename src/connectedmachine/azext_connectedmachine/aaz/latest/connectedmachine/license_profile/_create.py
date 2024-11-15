@@ -65,6 +65,10 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.software_assurance_customer = AAZBoolArg(
+            options=["--software-assurance", "--software-assurance-customer"],
+            help="Specifies if this machine is licensed as part of a Software Assurance agreement.",
+        )
 
         # define Arg Group "EsuProfile"
 
@@ -128,15 +132,6 @@ class Create(AAZCommand):
             options=["subscription-status"],
             help="Indicates the current status of the product features.",
             enum={"Disabled": "Disabled", "Disabling": "Disabling", "Enabled": "Enabled", "Enabling": "Enabling", "Failed": "Failed", "Unknown": "Unknown"},
-        )
-
-        # define Arg Group "SoftwareAssurance"
-
-        _args_schema = cls._args_schema
-        _args_schema.software_assurance_customer = AAZBoolArg(
-            options=["--software-assurance-customer"],
-            arg_group="SoftwareAssurance",
-            help="Specifies if this machine is licensed as part of a Software Assurance agreement.",
         )
         return cls._args_schema
 
