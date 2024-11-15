@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='dns_resolver',
+    name='dns-resolver',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools DnsResolverManagementClient Extension',
     author='Microsoft Corporation',
