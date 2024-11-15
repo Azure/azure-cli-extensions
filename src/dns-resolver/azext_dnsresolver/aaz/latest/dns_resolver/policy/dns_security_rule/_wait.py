@@ -40,8 +40,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["--dns-resolver-policy-name"],
+        _args_schema.policy_name = AAZStrArg(
+            options=["--policy-name"],
             help="The name of the DNS resolver policy.",
             required=True,
             id_part="name",
@@ -114,7 +114,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

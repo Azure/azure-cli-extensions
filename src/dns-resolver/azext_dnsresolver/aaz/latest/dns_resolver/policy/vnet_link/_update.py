@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a DNS resolver policy virtual network link.
 
     :example: Update DNS resolver policy vnet link
-        az dns-resolver policy vnet-link update --resource-group sampleResourceGroup --dns-resolver-policy-name sampleDnsResolverPolicy --dns-resolver-policy-virtual-network-link-name sampleVirtualNetworkLink --location westus2 --tags "{key2:value2}"
+        az dns-resolver policy vnet-link update --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-resolver-policy-virtual-network-link-name sampleVirtualNetworkLink --location westus2 --tags "{key2:value2}"
     """
 
     _aaz_info = {
@@ -55,8 +55,8 @@ class Update(AAZCommand):
             options=["--if-none-match"],
             help="Set to '*' to allow a new resource to be created, but to prevent updating an existing resource. Other values will be ignored.",
         )
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["--dns-resolver-policy-name"],
+        _args_schema.policy_name = AAZStrArg(
+            options=["--policy-name"],
             help="The name of the DNS resolver policy.",
             required=True,
             id_part="name",
@@ -157,7 +157,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -260,7 +260,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

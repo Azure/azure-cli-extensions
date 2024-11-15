@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a DNS resolver policy virtual network link. WARNING: This operation cannot be undone.
 
     :example: Delete DNS resolver policy virtual network link
-        az dns-resolver policy dns-resolver-policy-link delete --resource-group sampleResourceGroup --dns-resolver-policy-name sampleDnsResolverPolicy --dns-resolver-policy-virtual-network-link-name sampleVirtualNetworkLink
+        az dns-resolver policy dns-resolver-policy-link delete --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-resolver-policy-virtual-network-link-name sampleVirtualNetworkLink
     """
 
     _aaz_info = {
@@ -50,8 +50,8 @@ class Delete(AAZCommand):
             options=["--if-match"],
             help="ETag of the resource. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent changes.",
         )
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["--dns-resolver-policy-name"],
+        _args_schema.policy_name = AAZStrArg(
+            options=["--policy-name"],
             help="The name of the DNS resolver policy.",
             required=True,
             id_part="name",
@@ -145,7 +145,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

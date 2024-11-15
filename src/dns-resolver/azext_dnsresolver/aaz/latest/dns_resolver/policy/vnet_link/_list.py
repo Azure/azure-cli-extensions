@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List DNS resolver policy virtual network links.
 
     :example: List DNS resolver policy virtual network links by DNS resolver policy
-        az dns-resolver policy dns-resolver-policy-link list --resource-group sampleResourceGroup --dns-resolver-policy-name sampleDnsResolverPolicy
+        az dns-resolver policy dns-resolver-policy-link list --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy
     """
 
     _aaz_info = {
@@ -45,8 +45,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["--dns-resolver-policy-name"],
+        _args_schema.policy_name = AAZStrArg(
+            options=["--policy-name"],
             help="The name of the DNS resolver policy.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

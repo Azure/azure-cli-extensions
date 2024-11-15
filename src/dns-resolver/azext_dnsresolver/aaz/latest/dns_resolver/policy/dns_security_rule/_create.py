@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a DNS security rule for a DNS resolver policy.
 
     :example: Upsert DNS security rule
-        az dns-resolver policy dns-security-rule create --resource-group sampleResourceGroup --dns-resolver-policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --tags "{key1:value1}" --priority 100 --action "{action-type:Block,block-response-code:SERVFAIL}" --dns-resolver-domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --dns-security-rule-state Enabled
+        az dns-resolver policy dns-security-rule create --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --tags "{key1:value1}" --priority 100 --action "{action-type:Block,block-response-code:SERVFAIL}" --domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --rule-state Enabled
     """
 
     _aaz_info = {
@@ -53,8 +53,8 @@ class Create(AAZCommand):
             options=["--if-none-match"],
             help="Set to '*' to allow a new resource to be created, but to prevent updating an existing resource. Other values will be ignored.",
         )
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["--dns-resolver-policy-name"],
+        _args_schema.policy_name = AAZStrArg(
+            options=["--policy-name"],
             help="The name of the DNS resolver policy.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -106,14 +106,14 @@ class Create(AAZCommand):
             help="The action to take on DNS requests that match the DNS security rule.",
             required=True,
         )
-        _args_schema.dns_resolver_domain_lists = AAZListArg(
-            options=["--dns-resolver-domain-lists"],
+        _args_schema.domain_lists = AAZListArg(
+            options=["--domain-lists"],
             arg_group="Properties",
             help="DNS resolver policy domains lists that the DNS security rule applies to.",
             required=True,
         )
-        _args_schema.dns_security_rule_state = AAZStrArg(
-            options=["--dns-security-rule-state"],
+        _args_schema.rule_state = AAZStrArg(
+            options=["--rule-state"],
             arg_group="Properties",
             help="The state of DNS security rule.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -137,10 +137,10 @@ class Create(AAZCommand):
             enum={"SERVFAIL": "SERVFAIL"},
         )
 
-        dns_resolver_domain_lists = cls._args_schema.dns_resolver_domain_lists
-        dns_resolver_domain_lists.Element = AAZObjectArg()
+        domain_lists = cls._args_schema.domain_lists
+        domain_lists.Element = AAZObjectArg()
 
-        _element = cls._args_schema.dns_resolver_domain_lists.Element
+        _element = cls._args_schema.domain_lists.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="Resource ID.",
@@ -211,7 +211,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -271,8 +271,8 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("action", AAZObjectType, ".action", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("dnsResolverDomainLists", AAZListType, ".dns_resolver_domain_lists", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("dnsSecurityRuleState", AAZStrType, ".dns_security_rule_state")
+                properties.set_prop("dnsResolverDomainLists", AAZListType, ".domain_lists", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("dnsSecurityRuleState", AAZStrType, ".rule_state")
                 properties.set_prop("priority", AAZIntType, ".priority", typ_kwargs={"flags": {"required": True}})
 
             action = _builder.get(".properties.action")

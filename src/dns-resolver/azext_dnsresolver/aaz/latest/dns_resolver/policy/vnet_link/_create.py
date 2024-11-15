@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a DNS resolver policy virtual network link.
 
     :example: Upsert DNS resolver policy virtual network link
-        az dns-resolver policy vnet-link create --resource-group sampleResourceGroup --dns-resolver-policy-name sampleDnsResolverPolicy --dns-resolver-policy-virtual-network-link-name sampleVirtualNetworkLink --location westus2 --tags "{key1:value1}" --virtual-network "{id:/subscriptions/0403cfa9-9659-4f33-9f30-1f191c51d111/resourceGroups/sampleVnetResourceGroupName/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork}"
+        az dns-resolver policy vnet-link create --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-resolver-policy-virtual-network-link-name sampleVirtualNetworkLink --location westus2 --tags "{key1:value1}" --virtual-network "{id:/subscriptions/0403cfa9-9659-4f33-9f30-1f191c51d111/resourceGroups/sampleVnetResourceGroupName/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork}"
     """
 
     _aaz_info = {
@@ -53,8 +53,8 @@ class Create(AAZCommand):
             options=["--if-none-match"],
             help="Set to '*' to allow a new resource to be created, but to prevent updating an existing resource. Other values will be ignored.",
         )
-        _args_schema.dns_resolver_policy_name = AAZStrArg(
-            options=["--dns-resolver-policy-name"],
+        _args_schema.policy_name = AAZStrArg(
+            options=["--policy-name"],
             help="The name of the DNS resolver policy.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -178,7 +178,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "dnsResolverPolicyName", self.ctx.args.dns_resolver_policy_name,
+                    "dnsResolverPolicyName", self.ctx.args.policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
