@@ -8,4 +8,7 @@
 # pylint: skip-file
 # flake8: noqa
 
-from ._clients import *
+from .__cmd_group import *
+from ._list import *
+from ._list_abilities import *
+from ._show import *
