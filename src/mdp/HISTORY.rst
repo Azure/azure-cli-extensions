@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Fixing agent profile resource predictions and added examples
+
 1.0.0
 ++++++
 * Upgrading to stable version 2024-10-19

@@ -263,6 +263,21 @@ class Show(AAZCommand):
                 serialized_name="maxAgentLifetime",
             )
 
+            resource_predictions = cls._schema_on_200.properties.agent_profile.resource_predictions
+            resource_predictions.timezone = AAZStrType(
+                serialized_name="timeZone",
+            )
+
+            resource_predictions.days_data = AAZListType(
+                serialized_name="daysData",
+            )
+
+            days_data = cls._schema_on_200.properties.agent_profile.resource_predictions.days_data
+            days_data.Element = AAZDictType()
+
+            _element = cls._schema_on_200.properties.agent_profile.resource_predictions.days_data.Element
+            _element.Element = AAZIntType()
+
             fabric_profile = cls._schema_on_200.properties.fabric_profile
             fabric_profile.kind = AAZStrType(
                 flags={"required": True},
