@@ -46,10 +46,10 @@ class AzureBillingAccountsScenarioTest(ScenarioTest):
 		
 class AzureEaBillingAccountsScenarioTests(ScenarioTest):
 	def test_ea_accounts_list_and_get(self):
+		# list
 		self.kwargs.update({
 			'filter': "properties/agreementType eq 'EnterpriseAgreement'"
 		})
-		# list
 		accounts_list = self.cmd('billing account list --filter "{filter}"').get_output_in_json()
 		self.assertTrue(accounts_list)
 		# get
@@ -63,6 +63,7 @@ class AzureEaBillingAccountsScenarioTests(ScenarioTest):
 		])
 
 	def test_ea_accounts_update(self):
+		# update po number
 		account_name = "6575495"
 		po_number = "PO123456"
 		self.kwargs.update({
