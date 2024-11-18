@@ -198,13 +198,18 @@ DEBUG_MODE_SETTINGS = _config["debugMode"]
 # reserved fragment names for existing pieces of Rego
 RESERVED_FRAGMENT_NAMES = _config["reserved_fragment_namespaces"]
 # fragment artifact type
-ARTIFACT_TYPE = "application/x-ms-policy-frag"
+ARTIFACT_TYPE = "application/x-ms-ccepolicy-frag"
 # customer rego file for data to be injected
 REGO_FILE = "./data/customer_rego_policy.txt"
 REGO_FRAGMENT_FILE = "./data/customer_rego_fragment.txt"
 script_directory = os.path.dirname(os.path.realpath(__file__))
 REGO_FILE_PATH = f"{script_directory}/{REGO_FILE}"
 REGO_FRAGMENT_FILE_PATH = f"{script_directory}/{REGO_FRAGMENT_FILE}"
+REGO_IMPORT_FILE_STRUCTURE = """
+{
+    "fragments": []
+}
+"""
 CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
 CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file

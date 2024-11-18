@@ -65,20 +65,25 @@ The fragment can be seen in the Azure portal under the container repo's artifact
 To create an import statement for the newly created rego fragment, run the following command:
 
 ```bash
-az confcom acifragmentgen --generate-import -p ./contoso.rego.cose --minimum-svn 1
+az confcom acifragmentgen --generate-import -p ./contoso.rego.cose --minimum-svn 1 --fragments-json fragments.json
 ```
 
-Which will output the fragment's import in json format. **Place this import statement into a new `fragments.json` file.**
+Which will output the fragment's import in json format to the file `fragments.json`.
 
 example output:
 
 ```json
 {
-    "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
-    "feed": "contoso.azurecr.io/infra",
-    "minimum_svn": "1",
-    "includes": [
-        "containers"
+    "fragments": [
+        {
+        "feed": "mcr.microsoft.com/acc/samples/aci/helloworld",
+        "includes": [
+            "containers",
+            "fragments"
+        ],
+        "issuer": "did:x509:0:sha256:0NWnhcxjUwmwLCd7A-PubQRq08ig3icQxpW5d2f4Rbc::subject:CN:Contoso",
+        "minimum_svn": "1"
+        }
     ]
 }
 ```

@@ -76,6 +76,12 @@ def image_has_hash(image: str) -> bool:
     return "@sha256:" in image
 
 
+def get_image_name(image: str) -> str:
+    if image_has_hash(image):
+        return image.split("@")[0]
+    return image.split(":")[0]
+
+
 def get_image_info(progress, message_queue, tar_mapping, image):
     image_info = None
     raw_image = None

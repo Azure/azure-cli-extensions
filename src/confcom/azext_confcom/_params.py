@@ -22,6 +22,8 @@ from azext_confcom._validators import (
     validate_fragment_path,
     validate_fragment_json,
     validate_fragment_json_policy,
+    validate_image_target,
+    validate_upload_fragment,
 )
 
 
@@ -231,6 +233,13 @@ def load_arguments(self, _):
             help="Feed for the generated policy fragment",
         )
         c.argument(
+            "image_target",
+            options_list=("--image-target"),
+            required=False,
+            help="Image target where the generated policy fragment is attached",
+            validator=validate_image_target,
+        )
+        c.argument(
             "key",
             options_list=("--key", "-k"),
             required=False,
@@ -301,6 +310,7 @@ def load_arguments(self, _):
             options_list=("--upload-fragment", "-u"),
             required=False,
             help="Upload a policy fragment to a container registry",
+            validator=validate_upload_fragment,
         )
         c.argument(
             "no_print",

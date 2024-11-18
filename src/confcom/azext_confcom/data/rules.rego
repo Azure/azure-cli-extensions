@@ -1,3 +1,7 @@
+# Copyright (c) 2023 Microsoft Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 package agent_policy
 
 import future.keywords.in
@@ -6,23 +10,36 @@ import future.keywords.every
 import input
 
 # Default values, returned by OPA when rules cannot be evaluated to true.
+default AddARPNeighborsRequest := false
+default AddSwapRequest := false
+default CloseStdinRequest := false
 default CopyFileRequest := false
 default CreateContainerRequest := false
-default CreateSandboxRequest := true
+default CreateSandboxRequest := false
 default DestroySandboxRequest := true
 default ExecProcessRequest := false
 default GetOOMEventRequest := true
 default GuestDetailsRequest := true
+default ListInterfacesRequest := false
+default ListRoutesRequest := false
+default MemHotplugByProbeRequest := false
 default OnlineCPUMemRequest := true
-default PullImageRequest := true
+default PauseContainerRequest := false
 default ReadStreamRequest := false
 default RemoveContainerRequest := true
 default RemoveStaleVirtiofsShareMountsRequest := true
+default ReseedRandomDevRequest := false
+default ResumeContainerRequest := false
+default SetGuestDateTimeRequest := false
+default SetPolicyRequest := false
 default SignalProcessRequest := true
 default StartContainerRequest := true
+default StartTracingRequest := false
 default StatsContainerRequest := true
+default StopTracingRequest := false
 default TtyWinResizeRequest := true
-default UpdateEphemeralMountsRequest := true
+default UpdateContainerRequest := false
+default UpdateEphemeralMountsRequest := false
 default UpdateInterfaceRequest := true
 default UpdateRoutesRequest := true
 default WaitProcessRequest := true
@@ -35,14 +52,23 @@ default WriteStreamRequest := false
 default AllowRequestsFailingPolicy := false
 
 CreateContainerRequest {
+    # Check if the input request should be rejected even before checking the
+    # policy_data.containers information.
+    allow_create_container_input
+
     i_oci := input.OCI
     i_storages := input.storages
 
+    # Check if any element from the policy_data.containers array allows the input request.
     some p_container in policy_data.containers
     print("======== CreateContainerRequest: trying next policy container")
 
+    p_pidns := p_container.sandbox_pidns
+    i_pidns := input.sandbox_pidns
+    print("CreateContainerRequest: p_pidns =", p_pidns, "i_pidns =", i_pidns)
+    p_pidns == i_pidns
+
     p_oci := p_container.OCI
-    p_storages := p_container.storages
 
     print("CreateContainerRequest: p Version =", p_oci.Version, "i Version =", i_oci.Version)
     p_oci.Version == i_oci.Version
@@ -51,10 +77,44 @@ CreateContainerRequest {
     p_oci.Root.Readonly == i_oci.Root.Readonly
 
     allow_anno(p_oci, i_oci)
+
+    p_storages := p_container.storages
     allow_by_anno(p_oci, i_oci, p_storages, i_storages)
+
     allow_linux(p_oci, i_oci)
 
     print("CreateContainerRequest: true")
+}
+
+allow_create_container_input {
+    print("allow_create_container_input: input =", input)
+
+    count(input.shared_mounts) == 0
+    is_null(input.string_user)
+
+    i_oci := input.OCI
+    is_null(i_oci.Hooks)
+    is_null(i_oci.Solaris)
+    is_null(i_oci.Windows)
+
+    i_linux := i_oci.Linux
+    count(i_linux.GIDMappings) == 0
+    count(i_linux.MountLabel) == 0
+    count(i_linux.Resources.Devices) == 0
+    count(i_linux.RootfsPropagation) == 0
+    count(i_linux.UIDMappings) == 0
+    is_null(i_linux.IntelRdt)
+    is_null(i_linux.Resources.BlockIO)
+    is_null(i_linux.Resources.Network)
+    is_null(i_linux.Resources.Pids)
+    is_null(i_linux.Seccomp)
+    i_linux.Sysctl == {}
+
+    i_process := i_oci.Process
+    count(i_process.SelinuxLabel) == 0
+    count(i_process.User.Username) == 0
+
+    print("allow_create_container_input: true")
 }
 
 # Reject unexpected annotations.
@@ -454,11 +514,8 @@ allow_user(p_process, i_process) {
     p_user := p_process.User
     i_user := i_process.User
 
-    # TODO: track down the reason for mcr.microsoft.com/oss/bitnami/redis:6.0.8 being
-    #       executed with uid = 0 despite having "User": "1001" in its container image
-    #       config.
-    #print("allow_user: input uid =", i_user.UID, "policy uid =", p_user.UID)
-    #p_user.UID == i_user.UID
+    print("allow_user: input uid =", i_user.UID, "policy uid =", p_user.UID)
+    p_user.UID == i_user.UID
 
     # TODO: track down the reason for registry.k8s.io/pause:3.9 being
     #       executed with gid = 0 despite having "65535:65535" in its container image
@@ -526,6 +583,7 @@ allow_env(p_process, i_process, s_name) {
     print("allow_env: i env =", i_process.Env)
 
     every i_var in i_process.Env {
+        print("allow_env: i_var =", i_var)
         allow_var(p_process, i_process, i_var, s_name)
     }
 
@@ -534,22 +592,17 @@ allow_env(p_process, i_process, s_name) {
 
 # Allow input env variables that are present in the policy data too.
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 1: i_var =", i_var)
-
     some p_var in p_process.Env
     p_var == i_var
-
     print("allow_var 1: true")
 }
 
 # Match input with one of the policy variables, after substituting $(sandbox-name).
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 2: i_var =", i_var)
-
     some p_var in p_process.Env
     p_var2 := replace(p_var, "$(sandbox-name)", s_name)
-    print("allow_var 2: p_var2 =", p_var2)
 
+    print("allow_var 2: p_var2 =", p_var2)
     p_var2 == i_var
 
     print("allow_var 2: true")
@@ -557,24 +610,13 @@ allow_var(p_process, i_process, i_var, s_name) {
 
 # Allow input env variables that match with a request_defaults regex.
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 3: start")
-
     some p_regex1 in policy_data.request_defaults.CreateContainerRequest.allow_env_regex
-    print("allow_var 3: p_regex1 =", p_regex1)
-
     p_regex2 := replace(p_regex1, "$(ipv4_a)", policy_data.common.ipv4_a)
-    print("allow_var 3: p_regex2 =", p_regex2)
-
     p_regex3 := replace(p_regex2, "$(ip_p)", policy_data.common.ip_p)
-    print("allow_var 3: p_regex3 =", p_regex3)
-
     p_regex4 := replace(p_regex3, "$(svc_name)", policy_data.common.svc_name)
-    print("allow_var 3: p_regex4 =", p_regex4)
-
     p_regex5 := replace(p_regex4, "$(dns_label)", policy_data.common.dns_label)
-    print("allow_var 3: p_regex5 =", p_regex5)
 
-    print("allow_var 3: i_var =", i_var)
+    print("allow_var 3: p_regex5 =", p_regex5)
     regex.match(p_regex5, i_var)
 
     print("allow_var 3: true")
@@ -582,8 +624,6 @@ allow_var(p_process, i_process, i_var, s_name) {
 
 # Allow fieldRef "fieldPath: status.podIP" values.
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 4: i_var =", i_var)
-
     name_value := split(i_var, "=")
     count(name_value) == 2
     is_ip(name_value[1])
@@ -596,8 +636,6 @@ allow_var(p_process, i_process, i_var, s_name) {
 
 # Allow common fieldRef variables.
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 5: i_var =", i_var)
-
     name_value := split(i_var, "=")
     count(name_value) == 2
 
@@ -617,8 +655,6 @@ allow_var(p_process, i_process, i_var, s_name) {
 
 # Allow fieldRef "fieldPath: status.hostIP" values.
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 6: i_var =", i_var)
-
     name_value := split(i_var, "=")
     count(name_value) == 2
     is_ip(name_value[1])
@@ -631,8 +667,6 @@ allow_var(p_process, i_process, i_var, s_name) {
 
 # Allow resourceFieldRef values (e.g., "limits.cpu").
 allow_var(p_process, i_process, i_var, s_name) {
-    print("allow_var 7: i_var =", i_var)
-
     name_value := split(i_var, "=")
     count(name_value) == 2
 
@@ -696,8 +730,9 @@ is_ip_other_byte(component) {
 
 # OCI root.Path
 allow_root_path(p_oci, i_oci, bundle_id) {
+    i_path := i_oci.Root.Path
     p_path1 := p_oci.Root.Path
-    print("allow_root_path: p_path1 =", p_path1)
+    print("allow_root_path: i_path =", i_path, "p_path1 =", p_path1)
 
     p_path2 := replace(p_path1, "$(cpath)", policy_data.common.cpath)
     print("allow_root_path: p_path2 =", p_path2)
@@ -705,16 +740,17 @@ allow_root_path(p_oci, i_oci, bundle_id) {
     p_path3 := replace(p_path2, "$(bundle-id)", bundle_id)
     print("allow_root_path: p_path3 =", p_path3)
 
-    p_path3 == i_oci.Root.Path
+    p_path3 == i_path
 
     print("allow_root_path: true")
 }
 
 # device mounts
 allow_mount(p_oci, i_mount, bundle_id, sandbox_id) {
-    print("allow_mount: start")
+    print("allow_mount: i_mount =", i_mount)
 
     some p_mount in p_oci.Mounts
+    print("allow_mount: p_mount =", p_mount)
     check_mount(p_mount, i_mount, bundle_id, sandbox_id)
 
     # TODO: are there any other required policy checks for mounts - e.g.,
@@ -724,22 +760,12 @@ allow_mount(p_oci, i_mount, bundle_id, sandbox_id) {
 }
 
 check_mount(p_mount, i_mount, bundle_id, sandbox_id) {
-    print("check_mount 1: p_mount =", p_mount)
-    print("check_mount 1: i_mount =", i_mount)
-
     p_mount == i_mount
-
     print("check_mount 1: true")
 }
 check_mount(p_mount, i_mount, bundle_id, sandbox_id) {
-    print("check_mount 2: i destination =", i_mount.destination, "p destination =", p_mount.destination)
     p_mount.destination == i_mount.destination
-
-    print("check_mount 2: i type =", i_mount.type_, "p type =", p_mount.type_)
     p_mount.type_ == i_mount.type_
-
-    print("check_mount 2: i options =", i_mount.options)
-    print("check_mount 2: p options =", p_mount.options)
     p_mount.options == i_mount.options
 
     mount_source_allows(p_mount, i_mount, bundle_id, sandbox_id)
@@ -748,46 +774,51 @@ check_mount(p_mount, i_mount, bundle_id, sandbox_id) {
 }
 
 mount_source_allows(p_mount, i_mount, bundle_id, sandbox_id) {
-    print("mount_source_allows 1: i_mount.source =", i_mount.source)
-
     regex1 := p_mount.source
-    print("mount_source_allows 1: regex1 =", regex1)
-
     regex2 := replace(regex1, "$(sfprefix)", policy_data.common.sfprefix)
-    print("mount_source_allows 1: regex2 =", regex2)
-
     regex3 := replace(regex2, "$(cpath)", policy_data.common.cpath)
-    print("mount_source_allows 1: regex3 =", regex3)
-
     regex4 := replace(regex3, "$(bundle-id)", bundle_id)
-    print("mount_source_allows 1: regex4 =", regex4)
 
+    print("mount_source_allows 1: regex4 =", regex4)
     regex.match(regex4, i_mount.source)
 
     print("mount_source_allows 1: true")
 }
 mount_source_allows(p_mount, i_mount, bundle_id, sandbox_id) {
-    print("mount_source_allows 2: i_mount.source=", i_mount.source)
-
     regex1 := p_mount.source
-    print("mount_source_allows 2: regex1 =", regex1)
-
     regex2 := replace(regex1, "$(sfprefix)", policy_data.common.sfprefix)
-    print("mount_source_allows 2: regex2 =", regex2)
-
     regex3 := replace(regex2, "$(cpath)", policy_data.common.cpath)
-    print("mount_source_allows 2: regex3 =", regex3)
-
     regex4 := replace(regex3, "$(sandbox-id)", sandbox_id)
-    print("mount_source_allows 2: regex4 =", regex4)
 
+    print("mount_source_allows 2: regex4 =", regex4)
     regex.match(regex4, i_mount.source)
 
     print("mount_source_allows 2: true")
 }
+mount_source_allows(p_mount, i_mount, bundle_id, sandbox_id) {
+    print("mount_source_allows 3: i_mount.source=", i_mount.source)
+
+    i_source_parts = split(i_mount.source, "/")
+    b64_direct_vol_path = i_source_parts[count(i_source_parts) - 1]
+
+    base64.is_valid(b64_direct_vol_path)
+
+    source1 := p_mount.source
+    print("mount_source_allows 3: source1 =", source1)
+
+    source2 := replace(source1, "$(spath)", policy_data.common.spath)
+    print("mount_source_allows 3: source2 =", source2)
+
+    source3 := replace(source2, "$(b64-direct-vol-path)", b64_direct_vol_path)
+    print("mount_source_allows 3: source3 =", source3)
+
+    source3 == i_mount.source
+
+    print("mount_source_allows 3: true")
+}
 
 ######################################################################
-# Storages
+# Create container Storages
 
 allow_storages(p_storages, i_storages, bundle_id, sandbox_id) {
     p_count := count(p_storages)
@@ -836,7 +867,6 @@ allow_storage(p_storages, i_storage, bundle_id, sandbox_id, layer_ids, root_hash
 allow_storage_options(p_storage, i_storage, layer_ids, root_hashes) {
     print("allow_storage_options 1: start")
 
-    p_storage.driver != "blk"
     p_storage.driver != "overlayfs"
     p_storage.options == i_storage.options
 
@@ -873,8 +903,8 @@ allow_storage_options(p_storage, i_storage, layer_ids, root_hashes) {
     lowerdir := concat("=", ["lowerdir", p_storage.options[0]])
     print("allow_storage_options 2: lowerdir =", lowerdir)
 
-    i_storage.options[i_count - 1] == lowerdir
     print("allow_storage_options 2: i_storage.options[i_count - 1] =", i_storage.options[i_count - 1])
+    i_storage.options[i_count - 1] == lowerdir
 
     every i, policy_id in policy_ids {
         allow_overlay_layer(policy_id, policy_hashes[i], i_storage.options[i + 1])
@@ -907,6 +937,25 @@ allow_storage_options(p_storage, i_storage, layer_ids, root_hashes) {
 
     print("allow_storage_options 3: true")
 }
+allow_storage_options(p_storage, i_storage, layer_ids, root_hashes) {
+    print("allow_storage_options 4: start")
+
+    p_storage.driver == "smb"
+    count(i_storage.options) == 8
+    i_storage.options[0] == "dir_mode=0666"
+    i_storage.options[1] == "file_mode=0666"
+    i_storage.options[2] == "mfsymlinks"    
+    i_storage.options[3] == "cache=strict"  
+    i_storage.options[4] == "nosharesock"
+    i_storage.options[5] == "actimeo=30"    
+    startswith(i_storage.options[6], "addr=")
+    creds = split(i_storage.options[7], ",")
+    count(creds) == 2
+    startswith(creds[0], "username=")
+    startswith(creds[1], "password=")
+    
+    print("allow_storage_options 4: true")
+}
 
 allow_overlay_layer(policy_id, policy_hash, i_option) {
     print("allow_overlay_layer: policy_id =", policy_id, "policy_hash =", policy_hash)
@@ -927,7 +976,6 @@ allow_overlay_layer(policy_id, policy_hash, i_option) {
 }
 
 allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
-    print("allow_mount_point 1: i_storage.mount_point =", i_storage.mount_point)
     p_storage.fstype == "tar"
 
     startswith(p_storage.mount_point, "$(layer")
@@ -949,7 +997,6 @@ allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
     print("allow_mount_point 1: true")
 }
 allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
-    print("allow_mount_point 2: i_storage.mount_point =", i_storage.mount_point)
     p_storage.fstype == "fuse3.kata-overlay"
 
     mount1 := replace(p_storage.mount_point, "$(cpath)", policy_data.common.cpath)
@@ -961,7 +1008,6 @@ allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
     print("allow_mount_point 2: true")
 }
 allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
-    print("allow_mount_point 3: i_storage.mount_point =", i_storage.mount_point)
     p_storage.fstype == "local"
 
     mount1 := p_storage.mount_point
@@ -978,7 +1024,6 @@ allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
     print("allow_mount_point 3: true")
 }
 allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
-    print("allow_mount_point 4: i_storage.mount_point =", i_storage.mount_point)
     p_storage.fstype == "bind"
 
     mount1 := p_storage.mount_point
@@ -995,7 +1040,6 @@ allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
     print("allow_mount_point 4: true")
 }
 allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
-    print("allow_mount_point 5: i_storage.mount_point =", i_storage.mount_point)
     p_storage.fstype == "tmpfs"
 
     mount1 := p_storage.mount_point
@@ -1004,6 +1048,35 @@ allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
     regex.match(mount1, i_storage.mount_point)
 
     print("allow_mount_point 5: true")
+}
+allow_mount_point(p_storage, i_storage, bundle_id, sandbox_id, layer_ids) {
+    print("allow_mount_point 6: i_storage.mount_point =", i_storage.mount_point)
+    allow_direct_vol_driver(p_storage, i_storage)
+
+    mount1 := p_storage.mount_point
+    print("allow_mount_point 6: mount1 =", mount1)
+
+    mount2 := replace(mount1, "$(spath)", policy_data.common.spath)
+    print("allow_mount_point 6: mount2 =", mount2)
+
+    direct_vol_path := i_storage.source
+    mount3 := replace(mount2, "$(b64-direct-vol-path)", base64url.encode(direct_vol_path))
+    print("allow_mount_point 6: mount3 =", mount3)
+
+    mount3 == i_storage.mount_point
+
+    print("allow_mount_point 6: true")
+}
+
+allow_direct_vol_driver(p_storage, i_storage) {
+    print("allow_direct_vol_driver 1: start")
+    p_storage.driver == "blk"
+    print("allow_direct_vol_driver 1: true")
+}
+allow_direct_vol_driver(p_storage, i_storage) {
+    print("allow_direct_vol_driver 2: start")
+    p_storage.driver == "smb"
+    print("allow_direct_vol_driver 2: true")
 }
 
 # process.Capabilities
@@ -1060,23 +1133,85 @@ match_caps(p_caps, i_caps) {
 }
 
 ######################################################################
+check_directory_traversal(i_path) {
+    contains(i_path, "../") == false
+    endswith(i_path, "/..") == false
+    i_path != ".."
+}
+
+check_symlink_source {
+    # TODO: delete this rule once the symlink_src field gets implemented
+    # by all/most Guest VMs.
+    not input.symlink_src
+}
+check_symlink_source {
+    i_src := input.symlink_src
+    print("check_symlink_source: i_src =", i_src)
+
+    startswith(i_src, "/") == false
+    check_directory_traversal(i_src)
+}
+
+allow_sandbox_storages(i_storages) {
+    print("allow_sandbox_storages: i_storages =", i_storages)
+
+    p_storages := policy_data.sandbox.storages
+    every i_storage in i_storages {
+        allow_sandbox_storage(p_storages, i_storage)
+    }
+
+    print("allow_sandbox_storages: true")
+}
+
+allow_sandbox_storage(p_storages, i_storage) {
+    print("allow_sandbox_storage: i_storage =", i_storage)
+
+    some p_storage in p_storages
+    print("allow_sandbox_storage: p_storage =", p_storage)
+    i_storage == p_storage
+
+    print("allow_sandbox_storage: true")
+}
+
 CopyFileRequest {
     print("CopyFileRequest: input.path =", input.path)
 
+    check_symlink_source
+    check_directory_traversal(input.path)
+
     some regex1 in policy_data.request_defaults.CopyFileRequest
-    regex2 := replace(regex1, "$(cpath)", policy_data.common.cpath)
-    regex.match(regex2, input.path)
+    regex2 := replace(regex1, "$(sfprefix)", policy_data.common.sfprefix)
+    regex3 := replace(regex2, "$(cpath)", policy_data.common.cpath)
+    regex4 := replace(regex3, "$(bundle-id)", "[a-z0-9]{64}")
+    print("CopyFileRequest: regex4 =", regex4)
+
+    regex.match(regex4, input.path)
 
     print("CopyFileRequest: true")
+}
+
+CreateSandboxRequest {
+    print("CreateSandboxRequest: input.guest_hook_path =", input.guest_hook_path)
+    count(input.guest_hook_path) == 0
+
+    print("CreateSandboxRequest: input.kernel_modules =", input.kernel_modules)
+    count(input.kernel_modules) == 0
+
+    i_pidns := input.sandbox_pidns
+    print("CreateSandboxRequest: i_pidns =", i_pidns)
+    i_pidns == false
+
+    allow_sandbox_storages(input.storages)
 }
 
 ExecProcessRequest {
     print("ExecProcessRequest 1: input =", input)
 
     i_command = concat(" ", input.process.Args)
-    print("ExecProcessRequest 3: i_command =", i_command)
+    print("ExecProcessRequest 1: i_command =", i_command)
 
     some p_command in policy_data.request_defaults.ExecProcessRequest.commands
+    print("ExecProcessRequest 1: p_command =", p_command)
     p_command == i_command
 
     print("ExecProcessRequest 1: true")
@@ -1111,8 +1246,16 @@ ExecProcessRequest {
     print("ExecProcessRequest 3: true")
 }
 
+CloseStdinRequest {
+    policy_data.request_defaults.CloseStdinRequest == true
+}
+
 ReadStreamRequest {
     policy_data.request_defaults.ReadStreamRequest == true
+}
+
+UpdateEphemeralMountsRequest {
+    policy_data.request_defaults.UpdateEphemeralMountsRequest == true
 }
 
 WriteStreamRequest {

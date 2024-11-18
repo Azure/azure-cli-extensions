@@ -151,6 +151,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         return self._rootfs_proxy
 
+    def set_fragment_contents(self, fragment_contents: List[str]) -> None:
+        self._fragment_contents = fragment_contents
+
     def get_fragments(self) -> List[str]:
         return self._fragments or []
 
@@ -380,9 +383,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         policy = []
         regular_container_images = self.get_images()
 
-        is_sidecars = True
+        # in the case where fragments cover all the customer containers, we still need the pause container
+        is_sidecars = all(is_sidecar(image.containerImage) for image in regular_container_images)
         for image in regular_container_images:
-            is_sidecars = is_sidecars and is_sidecar(image.containerImage)
             image_dict = image.get_policy_json(omit_id=omit_id)
             policy.append(image_dict)
         if not is_sidecars and include_sidecars:

@@ -201,9 +201,15 @@ helps[
         - name: Input a config file to generate a fragment with a custom namespace and debug mode enabled
           text: az confcom acifragmentgen --input "./config.json" --namespace "my-namespace" --debug-mode
         - name: Generate an import statement for a signed local fragment
-          text: az confcom acifragmentgen --fragment-path "./fragment.json" --generate-import --minimum-svn 1
+          text: az confcom acifragmentgen --fragment-path "./fragment.rego.cose" --generate-import --minimum-svn 1
         - name: Generate a fragment and COSE sign it with a key and chain
-          text: az confcom acifragmentgen --image mcr.microsoft.com/azuredocs/aci-helloworld --key "./key.pem" --chain "./chain.pem" --svn 1 --namespace contoso --no-print
+          text: az confcom acifragmentgen --input "./config.json" --key "./key.pem" --chain "./chain.pem" --svn 1 --namespace contoso --no-print
+        - name: Generate a fragment import from an image name
+          text: az confcom acifragmentgen --image <my-image> --generate-import --minimum-svn 1
+        - name: Attach a fragment to a specified image
+          text: az confcom acifragmentgen --input "./config.json" --key "./key.pem" --chain "./chain.pem" --svn 1 --namespace contoso --upload-fragment --image-target <my-image>
+
+
 """
 
 helps[

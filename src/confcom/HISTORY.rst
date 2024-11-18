@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.1.2
+++++++
+* fixing metadata for uploaded fragments
+* fixing support for non-image feed names and attaching fragments to an image
+* bug fixes for image-attached fragments
+* adding ability to generate a fragment import from an image name using the remote attached fragments
+* updating stdout import statement to look more like the file output
+
 1.1.1
 ++++++
 * updating dmverity-vhd version with bugfix for empty image layers

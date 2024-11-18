@@ -11,6 +11,7 @@ from typing import List
 from azext_confcom.errors import eprint
 from azext_confcom.config import ARTIFACT_TYPE
 from azext_confcom.cose_proxy import CoseSignToolProxy
+from azext_confcom.os_util import delete_silently
 
 host_os = platform.system()
 machine = platform.machine()
@@ -31,9 +32,10 @@ def discover(
 
     if item.returncode == 0:
         json_output = json.loads(item.stdout.decode("utf-8"))
-        manifests = json_output["manifests"]
-        for manifest in manifests:
-            hashes.append(manifest["digest"])
+        manifests = json_output.get("manifests", [])
+        if manifests is not None:
+            for manifest in manifests:
+                hashes.append(manifest["digest"])
     # get the exit code from the subprocess
     else:
         if "401: Unauthorized" in item.stderr.decode("utf-8"):
@@ -83,10 +85,12 @@ def pull_all_image_attached_fragments(image):
     # TODO: this will be for standalone fragments
     fragments = discover(image)
     fragment_contents = []
+    feeds = []
     proxy = CoseSignToolProxy()
     for fragment_digest in fragments:
         filename = pull(image, fragment_digest)
         text = proxy.extract_payload_from_path(filename)
+        feed = proxy.extract_feed_from_path(filename)
         # containers = extract_containers_from_text(text, REGO_CONTAINER_START)
         # new_fragments = extract_containers_from_text(text, REGO_FRAGMENT_START)
         # if new_fragments:
@@ -96,7 +100,8 @@ def pull_all_image_attached_fragments(image):
         #         if feed not in fragment_feeds:
         #             fragment_contents.extend(pull_all_image_attached_fragments(feed, fragment_feeds=fragment_feeds))
         fragment_contents.append(text)
-    return fragment_contents
+        feeds.append(feed)
+    return fragment_contents, feeds
 
 
 def check_oras_cli():
@@ -113,7 +118,14 @@ def attach_fragment_to_image(image_name: str, filename: str):
     if ":" not in image_name:
         image_name += ":latest"
     # attach the fragment to the image
-    arg_list = ["oras", "attach", "--artifact-type", ARTIFACT_TYPE, image_name, filename]
+    arg_list = [
+        "oras",
+        "attach",
+        "--artifact-type",
+        ARTIFACT_TYPE,
+        image_name,
+        filename + ":application/cose-x509+rego"
+    ]
     item = call_oras_cli(arg_list, check=False)
     if item.returncode != 0:
         eprint(f"Could not attach fragment to image: {image_name}. Failed with {item.stderr}")
@@ -124,3 +136,23 @@ def attach_fragment_to_image(image_name: str, filename: str):
         print("Attached fragment to image, but could not extract digest from output.")
     digest = digest_result.group(0)
     print(f"Fragment attached to image '{image_name}' with Digest:{digest}")
+
+
+def generate_imports_from_image_name(image_name: str, minimum_svn: int) -> List[dict]:
+    cose_proxy = CoseSignToolProxy()
+    fragment_hashes = discover(image_name)
+    import_list = []
+
+    for fragment_hash in fragment_hashes:
+        filename = ""
+        try:
+            filename = pull(image_name, fragment_hash)
+            import_statement = cose_proxy.generate_import_from_path(filename, minimum_svn)
+            if import_statement not in import_list:
+                import_list.append(import_statement)
+        finally:
+            # clean up the fragment file
+            delete_silently(filename)
+
+
+    return import_list

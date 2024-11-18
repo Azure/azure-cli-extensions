@@ -66,10 +66,19 @@ def validate_fragment_source(namespace):
         raise CLIError("Must provide either an image name or an input file to generate a fragment")
 
 
+def validate_image_target(namespace):
+    if namespace.image_target and not namespace.upload_fragment:
+        raise CLIError("Must specify --upload-fragment to use --image-target")
+
+
+def validate_upload_fragment(namespace):
+    if namespace.upload_fragment and not (namespace.key or namespace.chain):
+        raise CLIError("Must sign the fragment with --key and --chain to upload it")
+
+
 def validate_fragment_generate_import(namespace):
     if namespace.generate_import and sum(map(bool, [
         namespace.fragment_path,
-        namespace.input_path,
         namespace.image_name
     ])) != 1:
         raise CLIError(
@@ -78,8 +87,11 @@ def validate_fragment_generate_import(namespace):
                 "an image name to generate an import statement"
             )
         )
-    elif namespace.generate_import and namespace.output_filename:
-        raise CLIError("Cannot specify an output file (--output-filename) when generating an import statement. Use --fragments-json (-j) to write to a file.")
+    if namespace.generate_import and namespace.output_filename:
+        raise CLIError(
+            "Cannot specify an output file (--output-filename) when generating an import statement." +
+            "Use --fragments-json (-j) to write to a file."
+        )
 
 
 def validate_fragment_namespace_and_svn(namespace):

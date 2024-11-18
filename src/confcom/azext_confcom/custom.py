@@ -11,7 +11,7 @@ from knack.log import get_logger
 from azext_confcom.config import (
     DEFAULT_REGO_FRAGMENTS,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-
+    REGO_IMPORT_FILE_STRUCTURE,
 )
 
 from azext_confcom import os_util
@@ -22,7 +22,8 @@ from azext_confcom.template_util import (
     inject_policy_into_template,
     inject_policy_into_yaml,
     print_existing_policy_from_arm_template,
-    print_existing_policy_from_yaml
+    print_existing_policy_from_yaml,
+    get_image_name,
 )
 from azext_confcom.fragment_util import get_all_fragment_contents
 from azext_confcom.init_checks import run_initial_docker_checks
@@ -93,7 +94,6 @@ def acipolicygen_confcom(
     check_infrastructure_svn(infrastructure_svn)
 
     fragments_list = []
-    fragment_policy_list = []
     # gather information about the fragments being used in the new policy
     if include_fragments:
         fragments_list = os_util.load_json_from_file(fragments_json or input_path)
@@ -102,7 +102,6 @@ def acipolicygen_confcom(
         # convert to list if it's just a dict
         if not isinstance(fragments_list, list):
             fragments_list = [fragments_list]
-        fragment_policy_list = get_all_fragment_contents(fragments_list)
 
     # telling the user what operation we're doing
     logger.warning(
@@ -132,7 +131,6 @@ def acipolicygen_confcom(
             approve_wildcards=approve_wildcards,
             diff_mode=diff,
             rego_imports=fragments_list,
-            fragment_contents=fragment_policy_list,
             exclude_default_fragments=exclude_default_fragments,
         )
     elif image_name:
@@ -155,6 +153,21 @@ def acipolicygen_confcom(
     # since they can only ever output a single image's policy
     if not isinstance(container_group_policies, list):
         container_group_policies = [container_group_policies]
+
+    # get all of the fragments that are being used in the policy
+    # and associate them with each container group
+
+    if include_fragments:
+        fragment_policy_list = []
+        container_names = []
+        fragment_imports = []
+        for policy in container_group_policies:
+            fragment_imports.extend(policy.get_fragments())
+            for container in policy.get_images():
+                container_names.append(container.get_container_image())
+        fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
+        for policy in container_group_policies:
+            policy.set_fragment_contents(fragment_policy_list)
 
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(
@@ -209,6 +222,7 @@ def acifragmentgen_confcom(
     key: str,
     chain: str,
     minimum_svn: int,
+    image_target: str = "",
     algo: str = "ES384",
     fragment_path: str = None,
     generate_import: bool = False,
@@ -224,25 +238,34 @@ def acifragmentgen_confcom(
 
     if generate_import:
         cose_client = CoseSignToolProxy()
-        import_statement = cose_client.generate_import_from_path(fragment_path, minimum_svn=minimum_svn)
-        if fragments_json:
-            if os.path.isfile(fragments_json):
-                logger.info("Appending import statement to JSON file")
-                fragments_file_contents = os_util.load_json_from_file(fragments_json)
-                fragments_list = fragments_file_contents.get(POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS, [])
-            else:
-                logger.info("Creating import statement JSON file")
-                fragments_file_contents = {}
-                fragments_list = []
-            # convert to list if it's just a dict
-            if not isinstance(fragments_list, list):
-                fragments_list = [fragments_list]
-            fragments_list.append(import_statement)
+        import_statements = []
+        # images can have multiple fragments attached to them so we need an array to hold the import statements
+        if fragment_path:
+            import_statements = [cose_client.generate_import_from_path(fragment_path, minimum_svn=minimum_svn)]
+        elif image_name:
+            import_statements = oras_proxy.generate_imports_from_image_name(image_name, minimum_svn=minimum_svn)
 
-            fragments_file_contents[POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS] = fragments_list
+        fragments_file_contents = {}
+        fragments_list = []
+        if fragments_json:
+            logger.info("Creating/appending import statement JSON file")
+            if os.path.isfile(fragments_json):
+                fragments_file_contents = os_util.load_json_from_file(fragments_json)
+                if isinstance(fragments_file_contents, list):
+                    logger.error("Unsupported JSON file format. Please make sure the outermost structure is not an array. An empty import file should look like: %s", REGO_IMPORT_FILE_STRUCTURE)
+                    sys.exit(1)
+                fragments_list = fragments_file_contents.get(POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS, [])
+
+        # convert to list if it's just a dict
+        if isinstance(fragments_list, dict):
+            fragments_list = [fragments_list]
+        fragments_list += import_statements
+
+        fragments_file_contents[POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS] = fragments_list
+        if fragments_json:
             os_util.write_str_to_file(fragments_json, pretty_print_func(fragments_file_contents))
         else:
-            print(pretty_print_func(import_statement))
+            print(pretty_print_func(fragments_file_contents))
         return
 
     tar_mapping = tar_mapping_validation(tar_mapping_location, using_config_file=bool(input_path))
@@ -258,14 +281,30 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_config_file(
             input_path, debug_mode=debug_mode, disable_stdio=disable_stdio
         )
+    # get all of the fragments that are being used in the policy
+    # and associate them with each container group
+    fragment_policy_list = []
+    container_names = []
+    fragment_imports = policy.get_fragments()
+    for container in policy.get_images():
+        container_names.append(container.get_container_image())
+    fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
+    policy.set_fragment_contents(fragment_policy_list)
     policy.populate_policy_content_for_all_images(
         individual_image=bool(image_name), tar_mapping=tar_mapping
     )
 
     # if no feed is provided, use the first image's feed
     # to assume it's an image-attached fragment
+    if not image_target:
+        policy_images = policy.get_images()
+        if not policy_images:
+            logger.error("No images found in the policy or all images are covered by fragments")
+            sys.exit(1)
+        image_target = policy_images[0].containerImage
     if not feed:
-        feed = policy.get_images()[0].containerImage
+        # strip the tag or hash off the image name so there are stable feed names
+        feed = get_image_name(image_target)
 
     fragment_text = policy.generate_fragment(namespace, svn, output_type)
 
@@ -284,7 +323,7 @@ def acifragmentgen_confcom(
 
         cose_proxy.cose_sign(filename, key, chain, feed, iss, algo, out_path)
         if upload_fragment:
-            oras_proxy.attach_fragment_to_image(feed, out_path)
+            oras_proxy.attach_fragment_to_image(image_target, out_path)
 
 
 def katapolicygen_confcom(
