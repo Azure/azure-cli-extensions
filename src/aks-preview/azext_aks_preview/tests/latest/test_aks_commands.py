@@ -13103,7 +13103,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westcentralus",
+        location="centraluseuap",
     )
     def test_aks_update_enable_acns(
         self, resource_group, resource_group_location
@@ -13131,33 +13131,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # update to enable acns
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
             ],
         )
 
         # update to disable acns
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd_two = (
             "aks update --resource-group={resource_group} --name={name} --disable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd_two,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
@@ -13189,33 +13187,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # update to enable acns
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
         # update to disable acns
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd_two = (
             "aks update --resource-group={resource_group} --name={name} --disable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd_two,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
@@ -13229,7 +13225,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westcentralus",
+        location="eastus2euap",
     )
     def test_aks_create_with_enable_acns(
         self, resource_group, resource_group_location
@@ -13249,19 +13245,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # Cilium Cluster with ACNS enabled
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
             ],
         )
 
@@ -13286,19 +13281,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # Retina Cluster (Non-Cilium) with ACNS enabled
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--enable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
@@ -13332,84 +13326,79 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # Cilium Cluster with ACNS enabled
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
             "--enable-acns --disable-acns-security "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
         # update: enable security and observability
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
             ],
         )
 
         # update: disable security
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd2 = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-acns --disable-acns-security "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd2,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
         # update: enable security, disable observability
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd3 = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-acns --disable-acns-observability "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd3,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.enabled", True),
             ],
         )
 
         # update: disable acns
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd5 = (
             "aks update --resource-group={resource_group} --name={name} "
             "--disable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd5,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
@@ -13438,30 +13427,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--enable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
         # update: disable acns
-        # TODO remove custom headers when AFEC flag disabled (expedited toggle in RP)
         update_cmd5 = (
             "aks update --resource-group={resource_group} --name={name} "
             "--disable-acns "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd5,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.enabled", False),
             ],
         )
 
