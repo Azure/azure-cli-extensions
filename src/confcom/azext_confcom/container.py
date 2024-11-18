@@ -20,6 +20,7 @@ from azext_confcom.os_util import base64_to_str
 
 
 _DEFAULT_MOUNTS = config.DEFAULT_MOUNTS_USER
+_DEFAULT_MOUNTS_VN2 = config.DEFAULT_MOUNTS_USER_VIRTUAL_NODE
 
 _DEFAULT_USER = config.DEFAULT_USER
 
@@ -29,6 +30,8 @@ _INJECTED_CUSTOMER_ENV_RULES = (
     + config.MANAGED_IDENTITY_ENV_RULES
     + config.ENABLE_RESTART_ENV_RULE
 )
+
+_INJECTED_SERVICE_VN2_ENV_RULES = config.VIRTUAL_NODE_ENV_RULES
 
 _CAPABILITIES = {
     config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING: [],
@@ -70,9 +73,23 @@ def extract_env_rules(container_json: Any) -> List[Dict]:
             case_insensitive_dict_get(rule, config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY),
             case_insensitive_dict_get(rule, config.ACI_FIELD_CONTAINERS_ENVS_REQUIRED),
         )
-        if name is None or value is None or strategy is None:
+        if name is None:
             eprint(
-                f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_ENVS}"] is incorrect.'
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_ENVS}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_ENVS_NAME}] is incorrect or missing.'
+            )
+        if value is None:
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_ENVS}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_ENVS_VALUE}"] is empty for env var {name}.'
+            )
+        if strategy is None:
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_ENVS}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY}"] is incorrect for env var {name}.'
             )
 
         environmentRules.append(
@@ -90,6 +107,10 @@ def extract_env_rules(container_json: Any) -> List[Dict]:
 
 def extract_id(container_json: Any) -> str:
     return case_insensitive_dict_get(container_json, config.ACI_FIELD_CONTAINERS_ID)
+
+
+def extract_container_name(container_json: Any) -> str:
+    return case_insensitive_dict_get(container_json, config.ACI_FIELD_CONTAINERS_NAME)
 
 
 def extract_working_dir(container_json: Any) -> str:
@@ -396,7 +417,7 @@ def extract_allow_elevated(container_json: Any) -> bool:
     return privileged_value or False
 
 
-def extract_seccomp_profile_sha256(container_json: Any) -> Dict:
+def extract_seccomp_profile_sha256(container_json: Any, seccomp_json: dict = None) -> Dict:
     security_context = case_insensitive_dict_get(
         container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
     )
@@ -405,21 +426,34 @@ def extract_seccomp_profile_sha256(container_json: Any) -> Dict:
     # assumes that securityContext field is optional
     if security_context:
         # get the field for seccomp_profile
-        seccomp_profile_base64 = case_insensitive_dict_get(
+        seccomp_profile = case_insensitive_dict_get(
             security_context, config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE
         )
 
-        if seccomp_profile_base64 is not None and not isinstance(seccomp_profile_base64, str):
-            eprint(
-                f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
-                + f'["{config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE}"] can only be a string.'
-            )
-        elif seccomp_profile_base64 is not None:
+        if isinstance(seccomp_profile, str):
             # clean up and jsonify the seccomp profile
-            seccomp_profile = process_seccomp_policy(base64_to_str(seccomp_profile_base64))
+            seccomp_profile = process_seccomp_policy(base64_to_str(seccomp_profile))
             seccomp_profile_str = json.dumps(seccomp_profile, separators=(',', ':'))
             # hash the seccomp profile
             seccomp_profile_sha256 = str_to_sha256(seccomp_profile_str)
+
+        elif isinstance(seccomp_profile, dict):
+            profile_type = seccomp_profile.get('type')
+
+            if profile_type == 'RuntimeDefault':
+                # Tied to container runtime. Not sure how to extract it.
+                pass
+
+            elif profile_type == 'Localhost':
+                if seccomp_json:
+                    # If seccomp JSON is provided directly, use it
+                    processed_seccomp_profile = process_seccomp_policy(json.dumps(seccomp_json))
+                    seccomp_profile_str = json.dumps(processed_seccomp_profile, separators=(',', ':'))
+                    seccomp_profile_sha256 = str_to_sha256(seccomp_profile_str)
+                else:
+                    eprint("Localhost profile type specified but no seccomp JSON provided.")
+
+    # NOTE: this is also returned if profile_type == 'Unconfined'
     return seccomp_profile_sha256
 
 
@@ -432,7 +466,6 @@ def extract_allow_privilege_escalation(container_json: Any) -> bool:
     allow_privilege_escalation = True
     # assumes that securityContext field is optional
     if security_context:
-
         # get the field for allow privilege escalation, default to true
         temp_privilege_escalation = case_insensitive_dict_get(
             security_context,
@@ -488,6 +521,7 @@ class ContainerImage:
 
         container_image = extract_container_image(container_json)
         id_val = extract_id(container_json)
+        container_name = extract_container_name(container_json)
         environment_rules = extract_env_rules(container_json=container_json)
         command = extract_command(container_json)
         working_dir = extract_working_dir(container_json)
@@ -507,6 +541,7 @@ class ContainerImage:
         allow_privilege_escalation = extract_allow_privilege_escalation(container_json)
         return ContainerImage(
             containerImage=container_image,
+            containerName=container_name,
             environmentRules=environment_rules,
             command=command,
             workingDir=working_dir,
@@ -540,8 +575,10 @@ class ContainerImage:
         allowPrivilegeEscalation: bool = True,
         execProcesses: List = None,
         signals: List = None,
+        containerName: str = ""
     ) -> None:
         self.containerImage = containerImage
+        self.containerName = containerName
         if ":" in containerImage:
             self.base, self.tag = containerImage.split(":", 1)
         else:
@@ -557,21 +594,19 @@ class ContainerImage:
         self._user = user or {}
         self._capabilities = capabilities
         self._allow_privilege_escalation = allowPrivilegeEscalation
-        self._policy_json = None
-        self._policy_json_str = None
-        self._policy_json_str_pp = None
         self._identifier = id_val
         self._exec_processes = execProcesses or []
         self._signals = signals or []
         self._extraEnvironmentRules = extraEnvironmentRules
 
-    def get_policy_json(self) -> str:
-        if not self._policy_json:
-            self._policy_json_serialization()
-        return self._policy_json
+    def get_policy_json(self, omit_id: bool = False) -> str:
+        return self._populate_policy_json_elements(omit_id=omit_id)
 
     def get_id(self) -> str:
         return self._identifier
+
+    def get_name(self) -> str:
+        return self.containerName
 
     def get_working_dir(self) -> str:
         return self._workingDir
@@ -616,6 +651,8 @@ class ContainerImage:
     def parse_all_parameters_and_variables(self, params, vars_dict) -> None:
         field_names = [
             "containerImage",
+            "containerName",
+            "_identifier",
             "_environmentRules",
             "_command",
             "_workingDir",
@@ -664,7 +701,6 @@ class ContainerImage:
             return []
 
         mounts = []
-
         for m in self._mounts:
             mount = copy.deepcopy(config.DEFAULT_MOUNT_POLICY)
             mount[
@@ -692,10 +728,9 @@ class ContainerImage:
 
         return mounts
 
-    def _populate_policy_json_elements(self) -> Dict[str, Any]:
-
+    def _populate_policy_json_elements(self, omit_id: bool = False) -> Dict[str, Any]:
         elements = {
-            config.POLICY_FIELD_CONTAINERS_ID: self._identifier,
+            config.POLICY_FIELD_CONTAINERS_NAME: self.get_name(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS: self._layers,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS: self._command,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS: self._get_environment_rules(),
@@ -710,34 +745,39 @@ class ContainerImage:
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS: self._allow_stdio_access,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_NO_NEW_PRIVILEGES: not self._allow_privilege_escalation
         }
-        self._policy_json = elements
-        return self._policy_json
 
-    def _policy_json_serialization(self):
-        policy = self._populate_policy_json_elements()
-        # serialize json policy to object, compact string and pretty print string
-        self._policy_json_str, self._policy_json_str_pp = (
-            json.dumps(policy, separators=(",", ":"), sort_keys=True),
-            json.dumps(policy, indent=2, sort_keys=True),
-        )
+        if not omit_id:
+            elements[config.POLICY_FIELD_CONTAINERS_ID] = self._identifier
+        # if we are omitting the id, we should remove the id value from the policy if it's in the name field
+        elif omit_id and self.get_name() == self._identifier:
+            del elements[config.POLICY_FIELD_CONTAINERS_NAME]
+
+        return elements
 
 
 class UserContainerImage(ContainerImage):
+    # pylint: disable=arguments-differ
     @classmethod
     def from_json(
-        cls, container_json: Any
+        cls, container_json: Any, is_vn2=False
     ) -> "UserContainerImage":
         image = super().from_json(container_json)
         image.__class__ = UserContainerImage
         # inject default mounts for user container
-        if image.base not in config.BASELINE_SIDECAR_CONTAINERS:
+        if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (not is_vn2):
             image.get_mounts().extend(_DEFAULT_MOUNTS)
 
-        image.set_extra_environment_rules(_INJECTED_CUSTOMER_ENV_RULES)
+        if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (is_vn2):
+            image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
+
+        # Start with the customer environment rules
+        env_rules = _INJECTED_CUSTOMER_ENV_RULES
+        # If is_vn2, add the VN2 environment rules
+        if is_vn2:
+            env_rules += _INJECTED_SERVICE_VN2_ENV_RULES
+
+        image.set_extra_environment_rules(env_rules)
         return image
 
-    def _populate_policy_json_elements(self) -> Dict[str, Any]:
-        elements = super()._populate_policy_json_elements()
-        self._policy_json = elements
-
-        return self._policy_json
+    def _populate_policy_json_elements(self, omit_id: bool = False) -> Dict[str, Any]:
+        return super()._populate_policy_json_elements(omit_id=omit_id)

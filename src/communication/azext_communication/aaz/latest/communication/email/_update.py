@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a new EmailService or update an existing EmailService.
+
+    :example: Update a email resource with tags
+        az communication email update -n ResourceName -g ResourceGroup --tags "{tag:tag}"
     """
 
     _aaz_info = {
@@ -357,7 +360,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         email_service_resource_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         email_service_resource_read.system_data = AAZObjectType(
             serialized_name="systemData",

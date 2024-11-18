@@ -38,7 +38,7 @@ helps['spring create'] = """
       text: |
         az provider register -n Microsoft.SaaS
         az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
-        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
+        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-config-server --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
 """
 
 helps['spring list-marketplace-plan'] = """
@@ -190,8 +190,8 @@ helps['spring app create'] = """
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
-    - name: Create an app binding to the default Service Registry and Application Configuration Service.
-      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service
+    - name: Create an app binding to the default Service Registry, Application Configuration Service and Spring Cloud Config Server.
+      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service --bind-config-server
 """
 
 helps['spring app append-persistent-storage'] = """
@@ -437,16 +437,25 @@ helps['spring config-server'] = """
 helps['spring config-server show'] = """
     type: command
     short-summary: Show Config Server.
+    examples:
+        - name: Show the metadata for the default Config Server in service instance MyService.
+          text: az spring config-server show -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server set'] = """
     type: command
     short-summary: Set Config Server from a yaml file.
+    examples:
+        - name: Load from a yaml file and set the default Config Server in service instance MyService.
+          text: az spring config-server set -s MyService -g MyResourceGroup --config-file MyConfigFile.yaml
 """
 
 helps['spring config-server clear'] = """
     type: command
     short-summary: Erase all settings in Config Server.
+    examples:
+        - name: Update the settings for the default Config Server in service instance MyService to empty.
+          text: az spring config-server clear -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server git'] = """
@@ -462,36 +471,87 @@ helps['spring config-server git repo'] = """
 helps['spring config-server git set'] = """
     type: command
     short-summary: Set git property of Config Server, will totally override the old one.
+    examples:
+        - name: Set a public git repository without credential for the default Config Server in service instance MyService.
+          text: az spring config-server git set -s MyService -g MyResourceGroup --uri UrlOfGitRepository --label LabelOfGitRepository --search-paths "/path1,/path2"
 """
 
 helps['spring config-server git repo add'] = """
     type: command
     short-summary: Add a new repository of git property of Config Server.
+    examples:
+        - name: Add a new public git repository without credential for the default Config Server in service instance MyService.
+          text: az spring config-server git repo add -s MyService -g MyResourceGroup --uri UrlOfGitRepository --repo-name GitRepoName
 """
 
 helps['spring config-server git repo remove'] = """
     type: command
     short-summary: Remove an existing repository of git property of Config Server.
+    examples:
+        - name: Remove an existing repository for the default Config Server in service instance MyService.
+          text: az spring config-server git repo remove -s MyService -g MyResourceGroup --repo-name GitRepoName
 """
 
 helps['spring config-server git repo update'] = """
     type: command
     short-summary: Override an existing repository of git property of Config Server, will totally override the old one.
+    examples:
+        - name: Update one of the additional repositories for the default Config Server in service instance MyService.
+          text: az spring config-server git repo update -s MyService -g MyResourceGroup --uri UrlOfGitRepository --repo-name GitRepoName --label LabelOfGitRepository
 """
 
 helps['spring config-server git repo list'] = """
     type: command
     short-summary: List all repositories of git property of Config Server.
+    examples:
+        - name: List all repositories for the default Config Server in service instance MyService.
+          text: az spring config-server git repo list -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server enable'] = """
     type: command
-    short-summary: (Support Standard consumption Tier) Enable Config Server.
+    short-summary: (Standard consumption Tier Only) Enable Config Server.
 """
 
 helps['spring config-server disable'] = """
     type: command
-    short-summary: (Support Standard consumption Tier) Disable Config Server.
+    short-summary: (Standard consumption Tier Only) Disable Config Server.
+"""
+
+helps['spring config-server create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create Config Server.
+    examples:
+        - name: Create a Config Server without repository settings in service instance MyService.
+          text: az spring config-server create -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete Config Server.
+    examples:
+        - name: Delete the default Config Server in service instance MyService.
+          text: az spring config-server delete -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server bind'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Bind an app to Config Server.
+    examples:
+        - name: Bind an app to the default Config Server in service instance MyService.
+          text: az spring config-server bind --app MyApp -s MyService -g MyResourceGroup
+        - name: Bind a job to the default Config Server in service instance MyService.
+          text: az spring config-server bind --job job-name -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server unbind'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Unbind an app from Config Server.
+    examples:
+        - name: Unbind an app from the default Config Server in service instance MyService.
+          text: az spring config-server unbind --app MyApp -s MyService -g MyResourceGroup
+        - name: Unbind a job from the default Config Server in service instance MyService.
+          text: az spring config-server unbind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring eureka-server'] = """
@@ -721,18 +781,22 @@ helps['spring service-registry show'] = """
 
 helps['spring service-registry bind'] = """
     type: command
-    short-summary: Bind an app to Service Registry.
+    short-summary: Bind an app or a job to Service Registry.
     examples:
         - name: Bind an app to Service Registry.
           text: az spring service-registry bind --app MyApp -s MyService -g MyResourceGroup
+        - name: Bind a job to Service Registry.
+          text: az spring service-registry bind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring service-registry unbind'] = """
     type: command
-    short-summary: Unbind an app from Service Registry.
+    short-summary: Unbind an app or a job from Service Registry.
     examples:
         - name: Unbind an app from Service Registry.
           text: az spring service-registry unbind --app MyApp -s MyService -g MyResourceGroup
+        - name: Unbind a job from Service Registry.
+          text: az spring service-registry unbind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring build-service'] = """
@@ -1559,7 +1623,7 @@ helps['spring component'] = """
 
 helps['spring component logs'] = """
     type: command
-    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway
+    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway (c) Spring Cloud Config Server
     examples:
         - name: Show logs for all instances of flux in Application Configuration Serice (Gen2)
           text: az spring component logs --name flux-source-controller --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --all-instances
@@ -1592,4 +1656,156 @@ helps['spring component instance list'] = """
           text: az spring component instance list --component spring-cloud-gateway --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
         - name: List instances for spring-cloud-gateway-operator of Spring Cloud Gateway
           text: az spring component instance list --component spring-cloud-gateway-operator --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+"""
+
+helps['spring job'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage jobs of Azure Spring Apps service.
+"""
+
+helps['spring job create'] = """
+    type: command
+    short-summary: Create a new job in Azure Spring Apps service.
+    examples:
+    - name: Create a job with the default configuration.
+      text: az spring job create -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job update'] = """
+    type: command
+    short-summary: Update configurations of a job.
+    examples:
+    - name: Add plain text environment variables for the job.
+      text: az spring job update -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --envs foo=bar
+    - name: Remove all plain text environment variables and keep all existed secrets for the job.
+      text: az spring job update -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --envs
+    - name: Remove all secrets and keep all the plain text environment variables for the job.
+      text: az spring job update -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --secret-envs
+"""
+
+helps['spring job delete'] = """
+    type: command
+    short-summary: Delete a job in the Azure Spring Apps.
+    examples:
+    - name: Delete a job
+      text: az spring job delete -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job list'] = """
+    type: command
+    short-summary: List all jobs in the Azure Spring Apps.
+    examples:
+    - name: List jobs
+      text: az spring job list -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job show'] = """
+    type: command
+    short-summary: Show the details of a job in the Azure Spring Apps.
+    exmaples:
+    - name: Show details of a job
+      text: az spring job show -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job start'] = """
+    type: command
+    short-summary: Start an execution of the job.
+    examples:
+    - name: Start an execution of the job
+      text: az spring job start -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage job executions of Azure Spring Apps service.
+"""
+
+helps['spring job execution cancel'] = """
+    type: command
+    short-summary: Cancel a job execution.
+    examples:
+    - name: Cancel a job execution
+      text: az spring job execution cancel -n job-execution-name --job job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution show'] = """
+    type: command
+    short-summary: Show status and results of an execution of the job.
+    examples:
+    - name: Show status and results of an execution of the job
+      text: az spring job execution show -n job-execution-name --job job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution list'] = """
+    type: command
+    short-summary: List all executions of the job.
+    examples:
+    - name: List all executions of the job
+      text: az spring job execution list --job job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution instance'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage job execution instances of Azure Spring Apps service.
+"""
+
+helps['spring job execution instance list'] = """
+    type: command
+    short-summary: List all instances of the job execution.
+    examples:
+        - name: List all instances of the job execution.
+          text: az spring job execution instance list --job job-name --execution job-execution-name -s MyService -g MyResourceGroup
+"""
+
+helps['spring job deploy'] = """
+    type: command
+    short-summary: Deploy artifact to a job and update related configurations.
+    examples:
+    - name: Deploy a pre-built jar to a job with environment variables.
+      text: az spring job deploy -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --artifact-path app.jar --env foo=bar
+    - name: Deploy a pre-built jar to a job with build env.
+      text: az spring job deploy -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --artifact-path app.jar --build-env BP_JVM_VERSION=11.*
+"""
+
+helps['spring job logs'] = """
+    type: command
+    short-summary: Show logs for job execution instances. Logs will be streamed when setting '-f/--follow'.
+    examples:
+        - name: Show logs for all instances of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --all-instances -s MyService -g MyResourceGroup
+        - name: Show logs for a specific instance of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --instance job-execution-instance -s MyService -g MyResourceGroup
+        - name: Stream and watch logs for all instances of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --all-instances --follow -s MyService -g MyResourceGroup
+        - name: Stream and watch logs for a specific instance of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --instance MyJobExecutionInstance --follow -s MyService -g MyResourceGroup
+"""
+
+helps['spring private-dns-zone'] = """
+    type: group
+    short-summary: Commands to configure constumer private DNS zone with Azure Spring Apps.
+"""
+
+helps['spring private-dns-zone add'] = """
+    type: command
+    short-summary: Commands to add a constumer private DNS zone with Azure Spring Apps.
+    examples:
+        - name: Add a private DNS zone to Azure Spring Apps.
+          text: az spring private-dns-zone add --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --zone-id MyPrivateDNSZoneId
+"""
+
+helps['spring private-dns-zone update'] = """
+    type: command
+    short-summary: Commands to update constumer private DNS zone in Azure Spring Apps.
+    examples:
+        - name: Update a private DNS zone in Azure Spring Apps.
+          text: az spring private-dns-zone update --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --zone-id MyPrivateDNSZoneId
+"""
+
+helps['spring private-dns-zone clean'] = """
+    type: command
+    short-summary: Commands to clean up constumer private DNS zone in Azure Spring Apps.
+    examples:
+        - name: Clean up private DNS zone with Azure Spring Apps.
+          text: az spring private-dns-zone clean --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
 """

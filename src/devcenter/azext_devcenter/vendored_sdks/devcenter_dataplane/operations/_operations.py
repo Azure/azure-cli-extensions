@@ -48,7 +48,7 @@ def build_dev_center_list_projects_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -71,7 +71,7 @@ def build_dev_center_get_project_request(project_name: str, **kwargs: Any) -> Ht
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -93,13 +93,49 @@ def build_dev_center_get_project_request(project_name: str, **kwargs: Any) -> Ht
     return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
+def build_dev_center_get_project_abilities_request(
+    project_name: str, user_id: str = "me", **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/projects/{projectName}/users/{userId}/abilities"
+    path_format_arguments = {
+        "projectName": _SERIALIZER.url(
+            "project_name", project_name, "str", max_length=63, min_length=3, pattern=r"^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$"
+        ),
+        "userId": _SERIALIZER.url(
+            "user_id",
+            user_id,
+            "str",
+            max_length=36,
+            min_length=2,
+            pattern=r"^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
 def build_dev_boxes_list_pools_request(
     project_name: str, *, top: Optional[int] = None, filter: Optional[str] = None, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -134,7 +170,7 @@ def build_dev_boxes_get_pool_request(project_name: str, pool_name: str, **kwargs
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -170,7 +206,7 @@ def build_dev_boxes_list_schedules_by_project_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -207,7 +243,7 @@ def build_dev_boxes_list_schedules_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -247,7 +283,7 @@ def build_dev_boxes_get_schedule_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -284,7 +320,7 @@ def build_dev_boxes_list_all_dev_boxes_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -309,7 +345,7 @@ def build_dev_boxes_list_all_dev_boxes_by_user_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -346,7 +382,7 @@ def build_dev_boxes_list_dev_boxes_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -391,7 +427,7 @@ def build_dev_boxes_get_dev_box_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -441,7 +477,7 @@ def build_dev_boxes_create_dev_box_request(
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -492,7 +528,7 @@ def build_dev_boxes_delete_dev_box_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -541,7 +577,7 @@ def build_dev_boxes_start_dev_box_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -590,7 +626,7 @@ def build_dev_boxes_stop_dev_box_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -641,7 +677,7 @@ def build_dev_boxes_restart_dev_box_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -690,7 +726,7 @@ def build_dev_boxes_repair_dev_box_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -739,7 +775,7 @@ def build_dev_boxes_list_customization_groups_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -790,7 +826,7 @@ def build_dev_boxes_get_customization_group_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -848,7 +884,7 @@ def build_dev_boxes_create_customization_group_request(
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -912,7 +948,7 @@ def build_dev_boxes_get_customization_task_log_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "text/plain")
 
     # Construct URL
@@ -977,7 +1013,7 @@ def build_dev_boxes_get_remote_connection_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1026,7 +1062,7 @@ def build_dev_boxes_list_actions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1075,7 +1111,7 @@ def build_dev_boxes_get_action_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1127,7 +1163,7 @@ def build_dev_boxes_skip_action_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1185,7 +1221,7 @@ def build_dev_boxes_delay_action_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1238,7 +1274,7 @@ def build_dev_boxes_delay_all_actions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1294,7 +1330,7 @@ def build_dev_boxes_list_operations_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1347,7 +1383,7 @@ def build_dev_boxes_get_operation_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1404,7 +1440,7 @@ def build_projects_list_customization_task_definitions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1445,7 +1481,7 @@ def build_projects_get_customization_task_definition_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1492,7 +1528,7 @@ def build_projects_validate_customization_tasks_request(project_name: str, **kwa
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1527,7 +1563,7 @@ def build_deployment_environments_list_all_environments_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1562,7 +1598,7 @@ def build_deployment_environments_list_environments_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1605,7 +1641,7 @@ def build_deployment_environments_get_environment_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1655,7 +1691,7 @@ def build_deployment_environments_create_or_update_environment_request(
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1701,12 +1737,12 @@ def build_deployment_environments_create_or_update_environment_request(
 
 
 def build_deployment_environments_delete_environment_request(
-    project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
+    project_name: str, environment_name: str, user_id: str = "me", force: Optional[bool] = None, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-10-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1742,6 +1778,8 @@ def build_deployment_environments_delete_environment_request(
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+    if force is not None:
+        _params["force"] = _SERIALIZER.query("force", force, "bool")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -1755,7 +1793,7 @@ def build_deployment_environments_list_catalogs_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1790,7 +1828,7 @@ def build_deployment_environments_get_catalog_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1831,7 +1869,7 @@ def build_deployment_environments_list_environment_definitions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1866,7 +1904,7 @@ def build_deployment_environments_list_environment_definitions_by_catalog_reques
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1909,7 +1947,7 @@ def build_deployment_environments_get_environment_definition_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1958,7 +1996,7 @@ def build_deployment_environments_list_environment_types_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1993,8 +2031,8 @@ def build_environments_patch_environment_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2028,8 +2066,10 @@ def build_environments_patch_environment_request(
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
-    # Construct headers
+    # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
     if content_type is not None:
         _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -2043,7 +2083,7 @@ def build_environments_get_outputs_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2098,7 +2138,7 @@ def build_environments_list_operations_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2151,7 +2191,7 @@ def build_environments_get_operation_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2208,7 +2248,7 @@ def build_environments_get_logs_by_operation_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "text/plain")
 
     # Construct URL
@@ -2265,7 +2305,7 @@ def build_environments_list_actions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2314,7 +2354,7 @@ def build_environments_get_action_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2366,7 +2406,7 @@ def build_environments_skip_action_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2424,7 +2464,7 @@ def build_environments_delay_action_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -2469,6 +2509,100 @@ def build_environments_delay_action_request(
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_environments_get_environment_type_request(
+    project_name: str, environment_type_name: str, *, top: Optional[int] = None, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/projects/{projectName}/environmentTypes/{environmentTypeName}"
+    path_format_arguments = {
+        "projectName": _SERIALIZER.url(
+            "project_name",
+            project_name,
+            "str",
+            max_length=63,
+            min_length=3,
+            pattern=r"^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+        ),
+        "environmentTypeName": _SERIALIZER.url(
+            "environment_type_name",
+            environment_type_name,
+            "str",
+            max_length=63,
+            min_length=3,
+            pattern=r"^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+    if top is not None:
+        _params["top"] = _SERIALIZER.query("top", top, "int")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_environments_get_environment_type_abilities_request(
+    project_name: str, environment_type_name: str, user_id: str = "me", *, top: Optional[int] = None, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/projects/{projectName}/environmentTypes/{environmentTypeName}/users/{userId}/abilities"
+    path_format_arguments = {
+        "projectName": _SERIALIZER.url(
+            "project_name",
+            project_name,
+            "str",
+            max_length=63,
+            min_length=3,
+            pattern=r"^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+        ),
+        "environmentTypeName": _SERIALIZER.url(
+            "environment_type_name",
+            environment_type_name,
+            "str",
+            max_length=63,
+            min_length=3,
+            pattern=r"^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+        ),
+        "userId": _SERIALIZER.url(
+            "user_id",
+            user_id,
+            "str",
+            max_length=36,
+            min_length=2,
+            pattern=r"^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+    if top is not None:
+        _params["top"] = _SERIALIZER.query("top", top, "int")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 class DevCenterOperations:
@@ -2632,6 +2766,82 @@ class DevCenterOperations:
 
         request = build_dev_center_get_project_request(
             project_name=project_name,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            if _stream:
+                response.read()  # Load the body in memory and close the socket
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})
+
+        return cast(JSON, deserialized)
+
+    @distributed_trace
+    def get_project_abilities(self, project_name: str, user_id: str = "me", **kwargs: Any) -> JSON:
+        """Gets the signed-in user's permitted abilities in a project.
+
+        :param project_name: The DevCenter Project upon which to execute operations. Required.
+        :type project_name: str
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context. Default value is "me".
+        :type user_id: str
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "abilitiesAsAdmin": [
+                        "str"  # The abilities the user has to perform actions on the project
+                          as an admin. Required.
+                    ],
+                    "abilitiesAsDeveloper": [
+                        "str"  # The abilities the user has to perform actions on the project
+                          as a developer. Required.
+                    ]
+                }
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        request = build_dev_center_get_project_abilities_request(
+            project_name=project_name,
+            user_id=user_id,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,
@@ -5358,11 +5568,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5492,11 +5707,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5609,11 +5829,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5641,11 +5866,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5709,11 +5939,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5775,11 +6010,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5807,11 +6047,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -5974,6 +6219,8 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
                 # response body for status code(s): 200
                 response == {
+                    "cloudPcConnectionUrl": "str",  # Optional. Link to open a remote desktop
+                      session via a dev box's underlying Cloud PC. (This will default to Windows App).
                     "rdpConnectionUrl": "str",  # Optional. Link to open a Remote Desktop
                       session.
                     "webUrl": "str"  # Optional. URL to open a browser based RDP session.
@@ -7259,13 +7506,16 @@ class ProjectsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
+        response_headers = {}
+        response_headers["Operation-Location"] = self._deserialize("str", response.headers.get("Operation-Location"))
+
         if response.content:
             deserialized = response.json()
         else:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
         return cast(JSON, deserialized)
 
@@ -7311,11 +7561,16 @@ class ProjectsOperations:
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ]
                 }
@@ -7364,11 +7619,16 @@ class ProjectsOperations:
                                         "str": "str"  # Optional. Parameters
                                           for the task.
                                     },
+                                    "runAs": "str",  # Optional. What account to
+                                      run the task as. Known values are: "System" and "User".
                                     "startTime": "2020-02-20 00:00:00",  #
                                       Optional. Start time of the task.
-                                    "status": "str"  # Optional. Status of the
+                                    "status": "str",  # Optional. Status of the
                                       task. Known values are: "NotStarted", "Running", "Succeeded",
-                                      "FailedValidation", "Skipped", "TimedOut", and "Failed".
+                                      "FailedValidation", "Skipped", "TimedOut", "Failed",
+                                      "WaitingForUserInputUac", and "WaitingForUserSession".
+                                    "timeout": 0  # Optional. Timeout, in
+                                      seconds. Overrides any timeout provided on the task definition.
                                 }
                             }
                         ]
@@ -7449,11 +7709,16 @@ class ProjectsOperations:
                                         "str": "str"  # Optional. Parameters
                                           for the task.
                                     },
+                                    "runAs": "str",  # Optional. What account to
+                                      run the task as. Known values are: "System" and "User".
                                     "startTime": "2020-02-20 00:00:00",  #
                                       Optional. Start time of the task.
-                                    "status": "str"  # Optional. Status of the
+                                    "status": "str",  # Optional. Status of the
                                       task. Known values are: "NotStarted", "Running", "Succeeded",
-                                      "FailedValidation", "Skipped", "TimedOut", and "Failed".
+                                      "FailedValidation", "Skipped", "TimedOut", "Failed",
+                                      "WaitingForUserInputUac", and "WaitingForUserSession".
+                                    "timeout": 0  # Optional. Timeout, in
+                                      seconds. Overrides any timeout provided on the task definition.
                                 }
                             }
                         ]
@@ -7505,11 +7770,16 @@ class ProjectsOperations:
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ]
                 }
@@ -7558,11 +7828,16 @@ class ProjectsOperations:
                                         "str": "str"  # Optional. Parameters
                                           for the task.
                                     },
+                                    "runAs": "str",  # Optional. What account to
+                                      run the task as. Known values are: "System" and "User".
                                     "startTime": "2020-02-20 00:00:00",  #
                                       Optional. Start time of the task.
-                                    "status": "str"  # Optional. Status of the
+                                    "status": "str",  # Optional. Status of the
                                       task. Known values are: "NotStarted", "Running", "Succeeded",
-                                      "FailedValidation", "Skipped", "TimedOut", and "Failed".
+                                      "FailedValidation", "Skipped", "TimedOut", "Failed",
+                                      "WaitingForUserInputUac", and "WaitingForUserSession".
+                                    "timeout": 0  # Optional. Timeout, in
+                                      seconds. Overrides any timeout provided on the task definition.
                                 }
                             }
                         ]
@@ -7592,13 +7867,18 @@ class ProjectsOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
             response = pipeline_response.http_response
+            response_headers["Operation-Location"] = self._deserialize(
+                "str", response.headers.get("Operation-Location")
+            )
+
             if response.content:
                 deserialized = response.json()
             else:
                 deserialized = None
             if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
+                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
             return deserialized
 
         path_format_arguments = {
@@ -8423,7 +8703,7 @@ class DeploymentEnvironmentsOperations:
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     def _delete_environment_initial(
-        self, project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
+        self, project_name: str, environment_name: str, user_id: str = "me", force: Optional[bool] = None, **kwargs: Any
     ) -> Optional[JSON]:
         error_map = {
             401: ClientAuthenticationError,
@@ -8442,7 +8722,8 @@ class DeploymentEnvironmentsOperations:
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
-            api_version=self._config.api_version,
+            force=force,
+            api_version="2024-10-01-preview", #Overwriting while this is the only route on this version. Will remove when version bump completes.
             headers=_headers,
             params=_params,
         )
@@ -8483,7 +8764,7 @@ class DeploymentEnvironmentsOperations:
 
     @distributed_trace
     def begin_delete_environment(
-        self, project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
+        self, project_name: str, environment_name: str, user_id: str = "me", force: Optional[bool] = None, **kwargs: Any
     ) -> LROPoller[JSON]:
         """Deletes an environment and all its associated resources.
 
@@ -8494,6 +8775,10 @@ class DeploymentEnvironmentsOperations:
         :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context. Default value is "me".
         :type user_id: str
+        :keyword force: Optional parameter to force environment deletion even if the environment definition 
+          does not exist. This is a best-effort delete, and anything custom that forces resource creation beyond
+          the associated resource group may not be deleted. Default value is None.
+        :paramtype force: bool
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be LROBasePolling. Pass in False for
          this operation to not poll, or pass in your own initialized polling object for a personal
@@ -8539,6 +8824,7 @@ class DeploymentEnvironmentsOperations:
                 project_name=project_name,
                 environment_name=environment_name,
                 user_id=user_id,
+                force=force,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,
@@ -9528,6 +9814,7 @@ class EnvironmentsOperations:
             environment_name=environment_name,
             user_id=user_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -10346,6 +10633,178 @@ class EnvironmentsOperations:
             action_name=action_name,
             user_id=user_id,
             until=until,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            if _stream:
+                response.read()  # Load the body in memory and close the socket
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})
+
+        return cast(JSON, deserialized)
+
+    @distributed_trace
+    def get_environment_type(
+        self, project_name: str, environment_type_name: str, *, top: Optional[int] = None, **kwargs: Any
+    ) -> JSON:
+        """Get an environment type configured for a project.
+
+        :param project_name: The DevCenter Project upon which to execute operations. Required.
+        :type project_name: str
+        :param environment_type_name: The name of the environment type. Required.
+        :type environment_type_name: str
+        :keyword top: The maximum number of resources to return from the operation. Example: 'top=10'.
+         Default value is None.
+        :paramtype top: int
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "deploymentTargetId": "str",  # The ID of a subscription or management group
+                      that the environment type will be mapped to. The environment's resources will be
+                      deployed into this subscription or management group. Required.
+                    "name": "str",  # Name of the environment type. Required.
+                    "status": "str",  # Indicates whether this environment type is enabled for
+                      use in this project. Required. Known values are: "Enabled" and "Disabled".
+                    "uri": "str",  # The unique URI of the environment type. Required.
+                    "displayName": "str"  # Optional. Display name of the environment type.
+                }
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        request = build_environments_get_environment_type_request(
+            project_name=project_name,
+            environment_type_name=environment_type_name,
+            top=top,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            if _stream:
+                response.read()  # Load the body in memory and close the socket
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})
+
+        return cast(JSON, deserialized)
+
+    @distributed_trace
+    def get_environment_type_abilities(
+        self,
+        project_name: str,
+        environment_type_name: str,
+        user_id: str = "me",
+        *,
+        top: Optional[int] = None,
+        **kwargs: Any
+    ) -> JSON:
+        """Gets the signed-in user's permitted abilities in an environment type.
+
+        :param project_name: The DevCenter Project upon which to execute operations. Required.
+        :type project_name: str
+        :param environment_type_name: The name of the environment type. Required.
+        :type environment_type_name: str
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context. Default value is "me".
+        :type user_id: str
+        :keyword top: The maximum number of resources to return from the operation. Example: 'top=10'.
+         Default value is None.
+        :paramtype top: int
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "abilitiesAsAdmin": [
+                        "str"  # The abilities the user has to perform actions on the
+                          environment type as an admin. Required.
+                    ],
+                    "abilitiesAsDeveloper": [
+                        "str"  # The abilities the user has to perform actions on the
+                          environment type as a developer. Required.
+                    ]
+                }
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        request = build_environments_get_environment_type_abilities_request(
+            project_name=project_name,
+            environment_type_name=environment_type_name,
+            user_id=user_id,
+            top=top,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,

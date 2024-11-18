@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-linkable-environment"
+    "dynatrace monitor list-linkable-environment",
 )
 class ListLinkableEnvironment(AAZCommand):
     """Get all the dynatrace environments that a user can link a azure resource to
@@ -27,6 +27,8 @@ class ListLinkableEnvironment(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listlinkableenvironments", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -221,6 +223,10 @@ class ListLinkableEnvironment(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListLinkableEnvironmentHelper:
+    """Helper class for ListLinkableEnvironment"""
 
 
 __all__ = ["ListLinkableEnvironment"]

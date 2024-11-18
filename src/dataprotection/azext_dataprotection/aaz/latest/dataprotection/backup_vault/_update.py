@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-vault update",
-    is_experimental=True,
 )
 class Update(AAZCommand):
     """Updates a BackupVault resource belonging to a resource group. For example, updating tags for a resource.
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2024-04-01"],
         ]
     }
 
@@ -69,6 +68,36 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
+        # define Arg Group "EncryptionSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cmk_user_assigned_identity_id = AAZStrArg(
+            options=["--cmk-uami", "--cmk-user-assigned-identity-id"],
+            arg_group="EncryptionSettings",
+            help="This parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
+            nullable=True,
+        )
+        _args_schema.cmk_identity_type = AAZStrArg(
+            options=["--cmk-identity-type"],
+            arg_group="EncryptionSettings",
+            help="The identity type to be used for CMK encryption - SystemAssigned or UserAssigned Identity.",
+            nullable=True,
+            enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+        )
+        _args_schema.cmk_encryption_key_uri = AAZStrArg(
+            options=["--cmk-encryption-key-uri"],
+            arg_group="EncryptionSettings",
+            help="The key uri of the Customer Managed Key",
+            nullable=True,
+        )
+        _args_schema.cmk_encryption_state = AAZStrArg(
+            options=["--cmk-encryption-state"],
+            arg_group="EncryptionSettings",
+            help="Enable CMK encryption state for a Backup Vault.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled", "Inconsistent": "Inconsistent"},
+        )
+
         # define Arg Group "FeatureSettings"
 
         _args_schema = cls._args_schema
@@ -86,8 +115,20 @@ class Update(AAZCommand):
         _args_schema.type = AAZStrArg(
             options=["--type"],
             arg_group="Identity",
-            help="The identityType which can be either SystemAssigned or None",
+            help="The identityType which can be \"SystemAssigned\", \"UserAssigned\", \"SystemAssigned,UserAssigned\" or \"None\"",
             nullable=True,
+        )
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--uami", "--user-assigned-identities"],
+            arg_group="Identity",
+            help="Gets or sets the user assigned identities.",
+            nullable=True,
+        )
+
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
         )
 
         # define Arg Group "Monitoring Settings Azure Monitor Alert Settings"
@@ -117,6 +158,20 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_guard_operation_requests = AAZListArg(
+            options=["--resource-guard-operation-requests"],
+            singular_options=["--operation-requests"],
+            arg_group="Properties",
+            help="ResourceGuardOperationRequests on which LAC check will be performed",
+            nullable=True,
+        )
+
+        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg(
+            nullable=True,
+        )
 
         # define Arg Group "SecuritySettings"
 
@@ -225,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -324,7 +379,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -389,11 +444,17 @@ class Update(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
+                properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
                 properties.set_prop("securitySettings", AAZObjectType)
 
             feature_settings = _builder.get(".properties.featureSettings")
@@ -417,10 +478,30 @@ class Update(AAZCommand):
             if azure_monitor_alert_settings is not None:
                 azure_monitor_alert_settings.set_prop("alertsForAllJobFailures", AAZStrType, ".azure_monitor_alerts_for_job_failures")
 
+            resource_guard_operation_requests = _builder.get(".properties.resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
+
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:
+                security_settings.set_prop("encryptionSettings", AAZObjectType)
                 security_settings.set_prop("immutabilitySettings", AAZObjectType)
                 security_settings.set_prop("softDeleteSettings", AAZObjectType)
+
+            encryption_settings = _builder.get(".properties.securitySettings.encryptionSettings")
+            if encryption_settings is not None:
+                encryption_settings.set_prop("kekIdentity", AAZObjectType)
+                encryption_settings.set_prop("keyVaultProperties", AAZObjectType)
+                encryption_settings.set_prop("state", AAZStrType, ".cmk_encryption_state")
+
+            kek_identity = _builder.get(".properties.securitySettings.encryptionSettings.kekIdentity")
+            if kek_identity is not None:
+                kek_identity.set_prop("identityId", AAZStrType, ".cmk_user_assigned_identity_id")
+                kek_identity.set_prop("identityType", AAZStrType, ".cmk_identity_type")
+
+            key_vault_properties = _builder.get(".properties.securitySettings.encryptionSettings.keyVaultProperties")
+            if key_vault_properties is not None:
+                key_vault_properties.set_prop("keyUri", AAZStrType, ".cmk_encryption_key_uri")
 
             immutability_settings = _builder.get(".properties.securitySettings.immutabilitySettings")
             if immutability_settings is not None:
@@ -521,6 +602,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_backup_vault_resource_read.properties
+        properties.bcdr_security_level = AAZStrType(
+            serialized_name="bcdrSecurityLevel",
+            flags={"read_only": True},
+        )
         properties.feature_settings = AAZObjectType(
             serialized_name="featureSettings",
         )
@@ -537,6 +622,9 @@ class _UpdateHelper:
         )
         properties.replicated_regions = AAZListType(
             serialized_name="replicatedRegions",
+        )
+        properties.resource_guard_operation_requests = AAZListType(
+            serialized_name="resourceGuardOperationRequests",
         )
         properties.resource_move_details = AAZObjectType(
             serialized_name="resourceMoveDetails",
@@ -584,6 +672,9 @@ class _UpdateHelper:
         replicated_regions = _schema_backup_vault_resource_read.properties.replicated_regions
         replicated_regions.Element = AAZStrType()
 
+        resource_guard_operation_requests = _schema_backup_vault_resource_read.properties.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrType()
+
         resource_move_details = _schema_backup_vault_resource_read.properties.resource_move_details
         resource_move_details.completion_time_utc = AAZStrType(
             serialized_name="completionTimeUtc",
@@ -602,11 +693,39 @@ class _UpdateHelper:
         )
 
         security_settings = _schema_backup_vault_resource_read.properties.security_settings
+        security_settings.encryption_settings = AAZObjectType(
+            serialized_name="encryptionSettings",
+        )
         security_settings.immutability_settings = AAZObjectType(
             serialized_name="immutabilitySettings",
         )
         security_settings.soft_delete_settings = AAZObjectType(
             serialized_name="softDeleteSettings",
+        )
+
+        encryption_settings = _schema_backup_vault_resource_read.properties.security_settings.encryption_settings
+        encryption_settings.infrastructure_encryption = AAZStrType(
+            serialized_name="infrastructureEncryption",
+        )
+        encryption_settings.kek_identity = AAZObjectType(
+            serialized_name="kekIdentity",
+        )
+        encryption_settings.key_vault_properties = AAZObjectType(
+            serialized_name="keyVaultProperties",
+        )
+        encryption_settings.state = AAZStrType()
+
+        kek_identity = _schema_backup_vault_resource_read.properties.security_settings.encryption_settings.kek_identity
+        kek_identity.identity_id = AAZStrType(
+            serialized_name="identityId",
+        )
+        kek_identity.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+
+        key_vault_properties = _schema_backup_vault_resource_read.properties.security_settings.encryption_settings.key_vault_properties
+        key_vault_properties.key_uri = AAZStrType(
+            serialized_name="keyUri",
         )
 
         immutability_settings = _schema_backup_vault_resource_read.properties.security_settings.immutability_settings

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-09-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -163,10 +163,14 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.sku = AAZObjectType(
                 flags={"required": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
@@ -182,12 +186,17 @@ class Wait(AAZWaitCommand):
                 serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            identity.type = AAZStrType()
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
 
             properties = cls._schema_on_200.properties
             properties.availability = AAZObjectType()
             properties.circuit = AAZObjectType()
             _WaitHelper._build_schema_circuit_read(properties.circuit)
+            properties.dns_zone_type = AAZStrType(
+                serialized_name="dnsZoneType",
+            )
             properties.encryption = AAZObjectType()
             properties.endpoints = AAZObjectType()
             properties.extended_network_blocks = AAZListType(
@@ -215,7 +224,6 @@ class Wait(AAZWaitCommand):
             )
             properties.nsx_public_ip_quota_raised = AAZStrType(
                 serialized_name="nsxPublicIpQuotaRaised",
-                flags={"read_only": True},
             )
             properties.nsxt_certificate_thumbprint = AAZStrType(
                 serialized_name="nsxtCertificateThumbprint",
@@ -245,6 +253,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="vcenterPassword",
                 flags={"secret": True},
             )
+            properties.virtual_network_id = AAZStrType(
+                serialized_name="virtualNetworkId",
+            )
             properties.vmotion_network = AAZStrType(
                 serialized_name="vmotionNetwork",
                 flags={"read_only": True},
@@ -273,7 +284,6 @@ class Wait(AAZWaitCommand):
             )
             key_vault_properties.key_state = AAZStrType(
                 serialized_name="keyState",
-                flags={"read_only": True},
             )
             key_vault_properties.key_vault_url = AAZStrType(
                 serialized_name="keyVaultUrl",
@@ -283,7 +293,6 @@ class Wait(AAZWaitCommand):
             )
             key_vault_properties.version_type = AAZStrType(
                 serialized_name="versionType",
-                flags={"read_only": True},
             )
 
             endpoints = cls._schema_on_200.properties.endpoints
@@ -291,8 +300,20 @@ class Wait(AAZWaitCommand):
                 serialized_name="hcxCloudManager",
                 flags={"read_only": True},
             )
+            endpoints.hcx_cloud_manager_ip = AAZStrType(
+                serialized_name="hcxCloudManagerIp",
+                flags={"read_only": True},
+            )
             endpoints.nsxt_manager = AAZStrType(
                 serialized_name="nsxtManager",
+                flags={"read_only": True},
+            )
+            endpoints.nsxt_manager_ip = AAZStrType(
+                serialized_name="nsxtManagerIp",
+                flags={"read_only": True},
+            )
+            endpoints.vcenter_ip = AAZStrType(
+                serialized_name="vcenterIp",
                 flags={"read_only": True},
             )
             endpoints.vcsa = AAZStrType(
@@ -309,37 +330,26 @@ class Wait(AAZWaitCommand):
             identity_sources.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.identity_sources.Element
-            _element.alias = AAZStrType(
-                flags={"required": True},
-            )
+            _element.alias = AAZStrType()
             _element.base_group_dn = AAZStrType(
                 serialized_name="baseGroupDN",
-                flags={"required": True},
             )
             _element.base_user_dn = AAZStrType(
                 serialized_name="baseUserDN",
-                flags={"required": True},
             )
-            _element.domain = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
+            _element.domain = AAZStrType()
+            _element.name = AAZStrType()
             _element.password = AAZStrType(
                 flags={"secret": True},
             )
             _element.primary_server = AAZStrType(
                 serialized_name="primaryServer",
-                flags={"required": True},
             )
             _element.secondary_server = AAZStrType(
                 serialized_name="secondaryServer",
             )
             _element.ssl = AAZStrType()
-            _element.username = AAZStrType(
-                flags={"secret": True},
-            )
+            _element.username = AAZStrType()
 
             management_cluster = cls._schema_on_200.properties.management_cluster
             management_cluster.cluster_id = AAZIntType(
@@ -348,20 +358,46 @@ class Wait(AAZWaitCommand):
             )
             management_cluster.cluster_size = AAZIntType(
                 serialized_name="clusterSize",
-                flags={"required": True},
             )
             management_cluster.hosts = AAZListType()
             management_cluster.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            management_cluster.vsan_datastore_name = AAZStrType(
+                serialized_name="vsanDatastoreName",
+            )
 
             hosts = cls._schema_on_200.properties.management_cluster.hosts
             hosts.Element = AAZStrType()
 
             sku = cls._schema_on_200.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
             sku.name = AAZStrType(
                 flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             tags = cls._schema_on_200.tags

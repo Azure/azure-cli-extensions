@@ -1,6 +1,18 @@
 Release History
 ===============
 
+1.0.0b1
+++++++
+* Migrated to a new authentication flow to enhance overall security
+
+0.1.8
+++++++
+* Changed first message flow, fixed typo
+
+0.1.7
+++++++
+* Preparation for the new websocket authentication mechanism
+
 0.1.6
 ++++++
 * Fix pair region mapping for eastus to westus

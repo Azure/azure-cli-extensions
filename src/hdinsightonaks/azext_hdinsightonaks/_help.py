@@ -19,23 +19,3 @@ helps['hdinsight-on-aks cluster node-profile create'] = """
 type: command
 short-summary: Create a node profile with SKU and worker count.
 """
-
-helps['hdinsight-on-aks cluster trino-hive-catalog'] = """
-type: group
-short-summary: Manage hive catalog config.
-"""
-
-helps['hdinsight-on-aks cluster trino-hive-catalog create'] = """
-type: command
-short-summary: Create a hive catalog configured as a Trino cluster.
-"""
-
-helps['hdinsight-on-aks cluster secret'] = """
-type: group
-short-summary: Manage secret reference.
-"""
-
-helps['hdinsight-on-aks cluster secret create'] = """
-type: command
-short-summary: Create a reference to provide a secret to store the password for accessing the database.
-"""

@@ -6,6 +6,7 @@
 
 from azure.cli.testsdk import *
 from azure.core.exceptions import HttpResponseError
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 @record_only()
 class MdpScenario(ScenarioTest):
@@ -15,7 +16,7 @@ class MdpScenario(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "eastus2",
+                "location": "eastus",
             }
         )
 
@@ -131,11 +132,15 @@ class MdpScenario(ScenarioTest):
             --name \"{poolName}\" \
             --resource-group \"{rg}\" \
             --tags CostCode=234 \
+            --agent-profile \"{{Stateless:{{}},resourcePredictionsProfile:{{Manual:{{}}}},resourcePredictions:{{timezone:'UTC',daysData:[{{}},{{}},{{}},{{'09:00:00':2,'11:00:00':0}},{{}},{{}},{{}}]}}}}\" \
             ",
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
-                self.check("tags.CostCode", "234")
+                self.check("tags.CostCode", "234"),
+                self.check("agentProfile.resourcePredictions.timeZone", "UTC"),
+                self.check("length(agentProfile.resourcePredictions.daysData)", 7),
+                self.check("length(agentProfile.resourcePredictions.daysData[3])", 2),
             ],
         )
 
@@ -186,6 +191,14 @@ class MdpScenario(ScenarioTest):
             ],
         )
 
+        # List agents of second pool
+        self.cmd(
+            "az mdp pool agent list --pool-name \"{poolName2}\" --resource-group \"{rg}\" ",
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
+
     @ResourceGroupPreparer(
         name_prefix="clitest_mdp", key="rg", parameter_name="rg"
     )
@@ -208,3 +221,15 @@ class MdpScenario(ScenarioTest):
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
         assert 'ResourceCreationValidateFailed' in str(raises.exception)
+
+    @AllowLargeResponse(size_kb=9999)
+    def test_mdp_sku_scenario(self):
+        # List skus
+        skus = self.cmd("az mdp sku list --location westus").get_output_in_json()
+        assert len(skus) > 0
+
+    @AllowLargeResponse(size_kb=9999)
+    def test_mdp_usage_scenario(self):
+        # List skus
+        usages = self.cmd("az mdp usage list --location westus").get_output_in_json()
+        assert len(usages) > 0

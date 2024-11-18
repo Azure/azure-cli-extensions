@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/cloudlinks/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/cloudlinks/{}", "2023-09-01"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Update(AAZCommand):
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -73,6 +73,7 @@ class Update(AAZCommand):
             options=["--linked-cloud"],
             arg_group="Properties",
             help="Identifier of the other private cloud participating in the link.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -158,7 +159,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -261,7 +262,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -319,11 +320,11 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("linkedCloud", AAZStrType, ".linked_cloud", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("linkedCloud", AAZStrType, ".linked_cloud")
 
             return _instance_value
 
@@ -347,6 +348,7 @@ class _UpdateHelper:
             _schema.id = cls._schema_cloud_link_read.id
             _schema.name = cls._schema_cloud_link_read.name
             _schema.properties = cls._schema_cloud_link_read.properties
+            _schema.system_data = cls._schema_cloud_link_read.system_data
             _schema.type = cls._schema_cloud_link_read.type
             return
 
@@ -360,7 +362,11 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         cloud_link_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
+        )
+        cloud_link_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
         )
         cloud_link_read.type = AAZStrType(
             flags={"read_only": True},
@@ -369,15 +375,37 @@ class _UpdateHelper:
         properties = _schema_cloud_link_read.properties
         properties.linked_cloud = AAZStrType(
             serialized_name="linkedCloud",
-            flags={"required": True},
         )
-        properties.status = AAZStrType(
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+        properties.status = AAZStrType()
+
+        system_data = _schema_cloud_link_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
         )
 
         _schema.id = cls._schema_cloud_link_read.id
         _schema.name = cls._schema_cloud_link_read.name
         _schema.properties = cls._schema_cloud_link_read.properties
+        _schema.system_data = cls._schema_cloud_link_read.system_data
         _schema.type = cls._schema_cloud_link_read.type
 
 

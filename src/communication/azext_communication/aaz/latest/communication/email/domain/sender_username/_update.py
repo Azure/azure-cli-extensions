@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a new SenderUsername resource under the parent Domains resource or update an existing SenderUsername resource.
+
+    :example: Update a sender username with display name
+        az communication email domain sender-username update --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername --display-name DisplayName
     """
 
     _aaz_info = {

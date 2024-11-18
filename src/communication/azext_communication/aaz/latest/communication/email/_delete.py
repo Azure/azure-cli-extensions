@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete to delete a EmailService.
+
+    :example: Delete a email resource
+        az communication email delete -n ResourceName -g ResourceGroup
     """
 
     _aaz_info = {

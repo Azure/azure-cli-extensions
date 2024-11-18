@@ -13,19 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion delete",
-    is_preview=True,
+    confirmation="Are you sure you want to delete the Bastion?",
 )
 class Delete(AAZCommand):
-    """Delete a Azure Bastion host machine.
+    """Delete the specified Bastion Host.
 
     :example: Delete a Azure Bastion host machine.
         az network bastion delete --name MyBastionHost --resource-group MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2024-01-01"],
         ]
     }
 
@@ -48,11 +48,12 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Name of the bastion host.",
+            help="The name of the Bastion Host.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Resource group name of the Bastion Host.",
             required=True,
         )
         return cls._args_schema
@@ -143,7 +144,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }

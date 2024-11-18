@@ -31,7 +31,7 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
-        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType
+        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType,
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')

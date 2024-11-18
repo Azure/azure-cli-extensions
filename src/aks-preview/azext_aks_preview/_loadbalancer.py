@@ -17,6 +17,7 @@ def update_load_balancer_profile(
     outbound_ports,
     idle_timeout,
     backend_pool_type,
+    health_probe_mode,
     profile,
     models,
 ):
@@ -29,8 +30,9 @@ def update_load_balancer_profile(
             outbound_ip_prefixes,
             outbound_ports,
             idle_timeout,
+            backend_pool_type,
+            health_probe_mode,
         )
-        or backend_pool_type
     ):
         return profile
     if not profile:
@@ -49,6 +51,7 @@ def update_load_balancer_profile(
         outbound_ports,
         idle_timeout,
         backend_pool_type,
+        health_probe_mode,
         profile,
         models,
     )
@@ -62,6 +65,7 @@ def create_load_balancer_profile(
     outbound_ports,
     idle_timeout,
     backend_pool_type,
+    health_probe_mode,
     models,
 ):
     """parse and build load balancer profile"""
@@ -73,8 +77,9 @@ def create_load_balancer_profile(
             outbound_ip_prefixes,
             outbound_ports,
             idle_timeout,
+            backend_pool_type,
+            health_probe_mode,
         )
-        or backend_pool_type
     ):
         return None
     if isinstance(models, SimpleNamespace):
@@ -92,6 +97,7 @@ def create_load_balancer_profile(
         outbound_ports,
         idle_timeout,
         backend_pool_type,
+        health_probe_mode,
         profile,
         models,
     )
@@ -105,6 +111,7 @@ def configure_load_balancer_profile(
     outbound_ports,
     idle_timeout,
     backend_pool_type,
+    health_probe_mode,
     profile,
     models,
 ):
@@ -178,6 +185,8 @@ def configure_load_balancer_profile(
         profile.idle_timeout_in_minutes = idle_timeout
     if backend_pool_type:
         profile.backend_pool_type = backend_pool_type
+    if health_probe_mode:
+        profile.cluster_service_load_balancer_health_probe_mode = health_probe_mode
     return profile
 
 
@@ -188,6 +197,8 @@ def is_load_balancer_profile_provided(
     ip_prefixes,
     outbound_ports,
     idle_timeout,
+    backend_pool_type,
+    health_probe_mode,
 ):
     return any(
         [
@@ -197,6 +208,8 @@ def is_load_balancer_profile_provided(
             ip_prefixes,
             outbound_ports is not None,
             idle_timeout,
+            backend_pool_type,
+            health_probe_mode,
         ]
     )
 

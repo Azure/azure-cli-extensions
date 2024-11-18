@@ -15,21 +15,21 @@ from dateutil import parser
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
 class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
-
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_merge', location='eastus2')
     def test_cosmosdb_sql_container_merge(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        # Assumption: There exists a canary-sdk-test rg with the account mergetest. This test only creates the database and collection
+
         self.kwargs.update({
-            'rg': 'cosmosTest',
-            'acc': 'mergetest1',
+            'acc': self.create_random_name(prefix='merge-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'westus'
         })
+
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
@@ -50,14 +50,16 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg': 'cosmosTest',
-            'acc': 'mergetest2',
+            'acc': self.create_random_name(prefix='merge-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'westus',
             'shard_key': "theShardKey",
             'throughput': "20000"
         })
+
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
@@ -78,12 +80,14 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg with the account mergetest. This test only creates the database and collection
         self.kwargs.update({
-            'rg': 'cosmosTest',
-            'acc': 'dbmergetest',
+            'acc': self.create_random_name(prefix='merge-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'eastus2'
         })
+
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name} --throughput 30000')
@@ -104,14 +108,16 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg': 'cosmosTest',
-            'acc': 'dbmergetest2',
+            'acc': self.create_random_name(prefix='merge-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'eastus2',
             'shard_key': "theShardKey",
             'throughput': "20000"
         })
+
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name} --throughput {throughput}')

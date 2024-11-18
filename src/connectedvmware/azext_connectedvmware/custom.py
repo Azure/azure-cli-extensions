@@ -6,6 +6,7 @@
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
 from collections import defaultdict
+import json
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -17,7 +18,8 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from knack.prompting import prompt, prompt_y_n
 
 from .pwinput import pwinput
 from .vmware_utils import get_logger, get_resource_id
@@ -754,6 +756,11 @@ def list_vm_template(
 
 # region VirtualMachines
 
+# def get_inventory_id_from_name(
+#     cmd,
+#     client: VirtualMachineInstancesOperations,
+# )
+
 def get_hcrp_machine_id(
     cmd,
     resource_group_name,
@@ -841,7 +848,10 @@ Resources
     substring(u, 11, 2), substring(u, 9, 2), '-',
     substring(u, 16, 2), substring(u, 14, 2), '-',
     substring(u, 19))
-| project machineId=id, name, resourceGroup, vmUuidRev, kind
+| extend vmUuid=pack_array(u, vmUuidRev)
+| mv-expand vmUuid
+| extend vmUuid=tostring(vmUuid)
+| project machineId=id, name, resourceGroup, vmUuid, kind
 | join kind=inner (
 ConnectedVMwareVsphereResources
 | where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
@@ -851,8 +861,8 @@ ConnectedVMwareVsphereResources
 | extend biosId = tolower(tostring(p['smbiosUuid']))
 | extend managedResourceId=tolower(tostring(p['managedResourceId']))
 | project inventoryId=id, biosId, managedResourceId
-) on $left.vmUuidRev == $right.biosId
-| project-away vmUuidRev
+) on $left.vmUuid == $right.biosId
+| project-away vmUuid
 """
     query = " ".join(query.splitlines())
 
@@ -957,6 +967,7 @@ def create_vm(
     host=None,
     datastore=None,
     inventory_item=None,
+    mo_name=None,
     admin_username=None,
     admin_password=None,
     num_CPUs=None,
@@ -983,6 +994,103 @@ def create_vm(
     inventory_item_id = None
     vcenter_id = None
 
+    # Both mo_name and inventory_item cannot be provided together.
+    if all([mo_name, inventory_item]):
+        raise MutuallyExclusiveArgumentError(
+            "both mo_name and inventory_item cannot be provided together."
+        )
+
+    if mo_name is not None:
+        # vcenter should be provided
+        if vcenter is None:
+            raise RequiredArgumentMissingError(
+                "Missing parameter, please provide vcenter name or id along with mo_name."
+            )
+        vcenter_id = get_resource_id(
+            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
+        )
+        assert vcenter_id is not None
+
+        # Use ARG to search for inventory item with mo_name
+        arg_client = cf_resource_graph(cmd.cli_ctx)
+
+        query = f"""
+ConnectedVMwareVsphereResources
+| where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
+| where kind =~ 'VirtualMachine'
+| where id startswith '{vcenter_id}/InventoryItems'
+| extend p=parse_json(properties)
+| extend p=parse_json(properties)
+| extend moName = tolower(tostring(p['moName']))
+| extend moRefId = tolower(tostring(p['moRefId']))
+| where moName =~ '{mo_name}'
+| project id, moName, moRefId, props=p
+"""
+
+        query = " ".join(query.splitlines())
+        query_request = QueryRequest(
+            subscriptions=[get_subscription_id(cmd.cli_ctx)],
+            query=query,
+        )
+        query_response: QueryResponse = arg_client.resources(query_request)
+        vm_list = []
+        for vm in query_response.data:
+            vm_list.append(vm)
+        if len(vm_list) == 0:
+            raise ResourceNotFoundError(
+                f"Inventory item with mo_name '{mo_name}' not found in vCenter '{vcenter}'."
+            )
+        if len(vm_list) > 1:
+            # Ask user to select one of the inventory items.
+            # print the json of the inventory items and ask user to select one.
+            logger = get_logger(__name__)
+            for i, vm in enumerate(vm_list):
+                logger.warning(
+                    "[%s] %s \n%s",
+                    i + 1, vm["id"], json.dumps(vm["props"], indent=2)
+                )
+            logger.warning(
+                "Multiple inventory items found with mo_name '%s' in vCenter '%s'. "
+                "Please check the logs above for the properties of the inventory items.",
+                mo_name, vcenter
+            )
+            selected = prompt_y_n(
+                "Do you want to select one of the inventory items to proceed?"
+            )
+            if not selected:
+                raise InvalidArgumentValueError(
+                    "Please provide a unique mo_name or inventory_item id. "
+                    "Multiple inventory items found with the same mo_name, and no selection was made."
+                )
+            # print just the inventory item id in a list and ask user to select one.
+            for i, vm in enumerate(vm_list):
+                logger.warning(
+                    "[%s] %s",
+                    i + 1, vm["id"]
+                )
+            selected = prompt(
+                f"Select one of the inventory items by entering the index between 1 and {len(vm_list)}: "
+            )
+            try:
+                while True:
+                    selected = int(selected.strip())
+                    if 1 <= selected <= len(vm_list):
+                        logger.warning(
+                            "You selected: %s",
+                            vm_list[selected - 1]["id"]
+                        )
+                        break
+                    selected = prompt(
+                        f"Invalid index. Please enter a valid index between 1 and {len(vm_list)}: "
+                    )
+            except ValueError:
+                raise InvalidArgumentValueError(
+                    "Invalid input. Please provide a valid index."
+                )
+            inventory_item = vm_list[selected - 1]["id"]
+        else:
+            inventory_item = vm_list[0]["id"]
+
     if inventory_item is not None:
         inventory_item_id = get_resource_id(
             cmd,
@@ -1007,7 +1115,9 @@ def create_vm(
     # The subscription of the vCenter can be different from the machine resource.
     # There was no straightforward way to change the subscription for vcenter client factory.
     # Hence using the generic get client.
-    vcenter_sub = vcenter_id.split("/")[2]
+    vcenter_parts = parse_resource_id(vcenter_id)
+    vcenter_sub = vcenter_parts["subscription"]
+    vcenter_rg = vcenter_parts["resource_group"]
     resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
     vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
 
@@ -1061,7 +1171,9 @@ def create_vm(
             "type": "str"
         }
         inventory_item_client = cf_inventory_item(cmd.cli_ctx)
-        inventory_items = inventory_item_client.list_by_v_center(resource_group_name, vcenter.name)
+        inventory_items = inventory_item_client.list_by_v_center(
+            vcenter_rg, vcenter.name
+        )
         for inv_item in inventory_items:
             if not hasattr(inv_item, "smbiosUuid"):
                 raise CLIInternalError(
@@ -2085,14 +2197,41 @@ def enable_guest_agent(
     client: VMInstanceGuestAgentsOperations,
     resource_group_name,
     vm_name,
-    username,
-    password,
+    username=None,
+    password=None,
     https_proxy=None,
+    private_link_scope=None,
     no_wait=False,
 ):
     """
     Enable guest agent on the given virtual machine.
     """
+
+    creds_ok = all(inp is not None for inp in [username, password])
+    while not creds_ok:
+        creds = {
+            "username": username,
+            "password": password,
+        }
+        while not creds["username"]:
+            creds["username"] = prompt("Please provide VM username: ")
+            if not creds["username"]:
+                print("Parameter is required, please try again")
+        while not creds["password"]:
+            creds["password"] = pwinput("Please provide VM password: ")
+            if not creds["password"]:
+                print("Parameter is required, please try again")
+                continue
+            passwdConfim = pwinput("Please confirm VM password: ")
+            if creds["password"] != passwdConfim:
+                print("Passwords do not match, please try again")
+                creds["password"] = None
+        if prompt_y_n("Confirm VM credentials?", default="y"):
+            username, password = (
+                creds["username"],
+                creds["password"],
+            )
+            creds_ok = True
 
     machine_client = cf_machine(cmd.cli_ctx)
     machine = machine_client.get(resource_group_name, vm_name)
@@ -2114,6 +2253,7 @@ def enable_guest_agent(
 
     guest_agent = GuestAgent(
         credentials=vm_creds,
+        private_link_scope_resource_id=private_link_scope,
         http_proxy_config=https_proxy_config,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
     )

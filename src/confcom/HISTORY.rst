@@ -2,6 +2,47 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* updating dmverity-vhd version with bugfix for empty image layers
+
+1.1.0
+++++++
+* adding support for image-attached fragments via `acifragmentgen`
+* adding workload identity support for VN2
+* adding `--exclude-default-fragments` to disallow sidecars from policy
+* adding `--omit-id` for policy stability across multiple image registries
+* better handle broken base64 policies in templates
+* improve error handling structure
+* make some mount types in VN2 required readonly
+* prompt users if they want to overwrite their policy in VN2
+* changing where dmverity-vhd and sign1util binaries are fetched from. This includes a significant speedup in dmverity-vhd hashing
+
+1.0.1
+++++++
+* getting rid of msrestazure dependency in _validators.py
+
+1.0.0
+++++++
+* adding support for Virtual Node
+* updating genpolicy version up through 3.2.0.azl1.genpolicy1
+
+0.3.6
+++++++
+* updating genpolicy version up through 3.2.0.azl1.genpolicy0. Please note that this is a breaking change for deploying older policies. With the new node image, 0.3.6 or newer will be required.
+* changing genpolicy flags to give full path to config files instead of path as a flag
+* adding genpolicy flags for --containerd-pull, --containerd-socket-path, --rules-file-name, and --print-version
+* `-c` flag for katapolicygen now supports persistent volume claims
+
+0.3.5
+++++++
+* making diff mode more robust
+* bugfix for arm template regex
+* updating genpolicy version up through 3.2.0.azl0.genpolicy1
+* adding configmap sidecar
+* bugfix for seccompProfile missing after injecting policy
+* adding cs2 support
+
 0.3.4
 ++++++
 * adding faster hashing flag to use buffered reader in dmverity-vhd

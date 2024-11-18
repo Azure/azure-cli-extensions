@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11"],
         ]
     }
 
@@ -53,6 +53,11 @@ class Delete(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.delete_associations = AAZBoolArg(
+            options=["--delete-associations"],
+            help="If set to 'true' then all associations of this data collection rule will also be deleted",
+            default=False,
         )
         return cls._args_schema
 
@@ -119,7 +124,10 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "deleteAssociations", self.ctx.args.delete_associations,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }

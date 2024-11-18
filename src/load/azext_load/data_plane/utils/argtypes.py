@@ -34,6 +34,14 @@ custom_no_wait = CLIArgumentType(
     help="Do not wait for the long-running operation to finish.",
 )
 
+disable_public_ip = CLIArgumentType(
+    validator=validators.validate_disable_public_ip,
+    options_list=["--disable-public-ip"],
+    type=str,
+    help="Disable the deployment of a public IP address, load balancer, and network security group while testing a private endpoint.",
+)
+
+
 force = CLIArgumentType(
     options_list=["--force"],
     action="store_true",
@@ -195,7 +203,7 @@ file_type = CLIArgumentType(
     ),
     options_list=["--file-type"],
     type=str,
-    help=f"Type of file to be uploaded. Allowed values: {', '.join(utils.get_enum_values(models.AllowedFileTypes))}",
+    help=f"Type of file to be uploaded. Allowed values: {', '.join(utils.get_enum_values(models.AllowedFileTypes))}. Ensure that the ZIP file remains below 50 MB in size. Only 5 ZIP artifacts are allowed with a maximum of 1000 files in each and uncompressed size of 1 GB",
 )
 
 test_run_input = CLIArgumentType(

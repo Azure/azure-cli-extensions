@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance stop-protection",
-    is_experimental=True,
 )
 class StopProtection(AAZCommand):
     """This operation will stop protection of a backup instance and data will be held forever.
@@ -23,9 +22,9 @@ class StopProtection(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/stopprotection", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/stopprotection", "2024-04-01"],
         ]
     }
 
@@ -61,6 +60,19 @@ class StopProtection(AAZCommand):
             required=True,
             id_part="name",
         )
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_guard_operation_requests = AAZListArg(
+            options=["--resource-guard-operation-requests"],
+            singular_options=["--operation-requests"],
+            arg_group="Parameters",
+            help="Critical operation request which is protected by the resourceGuard.",
+        )
+
+        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -144,11 +156,35 @@ class StopProtection(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
             return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
+
+            resource_guard_operation_requests = _builder.get(".resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             pass

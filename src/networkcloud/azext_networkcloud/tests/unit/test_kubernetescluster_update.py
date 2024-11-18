@@ -8,8 +8,6 @@ from unittest import mock
 from azext_networkcloud import NetworkcloudCommandsLoader
 from azext_networkcloud.operations.kubernetescluster._update import Update
 from azure.cli.core.aaz._base import AAZUndefined
-from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa

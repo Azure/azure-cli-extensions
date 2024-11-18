@@ -2,6 +2,70 @@
 
 Release History
 ===============
+3.1.3
+++++++
+* Fix argument missing
+
+3.1.2
+++++++
+* Update dependencies
+
+3.1.1
+++++++
+* Fix issue
+
+3.1.0
+++++++
+* Add `az aks connection create`
+
+3.0.2
+++++++
+* Some improvements and security issue fixes.
+
+3.0.1
+++++++
+* Some improvements and security issue fixes.
+
+3.0.0
+++++++
+* Add new param --new to override the existing database user and deprecate Postgres single server
+
+2.0.7
+++++++
+* Fix argument missing
+
+2.0.6
+++++++
+* Add create permission in postgresql
+
+2.0.5
+++++++
+* Bump version
+
+2.0.4
+++++++
+* Fix PostgreSQL connection string format
+
+2.0.3
+++++++
+* Prompt confirmation when update PostgreSQL server
+
+2.0.2
+++++++
+* Fix no attribute error
+
+2.0.1
+++++++
+* Fix old api-version issue
+
+2.0.0
+++++++
+* Update to be compatible with Azure CLI 2.60.0
+
+1.0.3
+++++++
+* Fix no attribute error
+
 1.0.2
 ++++++
 * Bypass error of `az postgres flexible-server db show`

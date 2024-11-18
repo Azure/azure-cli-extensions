@@ -12,8 +12,9 @@ manifest = '''
   "datasourceType": "Microsoft.ContainerService/managedClusters",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "AlternateLocation", "OriginalLocation" ],
-  "itemLevelRecoveyEnabled": true,
+  "itemLevelRecoveryEnabled": true,
   "addBackupDatasourceParametersList": true,
+  "backupConfigurationRequired":  true,
   "addDataStoreParametersList": true,
   "friendlyNameRequired": true,
   "supportSecretStoreAuthentication": false,
@@ -33,9 +34,25 @@ manifest = '''
         "type": "SnapshotRG"
     }
   ],
+  "backupVaultRestorePermissions": [
+    {
+        "roleDefinitionName": "Reader",
+        "type": "DataSource"
+    },
+    {
+        "roleDefinitionName": "Reader",
+        "type": "SnapshotRG"
+    }
+  ],
+  "dataSourceRestorePermissions": [
+    {
+        "roleDefinitionName": "Contributor",
+        "type": "SnapshotRG"
+    }
+  ],
   "policySettings": {
     "supportedRetentionTags": [ "Daily", "Weekly" ],
-    "supportedDatastoreTypes": [ "OperationalStore" ],
+    "supportedDatastoreTypes": [ "OperationalStore", "VaultStore" ],
     "disableAddRetentionRule": false,
     "disableCustomRetentionTag": true,
     "backupScheduleSupported": true,
@@ -54,6 +71,22 @@ manifest = '''
               ]
             },
             "taggingCriteria": [
+              {
+                "tagInfo": {
+                  "tagName": "Daily",
+                  "id": "Daily_"
+                },
+                "taggingPriority": 25,
+                "isDefault": false,
+                "criteria": [
+                  {
+                    "absoluteCriteria": [
+                      "FirstOfDay"
+                    ],
+                    "objectType": "ScheduleBasedBackupCriteria"
+                  }
+                ]
+              },
               {
                 "tagInfo": {
                   "tagName": "Default",
@@ -87,6 +120,45 @@ manifest = '''
           ],
           "isDefault": true,
           "name": "Default",
+          "objectType": "AzureRetentionRule"
+        },
+        {
+          "lifecycles": [
+            {
+              "deleteAfter": {
+                "objectType": "AbsoluteDeleteOption",
+                "duration": "P7D"
+              },
+              "targetDataStoreCopySettings": [
+                {
+                  "dataStore": {
+                    "dataStoreType": "VaultStore",
+                    "objectType": "DataStoreInfoBase"
+                  },
+                  "copyAfter": {
+                    "objectType": "ImmediateCopyOption"
+                  }
+                }
+              ],
+              "sourceDataStore": {
+                  "dataStoreType": "OperationalStore",
+                  "objectType": "DataStoreInfoBase"
+              }
+            },
+            {
+              "deleteAfter": {
+                "objectType": "AbsoluteDeleteOption",
+                "duration": "P84D"
+              },
+              "targetDataStoreCopySettings": [],
+              "sourceDataStore": {
+                "dataStoreType": "VaultStore",
+                "objectType": "DataStoreInfoBase"
+              }
+            }
+          ],
+          "isDefault": false,
+          "name": "Daily",
           "objectType": "AzureRetentionRule"
         }
       ],

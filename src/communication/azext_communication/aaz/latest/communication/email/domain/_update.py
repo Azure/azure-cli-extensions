@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a new Domains resource under the parent EmailService resource or update an existing Domains resource.
+
+    :example: Update a domain with tags
+        az communication email domain update --domain-name DomainName  --email-service-name ResourceName -g ResourceGroup --tags "{tag:tag}" --user-engmnt-tracking Enabled/Disabled
     """
 
     _aaz_info = {

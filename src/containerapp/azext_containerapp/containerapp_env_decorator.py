@@ -2,13 +2,16 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation
+
 from knack.log import get_logger
 
+from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
+
 from ._models import ManagedServiceIdentity, CustomDomainConfiguration
 from ._utils import safe_get
 from ._client_factory import handle_non_404_status_code_exception
@@ -21,7 +24,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         return self.get_param("infrastructure_resource_group")
 
     def construct_payload(self):
-        ### copy from the parent construct_payload
+        # copy from the parent construct_payload
         self.set_up_app_log_configuration()
 
         self.managed_env_def["location"] = self.get_argument_location()
@@ -36,16 +39,16 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         # Vnet
         self.set_up_vnet_configuration()
 
-        if self.get_argument_mtls_enabled() is not None:
-            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=self.get_argument_mtls_enabled())
-        ### copy end
-            
-        ### overwrite custom_domain_configuration
+        self.set_up_peer_to_peer_encryption()
+        # copy end
+
+        # overwrite custom_domain_configuration
         self.set_up_custom_domain_configuration()
 
         self.set_up_infrastructure_resource_group()
         self.set_up_dynamic_json_columns()
         self.set_up_managed_identity()
+        self.set_up_public_network_access()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -58,7 +61,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if not self.get_argument_enable_workload_profiles():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--enable-workload-profiles/-w")
-        
+
         # validate custom domain configuration
         if self.get_argument_hostname():
             if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
@@ -66,14 +69,19 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
 
+    def set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess",
+                     value=self.get_argument_public_network_access())
+
     def set_up_dynamic_json_columns(self):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
-            self.managed_env_def["properties"]["appLogsConfiguration"]["logAnalyticsConfiguration"]["dynamicJsonColumns"] = self.get_argument_logs_dynamic_json_columns()
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
 
     def set_up_infrastructure_resource_group(self):
         if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
             self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
-    
+
     def set_up_managed_identity(self):
         identity_def = ManagedServiceIdentity
         identity_def["type"] = "None"
@@ -163,12 +171,15 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_user_assigned(self):
         return self.get_param("user_assigned")
-    
+
     def get_argument_certificate_identity(self):
         return self.get_param("certificate_identity")
-    
+
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
+
+    def get_argument_public_network_access(self):
+        return self.get_param("public_network_access")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
@@ -179,12 +190,24 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate --certificate-file with --certificate-akv-url at the same time")
 
+    def construct_payload(self):
+        super().construct_payload()
+
+        self.set_up_public_network_access()
+
+    def set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess", value=self.get_argument_public_network_access())
+
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
 
         if logs_destination:
-            logs_destination = None if logs_destination == "none" else logs_destination
-            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+            if logs_destination == "none":
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=None)
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
+            else:
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
         if logs_destination == "azure-monitor":
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
@@ -219,10 +242,12 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
 
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
-    
+
     def get_argument_certificate_identity(self):
         return self.get_param("certificate_identity")
-    
+
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
-    
+
+    def get_argument_public_network_access(self):
+        return self.get_param("public_network_access")

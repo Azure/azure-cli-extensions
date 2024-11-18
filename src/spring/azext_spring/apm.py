@@ -10,11 +10,11 @@ from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from knack.log import get_logger
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from ._utils import get_portal_uri
 from .custom import try_create_application_insights
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_APM_NAME = "default"

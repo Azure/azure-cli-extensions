@@ -9,19 +9,15 @@ import json
 import os
 import os.path
 import platform
-import re
 import ssl
 import sys
 import threading
 import time
-import uuid
 import webbrowser
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
-    get_graph_rbac_management_client,
-    get_msi_client,
     get_compute_client,
 )
 from azext_aks_preview._consts import (
@@ -49,6 +45,7 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
@@ -59,6 +56,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
+    CONST_ARTIFACT_SOURCE_DIRECT,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -66,6 +64,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
+    check_is_monitoring_addon_enabled,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -89,6 +88,9 @@ from azext_aks_preview.aks_draft.commands import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+)
+from azure.cli.command_modules.acs._helpers import (
+    get_user_assigned_identity_by_resource_id
 )
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
@@ -119,18 +121,10 @@ from azure.core.exceptions import (
     ResourceNotFoundError,
     HttpResponseError,
 )
-from azure.graphrbac.models import (
-    ApplicationCreateParameters,
-    KeyCredential,
-    PasswordCredential,
-    ServicePrincipalCreateParameters,
-)
 from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
@@ -207,110 +201,6 @@ def load_service_principals(config_path):
             return shell_safe_json_parse(f.read())
     except:  # pylint: disable=bare-except
         return None
-
-
-def create_application(client, display_name, homepage, identifier_uris,
-                       available_to_other_tenants=False, password=None, reply_urls=None,
-                       key_value=None, key_type=None, key_usage=None, start_date=None,
-                       end_date=None):
-    from azure.graphrbac.models import GraphErrorException
-    password_creds, key_creds = _build_application_creds(password=password, key_value=key_value, key_type=key_type,
-                                                         key_usage=key_usage, start_date=start_date, end_date=end_date)
-
-    app_create_param = ApplicationCreateParameters(available_to_other_tenants=available_to_other_tenants,
-                                                   display_name=display_name,
-                                                   identifier_uris=identifier_uris,
-                                                   homepage=homepage,
-                                                   reply_urls=reply_urls,
-                                                   key_credentials=key_creds,
-                                                   password_credentials=password_creds)
-    try:
-        return client.create(app_create_param)
-    except GraphErrorException as ex:
-        if 'insufficient privileges' in str(ex).lower():
-            link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
-            raise CLIError(
-                "Directory permission is needed for the current user to register the application. "
-                f"For how to configure, please refer '{link}'."
-            ) from ex
-        raise
-
-
-def _build_application_creds(password=None, key_value=None, key_type=None,
-                             key_usage=None, start_date=None, end_date=None):
-    if password and key_value:
-        raise CLIError(
-            'specify either --password or --key-value, but not both.')
-
-    if not start_date:
-        start_date = datetime.datetime.utcnow()
-    elif isinstance(start_date, str):
-        start_date = parse(start_date)
-
-    if not end_date:
-        end_date = start_date + relativedelta(years=1)
-    elif isinstance(end_date, str):
-        end_date = parse(end_date)
-
-    key_type = key_type or 'AsymmetricX509Cert'
-    key_usage = key_usage or 'Verify'
-
-    password_creds = None
-    key_creds = None
-    if password:
-        password_creds = [PasswordCredential(start_date=start_date, end_date=end_date,
-                                             key_id=str(uuid.uuid4()), value=password)]
-    elif key_value:
-        key_creds = [KeyCredential(start_date=start_date, end_date=end_date, value=key_value,
-                                   key_id=str(uuid.uuid4()), usage=key_usage, type=key_type)]
-
-    return (password_creds, key_creds)
-
-
-def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=None):
-    if rbac_client is None:
-        rbac_client = get_graph_rbac_management_client(cli_ctx)
-
-    if resolve_app:
-        try:
-            uuid.UUID(identifier)
-            result = list(rbac_client.applications.list(
-                filter=f"appId eq '{identifier}'"))
-        except ValueError:
-            result = list(rbac_client.applications.list(
-                filter=f"identifierUris/any(s:s eq '{identifier}')"))
-
-        if not result:  # assume we get an object id
-            result = [rbac_client.applications.get(identifier)]
-        app_id = result[0].app_id
-    else:
-        app_id = identifier
-
-    return rbac_client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
-
-
-_re_user_assigned_identity_resource_id = re.compile(
-    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
-    flags=re.IGNORECASE)
-
-
-def _get_user_assigned_identity(cli_ctx, resource_id):
-    resource_id = resource_id.lower()
-    match = _re_user_assigned_identity_resource_id.search(resource_id)
-    if match:
-        subscription_id = match.group(1)
-        resource_group_name = match.group(2)
-        identity_name = match.group(3)
-        msi_client = get_msi_client(cli_ctx, subscription_id)
-        try:
-            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
-                                                               resource_name=identity_name)
-        except CloudError as ex:
-            if 'was not found' in ex.message:
-                raise CLIError(f"Identity {resource_id} not found.") from ex
-            raise ex
-        return identity
-    raise CLIError(f"Cannot parse identity name from provided resource id {resource_id}.")
 
 
 def aks_browse(
@@ -480,7 +370,7 @@ def aks_create(
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
     cluster_autoscaler_profile=None,
-    uptime_sla=False,
+    sku=None,
     tier=None,
     fqdn_subdomain=None,
     api_server_authorized_ip_ranges=None,
@@ -489,14 +379,11 @@ def aks_create(
     disable_public_fqdn=False,
     service_principal=None,
     client_secret=None,
-    enable_managed_identity=True,
+    enable_managed_identity=None,
     assign_identity=None,
     assign_kubelet_identity=None,
     enable_aad=False,
     enable_azure_rbac=False,
-    aad_client_app_id=None,
-    aad_server_app_id=None,
-    aad_server_app_secret=None,
     aad_tenant_id=None,
     aad_admin_group_object_ids=None,
     enable_oidc_issuer=False,
@@ -523,12 +410,16 @@ def aks_create(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
+    bootstrap_container_registry_resource_id=None,
     # addons
     enable_addons=None,  # pylint: disable=redefined-outer-name
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -539,6 +430,7 @@ def aks_create(
     enable_secret_rotation=False,
     rotation_poll_interval=None,
     enable_app_routing=False,
+    app_routing_default_nginx_controller=None,
     # nodepool paramerters
     nodepool_name="nodepool1",
     node_vm_size=None,
@@ -556,6 +448,7 @@ def aks_create(
     nodepool_tags=None,
     nodepool_labels=None,
     nodepool_taints=None,
+    nodepool_initialization_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -594,10 +487,12 @@ def aks_create(
     enable_keda=False,
     enable_vpa=False,
     enable_addon_autoscaling=False,
-    enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
-    enable_network_observability=None,
+    # advanced networking
+    enable_acns=None,
+    disable_acns_observability=None,
+    disable_acns_security=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -613,7 +508,7 @@ def aks_create(
     # azure service mesh
     enable_azure_service_mesh=None,
     revision=None,
-    # azure monitor profile
+    # azure monitor profile - metrics
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
     azure_monitor_workspace_resource_id=None,
@@ -621,6 +516,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -631,11 +528,22 @@ def aks_create(
     storage_pool_size=None,
     storage_pool_sku=None,
     storage_pool_option=None,
+    ephemeral_disk_volume_type=None,
+    ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    # virtualmachines
+    vm_sizes=None,
+    # IMDS restriction
+    enable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -698,8 +606,7 @@ def aks_update(
     disable_force_upgrade=False,
     upgrade_override_until=None,
     cluster_autoscaler_profile=None,
-    uptime_sla=False,
-    no_uptime_sla=False,
+    sku=None,
     tier=None,
     api_server_authorized_ip_ranges=None,
     enable_public_fqdn=False,
@@ -741,6 +648,8 @@ def aks_update(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    bootstrap_artifact_source=None,
+    bootstrap_container_registry_resource_id=None,
     # addons
     enable_secret_rotation=False,
     disable_secret_rotation=False,
@@ -753,6 +662,7 @@ def aks_update(
     max_count=None,
     nodepool_labels=None,
     nodepool_taints=None,
+    nodepool_initialization_taints=None,
     # misc
     yes=False,
     no_wait=False,
@@ -784,8 +694,6 @@ def aks_update(
     apiserver_subnet_id=None,
     enable_keda=False,
     disable_keda=False,
-    enable_node_restriction=False,
-    disable_node_restriction=False,
     enable_private_cluster=False,
     disable_private_cluster=False,
     private_dns_zone=None,
@@ -798,6 +706,9 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
+    disable_azure_monitor_app_monitoring=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_addon_autoscaling=False,
@@ -808,8 +719,11 @@ def aks_update(
     safeguards_level=None,
     safeguards_version=None,
     safeguards_excluded_ns=None,
-    enable_network_observability=None,
-    disable_network_observability=None,
+    # advanced networking
+    enable_acns=None,
+    disable_acns=None,
+    disable_acns_observability=None,
+    disable_acns_security=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -824,8 +738,18 @@ def aks_update(
     storage_pool_sku=None,
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
+    ephemeral_disk_volume_type=None,
+    ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
-    ssh_access=None,
+    cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    disable_static_egress_gateway=False,
+    # IMDS restriction
+    enable_imds_restriction=False,
+    disable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -988,7 +912,13 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
 
-            agent_profile.count = int(node_count)
+            if agent_profile.type == CONST_VIRTUAL_MACHINES:
+                if len(agent_profile.virtual_machines_profile.scale.manual) == 1:
+                    agent_profile.virtual_machines_profile.scale.manual[0].count = int(node_count)
+                else:
+                    raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
+            else:
+                agent_profile.count = int(node_count)
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
             return sdk_no_wait(
@@ -1013,7 +943,12 @@ def aks_upgrade(cmd,
                 node_image_only=False,
                 cluster_snapshot_id=None,
                 aks_custom_headers=None,
-                yes=False):
+                enable_force_upgrade=False,
+                disable_force_upgrade=False,
+                upgrade_override_until=None,
+                yes=False,
+                if_match=None,
+                if_none_match=None):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -1060,6 +995,13 @@ def aks_upgrade(cmd,
         )
         mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
         kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
+
+    instance = _update_upgrade_settings(
+        cmd,
+        instance,
+        enable_force_upgrade=enable_force_upgrade,
+        disable_force_upgrade=disable_force_upgrade,
+        upgrade_override_until=upgrade_override_until)
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1110,7 +1052,67 @@ def aks_upgrade(cmd,
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        name,
+        instance,
+        headers=headers,
+        if_match=if_match,
+        if_none_match=if_none_match)
+
+
+def _update_upgrade_settings(cmd, instance,
+                             enable_force_upgrade=False,
+                             disable_force_upgrade=False,
+                             upgrade_override_until=None):
+    existing_until = None
+    if (instance.upgrade_settings is not None and instance.upgrade_settings.override_settings is not None
+            and instance.upgrade_settings.override_settings.until is not None):
+        existing_until = instance.upgrade_settings.override_settings.until
+
+    force_upgrade = None
+    if enable_force_upgrade is False and disable_force_upgrade is False:
+        force_upgrade = None
+    elif enable_force_upgrade is not None:
+        force_upgrade = enable_force_upgrade
+    elif disable_force_upgrade is not None:
+        force_upgrade = not disable_force_upgrade
+
+    ClusterUpgradeSettings = cmd.get_models(
+        "ClusterUpgradeSettings",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+
+    UpgradeOverrideSettings = cmd.get_models(
+        "UpgradeOverrideSettings",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+
+    if force_upgrade is not None or upgrade_override_until is not None:
+        if instance.upgrade_settings is None:
+            instance.upgrade_settings = ClusterUpgradeSettings()
+        if instance.upgrade_settings.override_settings is None:
+            instance.upgrade_settings.override_settings = UpgradeOverrideSettings()
+        # sets force_upgrade
+        if force_upgrade is not None:
+            instance.upgrade_settings.override_settings.force_upgrade = force_upgrade
+        # sets until
+        if upgrade_override_until is not None:
+            try:
+                instance.upgrade_settings.override_settings.until = parse(upgrade_override_until)
+            except Exception:  # pylint: disable=broad-except
+                raise InvalidArgumentValueError(
+                    f"{upgrade_override_until} is not a valid datatime format."
+                )
+        elif force_upgrade:
+            default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
+            if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
+                instance.upgrade_settings.override_settings.until = default_extended_until
+    return instance
 
 
 def _upgrade_single_nodepool_image_version(
@@ -1178,6 +1180,7 @@ def aks_agentpool_add(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    undrainable_node_behavior=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1205,10 +1208,17 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    driver_type=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
+    # static egress gateway - gateway-mode pool
+    gateway_prefix_size=None,
+    # virtualmachines
+    vm_sizes=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1251,6 +1261,7 @@ def aks_agentpool_update(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    undrainable_node_behavior=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1269,6 +1280,10 @@ def aks_agentpool_update(
     disable_secure_boot=False,
     enable_vtpm=False,
     disable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1309,7 +1324,13 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
     if new_node_count == instance.count:
         raise CLIError(
             "The new node count is the same as the current node count.")
-    instance.count = new_node_count  # pylint: disable=no-member
+    if instance.type_properties_type == CONST_VIRTUAL_MACHINES:
+        if len(instance.virtual_machines_profile.scale.manual) == 1:
+            instance.virtual_machines_profile.scale.manual[0].count = new_node_count
+        else:
+            raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
+    else:
+        instance.count = new_node_count  # pylint: disable=no-member
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -1331,10 +1352,13 @@ def aks_agentpool_upgrade(cmd,
                           max_surge=None,
                           drain_timeout=None,
                           node_soak_duration=None,
+                          undrainable_node_behavior=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
-                          yes=False):
+                          yes=False,
+                          if_match=None,
+                          if_none_match=None):
     AgentPoolUpgradeSettings = cmd.get_models(
         "AgentPoolUpgradeSettings",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -1348,7 +1372,7 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if (max_surge or drain_timeout or node_soak_duration) and node_image_only:
+    if (max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior) and node_image_only:
         raise MutuallyExclusiveArgumentError(
             "Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only."
             "If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first "
@@ -1411,6 +1435,8 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
     if node_soak_duration:
         instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+    if undrainable_node_behavior:
+        instance.upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
@@ -1429,6 +1455,8 @@ def aks_agentpool_upgrade(cmd,
         nodepool_name,
         instance,
         headers=aks_custom_headers,
+        if_match=if_match,
+        if_none_match=if_none_match,
     )
 
 
@@ -1524,7 +1552,8 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          cluster_name,
                          nodepool_name,
                          ignore_pod_disruption_budget=None,
-                         no_wait=False):
+                         no_wait=False,
+                         if_match=None):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1544,6 +1573,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         resource_group_name,
         cluster_name,
         nodepool_name,
+        if_match=if_match,
         ignore_pod_disruption_budget=ignore_pod_disruption_budget,
     )
 
@@ -1625,6 +1655,131 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
         nodepool_name,
         machines,
     )
+
+
+def aks_agentpool_manual_scale_add(cmd,
+                                   client,
+                                   resource_group_name,
+                                   cluster_name,
+                                   nodepool_name,
+                                   vm_sizes,
+                                   node_count,
+                                   no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot add manual to a non-virtualmachines node pool.")
+    ManualScaleProfile = cmd.get_models(
+        "ManualScaleProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    sizes = [x.strip() for x in vm_sizes.split(",")]
+    new_manual_scale_profile = ManualScaleProfile(sizes=sizes, count=int(node_count))
+    instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name,
+                                      current_vm_sizes,
+                                      vm_sizes=None,
+                                      node_count=None,
+                                      no_wait=False):
+    if vm_sizes is None and node_count is None:
+        raise RequiredArgumentMissingError("specify --vm-sizes or --node-count or both.")
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot update manual in a non-virtualmachines node pool.")
+
+    _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
+    _vm_sizes = [x.strip() for x in vm_sizes.split(",")] if vm_sizes else []
+    manual_exists = False
+    for m in instance.virtual_machines_profile.scale.manual:
+        if m.sizes == _current_vm_sizes:
+            manual_exists = True
+            if vm_sizes:
+                m.sizes = _vm_sizes
+            if node_count:
+                m.count = int(node_count)
+            break
+    if not manual_exists:
+        raise InvalidArgumentValueError(
+            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name,
+                                      current_vm_sizes,
+                                      no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise CLIError("Cannot delete manual in a non-virtualmachines node pool.")
+    _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
+    manual_exists = False
+    for m in instance.virtual_machines_profile.scale.manual:
+        if m.sizes == _current_vm_sizes:
+            manual_exists = True
+            instance.virtual_machines_profile.scale.manual.remove(m)
+            break
+    if not manual_exists:
+        raise InvalidArgumentValueError(
+            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_operation_show(cmd,
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name,
+                       operation_id,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, operation_id)
+    return client.get(resource_group_name, name, operation_id)
+
+
+def aks_operation_show_latest(cmd,
+                              client,
+                              resource_group_name,
+                              name,
+                              nodepool_name,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, "latest")
+    return client.get(resource_group_name, name, "latest")
 
 
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
@@ -1752,6 +1907,8 @@ def aks_addon_enable(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     return enable_addons(
         cmd,
@@ -1776,6 +1933,8 @@ def aks_addon_enable(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -1806,6 +1965,8 @@ def aks_addon_update(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -1855,6 +2016,8 @@ def aks_addon_update(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -1889,6 +2052,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
                 create_dcra=True,
                 enable_syslog=False,
                 data_collection_settings=None,
+                ampls_resource_id=None,
+                enable_high_log_scale_mode=False
             )
     except TypeError:
         pass
@@ -1931,6 +2096,8 @@ def aks_enable_addons(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aks_custom_headers=None,
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -1943,6 +2110,11 @@ def aks_enable_addons(
         enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    is_private_cluster = False
+    if instance.api_server_access_profile and instance.api_server_access_profile.enable_private_cluster:
+        is_private_cluster = True
+
     instance = _update_addons(
         cmd,
         instance,
@@ -1966,12 +2138,11 @@ def aks_enable_addons(
         no_wait=no_wait,
         dns_zone_resource_id=dns_zone_resource_id,
         dns_zone_resource_ids=dns_zone_resource_ids,
-        enable_syslog=enable_syslog,
-        data_collection_settings=data_collection_settings,
     )
+
+    is_monitoring_addon_enabled = check_is_monitoring_addon_enabled(addons, instance)
     if (
-        CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
-        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        is_monitoring_addon_enabled
     ):
         if (
             CONST_MONITORING_USING_AAD_MSI_AUTH in
@@ -1998,14 +2169,22 @@ def aks_enable_addons(
                 create_dcra=True,
                 enable_syslog=enable_syslog,
                 data_collection_settings=data_collection_settings,
+                is_private_cluster=is_private_cluster,
+                ampls_resource_id=ampls_resource_id,
+                enable_high_log_scale_mode=enable_high_log_scale_mode
             )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
+            if enable_high_log_scale_mode:
+                raise ArgumentUsageError(
+                    "--enable-high-log-scale-mode can not be used without MSI auth.")
             if data_collection_settings is not None:
                 raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
+            if ampls_resource_id is not None:
+                raise ArgumentUsageError("--ampls-resource-id can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2016,8 +2195,6 @@ def aks_enable_addons(
                 aad_route=False,
             )
 
-    monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
@@ -2026,7 +2203,11 @@ def aks_enable_addons(
     if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
         enable_virtual_node = True
 
-    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled or enable_virtual_node
+    need_post_creation_role_assignment = (
+        is_monitoring_addon_enabled or
+        ingress_appgw_addon_enabled or
+        enable_virtual_node
+    )
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
@@ -2054,7 +2235,7 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.begin_rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
+def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements,
                    instance,
                    subscription_id,
                    resource_group_name,
@@ -2076,9 +2257,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    dns_zone_resource_ids=None,
-                   no_wait=False,  # pylint: disable=unused-argument
-                   enable_syslog=False,
-                   data_collection_settings=None):
+                   no_wait=False,):  # pylint: disable=unused-argument
+
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2267,10 +2447,6 @@ def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argumen
     return client.list_kubernetes_versions(location)
 
 
-def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
-    return client.get_os_options(location, resource_type='managedClusters')
-
-
 def get_aks_custom_headers(aks_custom_headers=None):
     headers = {}
     if aks_custom_headers is not None:
@@ -2376,7 +2552,7 @@ def aks_pod_identity_add(
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
-    user_assigned_identity = _get_user_assigned_identity(
+    user_assigned_identity = get_user_assigned_identity_by_resource_id(
         cmd.cli_ctx, identity_resource_id)
     _ensure_managed_identity_operator_permission(
         cmd, instance, user_assigned_identity.id)
@@ -3017,12 +3193,15 @@ def aks_mesh_upgrade_complete(
         cmd,
         client,
         resource_group_name,
-        name):
+        name,
+        yes=False
+):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
 
 
@@ -3030,14 +3209,26 @@ def aks_mesh_upgrade_rollback(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
+        yes=False
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
+
+
+def _aks_mesh_get_supported_revisions(
+        cmd,
+        client,
+        location):
+
+    revisions = aks_mesh_get_revisions(cmd, client, location)
+    supported_revisions = [r.revision for r in revisions.mesh_revisions]
+    return supported_revisions
 
 
 # pylint: disable=unused-argument
@@ -3059,6 +3250,7 @@ def _aks_mesh_update(
         enable_egress_gateway=None,
         disable_egress_gateway=None,
         revision=None,
+        yes=False,
         mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
@@ -3072,10 +3264,31 @@ def _aks_mesh_update(
         raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
-
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
+
+        # check for unsupported asm revision once the smp in mc object has been updated
+        # skip the warning incase upgrade is in progress
+        service_mesh_profile = mc.service_mesh_profile
+        if (
+            service_mesh_profile
+            and service_mesh_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+            and service_mesh_profile.istio
+            and service_mesh_profile.istio.revisions
+            and len(service_mesh_profile.istio.revisions) == 1
+        ):
+            revision = service_mesh_profile.istio.revisions[0]
+            supported_revisions = _aks_mesh_get_supported_revisions(cmd, client, mc.location)
+            if revision not in supported_revisions:
+                msg = (
+                    f"Istio mesh revision {revision} currently in use in your cluster is no longer supported.\n"
+                    "Please upgrade for continued support. Use `az aks mesh get-upgrades` to check for available "
+                    "upgrades.\nMore information about mesh upgrades and version support can be found here:"
+                    " https://aka.ms/asm-aks-upgrade-docs"
+                )
+                logger.warning(msg)
+
     except DecoratorEarlyExitException:
         return None
 
@@ -3088,7 +3301,8 @@ def aks_approuting_enable(
         resource_group_name,
         name,
         enable_kv=False,
-        keyvault_id=None
+        keyvault_id=None,
+        nginx=None,
 ):
     return _aks_approuting_update(
         cmd,
@@ -3097,7 +3311,8 @@ def aks_approuting_enable(
         name,
         enable_app_routing=True,
         keyvault_id=keyvault_id,
-        enable_kv=enable_kv)
+        enable_kv=enable_kv,
+        nginx=nginx)
 
 
 def aks_approuting_disable(
@@ -3120,7 +3335,8 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=None,
-        enable_kv=False
+        enable_kv=False,
+        nginx=None
 ):
     return _aks_approuting_update(
         cmd,
@@ -3128,7 +3344,8 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=keyvault_id,
-        enable_kv=enable_kv)
+        enable_kv=enable_kv,
+        nginx=nginx)
 
 
 def aks_approuting_zone_add(
@@ -3189,7 +3406,7 @@ def aks_approuting_zone_list(
         resource_group_name,
         name
 ):
-    from msrestazure.tools import parse_resource_id
+    from azure.mgmt.core.tools import parse_resource_id
     mc = client.get(resource_group_name, name)
 
     if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
@@ -3223,7 +3440,8 @@ def _aks_approuting_update(
         delete_dns_zone=None,
         update_dns_zone=None,
         dns_zone_resource_ids=None,
-        attach_zones=None
+        attach_zones=None,
+        nginx=None
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator

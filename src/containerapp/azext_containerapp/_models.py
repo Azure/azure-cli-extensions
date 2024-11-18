@@ -29,7 +29,8 @@ ManagedEnvironment = {
 CustomDomainConfiguration = {
     "dnsSuffix": None,
     "certificateValue": None,
-    "certificatePassword": None
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }
 
 AppLogsConfiguration = {
@@ -290,6 +291,40 @@ ContainerAppsJob = {
         "workloadProfileName": None
     },
     "tags": None
+}
+
+MaintenanceConfiguration = {
+    "name": "default",
+    "properties": {
+        "scheduledEntries": [
+            {
+                "weekDay": None,
+                "startHourUtc": None,
+                "durationHours": None
+            }
+        ]
+    }
+}
+
+SessionPool = {
+    "location": None,
+    "properties": {
+        "environmentId": None,
+        "poolManagementType": None,
+        "containerType": None,
+        "customContainerTemplate": None,
+        "secrets": None,
+        "dynamicPoolConfiguration": None,
+        "scaleConfiguration": None,
+        "sessionNetworkConfiguration": None
+    }
+}
+
+SessionCodeInterpreterExecution = {
+    "codeInputType": None,
+    "executionType": None,
+    "code": None,
+    "timeoutInSeconds": None
 }
 
 DaprComponentResiliency = {
@@ -570,20 +605,28 @@ MetricsConfiguration = {
     "destinations": []
 }
 
-ManagedServiceIdentity = {
-    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
-    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
-}
-
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
 }
 
-CustomDomainConfiguration = {
-    "dnsSuffix": None,
-    "certificateValue": None,
-    "certificatePassword": None,
-    "certificateKeyVaultProperties": None
+RuntimeJava = {
+    "enableMetrics": True,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
+}
+
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

@@ -18,7 +18,7 @@ class StorageCommandsLoader(AzCommandsLoader):
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_ADLS, '2019-02-02-preview')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2022-09-01')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2023-05-01')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2022-11-02')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2022-11-02')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')
@@ -98,8 +98,9 @@ class StorageArgumentContext(AzArgumentContext):
             self.extra('clear_content_settings',
                        help='If this flag is set, then if any one or more of the '
                             'following properties (--content-cache-control, --content-disposition, --content-encoding, '
-                            '--content-language, --content-md5, --content-type) is set, then all of these properties are '
-                            'set together. If a value is not provided for a given property when at least one of the '
+                            '--content-language, --content-md5, --content-type) is set, '
+                            'then all of these properties are set together. '
+                            'If a value is not provided for a given property when at least one of the '
                             'properties listed below is set, then that property will be cleared.',
                        arg_type=get_three_state_flag())
 

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b1
++++++++
+* Migrate to AAZ commands
+
 0.1.5
 ++++++
 * Update supported `--offer-types` of `az account create`

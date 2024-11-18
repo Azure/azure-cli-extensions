@@ -12,4 +12,10 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group("network-function traffic-collector collector-policy"):
+        from .custom import CollectorPolicyCreate
+        from .custom import CollectorPolicyUpdate
+        self.command_table["network-function traffic-collector collector-policy create"] = \
+            CollectorPolicyCreate(loader=self)
+        self.command_table["network-function traffic-collector collector-policy update"] = \
+            CollectorPolicyUpdate(loader=self)

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/solutions/{}", "2023-09-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/solutions/{}", "2024-03-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }

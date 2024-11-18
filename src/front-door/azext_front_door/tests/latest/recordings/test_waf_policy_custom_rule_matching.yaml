@@ -1,8 +1,50 @@
 interactions:
 - request:
-    body: '{"location": "global", "sku": {"name": "Classic_AzureFrontDoor"}, "properties":
-      {"policySettings": {"enabledState": "Enabled"}, "customRules": {"rules": []},
-      "managedRules": {}}}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_waf_policy_custom_rule_matching","date":"2024-04-22T03:34:06Z","module":"front-door"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:34:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8A62CE2439724BF58F4BAE8B7042C733 Ref B: MAA201060515011 Ref C: 2024-04-22T03:34:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus"}'
     headers:
       Accept:
       - application/json
@@ -13,39 +55,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '178'
+      - '22'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '762'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:13 GMT
+      - Mon, 22 Apr 2024 03:34:15 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: D9BDBABBDE134DC891DD4BA35A4A862D Ref B: MAA201060516027 Ref C: 2024-04-22T03:34:13Z'
     status:
       code: 201
       message: Created
@@ -63,40 +107,38 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority --rule-type --action --defer
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '762'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:14 GMT
+      - Mon, 22 Apr 2024 03:34:17 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: DDC1DC097F8E44D4BB0B3C296397B91D Ref B: MAA201060516019 Ref C: 2024-04-22T03:34:17Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Classic_AzureFrontDoor"},
+    body: '{"location": "WestUs", "tags": {}, "sku": {"name": "Classic_AzureFrontDoor"},
       "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
       "requestBodyCheck": "Enabled"}, "customRules": {"rules": [{"name": "cli000003",
       "priority": 6, "enabledState": "Enabled", "ruleType": "MatchRule", "matchConditions":
@@ -118,37 +160,35 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --match-variable --operator --values
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":6,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestBody","selector":null,"operator":"RegEx","negateCondition":false,"matchValue":["something"],"transforms":[]}],"action":"Block"}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":null,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":6,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestBody","selector":null,"operator":"RegEx","negateCondition":false,"matchValue":["something"],"transforms":[]}],"action":"Block","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1030'
+      - '1087'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:17 GMT
+      - Mon, 22 Apr 2024 03:34:19 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9F414BA3D6464B53A426ABB99170CEAA Ref B: MAA201060515045 Ref C: 2024-04-22T03:34:19Z'
     status:
       code: 200
       message: OK
@@ -187,35 +227,37 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2021-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Creating","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Creating","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Creating","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Creating","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Creating","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Creating"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"d972eb52-21a0-443d-a6c6-f2cc8a48f2b7","extendedProperties":{},"resourceState":"Creating","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Creating","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Creating","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Creating","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Creating","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Creating"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/ec4ed2f9-2d2e-4803-993b-9074f3c3d515?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/746178f2-cc4a-49de-960a-79d48d89cbb7?api-version=2021-06-01&t=638493536652906864&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=nPnstUEolHRmehJDEQS7XEbxPvQPpWAbE6ElzDpXhdB_GsDOiJg42OlenrGPt1m5btJEdeg5UCR5zi0D10c4_ftjOFINj4_L-ajQ9_hYJKPVGU5ID7dJQMFz_4UmBS9LSjKZB1xlkeqw3pweDD2uTa4YtC2RyKlqsVbxYawZLulYpXtfqwDVYHG9sqyOPZ1hVWBo0k0_q8VJq94u9_w2r6ZxpTCT_LJDcDGIdUOI5whHMotZ2MZ8niTO9fquwmwfpYRB38YXj6oGR0qKy1xIg5PjeTpZElbWWW-1yI5czNc_sKXwBPTveHx8Z3o9wf2NvCPpwT3kXTM3Zo3WU4dAQw&h=gv95cLlN47EviBpktJm1sthWFgQowf4Yek5VLNdz-XA
       cache-control:
       - no-cache
       content-length:
-      - '4097'
+      - '4121'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:24 GMT
+      - Mon, 22 Apr 2024 03:34:25 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 739E7C16B40E45718DAAB806BC872DFF Ref B: MAA201060514037 Ref C: 2024-04-22T03:34:21Z'
     status:
       code: 201
       message: Created
@@ -233,35 +275,33 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/ec4ed2f9-2d2e-4803-993b-9074f3c3d515?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/746178f2-cc4a-49de-960a-79d48d89cbb7?api-version=2021-06-01&t=638493536652906864&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=nPnstUEolHRmehJDEQS7XEbxPvQPpWAbE6ElzDpXhdB_GsDOiJg42OlenrGPt1m5btJEdeg5UCR5zi0D10c4_ftjOFINj4_L-ajQ9_hYJKPVGU5ID7dJQMFz_4UmBS9LSjKZB1xlkeqw3pweDD2uTa4YtC2RyKlqsVbxYawZLulYpXtfqwDVYHG9sqyOPZ1hVWBo0k0_q8VJq94u9_w2r6ZxpTCT_LJDcDGIdUOI5whHMotZ2MZ8niTO9fquwmwfpYRB38YXj6oGR0qKy1xIg5PjeTpZElbWWW-1yI5czNc_sKXwBPTveHx8Z3o9wf2NvCPpwT3kXTM3Zo3WU4dAQw&h=gv95cLlN47EviBpktJm1sthWFgQowf4Yek5VLNdz-XA
   response:
     body:
-      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
+      string: '{"status":"InProgress","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '61'
+      - '62'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:35 GMT
+      - Mon, 22 Apr 2024 03:34:26 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 37E7EA89990644798686DBDFC9AA9081 Ref B: MAA201060514037 Ref C: 2024-04-22T03:34:25Z'
     status:
       code: 200
       message: OK
@@ -279,35 +319,77 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/746178f2-cc4a-49de-960a-79d48d89cbb7?api-version=2021-06-01&t=638493536652906864&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=nPnstUEolHRmehJDEQS7XEbxPvQPpWAbE6ElzDpXhdB_GsDOiJg42OlenrGPt1m5btJEdeg5UCR5zi0D10c4_ftjOFINj4_L-ajQ9_hYJKPVGU5ID7dJQMFz_4UmBS9LSjKZB1xlkeqw3pweDD2uTa4YtC2RyKlqsVbxYawZLulYpXtfqwDVYHG9sqyOPZ1hVWBo0k0_q8VJq94u9_w2r6ZxpTCT_LJDcDGIdUOI5whHMotZ2MZ8niTO9fquwmwfpYRB38YXj6oGR0qKy1xIg5PjeTpZElbWWW-1yI5czNc_sKXwBPTveHx8Z3o9wf2NvCPpwT3kXTM3Zo3WU4dAQw&h=gv95cLlN47EviBpktJm1sthWFgQowf4Yek5VLNdz-XA
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
+      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4092'
+      - '61'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:35 GMT
+      - Mon, 22 Apr 2024 03:34:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2718263F9B7640E084498DB7ECC80FA9 Ref B: MAA201060514037 Ref C: 2024-04-22T03:34:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --backend-address --name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"d972eb52-21a0-443d-a6c6-f2cc8a48f2b7","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4116'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:34:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7998D2DBFA384972A36453E5B2A5FFC9 Ref B: MAA201060514037 Ref C: 2024-04-22T03:34:57Z'
     status:
       code: 200
       message: OK
@@ -325,35 +407,33 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2021-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"d972eb52-21a0-443d-a6c6-f2cc8a48f2b7","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4092'
+      - '4116'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:38 GMT
+      - Mon, 22 Apr 2024 03:35:00 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 08046EFC1ABC4CD098D2D6A268C42BE0 Ref B: MAA201060513017 Ref C: 2024-04-22T03:34:59Z'
     status:
       code: 200
       message: OK
@@ -397,37 +477,39 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2021-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"d972eb52-21a0-443d-a6c6-f2cc8a48f2b7","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e50015ab-c8c6-42eb-9f39-bc543c05bbf2?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/12f53389-4a91-4289-8b6a-8f5bb7eb4a52?api-version=2021-06-01&t=638493537059208184&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=hGxj0NO6RbLmZ8feLLH06KYCdPb9JjKVf7-NyiAgmhmQxvqq5iPEzrwqYPaJqCubw04m5ZPklWDDifo8h8fB-ObfSaaWauTnc_A9x_dM72S-l-JvsBBlzT6BvWgI9SkTWPeCO2bouhl4UnWwyDCcDd1vOSF9ONKgY8J5Wo4BASBvqxg0jXxX19LncxvDM2kEnOvAt3Ej8jWEOo9y2-gshighmpXViCCm0JqFaMqTDi2uuCBOC51vzpGSyupl5sQ0I4JMR55_ncT63n-yeyzUw82K_9ExrGWjNWsdNBWsDVCHjz42OWeIMUeTLPKwZ7XHhjnvLnob8JRIf3ABadIinA&h=ZCMG6CWkATg70i7obv0TapaMXdb1nyS6MOjWGBTjRJI
       cache-control:
       - no-cache
       content-length:
-      - '4258'
+      - '4282'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:42 GMT
+      - Mon, 22 Apr 2024 03:35:05 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e50015ab-c8c6-42eb-9f39-bc543c05bbf2/frontdoorresults/cli000004?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/12f53389-4a91-4289-8b6a-8f5bb7eb4a52/frontdoorresults/cli000004?api-version=2021-06-01
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: D51AEFBCC77745CC98039DF965437AEB Ref B: MAA201060516047 Ref C: 2024-04-22T03:35:02Z'
     status:
       code: 202
       message: Accepted
@@ -445,35 +527,33 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e50015ab-c8c6-42eb-9f39-bc543c05bbf2?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/12f53389-4a91-4289-8b6a-8f5bb7eb4a52?api-version=2021-06-01&t=638493537059208184&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=hGxj0NO6RbLmZ8feLLH06KYCdPb9JjKVf7-NyiAgmhmQxvqq5iPEzrwqYPaJqCubw04m5ZPklWDDifo8h8fB-ObfSaaWauTnc_A9x_dM72S-l-JvsBBlzT6BvWgI9SkTWPeCO2bouhl4UnWwyDCcDd1vOSF9ONKgY8J5Wo4BASBvqxg0jXxX19LncxvDM2kEnOvAt3Ej8jWEOo9y2-gshighmpXViCCm0JqFaMqTDi2uuCBOC51vzpGSyupl5sQ0I4JMR55_ncT63n-yeyzUw82K_9ExrGWjNWsdNBWsDVCHjz42OWeIMUeTLPKwZ7XHhjnvLnob8JRIf3ABadIinA&h=ZCMG6CWkATg70i7obv0TapaMXdb1nyS6MOjWGBTjRJI
   response:
     body:
-      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
+      string: '{"status":"InProgress","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '61'
+      - '62'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:52 GMT
+      - Mon, 22 Apr 2024 03:35:05 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: B68F84C6CD41408D824C5EEDE8C11C8A Ref B: MAA201060516047 Ref C: 2024-04-22T03:35:06Z'
     status:
       code: 200
       message: OK
@@ -491,145 +571,346 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/12f53389-4a91-4289-8b6a-8f5bb7eb4a52?api-version=2021-06-01&t=638493537059208184&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=hGxj0NO6RbLmZ8feLLH06KYCdPb9JjKVf7-NyiAgmhmQxvqq5iPEzrwqYPaJqCubw04m5ZPklWDDifo8h8fB-ObfSaaWauTnc_A9x_dM72S-l-JvsBBlzT6BvWgI9SkTWPeCO2bouhl4UnWwyDCcDd1vOSF9ONKgY8J5Wo4BASBvqxg0jXxX19LncxvDM2kEnOvAt3Ej8jWEOo9y2-gshighmpXViCCm0JqFaMqTDi2uuCBOC51vzpGSyupl5sQ0I4JMR55_ncT63n-yeyzUw82K_9ExrGWjNWsdNBWsDVCHjz42OWeIMUeTLPKwZ7XHhjnvLnob8JRIf3ABadIinA&h=ZCMG6CWkATg70i7obv0TapaMXdb1nyS6MOjWGBTjRJI
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
+      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4258'
+      - '61'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:53 GMT
+      - Mon, 22 Apr 2024 03:35:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 68C4BB1EA46E415589D2BC73E6F93748 Ref B: MAA201060516047 Ref C: 2024-04-22T03:35:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --set
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"d972eb52-21a0-443d-a6c6-f2cc8a48f2b7","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4282'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:35:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 50793042C143458CAE95A7BAAC202982 Ref B: MAA201060516047 Ref C: 2024-04-22T03:35:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:35:39 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:35:39 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033539Z-15b4f94784886qqfg68f1hg7e0000000041g0000000063eg
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:35:50 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:35:50 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033550Z-158fbddb65dmdsvg5rkd84yzsw0000000300000000003196
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:36:01 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:36:01 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033600Z-158fbddb65d9frjpgp2cwxz35w00000004m000000000616k
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true\
+        \ -->\n<html lang=\"en\" dir=\"ltr\">\n  <head>\n    <meta http-equiv=\"Content-Type\"\
+        \ content=\"text/html; charset=UTF-8\" />\n    <title>Page not found</title>\n\
+        \n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n    <meta\
+        \ name=\"msapplication-config\" content=\"none\" />\n    <link\n      rel=\"\
+        icon\"\n      type=\"image/x-icon\"\n      href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\"\
+        \n    />\n    <link\n      rel=\"shortcut icon\"\n      type=\"image/x-icon\"\
+        \n      href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\"\
+        \n    />\n    <meta name=\"robots\" content=\"noindex, nofollow\" />\n\n \
+        \   <link\n      rel=\"stylesheet\"\n      property=\"stylesheet\"\n     \
+        \ type=\"text/css\"\n      href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\"\
+        \n    />\n\n    <link\n      rel=\"stylesheet\"\n      property=\"stylesheet\"\
+        \n      type=\"text/css\"\n      href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\"\
+        \n    />\n    \n    <style type=\"text/css\"></style>\n  </head>\n\n  <body\
+        \ class=\"error-page-wrapper\">\n    <div class=\"error-page\">\n      <div\
+        \ class=\"error-page-content\">\n        <h1>Page not found</h1>\n\n     \
+        \   <div style=\"padding-top: 35px\">\n          Oops! We weren't able to\
+        \ find your Azure Front Door Service\n          configuration. If it's a new\
+        \ configuration that you recently created,\n          it might not be ready\
+        \ yet. You should check again in a few minutes. If\n          the problem\
+        \ persists, please contact Azure support.\n        </div>\n        <ul>\n\
+        \          <li>\n            <a\n              class=\"error-page-content-tryagain\"\
+        \n              href=\"https://portal.azure.com/#create/Microsoft.AFDX\"\n\
+        \              ><span>Try again</span\n              ><img\n             \
+        \   src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"\
+        \n                alt=\"\"\n            /></a>\n          </li>\n\n      \
+        \    <li>\n            <a\n              class=\"error-page-content-support\"\
+        \n              href=\"https://azure.microsoft.com/en-us/support/options/\"\
+        \n              ><span>Contact support</span\n              ><img\n      \
+        \          src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"\
+        \n                alt=\"\"\n            /></a>\n          </li>\n\n      \
+        \    <li>\n            <a\n              class=\"error-page-content-support\"\
+        \n              href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"\
+        \n              ><span>Documentation</span\n              ><img\n        \
+        \        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"\
+        \n                alt=\"\"\n            /></a>\n          </li>\n        </ul>\n\
+        \      </div>\n      <img\n        class=\"error-page-cloud1\"\n        src=\"\
+        https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\"\
+        \n      />\n      <img\n        class=\"error-page-cloud2\"\n        src=\"\
+        https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\"\
+        \n      />\n      <img\n        class=\"error-page-cloud3\"\n        src=\"\
+        https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\"\
+        \n      />\n    </div>\n    <div class=\"error-body\">\n      <div></div>\n\
+        \    </div>\n  </body>\n</html>\n"
+    headers:
+      cache-control:
+      - no-store
+      connection:
+      - close
+      content-length:
+      - '3450'
+      content-type:
+      - text/html
+      date:
+      - Mon, 22 Apr 2024 03:36:11 GMT
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.26.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Mon, 17 Oct 2022 06:28:53 GMT
-      location:
-      - /pages/404.html
-      x-msedge-ref:
-      - 'Ref A: 13A21200BF3D483C80F7B3A2A2BEFD20 Ref B: SG2EDGE2811 Ref C: 2022-10-17T06:28:54Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true
-        -->\n<html lang=\"en\" dir=\"ltr\"><!-- Portal Version: 5.0.102.1084 (dogfood#d61d547.160510-1403)
-        --><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n
-        \   <title>Page not found</title>\n    \n\n<meta http-equiv=\"X-UA-Compatible\"
-        content=\"IE=edge\">\n<meta name=\"msapplication-config\" content=\"none\">\n<link
-        rel=\"icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<link
-        rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<meta
-        name=\"robots\" content=\"noindex, nofollow\">\n\n    \n<link rel=\"stylesheet\"
-        property=\"stylesheet\" type=\"text/css\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\">\n\n
-        \   \n    \n<link rel=\"stylesheet\" property=\"stylesheet\" type=\"text/css\"
-        href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\">\n\n\n
-        \   <script>\n        if (history && (typeof history.pushState === \"function\"))
-        {\n            var shownPart = \"shown=true\",\n                qs = window.location.search
-        || \"\",\n                prefix;\n            if (qs.indexOf(shownPart) <
-        0) {\n                if (!qs) {\n                    prefix = \"?\";\n                }
-        else {\n                    prefix = \"&\";\n                }\n\n                history.pushState({},
-        \"\", window.location.href + prefix + shownPart);\n            }\n        }\n
-        \   </script><style type=\"text/css\"></style>\n</head>\n<body class=\"error-page-wrapper\">\n
-        \   <div class=\"error-page\">\n        <div class=\"error-page-content\">\n
-        \           <h1>Page not found</h1>\n\n\t\t\t<div style=\"padding-top: 35px\">Oops!
-        We weren't able to find your Azure Front Door Service configuration. If it\u2019s
-        a new configuration that you recently created, it might not be ready yet.
-        \ You should check again in a few minutes. If the problem persists, please
-        contact Azure support.</div>\n                <ul>\n                        <li><a
-        class=\"error-page-content-tryagain\" href=\"https://ms.portal.azure.com/#create/Microsoft.Network/Frontdoor\"><span>Try
-        again</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n\n                        <li><a class=\"error-page-content-support\"
-        href=\"https://azure.microsoft.com/en-us/support/options/\"><span>Contact
-        support</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<li><a class=\"error-page-content-support\"
-        href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"><span>Documentation</span><img
-        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n                </ul>\n        </div>\n        <img class=\"error-page-cloud1\"
-        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \       <img class=\"error-page-cloud2\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \       <img class=\"error-page-cloud3\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \   </div>\n    <div class=\"error-body\">\n        <div>\n            \n\n
-        \       </div>\n    </div>\n\n\n</body></html>"
-    headers:
-      content-length:
-      - '3467'
-      content-type:
-      - text/html
-      date:
-      - Mon, 17 Oct 2022 06:28:54 GMT
-      etag:
-      - '0x8D61E6FBA75C854'
-      last-modified:
-      - Wed, 19 Sep 2018 20:37:33 GMT
+      x-azure-ref:
+      - 20240422T033611Z-15b4f9478489lgcjh3egrqk3ts00000004800000000052xg
       x-cache:
       - CONFIG_NOCACHE
-      x-ms-blob-type:
-      - BlockBlob
-      x-ms-lease-status:
-      - unlocked
-      x-ms-version:
-      - '2009-09-19'
-      x-msedge-ref:
-      - 'Ref A: 6127CF065B794B68855BBA40592CDBB9 Ref B: SG2EDGE2811 Ref C: 2022-10-17T06:28:54Z'
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
 - request:
     body: '''key'':''something'''
     headers:
@@ -642,98 +923,52 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.26.0
+      - python-requests/2.31.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: ''
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
     headers:
-      content-length:
-      - '0'
-      date:
-      - Mon, 17 Oct 2022 06:29:04 GMT
-      location:
-      - /pages/404.html
-      x-msedge-ref:
-      - 'Ref A: B867DAE165D046A5B7EF7ABCC63D4E9A Ref B: SG2EDGE2710 Ref C: 2022-10-17T06:29:05Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
       - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true
-        -->\n<html lang=\"en\" dir=\"ltr\"><!-- Portal Version: 5.0.102.1084 (dogfood#d61d547.160510-1403)
-        --><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n
-        \   <title>Page not found</title>\n    \n\n<meta http-equiv=\"X-UA-Compatible\"
-        content=\"IE=edge\">\n<meta name=\"msapplication-config\" content=\"none\">\n<link
-        rel=\"icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<link
-        rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<meta
-        name=\"robots\" content=\"noindex, nofollow\">\n\n    \n<link rel=\"stylesheet\"
-        property=\"stylesheet\" type=\"text/css\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\">\n\n
-        \   \n    \n<link rel=\"stylesheet\" property=\"stylesheet\" type=\"text/css\"
-        href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\">\n\n\n
-        \   <script>\n        if (history && (typeof history.pushState === \"function\"))
-        {\n            var shownPart = \"shown=true\",\n                qs = window.location.search
-        || \"\",\n                prefix;\n            if (qs.indexOf(shownPart) <
-        0) {\n                if (!qs) {\n                    prefix = \"?\";\n                }
-        else {\n                    prefix = \"&\";\n                }\n\n                history.pushState({},
-        \"\", window.location.href + prefix + shownPart);\n            }\n        }\n
-        \   </script><style type=\"text/css\"></style>\n</head>\n<body class=\"error-page-wrapper\">\n
-        \   <div class=\"error-page\">\n        <div class=\"error-page-content\">\n
-        \           <h1>Page not found</h1>\n\n\t\t\t<div style=\"padding-top: 35px\">Oops!
-        We weren't able to find your Azure Front Door Service configuration. If it\u2019s
-        a new configuration that you recently created, it might not be ready yet.
-        \ You should check again in a few minutes. If the problem persists, please
-        contact Azure support.</div>\n                <ul>\n                        <li><a
-        class=\"error-page-content-tryagain\" href=\"https://ms.portal.azure.com/#create/Microsoft.Network/Frontdoor\"><span>Try
-        again</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n\n                        <li><a class=\"error-page-content-support\"
-        href=\"https://azure.microsoft.com/en-us/support/options/\"><span>Contact
-        support</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<li><a class=\"error-page-content-support\"
-        href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"><span>Documentation</span><img
-        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n                </ul>\n        </div>\n        <img class=\"error-page-cloud1\"
-        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \       <img class=\"error-page-cloud2\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \       <img class=\"error-page-cloud3\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \   </div>\n    <div class=\"error-body\">\n        <div>\n            \n\n
-        \       </div>\n    </div>\n\n\n</body></html>"
-    headers:
       content-length:
-      - '3467'
+      - '1256'
       content-type:
-      - text/html
+      - text/html; charset=UTF-8
       date:
-      - Mon, 17 Oct 2022 06:29:06 GMT
+      - Mon, 22 Apr 2024 03:36:22 GMT
       etag:
-      - '0x8D61E6FBA75C854'
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:36:22 GMT
       last-modified:
-      - Wed, 19 Sep 2018 20:37:33 GMT
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033621Z-158fbddb65dwj7s2dbv95ghm9s00000002u0000000006z00
       x-cache:
       - CONFIG_NOCACHE
-      x-ms-blob-type:
-      - BlockBlob
-      x-ms-lease-status:
-      - unlocked
-      x-ms-version:
-      - '2009-09-19'
-      x-msedge-ref:
-      - 'Ref A: FF039FEE980F440C9CAAEEBBA37AB2BD Ref B: SG2EDGE2710 Ref C: 2022-10-17T06:29:05Z'
     status:
       code: 200
       message: OK
@@ -749,98 +984,52 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.26.0
+      - python-requests/2.31.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: ''
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
     headers:
-      content-length:
-      - '0'
-      date:
-      - Mon, 17 Oct 2022 06:29:15 GMT
-      location:
-      - /pages/404.html
-      x-msedge-ref:
-      - 'Ref A: 678490ABC8F3474283A57942232E4C90 Ref B: SG2EDGE2806 Ref C: 2022-10-17T06:29:16Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
       - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true
-        -->\n<html lang=\"en\" dir=\"ltr\"><!-- Portal Version: 5.0.102.1084 (dogfood#d61d547.160510-1403)
-        --><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n
-        \   <title>Page not found</title>\n    \n\n<meta http-equiv=\"X-UA-Compatible\"
-        content=\"IE=edge\">\n<meta name=\"msapplication-config\" content=\"none\">\n<link
-        rel=\"icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<link
-        rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<meta
-        name=\"robots\" content=\"noindex, nofollow\">\n\n    \n<link rel=\"stylesheet\"
-        property=\"stylesheet\" type=\"text/css\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\">\n\n
-        \   \n    \n<link rel=\"stylesheet\" property=\"stylesheet\" type=\"text/css\"
-        href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\">\n\n\n
-        \   <script>\n        if (history && (typeof history.pushState === \"function\"))
-        {\n            var shownPart = \"shown=true\",\n                qs = window.location.search
-        || \"\",\n                prefix;\n            if (qs.indexOf(shownPart) <
-        0) {\n                if (!qs) {\n                    prefix = \"?\";\n                }
-        else {\n                    prefix = \"&\";\n                }\n\n                history.pushState({},
-        \"\", window.location.href + prefix + shownPart);\n            }\n        }\n
-        \   </script><style type=\"text/css\"></style>\n</head>\n<body class=\"error-page-wrapper\">\n
-        \   <div class=\"error-page\">\n        <div class=\"error-page-content\">\n
-        \           <h1>Page not found</h1>\n\n\t\t\t<div style=\"padding-top: 35px\">Oops!
-        We weren't able to find your Azure Front Door Service configuration. If it\u2019s
-        a new configuration that you recently created, it might not be ready yet.
-        \ You should check again in a few minutes. If the problem persists, please
-        contact Azure support.</div>\n                <ul>\n                        <li><a
-        class=\"error-page-content-tryagain\" href=\"https://ms.portal.azure.com/#create/Microsoft.Network/Frontdoor\"><span>Try
-        again</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n\n                        <li><a class=\"error-page-content-support\"
-        href=\"https://azure.microsoft.com/en-us/support/options/\"><span>Contact
-        support</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<li><a class=\"error-page-content-support\"
-        href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"><span>Documentation</span><img
-        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
-        alt=\"\"></a></li>\n                </ul>\n        </div>\n        <img class=\"error-page-cloud1\"
-        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \       <img class=\"error-page-cloud2\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \       <img class=\"error-page-cloud3\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
-        \   </div>\n    <div class=\"error-body\">\n        <div>\n            \n\n
-        \       </div>\n    </div>\n\n\n</body></html>"
-    headers:
       content-length:
-      - '3467'
+      - '1256'
       content-type:
-      - text/html
+      - text/html; charset=UTF-8
       date:
-      - Mon, 17 Oct 2022 06:29:16 GMT
+      - Mon, 22 Apr 2024 03:36:32 GMT
       etag:
-      - '0x8D61E6FBA75C854'
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:36:32 GMT
       last-modified:
-      - Wed, 19 Sep 2018 20:37:33 GMT
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033632Z-r1869b9b46cn8b9xx9bp3y443s0000000450000000009c5t
       x-cache:
       - CONFIG_NOCACHE
-      x-ms-blob-type:
-      - BlockBlob
-      x-ms-lease-status:
-      - unlocked
-      x-ms-version:
-      - '2009-09-19'
-      x-msedge-ref:
-      - 'Ref A: 97C7A36D1EA54B76BF189B39DADB823D Ref B: SG2EDGE2806 Ref C: 2022-10-17T06:29:16Z'
     status:
       code: 200
       message: OK
@@ -856,111 +1045,1446 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.26.0
+      - python-requests/2.31.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
-        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
-        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
-        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
-        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
-        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
-        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
-        }</style><title>Service unavailable</title></head><body><div id=''content''><div
-        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
-        working to restore all services as soon as possible. Please check back soon.</p></div><div
-        id=''errorref''><span>0SPZMYwAAAADXxlNZbUwDTZL4Rzu1CI0aU0cyRURHRTI3MDYANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2</span></div></div></body></html>'
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:36:43 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:36:43 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033643Z-158fbddb65dv6gxduunquwkbfw00000004m0000000007mxz
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:36:54 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:36:53 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033653Z-r1869b9b46cz2mkl7axu1pkpp400000003zg000000016ssr
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:37:04 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:37:04 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033704Z-r1869b9b46ct5bcdtgg8bwuww400000003wg00000000r03w
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:37:15 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:37:15 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033714Z-158fbddb65dkbt890d1hbuaaq800000002qg000000006rh9
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:37:25 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:37:25 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033725Z-r1869b9b46c6gplr1hnx7cxnms0000000430000000016zw0
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:37:36 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:37:36 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033736Z-r1869b9b46cmcg4ws7tx0w5n98000000044g000000018ads
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:37:47 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:37:47 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033747Z-r1869b9b46crhm4thrcnm9ahqc000000041g000000004uvd
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:37:57 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:37:57 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033757Z-158fbddb65dc7b4zkukp7u2xvc0000000240000000005eq6
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:38:08 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:38:08 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033808Z-15b4f9478488ph8wk3hc344ex000000004900000000017dw
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:38:19 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:38:19 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033818Z-15b4f947848nzv4jrm9ef5zyw0000000010g000000002qk7
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:38:29 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:38:29 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033829Z-15b4f9478485p92znm2005vn9c000000044g000000006h16
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:38:40 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:38:40 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033840Z-158fbddb65df6xmp78afy8fm2s00000001p000000000516h
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:38:51 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:38:51 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033850Z-r1869b9b46chwnzxm1paxp7da00000000480000000003zhk
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:39:01 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:39:01 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033901Z-r1869b9b46cmcg4ws7tx0w5n9800000004a0000000002xz7
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:39:12 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:39:12 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033911Z-r1869b9b46cz2mkl7axu1pkpp40000000450000000002exe
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:39:23 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:39:23 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033922Z-r1869b9b46cz2mkl7axu1pkpp40000000400000000015724
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:39:33 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:39:33 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033933Z-158fbddb65dwj7s2dbv95ghm9s00000002vg000000006fgb
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:39:44 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:39:44 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033944Z-158fbddb65dc7b4zkukp7u2xvc000000024g000000004m6m
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:39:54 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:39:54 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T033954Z-r1869b9b46cz9tdx6gyuh69kb8000000044g000000019sa7
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:40:05 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:40:05 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T034005Z-15b4f947848x4xblzz4xggw7t0000000047g000000000p7t
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:40:16 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:40:16 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T034015Z-15b4f947848nfrflpd3k619wyw00000004400000000045b8
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:40:26 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:40:26 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T034026Z-r1869b9b46cbz8pnfx60nrnch0000000046g000000017d2d
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      connection:
+      - keep-alive
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
+      date:
+      - Mon, 22 Apr 2024 03:40:37 GMT
+      etag:
+      - '"3147526947"'
+      expires:
+      - Mon, 29 Apr 2024 03:40:37 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      x-azure-ref:
+      - 20240422T034037Z-r1869b9b46chwnzxm1paxp7da0000000042g00000000xuh3
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.31.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>\n\
+        <html xmlns='http://www.w3.org/1999/xhtml'>\n\n<head>\n    <meta content='text/html;\
+        \ charset=utf-8' http-equiv='content-type' />\n    <style type='text/css'>\n\
+        \        body {\n            font-family: Arial;\n            margin-left:\
+        \ 40px;\n        }\n\n        img {\n            border: 0 none;\n       \
+        \ }\n\n        #content {\n            margin-left: auto;\n            margin-right:\
+        \ auto\n        }\n\n        #message h2 {\n            font-size: 20px;\n\
+        \            font-weight: normal;\n            color: #000000;\n         \
+        \   margin: 34px 0px 0px 0px\n        }\n\n        #message p {\n        \
+        \    font-size: 13px;\n            color: #000000;\n            margin: 7px\
+        \ 0px 0px0px\n        }\n\n        #errorref {\n            font-size: 11px;\n\
+        \            color: #737373;\n            margin-top: 41px\n        }\n  \
+        \  </style>\n    <title>Service unavailable</title>\n</head>\n\n<body>\n \
+        \   <div id='content'>\n        <div id='message'>\n            <h2>The request\
+        \ is blocked.</h2>\n        </div>\n        <div id='errorref'>\n        \
+        \    <span>20240422T034047Z-158fbddb65dtjfbw7rkefdxmxs00000004hg000000004x5r\
+        \            </span>\n        </div>\n    </div>\n</body>\n</html>\n"
     headers:
       cache-control:
       - no-store
+      connection:
+      - close
       content-length:
-      - '994'
+      - '1261'
       content-type:
       - text/html
       date:
-      - Mon, 17 Oct 2022 06:29:27 GMT
+      - Mon, 22 Apr 2024 03:40:47 GMT
       x-azure-ref:
-      - 0SPZMYwAAAADXxlNZbUwDTZL4Rzu1CI0aU0cyRURHRTI3MDYANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.26.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
-        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
-        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
-        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
-        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
-        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
-        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
-        }</style><title>Service unavailable</title></head><body><div id=''content''><div
-        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
-        working to restore all services as soon as possible. Please check back soon.</p></div><div
-        id=''errorref''><span>0UvZMYwAAAAC9jeLAqzLNRJD53UHo3NYQU0cyRURHRTI3MTgANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2</span></div></div></body></html>'
-    headers:
-      cache-control:
-      - no-store
-      content-length:
-      - '994'
-      content-type:
-      - text/html
-      date:
-      - Mon, 17 Oct 2022 06:29:37 GMT
-      x-azure-ref:
-      - 0UvZMYwAAAAC9jeLAqzLNRJD53UHo3NYQU0cyRURHRTI3MTgANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.26.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
-        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
-        http-equiv=''content-type''/><style type=''text/css''>body { font-family:Arial;
-        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
-        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
-        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
-        7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
-        41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0XPZMYwAAAAB57HRhclVmR48vbVOm91ZjU0cyRURHRTI3MTcANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2</span></div></div></body></html>'
-    headers:
-      date:
-      - Mon, 17 Oct 2022 06:29:48 GMT
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 0XPZMYwAAAAB57HRhclVmR48vbVOm91ZjU0cyRURHRTI3MTcANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
+      - 20240422T034047Z-158fbddb65dtjfbw7rkefdxmxs00000004hg000000004x5r
+      x-cache:
+      - CONFIG_NOCACHE
     status:
       code: 403
       message: Forbidden
@@ -976,47 +2500,50 @@ interactions:
       Content-Length:
       - '13'
       User-Agent:
-      - python-requests/2.26.0
+      - python-requests/2.31.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\
+        \n    <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"\
+        text/html; charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,\
+        \ initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n      \
+        \  background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n \
+        \       font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe\
+        \ UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\
+        \        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n\
+        \        padding: 2em;\n        background-color: #fdfdff;\n        border-radius:\
+        \ 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n \
+        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:\
+        \ none;\n    }\n    @media (max-width: 700px) {\n        div {\n         \
+        \   margin: 0 auto;\n            width: auto;\n        }\n    }\n    </style>\
+        \    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n    <p>This\
+        \ domain is for use in illustrative examples in documents. You may use this\n\
+        \    domain in literature without prior coordination or asking for permission.</p>\n\
+        \    <p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n\
+        </div>\n</body>\n</html>\n"
     headers:
       accept-ranges:
       - bytes
       cache-control:
       - max-age=604800
+      connection:
+      - keep-alive
       content-length:
       - '1256'
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Mon, 17 Oct 2022 06:29:48 GMT
+      - Mon, 22 Apr 2024 03:40:48 GMT
       etag:
       - '"3147526947"'
       expires:
-      - Mon, 24 Oct 2022 06:29:48 GMT
+      - Mon, 29 Apr 2024 03:40:48 GMT
       last-modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       x-azure-ref:
-      - 0XPZMYwAAAADcIRtxVP4GSrBVivZfCYZPU0cyRURHRTI4MTYANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
+      - 20240422T034047Z-15b4f9478487vmzr3r64sg19xs0000000430000000008e1b
       x-cache:
       - CONFIG_NOCACHE
     status:

@@ -8,29 +8,41 @@ import sys
 
 from pkg_resources import parse_version
 from knack.log import get_logger
-from azext_confcom.config import DEFAULT_REGO_FRAGMENTS, DATA_FOLDER
+from azext_confcom.config import (
+    DEFAULT_REGO_FRAGMENTS,
+    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
+
+)
+
 from azext_confcom import os_util
 from azext_confcom.template_util import (
     pretty_print_func,
     print_func,
     str_to_sha256,
     inject_policy_into_template,
+    inject_policy_into_yaml,
     print_existing_policy_from_arm_template,
+    print_existing_policy_from_yaml
 )
+from azext_confcom.fragment_util import get_all_fragment_contents
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom import security_policy
 from azext_confcom.security_policy import OutputType
 from azext_confcom.kata_proxy import KataPolicyGenProxy
+from azext_confcom.cose_proxy import CoseSignToolProxy
+from azext_confcom import oras_proxy
 
 
 logger = get_logger(__name__)
 
 
+# pylint: disable=too-many-locals, too-many-branches
 def acipolicygen_confcom(
     input_path: str,
     arm_template: str,
     arm_template_parameters: str,
     image_name: str,
+    virtual_node_yaml_path: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
     approve_wildcards: str = False,
@@ -44,36 +56,27 @@ def acipolicygen_confcom(
     disable_stdio: bool = False,
     print_existing_policy: bool = False,
     faster_hashing: bool = False,
+    omit_id: bool = False,
+    include_fragments: bool = False,
+    fragments_json: str = None,
+    exclude_default_fragments: bool = False,
 ):
-
-    if sum(map(bool, [input_path, arm_template, image_name])) != 1:
-        error_out("Can only generate CCE policy from one source at a time")
-    if sum(map(bool, [print_policy_to_terminal, outraw, outraw_pretty_print])) > 1:
-        error_out("Can only print in one format at a time")
-    elif (diff and input_path) or (diff and image_name):
-        error_out("Can only diff CCE policy from ARM Template")
-    elif arm_template_parameters and not arm_template:
-        error_out(
-            "Can only use ARM Template Parameters if ARM Template is also present"
-        )
-    elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-        error_out("Must print policy to terminal when saving to file")
-    elif faster_hashing and tar_mapping_location:
-        error_out("Cannot use --faster-hashing with --tar")
-
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
             "%s %s %s %s %s",
-            "Secrets that are included in the provided arm template or configuration files ",
+            "Secrets that are included in the provided arm template or configuration files",
             "in the container env or cmd sections will be printed out with this flag.",
             "These are outputed secrets that you must protect. Be sure that you do not include these secrets in your",
             "source control. Also verify that no secrets are present in the logs of your command or script.",
             "For additional information, see http://aka.ms/clisecrets. \n",
         )
 
-    if print_existing_policy:
+    if print_existing_policy and arm_template:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
-        sys.exit(0)
+        return
+    if print_existing_policy and virtual_node_yaml_path:
+        print_existing_policy_from_yaml(virtual_node_yaml_path)
+        return
 
     if debug_mode:
         logger.warning("WARNING: %s %s",
@@ -89,11 +92,23 @@ def acipolicygen_confcom(
     # warn user that input infrastructure_svn is less than the configured default value
     check_infrastructure_svn(infrastructure_svn)
 
+    fragments_list = []
+    fragment_policy_list = []
+    # gather information about the fragments being used in the new policy
+    if include_fragments:
+        fragments_list = os_util.load_json_from_file(fragments_json or input_path)
+        fragments_list = fragments_list.get("fragments", []) or fragments_list
+
+        # convert to list if it's just a dict
+        if not isinstance(fragments_list, list):
+            fragments_list = [fragments_list]
+        fragment_policy_list = get_all_fragment_contents(fragments_list)
+
     # telling the user what operation we're doing
     logger.warning(
         "Generating security policy for %s: %s in %s",
         "ARM Template" if arm_template else "Image" if image_name else "Input File",
-        input_path or arm_template or image_name,
+        input_path or arm_template or image_name or virtual_node_yaml_path,
         "base64"
         if output_type == security_policy.OutputType.DEFAULT
         else "clear text",
@@ -101,7 +116,11 @@ def acipolicygen_confcom(
     # error checking for making sure an input is provided is above
     if input_path:
         container_group_policies = security_policy.load_policy_from_file(
-            input_path, debug_mode=debug_mode,
+            input_path,
+            debug_mode=debug_mode,
+            infrastructure_svn=infrastructure_svn,
+            disable_stdio=disable_stdio,
+            exclude_default_fragments=exclude_default_fragments,
         )
     elif arm_template:
         container_group_policies = security_policy.load_policy_from_arm_template_file(
@@ -111,10 +130,22 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             approve_wildcards=approve_wildcards,
+            diff_mode=diff,
+            rego_imports=fragments_list,
+            fragment_contents=fragment_policy_list,
+            exclude_default_fragments=exclude_default_fragments,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=disable_stdio
+        )
+    elif virtual_node_yaml_path:
+        container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
+            virtual_node_yaml_path=virtual_node_yaml_path,
+            debug_mode=debug_mode,
+            disable_stdio=disable_stdio,
+            approve_wildcards=approve_wildcards,
+            diff_mode=diff
         )
 
     exit_code = 0
@@ -132,20 +163,27 @@ def acipolicygen_confcom(
 
         if validate_sidecar:
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
+        elif virtual_node_yaml_path and not (print_policy_to_terminal or outraw or outraw_pretty_print or diff):
+            result = inject_policy_into_yaml(
+                virtual_node_yaml_path, policy.get_serialized_output(omit_id=omit_id), count
+            )
+            if result:
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
+                logger.info("CCE Policy successfully injected into YAML file")
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-            seccomp_profile_hashes = {x.get_id(): x.get_seccomp_profile_sha256() for x in policy.get_images()}
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(), count,
-                                                 seccomp_profile_hashes)
+                                                 policy.get_serialized_output(omit_id=omit_id), count)
             if result:
                 # this is always going to be the unencoded policy
-                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW)))
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
                 logger.info("CCE Policy successfully injected into ARM Template")
+
         else:
             # output to terminal
-            print(f"{policy.get_serialized_output(output_type)}\n\n")
+            print(f"{policy.get_serialized_output(output_type, omit_id=omit_id)}\n\n")
+
             # output to file
             if save_to_file:
                 logger.warning(
@@ -156,7 +194,97 @@ def acipolicygen_confcom(
                 )
                 policy.save_to_file(save_to_file, output_type)
 
-    sys.exit(exit_code)
+    if exit_code != 0:
+        sys.exit(exit_code)
+
+
+# pylint: disable=R0914
+def acifragmentgen_confcom(
+    image_name: str,
+    input_path: str,
+    tar_mapping_location: str,
+    namespace: str,
+    svn: str,
+    feed: str,
+    key: str,
+    chain: str,
+    minimum_svn: int,
+    algo: str = "ES384",
+    fragment_path: str = None,
+    generate_import: bool = False,
+    disable_stdio: bool = False,
+    debug_mode: bool = False,
+    output_filename: str = None,
+    outraw: bool = False,
+    upload_fragment: bool = False,
+    no_print: bool = False,
+    fragments_json: str = "",
+):
+    output_type = get_fragment_output_type(outraw)
+
+    if generate_import:
+        cose_client = CoseSignToolProxy()
+        import_statement = cose_client.generate_import_from_path(fragment_path, minimum_svn=minimum_svn)
+        if fragments_json:
+            if os.path.isfile(fragments_json):
+                logger.info("Appending import statement to JSON file")
+                fragments_file_contents = os_util.load_json_from_file(fragments_json)
+                fragments_list = fragments_file_contents.get(POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS, [])
+            else:
+                logger.info("Creating import statement JSON file")
+                fragments_file_contents = {}
+                fragments_list = []
+            # convert to list if it's just a dict
+            if not isinstance(fragments_list, list):
+                fragments_list = [fragments_list]
+            fragments_list.append(import_statement)
+
+            fragments_file_contents[POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS] = fragments_list
+            os_util.write_str_to_file(fragments_json, pretty_print_func(fragments_file_contents))
+        else:
+            print(pretty_print_func(import_statement))
+        return
+
+    tar_mapping = tar_mapping_validation(tar_mapping_location, using_config_file=bool(input_path))
+
+    if image_name:
+        policy = security_policy.load_policy_from_image_name(
+            image_name, debug_mode=debug_mode, disable_stdio=disable_stdio
+        )
+    else:
+        # this is using --input
+        if not tar_mapping:
+            tar_mapping = os_util.load_tar_mapping_from_config_file(input_path)
+        policy = security_policy.load_policy_from_config_file(
+            input_path, debug_mode=debug_mode, disable_stdio=disable_stdio
+        )
+    policy.populate_policy_content_for_all_images(
+        individual_image=bool(image_name), tar_mapping=tar_mapping
+    )
+
+    # if no feed is provided, use the first image's feed
+    # to assume it's an image-attached fragment
+    if not feed:
+        feed = policy.get_images()[0].containerImage
+
+    fragment_text = policy.generate_fragment(namespace, svn, output_type)
+
+    if output_type != security_policy.OutputType.DEFAULT and not no_print:
+        print(fragment_text)
+
+    # take ".rego" off the end of the filename if it's there, it'll get added back later
+    output_filename.replace(".rego", "")
+    filename = f"{output_filename or namespace}.rego"
+    os_util.write_str_to_file(filename, fragment_text)
+
+    if key:
+        cose_proxy = CoseSignToolProxy()
+        iss = cose_proxy.create_issuer(chain)
+        out_path = filename + ".cose"
+
+        cose_proxy.cose_sign(filename, key, chain, feed, iss, algo, out_path)
+        if upload_fragment:
+            oras_proxy.attach_fragment_to_image(feed, out_path)
 
 
 def katapolicygen_confcom(
@@ -166,13 +294,11 @@ def katapolicygen_confcom(
     print_policy: bool = False,
     use_cached_files: bool = False,
     settings_file_name: str = None,
+    rules_file_name: str = None,
+    print_version: bool = False,
+    containerd_pull: str = False,
+    containerd_socket_path: str = None,
 ):
-
-    if settings_file_name:
-        if "genpolicy-settings.json" in settings_file_name:
-            error_out("Cannot use default settings file names")
-        os_util.copy_file(settings_file_name, DATA_FOLDER)
-
     kata_proxy = KataPolicyGenProxy()
 
     output = kata_proxy.kata_genpolicy(
@@ -182,9 +308,12 @@ def katapolicygen_confcom(
         print_policy=print_policy,
         use_cached_files=use_cached_files,
         settings_file_name=settings_file_name,
+        rules_file_name=rules_file_name,
+        print_version=print_version,
+        containerd_pull=containerd_pull,
+        containerd_socket_path=containerd_socket_path,
     )
     print(output)
-    sys.exit(0)
 
 
 def update_confcom(cmd, instance, tags=None):
@@ -231,7 +360,7 @@ def get_diff_outputs(policy: security_policy.AciPolicy, outraw_pretty_print: boo
         formatted_output = print_func(output)
 
     print(
-        "Existing policy and ARM Template match"
+        "Existing policy and Template match"
         if is_valid
         else formatted_output
     )
@@ -243,13 +372,15 @@ def get_diff_outputs(policy: security_policy.AciPolicy, outraw_pretty_print: boo
         )
     if not is_valid:
         logger.warning(
-            "Existing Policy and ARM Template differ. Consider recreating the base64-encoded policy."
+            "Existing Policy and Template differ. Consider recreating the base64-encoded policy."
         )
         exit_code = 2
     return exit_code
 
 
-def tar_mapping_validation(tar_mapping_location: str):
+# TODO: refactor this function to use _validators.py functions and make sure the tar path
+# isn't coming from the config file rather than the flag
+def tar_mapping_validation(tar_mapping_location: str, using_config_file: bool = False):
     tar_mapping = None
     if tar_mapping_location:
         if not os.path.isfile(tar_mapping_location):
@@ -264,7 +395,7 @@ def tar_mapping_validation(tar_mapping_location: str):
         # passing in a single tar location for a single image policy
         else:
             tar_mapping = tar_mapping_location
-    else:
+    elif not using_config_file:
         # only need to do the docker checks if we're not grabbing image info from tar files
         error_msg = run_initial_docker_checks()
         if error_msg:
@@ -282,6 +413,8 @@ def get_output_type(outraw, outraw_pretty_print):
     return output_type
 
 
-def error_out(error_string):
-    logger.error(error_string)
-    sys.exit(1)
+def get_fragment_output_type(outraw):
+    output_type = security_policy.OutputType.PRETTY_PRINT
+    if outraw:
+        output_type = security_policy.OutputType.RAW
+    return output_type

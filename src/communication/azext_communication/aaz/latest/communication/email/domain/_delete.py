@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete to delete a Domains resource.
+
+    :example: Delete a domain resource
+        az communication email domain delete --domain-name DomainName --email-service-name ResourceName -g ResourceGroup
     """
 
     _aaz_info = {

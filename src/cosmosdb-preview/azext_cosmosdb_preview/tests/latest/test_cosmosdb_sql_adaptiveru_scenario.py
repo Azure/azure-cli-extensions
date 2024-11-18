@@ -14,23 +14,24 @@ from dateutil import parser
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
 class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_adaptiveru', location='australiaeast')
     def test_cosmosdb_sql_container_adaptiveru(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        # Assumption: There exists a cosmosTest rg with the account adrutest2. This test only creates the database and collection
+
         self.kwargs.update({
-            'rg': 'cosmosTest',
-            'acc': 'adrutest2',
+            'acc': self.create_random_name(prefix='adru-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'australiaeast',
             'tar': '0=1200 1=1200',
             'src': '2'
         })
+
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
@@ -63,8 +64,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg': 'cosmosTest',
-            'acc': 'adrutest3',
+            'acc': self.create_random_name(prefix='adru-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'australiaeast',
@@ -73,6 +73,9 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
             'tar': '0=1200 1=1200',
             'src': '2'
         })
+
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')

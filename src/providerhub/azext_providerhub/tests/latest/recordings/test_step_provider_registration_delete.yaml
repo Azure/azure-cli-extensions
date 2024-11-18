@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --provider-namespace
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"DecommissionProviderRequiredPropertiesNotFound","message":"The
+        Provider ''Private.VPTest'' must inclue ''Hidden'' and ''Decommissioned''
+        in providerType when decommissioning."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '189'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Jun 2024 04:28:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/0ff1374b-8a79-4d6f-9143-3f9a92b4988e
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-msedge-ref:
+      - 'Ref A: 31D783824BF34F029D894C6EBDFD6C34 Ref B: CO6AA3150220047 Ref C: 2024-06-17T04:28:14Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

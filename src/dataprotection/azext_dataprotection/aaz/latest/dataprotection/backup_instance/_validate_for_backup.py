@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance validate-for-backup",
-    is_experimental=True,
 )
 class ValidateForBackup(AAZCommand):
     """Validate whether adhoc backup will be successful or not
@@ -23,9 +22,9 @@ class ValidateForBackup(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2024-04-01"],
         ]
     }
 
@@ -96,6 +95,10 @@ class ValidateForBackup(AAZCommand):
             options=["policy-info"],
             help="Gets or sets the policy information.",
             required=True,
+        )
+        backup_instance.resource_guard_operation_requests = AAZListArg(
+            options=["resource-guard-operation-requests"],
+            help="ResourceGuardOperationRequests on which LAC check will be performed",
         )
         backup_instance.validation_type = AAZStrArg(
             options=["validation-type"],
@@ -336,6 +339,9 @@ class ValidateForBackup(AAZCommand):
             options=["resource-group-id"],
             help="Gets or sets the Snapshot Resource Group Uri.",
         )
+
+        resource_guard_operation_requests = cls._args_schema.backup_instance.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg()
         return cls._args_schema
 
     _args_base_resource_properties_create = None
@@ -439,7 +445,7 @@ class ValidateForBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -475,6 +481,7 @@ class ValidateForBackup(AAZCommand):
                 backup_instance.set_prop("identityDetails", AAZObjectType, ".identity_details")
                 backup_instance.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
                 backup_instance.set_prop("policyInfo", AAZObjectType, ".policy_info", typ_kwargs={"flags": {"required": True}})
+                backup_instance.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
                 backup_instance.set_prop("validationType", AAZStrType, ".validation_type")
 
             data_source_info = _builder.get(".backupInstance.dataSourceInfo")
@@ -601,6 +608,10 @@ class ValidateForBackup(AAZCommand):
             disc_azure_operational_store_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.dataStoreParametersList[]{objectType:AzureOperationalStoreParameters}")
             if disc_azure_operational_store_parameters is not None:
                 disc_azure_operational_store_parameters.set_prop("resourceGroupId", AAZStrType, ".azure_operational_store_parameters.resource_group_id")
+
+            resource_guard_operation_requests = _builder.get(".backupInstance.resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 

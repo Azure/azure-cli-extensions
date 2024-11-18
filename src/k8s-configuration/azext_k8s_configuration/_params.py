@@ -15,8 +15,6 @@ from .validators import (
     validate_configuration_name,
     validate_fluxconfig_name,
     validate_namespace,
-    validate_operator_instance_name,
-    validate_operator_namespace,
 )
 
 from .action import (
@@ -175,7 +173,7 @@ def load_arguments(self, _):
             "kustomization",
             action=KustomizationAddAction,
             options_list=["--kustomization", "-k"],
-            help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force']",
+            help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force', 'disable_health_check']",
             nargs="+",
         )
         c.argument(
@@ -282,87 +280,6 @@ def load_arguments(self, _):
             validator=validate_configuration_name,
         )
 
-    with self.argument_context("k8s-configuration create") as c:
-        c.argument(
-            "repository_url",
-            options_list=["--repository-url", "-u"],
-            help="Url of the source control repository",
-        )
-        c.argument(
-            "scope",
-            arg_type=get_enum_type(["namespace", "cluster"]),
-            help="""Specify scope of the operator to be 'namespace' or 'cluster' """,
-        )
-        c.argument(
-            "enable_helm_operator",
-            arg_group="Helm Operator",
-            arg_type=get_three_state_flag(),
-            options_list=["--enable-helm-operator", "--enable-hop"],
-            help="Enable support for Helm chart deployments",
-        )
-        c.argument(
-            "helm_operator_params",
-            arg_group="Helm Operator",
-            options_list=["--helm-operator-params", "--hop-params"],
-            help="Chart values for the Helm Operator (if enabled)",
-        )
-        c.argument(
-            "helm_operator_chart_version",
-            arg_group="Helm Operator",
-            options_list=["--helm-operator-chart-version", "--hop-chart-version"],
-            help="Chart version of the Helm Operator (if enabled)",
-        )
-        c.argument(
-            "operator_params", arg_group="Operator", help="Parameters for the Operator"
-        )
-        c.argument(
-            "operator_instance_name",
-            arg_group="Operator",
-            help="Instance name of the Operator",
-            validator=validate_operator_instance_name,
-        )
-        c.argument(
-            "operator_namespace",
-            arg_group="Operator",
-            help="Namespace in which to install the Operator",
-            validator=validate_operator_namespace,
-        )
-        c.argument(
-            "operator_type",
-            arg_group="Operator",
-            help="""Type of the operator. Valid value is 'flux' """,
-        )
-        c.argument(
-            "ssh_private_key",
-            arg_group="Auth",
-            help="Specify Base64-encoded private ssh key for private repository sync",
-        )
-        c.argument(
-            "ssh_private_key_file",
-            arg_group="Auth",
-            help="Specify file path to private ssh key for private repository sync",
-        )
-        c.argument(
-            "https_user",
-            arg_group="Auth",
-            help="Specify HTTPS username for private repository sync",
-        )
-        c.argument(
-            "https_key",
-            arg_group="Auth",
-            help="Specify HTTPS token/password for private repository sync",
-        )
-        c.argument(
-            "ssh_known_hosts",
-            arg_group="Auth",
-            help="Specify Base64-encoded known_hosts contents containing public SSH keys required to access private Git instances",
-        )
-        c.argument(
-            "ssh_known_hosts_file",
-            arg_group="Auth",
-            help="Specify file path to known_hosts contents containing public SSH keys required to access private Git instances",
-        )
-
     with self.argument_context("k8s-configuration flux kustomization") as c:
         c.argument(
             "kustomization_name",
@@ -400,6 +317,11 @@ def load_arguments(self, _):
             "force",
             arg_type=get_three_state_flag(),
             help="Re-create resources that cannot be updated on the cluster (i.e. jobs)",
+        )
+        c.argument(
+            "disable_health_check",
+            arg_type=get_three_state_flag(),
+            help="Disable health checks for kustomizations applied to the cluster."
         )
 
     with self.argument_context("k8s-configuration flux kustomization delete") as c:

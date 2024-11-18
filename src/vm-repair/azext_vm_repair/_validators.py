@@ -8,12 +8,12 @@ from json import loads
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
-from msrestazure.azure_exceptions import CloudError
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from .encryption_types import Encryption
 from .exceptions import AzCommandError
@@ -71,6 +71,10 @@ def validate_create(cmd, namespace):
         raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
+
+    if namespace.encrypt_recovery_key:
+        if not namespace.unlock_encrypted_vm:
+            raise RequiredArgumentMissingError('Recovery password is provided in the argument, but --unlock-encrypted-vm is not passed. Rerun command adding --unlock-encrypted-vm.')
 
     if namespace.enable_nested:
         if is_linux:
@@ -224,13 +228,15 @@ def _prompt_public_ip(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
         if prompt_y_n('Does repair vm requires public ip?'):
-            namespace.associate_public_ip = namespace.repair_vm_name + "PublicIP"
+            namespace.associate_public_ip = _return_public_ip_name(namespace)
         else:
             namespace.associate_public_ip = '""'
 
     except NoTTYException:
         raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
+def _return_public_ip_name(namespace):
+    return namespace.repair_vm_name + "PublicIP"
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
@@ -241,9 +247,9 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         api_version = _resolve_api_version(rcf, classic_vm_provider, None, vm_resource_type)
         resource_client = rcf.resources
         resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
-    except CloudError as cloudError:
+    except HttpResponseError as httpError:
         # Resource does not exist or the API failed
-        logger.debug(cloudError)
+        logger.debug(httpError)
         return False
     except Exception as exception:
         # Unknown error, so return false for default resource not found error message
@@ -258,13 +264,13 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
     source_vm = None
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
-    except CloudError as cloudError:
-        logger.debug(cloudError)
-        if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
+    except HttpResponseError as httpError:
+        logger.debug(httpError)
+        if httpError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
             # Given VM is classic VM (RDFE)
             raise CLIError('The given VM \'{}\' is a classic VM. VM repair commands do not support classic VMs.'.format(vm_name))
         # Unknown Error
-        raise CLIError(cloudError.message)
+        raise CLIError(httpError.message)
 
     return source_vm
 
@@ -424,9 +430,9 @@ def validate_repair_and_restore(cmd, namespace):
 
     validate_vm_username(namespace.repair_username, is_linux)
     validate_vm_password(namespace.repair_password, is_linux)
+    
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
-
     # Validate repair run command
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)

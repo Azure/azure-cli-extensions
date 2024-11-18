@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a pool
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-12-13-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2023-12-13-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-13-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
@@ -196,7 +195,9 @@ class Show(AAZCommand):
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
@@ -240,12 +241,42 @@ class Show(AAZCommand):
             agent_profile.resource_predictions = AAZObjectType(
                 serialized_name="resourcePredictions",
             )
+            agent_profile.resource_predictions_profile = AAZObjectType(
+                serialized_name="resourcePredictionsProfile",
+            )
 
-            disc_stateful = cls._schema_on_200.properties.agent_profile.discriminate_by("kind", "Stateful")
-            disc_stateful.max_agent_lifetime = AAZStrType(
-                serialized_name="maxAgentLifetime",
+            resource_predictions_profile = cls._schema_on_200.properties.agent_profile.resource_predictions_profile
+            resource_predictions_profile.kind = AAZStrType(
                 flags={"required": True},
             )
+
+            disc_automatic = cls._schema_on_200.properties.agent_profile.resource_predictions_profile.discriminate_by("kind", "Automatic")
+            disc_automatic.prediction_preference = AAZStrType(
+                serialized_name="predictionPreference",
+            )
+
+            disc_stateful = cls._schema_on_200.properties.agent_profile.discriminate_by("kind", "Stateful")
+            disc_stateful.grace_period_time_span = AAZStrType(
+                serialized_name="gracePeriodTimeSpan",
+            )
+            disc_stateful.max_agent_lifetime = AAZStrType(
+                serialized_name="maxAgentLifetime",
+            )
+
+            resource_predictions = cls._schema_on_200.properties.agent_profile.resource_predictions
+            resource_predictions.timezone = AAZStrType(
+                serialized_name="timeZone",
+            )
+
+            resource_predictions.days_data = AAZListType(
+                serialized_name="daysData",
+            )
+
+            days_data = cls._schema_on_200.properties.agent_profile.resource_predictions.days_data
+            days_data.Element = AAZDictType()
+
+            _element = cls._schema_on_200.properties.agent_profile.resource_predictions.days_data.Element
+            _element.Element = AAZIntType()
 
             fabric_profile = cls._schema_on_200.properties.fabric_profile
             fabric_profile.kind = AAZStrType(
@@ -277,7 +308,9 @@ class Show(AAZCommand):
             _element.buffer = AAZStrType()
             _element.resource_id = AAZStrType(
                 serialized_name="resourceId",
-                flags={"required": True},
+            )
+            _element.well_known_image_name = AAZStrType(
+                serialized_name="wellKnownImageName",
             )
 
             aliases = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").images.Element.aliases
@@ -319,8 +352,26 @@ class Show(AAZCommand):
             )
 
             storage_profile = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile
+            storage_profile.data_disks = AAZListType(
+                serialized_name="dataDisks",
+            )
             storage_profile.os_disk_storage_account_type = AAZStrType(
                 serialized_name="osDiskStorageAccountType",
+            )
+
+            data_disks = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks
+            data_disks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks.Element
+            _element.caching = AAZStrType()
+            _element.disk_size_gi_b = AAZIntType(
+                serialized_name="diskSizeGiB",
+            )
+            _element.drive_letter = AAZStrType(
+                serialized_name="driveLetter",
+            )
+            _element.storage_account_type = AAZStrType(
+                serialized_name="storageAccountType",
             )
 
             organization_profile = cls._schema_on_200.properties.organization_profile

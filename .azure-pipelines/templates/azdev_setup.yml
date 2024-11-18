@@ -17,6 +17,8 @@ steps:
       pip install azdev
       azdev --version
       azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
+      # Installing setuptools with a version higher than 70.0.0 will not generate metadata.json
+      pip install setuptools==70.0.0
       pip list -v
       az --version
     displayName: 'azdev setup'

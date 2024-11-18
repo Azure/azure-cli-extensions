@@ -40,6 +40,7 @@ def create_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
     custom_no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -70,6 +71,7 @@ def create_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     else:
         yaml = load_yaml(load_test_config_file)
@@ -87,6 +89,7 @@ def create_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -100,7 +103,7 @@ def create_test(
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been created successfully", test_id)
-    return response
+    return response.as_dict()
 
 
 def update_test(
@@ -119,6 +122,7 @@ def update_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
     custom_no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -148,6 +152,7 @@ def update_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     else:
         body = create_or_update_test_without_config(
@@ -162,6 +167,7 @@ def update_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -175,7 +181,7 @@ def update_test(
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been updated successfully", test_id)
-    return response
+    return response.as_dict()
 
 
 def list_tests(
@@ -185,9 +191,9 @@ def list_tests(
 ):
     logger.info("Listing tests for load test resource: %s", load_test_resource)
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    response = client.list_tests()
-    logger.debug("Retrieved tests: %s", response)
-    return response
+    response_list = client.list_tests()
+    logger.debug("Retrieved tests: %s", response_list)
+    return [response.as_dict() for response in response_list]
 
 
 def get_test(
@@ -200,7 +206,7 @@ def get_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     response = client.get_test(test_id)
     logger.debug("Retrieved test: %s", response)
-    return response
+    return response.as_dict()
 
 
 def download_test_files(
@@ -271,7 +277,7 @@ def add_test_app_component(
     response = client.create_or_update_app_components(test_id=test_id, body=body)
     logger.info("Add test app component completed for test: %s", test_id)
     logger.debug("Add test app component response: %s", response)
-    return response
+    return response.as_dict()
 
 
 def list_test_app_component(
@@ -285,7 +291,7 @@ def list_test_app_component(
     response = client.get_app_components(test_id=test_id)
     logger.debug("Retrieved app components: %s", response)
     logger.info("Listing app components completed")
-    return response
+    return response.as_dict()
 
 
 def remove_test_app_component(
@@ -302,7 +308,7 @@ def remove_test_app_component(
     response = client.create_or_update_app_components(test_id=test_id, body=body)
     logger.debug("Removed app component: %s", response)
     logger.info("Removing app components completed")
-    return response
+    return response.as_dict()
 
 
 def add_test_server_metric(
@@ -335,7 +341,7 @@ def add_test_server_metric(
     response = client.create_or_update_server_metrics_config(test_id=test_id, body=body)
     logger.debug("Add test server metric response: %s", response)
     logger.info("Add test server metric completed")
-    return response
+    return response.as_dict()
 
 
 def list_test_server_metric(
@@ -349,7 +355,7 @@ def list_test_server_metric(
     response = client.get_server_metrics_config(test_id=test_id)
     logger.debug("Retrieved server metrics: %s", response)
     logger.info("Listing server metrics completed")
-    return response
+    return response.as_dict()
 
 
 def remove_test_server_metric(
@@ -366,7 +372,7 @@ def remove_test_server_metric(
     response = client.create_or_update_server_metrics_config(test_id=test_id, body=body)
     logger.debug("Removed server metrics: %s", response)
     logger.info("Removing server metrics completed")
-    return response
+    return response.as_dict()
 
 
 def upload_test_file(
@@ -386,7 +392,7 @@ def upload_test_file(
     )
     logger.debug("Upload test file response: %s", response)
     logger.info("Upload test file completed")
-    return response
+    return response.as_dict()
 
 
 def list_test_file(
@@ -397,10 +403,10 @@ def list_test_file(
 ):
     logger.info("Listing files for the test")
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    response = client.list_test_files(test_id)
-    logger.debug("Retrieved files: %s", response)
+    response_list = client.list_test_files(test_id)
+    logger.debug("Retrieved files: %s", response_list)
     logger.info("Listing files for the test completed")
-    return response
+    return [response.as_dict() for response in response_list]
 
 
 def download_test_file(

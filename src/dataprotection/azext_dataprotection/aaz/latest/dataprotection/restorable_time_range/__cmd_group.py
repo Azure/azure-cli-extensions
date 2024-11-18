@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "dataprotection restorable-time-range",
-    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage restorable time range with dataprotection.

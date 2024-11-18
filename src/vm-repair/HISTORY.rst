@@ -2,6 +2,51 @@
 Release History
 ===============
 
+2.0.0
+++++++
+Changed default VM image to 2022-datacenter-smalldisk for better default security. 
+
+1.1.1
+++++++
+Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
+Fixed a bug with `--associate-public-ip` where it was always creating a public IP. Now a private IP will be used if `--associate-public-ip` is not specified.
+
+1.1.0
+++++++
+Added script for GT fixit button.
+Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
+
+1.0.10
+++++++
+Added breaking change warning for the default image for Windows source VMs if the source VM image is not found in `az vm repair create`. It will change from a 2016 image to 2022 in November 2024.
+
+1.0.9
+++++++
+Fixed and updated several vm-repair tests for better coverage. 
+Removed and updated broken image aliases pointing at images that no longer existed. 
+Add `--encrypt-recovery-key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM. 
+
+1.0.8
+++++++
+SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.
+
+1.0.7
+++++++
+az command adjustment
+
+1.0.6
+++++++
+Add CLI update wait for ASG to wait for the operation done as the async 2rd operation will cancel the 1st call.
+
+1.0.5
+++++++
+Bug fix ASG is not added properly when reset the nic
+Add ASG if exist when nic is reset 
+
+1.0.4
+++++++
+Logging improvements and script fixing
+
 1.0.3
 ++++++
 Bug fix the win-nest specific SKU issue

@@ -3,18 +3,18 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions, logging-fstring-interpolation
 
+from copy import copy as shallowcopy
+from knack.log import get_logger
+from msrest.exceptions import DeserializationError
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from msrest.exceptions import DeserializationError
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (clean_null_values, _convert_object_from_snake_to_camel_case, safe_get, safe_set,
                                                            _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
-from knack.log import get_logger
-
-from copy import copy as shallowcopy
 
 from ._decorator_utils import load_yaml_file, create_deserializer, process_dapr_component_resiliency_yaml
 from ._models import (
@@ -30,6 +30,7 @@ logger = get_logger(__name__)
 
 
 class DaprComponentResiliencyDecorator(BaseResource):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -128,7 +129,6 @@ class DaprComponentResiliencyDecorator(BaseResource):
         if argument_group_in_use and first_validation_error is not None:
             raise first_validation_error
 
-
     def validate_arguments(self):
         self.validate_positive_argument("in_timeout_response_in_seconds", "in-timeout")
         self.validate_positive_argument("out_timeout_response_in_seconds", "out-timeout")
@@ -153,6 +153,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
                                               optional_argument_names=["out_circuit_breaker_interval"],
                                               condition_message="when providing an outbound dapr component circuit breaker policy.")
 
+    # pylint: disable=expression-not-assigned
     def set_up_component_resiliency_yaml(self, file_name):
         component_resiliency_def = DaprComponentResiliencyModel
         if (self.get_argument_in_http_retry_delay_in_milliseconds() or self.get_argument_in_http_retry_interval_in_milliseconds()
@@ -169,7 +170,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
 
         yaml_component_resiliency = load_yaml_file(file_name)
 
-        if type(yaml_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_component_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
 
         if yaml_component_resiliency.get('type') and yaml_component_resiliency.get('type').lower() != "microsoft.app/managedenvironments/daprcomponents/resiliencypolicies":
@@ -228,6 +229,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
 
 
 class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.component_resiliency_def = DaprComponentResiliencyModel
@@ -323,6 +325,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
         self.component_resiliency_update_def = DaprComponentResiliencyModel
         self.component_resiliency_patch_def = shallowcopy(self.component_resiliency_update_def)
 
+    # pylint: disable=too-many-branches
     def construct_payload(self):
         if self.get_argument_yaml():
             self.component_resiliency_update_def = self.set_up_component_resiliency_yaml(file_name=self.get_argument_yaml())
@@ -334,7 +337,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
             component_resiliency_def = DaprComponentResiliencyPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                                                                  name=self.get_argument_name(), dapr_component_name=self.get_argument_dapr_component_name(),
                                                                                  environment_name=self.get_argument_environment())
-        except:
+        except:  # pylint: disable=bare-except
             pass
 
         if not component_resiliency_def:
@@ -455,6 +458,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
 
 
 class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -470,6 +474,7 @@ class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorat
 
 
 class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -484,6 +489,7 @@ class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorat
 
 
 class DaprComponentResiliencyPreviewDeleteDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
