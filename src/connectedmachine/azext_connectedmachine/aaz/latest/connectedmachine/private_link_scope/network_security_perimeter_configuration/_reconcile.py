@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope network-security-perimeter-configuration reconcile",
 )
 class Reconcile(AAZCommand):
-    """Forces the network security perimeter configuration to refresh for a private link scope.
+    """Force the network security perimeter configuration to refresh for a private link scope.
 
     :example: Sample command for NSP reconcile
         az connectedmachine private-link-scope network-security-perimeter-configuration reconcile --resource-group myResourceGroup --scope-name myPrivateLinkScope --perimeter-name aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.myAssociation
     """
 
     _aaz_info = {
-        "version": "2024-07-10",
+        "version": "2024-07-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}/reconcile", "2024-07-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}/reconcile", "2024-07-31-preview"],
         ]
     }
 
@@ -153,7 +153,7 @@ class Reconcile(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-10",
+                    "api-version", "2024-07-31-preview",
                     required=True,
                 ),
             }
