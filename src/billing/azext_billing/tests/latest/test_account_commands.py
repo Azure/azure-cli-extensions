@@ -43,3 +43,34 @@ class AzureBillingAccountsScenarioTest(ScenarioTest):
                  self.check("properties.soldTo.postalCode", "98052", case_sensitive=False),
                  self.check("properties.soldTo.region", "WA", case_sensitive=False),
              ])
+		
+class AzureEaBillingAccountsScenarioTests(ScenarioTest):
+	def test_ea_accounts_list_and_get(self):
+		self.kwargs.update({
+			'filter': "properties/agreementType eq 'EnterpriseAgreement'"
+		})
+		# list
+		accounts_list = self.cmd('billing account list --filter "{filter}"').get_output_in_json()
+		self.assertTrue(accounts_list)
+		# get
+		account_name = accounts_list[0]['name']
+		self.kwargs.update({
+			'account_name': account_name
+		})
+		self.cmd('billing account get --billing-account-name {account_name}', checks=[
+			self.check('name', account_name),
+			self.check('properties.agreementType', 'EnterpriseAgreement')
+		])
+
+	def test_ea_accounts_update(self):
+		account_name = "6575495"
+		po_number = "PO123456"
+		self.kwargs.update({
+			'account_name': account_name,
+			'po_number': po_number
+		})
+		self.cmd('billing account update --billing-account-name {account_name} --enrollment-details po-number={po_number}', checks=[
+			self.check('name', account_name),
+			self.check('properties.enrollmentDetails.poNumber', po_number)
+		])
+		
