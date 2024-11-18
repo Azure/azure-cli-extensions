@@ -214,7 +214,7 @@ def acifragmentgen_confcom(
     generate_import: bool = False,
     disable_stdio: bool = False,
     debug_mode: bool = False,
-    output_filename: str = None,
+    output_filename: str = "",
     outraw: bool = False,
     upload_fragment: bool = False,
     no_print: bool = False,
@@ -273,7 +273,7 @@ def acifragmentgen_confcom(
         print(fragment_text)
 
     # take ".rego" off the end of the filename if it's there, it'll get added back later
-    output_filename.replace(".rego", "")
+    output_filename = output_filename.replace(".rego", "")
     filename = f"{output_filename or namespace}.rego"
     os_util.write_str_to_file(filename, fragment_text)
 

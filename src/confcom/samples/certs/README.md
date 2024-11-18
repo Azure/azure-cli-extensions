@@ -23,12 +23,12 @@ The image in `fragment_config.json` must be updated from `<your-image>` to the i
 ./create_certchain.sh
 ```
 
-You will need to select (y) for four prompts to sign the certs needed to create a cert chain.
-
 After completion, this will create the following files to be used in the confcom signing process:
 
 - `intermediate/private/ec_p384_private.pem`
 - `intermediateCA/certs/www.contoso.com.chain.cert.pem`
+
+Note that for consecutive runs, the script will not completely overwrite the existing key and cert files. It is recommended to either delete the existing files or modify the path to create the new files elsewhere.
 
 ## Run confcom
 
@@ -37,7 +37,7 @@ After completion, this will create the following files to be used in the confcom
 You may need to change the path to the chain and key files in the following command:
 
 ```bash
-az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --config ./samples/config.json --upload-fragment
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/config.json --upload-fragment
 ```
 
 After running the command, there will be the following files created:

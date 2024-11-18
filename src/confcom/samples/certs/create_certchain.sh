@@ -1,6 +1,8 @@
 # Following guide from: https://www.golinuxcloud.com/openssl-create-certificate-chain-linux/
+OriginalPath=`pwd`
 
-RootPath=/home/<your-username>/azure-cli-extensions/src/confcom/samples/certs
+RootPath=`realpath $(dirname $0)`
+cd $RootPath
 
 # create dirs for root CA
 mkdir -p $RootPath/rootCA/{certs,crl,newcerts,private,csr}
@@ -42,7 +44,7 @@ chmod 400 $RootPath/intermediateCA/private/intermediate.key.pem
 openssl req -config openssl_intermediate.cnf -key $RootPath/intermediateCA/private/intermediate.key.pem -new -sha256 -out $RootPath/intermediateCA/certs/intermediate.csr.pem -subj "/C=US/ST=Georgia/L=Atlanta/O=Microsoft/OU=ACCCT/CN=Intermediate CA"
 
 # sign intermediate cert with root
-openssl ca -config openssl_root.cnf -extensions v3_intermediate_ca -days 3650 -notext -md sha256 -in $RootPath/intermediateCA/certs/intermediate.csr.pem -out $RootPath/intermediateCA/certs/intermediate.cert.pem
+openssl ca -config openssl_root.cnf -extensions v3_intermediate_ca -days 3650 -notext -md sha256 -in $RootPath/intermediateCA/certs/intermediate.csr.pem -out $RootPath/intermediateCA/certs/intermediate.cert.pem -batch
 
 # make it readable by everyone
 chmod 444 $RootPath/intermediateCA/certs/intermediate.cert.pem
@@ -69,7 +71,7 @@ chmod 400 $RootPath/intermediateCA/private/www.contoso.com.key.pem
 openssl req -config openssl_intermediate.cnf -key $RootPath/intermediateCA/private/www.contoso.com.key.pem -new -sha384 -out $RootPath/intermediateCA/csr/www.contoso.com.csr.pem -batch
 
 # sign server cert with intermediate key
-openssl ca -config openssl_intermediate.cnf -extensions server_cert -days 375 -notext -md sha384 -in $RootPath/intermediateCA/csr/www.contoso.com.csr.pem -out $RootPath/intermediateCA/certs/www.contoso.com.cert.pem
+openssl ca -config openssl_intermediate.cnf -extensions server_cert -days 375 -notext -md sha384 -in $RootPath/intermediateCA/csr/www.contoso.com.csr.pem -out $RootPath/intermediateCA/certs/www.contoso.com.cert.pem -batch
 
 # print the cert
 # openssl x509 -noout -text -in $RootPath/intermediateCA/certs/www.contoso.com.cert.pem
@@ -79,3 +81,5 @@ openssl ca -config openssl_intermediate.cnf -extensions server_cert -days 375 -n
 
 # create chain file
 cat $RootPath/intermediateCA/certs/www.contoso.com.cert.pem $RootPath/intermediateCA/certs/intermediate.cert.pem $RootPath/rootCA/certs/ca.cert.pem > $RootPath/intermediateCA/certs/www.contoso.com.chain.cert.pem
+
+cd $OriginalPath

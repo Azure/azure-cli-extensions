@@ -78,6 +78,8 @@ def validate_fragment_generate_import(namespace):
                 "an image name to generate an import statement"
             )
         )
+    elif namespace.generate_import and namespace.output_filename:
+        raise CLIError("Cannot specify an output file (--output-filename) when generating an import statement. Use --fragments-json (-j) to write to a file.")
 
 
 def validate_fragment_namespace_and_svn(namespace):
