@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, record_only
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class AzureBillingRoleAssignmentsScenarioTest(ScenarioTest):
 	def test_read_roleassignments(self):
@@ -51,3 +52,49 @@ class AzureBillingRoleAssignmentsScenarioTest(ScenarioTest):
 		# get role assignment by invoice section
 		# role_assignment = self.cmd('billing role-assignment get-by-invoice-section --billing-account-name {account_name} --billing-profile-name {profile_name} --invoice-section-name {invoice_section_name} --billing-role-assignment-name {invoice_section_role_assignment_name}').get_output_in_json()
 		# self.assertTrue(role_assignment)
+
+class AzureEaBillingRoleAssignmentsScenarioTest(ScenarioTest):
+	# allow large response since pagination is not supported in role-assignment list-* calls from cli, so is $orderby
+	@AllowLargeResponse()
+	def test_ea_roleassignments_list_and_get(self):
+		self.kwargs.update({
+			'account_name': '6575495',
+			'department_name': '148446',
+			'enrollment_account_name': '261569'
+		})
+
+		# list by billing account
+		list_role_assignments_by_billing_account = self.cmd('billing role-assignment list-by-billing-account --billing-account-name {account_name}').get_output_in_json()
+		self.assertTrue(list_role_assignments_by_billing_account)
+
+		# get by billing account
+		billing_account_role_assignment_name = list_role_assignments_by_billing_account[0]['name']
+		self.kwargs.update({
+			'billing_account_role_assignment_name': billing_account_role_assignment_name
+		})
+		billing_account_role_assignment = self.cmd('billing role-assignment get-by-billing-account --billing-account-name {account_name} --billing-role-assignment-name {billing_account_role_assignment_name}').get_output_in_json()
+		self.assertTrue(billing_account_role_assignment)
+
+		# list by department
+		list_role_assignments_by_department = self.cmd('billing role-assignment list-by-department --billing-account-name {account_name} --department-name {department_name}').get_output_in_json()
+		self.assertTrue(list_role_assignments_by_department)
+
+		# get by department
+		department_role_assignment_name = list_role_assignments_by_department[0]['name']
+		self.kwargs.update({
+			'department_role_assignment_name': department_role_assignment_name
+		})
+		department_role_assignment = self.cmd('billing role-assignment get-by-department --billing-account-name {account_name} --department-name {department_name} --billing-role-assignment-name {department_role_assignment_name}').get_output_in_json()
+		self.assertTrue(department_role_assignment)
+
+		# list by enrollment account
+		list_role_assignments_by_enrollment_account = self.cmd('billing role-assignment list-by-enrollment-account --billing-account-name {account_name}  --enrollment-account-name {enrollment_account_name}').get_output_in_json()
+		self.assertTrue(list_role_assignments_by_enrollment_account)
+
+		# get by enrollment account
+		enrollment_account_role_assignment_name = list_role_assignments_by_enrollment_account[0]['name']
+		self.kwargs.update({
+			'enrollment_account_role_assignment_name': enrollment_account_role_assignment_name
+		})
+		enrollment_account_role_assignment = self.cmd('billing role-assignment get-by-enrollment-account --billing-account-name {account_name} --enrollment-account-name {enrollment_account_name} --billing-role-assignment-name {enrollment_account_role_assignment_name}').get_output_in_json()
+		self.assertTrue(enrollment_account_role_assignment)
