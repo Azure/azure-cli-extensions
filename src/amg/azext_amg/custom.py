@@ -720,6 +720,8 @@ def create_service_account_token(cmd, grafana_name, service_account, token, time
 
     if time_to_live:
         data['secondsToLive'] = _convert_duration_to_seconds(time_to_live)
+    else:
+        data['secondsToLive'] = _convert_duration_to_seconds("1d")
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post",
                              "/api/serviceaccounts/" + service_account_id + '/tokens', data)
