@@ -20,7 +20,6 @@ from azure.cli.core.azclierror import (
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from decimal import Decimal
 from knack.log import get_logger
-import warnings
 
 from .models import IdentityType, AllowedFileTypes
 
@@ -373,10 +372,10 @@ def convert_yaml_to_test(data):
                 "errorRateTimeWindowInSeconds": time_window,
             }
     if (new_body.get("autoStopCriteria", {}).get("autoStopDisabled") is True):
-        warnings.warn("Auto stop is disabled. Error rate and time window will be ignored.", UserWarning)
-        warnings.warn(
-            "Auto stop is disabled. This can lead to incoming charges for an incorrectly configured test.",
-            UserWarning)
+        logger.warning(
+            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "This can lead to incoming charges for an incorrectly configured test."
+        )
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
@@ -520,10 +519,10 @@ def create_or_update_test_with_config(
         new_body["autoStopCriteria"] = body["autoStopCriteria"]
 
     if (new_body.get("autoStopCriteria", {}).get("autoStopDisabled") is True):
-        warnings.warn("Auto stop is disabled. Error rate and time window will be ignored.", UserWarning)
-        warnings.warn(
-            "Auto stop is disabled. This can lead to incoming charges for an incorrectly configured test.",
-            UserWarning)
+        logger.warning(
+            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "This can lead to incoming charges for an incorrectly configured test."
+        )
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
