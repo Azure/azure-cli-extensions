@@ -39,19 +39,6 @@ QIO_JOB = 1
 QIR_JOB = 2
 PASS_THROUGH_JOB = 3
 
-# Job States for the list function, as defined in JobScheduler/JobScheduler.Domain/Enum/JobState.cs
-job_state_code = {'None': '0',
-                  'TranslatingInput': '20',
-                  'Queued': '30',
-                  'Estimating': '35',
-                  'Executing': '40',
-                  'TranslatingOutput': '45',
-                  'Completed': '50',
-                  'Cancelling': '60',
-                  'CancellingTarget': '70',
-                  'Cancelled': '80',
-                  'Failed': '90'}
-
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
@@ -73,23 +60,19 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     query = _parse_pagination_param_values("JobType", query, job_type)
     query = _parse_pagination_param_values("ProviderId", query, provider_id)
     query = _parse_pagination_param_values("Target", query, target_id)
-    query = _parse_pagination_param_values("State", query, job_state_code.get(job_status))
-    # query = _parse_pagination_param_values("State", query, str(job_state_code.get(job_status)))
+    query = _parse_pagination_param_values("State", query, job_status)
 
     query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
     query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
     query = _parse_pagination_param_values("Name", query, job_name, "startswith")
 
+    if query == "":
+        query = None
+
     # Construct the orderby expression
     orderby_expression = orderby
     if orderby_expression is not None and order is not None:
         orderby_expression += " " + order
-
-    # >>>>>>>>>>>>>
-    # query = "State eq '50'"
-    # query = 'State eq "50"'
-    # <<<<<<<<<<<<<
-
 
     pagination_params = {'filter': query,
                          'skip': skip,

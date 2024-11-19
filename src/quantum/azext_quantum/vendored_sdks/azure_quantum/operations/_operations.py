@@ -96,7 +96,18 @@ def build_jobs_list_request(
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+    # DEBUG CODE ADDED:
+    # print()
+    # print("request params:  (From vendored_sdks\azure_quantum\operations\_operations.py)")
+    # print(_params)
+    # print()
+    httpRequest = HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+    print()
+    print("httpRequest:  (From vendored_sdks\azure_quantum\operations\_operations.py)")
+    print(httpRequest)
+    print()
+    return httpRequest
+    # return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_jobs_get_request(
