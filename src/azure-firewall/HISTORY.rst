@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.2.2
+++++++
+* `az network firewall create`: add support public-ip for vhub sku firewall
 
 1.2.1
 ++++++
