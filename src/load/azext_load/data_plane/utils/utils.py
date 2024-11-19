@@ -284,8 +284,8 @@ def convert_yaml_to_test(data):
     if "description" in data:
         new_body["description"] = data["description"]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-    if "keyvaultReferenceIdentityId" in data:
-        new_body["keyvaultReferenceIdentityId"] = data["keyvaultReferenceIdentityId"]
+    if "keyVaultReferenceIdentity" in data:
+        new_body["keyvaultReferenceIdentityId"] = data["keyVaultReferenceIdentity"]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
     if "subnetId" in data:
@@ -389,7 +389,7 @@ def create_or_update_test_with_config(
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
     elif yaml_test_body.get("keyvaultReferenceIdentityId") is not None:
         new_body["keyvaultReferenceIdentityId"] = yaml_test_body.get(
-            "keyVaultReferenceIdentity"
+            "keyvaultReferenceIdentityId"
         )
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
     else:

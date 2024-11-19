@@ -1094,3 +1094,125 @@ class LoadTestScenario(ScenarioTest):
         #     )
         # except Exception as e:
         #     assert "exceeds size limit of 50 MB" in str(e)
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_kvrefid(self, rg, load):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_KVREF_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", LoadTestConstants.CREATE_TEST_KVREF_ID),
+            JMESPathCheck(
+                "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
+            ),
+        ]
+        # Create load test from config file with keyvault reference id
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )
+
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_KVREF_ID,
+                "keyvault_reference_id": "null",
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "SystemAssigned"),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--keyvault-reference-id {keyvault_reference_id} ",
+            checks=checks,
+        )
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_splitcsv(self, rg, load):
+        # Create load test from config file with split csv true
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )
+        # Update test with split csv false
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "split_csv": LoadTestConstants.SPLIT_CSV_FALSE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", False),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--split-csv {split_csv} ",
+            checks=checks,
+        )
+        # Update test with split csv true
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--split-csv {split_csv} ",
+            checks=checks,
+        )
+        # Update test with split csv false using config file
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", False),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )

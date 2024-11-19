@@ -19,6 +19,7 @@ class LoadConstants:
     INVALID_ZIP_ARTIFACT_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config-with-zip-artifacts.yaml"
     )
+    LOAD_TEST_CONFIG_FILE_KVREFID = os.path.join(TEST_RESOURCES_DIR, r"config-with-kvrefid.yaml")
     TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
     ADDITIONAL_FILE = os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
@@ -87,6 +88,7 @@ class LoadTestConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     FILE_TEST_ID = "file-test-case"
+    CREATE_TEST_KVREF_ID = "create-testwithkvrefid-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"

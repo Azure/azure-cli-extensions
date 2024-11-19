@@ -56,8 +56,6 @@ def create_test(
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
-    if split_csv is None:
-        split_csv = False
     if load_test_config_file is None:
         body = create_or_update_test_without_config(
             test_id,
