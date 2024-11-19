@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.0.1
+++++++
+Updated parameter descriptions and examples for `az vm repair create`.
+
 2.0.0
 ++++++
 Changed default VM image to 2022-datacenter-smalldisk for better default security. 
