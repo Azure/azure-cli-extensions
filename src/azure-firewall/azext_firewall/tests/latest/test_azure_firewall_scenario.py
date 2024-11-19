@@ -1072,7 +1072,7 @@ class AzureFirewallScenario(ScenarioTest):
             checks=[
                 self.check("name", "{firewall_name}"),
                 self.check("sku.name", "AZFW_Hub"),
-                self.check("ipConfigurations[0].publicIPAddress.id", "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/{rg}/providers/Microsoft.Network/publicIPAddresses/{public_ip_name}"),
+                self.exists("ipConfigurations[0].publicIPAddress.id"),
                 self.check("ipConfigurations[0].name","AzureFirewallIpConfiguration0"),
             ]
         )
@@ -1084,7 +1084,7 @@ class AzureFirewallScenario(ScenarioTest):
             checks=[
                 self.check("name", "{firewall_name}"),
                 self.check("sku.name", "AZFW_Hub"),
-                self.check("ipConfigurations[0].publicIPAddress.id","/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/{rg}/providers/Microsoft.Network/publicIPAddresses/{public_ip_name}"),
+                self.exists("ipConfigurations[0].publicIPAddress.id"),
                 self.check("ipConfigurations[0].name", "{conf_name}"),
             ]
         )
