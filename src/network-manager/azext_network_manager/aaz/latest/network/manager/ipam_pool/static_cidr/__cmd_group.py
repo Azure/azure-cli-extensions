@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "network manager ipam-pool static-cidr",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage static cidr with network.

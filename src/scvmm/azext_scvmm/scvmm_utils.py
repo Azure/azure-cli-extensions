@@ -6,7 +6,7 @@
 from typing import Dict, Optional, Set
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from azext_scvmm.scvmm_constants import (
     EXTENDED_LOCATION_TYPE,
 )

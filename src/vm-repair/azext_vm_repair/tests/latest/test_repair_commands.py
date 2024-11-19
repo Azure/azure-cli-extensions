@@ -9,6 +9,9 @@ import pytest
 from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
 import json
 import re
+import uuid
+import secrets
+import string
 
 STATUS_SUCCESS = 'SUCCESS'
 

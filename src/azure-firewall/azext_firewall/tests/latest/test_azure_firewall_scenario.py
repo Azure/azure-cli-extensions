@@ -6,7 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIError
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -274,7 +274,7 @@ class AzureFirewallScenario(ScenarioTest):
         # self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         # self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
-        # with self.assertRaisesRegexp(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
+        # with self.assertRaisesRegex(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
         #     self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
@@ -1042,6 +1042,50 @@ class AzureFirewallScenario(ScenarioTest):
             checks=[
                 self.check("name", "{firewall_name}"),
                 self.check("sku.name", "AZFW_Hub")
+            ]
+        )
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_vhub_create_with_public_ip", location="westus")
+    def test_firewall_vhub_create_with_public_ip(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+            "vwan": self.create_random_name("vwan-", 12),
+            "vhub": self.create_random_name("vhub-", 12),
+        })
+
+        self.cmd("extension add -n virtual-wan")
+        self.cmd("network vwan create -n {vwan} -g {rg} --type Standard")
+        self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus --sku Standard')
+        self.cmd("network public-ip create -n {public_ip_name} -g {rg} --sku Standard")
+
+        with self.assertRaisesRegex(CLIError, "usage error: Cannot add both --public-ip-count and --public-ip at the same time."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --public-ip {public_ip_name} --public-ip-count 2")
+
+        with self.assertRaisesRegex(CLIError, "usage error: One of public-ip or public-ip-count should be provided for azure firewall on virtual hub."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --public-ip {public_ip_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub"),
+                self.exists("ipConfigurations[0].publicIPAddress.id"),
+                self.check("ipConfigurations[0].name","AzureFirewallIpConfiguration0"),
+            ]
+        )
+
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --public-ip {public_ip_name} --conf-name {conf_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub"),
+                self.exists("ipConfigurations[0].publicIPAddress.id"),
+                self.check("ipConfigurations[0].name", "{conf_name}"),
             ]
         )
 

@@ -13,7 +13,7 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
@@ -25,6 +25,7 @@ from .repair_utils import (
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
+    _fetch_compatible_windows_os_urn_v2,
     _fetch_run_script_map,
     _fetch_run_script_path,
     _process_ps_parameters,
@@ -48,7 +49,8 @@ from .repair_utils import (
     _select_distro_linux_Arm64,
     _fetch_vm_security_profile_parameters,
     _fetch_osdisk_security_profile_parameters,
-    _fetch_compatible_windows_os_urn_v2
+    _fetch_compatible_windows_os_urn_v2,
+    _make_public_ip_name
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
@@ -140,16 +142,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Setting the OS type to 'Windows'.  
             os_type = 'Windows'
   
-        # Setting up the base command to create the repair VM.  
-        if is_linux:  
-            # If the source VM's OS is Linux, the command includes a custom data script.  
+        # Set public IP address for repair VM
+        public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
+        
+        # Set up base create vm command
+        if is_linux:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip, cloud_init_script=_get_cloud_init_script())  
-        else:  
-            # If the source VM's OS is not Linux, the command does not include a custom data script.  
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name, cloud_init_script=_get_cloud_init_script())
+        else:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip)  
-  
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name)
+
         # Fetching the size of the repair VM.  
         sku = _fetch_compatible_sku(source_vm, enable_nested)  
         if not sku:  
@@ -649,6 +652,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
   
         # Set the overall command status to success  
         command.set_status_success()  
+
 
     except KeyboardInterrupt:
         command.error_stack_trace = traceback.format_exc()

@@ -3,6 +3,20 @@
 Release History
 ===============
 
+1.10.3
+++++++
+* Fixed linting and styling issues, and added type annotations.
+* Fixed the issue where the 'connectedk8s troubleshoot' command did not work when workload identity was not enabled on the cluster.
+* Fixed an issue where ArcAgentryConfigurations were unintentionally altered during updates that did not modify proxy settings
+
+1.10.2
+++++++
+* Update for disconnected environment scenario.
+
+1.10.1
+++++++
+* Fixed an issue where the proxy settings were not disabled when the 'disable_proxy' parameter was provided in the update command.
+
 1.10.0
 ++++++
 * Add support for Arc Gateway feature using '--gateway-resource-id' and '--disable-gateway' parameters.

@@ -293,6 +293,19 @@ ContainerAppsJob = {
     "tags": None
 }
 
+MaintenanceConfiguration = {
+    "name": "default",
+    "properties": {
+        "scheduledEntries": [
+            {
+                "weekDay": None,
+                "startHourUtc": None,
+                "durationHours": None
+            }
+        ]
+    }
+}
+
 SessionPool = {
     "location": None,
     "properties": {
@@ -308,13 +321,10 @@ SessionPool = {
 }
 
 SessionCodeInterpreterExecution = {
-    "properties": {
-        "identifier": None,
-        "codeInputType": None,
-        "executionType": None,
-        "code": None,
-        "timeoutInSeconds": None
-    }
+    "codeInputType": None,
+    "executionType": None,
+    "code": None,
+    "timeoutInSeconds": None
 }
 
 DaprComponentResiliency = {

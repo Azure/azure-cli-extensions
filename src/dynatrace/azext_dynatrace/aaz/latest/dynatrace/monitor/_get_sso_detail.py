@@ -200,4 +200,8 @@ class GetSsoDetail(AAZCommand):
             return cls._schema_on_200
 
 
+class _GetSsoDetailHelper:
+    """Helper class for GetSsoDetail"""
+
+
 __all__ = ["GetSsoDetail"]

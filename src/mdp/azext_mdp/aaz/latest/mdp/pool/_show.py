@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a pool
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-04-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-04-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
@@ -263,6 +262,21 @@ class Show(AAZCommand):
             disc_stateful.max_agent_lifetime = AAZStrType(
                 serialized_name="maxAgentLifetime",
             )
+
+            resource_predictions = cls._schema_on_200.properties.agent_profile.resource_predictions
+            resource_predictions.timezone = AAZStrType(
+                serialized_name="timeZone",
+            )
+
+            resource_predictions.days_data = AAZListType(
+                serialized_name="daysData",
+            )
+
+            days_data = cls._schema_on_200.properties.agent_profile.resource_predictions.days_data
+            days_data.Element = AAZDictType()
+
+            _element = cls._schema_on_200.properties.agent_profile.resource_predictions.days_data.Element
+            _element.Element = AAZIntType()
 
             fabric_profile = cls._schema_on_200.properties.fabric_profile
             fabric_profile.kind = AAZStrType(

@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -84,7 +84,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.install_azure_monitor_agent_enable_status = AAZStrArg(
-            options=["--install-azure-monitor-agent-enable-status", "-a"],
+            options=["-a", "--install-azure-monitor-agent-enable-status"],
             arg_group="DevBoxProvisioningSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -114,7 +114,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.microsoft_hosted_network_enable_status = AAZStrArg(
-            options=["--microsoft-hosted-network-enable-status", "-m"],
+            options=["-m", "--microsoft-hosted-network-enable-status"],
             arg_group="NetworkSettings",
             help="Indicates whether pools in this Dev Center can use Microsoft Hosted Networks. Defaults to Enabled if not set.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -124,7 +124,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.project_catalog_item_sync_enable_status = AAZStrArg(
-            options=["--project-catalog-item-sync-enable-status", "-c"],
+            options=["-c", "--project-catalog-item-sync-enable-status"],
             arg_group="ProjectCatalogSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -143,6 +143,16 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Resource Id of an associated Plan",
             is_preview=True,
+        )
+        _args_schema.restricted_resource_types = AAZListArg(
+            options=["-r", "--restricted-resource-types"],
+            arg_group="Properties",
+            help="Indicates the resource types that are restricted from being accessed by a project unless allowed by a project policy. Allowed values are \"Images\", \"AttachedNetworks\", and \"Skus\".",
+        )
+
+        restricted_resource_types = cls._args_schema.restricted_resource_types
+        restricted_resource_types.Element = AAZStrArg(
+            enum={"AttachedNetworks": "AttachedNetworks", "Images": "Images", "Skus": "Skus"},
         )
         return cls._args_schema
 
@@ -227,7 +237,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -273,6 +283,7 @@ class Create(AAZCommand):
                 properties.set_prop("networkSettings", AAZObjectType)
                 properties.set_prop("planId", AAZStrType, ".plan_id")
                 properties.set_prop("projectCatalogSettings", AAZObjectType)
+                properties.set_prop("restrictedResourceTypes", AAZListType, ".restricted_resource_types")
 
             dev_box_provisioning_settings = _builder.get(".properties.devBoxProvisioningSettings")
             if dev_box_provisioning_settings is not None:
@@ -285,6 +296,10 @@ class Create(AAZCommand):
             project_catalog_settings = _builder.get(".properties.projectCatalogSettings")
             if project_catalog_settings is not None:
                 project_catalog_settings.set_prop("catalogItemSyncEnableStatus", AAZStrType, ".project_catalog_item_sync_enable_status")
+
+            restricted_resource_types = _builder.get(".properties.restrictedResourceTypes")
+            if restricted_resource_types is not None:
+                restricted_resource_types.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -386,6 +401,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.restricted_resource_types = AAZListType(
+                serialized_name="restrictedResourceTypes",
+            )
 
             dev_box_provisioning_settings = cls._schema_on_200_201.properties.dev_box_provisioning_settings
             dev_box_provisioning_settings.install_azure_monitor_agent_enable_status = AAZStrType(
@@ -425,6 +443,9 @@ class Create(AAZCommand):
             project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
                 serialized_name="catalogItemSyncEnableStatus",
             )
+
+            restricted_resource_types = cls._schema_on_200_201.properties.restricted_resource_types
+            restricted_resource_types.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
