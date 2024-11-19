@@ -67,6 +67,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The log categories to enable in the NSP logging configuration.",
         )
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
+            arg_group="Properties",
+            help="The version of the NSP logging configuration.",
+        )
 
         enabled_log_categories = cls._args_schema.enabled_log_categories
         enabled_log_categories.Element = AAZStrArg()
@@ -166,12 +171,12 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".logging_configuration_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("enabledLogCategories", AAZListType, ".enabled_log_categories")
+                properties.set_prop("version", AAZStrType, ".version")
 
             enabled_log_categories = _builder.get(".properties.enabledLogCategories")
             if enabled_log_categories is not None:
@@ -197,15 +202,25 @@ class Create(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.name = AAZStrType()
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
             properties.enabled_log_categories = AAZListType(
                 serialized_name="enabledLogCategories",
             )
+            properties.version = AAZStrType()
 
             enabled_log_categories = cls._schema_on_200.properties.enabled_log_categories
             enabled_log_categories.Element = AAZStrType()

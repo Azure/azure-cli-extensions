@@ -164,15 +164,25 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.name = AAZStrType()
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
             properties.enabled_log_categories = AAZListType(
                 serialized_name="enabledLogCategories",
             )
+            properties.version = AAZStrType()
 
             enabled_log_categories = cls._schema_on_200.properties.enabled_log_categories
             enabled_log_categories.Element = AAZStrType()

@@ -214,7 +214,7 @@ class NspScenario(ScenarioTest):
 
         # Show logging configuration and verify the enabled log categories
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\']")
+            self.check('properties.enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\']")
         ])
 
         # Update logging configuration
@@ -222,7 +222,7 @@ class NspScenario(ScenarioTest):
 
         # Show logging configuration and verify the updated enabled log categories
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']")
+            self.check('properties.enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']")
         ])
 
         # Delete logging configuration

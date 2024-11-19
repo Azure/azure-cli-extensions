@@ -72,6 +72,12 @@ class Update(AAZCommand):
             help="The log categories to enable in the NSP logging configuration.",
             nullable=True,
         )
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
+            arg_group="Properties",
+            help="The version of the NSP logging configuration.",
+            nullable=True,
+        )
 
         enabled_log_categories = cls._args_schema.enabled_log_categories
         enabled_log_categories.Element = AAZStrArg(
@@ -306,12 +312,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("name", AAZStrType, ".logging_configuration_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("enabledLogCategories", AAZListType, ".enabled_log_categories")
+                properties.set_prop("version", AAZStrType, ".version")
 
             enabled_log_categories = _builder.get(".properties.enabledLogCategories")
             if enabled_log_categories is not None:
@@ -336,28 +342,44 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_nsp_logging_configuration_read(cls, _schema):
         if cls._schema_nsp_logging_configuration_read is not None:
+            _schema.etag = cls._schema_nsp_logging_configuration_read.etag
+            _schema.id = cls._schema_nsp_logging_configuration_read.id
             _schema.name = cls._schema_nsp_logging_configuration_read.name
             _schema.properties = cls._schema_nsp_logging_configuration_read.properties
+            _schema.type = cls._schema_nsp_logging_configuration_read.type
             return
 
         cls._schema_nsp_logging_configuration_read = _schema_nsp_logging_configuration_read = AAZObjectType()
 
         nsp_logging_configuration_read = _schema_nsp_logging_configuration_read
-        nsp_logging_configuration_read.name = AAZStrType()
-        nsp_logging_configuration_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+        nsp_logging_configuration_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_logging_configuration_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_logging_configuration_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_logging_configuration_read.properties = AAZObjectType()
+        nsp_logging_configuration_read.type = AAZStrType(
+            flags={"read_only": True},
         )
 
         properties = _schema_nsp_logging_configuration_read.properties
         properties.enabled_log_categories = AAZListType(
             serialized_name="enabledLogCategories",
         )
+        properties.version = AAZStrType()
 
         enabled_log_categories = _schema_nsp_logging_configuration_read.properties.enabled_log_categories
         enabled_log_categories.Element = AAZStrType()
 
+        _schema.etag = cls._schema_nsp_logging_configuration_read.etag
+        _schema.id = cls._schema_nsp_logging_configuration_read.id
         _schema.name = cls._schema_nsp_logging_configuration_read.name
         _schema.properties = cls._schema_nsp_logging_configuration_read.properties
+        _schema.type = cls._schema_nsp_logging_configuration_read.type
 
 
 __all__ = ["Update"]
