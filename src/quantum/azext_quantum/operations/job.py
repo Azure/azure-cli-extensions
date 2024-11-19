@@ -40,17 +40,17 @@ QIR_JOB = 2
 PASS_THROUGH_JOB = 3
 
 # Job States for the list function, as defined in JobScheduler/JobScheduler.Domain/Enum/JobState.cs
-job_state_code = {'None': 0,
-                  'TranslatingInput': 20,
-                  'Queued': 30,
-                  'Estimating': 35,
-                  'Executing': 40,
-                  'TranslatingOutput': 45,
-                  'Completed': 50,
-                  'Cancelling': 60,
-                  'CancellingTarget': 70,
-                  'Cancelled': 80,
-                  'Failed': 90}
+job_state_code = {'None': '0',
+                  'TranslatingInput': '20',
+                  'Queued': '30',
+                  'Estimating': '35',
+                  'Executing': '40',
+                  'TranslatingOutput': '45',
+                  'Completed': '50',
+                  'Cancelling': '60',
+                  'CancellingTarget': '70',
+                  'Cancelled': '80',
+                  'Failed': '90'}
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -74,6 +74,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     query = _parse_pagination_param_values("ProviderId", query, provider_id)
     query = _parse_pagination_param_values("Target", query, target_id)
     query = _parse_pagination_param_values("State", query, job_state_code.get(job_status))
+    # query = _parse_pagination_param_values("State", query, str(job_state_code.get(job_status)))
 
     query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
     query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
@@ -83,14 +84,27 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     orderby_expression = orderby
     if orderby_expression is not None and order is not None:
         orderby_expression += " " + order
-  
+
+    # >>>>>>>>>>>>>
+    # query = "State eq '50'"
+    # query = 'State eq "50"'
+    # <<<<<<<<<<<<<
+
+
     pagination_params = {'filter': query,
                          'skip': skip,
                          'top': jobs_per_page,
                          'orderby': orderby_expression}
 
-    return client.list(info.location, pagination_params)
+    # FOR DEV TESTING
+    print()
+    print("pagination_params =")
+    print(pagination_params)
+    print()
+    # return
 
+    return client.list(info.location, **pagination_params)
+  
     # # FOR DEV TESTING (Comment-out the "return" above)
     # print()
     # print("query = " + query)
@@ -106,12 +120,21 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
         if len(query) > 0:
             query += " and "
 
+        # Special handling of --job-name
         if param_name == "Name":
             query += logic_operator + "(Name, '" + raw_values + "')"
+            # query += logic_operator + "(Name, \"" + raw_values + "\")"
             return query
 
+        # Special handling of --status
         if isinstance(raw_values, int):
             query += param_name + " eq " + str(raw_values)
+
+            print()
+            print("query =")
+            print(query)
+            print()
+
             return query
 
         if logic_operator is None:
@@ -489,7 +512,7 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    job = client.get(info.location, job_id)
     return job
 
 
