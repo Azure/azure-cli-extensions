@@ -2,14 +2,23 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
 import argparse
+from typing import Any
+
 from azure.cli.core.azclierror import ArgumentUsageError
 
 
 # pylint: disable=protected-access, too-few-public-methods
 class AddConfigurationSettings(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        namespace: argparse.Namespace,
+        values: Any,
+        option_string: str | None = None,
+    ) -> None:
         config_settings = getattr(namespace, self.dest, None)
         if config_settings is None:
             config_settings = {}
@@ -25,16 +34,21 @@ class AddConfigurationSettings(argparse._AppendAction):
                 config_settings[feature][setting] = value
             except ValueError as ex:
                 raise ArgumentUsageError(
-                    "Usage error: {} configuration_setting_key=configuration_setting_value".format(
-                        option_string
-                    )
+                    f"Usage error: {option_string} "
+                    "configuration_setting_key=configuration_setting_value"
                 ) from ex
         setattr(namespace, self.dest, config_settings)
 
 
 # pylint: disable=protected-access, too-few-public-methods
 class AddConfigurationProtectedSettings(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        namespace: argparse.Namespace,
+        values: Any,
+        option_string: str | None = None,
+    ) -> None:
         prot_settings = getattr(namespace, self.dest, None)
         if prot_settings is None:
             prot_settings = {}
@@ -50,7 +64,7 @@ class AddConfigurationProtectedSettings(argparse._AppendAction):
                 prot_settings[feature][setting] = value
             except ValueError as ex:
                 raise ArgumentUsageError(
-                    "Usage error: {} configuration_protected_setting_key="
-                    "configuration_protected_setting_value".format(option_string)
+                    f"Usage error: {option_string} configuration_protected_setting_key="
+                    "configuration_protected_setting_value"
                 ) from ex
         setattr(namespace, self.dest, prot_settings)

@@ -1,11 +1,12 @@
-# coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
-from knack.help_files import helps  # pylint: disable=unused-import
+from knack.help_files import helps
 
+__all__ = ["helps"]
 
 helps["connectedk8s"] = """
     type: group
