@@ -88,11 +88,89 @@ from .custom import (
     ScheduleShow,
     ScheduleUpdate,
     ScheduleWait,
+    ImageDefinitionList,
+    ImageDefinitionShow,
+    ImageDefinitionBuildImage,
+    ImageDefinitionBuildList,
+    ImageDefinitionBuildShow,
+    ImageDefinitionBuildCancel,
+    ImageDefinitionBuildGetDetail,
+    ProjectImageList,
+    ProjectImageShow,
+    ProjectImageVersionList,
+    ProjectImageVersionShow,
+    ProjectPolicyList,
+    ProjectPolicyShow,
+    ProjectPolicyCreate,
+    ProjectPolicyUpdate,
+    ProjectPolicyDelete,
+    ProjectPolicyWait,
+    ProjectSkuList,
 )
 
 
 def load_command_table(self, _):
     # Control plane
+    self.command_table["devcenter admin image-definition list"] = (
+        ImageDefinitionList(loader=self)
+    )
+    self.command_table["devcenter admin image-definition show"] = (
+        ImageDefinitionShow(loader=self)
+    )
+    self.command_table["devcenter admin image-definition build-image"] = (
+        ImageDefinitionBuildImage(loader=self)
+    )
+
+    self.command_table["devcenter admin image-definition-build list"] = (
+        ImageDefinitionBuildList(loader=self)
+    )
+    self.command_table["devcenter admin image-definition-build show"] = (
+        ImageDefinitionBuildShow(loader=self)
+    )
+    self.command_table["devcenter admin image-definition-build cancel"] = (
+        ImageDefinitionBuildCancel(loader=self)
+    )
+    self.command_table["devcenter admin image-definition-build get-build-detail"] = (
+        ImageDefinitionBuildGetDetail(loader=self)
+    )
+
+    self.command_table["devcenter admin project-image list"] = (
+        ProjectImageList(loader=self)
+    )
+    self.command_table["devcenter admin project-image show"] = (
+        ProjectImageShow(loader=self)
+    )
+
+    self.command_table["devcenter admin project-image-version list"] = (
+        ProjectImageVersionList(loader=self)
+    )
+    self.command_table["devcenter admin project-image-version show"] = (
+        ProjectImageVersionShow(loader=self)
+    )
+
+    self.command_table["devcenter admin project-policy create"] = (
+        ProjectPolicyCreate(loader=self)
+    )
+    self.command_table["devcenter admin project-policy delete"] = (
+        ProjectPolicyDelete(loader=self)
+    )
+    self.command_table["devcenter admin project-policy list"] = (
+        ProjectPolicyList(loader=self)
+    )
+    self.command_table["devcenter admin project-policy show"] = (
+        ProjectPolicyShow(loader=self)
+    )
+    self.command_table["devcenter admin project-policy update"] = (
+        ProjectPolicyUpdate(loader=self)
+    )
+    self.command_table["devcenter admin project-policy wait"] = (
+        ProjectPolicyWait(loader=self)
+    )
+
+    self.command_table["devcenter admin project-sku list"] = (
+        ProjectSkuList(loader=self)
+    )
+
     self.command_table["devcenter admin attached-network create"] = (
         AttachedNetworkCreate(loader=self)
     )

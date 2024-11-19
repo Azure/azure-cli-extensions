@@ -1,0 +1,48 @@
+{
+    "version": "1.0",
+    "fragments": [
+        {
+            "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
+            "feed": "contoso.azurecr.io/infra",
+            "minimum_svn": "1",
+            "includes": [
+                "containers"
+            ]
+        }
+    ],
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8",
+                "execProcesses": [
+                    {
+                        "command": [
+                            "echo",
+                            "Hello World"
+                        ]
+                    }
+                ],
+                "volumeMounts": [
+                    {
+                        "name": "azurefile",
+                        "mountPath": "/mount/azurefile",
+                        "mountType": "azureFile",
+                        "readOnly": true
+                    }
+                ],
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ]
+            }
+        }
+    ]
+}
