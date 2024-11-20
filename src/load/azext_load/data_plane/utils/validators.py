@@ -451,10 +451,15 @@ def _validate_autostop_disable_configfile(autostop):
 
 
 def _validate_autostop_criteria_configfile(error_rate, time_window):
-    if error_rate is not None and ((isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0)) or (isinstance(error_rate, int) and (error_rate < 0 or error_rate > 100))):
-        raise InvalidArgumentValueError(
-            "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
-        )
+    if error_rate is not None:
+        if isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+        if isinstance(error_rate, int) and (error_rate < 0 or error_rate > 100):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
     if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
         raise InvalidArgumentValueError(
             "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"

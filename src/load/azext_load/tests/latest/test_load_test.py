@@ -496,7 +496,7 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
-        # Update load test with CLI autostop criteria disabled true when different
+        # Update load test with CLI autostop criteria disabled true when
         # config file has autostop criteria and CLI argument is --autostop disable
         self.kwargs.update(
             {
