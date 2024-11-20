@@ -6,7 +6,7 @@
   },
   "workspaceFolder": "/workspaces",
   "onCreateCommand": "python -m venv venv",
-  "postCreateCommand": "cat azure-cli/.devcontainer/login.sh >> ~/.bashrc && cp azure-cli/.devcontainer/setup.sh easy_setup.sh && chmod +x easy_setup.sh",
+  "postCreateCommand": "REPO_NAME=$(basename $GITHUB_REPOSITORY) && cat $REPO_NAME/.devcontainer/login.sh >> ~/.bashrc && cp $REPO_NAME/.devcontainer/setup.sh easy_setup.sh && chmod +x easy_setup.sh",
   "hostRequirements": {
     "cpus": 16,
     "memory": "64gb",
