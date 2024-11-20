@@ -95,16 +95,29 @@ class Update(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
+
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -133,16 +146,19 @@ class Update(AAZCommand):
             options=["--cluster-service-principal"],
             arg_group="Properties",
             help="The service principal to be used by the cluster during Arc Appliance installation.",
+            nullable=True,
         )
         _args_schema.command_output_settings = AAZObjectArg(
             options=["--co-settings", "--command-output-settings"],
             arg_group="Properties",
             help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
+            nullable=True,
         )
         _args_schema.compute_deployment_threshold = AAZObjectArg(
             options=["--compute-deployment-threshold"],
             arg_group="Properties",
             help="The validation threshold indicating the allowable failures of compute machines during environment validation and deployment.",
+            nullable=True,
         )
         _args_schema.compute_rack_definitions = AAZListArg(
             options=["--compute-rack-definitions"],
@@ -153,16 +169,19 @@ class Update(AAZCommand):
             options=["--runtime-protection"],
             arg_group="Properties",
             help="The settings for cluster runtime protection.",
+            nullable=True,
         )
         _args_schema.secret_archive = AAZObjectArg(
             options=["--secret-archive"],
             arg_group="Properties",
             help="The configuration for use of a key vault to store secrets for later retrieval by the operator.",
+            nullable=True,
         )
         _args_schema.update_strategy = AAZObjectArg(
             options=["--update-strategy"],
             arg_group="Properties",
             help="The strategy for updating the cluster.",
+            nullable=True,
         )
 
         cluster_service_principal = cls._args_schema.cluster_service_principal
@@ -196,6 +215,7 @@ class Update(AAZCommand):
         command_output_settings.identity_resource_id = AAZResourceIdArg(
             options=["identity-resource-id"],
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
         )
         command_output_settings.container_url = AAZStrArg(
             options=["container-url"],
@@ -583,7 +603,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -591,22 +611,28 @@ class Update(AAZCommand):
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
 
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
+
             properties = _builder.get(".properties")
             if properties is not None:
                 _UpdateHelper._build_schema_rack_definition_update(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition"))
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
-                properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal")
-                properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings")
-                properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold")
+                properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal", typ_kwargs={"nullable": True})
+                properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings", typ_kwargs={"nullable": True})
+                properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold", typ_kwargs={"nullable": True})
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
-                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
-                properties.set_prop("secretArchive", AAZObjectType, ".secret_archive")
-                properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy")
+                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection", typ_kwargs={"nullable": True})
+                properties.set_prop("secretArchive", AAZObjectType, ".secret_archive", typ_kwargs={"nullable": True})
+                properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy", typ_kwargs={"nullable": True})
 
             cluster_service_principal = _builder.get(".properties.clusterServicePrincipal")
             if cluster_service_principal is not None:
@@ -623,7 +649,7 @@ class Update(AAZCommand):
             associated_identity = _builder.get(".properties.commandOutputSettings.associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
-                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
 
             compute_deployment_threshold = _builder.get(".properties.computeDeploymentThreshold")
             if compute_deployment_threshold is not None:
@@ -775,7 +801,7 @@ class _UpdateHelper:
         cluster_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        cluster_read.identity = AAZObjectType()
+        cluster_read.identity = AAZIdentityObjectType()
         cluster_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -1014,6 +1040,7 @@ class _UpdateHelper:
         )
         associated_identity.user_assigned_identity_resource_id = AAZStrType(
             serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
         )
 
         compute_deployment_threshold = _schema_cluster_read.properties.compute_deployment_threshold
