@@ -260,13 +260,13 @@ def parse_env(envs):
 def create_autostop_criteria_from_args(autostop, error_rate, time_window):
     if (autostop is None and error_rate is None and time_window is None):
         return None
-    autostopcriteria = {}
-    autostopcriteria["autoStopDisabled"] = not autostop if autostop is not None else False
+    autostop_criteria = {}
+    autostop_criteria["autoStopDisabled"] = not autostop if autostop is not None else False
     if error_rate is not None:
-        autostopcriteria["errorRate"] = error_rate
+        autostop_criteria["errorRate"] = error_rate
     if time_window is not None:
-        autostopcriteria["errorRateTimeWindowInSeconds"] = time_window
-    return autostopcriteria
+        autostop_criteria["errorRateTimeWindowInSeconds"] = time_window
+    return autostop_criteria
 
 
 def load_yaml(file_path):

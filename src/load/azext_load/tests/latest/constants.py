@@ -73,11 +73,11 @@ class LoadConstants:
     INVALID_SERVER_METRIC_ID = r"/subscriptions/invalid/resource/id"
 
     LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-1.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-2.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-1.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-2.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-3.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-error-rate.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-time-window.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-error-rate.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-time-window.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-random-string.yaml")
     AUTOSTOP_DISABLED = "disable"
     AUTOSTOP_ERROR_RATE = 77.5
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90

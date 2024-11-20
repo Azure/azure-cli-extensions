@@ -353,7 +353,7 @@ autostop_error_rate = CLIArgumentType(
     options_list=["--autostop-error-rate"],
     type=float,
     validator=validators.validate_autostop_error_rate,
-    help="Threshold percentage of errors on which test run should be automatically stopped. Allowed values are in range of 0.0-100.0",
+    help="Threshold percentage of errors on which test run should be automatically stopped. Allowed values are in range of [0.0,100.0]",
 )
 
 autostop_error_rate_time_window = CLIArgumentType(

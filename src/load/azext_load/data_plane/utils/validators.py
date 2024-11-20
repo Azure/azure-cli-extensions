@@ -439,7 +439,7 @@ def validate_autostop_error_rate(namespace):
         )
     if namespace.autostop_error_rate < 0.0 or namespace.autostop_error_rate > 100.0:
         raise InvalidArgumentValueError(
-            "Autostop error rate should be in range of 0.0-100.0"
+            "Autostop error rate should be in range of [0.0,100.0]"
         )
 
 

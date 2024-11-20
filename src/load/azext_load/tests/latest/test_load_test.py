@@ -364,7 +364,7 @@ class LoadTestScenario(ScenarioTest):
             JMESPathCheck("autoStopCriteria.errorRate", 90.0),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 60),
         ]
-        # Create load test with autostop disabled thru config file
+        # Create load test with autostop disabled through config file
         self.cmd(
             "az load test create "
             "--test-id {test_id} "
@@ -376,7 +376,7 @@ class LoadTestScenario(ScenarioTest):
             "--engine-instance {engine_instance} ",
             checks=checks,
         )
-        # Update load test with autostop criteria thru command line arguments
+        # Update load test with autostop criteria through command line arguments
         self.kwargs.update(
             {
                 "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE,
@@ -397,7 +397,7 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
-        # Update load test with autostop disabled thru command line arguments
+        # Update load test with autostop disabled through command line arguments
         self.kwargs.update(
             {
                 "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
@@ -416,7 +416,7 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
-        # Update load test with autostop criteria thru config file
+        # Update load test with autostop criteria through config file
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
@@ -435,7 +435,7 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
-        # Update load test with autostop criteria thru config file: only error rate
+        # Update load test with autostop criteria through config file: only error rate
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE,
@@ -454,7 +454,7 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
-        # Update load test with autostop criteria thru config file: only time window
+        # Update load test with autostop criteria through config file: only time window
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW,
@@ -562,7 +562,7 @@ class LoadTestScenario(ScenarioTest):
                 checks=checks,
             )
         except Exception as e:
-            assert "Autostop error rate should be in range of 0.0-100.0" in str(e)
+            assert "Autostop error rate should be in range of [0.0,100.0]" in str(e)
         # Invalid autostop test case: autostop error rate < 0.0
         self.kwargs.update({
                 "autostop_error_rate": -2.5,
@@ -577,7 +577,7 @@ class LoadTestScenario(ScenarioTest):
                 checks=checks,
             )
         except Exception as e:
-            assert "Autostop error rate should be in range of 0.0-100.0" in str(e)
+            assert "Autostop error rate should be in range of [0.0,100.0]" in str(e)
         # Invalid autostop test case: autostop error rate not of float type
         # This is not needed as the argument is type checked
         # argument --autostop-error-rate: invalid float value: 'rate'
