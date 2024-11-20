@@ -109,15 +109,9 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
             # query += logic_operator + "(Name, \"" + raw_values + "\")"
             return query
 
-        # Special handling of --status
-        if isinstance(raw_values, int):
-            query += param_name + " eq " + str(raw_values)
-
-            print()
-            print("query =")
-            print(query)
-            print()
-
+        # Special handling of --created-before and --created-after (No quotes around the date)
+        if param_name == "CreationTime":
+            query += "CreationTime " + logic_operator + " " + raw_values
             return query
 
         if logic_operator is None:
