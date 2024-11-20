@@ -1,5 +1,5 @@
-# Autostop criteria: both errorPercentage and timeWindow are provided
-displayName: CLI-Test-Autostop-Criteria
+# Invalid autstop criteria: errorPercentage is greater than 100
+displayName: CLI-Test
 testPlan: sample-JMX-file.jmx
 description: 'Test created from az load test command'
 engineInstances: 1
@@ -16,5 +16,5 @@ env:
     value: 1
 splitAllCSVs: True
 autoStop:
-  errorPercentage: 85
+  errorPercentage: 108.5
   timeWindow: 120

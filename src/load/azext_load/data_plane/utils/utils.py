@@ -18,7 +18,6 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
 )
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
-from decimal import Decimal
 from knack.log import get_logger
 
 from .models import IdentityType, AllowedFileTypes
@@ -261,11 +260,13 @@ def parse_env(envs):
 def create_autostop_criteria_from_args(autostop, error_rate, time_window):
     if (autostop is None and error_rate is None and time_window is None):
         return None
-    return {
-        "autoStopDisabled": not autostop if autostop is not None else False,
-        "errorRate": error_rate,
-        "errorRateTimeWindowInSeconds": time_window,
-    }
+    autostopcriteria = {}
+    autostopcriteria["autoStopDisabled"] = not autostop if autostop is not None else False
+    if error_rate is not None:
+        autostopcriteria["errorRate"] = error_rate
+    if time_window is not None:
+        autostopcriteria["errorRateTimeWindowInSeconds"] = time_window
+    return autostopcriteria
 
 
 def load_yaml(file_path):
@@ -360,22 +361,21 @@ def convert_yaml_to_test(data):
                 ] = name
     if data.get("autoStop") is not None:
         if (isinstance(data["autoStop"], str)):
+            validators._validate_autostop_disable_configfile(data["autoStop"])
             new_body["autoStopCriteria"] = {
                 "autoStopDisabled": True,
             }
         else:
-            error_rate = data["autoStop"].get("errorPercentage", Decimal(90.0))
-            time_window = data["autoStop"].get("timeWindow", 60)
+            error_rate = data["autoStop"].get("errorPercentage")
+            time_window = data["autoStop"].get("timeWindow")
+            validators._validate_autostop_criteria_configfile(error_rate, time_window)
             new_body["autoStopCriteria"] = {
                 "autoStopDisabled": False,
-                "errorRate": error_rate,
-                "errorRateTimeWindowInSeconds": time_window,
             }
-    if (new_body.get("autoStopCriteria", {}).get("autoStopDisabled") is True):
-        logger.warning(
-            "Auto stop is disabled. Error rate and time window will be ignored. "
-            "This can lead to incoming charges for an incorrectly configured test."
-        )
+            if error_rate is not None:
+                new_body["autoStopCriteria"]["errorRate"] = error_rate
+            if time_window is not None:
+                new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = time_window
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
@@ -504,21 +504,22 @@ def create_or_update_test_with_config(
             "loadTestConfiguration"
         ]["splitAllCSVs"]
 
-    logger.debug("autostop_criteria: %s", autostop_criteria)
-    logger.debug("yaml_test_body: %s", yaml_test_body["autoStopCriteria"])
-
+    new_body["autoStopCriteria"] = {}
     if autostop_criteria is not None:
-        new_body["autoStopCriteria"] = {
-            "autoStopDisabled": autostop_criteria.get("autoStopDisabled", False),
-            "errorRate": autostop_criteria.get("errorRate", Decimal(90.0)),
-            "errorRateTimeWindowInSeconds": autostop_criteria.get("errorRateTimeWindowInSeconds", 60),
-        }
+        new_body["autoStopCriteria"] = autostop_criteria
     elif yaml_test_body.get("autoStopCriteria") is not None:
         new_body["autoStopCriteria"] = yaml_test_body["autoStopCriteria"]
-    elif body.get("autoStopCriteria") is not None:
-        new_body["autoStopCriteria"] = body["autoStopCriteria"]
+    if (new_body["autoStopCriteria"].get("autoStopDisabled") is None
+        and body.get("autoStopCriteria", {}).get("autoStopDisabled") is not None):
+        new_body["autoStopCriteria"]["autoStopDisabled"] = body.get("autoStopCriteria", {}).get("autoStopDisabled")
+    if (new_body["autoStopCriteria"].get("errorRate") is None
+        and body.get("autoStopCriteria", {}).get("errorRate") is not None):
+        new_body["autoStopCriteria"]["errorRate"] = body.get("autoStopCriteria", {}).get("errorRate")
+    if (new_body["autoStopCriteria"].get("errorRateTimeWindowInSeconds") is None
+        and body.get("autoStopCriteria", {}).get("errorRateTimeWindowInSeconds") is not None):
+        new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = body.get("autoStopCriteria", {}).get("errorRateTimeWindowInSeconds")
 
-    if (new_body.get("autoStopCriteria", {}).get("autoStopDisabled") is True):
+    if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
         logger.warning(
             "Auto stop is disabled. Error rate and time window will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
@@ -611,14 +612,23 @@ def create_or_update_test_without_config(
     if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
 
+    new_body["autoStopCriteria"] = {}
     if autostop_criteria is not None:
-        new_body["autoStopCriteria"] = {
-            "autoStopDisabled": autostop_criteria.get("autoStopDisabled", False),
-            "errorRate": autostop_criteria.get("errorRate", Decimal(90.0)),
-            "errorRateTimeWindowInSeconds": autostop_criteria.get("errorRateTimeWindowInSeconds", 60),
-        }
-    elif body.get("autoStopCriteria") is not None:
-        new_body["autoStopCriteria"] = body["autoStopCriteria"]
+        new_body["autoStopCriteria"] = autostop_criteria
+    if (new_body["autoStopCriteria"].get("autoStopDisabled") is None
+        and body.get("autoStopCriteria", {}).get("autoStopDisabled") is not None):
+        new_body["autoStopCriteria"]["autoStopDisabled"] = body.get("autoStopCriteria", {}).get("autoStopDisabled")
+    if (new_body["autoStopCriteria"].get("errorRate") is None
+        and body.get("autoStopCriteria", {}).get("errorRate") is not None):
+        new_body["autoStopCriteria"]["errorRate"] = body.get("autoStopCriteria", {}).get("errorRate")
+    if (new_body["autoStopCriteria"].get("errorRateTimeWindowInSeconds") is None
+        and body.get("autoStopCriteria", {}).get("errorRateTimeWindowInSeconds") is not None):
+        new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = body.get("autoStopCriteria", {}).get("errorRateTimeWindowInSeconds")
+    if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
+        logger.warning(
+            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "This can lead to incoming charges for an incorrectly configured test."
+        )
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body

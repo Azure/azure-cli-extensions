@@ -1,5 +1,5 @@
-# Autostop criteria: both errorPercentage and timeWindow are provided
-displayName: CLI-Test-Autostop-Criteria
+# Invalid autoStop criteria: autstop is random string
+displayName: CLI-Test
 testPlan: sample-JMX-file.jmx
 description: 'Test created from az load test command'
 engineInstances: 1
@@ -15,6 +15,4 @@ env:
   - name: 'rps'
     value: 1
 splitAllCSVs: True
-autoStop:
-  errorPercentage: 85
-  timeWindow: 120
+autoStop: random

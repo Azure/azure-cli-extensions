@@ -12,7 +12,6 @@ import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
-from decimal import Decimal
 
 from . import utils
 from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
@@ -425,20 +424,38 @@ def validate_autostop_error_rate_time_window(namespace):
         raise InvalidArgumentValueError(
             f"Invalid autostop-error-rate-time-window type: {type(namespace.autostop_error_rate_time_window)}"
         )
-    if namespace.autostop_error_rate_time_window < 1:
+    if namespace.autostop_error_rate_time_window < 0:
         raise InvalidArgumentValueError(
-            "Autostop error rate time window should be greater than 0"
+            "Autostop error rate time window should be greater than or equal to 0"
         )
 
 
 def validate_autostop_error_rate(namespace):
     if namespace.autostop_error_rate is None:
         return
-    if not isinstance(namespace.autostop_error_rate, Decimal):
+    if not isinstance(namespace.autostop_error_rate, float):
         raise InvalidArgumentValueError(
             f"Invalid autostop-error-rate type: {type(namespace.autostop_error_rate)}"
         )
     if namespace.autostop_error_rate < 0.0 or namespace.autostop_error_rate > 100.0:
         raise InvalidArgumentValueError(
             "Autostop error rate should be in range of 0.0-100.0"
+        )
+
+
+def _validate_autostop_disable_configfile(autostop):
+    if autostop.casefold() not in ["disable"]:
+        raise InvalidArgumentValueError(
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow"
+        )
+
+
+def _validate_autostop_criteria_configfile(error_rate, time_window):
+    if error_rate is not None and ((isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0)) or (isinstance(error_rate, int) and (error_rate < 0 or error_rate > 100))):
+        raise InvalidArgumentValueError(
+            "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+        )
+    if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
+        raise InvalidArgumentValueError(
+            "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
         )
