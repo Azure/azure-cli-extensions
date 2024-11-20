@@ -12,14 +12,14 @@ setup_repo() {
 
     if [ -d "$DIR_PATH" ]; then
         echo -e "\n${YELLOW}($DIR_NAME) Pulling the latest changes from upstream...${NC}"
-        cd "$DIR_PATH"
-        gh repo sync --source "$REPO"
-        cd /workspaces
     else
         echo -e "\n${GREEN}($DIR_NAME) Forking and cloning the repository...${NC}"
-        cd /workspaces
         gh repo fork "$REPO" --clone=true
     fi
+
+    cd "$DIR_PATH"
+    gh repo sync --source "$REPO"
+    cd /workspaces
 }
 
 SECONDS=0
