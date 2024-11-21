@@ -310,6 +310,10 @@ def convert_yaml_to_test(data):
             "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
         )
     if data.get("splitAllCSVs") is not None:
+        if not isinstance(data.get("splitAllCSVs"), bool):
+            raise InvalidArgumentValueError(
+                "Invalid value for splitAllCSVs. Allowed values are boolean true or false"
+            )
         new_body["loadTestConfiguration"]["splitAllCSVs"] = data.get("splitAllCSVs")
 
     if data.get("failureCriteria"):

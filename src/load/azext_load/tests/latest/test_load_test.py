@@ -1099,19 +1099,19 @@ class LoadTestScenario(ScenarioTest):
     @LoadTestResourcePreparer(**load_params)
     @StorageAccountPreparer(**sa_params)
     def test_load_test_kvrefid(self, rg, load):
+        # Create load test from config file with keyvault reference id
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.CREATE_TEST_KVREF_ID,
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
             }
         )
         checks = [
-            JMESPathCheck("testId", LoadTestConstants.CREATE_TEST_KVREF_ID),
+            JMESPathCheck("testId", LoadTestConstants.LOAD_TEST_KVREF_ID),
             JMESPathCheck(
                 "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
             ),
         ]
-        # Create load test from config file with keyvault reference id
         self.cmd(
             "az load test create "
             "--test-id {test_id} "
@@ -1120,10 +1120,10 @@ class LoadTestScenario(ScenarioTest):
             '--load-test-config-file "{load_test_config_file}" ',
             checks=checks,
         )
-
+        # Update test with keyvault reference id null using parameters
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.CREATE_TEST_KVREF_ID,
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
                 "keyvault_reference_id": "null",
             }
         )
@@ -1138,6 +1138,102 @@ class LoadTestScenario(ScenarioTest):
             "--keyvault-reference-id {keyvault_reference_id} ",
             checks=checks,
         )
+        # Update test with keyvault reference id using parameters
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": LoadTestConstants.KEYVAULT_REFERENCE_ID,
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "UserAssigned"),
+            JMESPathCheck(
+                "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
+            ),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--keyvault-reference-id {keyvault_reference_id} ",
+            checks=checks,
+        )
+        # Update test with keyvault reference id not provided in config file
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "SystemAssigned"),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update test with keyvault reference id using CLI arguments when
+        # both parameters and config file are provided
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": LoadTestConstants.KEYVAULT_REFERENCE_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "UserAssigned"),
+            JMESPathCheck(
+                "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
+            ),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--keyvault-reference-id {keyvault_reference_id} ",
+            checks=checks,
+        )
+        # Invalid test case for keyvault reference id
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": "Random",
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--keyvault-reference-id {keyvault_reference_id} ",
+            )
+        except Exception as e:
+            assert "(InvalidManagedIdentity)" in str(e)
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_INVALID_KVREFID,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+            )
+        except Exception as e:
+            assert "(InvalidManagedIdentity)" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -1146,7 +1242,7 @@ class LoadTestScenario(ScenarioTest):
         # Create load test from config file with split csv true
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
             }
         )
@@ -1162,10 +1258,10 @@ class LoadTestScenario(ScenarioTest):
             '--load-test-config-file "{load_test_config_file}" ',
             checks=checks,
         )
-        # Update test with split csv false
+        # Update test with split csv false from CLI arguments
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
                 "split_csv": LoadTestConstants.SPLIT_CSV_FALSE,
             }
         )
@@ -1180,10 +1276,10 @@ class LoadTestScenario(ScenarioTest):
             "--split-csv {split_csv} ",
             checks=checks,
         )
-        # Update test with split csv true
+        # Update test with split csv true from CLI arguments
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
                 "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
             }
         )
@@ -1201,8 +1297,8 @@ class LoadTestScenario(ScenarioTest):
         # Update test with split csv false using config file
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.CREATE_TEST_ID,
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_SPLITCSV_FALSE,
             }
         )
         checks = [
@@ -1216,3 +1312,57 @@ class LoadTestScenario(ScenarioTest):
             '--load-test-config-file "{load_test_config_file}" ',
             checks=checks,
         )
+        # Update test with split csv CLI parameter when
+        # both config file and CLI parameter are provided
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_SPLITCSV_FALSE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--split-csv {split_csv} ",
+            checks=checks,
+        )
+        # Invalid test case for split csv
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "split_csv": "Random",
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--split-csv {split_csv} ",
+            )
+        except Exception as e:
+            assert "Invalid split-csv value: Random. Allowed values: true, false, yes, no, y, n" in str(e)
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_INVALID_SPLITCSV,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+            )
+        except Exception as e:
+            assert "Invalid value for splitAllCSVs. Allowed values are boolean true or false" in str(e)
