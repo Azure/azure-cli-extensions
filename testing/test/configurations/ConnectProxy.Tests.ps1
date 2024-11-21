@@ -25,9 +25,33 @@ Describe 'Connectedk8s Proxy Scenario' {
     }
 
     It 'Connectedk8s proxy test with non-empty kubeconfig' {
-        $output = az connectedk8s proxy -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
-        Write-Host "Proxy Command Output: $output"
-        $? | Should -BeTrue
+        # Start the proxy command as a background job
+        $proxyJob = Start-Job -ScriptBlock {
+            param($ClusterName, $ResourceGroup)
+
+            # Capture output and errors
+            try {
+                $output = az connectedk8s proxy -n $ClusterName -g $ResourceGroup 2>&1
+                return @{ Success = $LASTEXITCODE -eq 0; Output = $output }
+            } catch {
+                return @{ Success = $false; Output = $_.Exception.Message }
+            }
+        } -ArgumentList $ENVCONFIG.arcClusterName, $ENVCONFIG.resourceGroup
+
+        # Wait for a certain amount of time (e.g., 20 seconds)
+        Start-Sleep -Seconds 20
+
+        # Retrieve the job output
+        $result = Receive-Job -Job $proxyJob
+        Stop-Job -Job $proxyJob
+        Remove-Job -Job $proxyJob
+
+        # Display the output
+        Write-Host "Proxy Command Output:"
+        Write-Host $result.Output
+
+        # Check if the command ran successfully
+        $result.Success | Should -Be $true
     }
 
     It "Delete the connected instance" {
