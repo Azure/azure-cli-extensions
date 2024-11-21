@@ -459,7 +459,7 @@ def load_arguments(self, _):
         c.argument('container',
                    help="The container name that the debug console will connect to. Default to the first container of first replica.")
         c.argument('replica',
-                   help="The name of the replica. List replicas with 'az containerapp replica list'. A replica may be not found when it's scaled to zero if there is no traffic to your app. Defaults to the first replica of 'az containerapp replica list'.")
+                   help="The name of the replica. List replicas with 'az containerapp replica list'. A replica may be not found when it's scaled to zero if there is no traffic to your app. Default to the first replica of 'az containerapp replica list'.")
         c.argument('revision',
                    help="The name of the container app revision. Default to the latest revision.")
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
