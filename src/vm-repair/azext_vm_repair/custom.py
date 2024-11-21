@@ -75,6 +75,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - distro: The Linux distribution to use for the repair VM. Default is 'ubuntu'.  
     - yes: If True, confirmation prompts will be skipped. Default is False.  
     - encrypt_recovery_key: The Bitlocker recovery key to use for encrypting the VM. Default is an empty string.  
+    - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard. 
     """  
     
     # A warning about a future breaking change.  
