@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.10.4
+++++++
+* Fixed the issue where the 'connectedk8s proxy' command would fail if the kubeconfig file was empty.
+
 1.10.3
 ++++++
 * Fixed linting and styling issues, and added type annotations.
