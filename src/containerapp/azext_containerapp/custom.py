@@ -3359,3 +3359,43 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
+
+
+def update_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name, yaml):
+    yaml_httprouteconfig = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_httprouteconfig, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    httprouteconfig_envelope = {}
+
+    httprouteconfig_envelope["properties"] = yaml_httprouteconfig
+
+    try:
+        return ManagedEnvironmentPreviewClient.update_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_httprouteconfigs(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return ManagedEnvironmentPreviewClient.list_httprouteconfigs(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return ManagedEnvironmentPreviewClient.show_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return ManagedEnvironmentPreviewClient.delete_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name)
+    except Exception as e:
+        handle_raw_exception(e)
