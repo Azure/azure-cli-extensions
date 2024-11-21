@@ -1,9 +1,12 @@
-from im.orchestrator import Orchestrator
+import asyncio
+
+from .controller.rule_orchestrator import Orchestrator
 
 
-def main():
-    Orchestrator().run("dns")
-
+async def main():
+    orchestrator = Orchestrator()
+    await orchestrator.run("dns")
+    return
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
