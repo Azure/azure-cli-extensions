@@ -1,6 +1,6 @@
 Release History
 ===============
-2.0.0b1
+1.0.0b2
 ++++++
 * Changed to 2024 API version, fixes Disable API to track "properties". Essentially return to 2018 format
 
