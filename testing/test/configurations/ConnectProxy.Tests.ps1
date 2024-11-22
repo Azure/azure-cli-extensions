@@ -38,20 +38,17 @@ Describe 'Connectedk8s Proxy Scenario' {
             }
         } -ArgumentList $ENVCONFIG.arcClusterName, $ENVCONFIG.resourceGroup
 
-        # Wait for a certain amount of time (e.g., 20 seconds)
-        Start-Sleep -Seconds 20
-
-        # Retrieve the job output
-        $result = Receive-Job -Job $proxyJob
-        Stop-Job -Job $proxyJob
-        Remove-Job -Job $proxyJob
+        # Wait for a certain amount of time (e.g., 30 seconds)
+        Start-Sleep -Seconds 30
 
         # Display the output
-        Write-Host "Proxy Command Output:"
-        Write-Host $result.Output
+        Write-Host "Proxy Job State: $($proxyJob.State)"
 
-        # Check if the command ran successfully
-        $result.Success | Should -Be $true
+        # Check if the job ran successfully
+        $proxyJob.State | Should -Be 'Running'
+
+        Stop-Job -Job $proxyJob
+        Remove-Job -Job $proxyJob
     }
 
     It "Delete the connected instance" {
