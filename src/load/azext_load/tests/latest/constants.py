@@ -80,6 +80,7 @@ class LoadConstants:
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-random-string.yaml")
     AUTOSTOP_DISABLED = "disable"
     AUTOSTOP_ERROR_RATE = 77.5
+    AUTOSTOP_ERROR_RATE_INTEGER = 75
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
 
 

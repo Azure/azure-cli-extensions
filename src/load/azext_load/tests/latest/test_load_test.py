@@ -397,7 +397,29 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
+        # Update load test with autostop criteria when error rate is integer
+        # Order of this test case is important as response payload is checked in next test case
+        self.kwargs.update(
+            {
+                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--autostop-error-rate {autostop_error_rate} '
+            '--autostop-time-window {autostop_error_rate_time_window} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
         # Update load test with autostop disabled through command line arguments
+        # Order of this test case is important as response payload is checked from previous test case
         self.kwargs.update(
             {
                 "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
@@ -405,7 +427,7 @@ class LoadTestScenario(ScenarioTest):
         )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
-            JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
+            JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
         ]
         self.cmd(
@@ -417,6 +439,7 @@ class LoadTestScenario(ScenarioTest):
             checks=checks,
         )
         # Update load test with autostop criteria through config file
+        # Order of this test case is important as response payload for time-window is checked in next test case
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
@@ -436,6 +459,8 @@ class LoadTestScenario(ScenarioTest):
             checks=checks,
         )
         # Update load test with autostop criteria through config file: only error rate
+        # Order of this test case is important as response payload for time-window is checked from previous test case
+        # Order of this test case is important as response payload for error-rate is checked in next test case
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE,
@@ -455,6 +480,7 @@ class LoadTestScenario(ScenarioTest):
             checks=checks,
         )
         # Update load test with autostop criteria through config file: only time window
+        # Order of this test case is important as response payload for error-rate is checked from previous test case
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW,
