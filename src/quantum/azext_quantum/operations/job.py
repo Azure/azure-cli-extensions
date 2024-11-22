@@ -242,7 +242,8 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
 
     knack_logger.warning("Uploading input data...")
     try:
-        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, False)
+        # blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, False)
+        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, True)
     except Exception as e:
         # Unexplained behavior:
         #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
