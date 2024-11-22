@@ -659,10 +659,24 @@ def _process_bash_parameters(parameters):
     Returns a bash script formatted parameter string from a list of parameters.
     Example: [param1=1, param2=2] => 1 2
     """
+    # param_string = ''
+    # for param in parameters:
+    #     if '=' in param:
+    #         param = param.split('=', 1)[1]
+    #     param_string += '{p} '.format(p=param)
+
+    # return param_string.strip(' ')
     param_string = ''
+
     for param in parameters:
-        if '=' in param:
+        if param.startswith("++"):
+            # Retain the entire string after the `++` prefix
+            param = param[2:]
+        elif '=' in param:
+            # Split and keep only the value after `=`
             param = param.split('=', 1)[1]
+        # Ensure safe output for bash scripts
+        # param_string += f"{shlex.quote(param)} "
         param_string += '{p} '.format(p=param)
 
     return param_string.strip(' ')
