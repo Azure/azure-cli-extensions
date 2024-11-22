@@ -11,6 +11,7 @@ Release History
 ++++++
 * Fixed linting and styling issues, and added type annotations.
 * Fixed the issue where the 'connectedk8s troubleshoot' command did not work when workload identity was not enabled on the cluster.
+* Fixed an issue where ArcAgentryConfigurations were unintentionally altered during updates that did not modify proxy settings
 
 1.10.2
 ++++++
