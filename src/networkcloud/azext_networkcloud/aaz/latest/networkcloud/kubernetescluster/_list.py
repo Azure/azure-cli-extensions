@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Kubernetes clusters in the provided subscription.
