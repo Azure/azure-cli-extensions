@@ -3368,8 +3368,8 @@ def merge_kubernetes_configurations(
                 break
         except (KeyError, TypeError):
             continue
-
-    if not existing:
+    
+    if existing is None:
         existing = addition
     else:
         handle_merge(existing, addition, "clusters", replace)
