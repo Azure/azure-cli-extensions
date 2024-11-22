@@ -34,7 +34,7 @@ ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-out
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 
-# Job Types for the submit function
+# Job types
 QIO_JOB = 1
 QIR_JOB = 2
 PASS_THROUGH_JOB = 3
