@@ -5,7 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
-* 'az containerapp env httprouteconfig' Add comands for the httprouteconfig feature area.
+* 'az containerapp env httprouteconfig': Add comands for the httprouteconfig feature area.
 
 1.1.0b1
 ++++++
