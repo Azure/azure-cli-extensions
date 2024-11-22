@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.1.0
+++++++
+Fixed 2 Unbound variable bugs in `vm repair create` and improved the code documentation.  
+
 2.0.0
 ++++++
 Changed default VM image to 2022-datacenter-smalldisk for better default security. 
@@ -15,7 +19,6 @@ Fixed a bug with `--associate-public-ip` where it was always creating a public I
 ++++++
 Added script for GT fixit button.
 Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
-Fixed 2 Unbound variable bugs.  
 
 1.0.10
 ++++++
