@@ -3372,11 +3372,14 @@ def merge_kubernetes_configurations(
                 break
         except (KeyError, TypeError):
             continue
-
-    handle_merge(existing, addition, "clusters", replace)
-    handle_merge(existing, addition, "users", replace)
-    handle_merge(existing, addition, "contexts", replace)
-    existing["current-context"] = addition["current-context"]
+    
+    if existing is None:
+        existing = addition
+    else:
+        handle_merge(existing, addition, "clusters", replace)
+        handle_merge(existing, addition, "users", replace)
+        handle_merge(existing, addition, "contexts", replace)
+        existing["current-context"] = addition["current-context"]
 
     # check that ~/.kube/config is only read- and writable by its owner
     if platform.system() != "Windows":

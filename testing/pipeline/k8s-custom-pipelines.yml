@@ -48,6 +48,10 @@ stages:
     parameters:
       jobName: TroubleshootTest
       path: ./test/configurations/Troubleshoot.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: Connectedk8sProxyTest
+      path: ./test/configurations/ConnectProxy.Tests.ps1
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-20.04'
