@@ -1,6 +1,7 @@
 import asyncio
 
 from .controller.rule_orchestrator import Orchestrator
+from collections import namedtuple
 
 
 async def main():

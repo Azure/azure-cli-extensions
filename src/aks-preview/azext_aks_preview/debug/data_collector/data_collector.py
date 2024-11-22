@@ -1,5 +1,4 @@
 from typing import Dict
-from random import randint
 import asyncio
 from ..common.consts import DEBUG_TOOL_DIR
 from ..controller.tool_manager import ToolManager

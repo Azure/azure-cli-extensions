@@ -1,22 +1,22 @@
-from typing import Dict, List
+from typing import Dict, List, Type
 
-from ..common.types import DebugStep, ActionStep
+from ..common.types import DebugStep, ActionStep, StepBuilder
 from .knowledge_base_debug import DebugStepCoreDNSPodRunning, DebugStepCoreDNSConfigMapValid, DebugStepIGTraceDNSNode, DebugStepIGTraceDNSPod
 from .knowledge_base_action import NoActionStep, ActionStepPrompt
 
 
 class KnowledgeBase:
     def __init__(self) -> None:
-        self.debug_steps: Dict[str, DebugStep] = {
-            "DebugStepCoreDNSPodRunning": DebugStepCoreDNSPodRunning(),
-            "DebugStepCoreDNSConfigMapValid": DebugStepCoreDNSConfigMapValid(),
-            "DebugStepIGTraceDNSNode": DebugStepIGTraceDNSNode(),
-            "DebugStepIGTraceDNSPod": DebugStepIGTraceDNSPod(),
+        self.debug_steps: Dict[str, Type[DebugStep]] = {
+            "DebugStepCoreDNSPodRunning": DebugStepCoreDNSPodRunning,
+            "DebugStepCoreDNSConfigMapValid": DebugStepCoreDNSConfigMapValid,
+            "DebugStepIGTraceDNSNode": DebugStepIGTraceDNSNode,
+            "DebugStepIGTraceDNSPod": DebugStepIGTraceDNSPod,
         }
 
-    def get_debug_steps_by_scenario(self, scenario: str) -> List[DebugStep]:
-        results = []
+    def get_debug_steps_by_scenario(self, scenario: str) -> List[StepBuilder]:
+        results: List[StepBuilder] = []
         for v in self.debug_steps.values():
-            if scenario in v.applicable_scenarios:
-                results.append(v)
+            if scenario in v.entry_step_for_scenarios:
+                results.append(StepBuilder(v, {}))
         return results

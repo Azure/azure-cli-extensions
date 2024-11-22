@@ -1,31 +1,30 @@
 from __future__ import annotations
-from typing import List
+from typing import List, NamedTuple, Type, Any
 from ..controller.data_broker import DataBroker
-from datetime import datetime
+import json
 
 
 class Step:
     def __init__(self) -> None:
-        self.applicable_scenarios: List[str] = []
         self.summary: str = ""
-        self.next_steps: List[Step] = []
+        self.next_steps: List[StepBuilder] = []
 
     async def run(self) -> None:
         pass
 
-    def get_name(self) -> str:
-        return self.__class__.__name__ + datetime.now().strftime("%H%M%S")
-
     def get_summary(self) -> str:
         return self.summary
 
-    def get_next_steps(self) -> List[Step]:
+    def get_next_steps(self) -> List[StepBuilder]:
         return self.next_steps
 
 
 class DebugStep(Step):
-    def __init__(self) -> None:
+    entry_step_for_scenarios = []
+
+    def __init__(self, data=None) -> None:
         super().__init__()
+        self.data = data
         self.data_broker = None
 
     def attach_data_broker(self, data_broker: DataBroker) -> None:
@@ -33,5 +32,19 @@ class DebugStep(Step):
 
 
 class ActionStep(Step):
-    def __init__(self) -> None:
+    def __init__(self, data=None) -> None:
         super().__init__()
+        self.data = data
+
+
+class StepBuilder(NamedTuple):
+    cls: Type[Step]
+    data: Any
+
+    def get_identifier(self) -> str:
+        return self.cls.__name__ + json.dumps(self.data)
+
+
+class StepBundle(NamedTuple):
+    step: Step
+    builder: StepBuilder
