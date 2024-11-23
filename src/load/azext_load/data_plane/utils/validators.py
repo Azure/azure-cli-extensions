@@ -422,7 +422,7 @@ def validate_autostop_error_rate_time_window(namespace):
         return
     if not isinstance(namespace.autostop_error_rate_time_window, int):
         raise InvalidArgumentValueError(
-            f"Invalid autostop-error-rate-time-window type: {type(namespace.autostop_error_rate_time_window)}"
+            f"Invalid autostop-time-window type: {type(namespace.autostop_error_rate_time_window)}"
         )
     if namespace.autostop_error_rate_time_window < 0:
         raise InvalidArgumentValueError(
