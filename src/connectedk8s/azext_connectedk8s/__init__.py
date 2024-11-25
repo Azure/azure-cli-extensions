@@ -43,7 +43,7 @@ class Connectedk8sCommandsLoader(AzCommandsLoader):  # type: ignore[misc]
 COMMAND_LOADER_CLS = Connectedk8sCommandsLoader
 
 __all__ = [
-    "helps",
-    "Connectedk8sCommandsLoader",
     "COMMAND_LOADER_CLS",
+    "Connectedk8sCommandsLoader",
+    "helps",
 ]
