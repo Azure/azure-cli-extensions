@@ -17,7 +17,7 @@ setup_repo() {
         gh repo fork "$REPO" --clone=true
     fi
 
-    HEAD_BRANCH=$(git remote show upstream | grep "HEAD branch" | awk '{print $NF}')
+    HEAD_BRANCH=$(git -C "$DIR_PATH" remote show upstream | grep "HEAD branch" | awk '{print $NF}')
     git -C "$DIR_PATH" pull -r upstream "$HEAD_BRANCH"
 }
 
