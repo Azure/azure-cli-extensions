@@ -10,6 +10,6 @@ async def poll_helper(progress_hook: progress.ProgressHook, coro, hint: str) -> 
         if t.done():
             break
         progress_hook.add(message=hint)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(2)
     progress_hook.end()
     return t.result()

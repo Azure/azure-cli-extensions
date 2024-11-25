@@ -90,7 +90,7 @@ class InspektorGadgetDataCollector(DataCollector):
         if namespace:
             args.extend(["--namespace", namespace])
         if pod_name:
-            args.extend(["--pod", pod_name])
+            args.extend(["--podname", pod_name])
         if node_name:
             args.extend(["--node", node_name])
         if timeout:
