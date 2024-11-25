@@ -106,7 +106,8 @@ from ._clients import (
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient,
-    MaintenanceConfigPreviewClient
+    MaintenanceConfigPreviewClient,
+    HttpRouteConfigPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -3361,7 +3362,7 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
                 conn.send(SSH_CTRL_C_MSG)
 
 
-def update_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name, yaml):
+def update_httprouteconfig(cmd, resource_group_name, name, http_route_config_name, yaml):
     yaml_httprouteconfig = load_yaml_file(yaml)
     # check if the type is dict
     if not isinstance(yaml_httprouteconfig, dict):
@@ -3372,7 +3373,7 @@ def update_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name,
     httprouteconfig_envelope["properties"] = yaml_httprouteconfig
 
     try:
-        return ManagedEnvironmentPreviewClient.update_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope)
+        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, httprouteconfig_envelope)
     except Exception as e:
         handle_raw_exception(e)
 
@@ -3380,22 +3381,22 @@ def update_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name,
 def list_httprouteconfigs(cmd, resource_group_name, name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
-        return ManagedEnvironmentPreviewClient.list_httprouteconfigs(cmd, resource_group_name, name)
+        return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
     except Exception as e:
         handle_raw_exception(e)
 
 
-def show_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name):
+def show_httprouteconfig(cmd, resource_group_name, name, http_route_config_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
-        return ManagedEnvironmentPreviewClient.show_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name)
+        return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
     except Exception as e:
         handle_raw_exception(e)
 
 
-def delete_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name):
+def delete_httprouteconfig(cmd, resource_group_name, name, http_route_config_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
-        return ManagedEnvironmentPreviewClient.delete_httprouteconfig(cmd, resource_group_name, name, httprouteconfig_name)
+        return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
     except Exception as e:
         handle_raw_exception(e)

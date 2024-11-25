@@ -36,7 +36,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
         yaml_file = os.path.join(TEST_DIR, "./httprouteconfig1.yaml")
         route_name = "route1"
 
-        self.cmd("az containerapp env httprouteconfig create -g {} -n {} --httprouteconfig-name {} --yaml {}".format(resource_group, env_name, route_name, yaml_file), checks=[
+        self.cmd("az containerapp env http-route-config create -g {} -n {} -r {} --yaml {}".format(resource_group, env_name, route_name, yaml_file), checks=[
             JMESPathCheck('properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('properties.provisioningErrors[0].message', "Unable to retrieve container app app1 from cluster"),
             # Not deployed yet
@@ -46,7 +46,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('properties.rules[0].targets[0].containerApp', "app1"),
         ])
 
-        self.cmd("az containerapp env httprouteconfig show -g {} -n {} --httprouteconfig-name {}".format(resource_group, env_name, route_name), checks=[
+        self.cmd("az containerapp env http-route-config show -g {} -n {} -r {}".format(resource_group, env_name, route_name), checks=[
             JMESPathCheck('properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('properties.provisioningErrors[0].message', "Unable to retrieve container app app1 from cluster"),
             # Not deployed yet
@@ -56,7 +56,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('properties.rules[0].targets[0].containerApp', "app1"),
         ])
 
-        self.cmd("az containerapp env httprouteconfig list -g {} -n {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env http-route-config list -g {} -n {}".format(resource_group, env_name), checks=[
             JMESPathCheck('[0].properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('[0].properties.provisioningErrors[0].message', "Unable to retrieve container app app1 from cluster"),
             # Not deployed yet
@@ -68,7 +68,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
 
         yaml_file = os.path.join(TEST_DIR, "./httprouteconfig2.yaml")
 
-        self.cmd("az containerapp env httprouteconfig update -g {} -n {} --httprouteconfig-name {} --yaml {}".format(resource_group, env_name, route_name, yaml_file), checks=[
+        self.cmd("az containerapp env http-route-config update -g {} -n {} -r {} --yaml {}".format(resource_group, env_name, route_name, yaml_file), checks=[
             JMESPathCheck('properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('properties.provisioningErrors[0].message', "Unable to retrieve container app app2 from cluster"),
             # Not deployed yet
@@ -78,9 +78,9 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('properties.rules[0].targets[0].containerApp', "app2"),
         ])
 
-        self.cmd("az containerapp env httprouteconfig delete -g {} -n {} --httprouteconfig-name {} -y".format(resource_group, env_name, route_name))
+        self.cmd("az containerapp env http-route-config delete -g {} -n {} -r {} -y".format(resource_group, env_name, route_name))
 
-        self.cmd("az containerapp env httprouteconfig list -g {} -n {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env http-route-config list -g {} -n {}".format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
