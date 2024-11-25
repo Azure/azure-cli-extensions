@@ -2,7 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanImageAndSchedulePatchTask: cssc-scan-image
-    cssc : mcr.microsoft.com/acr/cssc:6d6906b
+    cssc : mcr.microsoft.com/acr/cssc:0995fb8
 steps:
   - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
@@ -25,10 +25,10 @@ steps:
         TagName=${array[2]}
         IncrementedTagNumber=""
         echo "Tag Convention details: $(cat tagConvention.txt)"
-        if grep -q "incremental" tagConvention.txt; then
-          IncrementedTagNumber="1"
-        else
+        if grep -q "floating" tagConvention.txt; then
           IncrementedTagNumber="patched"
+        else
+          IncrementedTagNumber="1"
         fi
 
         if [ $TagName == "N/A" ]; then

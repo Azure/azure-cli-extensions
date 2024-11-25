@@ -3,7 +3,7 @@ alias:
   values:
     patchimagetask: cssc-patch-image
     DATE: $(date "+%Y-%m-%d")
-    cssc : mcr.microsoft.com/acr/cssc:6d6906b
+    cssc : mcr.microsoft.com/acr/cssc:0995fb8
 steps:
   - id: print-inputs
     cmd: |
@@ -16,11 +16,12 @@ steps:
     cmd: |
       cssc trivy image \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
-      --vuln-type os \
+      --pkg-types os \
       --ignore-unfixed \
       --format json \
       --timeout 30m \
       --scanners vuln \
+      --db-repository "ghcr.io/aquasecurity/trivy-db:2","public.ecr.aws/aquasecurity/trivy-db" \
       --output /workspace/data/vulnerability-report_trivy_$DATE.json
 
   - cmd: cssc jq 'if .Results == null or (.Results | length) == 0 then 0 else [.Results[] | select(.Vulnerabilities != null) | .Vulnerabilities | length] | add end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt
