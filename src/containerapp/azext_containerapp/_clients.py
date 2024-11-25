@@ -46,6 +46,45 @@ class ContainerAppPreviewClient(ContainerAppClient):
     api_version = PREVIEW_API_VERSION
 
 
+class LabelHistoryPreviewClient:
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, name):
+        history_list = []
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/labelhistory?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        j = r.json()
+        for route in j["value"]:
+            history_list.append(route)
+        return history_list
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, name, label):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/labelhistory/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            label,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        return r.json()
+
+
 class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
     api_version = PREVIEW_API_VERSION
     LOG_STREAM_API_VERSION = "2023-11-02-preview"

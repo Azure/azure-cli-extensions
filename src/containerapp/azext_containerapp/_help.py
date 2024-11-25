@@ -2198,3 +2198,21 @@ helps['containerapp debug'] = """
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
 """
+
+helps['containerapp label-history list'] = """
+    type: command
+    short-summary: List the history for all labels on the Container App.
+    examples:
+    - name: List All Label History
+      text: |
+          az containerapp label-history list -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp label-history show'] = """
+    type: command
+    short-summary: Show the history for a specific label on the Container App.
+    examples:
+    - name: Show Label History
+      text: |
+          az containerapp label-history show -n my-containerapp -g MyResourceGroup -l LabelName
+"""

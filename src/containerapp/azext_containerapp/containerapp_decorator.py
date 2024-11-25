@@ -131,6 +131,9 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
     def get_argument_from_revision(self):
         return self.get_param("from_revision")
 
+    def get_argument_target_label(self):
+        return self.get_param("target_label")
+
     def validate_arguments(self):
         self.containerapp_def = None
         try:
@@ -447,10 +450,20 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
             self.new_containerapp["properties"]["template"]["revisionSuffix"] = None
 
+        if self.get_argument_revisions_mode():
+            self.new_containerapp["properties"]["configuration"] = {} if "configuration" not in self.new_containerapp[
+                "properties"] else self.new_containerapp["properties"]["configuration"]
+            self.new_containerapp["properties"]["configuration"]["activeRevisionsMode"] = self.get_argument_revisions_mode()
+
+        if self.get_argument_target_label():
+            self.new_containerapp["properties"]["configuration"] = {} if "configuration" not in self.new_containerapp[
+                "properties"] else self.new_containerapp["properties"]["configuration"]
+            self.new_containerapp["properties"]["configuration"]["targetLabel"] = self.get_argument_target_label()
+
     def set_up_update_containerapp_yaml(self, name, file_name):
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or \
                 self.get_argument_set_env_vars() or self.get_argument_remove_env_vars() or self.get_argument_replace_env_vars() or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or \
-                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags():
+                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags() or self.get_argument_revisions_mode() or self.get_argument_target_label():
             logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
@@ -664,6 +677,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_no_wait(self, no_wait):
         self.set_param("no_wait", no_wait)
 
+    def get_argument_target_label(self):
+        return self.get_param("target_label")
+
     # not craete role assignment if it's env system msi
     def check_create_acrpull_role_assignment(self):
         identity = self.get_argument_registry_identity()
@@ -797,6 +813,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         config_def = deepcopy(ConfigurationModel)
         config_def["secrets"] = secrets_def
         config_def["activeRevisionsMode"] = self.get_argument_revisions_mode()
+        config_def["targetLabel"] = self.get_argument_target_label()
         config_def["ingress"] = ingress_def
         config_def["registries"] = [registries_def] if registries_def is not None else None
         config_def["dapr"] = dapr_def
@@ -1119,7 +1136,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_target_port() or self.get_argument_ingress() or \
                 self.get_argument_revisions_mode() or self.get_argument_secrets() or self.get_argument_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_registry_server() or \
                 self.get_argument_registry_user() or self.get_argument_registry_pass() or self.get_argument_dapr_enabled() or self.get_argument_dapr_app_port() or self.get_argument_dapr_app_id() or \
-                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags():
+                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags() or self.get_argument_target_label():
             not self.get_argument_disable_warnings() and logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
 

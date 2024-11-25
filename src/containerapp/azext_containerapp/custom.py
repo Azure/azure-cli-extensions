@@ -106,7 +106,8 @@ from ._clients import (
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient,
-    MaintenanceConfigPreviewClient
+    MaintenanceConfigPreviewClient,
+    LabelHistoryPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -445,7 +446,8 @@ def create_containerapp(cmd,
                         transport="auto",
                         ingress=None,
                         allow_insecure=False,
-                        revisions_mode="single",
+                        revisions_mode=None,
+                        target_label=None,
                         secrets=None,
                         env_vars=None,
                         cpu=None,
@@ -530,6 +532,8 @@ def update_containerapp_logic(cmd,
                               remove_env_vars=None,
                               replace_env_vars=None,
                               remove_all_env_vars=False,
+                              revisions_mode=None,
+                              target_label=None,
                               cpu=None,
                               memory=None,
                               revision_suffix=None,
@@ -596,6 +600,8 @@ def update_containerapp(cmd,
                         remove_env_vars=None,
                         replace_env_vars=None,
                         remove_all_env_vars=False,
+                        revisions_mode=None,
+                        target_label=None,
                         cpu=None,
                         memory=None,
                         revision_suffix=None,
@@ -636,6 +642,8 @@ def update_containerapp(cmd,
                                      remove_env_vars=remove_env_vars,
                                      replace_env_vars=replace_env_vars,
                                      remove_all_env_vars=remove_all_env_vars,
+                                     revisions_mode=revisions_mode,
+                                     target_label=target_label,
                                      cpu=cpu,
                                      memory=memory,
                                      revision_suffix=revision_suffix,
@@ -1201,6 +1209,8 @@ def containerapp_up(cmd,
                     build_env_vars=None,
                     ingress=None,
                     target_port=None,
+                    revisions_mode=None,
+                    target_label=None,
                     registry_user=None,
                     registry_pass=None,
                     env_vars=None,
@@ -1256,9 +1266,9 @@ def containerapp_up(cmd,
         target_port = 80 if not target_port else target_port
 
     if image:
-        if ingress and not target_port:
-            target_port = 80
-            logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
+        if ingress and not target_port and target_port != 0:
+            target_port = 0
+            logger.warning("No target-port provided, defaulting to auto-detect. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
     # Check if source contains a Dockerfile
     # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
@@ -1270,7 +1280,7 @@ def containerapp_up(cmd,
     custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
     extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
     env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
-    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
     # Check and see if registry (username and passwords) or registry-identity are specified. If so, set is_registry_server_params_set to True to use those creds.
     is_registry_server_params_set = bool(registry_server and ((registry_user and registry_pass) or registry_identity))
@@ -1312,7 +1322,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1322,9 +1332,9 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates,
-                                         registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned)
+                                         registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type,
-                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned)
+                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
@@ -3359,3 +3369,48 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
+
+
+def list_labelhistory(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return LabelHistoryPreviewClient.list(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_labelhistory(cmd, resource_group_name, name, label):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return LabelHistoryPreviewClient.show(cmd, resource_group_name, name, label)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    # When changing modes clear the traffic section and use mode specific defaults.
+    if containerapp_def["properties"]["configuration"]["activeRevisionsMode"].lower() != mode.lower():
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = None
+
+    containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = mode.lower()
+    containerapp_def["properties"]["configuration"]["targetLabel"] = target_label
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    try:
+        r = ContainerAppPreviewClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["activeRevisionsMode"]
+    except Exception as e:
+        handle_raw_exception(e)
