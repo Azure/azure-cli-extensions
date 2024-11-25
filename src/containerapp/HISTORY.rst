@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 
 1.1.0b1
 ++++++
