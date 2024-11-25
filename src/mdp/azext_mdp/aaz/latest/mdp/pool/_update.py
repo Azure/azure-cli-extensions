@@ -142,6 +142,25 @@ class Update(AAZCommand):
             enum={"Balanced": "Balanced", "BestPerformance": "BestPerformance", "MoreCostEffective": "MoreCostEffective", "MorePerformance": "MorePerformance", "MostCostEffective": "MostCostEffective"},
         )
 
+        resource_predictions = cls._args_schema.agent_profile.resource_predictions
+        resource_predictions.timezone = AAZStrArg(
+            options=["timezone", "timeZone"],
+            help="Time zone of the predictive pool provisioning.",
+        )
+
+        resource_predictions.days_data = AAZListArg(
+            options=["days-data"],
+            help="Resource predictions data per every day in a week.",
+        )
+
+        days_data = cls._args_schema.agent_profile.resource_predictions.days_data
+        days_data.Element = AAZDictArg(
+            help="key value pairs with time and predicted count"
+        )
+
+        _element = cls._args_schema.agent_profile.resource_predictions.days_data.Element
+        _element.Element = AAZIntArg()
+
         fabric_profile = cls._args_schema.fabric_profile
         fabric_profile.vmss = AAZObjectArg(
             options=["vmss"],
@@ -710,6 +729,19 @@ class Update(AAZCommand):
             if disc_stateful is not None:
                 disc_stateful.set_prop("gracePeriodTimeSpan", AAZStrType, ".stateful.grace_period_time_span")
                 disc_stateful.set_prop("maxAgentLifetime", AAZStrType, ".stateful.max_agent_lifetime")
+            
+            resource_predictions = _builder.get(".properties.agentProfile.resourcePredictions")
+            if resource_predictions is not None:
+                resource_predictions.set_prop("timeZone", AAZStrType, ".timezone")
+                resource_predictions.set_prop("daysData", AAZListType, ".days_data")
+           
+            days_data = _builder.get(".properties.agentProfile.resourcePredictions.daysData")
+            if days_data is not None:
+                days_data.set_elements(AAZDictType, ".")
+
+            _elements = _builder.get(".properties.agentProfile.resourcePredictions.daysData[]")
+            if _elements is not None:
+                _elements.set_elements(AAZIntType, ".")
 
             fabric_profile = _builder.get(".properties.fabricProfile")
             if fabric_profile is not None:
@@ -977,6 +1009,21 @@ class _UpdateHelper:
         disc_stateful.max_agent_lifetime = AAZStrType(
             serialized_name="maxAgentLifetime",
         )
+
+        resource_predictions = _schema_pool_read.properties.agent_profile.resource_predictions
+        resource_predictions.timezone = AAZStrType(
+            serialized_name="timeZone",
+        )
+
+        resource_predictions.days_data = AAZListType(
+            serialized_name="daysData",
+        )
+
+        days_data = _schema_pool_read.properties.agent_profile.resource_predictions.days_data
+        days_data.Element = AAZDictType()
+
+        _element = _schema_pool_read.properties.agent_profile.resource_predictions.days_data.Element
+        _element.Element = AAZIntType()
 
         fabric_profile = _schema_pool_read.properties.fabric_profile
         fabric_profile.kind = AAZStrType(

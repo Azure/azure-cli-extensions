@@ -13,7 +13,7 @@ from azure.cli.core.aaz import has_value, register_command
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError, ArgumentUsageError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from ._client_factory import network_client_factory
 from .aaz.latest.network.firewall import Create as _AzureFirewallCreate, Update as _AzureFirewallUpdate, \
     Show as _AzureFirewallShow
@@ -191,13 +191,26 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
     def pre_operations(self):
         args = self.ctx.args
+        if has_value(args.public_ip_count) and has_value(args.public_ip):
+            raise CLIError(
+                'usage error: Cannot add both --public-ip-count and --public-ip at the same time.')
         if has_value(args.sku):
             sku = args.sku.to_serialized_data()
-            if sku.lower() == 'azfw_hub' and not all([args.virtual_hub, args.public_ip_count]):
-                raise CLIError(
-                    'usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
-            if sku.lower() == 'azfw_hub' and has_value(args.allow_active_ftp):
-                raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
+            if sku.lower() == 'azfw_hub':
+                if not has_value(args.virtual_hub):
+                    raise CLIError(
+                        'usage error: virtual hub is mandatory for azure firewall on virtual hub.')
+                if not has_value(args.public_ip_count) and not has_value(args.public_ip):
+                    raise CLIError(
+                        'usage error: One of public-ip or public-ip-count should be provided for azure firewall on virtual hub.')
+                if has_value(args.allow_active_ftp):
+                    raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
+
+                if has_value(args.public_ip):
+                    args.ip_configurations = [{
+                        "name": args.conf_name if has_value(args.conf_name) else "AzureFirewallIpConfiguration0",
+                        "public_ip_address": args.public_ip}]
+
         if has_value(args.firewall_policy) and any([args.enable_dns_proxy, args.dns_servers]):
             raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
 
@@ -238,7 +251,7 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         if has_value(args.route_server_id):
             args.additional_properties['Network.RouteServerInfo.RouteServerID'] = args.route_server_id
 
-        if has_value(args.conf_name):
+        if has_value(args.conf_name) and has_value(args.sku) and sku.lower() == 'azfw_vnet':
             subnet_id = resource_id(
                 subscription=get_subscription_id(self.cli_ctx),
                 resource_group=args.resource_group,
