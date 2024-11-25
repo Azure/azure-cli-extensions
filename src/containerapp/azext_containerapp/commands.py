@@ -14,6 +14,7 @@ from ._transformers import (transform_sensitive_values,
                             transform_telemetry_otlp_values,
                             transform_telemetry_otlp_values_by_name_wrapper)
 from ._utils import is_cloud_supported_by_connected_env
+from ._validators import validate_debug
 
 
 def load_command_table(self, args):
@@ -24,6 +25,7 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output, transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
+        g.custom_command('debug', 'containerapp_debug', is_preview=True, validator=validate_debug)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer

@@ -454,3 +454,13 @@ def load_arguments(self, _):
         c.argument('logger_name', help="The logger name.")
         c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
+
+    with self.argument_context('containerapp debug') as c:
+        c.argument('container',
+                   help="The container name that the debug console will connect to. Default to the first container of first replica.")
+        c.argument('replica',
+                   help="The name of the replica. List replicas with 'az containerapp replica list'. A replica may be not found when it's scaled to zero if there is no traffic to your app. Default to the first replica of 'az containerapp replica list'.")
+        c.argument('revision',
+                   help="The name of the container app revision. Default to the latest revision.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
