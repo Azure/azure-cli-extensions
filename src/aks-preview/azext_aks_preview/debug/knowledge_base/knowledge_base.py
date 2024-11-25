@@ -1,8 +1,10 @@
 from typing import Dict, List, Type
 
-from ..common.types import DebugStep, ActionStep, StepBuilder
-from .knowledge_base_debug import DebugStepCoreDNSPodRunning, DebugStepCoreDNSConfigMapValid, DebugStepIGTraceDNSNode, DebugStepIGTraceDNSPod
-from .knowledge_base_action import NoActionStep, ActionStepPrompt
+from ..common.types import DebugStep, StepBuilder
+from .knowledge_base_debug import (DebugStepCoreDNSConfigMapValid,
+                                   DebugStepCoreDNSPodRunning,
+                                   DebugStepIGTraceDNSNode,
+                                   DebugStepIGTraceDNSPod)
 
 
 class KnowledgeBase:

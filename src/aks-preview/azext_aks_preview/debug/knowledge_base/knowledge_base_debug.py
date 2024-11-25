@@ -1,5 +1,11 @@
+import asyncio
+
+from knack.log import get_logger
+
 from ..common.types import DebugStep, StepBuilder
-from .knowledge_base_action import NoActionStep, ActionStepPrompt
+from .knowledge_base_action import ActionStepPrompt, NoActionStep
+
+logger = get_logger(__name__)
 
 
 class DebugStepCoreDNSPodRunning(DebugStep):
@@ -32,8 +38,10 @@ class DebugStepCoreDNSConfigMapValid(DebugStep):
         data = await self.data_broker.k8s_data_collector.get_cm(name="coredns", namespace="kube-system")
         if data["data"]["Corefile"]:
             self.next_steps.append(StepBuilder(DebugStepIGTraceDNSPod, {}))
+            self.summary = "CoreDNS config map is valid"
         else:
             self.next_steps.append(StepBuilder(ActionStepPrompt, "CoreDNS config map is not valid"))
+            self.summary = "CoreDNS config map is not valid"
 
 
 class DebugStepIGTraceDNSNode(DebugStep):
@@ -49,7 +57,9 @@ class DebugStepIGTraceDNSNode(DebugStep):
         else:
             self.summary = "IG trace DNS node have no data"
         self.next_steps.append(StepBuilder(NoActionStep, {}))
+        # for demonstration purpose
         self.next_steps.append(StepBuilder(DebugStepDemoException, {}))
+        self.next_steps.append(StepBuilder(DebugStepDemoLongRunning, {}))
 
 
 class DebugStepIGTraceDNSPod(DebugStep):
@@ -65,6 +75,7 @@ class DebugStepIGTraceDNSPod(DebugStep):
         else:
             self.summary = "IG trace DNS pod have no data"
         self.next_steps.append(StepBuilder(NoActionStep, {}))
+        # for demonstration purpose
         self.next_steps.append(StepBuilder(DebugStepDemoCircular, {"abc": "xyz"}))
 
 
@@ -73,7 +84,7 @@ class DebugStepDemoCircular(DebugStep):
         super().__init__(data=data)
 
     async def run(self) -> None:
-        self.summary = "demo"
+        self.summary = "demo circular step"
         self.next_steps.append(StepBuilder(DebugStepDemoCircular, self.data))
 
 
@@ -82,4 +93,14 @@ class DebugStepDemoException(DebugStep):
         super().__init__(data=data)
 
     async def run(self) -> None:
+        self.summary = "demo exception step"
         raise Exception("demo exception")
+
+
+class DebugStepDemoLongRunning(DebugStep):
+    def __init__(self, data=None) -> None:
+        super().__init__(data=data)
+
+    async def run(self) -> None:
+        self.summary = "demo long running step"
+        await asyncio.sleep(10)

@@ -1,7 +1,11 @@
 from __future__ import annotations
-from typing import List, NamedTuple, Type, Any
-from ..controller.data_broker import DataBroker
+
 import json
+from typing import Any, List, NamedTuple, Type
+
+from azure.cli.core.commands import progress
+
+from ..controller.data_broker import DataBroker
 
 
 class Step:
@@ -48,3 +52,4 @@ class StepBuilder(NamedTuple):
 class StepBundle(NamedTuple):
     step: Step
     builder: StepBuilder
+    progress_hook: progress.ProgressHook

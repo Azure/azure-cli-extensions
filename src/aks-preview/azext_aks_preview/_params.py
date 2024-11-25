@@ -129,6 +129,10 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_DEBUG_SCENARIO_DNS,
+    CONST_DEBUG_SCENARIO_EGRESS,
+    CONST_DEBUG_COMPONENT_POD,
+    CONST_DEBUG_COMPONENT_NODE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -418,6 +422,16 @@ app_routing_nginx_configs = [
 gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+]
+
+debug_scenarios = [
+    CONST_DEBUG_SCENARIO_DNS,
+    CONST_DEBUG_SCENARIO_EGRESS,
+]
+
+debug_components = [
+    CONST_DEBUG_COMPONENT_POD,
+    CONST_DEBUG_COMPONENT_NODE,
 ]
 
 
@@ -2285,6 +2299,11 @@ def load_arguments(self, _):
                    nargs="+",
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
+
+    with self.argument_context('aks debug check') as c:
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], required=True, help='Name of the managed cluster.')
+        c.argument('scenario', options_list=['--scenario', '-s'], help='The scenario to check.', arg_type=get_enum_type(debug_scenarios))
+        c.argument('component', help='The component to check.', arg_type=get_enum_type(debug_components))
 
 
 def _get_default_install_location(exe_name):

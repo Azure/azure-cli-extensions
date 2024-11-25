@@ -1,7 +1,11 @@
-from typing import List
 import os
 import subprocess
+
+from knack.log import get_logger
+
 from ..common.consts import DEBUG_TOOL_DIR
+
+logger = get_logger(__name__)
 
 
 class ToolManager:
@@ -20,9 +24,9 @@ class ToolManager:
 
     def local_install_kubectl(self) -> None:
         if os.path.exists(self.get_kubectl_path()):
-            print("kubectl already exists")
+            logger.debug("[tool manager] kubectl already exists")
             return
-        print("kubectl not exists, will install it to {}".format(self.get_kubectl_path()))
+        logger.info("[tool manager] kubectl not exists, will install it to %s", self.get_kubectl_path())
         self.ensure_tool_dir()
         subprocess.run(
             [
@@ -31,6 +35,9 @@ class ToolManager:
                 "https://dl.k8s.io/release/v1.29.9/bin/linux/amd64/kubectl",
             ],
             cwd=self.tool_dir,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         subprocess.run(
             [
@@ -39,8 +46,11 @@ class ToolManager:
                 "kubectl",
             ],
             cwd=self.tool_dir,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
-        print("kubectl installed successfully")
+        logger.info("[tool manager] kubectl installed successfully")
         return
 
     def get_kubectl_inspektor_gadget_path(self) -> str:
@@ -48,9 +58,9 @@ class ToolManager:
 
     def local_install_kubectl_inspektor_gadget(self) -> None:
         if os.path.exists(self.get_kubectl_inspektor_gadget_path()):
-            print("kubectl-gadget already exists")
+            logger.debug("[tool manager] kubectl-gadget already exists")
             return
-        print("kubectl-gadget not exists, will install it to {}".format(self.get_kubectl_inspektor_gadget_path()))
+        logger.info("[tool manager] kubectl-gadget not exists, will install it to %s", self.get_kubectl_inspektor_gadget_path())
         self.ensure_tool_dir()
         subprocess.run(
             [
@@ -59,6 +69,9 @@ class ToolManager:
                 "https://github.com/inspektor-gadget/inspektor-gadget/releases/download/v0.34.0/kubectl-gadget-linux-amd64-v0.34.0.tar.gz",
             ],
             cwd=self.tool_dir,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         subprocess.run(
             [
@@ -67,6 +80,9 @@ class ToolManager:
                 "kubectl-gadget-linux-amd64-v0.34.0.tar.gz",
             ],
             cwd=self.tool_dir,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         subprocess.run(
             [
@@ -75,8 +91,11 @@ class ToolManager:
                 "kubectl-gadget",
             ],
             cwd=self.tool_dir,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
-        print("kubectl-gadget installed successfully")
+        logger.info("[tool manager] kubectl-gadget installed successfully")
         return
 
     def remote_install_inspektor_gadget(self) -> str:
@@ -88,11 +107,12 @@ class ToolManager:
                 "version",
             ],
             cwd=self.tool_dir,
+            stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
         if "Server version: not installed" in p.stdout.decode("utf-8"):
-            print("inspektor gadget not installed to cluster, will install it")
+            logger.info("[tool manager] inspektor gadget not installed to cluster, will install it")
             subprocess.run(
                 [
                     "kubectl",
@@ -100,8 +120,11 @@ class ToolManager:
                     "deploy",
                 ],
                 cwd=self.tool_dir,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
-            print("inspektor gadget installed to cluster successfully")
+            logger.info("[tool manager] inspektor gadget installed to cluster successfully")
         else:
-            print("inspektor gadget already installed to cluster")
+            logger.debug("[tool manager] inspektor gadget already installed to cluster")
         return

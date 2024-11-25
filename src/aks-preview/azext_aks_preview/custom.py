@@ -3685,3 +3685,36 @@ def aks_check_network_outbound(
                             instance_id,
                             vm_name,
                             custom_endpoints)
+
+
+def aks_debug_check(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    scenario=None,
+    component=None,
+    aks_custom_headers=None,
+):
+    from azext_aks_preview.debug.common.consts import DEBUG_KUBECONFIG_PATH
+    from azext_aks_preview.debug.controller.rule_orchestrator import Orchestrator
+    import asyncio
+
+    headers = get_aks_custom_headers(aks_custom_headers)
+    mc = client.get(resource_group_name, cluster_name, headers=headers)
+    aks_get_credentials(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        admin=True,
+        path=DEBUG_KUBECONFIG_PATH,
+        overwrite_existing=True,
+        aks_custom_headers=aks_custom_headers,
+    )
+    orchestrator = Orchestrator()
+    asyncio.run(orchestrator.run(scenario))
+    print()
+    print("debug summary:", end="\n")
+    print(orchestrator.get_summary())
+    return
