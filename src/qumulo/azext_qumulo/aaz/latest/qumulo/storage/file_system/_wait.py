@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2022-10-12"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2024-06-19"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Name of the File System resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-10-12",
+                    "api-version", "2024-06-19",
                     required=True,
                 ),
             }
@@ -152,7 +155,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -160,7 +163,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -203,7 +206,7 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.admin_password = AAZStrType(
                 serialized_name="adminPassword",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             properties.availability_zone = AAZStrType(
                 serialized_name="availabilityZone",
@@ -215,19 +218,16 @@ class Wait(AAZWaitCommand):
                 serialized_name="delegatedSubnetId",
                 flags={"required": True},
             )
-            properties.initial_capacity = AAZIntType(
-                serialized_name="initialCapacity",
-                flags={"required": True},
-            )
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
             )
-            properties.private_i_ps = AAZListType(
+            properties.private_ips = AAZListType(
                 serialized_name="privateIPs",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.storage_sku = AAZStrType(
                 serialized_name="storageSku",
@@ -244,6 +244,7 @@ class Wait(AAZWaitCommand):
             )
             marketplace_details.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
+                flags={"read_only": True},
             )
             marketplace_details.offer_id = AAZStrType(
                 serialized_name="offerId",
@@ -255,15 +256,17 @@ class Wait(AAZWaitCommand):
             )
             marketplace_details.publisher_id = AAZStrType(
                 serialized_name="publisherId",
-                flags={"required": True},
+            )
+            marketplace_details.term_unit = AAZStrType(
+                serialized_name="termUnit",
             )
 
-            private_i_ps = cls._schema_on_200.properties.private_i_ps
-            private_i_ps.Element = AAZStrType()
+            private_ips = cls._schema_on_200.properties.private_ips
+            private_ips.Element = AAZStrType()
 
             user_details = cls._schema_on_200.properties.user_details
             user_details.email = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
 
             system_data = cls._schema_on_200.system_data
