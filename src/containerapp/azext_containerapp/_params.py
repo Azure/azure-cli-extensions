@@ -472,6 +472,10 @@ def load_arguments(self, _):
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
+    with self.argument_context('containerapp label-history') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+
     with self.argument_context('containerapp label-history show') as c:
         c.argument('label', options_list=['--label', '-l'], help="The label name to show history for.")
 
