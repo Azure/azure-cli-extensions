@@ -27,9 +27,15 @@ setup_repo() {
         gh repo fork "$REPO" --clone=true
     fi
 
-    cd "$DIR_PATH"
-    gh repo sync --source "$REPO"
-    cd /workspaces
+    # git doesn't work well with private repository
+    if [ "$(gh repo view "$REPO" --json visibility --jq '.visibility')" == "PRIVATE" ]; then
+        cd "$DIR_PATH"
+        gh repo sync --source "$REPO"
+        cd /workspaces
+    else
+        DEFAULT_BRANCH=$(git -C "$DIR_PATH" remote show upstream | grep "HEAD branch" | awk '{print $NF}')
+        git -C "$DIR_PATH" pull -r upstream "$DEFAULT_BRANCH"
+    fi
 }
 
 SECONDS=0
