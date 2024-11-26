@@ -29,6 +29,9 @@ def load_arguments(self, _):
         c.argument("engine_instances", argtypes.engine_instances)
         c.argument("custom_no_wait", argtypes.custom_no_wait)
         c.argument("disable_public_ip", argtypes.disable_public_ip)
+        c.argument("autostop", argtypes.autostop)
+        c.argument("autostop_error_rate", argtypes.autostop_error_rate)
+        c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
 
     with self.argument_context("load test update") as c:
         c.argument("load_test_config_file", argtypes.load_test_config_file)
@@ -46,6 +49,9 @@ def load_arguments(self, _):
         c.argument("split_csv", argtypes.split_csv)
         c.argument("custom_no_wait", argtypes.custom_no_wait)
         c.argument("disable_public_ip", argtypes.disable_public_ip)
+        c.argument("autostop", argtypes.autostop)
+        c.argument("autostop_error_rate", argtypes.autostop_error_rate)
+        c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
 
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)

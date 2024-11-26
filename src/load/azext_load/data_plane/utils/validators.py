@@ -402,3 +402,65 @@ def validate_disable_public_ip(namespace):
         namespace.disable_public_ip = True
     else:
         namespace.disable_public_ip = False
+
+
+def validate_autostop_enable_disable(namespace):
+    if namespace.autostop is None:
+        return
+    if not isinstance(namespace.autostop, str) or namespace.autostop.casefold() not in ["enable", "disable"]:
+        raise InvalidArgumentValueError(
+            f"Invalid autostop type: {type(namespace.autostop)}. Allowed values: enable, disable"
+        )
+    if namespace.autostop.casefold() not in ["disable"]:
+        namespace.autostop = True
+    else:
+        namespace.autostop = False
+
+
+def validate_autostop_error_rate_time_window(namespace):
+    if namespace.autostop_error_rate_time_window is None:
+        return
+    if not isinstance(namespace.autostop_error_rate_time_window, int):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-time-window type: {type(namespace.autostop_error_rate_time_window)}"
+        )
+    if namespace.autostop_error_rate_time_window < 0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate time window should be greater than or equal to 0"
+        )
+
+
+def validate_autostop_error_rate(namespace):
+    if namespace.autostop_error_rate is None:
+        return
+    if not isinstance(namespace.autostop_error_rate, float):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-error-rate type: {type(namespace.autostop_error_rate)}"
+        )
+    if namespace.autostop_error_rate < 0.0 or namespace.autostop_error_rate > 100.0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate should be in range of [0.0,100.0]"
+        )
+
+
+def _validate_autostop_disable_configfile(autostop):
+    if autostop.casefold() not in ["disable"]:
+        raise InvalidArgumentValueError(
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow"
+        )
+
+
+def _validate_autostop_criteria_configfile(error_rate, time_window):
+    if error_rate is not None:
+        if isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+        if isinstance(error_rate, int) and (error_rate < 0 or error_rate > 100):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+    if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
+        raise InvalidArgumentValueError(
+            "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
+        )
