@@ -16,7 +16,9 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_role_definition_body,
     validate_mongo_role_definition_id,
     validate_mongo_user_definition_body,
-    validate_mongo_user_definition_id)
+    validate_mongo_user_definition_id,
+    validate_table_role_definition_body,
+    validate_table_role_definition_id)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -53,6 +55,16 @@ from azure.cli.command_modules.cosmosdb._validators import (
     validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
     validate_client_encryption_policy)
 
+
+TABLE_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyRWRole\\",
+\\"Type\\": \\"CustomRole\\"
+\\"DatabaseName\\": \\"MyDb\\",
+\\"Privileges\\": [ {\\"Resource\\": {\\"Db\\": \\"MyDB\\",\\"Collection\\": \\"MyCol\\"},\\"Actions\\": [\\"insert\\",\\"find\\"]}],
+\\"Roles\\": [ {\\"Role\\": \\"myInheritedRole\\",\\"Db\\": \\"MyTestDb\\"}]
+}"
+"""
 
 MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
 \\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
@@ -626,3 +638,9 @@ def load_arguments(self, _):
         c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=False)
         c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
+
+    # table role definition
+    with self.argument_context('cosmosdb table role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('table_role_definition_id', options_list=['--id', '-i'], validator=validate_table_role_definition_id, help="Unique ID for the Table Role Definition.")
+        c.argument('table_role_definition_body', options_list=['--body', '-b'], validator=validate_table_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), DatabaseName, Privileges, Roles.  You can enter it as a string or as a file, e.g., --body @table-role_definition-body-file.json or " + TABLE_ROLE_DEFINITION_EXAMPLE)

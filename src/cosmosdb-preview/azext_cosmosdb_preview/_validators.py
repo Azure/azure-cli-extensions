@@ -245,3 +245,52 @@ def validate_mongo_user_definition_id(ns):
     """ Extracts Guid user definition Id """
     if ns.mongo_user_definition_id is not None:
         ns.mongo_user_definition_id = _parse_resource_path(ns.mongo_user_definition_id, False, "mongodbUserDefinitions")
+
+
+def validate_table_role_definition_body(cmd, ns):
+    """ Extracts role definition body """
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import RoleDefinitionType
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.table_role_definition_body is not None:
+        if os.path.exists(ns.table_role_definition_body):
+            table_role_definition = get_file_json(ns.table_role_definition_body)
+        else:
+            table_role_definition = shell_safe_json_parse(ns.table_role_definition_body)
+
+        if not isinstance(table_role_definition, dict):
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid table role definition. A valid dictionary JSON representation is expected.')
+
+        if 'RoleName' not in table_role_definition or not isinstance(table_role_definition['RoleName'], str) or len(table_role_definition['RoleName']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid table role name. A valid string role name is expected.')
+
+        #if 'AssignableScopes' in table_role_definition:
+        #    if not isinstance(table_role_definition['AssignableScopes'], list):
+        #        raise InvalidArgumentValueError(
+        #            'AssignableScopes creation failed. Invalid table AssignableScopes. A valid dictionary JSON representation is expected')
+        #    else:
+        #        for Scope in table_role_definition['AssignableScopes']:
+        #            if 'AssignableScopes' not in Scope or not isinstance(Scope['AssignableScopes'], str) or len(Scope['AssignableScopes']) == 0:
+        #                raise InvalidArgumentValueError(
+        #                    'AssignableScopes creation failed. Invalid table AssignableScopes Scope. A valid string Scope is expected.')
+                            
+        if 'AssignableScopes' not in table_role_definition or not isinstance(table_role_definition['AssignableScopes'], list) or len(table_role_definition['AssignableScopes']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid Table role definition for AssignableScopes. A valid list of strings is expected.')        
+        
+        if 'Permissions' not in table_role_definition or not isinstance(table_role_definition['Permissions'], list) or len(table_role_definition['Permissions']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid Table role Permissions. A valid List JSON representation is expected.')
+
+        if 'Type' not in table_role_definition:
+            table_role_definition['Type'] = RoleDefinitionType.custom_role
+
+        ns.table_role_definition_body = table_role_definition
+
+def validate_table_role_definition_id(ns):
+    """ Extracts Guid role definition Id """
+    if ns.table_role_definition_id is not None:
+        ns.table_role_definition_id = _parse_resource_path(ns.table_role_definition_id, False, "tableRoleDefinitions")
