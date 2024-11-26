@@ -1,4 +1,5 @@
-displayName: CLI-Test
+# Autostop criteria: both errorPercentage and timeWindow are provided
+displayName: CLI-Test-Autostop-Criteria
 testPlan: sample-JMX-file.jmx
 description: 'Test created from az load test command'
 engineInstances: 1
@@ -14,4 +15,6 @@ env:
   - name: 'rps'
     value: 1
 splitAllCSVs: True
-autoStop: disable
+autoStop:
+  errorPercentage: 85
+  timeWindow: 120

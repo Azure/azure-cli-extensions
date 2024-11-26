@@ -1,3 +1,4 @@
+# Invalid autstop criteria: errorPercentage is greater than 100
 displayName: CLI-Test
 testPlan: sample-JMX-file.jmx
 description: 'Test created from az load test command'
@@ -14,4 +15,6 @@ env:
   - name: 'rps'
     value: 1
 splitAllCSVs: True
-autoStop: disable
+autoStop:
+  errorPercentage: 108.5
+  timeWindow: 120

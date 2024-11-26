@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.0
+++++++
+* Add support for autostop criteria. Autostop error rate and time window in seconds can be set using `--autostop-error-rate` and `--autostop-time-window` arguments in 'az load test create' and 'az load test update' commands. Autostop can be disabled by using `--autostop disable` in 'az load test create' and 'az load test update' commands. Autostop criteria set in YAML config file will now also be honoured.
+
 1.2.0
 ++++++
 * Added support for disable public IP in test creation and update. This can be done by using --disable-public-ip argument in 'az load test create' and 'az load test update' commands.
