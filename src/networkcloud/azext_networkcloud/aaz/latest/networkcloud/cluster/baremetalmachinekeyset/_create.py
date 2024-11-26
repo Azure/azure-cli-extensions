@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster baremetalmachinekeyset create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new bare metal machine key set or update the existing one for the provided cluster.
