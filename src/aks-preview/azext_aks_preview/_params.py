@@ -813,17 +813,14 @@ def load_arguments(self, _):
         c.argument(
             "enable_acns",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "disable_acns_observability",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "disable_acns_security",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -1290,22 +1287,18 @@ def load_arguments(self, _):
         c.argument(
             "enable_acns",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "disable_acns",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "disable_acns_observability",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "disable_acns_security",
             action="store_true",
-            is_preview=True,
         )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")
