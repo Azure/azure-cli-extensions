@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '1.0.7'
+VERSION = '1.0.8'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -39,7 +39,8 @@ DEPENDENCIES = [
     'setproctitle~=1.3.3',
     'psycopg2~=2.9.3',
     'mycli~=1.27.0',
-    'pgcli==4.0.1'
+    'pgcli==4.0.1',
+    'configobj==5.0.8'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
