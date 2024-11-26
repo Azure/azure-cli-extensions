@@ -7,6 +7,7 @@ Release History
 * Bug fix for `splitAllCSVs` not being honoured from config file due to CLI argument being set as false by default leading to configuration not being selected from the config file.
 * Bug fix for `keyVaultReferenceIdentity` not being honoured from config file as the key being looked up while YAML parsing was incorrect.
 * Change 'VALIDATION_FAILED' to 'VALIDATION_FAILURE' as a terminal status for File Validation.
+* Add 'NOT_VALIDATED' as a terminal status for File Validation in Async IO.
 
 1.3.0
 ++++++
