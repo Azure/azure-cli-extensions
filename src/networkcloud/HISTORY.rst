@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.0.0
+++++++++
+* This is the stable version of the CLI extension that supports NetworkCloud 2024-07-01 APIs.
+* Additional validation is added to Cluster create and update commands for the containerUrl child property within the `--command-output-settings`.
+
 2.0.0b7
 ++++++++
 * This version requires a minimum of 2.66 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md

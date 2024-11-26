@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l3network show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided layer 3 (L3) network.

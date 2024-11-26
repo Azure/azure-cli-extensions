@@ -9,7 +9,10 @@ from unittest.mock import Mock, patch
 from azext_networkcloud.operations.common_commandoutputsettings import (
     CommandOutputSettings,
 )
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError,
+    RequiredArgumentMissingError,
+)
 
 
 class TestCommandOutputSettings(unittest.TestCase):
@@ -24,6 +27,9 @@ class TestCommandOutputSettings(unittest.TestCase):
         mock_has_value.return_value = True
         args = Mock()
         args.command_output_settings.identity_type = "SystemAssignedIdentity"
+        args.command_output_settings.container_url = (
+            "https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+        )
 
         self.command_output_settings.pre_operations_update(args)
 
@@ -39,6 +45,9 @@ class TestCommandOutputSettings(unittest.TestCase):
         mock_has_value.return_value = True
         args = Mock()
         args.command_output_settings.identity_type = "UserAssignedIdentity"
+        args.command_output_settings.container_url = (
+            "https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+        )
 
         # Mock the identity
         mock_identity1 = Mock(return_value="id1")
@@ -57,6 +66,9 @@ class TestCommandOutputSettings(unittest.TestCase):
         mock_has_value.return_value = True
         args = Mock()
         args.command_output_settings.identity_type = "SystemAssignedIdentity"
+        args.command_output_settings.container_url = (
+            "https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+        )
 
         # Mock the identity
         mock_identity1 = Mock(return_value="id1")
@@ -72,12 +84,30 @@ class TestCommandOutputSettings(unittest.TestCase):
 
     @patch("azext_networkcloud.operations.common_commandoutputsettings.has_value")
     def test_pre_operations_command_output_settings_user_no_id(self, mock_has_value):
-        mock_has_value.return_value = (
-            False  # UserAssigned identity resource ID is not passed
+        mock_has_value.side_effect = (
+            True,  # CommandOutputSettings does exist
+            True,  # ContainerURL is passed. has a value, and is checked first
+            False,  # UserAssigned identity resource ID is not passed, and is checked second
         )
         args = Mock()
         args.command_output_settings.identity_type = "UserAssignedIdentity"
         args.command_output_settings.identity_resource_id = None
+        args.command_output_settings.container_url = (
+            "https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+        )
 
         with self.assertRaises(InvalidArgumentValueError):
+            self.command_output_settings.pre_operations_update(args)
+
+    @patch("azext_networkcloud.operations.common_commandoutputsettings.has_value")
+    def test_pre_operations_command_output_settings_no_container_url(
+        self, mock_has_value
+    ):
+        mock_has_value.side_effect = (
+            True,  # CommandOutputSettings does exist
+            False,  # ContainerURL is not passed
+        )
+        args = Mock()
+
+        with self.assertRaises(RequiredArgumentMissingError):
             self.command_output_settings.pre_operations_update(args)

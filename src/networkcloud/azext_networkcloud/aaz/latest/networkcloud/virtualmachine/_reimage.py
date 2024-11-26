@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine reimage",
-    is_preview=True,
 )
 class Reimage(AAZCommand):
     """Reimage the provided virtual machine.

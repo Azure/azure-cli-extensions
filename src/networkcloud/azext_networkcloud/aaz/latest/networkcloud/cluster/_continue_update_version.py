@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster continue-update-version",
-    is_preview=True,
 )
 class ContinueUpdateVersion(AAZCommand):
     """Trigger the continuation of an update for a cluster with a matching update strategy that has paused after completing a segment of the update.

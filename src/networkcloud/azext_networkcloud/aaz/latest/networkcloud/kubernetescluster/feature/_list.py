@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster feature list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List a list of features for the provided Kubernetes cluster.
