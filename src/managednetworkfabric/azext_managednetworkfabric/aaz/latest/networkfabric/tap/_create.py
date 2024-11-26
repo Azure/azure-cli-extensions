@@ -90,6 +90,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="List of destinations to send the filter traffic.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.network_packet_broker_id = AAZResourceIdArg(
             options=["--npb-id", "--network-packet-broker-id"],

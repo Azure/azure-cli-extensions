@@ -106,6 +106,9 @@ class Create(AAZCommand):
             options=["route-targets"],
             help="Route Target List.The expected formats are ASN(plain):NN >> example 4294967294:50, ASN.ASN:NN >> example 65533.65333:40, IP-address:NN >> example 10.10.10.10:65535. The possible values of ASN,NN are in range of 0-65535, ASN(plain) is in range of 0-4294967295.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.sequence_number = AAZIntArg(
             options=["sequence-number"],

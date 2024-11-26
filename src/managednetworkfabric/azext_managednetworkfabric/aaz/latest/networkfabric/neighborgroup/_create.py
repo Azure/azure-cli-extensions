@@ -96,10 +96,16 @@ class Create(AAZCommand):
         destination.ipv4_addresses = AAZListArg(
             options=["ipv4-addresses"],
             help="Array of IPv4 Addresses.",
+            fmt=AAZListArgFormat(
+                max_length=16,
+            ),
         )
         destination.ipv6_addresses = AAZListArg(
             options=["ipv6-addresses"],
             help="Array of IPv6 Addresses.",
+            fmt=AAZListArgFormat(
+                max_length=16,
+            ),
         )
 
         ipv4_addresses = cls._args_schema.destination.ipv4_addresses

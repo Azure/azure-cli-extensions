@@ -32,6 +32,8 @@ class List(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
         return self.build_paging(self._execute_operations, self._output)
@@ -52,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.NetworkFabricsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.NetworkFabricsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.NetworkFabricsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,6 +74,256 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class NetworkFabricsListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkFabrics",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-02-15-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
+            properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.fabric_asn = AAZIntType(
+                serialized_name="fabricASN",
+                flags={"required": True},
+            )
+            properties.fabric_version = AAZStrType(
+                serialized_name="fabricVersion",
+            )
+            properties.ipv4_prefix = AAZStrType(
+                serialized_name="ipv4Prefix",
+                flags={"required": True},
+            )
+            properties.ipv6_prefix = AAZStrType(
+                serialized_name="ipv6Prefix",
+            )
+            properties.l2_isolation_domains = AAZListType(
+                serialized_name="l2IsolationDomains",
+                flags={"read_only": True},
+            )
+            properties.l3_isolation_domains = AAZListType(
+                serialized_name="l3IsolationDomains",
+                flags={"read_only": True},
+            )
+            properties.management_network_configuration = AAZObjectType(
+                serialized_name="managementNetworkConfiguration",
+                flags={"required": True},
+            )
+            properties.network_fabric_controller_id = AAZStrType(
+                serialized_name="networkFabricControllerId",
+                flags={"required": True},
+            )
+            properties.network_fabric_sku = AAZStrType(
+                serialized_name="networkFabricSku",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rack_count = AAZIntType(
+                serialized_name="rackCount",
+            )
+            properties.racks = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.router_ids = AAZListType(
+                serialized_name="routerIds",
+                flags={"read_only": True},
+            )
+            properties.server_count_per_rack = AAZIntType(
+                serialized_name="serverCountPerRack",
+                flags={"required": True},
+            )
+            properties.terminal_server_configuration = AAZObjectType(
+                serialized_name="terminalServerConfiguration",
+                flags={"required": True},
+            )
+
+            l2_isolation_domains = cls._schema_on_200.value.Element.properties.l2_isolation_domains
+            l2_isolation_domains.Element = AAZStrType()
+
+            l3_isolation_domains = cls._schema_on_200.value.Element.properties.l3_isolation_domains
+            l3_isolation_domains.Element = AAZStrType()
+
+            management_network_configuration = cls._schema_on_200.value.Element.properties.management_network_configuration
+            management_network_configuration.infrastructure_vpn_configuration = AAZObjectType(
+                serialized_name="infrastructureVpnConfiguration",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.infrastructure_vpn_configuration)
+            management_network_configuration.workload_vpn_configuration = AAZObjectType(
+                serialized_name="workloadVpnConfiguration",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
+
+            racks = cls._schema_on_200.value.Element.properties.racks
+            racks.Element = AAZStrType()
+
+            router_ids = cls._schema_on_200.value.Element.properties.router_ids
+            router_ids.Element = AAZStrType()
+
+            terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
+            terminal_server_configuration.network_device_id = AAZStrType(
+                serialized_name="networkDeviceId",
+                flags={"read_only": True},
+            )
+            terminal_server_configuration.password = AAZStrType(
+                flags={"secret": True},
+            )
+            terminal_server_configuration.primary_ipv4_prefix = AAZStrType(
+                serialized_name="primaryIpv4Prefix",
+                flags={"required": True},
+            )
+            terminal_server_configuration.primary_ipv6_prefix = AAZStrType(
+                serialized_name="primaryIpv6Prefix",
+                nullable=True,
+            )
+            terminal_server_configuration.secondary_ipv4_prefix = AAZStrType(
+                serialized_name="secondaryIpv4Prefix",
+                flags={"required": True},
+            )
+            terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
+                serialized_name="secondaryIpv6Prefix",
+                nullable=True,
+            )
+            terminal_server_configuration.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+            )
+            terminal_server_configuration.username = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class NetworkFabricsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -277,257 +529,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             terminal_server_configuration.password = AAZStrType(
-                flags={"required": True, "secret": True},
-            )
-            terminal_server_configuration.primary_ipv4_prefix = AAZStrType(
-                serialized_name="primaryIpv4Prefix",
-                flags={"required": True},
-            )
-            terminal_server_configuration.primary_ipv6_prefix = AAZStrType(
-                serialized_name="primaryIpv6Prefix",
-                nullable=True,
-            )
-            terminal_server_configuration.secondary_ipv4_prefix = AAZStrType(
-                serialized_name="secondaryIpv4Prefix",
-                flags={"required": True},
-            )
-            terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
-                serialized_name="secondaryIpv6Prefix",
-                nullable=True,
-            )
-            terminal_server_configuration.serial_number = AAZStrType(
-                serialized_name="serialNumber",
-            )
-            terminal_server_configuration.username = AAZStrType(
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class NetworkFabricsListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkFabrics",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            properties.annotation = AAZStrType()
-            properties.configuration_state = AAZStrType(
-                serialized_name="configurationState",
-                flags={"read_only": True},
-            )
-            properties.fabric_asn = AAZIntType(
-                serialized_name="fabricASN",
-                flags={"required": True},
-            )
-            properties.fabric_version = AAZStrType(
-                serialized_name="fabricVersion",
-            )
-            properties.ipv4_prefix = AAZStrType(
-                serialized_name="ipv4Prefix",
-                flags={"required": True},
-            )
-            properties.ipv6_prefix = AAZStrType(
-                serialized_name="ipv6Prefix",
-            )
-            properties.l2_isolation_domains = AAZListType(
-                serialized_name="l2IsolationDomains",
-                flags={"read_only": True},
-            )
-            properties.l3_isolation_domains = AAZListType(
-                serialized_name="l3IsolationDomains",
-                flags={"read_only": True},
-            )
-            properties.management_network_configuration = AAZObjectType(
-                serialized_name="managementNetworkConfiguration",
-                flags={"required": True},
-            )
-            properties.network_fabric_controller_id = AAZStrType(
-                serialized_name="networkFabricControllerId",
-                flags={"required": True},
-            )
-            properties.network_fabric_sku = AAZStrType(
-                serialized_name="networkFabricSku",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.rack_count = AAZIntType(
-                serialized_name="rackCount",
-            )
-            properties.racks = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.router_ids = AAZListType(
-                serialized_name="routerIds",
-                flags={"read_only": True},
-            )
-            properties.server_count_per_rack = AAZIntType(
-                serialized_name="serverCountPerRack",
-                flags={"required": True},
-            )
-            properties.terminal_server_configuration = AAZObjectType(
-                serialized_name="terminalServerConfiguration",
-                flags={"required": True},
-            )
-
-            l2_isolation_domains = cls._schema_on_200.value.Element.properties.l2_isolation_domains
-            l2_isolation_domains.Element = AAZStrType()
-
-            l3_isolation_domains = cls._schema_on_200.value.Element.properties.l3_isolation_domains
-            l3_isolation_domains.Element = AAZStrType()
-
-            management_network_configuration = cls._schema_on_200.value.Element.properties.management_network_configuration
-            management_network_configuration.infrastructure_vpn_configuration = AAZObjectType(
-                serialized_name="infrastructureVpnConfiguration",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.infrastructure_vpn_configuration)
-            management_network_configuration.workload_vpn_configuration = AAZObjectType(
-                serialized_name="workloadVpnConfiguration",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
-
-            racks = cls._schema_on_200.value.Element.properties.racks
-            racks.Element = AAZStrType()
-
-            router_ids = cls._schema_on_200.value.Element.properties.router_ids
-            router_ids.Element = AAZStrType()
-
-            terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
-            terminal_server_configuration.network_device_id = AAZStrType(
-                serialized_name="networkDeviceId",
-                flags={"read_only": True},
-            )
-            terminal_server_configuration.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             terminal_server_configuration.primary_ipv4_prefix = AAZStrType(
                 serialized_name="primaryIpv4Prefix",

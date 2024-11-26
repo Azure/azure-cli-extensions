@@ -111,10 +111,16 @@ class Update(AAZCommand):
         aggregate_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Route prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         aggregate_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Route prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         ipv4_routes = cls._args_schema.aggregate_route_configuration.ipv4_routes

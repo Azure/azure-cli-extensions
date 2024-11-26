@@ -80,11 +80,17 @@ class Create(AAZCommand):
             options=["--connected-ipv4-subnets"],
             arg_group="Properties",
             help="List of Connected IPv4 Subnets.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.connected_ipv6_subnets = AAZListArg(
             options=["--connected-ipv6-subnets"],
             arg_group="Properties",
             help="List of connected IPv6 Subnets.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.egress_acl_id = AAZResourceIdArg(
             options=["--egress-acl-id"],
@@ -196,18 +202,30 @@ class Create(AAZCommand):
         bgp_configuration.ipv4_listen_range_prefixes = AAZListArg(
             options=["ipv4-listen-range-prefixes"],
             help="List of BGP IPv4 Listen Range prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         bgp_configuration.ipv4_neighbor_address = AAZListArg(
             options=["ipv4-neighbor-address"],
             help="List with stringified IPv4 Neighbor Addresses.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         bgp_configuration.ipv6_listen_range_prefixes = AAZListArg(
             options=["ipv6-listen-range-prefixes"],
             help="List of BGP IPv6 Listen Ranges prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         bgp_configuration.ipv6_neighbor_address = AAZListArg(
             options=["ipv6-neighbor-address"],
             help="List with stringified IPv6 Neighbor Address.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         bgp_configuration.peer_asn = AAZIntArg(
             options=["peer-asn"],
@@ -290,10 +308,16 @@ class Create(AAZCommand):
         static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Routes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Routes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         ipv4_routes = cls._args_schema.static_route_configuration.ipv4_routes
@@ -394,6 +418,9 @@ class Create(AAZCommand):
             options=["next-hop"],
             help="List of next hop addresses.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         static_route_properties_create.prefix = AAZStrArg(
             options=["prefix"],

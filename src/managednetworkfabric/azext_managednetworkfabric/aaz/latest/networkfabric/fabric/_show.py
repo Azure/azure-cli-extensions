@@ -271,7 +271,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             terminal_server_configuration.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             terminal_server_configuration.primary_ipv4_prefix = AAZStrType(
                 serialized_name="primaryIpv4Prefix",

@@ -315,7 +315,7 @@ class _ShowHelper:
         express_route_connection_information_read = _schema_express_route_connection_information_read
         express_route_connection_information_read.express_route_authorization_key = AAZStrType(
             serialized_name="expressRouteAuthorizationKey",
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         express_route_connection_information_read.express_route_circuit_id = AAZStrType(
             serialized_name="expressRouteCircuitId",
