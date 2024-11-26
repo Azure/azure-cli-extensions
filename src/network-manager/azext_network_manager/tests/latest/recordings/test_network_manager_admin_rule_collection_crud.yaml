@@ -25,7 +25,7 @@ interactions:
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"54e5468c-8540-4fb5-8d2f-d9be45a80bb3"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:38.9646254Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:38.9646254Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"54e5468c-8540-4fb5-8d2f-d9be45a80bb3"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:38.9646254Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:38.9646254Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -78,7 +78,7 @@ interactions:
   response:
     body:
       string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"description":"A
-        sample policy","provisioningState":"Succeeded","memberType":"VirtualNetwork","resourceGuid":"02f35bec-9d1e-4239-8700-40cf11199b2b"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:41.6769772Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:41.6769772Z"}}'
+        sample policy","provisioningState":"Succeeded","memberType":"VirtualNetwork","resourceGuid":"02f35bec-9d1e-4239-8700-40cf11199b2b"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:41.6769772Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:41.6769772Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -130,7 +130,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/staticMembers/TestStaticMember?api-version=2022-01-01
   response:
     body:
-      string: '{"name":"TestStaticMember","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/staticMembers/TestStaticMember","type":"Microsoft.Network/networkManagers/networkGroups/staticMembers","etag":"","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002","provisioningState":"Updating","location":""},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:43.1520229Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:43.1520229Z"}}'
+      string: '{"name":"TestStaticMember","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/staticMembers/TestStaticMember","type":"Microsoft.Network/networkManagers/networkGroups/staticMembers","etag":"","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002","provisioningState":"Updating","location":""},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:43.1520229Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:43.1520229Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -183,7 +183,7 @@ interactions:
   response:
     body:
       string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"A
-        sample policy","provisioningState":"Succeeded","resourceGuid":"0f1bf7a4-8e19-4c62-ab80-babf62145cc6","applyOnNetworkIntentPolicyBasedServices":[],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:44.9838838Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:44.9838838Z"}}'
+        sample policy","provisioningState":"Succeeded","resourceGuid":"0f1bf7a4-8e19-4c62-ab80-babf62145cc6","applyOnNetworkIntentPolicyBasedServices":[],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:44.9838838Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:44.9838838Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -238,7 +238,7 @@ interactions:
   response:
     body:
       string: '{"name":"myTestCollection","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig/ruleCollections/myTestCollection","type":"Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections","etag":"","properties":{"description":"A
-        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:47.2117244Z"}}'
+        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:47.2117244Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -287,7 +287,7 @@ interactions:
   response:
     body:
       string: '{"name":"myTestCollection","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig/ruleCollections/myTestCollection","type":"Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections","etag":"\"49037df7-0000-0200-0000-672e56800000\"","properties":{"description":"A
-        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:47.2117244Z"}}'
+        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:47.2117244Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -334,7 +334,7 @@ interactions:
   response:
     body:
       string: '{"name":"myTestCollection","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig/ruleCollections/myTestCollection","type":"Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections","etag":"\"4903eaf7-0000-0200-0000-672e56810000\"","properties":{"description":"A
-        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:47.2117244Z"}}'
+        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:47.2117244Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -386,7 +386,7 @@ interactions:
   response:
     body:
       string: '{"name":"myTestCollection","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig/ruleCollections/myTestCollection","type":"Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections","etag":"","properties":{"description":"A
-        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:51.2594304Z"}}'
+        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:51.2594304Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -435,7 +435,7 @@ interactions:
   response:
     body:
       string: '{"nextLink":"","value":[{"name":"myTestCollection","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig/ruleCollections/myTestCollection","type":"Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections","etag":"\"490357f8-0000-0200-0000-672e56830000\"","properties":{"description":"A
-        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:51.2594304Z"}}]}'
+        sample policy","appliesToGroups":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"}],"provisioningState":"Succeeded","resourceGuid":"94a6d32d-0258-4544-9696-9652d000d38e"},"systemData":{"createdBy":"aaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2024-11-08T18:20:47.2117244Z","lastModifiedBy":"aaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T18:20:51.2594304Z"}}]}'
     headers:
       cache-control:
       - no-cache

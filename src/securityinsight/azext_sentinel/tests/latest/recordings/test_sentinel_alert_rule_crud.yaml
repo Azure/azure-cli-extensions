@@ -2284,9 +2284,9 @@ interactions:
         that execute processes rarely executed within a workspace with elevated privileges
         may be the victim of a privilege escalation attack.\",\"lastUpdatedDateUTC\":\"2022-03-21T00:00:00Z\",\"createdDateUTC\":\"2022-03-21T00:00:00Z\",\"status\":\"Available\",\"requiredDataConnectors\":[{\"connectorId\":\"SecurityEvents\",\"dataTypes\":[\"SecurityEvents\"]}],\"alertRulesCreatedByTemplateCount\":0}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sentinel_000001/providers/Microsoft.OperationalInsights/workspaces/workspace-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/7249500f-3038-4b83-8549-9cd8dfa2d498\",\"name\":\"7249500f-3038-4b83-8549-9cd8dfa2d498\",\"type\":\"Microsoft.SecurityInsights/AlertRuleTemplates\",\"kind\":\"Scheduled\",\"properties\":{\"queryFrequency\":\"P1D\",\"queryPeriod\":\"P1D\",\"triggerOperator\":\"GreaterThan\",\"triggerThreshold\":0,\"severity\":\"High\",\"query\":\"let
         DomainNames = dynamic([\\\"de-ma.online\\\", \\\"g20saudi.000webhostapp.com\\\",
-        \\\"ksat20.000webhostapp.com\\\"]);\\nlet EmailAddresses = dynamic([\\\"munichconference1962@gmail.com\\\",\\\"munichconference@outlook.de\\\",
-        \\\"munichconference@outlook.com\\\", \\\"t20saudiarabia@gmail.com\\\", \\\"t20saudiarabia@hotmail.com\\\",
-        \\\"t20saudiarabia@outlook.sa\\\"]);\\nlet IPRegex = '[0-9]{1,3}\\\\\\\\.[0-9]{1,3}\\\\\\\\.[0-9]{1,3}\\\\\\\\.[0-9]{1,3}';\\n(union
+        \\\"ksat20.000webhostapp.com\\\"]);\\nlet EmailAddresses = dynamic([\\\"aaaaaaaaaaaaaaaaaaaaaa@foo.com\\\",\\\"aaaaaaaaaaaaaaaaaaa@foo.com\\\",
+        \\\"aaaaaaaaaaaaaaaaaaaa@foo.com\\\", \\\"aaaaaaaaaaaaaaaa@foo.com\\\", \\\"aaaaaaaaaaaaaaaaaa@foo.com\\\",
+        \\\"aaaaaaaaaaaaaaaaa@foo.com\\\"]);\\nlet IPRegex = '[0-9]{1,3}\\\\\\\\.[0-9]{1,3}\\\\\\\\.[0-9]{1,3}\\\\\\\\.[0-9]{1,3}';\\n(union
         isfuzzy=true\\n(CommonSecurityLog \\n| parse Message with * '(' DNSName ')'
         * \\n| extend MessageIP = extract(IPRegex, 0, Message)\\n| extend RequestURLIP
         = extract(IPRegex, 0, Message)\\n| where (isnotempty(DNSName) and DNSName

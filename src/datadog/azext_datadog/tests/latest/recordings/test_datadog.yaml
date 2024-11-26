@@ -125,7 +125,7 @@ interactions:
 - request:
     body: '{"tags": {"Environment": "Dev"}, "location": "eastus2euap", "identity":
       {"type": "SystemAssigned"}, "properties": {"monitoringStatus": "Enabled", "userInfo":
-      {"name": "Alice", "emailAddress": "alice@microsoft.com", "phoneNumber": "123-456-7890"}},
+      {"name": "Alice", "emailAddress": "aaaaaaaaaaa@foo.com", "phoneNumber": "123-456-7890"}},
       "sku": {"name": "drawdown_testing_20200904_Monthly"}}'
     headers:
       Accept:
@@ -1355,7 +1355,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor/listApiKeys?api-version=2021-03-01
   response:
     body:
-      string: '{"value":[{"createdBy":"alice@microsoft.com","name":"Azure Admin User
+      string: '{"value":[{"createdBy":"aaaaaaaaaaa@foo.com","name":"Azure Admin User
         API Key","key":"bbbbbbbbbbaaaaaaaaaaa","created":"2020-10-17 21:09:39"}],"nextLink":null}'
     headers:
       cache-control:
@@ -1561,7 +1561,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor?api-version=2021-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"Microsoft.Datadog/monitors","sku":{"name":"drawdown_testing_20200904_Monthly"},"location":"eastus2euap","tags":{"environment":"Dev2"},"systemData":{"createdBy":"alice@microsoft.com","createdByType":"User","createdAt":"2020-10-17T21:08:18.7403557Z","lastModifiedBy":"ae11f5fb-c627-4eec-b4a0-f7b5969426e5","lastModifiedByType":"Application","lastModifiedAt":"2020-10-17T21:10:42.1874411Z"},"identity":{"principalId":"396616d4-f232-4f78-b79f-8094954bc32b","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Deleting","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","datadogOrganizationProperties":{"name":"myMonitor","id":"ki0vqopr9ouvv7t2","linkingAuthCode":null,"linkingClientId":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"Microsoft.Datadog/monitors","sku":{"name":"drawdown_testing_20200904_Monthly"},"location":"eastus2euap","tags":{"environment":"Dev2"},"systemData":{"createdBy":"aaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2020-10-17T21:08:18.7403557Z","lastModifiedBy":"ae11f5fb-c627-4eec-b4a0-f7b5969426e5","lastModifiedByType":"Application","lastModifiedAt":"2020-10-17T21:10:42.1874411Z"},"identity":{"principalId":"396616d4-f232-4f78-b79f-8094954bc32b","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Deleting","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","datadogOrganizationProperties":{"name":"myMonitor","id":"ki0vqopr9ouvv7t2","linkingAuthCode":null,"linkingClientId":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
     headers:
       cache-control:
       - no-cache
@@ -2836,7 +2836,7 @@ interactions:
     body: '{"sku": {"name": "Linked"}, "properties": {"monitoringStatus": "Enabled",
       "datadogOrganizationProperties": {"apiKey": "",
       "applicationKey": ""}, "userInfo": {"name":
-      "Alice", "emailAddress": "alice@microsoft.com", "phoneNumber": "123-456-7890"}},
+      "Alice", "emailAddress": "aaaaaaaaaaa@foo.com", "phoneNumber": "123-456-7890"}},
       "identity": {"type": "SystemAssigned"}, "tags": {"Environment": "Dev"}, "location":
       "eastus2euap"}'
     headers:
@@ -2862,7 +2862,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor?api-version=2021-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"microsoft.datadog/monitors","sku":{"name":"Linked"},"location":"eastus2euap","tags":{"Environment":"Dev"},"systemData":{"createdBy":"limgu@microsoft.com","createdByType":"User","createdAt":"2021-03-27T00:45:46.8072643Z","lastModifiedBy":"limgu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-27T00:45:46.8072643Z"},"identity":{"principalId":"1c358b6b-d136-4835-8cb2-ba3245c00a5e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Accepted","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Provisioning","datadogOrganizationProperties":{"name":"myMonitor","id":null,"linkingAuthCode":null,"linkingClientId":null,"redirectUri":null,"apiKey":null,"applicationKey":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"microsoft.datadog/monitors","sku":{"name":"Linked"},"location":"eastus2euap","tags":{"Environment":"Dev"},"systemData":{"createdBy":"aaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2021-03-27T00:45:46.8072643Z","lastModifiedBy":"aaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-27T00:45:46.8072643Z"},"identity":{"principalId":"1c358b6b-d136-4835-8cb2-ba3245c00a5e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Accepted","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Provisioning","datadogOrganizationProperties":{"name":"myMonitor","id":null,"linkingAuthCode":null,"linkingClientId":null,"redirectUri":null,"apiKey":null,"applicationKey":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/providers/Microsoft.Datadog/locations/EASTUS2EUAP/operationStatuses/c94d288c-892f-48d2-9f30-b38ae92caee2?api-version=2021-03-01
@@ -2964,7 +2964,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor?api-version=2021-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"microsoft.datadog/monitors","sku":{"name":"Linked"},"location":"eastus2euap","tags":{"Environment":"Dev"},"systemData":{"createdBy":"limgu@microsoft.com","createdByType":"User","createdAt":"2021-03-27T00:45:46.8072643Z","lastModifiedBy":"ae11f5fb-c627-4eec-b4a0-f7b5969426e5","lastModifiedByType":"Application","lastModifiedAt":"2021-03-27T00:45:59.5597746Z"},"identity":{"principalId":"1c358b6b-d136-4835-8cb2-ba3245c00a5e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","datadogOrganizationProperties":{"name":"test325212","id":"ndvplqultx44t044","linkingAuthCode":null,"linkingClientId":null,"redirectUri":null,"apiKey":null,"applicationKey":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"microsoft.datadog/monitors","sku":{"name":"Linked"},"location":"eastus2euap","tags":{"Environment":"Dev"},"systemData":{"createdBy":"aaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2021-03-27T00:45:46.8072643Z","lastModifiedBy":"ae11f5fb-c627-4eec-b4a0-f7b5969426e5","lastModifiedByType":"Application","lastModifiedAt":"2021-03-27T00:45:59.5597746Z"},"identity":{"principalId":"1c358b6b-d136-4835-8cb2-ba3245c00a5e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","datadogOrganizationProperties":{"name":"test325212","id":"ndvplqultx44t044","linkingAuthCode":null,"linkingClientId":null,"redirectUri":null,"apiKey":null,"applicationKey":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
     headers:
       cache-control:
       - no-cache
@@ -3066,7 +3066,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor?api-version=2021-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"microsoft.datadog/monitors","sku":{"name":"Linked"},"location":"eastus2euap","tags":{"Environment":"Dev"},"systemData":{"createdBy":"limgu@microsoft.com","createdByType":"User","createdAt":"2021-03-27T00:45:46.8072643Z","lastModifiedBy":"ae11f5fb-c627-4eec-b4a0-f7b5969426e5","lastModifiedByType":"Application","lastModifiedAt":"2021-03-27T00:45:59.5597746Z"},"identity":{"principalId":"1c358b6b-d136-4835-8cb2-ba3245c00a5e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","datadogOrganizationProperties":{"name":"test325212","id":"ndvplqultx44t044","linkingAuthCode":null,"linkingClientId":null,"redirectUri":null,"apiKey":null,"applicationKey":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor","name":"myMonitor","type":"microsoft.datadog/monitors","sku":{"name":"Linked"},"location":"eastus2euap","tags":{"Environment":"Dev"},"systemData":{"createdBy":"aaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2021-03-27T00:45:46.8072643Z","lastModifiedBy":"ae11f5fb-c627-4eec-b4a0-f7b5969426e5","lastModifiedByType":"Application","lastModifiedAt":"2021-03-27T00:45:59.5597746Z"},"identity":{"principalId":"1c358b6b-d136-4835-8cb2-ba3245c00a5e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","datadogOrganizationProperties":{"name":"test325212","id":"ndvplqultx44t044","linkingAuthCode":null,"linkingClientId":null,"redirectUri":null,"apiKey":null,"applicationKey":null,"enterpriseAppId":null},"userInfo":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
     headers:
       cache-control:
       - no-cache

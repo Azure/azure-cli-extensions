@@ -55,7 +55,7 @@ interactions:
     body: '{"properties": {"advancedDiagnosticConsent": "No", "contactDetails": {"country":
       "USA", "firstName": "Foo", "lastName": "Bar", "preferredContactMethod": "email",
       "preferredSupportLanguage": "en-us", "preferredTimeZone": "Pacific Standard
-      Time", "primaryEmailAddress": "azengcase@microsoft.com"}, "description": "test
+      Time", "primaryEmailAddress": "aaaaaaaaaaaaaaa@foo.com"}, "description": "test
       ticket from python cli test. Do not assign and close after a day.", "problemClassificationId":
       "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f",
       "severity": "minimal", "title": "test ticket from python cli test. Do not assign
@@ -228,7 +228,7 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:01:55Z","expirationTime":"2024-05-13T15:02:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Azure
         Internal","supportPlanDisplayName":"Azure Support Plan - Internal","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs","fileWorkspaceName":"2405100010003340","supportTicketId":"2405100010003340","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:01:51Z","createdDate":"2024-05-10T19:01:55Z","modifiedDate":"2024-05-10T19:02:05Z"}}'
@@ -362,7 +362,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"body": "test body for communication posted from azure
-      python cli", "sender": "rushar@microsoft.com", "subject": "test subject for
+      python cli", "sender": "aaaaaaaaaaaa@foo.com", "subject": "test subject for
       communication posted from azure python cli"}}'
     headers:
       Accept:
@@ -525,7 +525,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"rushar@microsoft.com","subject":"test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"aaaaaaaaaaaa@foo.com","subject":"test
         subject for communication posted from azur... - TrackingID#2405100010003340","body":"<pre>test
         body for communication posted from azure python cli</pre>","createdDate":"2024-05-10T19:02:32Z"}}'
     headers:
@@ -574,7 +574,7 @@ interactions:
       string: "{\"value\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002\"\
         ,\"name\":\"test_communication_from_cli_000002\",\"type\":\"Microsoft.Support/communications\"\
         ,\"properties\":{\"communicationType\":\"Web\",\"communicationDirection\"\
-        :\"Outbound\",\"sender\":\"rushar@microsoft.com\",\"subject\":\"test subject\
+        :\"Outbound\",\"sender\":\"aaaaaaaaaaaa@foo.com\",\"subject\":\"test subject\
         \ for communication posted from azur... - TrackingID#2405100010003340\",\"\
         body\":\"<pre>test body for communication posted from azure python cli</pre>\"\
         ,\"createdDate\":\"2024-05-10T19:02:32Z\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/7c3a62c2-ff0e-ef11-9f8a-00224833c206\"\
@@ -718,7 +718,7 @@ interactions:
         \ 5.4pt\\\">\\n<div>\\n<div style=\\\"text-align:center\\\"><span style=\\\
         \"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\"><span style=\\\
         \"font-family:Calibri,sans-serif\\\"><span><span style=\\\"font-family:'Segoe\
-        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">azengcase@microsoft.com</span></span></span></span></span></span></span></div>\\\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">aaaaaaaaaaaaaaa@foo.com</span></span></span></span></span></span></span></div>\\\
         n</div>\\n</td>\\n</tr>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\"\
         \ style=\\\"border:none; background:white; width:40.0%; padding:2.85pt 5.4pt\
         \ 2.85pt 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span style=\\\
@@ -857,7 +857,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"rushar@microsoft.com","subject":"test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002","name":"test_communication_from_cli_000002","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"aaaaaaaaaaaa@foo.com","subject":"test
         subject for communication posted from azur... - TrackingID#2405100010003340","body":"<pre>test
         body for communication posted from azure python cli</pre>","createdDate":"2024-05-10T19:02:32Z"}}'
     headers:
@@ -911,7 +911,7 @@ interactions:
         \ cost is not loading for me\",\"severity\":\"Minimal\",\"require24X7Response\"\
         :false,\"enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Foo\",\"\
         lastName\":\"Bar\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\"\
-        :\"azengcase@microsoft.com\",\"preferredTimeZone\":\"Pacific Standard Time\"\
+        :\"aaaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"Pacific Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"serviceLevelAgreement\"\
         :{\"startTime\":\"2024-05-10T19:01:55Z\",\"expirationTime\":\"2024-05-13T15:02:00Z\"\
         ,\"slaMinutes\":480},\"supportEngineer\":{},\"supportPlanType\":\"Azure Internal\"\
@@ -930,9 +930,9 @@ interactions:
         \ cost is not loading for me\",\"severity\":\"Minimal\",\"require24X7Response\"\
         :false,\"enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Foo\",\"\
         lastName\":\"Bar\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\"\
-        :\"azengcase@microsoft.com\",\"phoneNumber\":\"123-456-7890\",\"preferredTimeZone\"\
+        :\"aaaaaaaaaaaaaaa@foo.com\",\"phoneNumber\":\"123-456-7890\",\"preferredTimeZone\"\
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
-        :\"en-US\"},\"supportEngineer\":{\"emailAddress\":\"v-hugofa@microsoft.com\"\
+        :\"en-US\"},\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaa@foo.com\"\
         },\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\":\"Azure\
         \ Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\"\
         :\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
@@ -949,10 +949,10 @@ interactions:
         \ cost is not loading for me\",\"severity\":\"Minimal\",\"require24X7Response\"\
         :false,\"enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Foo\",\"\
         lastName\":\"Bar\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\"\
-        :\"azengcase@microsoft.com\",\"preferredTimeZone\":\"Pacific Standard Time\"\
+        :\"aaaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"Pacific Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"serviceLevelAgreement\"\
         :{\"startTime\":\"2024-05-10T15:15:34Z\",\"expirationTime\":\"2024-05-10T23:15:34Z\"\
-        ,\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\":\"v-gokaranam@microsoft.com\"\
+        ,\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaaaaa@foo.com\"\
         },\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\":\"Azure\
         \ Support Plan - Internal\",\"advancedDiagnosticConsent\":\"No\",\"isTemporaryTicket\"\
         :\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
@@ -970,10 +970,10 @@ interactions:
         \ Dedicated Host\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"\
         enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Anika\",\"lastName\"\
         :\"Islam\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"\
-        anikaislam@microsoft.com\",\"preferredTimeZone\":\"Eastern Standard Time\"\
+        aaaaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"Eastern Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"serviceLevelAgreement\"\
         :{\"startTime\":\"2024-05-10T15:04:38Z\",\"expirationTime\":\"2024-05-10T23:04:38Z\"\
-        ,\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\":\"jamesshaw@microsoft.com\"\
+        ,\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaaa@foo.com\"\
         },\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\":\"Azure\
         \ Support Plan - Internal\",\"advancedDiagnosticConsent\":\"No\",\"isTemporaryTicket\"\
         :\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
@@ -989,12 +989,12 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"preferredTimeZone\":\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Akanksha-test/providers/microsoft.cdn/profiles/testcdnverizon\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-05-09T21:32:37Z\",\"expirationTime\"\
         :\"2024-05-10T17:33:00Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"v-laksingh@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2405090040013460\",\"supportTicketId\":\"2405090040013460\"\
@@ -1012,7 +1012,7 @@ interactions:
         \ I need to increase a Microsoft Purview limit\",\"severity\":\"Minimal\"\
         ,\"require24X7Response\":false,\"enrollmentId\":\"\",\"contactDetails\":{\"\
         firstName\":\"Will\",\"lastName\":\"Cho\",\"preferredContactMethod\":\"Email\"\
-        ,\"primaryEmailAddress\":\"willcho@microsoft.com\",\"preferredTimeZone\":\"\
+        ,\"primaryEmailAddress\":\"aaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"\
         Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\":\"\
         en-US\"},\"quotaTicketDetails\":{\"quotaChangeRequestVersion\":\"1.0\",\"\
         quotaChangeRequests\":[{\"region\":\"westeurope\",\"payload\":\"{\\\"QuotaBucket\\\
@@ -1034,7 +1034,7 @@ interactions:
         \"answer\\\":{\\\"displayValue\\\":\\\"6\\\",\\\"value\\\":6,\\\"type\\\"\
         :\\\"number\\\"}}]}\",\"serviceLevelAgreement\":{\"startTime\":\"2024-05-06T15:29:16Z\"\
         ,\"expirationTime\":\"2024-05-06T23:29:16Z\",\"slaMinutes\":480},\"supportEngineer\"\
-        :{\"emailAddress\":\"v-alsatish@microsoft.com\"},\"supportPlanType\":\"Azure\
+        :{\"emailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure\
         \ Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
@@ -1050,12 +1050,12 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"preferredTimeZone\":\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Akanksha-test/providers/microsoft.cdn/profiles/testcdnverizon\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-05-06T14:51:24Z\",\"expirationTime\"\
         :\"2024-05-06T22:51:24Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"kenleyshaw@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2405060040006277\",\"supportTicketId\":\"2405060040006277\"\
@@ -1076,7 +1076,7 @@ interactions:
         \ to connect using RDP or SSH port\",\"severity\":\"Minimal\",\"require24X7Response\"\
         :false,\"enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Jorge\",\"\
         lastName\":\"Bernal\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\"\
-        :\"jorgebe@microsoft.com\",\"preferredTimeZone\":\"Eastern Standard Time\"\
+        :\"aaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"Eastern Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"technicalTicketDetails\"\
         :{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/actest/providers/Microsoft.Compute/virtualMachines/actest\"\
         },\"problemScopingQuestions\":\"{\\\"articleId\\\":\\\"b4b6273d-558e-4f2d-ab00-36a830ea0025\\\
@@ -1104,7 +1104,7 @@ interactions:
         \"value\\\":\\\"2024-04-30T20:37:00.397Z\\\",\\\"type\\\":\\\"datetime\\\"\
         }}]}\",\"serviceLevelAgreement\":{\"startTime\":\"2024-04-30T20:38:30Z\",\"\
         expirationTime\":\"2024-05-01T16:39:00Z\",\"slaMinutes\":480},\"supportEngineer\"\
-        :{\"emailAddress\":\"jorgebe@microsoft.com\"},\"supportPlanType\":\"Azure\
+        :{\"emailAddress\":\"aaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure\
         \ Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
@@ -1124,7 +1124,7 @@ interactions:
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"serviceLevelAgreement\":{\"startTime\":\"2024-04-26T02:23:36Z\"\
         ,\"expirationTime\":\"2024-04-26T17:00:00Z\",\"slaMinutes\":240},\"supportEngineer\"\
-        :{\"emailAddress\":\"v-janghoyang@microsoft.com\"},\"supportPlanType\":\"\
+        :{\"emailAddress\":\"aaaaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"\
         Azure Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
@@ -1144,7 +1144,7 @@ interactions:
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"serviceLevelAgreement\":{\"startTime\":\"2024-04-26T02:18:05Z\"\
         ,\"expirationTime\":\"2024-04-26T17:00:00Z\",\"slaMinutes\":240},\"supportEngineer\"\
-        :{\"emailAddress\":\"v-mohanvay@microsoft.com\"},\"supportPlanType\":\"Azure\
+        :{\"emailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure\
         \ Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
@@ -1168,7 +1168,7 @@ interactions:
         \ / Unable to sign-in to an application due to MFA\",\"severity\":\"Minimal\"\
         ,\"require24X7Response\":false,\"enrollmentId\":\"\",\"contactDetails\":{\"\
         firstName\":\"Devin\",\"lastName\":\"Stoen\",\"preferredContactMethod\":\"\
-        Email\",\"primaryEmailAddress\":\"devin.stoen10@gmail.com\",\"phoneNumber\"\
+        Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaa@foo.com\",\"phoneNumber\"\
         :\"4255124083\",\"preferredTimeZone\":\"Pacific Standard Time\",\"country\"\
         :\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"problemScopingQuestions\"\
         :\"{\\\"articleId\\\":\\\"dc21287a-b8ec-48c3-b6bf-4b8d4dab65cc\\\",\\\"scopingDetails\\\
@@ -1196,7 +1196,7 @@ interactions:
         orderId\\\":9,\\\"inputType\\\":\\\"nonstatic\\\",\\\"answer\\\":{\\\"displayValue\\\
         \":\\\"\\\",\\\"value\\\":\\\"\\\",\\\"type\\\":\\\"\\\"}}]}\",\"serviceLevelAgreement\"\
         :{\"startTime\":\"2024-04-23T01:54:39Z\",\"expirationTime\":\"2024-04-23T21:00:00Z\"\
-        ,\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\":\"v-dungvu@microsoft.com\"\
+        ,\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaa@foo.com\"\
         },\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\":\"Azure\
         \ Support Plan - Internal\",\"advancedDiagnosticConsent\":\"No\",\"isTemporaryTicket\"\
         :\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
@@ -1214,12 +1214,12 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"preferredTimeZone\":\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Akanksha-test/providers/microsoft.cdn/profiles/testcdnverizon\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-04-17T18:53:44Z\",\"expirationTime\"\
         :\"2024-04-18T14:54:00Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"kenleyshaw@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2404170040011907\",\"supportTicketId\":\"2404170040011907\"\
@@ -1234,12 +1234,12 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"preferredTimeZone\":\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Akanksha-test/providers/microsoft.cdn/profiles/testcdnverizon\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-04-08T21:23:00Z\",\"expirationTime\"\
         :\"2024-04-09T17:23:00Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"kenleyshaw@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2404080040013413\",\"supportTicketId\":\"2404080040013413\"\
@@ -1255,12 +1255,12 @@ interactions:
         \ while streaming\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"\
         enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\"\
         :\"Shaw\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"\
-        kenleyshaw@microsoft.com\",\"preferredTimeZone\":\"Eastern Standard Time\"\
+        aaaaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"Eastern Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"technicalTicketDetails\"\
         :{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/df-SupportRP/providers/microsoft.cdn/profiles/SupportExtensionCdnTest\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-04-03T18:21:54Z\",\"expirationTime\"\
         :\"2024-04-04T14:22:00Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"kenleyshaw@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2404030040011675\",\"supportTicketId\":\"2404030040011675\"\
@@ -1275,12 +1275,12 @@ interactions:
         \ Managed backup\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"\
         enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"firstName\",\"lastName\"\
         :\"lastName\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\"\
-        :\"vimunuku@microsoft.com\",\"preferredTimeZone\":\"Pacific Standard Time\"\
+        :\"aaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\":\"Pacific Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"technicalTicketDetails\"\
         :{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ACTEST/providers/Microsoft.Compute/virtualMachines/ACTEST\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-03-19T20:33:07Z\",\"expirationTime\"\
         :\"2024-03-20T16:34:00Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"grhuang@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2403190010004435\",\"supportTicketId\":\"2403190010004435\"\
@@ -1293,7 +1293,7 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Test Support Topic 1\",\"severity\"\
         :\"Minimal\",\"require24X7Response\":false,\"enrollmentId\":\"\",\"contactDetails\"\
         :{\"firstName\":\"first\",\"lastName\":\"last\",\"preferredContactMethod\"\
-        :\"Email\",\"primaryEmailAddress\":\"grhuang@microsoft.com\",\"preferredTimeZone\"\
+        :\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\"\
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"serviceLevelAgreement\":{\"startTime\":\"2024-03-04T21:09:15Z\"\
         ,\"expirationTime\":\"2024-03-05T17:10:00Z\",\"slaMinutes\":480},\"supportEngineer\"\
@@ -1310,7 +1310,7 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Test Support Topic 1\",\"severity\"\
         :\"Minimal\",\"require24X7Response\":false,\"enrollmentId\":\"\",\"contactDetails\"\
         :{\"firstName\":\"first\",\"lastName\":\"last\",\"preferredContactMethod\"\
-        :\"Email\",\"primaryEmailAddress\":\"grhuang@microsoft.com\",\"preferredTimeZone\"\
+        :\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\"\
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"serviceLevelAgreement\":{\"startTime\":\"2024-03-04T21:01:58Z\"\
         ,\"expirationTime\":\"2024-03-05T17:02:00Z\",\"slaMinutes\":480},\"supportEngineer\"\
@@ -1329,11 +1329,11 @@ interactions:
         :\"\",\"problemClassificationDisplayName\":\"\",\"severity\":\"Minimal\",\"\
         require24X7Response\":false,\"enrollmentId\":\"\",\"contactDetails\":{\"firstName\"\
         :\"Michael\",\"lastName\":\"Simons AZURE\",\"preferredContactMethod\":\"Email\"\
-        ,\"primaryEmailAddress\":\"misimons@microsoft.com\",\"preferredTimeZone\"\
+        ,\"primaryEmailAddress\":\"aaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\"\
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"serviceLevelAgreement\":{\"startTime\":\"2024-02-23T17:37:12Z\"\
         ,\"expirationTime\":\"2024-02-24T01:37:12Z\",\"slaMinutes\":480},\"supportEngineer\"\
-        :{\"emailAddress\":\"misimons@microsoft.com\"},\"supportPlanType\":\"Azure\
+        :{\"emailAddress\":\"aaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure\
         \ Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
@@ -1349,12 +1349,12 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"preferredTimeZone\":\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/df-SupportRP/providers/microsoft.cdn/profiles/SupportExtensionCdnTest/endpoints/supportextensioncdn\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-02-14T17:01:02Z\",\"expirationTime\"\
         :\"2024-02-15T01:01:02Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"kenleyshaw@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Q0I3N0ZBLThCMTctNEVBQi05NDkzLUI2NURBQ0U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
         ,\"fileWorkspaceName\":\"2402140040008351\",\"supportTicketId\":\"2402140040008351\"\
@@ -1370,9 +1370,9 @@ interactions:
         \ my invoice (bill)\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"\
         enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Grace\",\"lastName\"\
         :\"Huang\",\"preferredContactMethod\":\"Phone\",\"primaryEmailAddress\":\"\
-        grhuang@microsoft.com\",\"phoneNumber\":\"112115678\",\"preferredTimeZone\"\
+        aaaaaaaaaaaaa@foo.com\",\"phoneNumber\":\"112115678\",\"preferredTimeZone\"\
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
-        :\"en-US\"},\"supportEngineer\":{\"emailAddress\":\"grhuang@microsoft.com\"\
+        :\"en-US\"},\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaa@foo.com\"\
         },\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\":\"Azure\
         \ Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"isTemporaryTicket\"\
         :\"No\",\"supportPlanId\":\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Q0I3N0ZBLThCMTctNEVBQi05NDkzLUI2NURBQ0U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
@@ -1401,7 +1401,7 @@ interactions:
         \ about invoice pay\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"\
         enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Atavur Rahaman\",\"\
         lastName\":\"Mohammad\",\"preferredContactMethod\":\"Email\",\"primaryEmailAddress\"\
-        :\"atmohammad@microsoft.com\",\"phoneNumber\":\"0000000000\",\"preferredTimeZone\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\",\"phoneNumber\":\"0000000000\",\"preferredTimeZone\"\
         :\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"problemScopingQuestions\":\"{\\\"articleId\\\":\\\"payment-switchtopaybyinvoice-problemscopingquestions\\\
         \",\\\"scopingDetails\\\":[{\\\"question\\\":\\\"Problem Start Date\\\",\\\
@@ -1455,7 +1455,7 @@ interactions:
         \ Invoice option over credit card\\\",\\\"controlId\\\":\\\"justification_details\\\
         \",\\\"orderId\\\":14,\\\"inputType\\\":\\\"nonstatic\\\",\\\"answer\\\":{\\\
         \"displayValue\\\":\\\"\\\",\\\"value\\\":\\\"\\\",\\\"type\\\":\\\"\\\"}}]}\"\
-        ,\"supportEngineer\":{\"emailAddress\":\"atmohammad@microsoft.com\"},\"supportPlanType\"\
+        ,\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\"\
         :\"Azure Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"No\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Q0I3N0ZBLThCMTctNEVBQi05NDkzLUI2NURBQ0U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
@@ -1477,7 +1477,7 @@ interactions:
         \ than expected\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"\
         enrollmentId\":\"\",\"contactDetails\":{\"firstName\":\"Atavur Rahaman\",\"\
         lastName\":\"Mohammad\",\"preferredContactMethod\":\"Phone\",\"primaryEmailAddress\"\
-        :\"atmohammad@microsoft.com\",\"phoneNumber\":\"0000000000\",\"preferredTimeZone\"\
+        :\"aaaaaaaaaaaaaaaa@foo.com\",\"phoneNumber\":\"0000000000\",\"preferredTimeZone\"\
         :\"Eastern Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/actest/providers/Microsoft.Compute/virtualMachines/actest\"\
         },\"problemScopingQuestions\":\"{\\\"articleId\\\":\\\"b4b6273d-558e-4f2d-ab00-36a830ea0058\\\
@@ -1503,7 +1503,7 @@ interactions:
         controlId\\\":\\\"problem_description\\\",\\\"orderId\\\":6,\\\"inputType\\\
         \":\\\"nonstatic\\\",\\\"answer\\\":{\\\"displayValue\\\":\\\"test\\\",\\\"\
         value\\\":\\\"test\\\",\\\"type\\\":\\\"string\\\"}}]}\",\"supportEngineer\"\
-        :{\"emailAddress\":\"atmohammad@microsoft.com\"},\"supportPlanType\":\"Azure\
+        :{\"emailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure\
         \ Internal\",\"supportPlanDisplayName\":\"Azure Support Plan - Internal\"\
         ,\"advancedDiagnosticConsent\":\"No\",\"isTemporaryTicket\":\"No\",\"supportPlanId\"\
         :\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Q0I3N0ZBLThCMTctNEVBQi05NDkzLUI2NURBQ0U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
@@ -1518,11 +1518,11 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Phone\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Phone\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"phoneNumber\":\"112112\",\"preferredTimeZone\":\"Pacific Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"technicalTicketDetails\"\
         :{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/df-SupportRP/providers/microsoft.cdn/profiles/SupportExtensionCdnTest/endpoints/supportextensioncdn\"\
-        },\"supportEngineer\":{\"emailAddress\":\"kenleyshaw@microsoft.com\"},\"supportPlanType\"\
+        },\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\"\
         :\"Azure Internal\",\"supportPlanDisplayName\":\"Unknown\",\"advancedDiagnosticConsent\"\
         :\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2401180040006675\",\"supportTicketId\":\"2401180040006675\"\
@@ -1538,12 +1538,12 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Configuration / Standard Rules Engine\"\
         ,\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\":\"\
         \",\"contactDetails\":{\"firstName\":\"Aditi\",\"lastName\":\"Takle\",\"preferredContactMethod\"\
-        :\"Email\",\"primaryEmailAddress\":\"Aditi.Takle@microsoft.com\",\"preferredTimeZone\"\
+        :\"Email\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaaa@foo.com\",\"preferredTimeZone\"\
         :\"Pacific Standard Time\",\"country\":\"USA\",\"preferredSupportLanguage\"\
         :\"en-US\"},\"technicalTicketDetails\":{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Akanksha-test/providers/microsoft.cdn/profiles/testcdnverizon\"\
         },\"serviceLevelAgreement\":{\"startTime\":\"2024-01-12T18:12:24Z\",\"expirationTime\"\
         :\"2024-01-16T14:13:00Z\",\"slaMinutes\":480},\"supportEngineer\":{\"emailAddress\"\
-        :\"adtakle@microsoft.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
+        :\"aaaaaaaaaaaaa@foo.com\"},\"supportPlanType\":\"Azure Internal\",\"supportPlanDisplayName\"\
         :\"Azure Support Plan - Internal\",\"advancedDiagnosticConsent\":\"Yes\",\"\
         isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkVBLFN1YnNjcmlwdGlvbklkOjc2Q0I3N0ZBLThCMTctNEVBQi05NDkzLUI2NURBQ0U5OTgxMyxPZmZlcklkOk1TLUFaUi0wMDE1UCxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMs\"\
         ,\"fileWorkspaceName\":\"2401120010003136\",\"supportTicketId\":\"2401120010003136\"\
@@ -1557,11 +1557,11 @@ interactions:
         ,\"problemClassificationDisplayName\":\"Availability and Performance / CDN\
         \ Analytics\",\"severity\":\"Minimal\",\"require24X7Response\":false,\"enrollmentId\"\
         :\"\",\"contactDetails\":{\"firstName\":\"Kenley\",\"lastName\":\"Shaw\",\"\
-        preferredContactMethod\":\"Phone\",\"primaryEmailAddress\":\"kenleyshaw@microsoft.com\"\
+        preferredContactMethod\":\"Phone\",\"primaryEmailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"\
         ,\"phoneNumber\":\"123123\",\"preferredTimeZone\":\"Pacific Standard Time\"\
         ,\"country\":\"USA\",\"preferredSupportLanguage\":\"en-US\"},\"technicalTicketDetails\"\
         :{\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/df-SupportRP/providers/microsoft.cdn/profiles/SupportExtensionCdnTest/endpoints/supportextensioncdn\"\
-        },\"supportEngineer\":{\"emailAddress\":\"kenleyshaw@microsoft.com\"},\"supportPlanType\"\
+        },\"supportEngineer\":{\"emailAddress\":\"aaaaaaaaaaaaaaaa@foo.com\"},\"supportPlanType\"\
         :\"Azure Internal\",\"supportPlanDisplayName\":\"Unknown\",\"advancedDiagnosticConsent\"\
         :\"Yes\",\"isTemporaryTicket\":\"No\",\"supportPlanId\":\"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs\"\
         ,\"fileWorkspaceName\":\"2401120040009600\",\"supportTicketId\":\"2401120040009600\"\
@@ -1620,7 +1620,7 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Moderate","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Moderate","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:01:55Z","expirationTime":"2024-05-13T15:02:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Azure
         Internal","supportPlanDisplayName":"Azure Support Plan - Internal","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs","fileWorkspaceName":"2405100010003340","supportTicketId":"2405100010003340","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:01:51Z","createdDate":"2024-05-10T19:01:55Z","modifiedDate":"2024-05-10T19:02:35Z"}}'
@@ -1675,7 +1675,7 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:01:55Z","expirationTime":"2024-05-13T15:02:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Azure
         Internal","supportPlanDisplayName":"Azure Support Plan - Internal","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs","fileWorkspaceName":"2405100010003340","supportTicketId":"2405100010003340","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:01:51Z","createdDate":"2024-05-10T19:01:55Z","modifiedDate":"2024-05-10T19:03:14Z"}}'
@@ -1730,7 +1730,7 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:01:55Z","expirationTime":"2024-05-10T23:03:19Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Azure
         Internal","supportPlanDisplayName":"Azure Support Plan - Internal","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs","fileWorkspaceName":"2405100010003340","supportTicketId":"2405100010003340","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:01:51Z","createdDate":"2024-05-10T19:01:55Z","modifiedDate":"2024-05-10T19:03:19Z"}}'
@@ -1785,7 +1785,7 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:01:55Z","expirationTime":"2024-05-10T23:03:19Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Azure
         Internal","supportPlanDisplayName":"Azure Support Plan - Internal","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs","fileWorkspaceName":"2405100010003340","supportTicketId":"2405100010003340","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"closed","problemStartTime":"2024-05-10T19:01:51Z","createdDate":"2024-05-10T19:01:55Z","modifiedDate":"2024-05-10T19:03:27Z"}}'
@@ -1836,7 +1836,7 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:01:55Z","expirationTime":"2024-05-13T15:04:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Azure
         Internal","supportPlanDisplayName":"Azure Support Plan - Internal","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkF6dXJlTW9kZXJuLFN1YnNjcmlwdGlvbklkOjc2Y2I3N2ZhLThiMTctNGVhYi05NDkzLWI2NWRhY2U5OTgxMyxTb3ZlcmVpZ25DbG91ZDpQdWJsaWMsT2ZmZXJJZDpNUy1BWlItMDAxNVAs","fileWorkspaceName":"2405100010003340","supportTicketId":"2405100010003340","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Closed","problemStartTime":"2024-05-10T19:01:51Z","createdDate":"2024-05-10T19:01:55Z","modifiedDate":"2024-05-10T19:03:27Z"}}'
