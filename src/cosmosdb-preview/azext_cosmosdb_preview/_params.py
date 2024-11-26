@@ -558,6 +558,14 @@ def load_arguments(self, _):
         c.argument('target_partition_info', nargs='+', action=CreateTargetPhysicalPartitionThroughputInfoAction, required=False, help="information about desired target physical partition throughput eg: 0=1200 1=1200")
         c.argument('source_partition_info', nargs='+', action=CreateSourcePhysicalPartitionThroughputInfoAction, required=False, help="space separated source physical partition ids eg: 1 2")
 
+    # Sql container throughput
+    with self.argument_context('cosmosdb sql container throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('database_name', database_name_type)
+        c.argument('container_name', options_list=['--name', '-n'], help="Container name")
+        c.argument('throughput', type=int, help='The throughput of SQL container (RU/s).')
+        c.argument('max_throughput', max_throughput_type)
+
     # Mongodb collection partition retrieve throughput
     with self.argument_context('cosmosdb mongodb collection retrieve-partition-throughput') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
