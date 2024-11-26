@@ -24,7 +24,7 @@ from ._client_factory import handle_raw_exception
 logger = get_logger(__name__)
 
 
-class JavaComponentDecorator(BaseResource):
+class BaseJavaComponentDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.java_component_def = deepcopy(JavaComponentModel)
@@ -65,52 +65,27 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_route_yaml(self):
         return self.get_param("route_yaml")
 
-    def construct_payload(self):
-        self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
-        self.set_up_service_bindings()
-        self.set_up_unbind_service_bindings()
-        self.set_up_gateway_route()
-        if self.get_argument_min_replicas() is not None and self.get_argument_max_replicas() is not None:
-            self.java_component_def["properties"]["scale"] = {
-                "minReplicas": self.get_argument_min_replicas(),
-                "maxReplicas": self.get_argument_max_replicas()
-            }
+    def get_argument_set_configurations(self):
+        return self.get_param("set_configurations")
+    
+    def get_argument_replace_configurations(self):
+        return self.get_param("replace_configurations")
+    
+    def get_argument_remove_configurations(self):
+        return self.get_param("remove_configurations")
+    
+    def get_argument_remove_all_configurations(self):
+        return self.get_param("remove_all_configurations")
+    
+    def set_configuration_with_legacy_way(self):
+        return self.get_argument_configuration() is not None
 
-        if self.get_argument_configuration() is not None:
-            configuration_list = []
-            for pair in self.get_argument_configuration():
-                key_val = pair.split('=', 1)
-                if len(key_val) != 2:
-                    raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
-                configuration_list.append({
-                    "propertyName": key_val[0],
-                    "value": key_val[1]
-                })
-            self.java_component_def["properties"]["configurations"] = configuration_list
+    def set_configuration_with_new_way(self):
+        return self.get_argument_set_configurations is not None or self.get_argument_replace_configurations() is not None or self.get_argument_remove_configurations() is not None or self.get_argument_remove_all_configurations() is not None
 
-    def create(self):
-        try:
-            return self.client.create(
-                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
-                java_component_envelope=self.java_component_def,
-                no_wait=self.get_argument_no_wait())
-        except Exception as e:
-            stringErr = str(e)
-            if "JavaComponentsNotAllowedForSubscription" in stringErr:
-                raise CLIInternalError("Java Components operations are not allowed for the subscription, please use 'az feature register --namespace  Microsoft.App --name JavaComponentsPreview' to register this feature.")
-
-            handle_raw_exception(e)
-
-    def update(self):
-        try:
-            return self.client.update(
-                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
-                java_component_envelope=self.java_component_def,
-                no_wait=self.get_argument_no_wait())
-        except Exception as e:
-            handle_raw_exception(e)
+    def validate_configurations(self):
+        if self.set_configuration_with_legacy_way() and self.set_configuration_with_new_way():
+            raise ValidationError("--configuration could not be specify alongside any of the following options: --set-configurations, --replace-configurations, --remove-configurations, or --remove-all-configurations. Use either --configuration alone or other mentioned parameters as needed.")
 
     def show(self):
         try:
@@ -136,6 +111,34 @@ class JavaComponentDecorator(BaseResource):
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
+    
+    def set_up_compoment_type(self):
+        self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
+
+    def set_up_replicas(self):
+        if self.get_argument_min_replicas() is not None and self.get_argument_max_replicas() is not None:
+            self.java_component_def["properties"]["scale"] = {
+                "minReplicas": self.get_argument_min_replicas(),
+                "maxReplicas": self.get_argument_max_replicas()
+            }
+
+    def parse_configurations(self, configurations):
+        configuration_list = []
+        for pair in configurations:
+            key_val = pair.split('=', 1)
+            if len(key_val) != 2:
+                raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+            configuration_list.append({
+                "propertyName": key_val[0],
+                "value": key_val[1]
+            })
+        return configuration_list
+
+
+    def set_up_configurations(self):
+        if self.get_argument_configuration() is not None:
+            configuration_list = self.parse_configurations(self.get_argument_configuration())
+            self.java_component_def["properties"]["configurations"] = configuration_list
 
     def set_up_service_bindings(self):
         if self.get_argument_service_bindings() is not None:
@@ -214,3 +217,141 @@ class JavaComponentDecorator(BaseResource):
                 raise ValidationError(f'The "filters" field must be a list in route {route["id"]}. Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
         return yaml_scg_routes.get('springCloudGatewayRoutes')
+
+class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
+    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
+        super().__init__(cmd, client, raw_parameters, models)
+
+    def create(self):
+        try:
+            return self.client.create(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
+                java_component_envelope=self.java_component_def,
+                no_wait=self.get_argument_no_wait())
+        except Exception as e:
+            stringErr = str(e)
+            if "JavaComponentsNotAllowedForSubscription" in stringErr:
+                raise CLIInternalError("Java Components operations are not allowed for the subscription, please use 'az feature register --namespace  Microsoft.App --name JavaComponentsPreview' to register this feature.")
+
+            handle_raw_exception(e)
+    
+    # need handle already set configurations
+    def set_up_set_configurations(self):
+        if self.get_argument_set_configurations() is not None:
+            configuration_list = self.parse_configurations(self.get_argument_set_configurations())
+            self.java_component_def["properties"]["configurations"] = configuration_list
+
+    def set_up_replace_configurations(self):
+        if self.get_argument_replace_configurations() is not None:
+            raise ValidationError('Cannot specify "--replace-configurations" when creating a new Java component.')
+
+    def set_up_remove_configurations(self):
+        if self.get_argument_remove_configurations() is not None:
+            raise ValidationError('Cannot specify "--remove-configurations" when creating a new Java component.')
+    
+    def set_up_remove_all_configurations(self):
+        if self.get_argument_remove_all_configurations() is not None:
+            raise ValidationError('Cannot specify "--remove-all-configurations" when creating a new Java component.')
+
+    def construct_payload(self):
+        self.set_up_compoment_type()
+        self.set_up_service_bindings()
+        self.set_up_unbind_service_bindings()
+        self.set_up_gateway_route()
+        self.set_up_replicas()
+        self.validate_configurations()
+        # --configuration
+        self.set_up_configurations()
+        # --set-configuration
+        self.set_up_set_configurations()
+
+
+class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
+    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
+        super().__init__(cmd, client, raw_parameters, models)
+        current_java_component_def = self.show()
+        if "configurations" not in current_java_component_def["properties"] or not current_java_component_def["properties"]["configurations"]:
+            self.java_component_def["properties"]["configurations"] = []
+        else:
+            self.java_component_def["properties"]["configurations"] = current_java_component_def["properties"]["configurations"]
+    
+    def update(self):
+        try:
+            return self.client.update(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
+                java_component_envelope=self.java_component_def,
+                no_wait=self.get_argument_no_wait())
+        except Exception as e:
+            handle_raw_exception(e)
+
+    def add_or_update_configurations(self, existing_configurations, new_configurations):
+        for new_configuration in new_configurations:
+
+            # Check if updating existing configuration
+            is_existing = False
+            for existing_configuration in existing_configurations:
+                if existing_configuration["propertyName"].lower() == new_configuration["propertyName"].lower():
+                    is_existing = True
+
+                    if "value" in new_configuration:
+                        existing_configuration["value"] = new_configuration["value"]
+                    else:
+                        existing_configuration["value"] = None
+
+            # If not updating existing configuration, add it as a new configuration
+            if not is_existing:
+                existing_configurations.append(new_configuration)
+
+
+    def remove_configurations(self, existing_configurations, remove_configurations):
+        for remove_configuration in remove_configurations:
+
+            # Check if updating existing configuration
+            is_existing = False
+            for i, value in enumerate(existing_configurations):
+                existing_configuration = value
+                if existing_configuration["propertyName"].lower() == remove_configuration.lower():
+                    is_existing = True
+                    existing_configurations.pop(i)
+                    break
+
+            # If not updating existing configuration, add it as a new configuration
+            if not is_existing:
+                logger.warning("configuration {} does not exist.".format(remove_configuration))
+
+    def set_up_set_configurations(self):
+        if self.get_argument_set_configurations() is not None:
+            configuration_list = self.parse_configurations(self.get_argument_set_configurations())
+            self.add_or_update_configurations(self.java_component_def["properties"]["configurations"], configuration_list)
+
+    def set_up_replace_configurations(self):
+        if self.get_argument_replace_configurations() is not None:
+            configuration_list = self.parse_configurations(self.get_argument_replace_configurations())
+            self.java_component_def["properties"]["configurations"] = []
+            self.add_or_update_configurations(self.java_component_def["properties"]["configurations"], configuration_list)
+    
+    def set_up_remove_configurations(self):
+        if self.get_argument_remove_configurations() is not None:
+            self.remove_configurations(self.java_component_def["properties"]["configurations"], self.get_argument_remove_configurations())
+
+    def set_up_remove_all_configurations(self):
+        if self.get_argument_remove_all_configurations():
+            self.java_component_def["properties"]["configurations"] = []
+
+    def construct_payload(self):
+        self.set_up_compoment_type()
+        self.set_up_service_bindings()
+        self.set_up_unbind_service_bindings()
+        self.set_up_gateway_route()
+        self.set_up_replicas()
+        self.validate_configurations()
+        # --configuration
+        self.set_up_configurations()
+        # --set-configuration
+        self.set_up_set_configurations()
+        self.set_up_replace_configurations()
+        self.set_up_remove_configurations()
+        self.set_up_remove_all_configurations()
+
