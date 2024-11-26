@@ -2,7 +2,7 @@
 Release History
 ===============
 
-2.1.0
+2.0.1
 ++++++
 Fixed 2 Unbound variable bugs in `vm repair create` and improved the code documentation.  
 
