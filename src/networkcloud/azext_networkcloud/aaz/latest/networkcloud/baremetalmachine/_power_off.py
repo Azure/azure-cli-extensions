@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine power-off",
-    is_preview=True,
 )
 class PowerOff(AAZCommand):
     """Power off the provided bare metal machine.

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud racksku show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the properties of the provided rack SKU.
