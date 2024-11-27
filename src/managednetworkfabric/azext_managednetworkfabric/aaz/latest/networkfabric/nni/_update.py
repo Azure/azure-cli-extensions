@@ -133,6 +133,9 @@ class Update(AAZCommand):
         layer2_configuration.interfaces = AAZListArg(
             options=["interfaces"],
             help="List of network device interfaces resource IDs.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         layer2_configuration.mtu = AAZIntArg(
             options=["mtu"],
@@ -154,10 +157,16 @@ class Update(AAZCommand):
         npb_static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Routes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         npb_static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Routes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         bfd_configuration = cls._args_schema.npb_static_route_configuration.bfd_configuration
@@ -231,6 +240,9 @@ class Update(AAZCommand):
             options=["next-hop"],
             help="List of next hop addresses.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         static_route_properties_update.prefix = AAZStrArg(
             options=["prefix"],

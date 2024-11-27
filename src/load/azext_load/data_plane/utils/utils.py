@@ -257,6 +257,18 @@ def parse_env(envs):
     return env_dict
 
 
+def create_autostop_criteria_from_args(autostop, error_rate, time_window):
+    if (autostop is None and error_rate is None and time_window is None):
+        return None
+    autostop_criteria = {}
+    autostop_criteria["autoStopDisabled"] = not autostop if autostop is not None else False
+    if error_rate is not None:
+        autostop_criteria["errorRate"] = error_rate
+    if time_window is not None:
+        autostop_criteria["errorRateTimeWindowInSeconds"] = time_window
+    return autostop_criteria
+
+
 def load_yaml(file_path):
     logger.debug("Loading yaml file: %s", file_path)
     try:
@@ -347,6 +359,25 @@ def convert_yaml_to_test(data):
                 new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                     "requestName"
                 ] = name
+    if data.get("autoStop") is not None:
+        if (isinstance(data["autoStop"], str)):
+            # pylint: disable-next=protected-access
+            validators._validate_autostop_disable_configfile(data["autoStop"])
+            new_body["autoStopCriteria"] = {
+                "autoStopDisabled": True,
+            }
+        else:
+            error_rate = data["autoStop"].get("errorPercentage")
+            time_window = data["autoStop"].get("timeWindow")
+            # pylint: disable-next=protected-access
+            validators._validate_autostop_criteria_configfile(error_rate, time_window)
+            new_body["autoStopCriteria"] = {
+                "autoStopDisabled": False,
+            }
+            if error_rate is not None:
+                new_body["autoStopCriteria"]["errorRate"] = error_rate
+            if time_window is not None:
+                new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = time_window
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
@@ -367,6 +398,7 @@ def create_or_update_test_with_config(
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
+    autostop_criteria=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -473,6 +505,35 @@ def create_or_update_test_with_config(
         new_body["loadTestConfiguration"]["splitAllCSVs"] = yaml_test_body[
             "loadTestConfiguration"
         ]["splitAllCSVs"]
+
+    new_body["autoStopCriteria"] = {}
+    if autostop_criteria is not None:
+        new_body["autoStopCriteria"] = autostop_criteria
+    elif yaml_test_body.get("autoStopCriteria") is not None:
+        new_body["autoStopCriteria"] = yaml_test_body["autoStopCriteria"]
+    if (
+        new_body["autoStopCriteria"].get("autoStopDisabled") is None
+        and body.get("autoStopCriteria", {}).get("autoStopDisabled") is not None
+    ):
+        new_body["autoStopCriteria"]["autoStopDisabled"] = body["autoStopCriteria"]["autoStopDisabled"]
+    if (
+        new_body["autoStopCriteria"].get("errorRate") is None
+        and body.get("autoStopCriteria", {}).get("errorRate") is not None
+    ):
+        new_body["autoStopCriteria"]["errorRate"] = body["autoStopCriteria"]["errorRate"]
+    if (
+        new_body["autoStopCriteria"].get("errorRateTimeWindowInSeconds") is None
+        and body.get("autoStopCriteria", {}).get("errorRateTimeWindowInSeconds") is not None
+    ):
+        new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = \
+            body["autoStopCriteria"]["errorRateTimeWindowInSeconds"]
+
+    if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
+        logger.warning(
+            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "This can lead to incoming charges for an incorrectly configured test."
+        )
+
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
@@ -492,6 +553,7 @@ def create_or_update_test_without_config(
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
+    autostop_criteria=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -558,6 +620,32 @@ def create_or_update_test_without_config(
         ]["splitAllCSVs"]
     if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
+
+    new_body["autoStopCriteria"] = {}
+    if autostop_criteria is not None:
+        new_body["autoStopCriteria"] = autostop_criteria
+    if (
+        new_body["autoStopCriteria"].get("autoStopDisabled") is None
+        and body.get("autoStopCriteria", {}).get("autoStopDisabled") is not None
+    ):
+        new_body["autoStopCriteria"]["autoStopDisabled"] = body["autoStopCriteria"]["autoStopDisabled"]
+    if (
+        new_body["autoStopCriteria"].get("errorRate") is None
+        and body.get("autoStopCriteria", {}).get("errorRate") is not None
+    ):
+        new_body["autoStopCriteria"]["errorRate"] = body["autoStopCriteria"]["errorRate"]
+    if (
+        new_body["autoStopCriteria"].get("errorRateTimeWindowInSeconds") is None
+        and body.get("autoStopCriteria", {}).get("errorRateTimeWindowInSeconds") is not None
+    ):
+        new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = \
+            body["autoStopCriteria"]["errorRateTimeWindowInSeconds"]
+    if (new_body["autoStopCriteria"].get("autoStopDisabled") is True):
+        logger.warning(
+            "Auto stop is disabled. Error rate and time window will be ignored. "
+            "This can lead to incoming charges for an incorrectly configured test."
+        )
+
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 

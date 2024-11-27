@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster feature update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided Kubernetes cluster feature.
