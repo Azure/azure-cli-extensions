@@ -42,7 +42,8 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            generate_randomized_cert_name, load_cert_file,
                                                            trigger_workflow, _ensure_identity_resource_id,
                                                            AppType, _get_existing_secrets, store_as_secret_and_return_secret_ref,
-                                                           set_managed_identity, is_registry_msi_system)
+                                                           set_managed_identity, is_registry_msi_system, _get_app_from_revision,
+                                                           _validate_revision_name)
 from azure.cli.command_modules.containerapp._models import (
     RegistryCredentials as RegistryCredentialsModel,
 )
@@ -3412,5 +3413,128 @@ def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, n
         r = ContainerAppPreviewClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         return r["properties"]["configuration"]["activeRevisionsMode"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False, yes=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not name:
+        name = _get_app_from_revision(revision)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to add labels.")
+
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic'] if 'traffic' in containerapp_def['properties']['configuration']['ingress'] else {}
+
+    _validate_revision_name(cmd, revision, resource_group_name, name)
+
+    is_labels_mode = containerapp_def['properties']['configuration']['activeRevisionsMode'] == 'Labels'
+
+    label_added = False
+    for weight in traffic_weight:
+        if "label" in weight and weight["label"].lower() == label.lower():
+            r_name = "latest" if "latestRevision" in weight and weight["latestRevision"] else weight["revisionName"]
+            if not yes and r_name.lower() != revision.lower():
+                msg = f"A weight with the label '{label}' already exists. Remove existing label '{label}' from '{r_name}' and add to '{revision}'?"
+                if is_labels_mode:
+                    msg = f"Label '{label}' already exists with revision '{r_name}'. Replace '{r_name}' with '{revision}'?"
+                if not prompt_y_n(msg, default="n"):
+                    raise ArgumentUsageError("Usage Error: cannot specify existing label without agreeing to update values.")
+
+            # in labels mode we update the revision assigned to the label, not the label assigned to the revision
+            if is_labels_mode:
+                weight["revisionName"] = revision
+                label_added = True
+            else:
+                weight["label"] = None
+
+        if "latestRevision" in weight:
+            if revision.lower() == "latest" and weight["latestRevision"]:
+                label_added = True
+                weight["label"] = label
+        elif not is_labels_mode:
+            if revision.lower() == weight["revisionName"].lower():
+                label_added = True
+                weight["label"] = label
+
+    if not label_added:
+        traffic_weight.append({
+            "revisionName": revision if revision.lower() != "latest" else None,
+            "weight": 0,
+            "latestRevision": revision.lower() == "latest",
+            "label": label
+        })
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to remove labels.")
+
+    traffic_list = containerapp_def['properties']['configuration']['ingress']['traffic']
+
+    label_removed = False
+    is_labels_mode = containerapp_def['properties']['configuration']['activeRevisionsMode'] == 'Labels'
+
+    new_traffic_list = []
+    for traffic in traffic_list:
+        if "label" in traffic and traffic["label"].lower() == label.lower():
+            label_removed = True
+            # in labels mode we remove the whole entry, otherwise just clear the label.
+            if not is_labels_mode:
+                traffic["label"] = None
+                new_traffic_list.append(traffic)
+        else:
+            new_traffic_list.append(traffic)
+
+    if not label_removed:
+        raise ValidationError("Please specify a label name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = new_traffic_list
+
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
     except Exception as e:
         handle_raw_exception(e)

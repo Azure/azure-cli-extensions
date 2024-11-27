@@ -277,3 +277,7 @@ def load_command_table(self, args):
 
     with self.command_group('containerapp revision') as g:
         g.custom_command('set-mode', 'set_revision_mode', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp revision label') as g:
+        g.custom_command('add', 'add_revision_label')
+        g.custom_command('remove', 'remove_revision_label')

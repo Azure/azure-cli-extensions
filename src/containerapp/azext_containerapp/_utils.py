@@ -828,3 +828,27 @@ def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_iden
                         raise UnauthorizedError(message) from e
                 else:
                     time.sleep(5)
+
+
+def _get_app_from_revision(revision):
+    if not revision:
+        raise ValidationError('Invalid revision. Revision must not be empty')
+    if revision.lower() == "latest":
+        raise ValidationError('Please provide a name for your containerapp. Cannot lookup name of containerapp without a full revision name.')
+    revision = revision.split('--')
+    revision.pop()
+    revision = "--".join(revision)
+    return revision
+
+
+def _validate_revision_name(cmd, revision, resource_group_name, name):
+    if revision.lower() == "latest":
+        return
+    revision_def = None
+    try:
+        revision_def = ContainerAppPreviewClient.show_revision(cmd, resource_group_name, name, revision)
+    except:  # pylint: disable=bare-except
+        pass
+
+    if not revision_def:
+        raise ValidationError(f"Revision '{revision}' is not a valid revision name.")
