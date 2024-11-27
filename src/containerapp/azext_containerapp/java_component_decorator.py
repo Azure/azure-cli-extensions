@@ -67,23 +67,23 @@ class BaseJavaComponentDecorator(BaseResource):
 
     def get_argument_set_configurations(self):
         return self.get_param("set_configurations")
-    
+
     def get_argument_replace_configurations(self):
         return self.get_param("replace_configurations")
-    
+
     def get_argument_remove_configurations(self):
         return self.get_param("remove_configurations")
-    
+
     def get_argument_remove_all_configurations(self):
         return self.get_param("remove_all_configurations")
-    
+
     def set_configuration_with_legacy_way(self):
         return self.get_argument_configuration() is not None
 
     def set_configuration_with_new_way(self):
-        return self.get_argument_set_configurations is not None or self.get_argument_replace_configurations() is not None or self.get_argument_remove_configurations() is not None or self.get_argument_remove_all_configurations() is not None
+        return self.get_argument_set_configurations() is not None or self.get_argument_replace_configurations() is not None or self.get_argument_remove_configurations() is not None or self.get_argument_remove_all_configurations() is not None
 
-    def validate_configurations(self):
+    def validate_configurations(self):    
         if self.set_configuration_with_legacy_way() and self.set_configuration_with_new_way():
             raise ValidationError("--configuration could not be specify alongside any of the following options: --set-configurations, --replace-configurations, --remove-configurations, or --remove-all-configurations. Use either --configuration alone or other mentioned parameters as needed.")
 
@@ -111,7 +111,7 @@ class BaseJavaComponentDecorator(BaseResource):
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
-    
+
     def set_up_compoment_type(self):
         self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
 
@@ -133,7 +133,6 @@ class BaseJavaComponentDecorator(BaseResource):
                 "value": key_val[1]
             })
         return configuration_list
-
 
     def set_up_configurations(self):
         if self.get_argument_configuration() is not None:
@@ -218,6 +217,7 @@ class BaseJavaComponentDecorator(BaseResource):
 
         return yaml_scg_routes.get('springCloudGatewayRoutes')
 
+
 class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
@@ -235,7 +235,7 @@ class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
                 raise CLIInternalError("Java Components operations are not allowed for the subscription, please use 'az feature register --namespace  Microsoft.App --name JavaComponentsPreview' to register this feature.")
 
             handle_raw_exception(e)
-    
+
     # need handle already set configurations
     def set_up_set_configurations(self):
         if self.get_argument_set_configurations() is not None:
@@ -249,7 +249,7 @@ class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
     def set_up_remove_configurations(self):
         if self.get_argument_remove_configurations() is not None:
             raise ValidationError('Cannot specify "--remove-configurations" when creating a new Java component.')
-    
+
     def set_up_remove_all_configurations(self):
         if self.get_argument_remove_all_configurations() is not None:
             raise ValidationError('Cannot specify "--remove-all-configurations" when creating a new Java component.')
@@ -275,7 +275,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
             self.java_component_def["properties"]["configurations"] = []
         else:
             self.java_component_def["properties"]["configurations"] = current_java_component_def["properties"]["configurations"]
-    
+
     def update(self):
         try:
             return self.client.update(
@@ -304,7 +304,6 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
             if not is_existing:
                 existing_configurations.append(new_configuration)
 
-
     def remove_configurations(self, existing_configurations, remove_configurations):
         for remove_configuration in remove_configurations:
 
@@ -331,7 +330,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
             configuration_list = self.parse_configurations(self.get_argument_replace_configurations())
             self.java_component_def["properties"]["configurations"] = []
             self.add_or_update_configurations(self.java_component_def["properties"]["configurations"], configuration_list)
-    
+
     def set_up_remove_configurations(self):
         if self.get_argument_remove_configurations() is not None:
             self.remove_configurations(self.java_component_def["properties"]["configurations"], self.get_argument_remove_configurations())
@@ -354,4 +353,3 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
         self.set_up_replace_configurations()
         self.set_up_remove_configurations()
         self.set_up_remove_all_configurations()
-

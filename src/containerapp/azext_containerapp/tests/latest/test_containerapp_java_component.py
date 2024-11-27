@@ -279,7 +279,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
 
     @ResourceGroupPreparer(location='eastus')
     def test_containerapp_java_component_configurations(self, resource_group):
-                location = TEST_LOCATION
+        location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
