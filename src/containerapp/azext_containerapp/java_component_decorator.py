@@ -219,8 +219,6 @@ class BaseJavaComponentDecorator(BaseResource):
 
 
 class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
-    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
-        super().__init__(cmd, client, raw_parameters, models)
 
     def create(self):
         try:
