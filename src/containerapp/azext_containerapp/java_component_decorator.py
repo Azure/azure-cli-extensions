@@ -83,7 +83,7 @@ class BaseJavaComponentDecorator(BaseResource):
     def set_configuration_with_new_way(self):
         return self.get_argument_set_configurations() is not None or self.get_argument_replace_configurations() is not None or self.get_argument_remove_configurations() is not None or self.get_argument_remove_all_configurations() is not None
 
-    def validate_configurations(self):  
+    def validate_configurations(self):
         if self.set_configuration_with_legacy_way() and self.set_configuration_with_new_way():
             raise ValidationError("--configuration could not be specify alongside any of the following options: --set-configurations, --replace-configurations, --remove-configurations, or --remove-all-configurations. Use either --configuration alone or other mentioned parameters as needed.")
 
