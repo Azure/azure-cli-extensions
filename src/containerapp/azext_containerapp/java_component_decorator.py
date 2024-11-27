@@ -240,18 +240,6 @@ class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
             configuration_list = self.parse_configurations(self.get_argument_set_configurations())
             self.java_component_def["properties"]["configurations"] = configuration_list
 
-    def set_up_replace_configurations(self):
-        if self.get_argument_replace_configurations() is not None:
-            raise ValidationError('Cannot specify "--replace-configurations" when creating a new Java component.')
-
-    def set_up_remove_configurations(self):
-        if self.get_argument_remove_configurations() is not None:
-            raise ValidationError('Cannot specify "--remove-configurations" when creating a new Java component.')
-
-    def set_up_remove_all_configurations(self):
-        if self.get_argument_remove_all_configurations() is not None:
-            raise ValidationError('Cannot specify "--remove-all-configurations" when creating a new Java component.')
-
     def construct_payload(self):
         self.set_up_compoment_type()
         self.set_up_service_bindings()
@@ -296,7 +284,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
                     if "value" in new_configuration:
                         existing_configuration["value"] = new_configuration["value"]
                     else:
-                        existing_configuration["value"] = None
+                        raise ValidationError("Value must be provided for configuration {}.".format(new_configuration["propertyName"]))
 
             # If not updating existing configuration, add it as a new configuration
             if not is_existing:
