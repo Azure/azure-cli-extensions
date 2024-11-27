@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.0
+1.0.1
 ++++++
 * Support for the new stable API version (2024-09-20).
 
