@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Support for the new stable API version (2024-09-20).
+
 1.0.0
 ++++++
 * Moved deidservice under healthcareapis
