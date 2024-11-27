@@ -2205,7 +2205,7 @@ helps['containerapp label-history'] = """
     examples:
     - name: Show Label History
       text: |
-          az containerapp label-history show -n my-containerapp -g MyResourceGroup -l LabelName
+          az containerapp label-history show -n my-containerapp -g MyResourceGroup --label LabelName
 """
 
 helps['containerapp label-history list'] = """
@@ -2223,5 +2223,5 @@ helps['containerapp label-history show'] = """
     examples:
     - name: Show Label History
       text: |
-          az containerapp label-history show -n my-containerapp -g MyResourceGroup -l LabelName
+          az containerapp label-history show -n my-containerapp -g MyResourceGroup --label LabelName
 """

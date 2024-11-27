@@ -477,7 +477,7 @@ def load_arguments(self, _):
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
 
     with self.argument_context('containerapp label-history show') as c:
-        c.argument('label', options_list=['--label', '-l'], help="The label name to show history for.")
+        c.argument('label', help="The label name to show history for.")
 
     with self.argument_context('containerapp revision set-mode') as c:
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
