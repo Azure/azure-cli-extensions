@@ -85,7 +85,9 @@ class BaseJavaComponentDecorator(BaseResource):
 
     def validate_configurations(self):
         if self.set_configuration_with_legacy_way() and self.set_configuration_with_new_way():
-            raise ValidationError("--configuration could not be specify alongside any of the following options: --set-configurations, --replace-configurations, --remove-configurations, or --remove-all-configurations. Use either --configuration alone or other mentioned parameters as needed.")
+            raise ValidationError(
+                "The --configuration option cannot be used together with --[set|replace|remove|remove-all]-configurations. Please use --[set|replace|remove|remove-all]-configurations for better flexibility and clarity."
+            )
 
     def show(self):
         try:
@@ -121,17 +123,28 @@ class BaseJavaComponentDecorator(BaseResource):
                 "minReplicas": self.get_argument_min_replicas(),
                 "maxReplicas": self.get_argument_max_replicas()
             }
-
+    
     def parse_configurations(self, configurations):
         configuration_list = []
+        seen_properties = set()  # Track already seen property names
+
         for pair in configurations:
             key_val = pair.split('=', 1)
             if len(key_val) != 2:
                 raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+            
+            property_name = key_val[0].lower()
+
+            # Check for duplicate propertyName
+            if property_name in seen_properties:
+                raise ValidationError(f"Duplicate propertyName found: \"{key_val[0].lower()}\". Each propertyName must be unique with case-insensitive.")
+
+            seen_properties.add(property_name)
             configuration_list.append({
                 "propertyName": key_val[0],
                 "value": key_val[1]
             })
+
         return configuration_list
 
     def set_up_configurations(self):
@@ -274,17 +287,15 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
 
     def add_or_update_configurations(self, existing_configurations, new_configurations):
         for new_configuration in new_configurations:
+            if "value" not in new_configuration:
+                raise ValidationError("Value must be provided for configuration {}.".format(new_configuration["propertyName"]))
 
             # Check if updating existing configuration
             is_existing = False
             for existing_configuration in existing_configurations:
                 if existing_configuration["propertyName"].lower() == new_configuration["propertyName"].lower():
                     is_existing = True
-
-                    if "value" in new_configuration:
-                        existing_configuration["value"] = new_configuration["value"]
-                    else:
-                        raise ValidationError("Value must be provided for configuration {}.".format(new_configuration["propertyName"]))
+                    existing_configuration["value"] = new_configuration["value"]
 
             # If not updating existing configuration, add it as a new configuration
             if not is_existing:
@@ -293,7 +304,6 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
     def remove_configurations(self, existing_configurations, remove_configurations):
         for remove_configuration in remove_configurations:
 
-            # Check if updating existing configuration
             is_existing = False
             for i, value in enumerate(existing_configurations):
                 existing_configuration = value
@@ -302,7 +312,6 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
                     existing_configurations.pop(i)
                     break
 
-            # If not updating existing configuration, add it as a new configuration
             if not is_existing:
                 logger.warning("configuration {} does not exist.".format(remove_configuration))
 
@@ -314,8 +323,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
     def set_up_replace_configurations(self):
         if self.get_argument_replace_configurations() is not None:
             configuration_list = self.parse_configurations(self.get_argument_replace_configurations())
-            self.java_component_def["properties"]["configurations"] = []
-            self.add_or_update_configurations(self.java_component_def["properties"]["configurations"], configuration_list)
+            self.java_component_def["properties"]["configurations"] = configuration_list
 
     def set_up_remove_configurations(self):
         if self.get_argument_remove_configurations() is not None:
