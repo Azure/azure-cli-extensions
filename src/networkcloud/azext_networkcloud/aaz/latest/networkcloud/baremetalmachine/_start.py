@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine start",
-    is_preview=True,
 )
 class Start(AAZCommand):
     """Start the provided bare metal machine.
