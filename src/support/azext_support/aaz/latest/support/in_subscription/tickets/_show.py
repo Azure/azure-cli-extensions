@@ -48,6 +48,7 @@ class Show(AAZCommand):
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 

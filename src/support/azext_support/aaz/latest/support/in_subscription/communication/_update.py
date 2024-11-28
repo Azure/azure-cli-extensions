@@ -45,11 +45,13 @@ class Update(AAZCommand):
             options=["-n", "--name", "--communication-name"],
             help="Communication name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.ticket_name = AAZStrArg(
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
+            id_part="name",
         )
         _args_schema.communication_body = AAZStrArg(
             options=["--communication-body"],

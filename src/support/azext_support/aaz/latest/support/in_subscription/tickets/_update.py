@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "support in-subscription tickets update",
 )
 class Update(AAZCommand):
-    """Update API allows you to update the severity level, ticket status, advanced diagnostic consent, secondary consent, and your contact information in the support ticket.<br/><br/>Note: The severity levels cannot be changed if a support ticket is actively being worked upon by an Azure support engineer. In such a case, contact your support engineer to request severity update by adding a new communication using the Communications API.
+    """Update API allows you to update the severity level, ticket status, advanced diagnostic consent, secondary consent, and your contact information in the support ticket.  Note: The severity levels cannot be changed if a support ticket is actively being worked upon by an Azure support engineer. In such a case, contact your support engineer to request severity update by adding a new communication using the Communications API.
 
     :example: Update support ticket severity.
         az support in-subscription tickets update --ticket-name "TestTicketName" --severity "moderate"
@@ -62,6 +62,7 @@ class Update(AAZCommand):
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
+            id_part="name",
         )
         _args_schema.advanced_diagnostic_consent = AAZStrArg(
             options=["--advanced-diagnostic-consent"],
