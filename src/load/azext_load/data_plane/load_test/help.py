@@ -37,6 +37,9 @@ examples:
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop-error-rate 80.5 --autostop-time-window 120
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop disable
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop enable
+    - name: Create a test with multi-region load configuration. The region name should be of format accepted by ARM, and should be a region supported by Azure Load Testing. Multi-region load tests can only be run against public endpoints.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --engine-instances 3 --regionwise-engines eastus=1 westus2=1 germanywestcentral=1 --test-plan sample-jmx.jmx
 """
 
 helps[
@@ -82,6 +85,12 @@ examples:
     - name: Update the Key Vault reference identity to system assigned Managed Identity.
       text: |
         az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --keyvault-reference-id null
+    - name: Update autostop criteria.
+      text: |
+        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --autostop-error-rate 90 --autostop-time-window 180
+    - name: Update multi-region load configuration.
+      text: |
+        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --engine-instances 5 --regionwise-engines eastus=2 westus2=1 eastasia=2 
 """
 
 helps[

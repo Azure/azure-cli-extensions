@@ -8,6 +8,7 @@ from azext_load.tests.latest.preparers import LoadTestResourcePreparer
 from azure.cli.testsdk import (
     JMESPathCheck,
     ResourceGroupPreparer,
+    VirtualNetworkPreparer,
     ScenarioTest,
 )
 from knack.log import get_logger
@@ -15,18 +16,27 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 rg_params = {
-    "name_prefix": "clitest-load-",
+    "name_prefix": "clitest-regionalload-",
     "location": "eastus",
     "key": "resource_group",
     "parameter_name": "rg",
     "random_name_length": 30,
 }
 load_params = {
-    "name_prefix": "clitest-load-",
+    "name_prefix": "clitest-regionalload-",
     "location": "eastus",
     "key": "load_test_resource",
     "parameter_name": "load",
     "resource_group_key": "resource_group",
+    "random_name_length": 30,
+}
+vnet_params = {
+    "name_prefix": "clitest-regionalload-",
+    "location": "eastus",
+    "key": "virtual_network",
+    "parameter_name": "vnet",
+    "resource_group_key": "resource_group",
+    "resource_group_parameter_name": "rg",
     "random_name_length": 30,
 }
 
@@ -37,6 +47,7 @@ class LoadTestScenarioRegionalLoad(ScenarioTest):
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
+    @VirtualNetworkPreparer(**vnet_params)
     def test_load_test_regional_load_config(self):
         # VALID: Create a load test with regional load configuration from YAML
         self.kwargs.update(
@@ -401,4 +412,29 @@ class LoadTestScenarioRegionalLoad(ScenarioTest):
             )
         except Exception as e:
             assert "Multi-region load test configuration should not contain duplicate region values" in str(e)
+        
+        # INVALID: Multi-region load test does not support private traffic mode
+        result = self.cmd(
+            "az network vnet subnet list --resource-group {resource_group} --vnet-name {virtual_network}"
+        ).get_output_in_json()
+        subnet_id = result[0]["id"]
+        self.kwargs.update(
+            {
+                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
+                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES,
+                "subnet_id": subnet_id,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--engine-instances {engine_instances} "
+                "--regionwise-engines {regionwise_engines} "
+                "--subnet-id {subnet_id} ",
+            )
+        except Exception as e:
+            assert "You can run multi-region load tests only against public endpoints. Select public test traffic mode to proceed" in str(e)
     
