@@ -90,7 +90,7 @@ examples:
         az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --autostop-error-rate 90 --autostop-time-window 180
     - name: Update multi-region load configuration.
       text: |
-        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --engine-instances 5 --regionwise-engines eastus=2 westus2=1 eastasia=2 
+        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --engine-instances 5 --regionwise-engines eastus=2 westus2=1 eastasia=2
 """
 
 helps[
