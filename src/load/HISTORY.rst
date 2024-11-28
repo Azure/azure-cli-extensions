@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.4.0
+++++++
+* Add support for multi-region load test configuration. Multi-region load test configuration can be set using `--regionwise-engines` argument in 'az load test create' and 'az load test update' commands. Multi-region load test configuration set in YAML config file under key `regionalLoadTestConfig` will also be honoured.
+* Bug fix for `engineInstances` being reset to 1 and not getting backfilled using test's existing configuration when engine instances are not explicitly specified either in YAML config file or CLI argument.
+
 1.3.1
 ++++++
 * Bug fix for `splitAllCSVs` not being honoured from config file due to CLI argument being set as false by default leading to configuration not being selected from the config file.

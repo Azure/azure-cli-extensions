@@ -256,21 +256,6 @@ def parse_env(envs):
     return env_dict
 
 
-def parse_regionwise_loadtest_config(regionwise_loadtest_config):
-    logger.debug("Parsing regionwise load test configuration")
-    regional_load_test_config = []
-    for region_load in regionwise_loadtest_config:
-        region_name = region_load.get("region")
-        if region_name is None or not isinstance(region_name, str):
-            raise RequiredArgumentMissingError("Region name is required of type string")
-        engine_instances = region_load.get("engineInstances")
-        if engine_instances is None or not isinstance(engine_instances, int):
-            raise InvalidArgumentValueError("Engine instances is required of type integer")
-        regional_load_test_config.append({"region": region_name.lower(), "engineInstances": engine_instances})
-    logger.debug("Successfully parsed regionwise load test configuration: %s", regional_load_test_config)
-    return regional_load_test_config
-
-
 def create_autostop_criteria_from_args(autostop, error_rate, time_window):
     if (autostop is None and error_rate is None and time_window is None):
         return None
@@ -317,12 +302,7 @@ def convert_yaml_to_test(data):
     if "subnetId" in data:
         new_body["subnetId"] = data["subnetId"]
 
-    new_body["loadTestConfiguration"] = {}
-    new_body["loadTestConfiguration"]["engineInstances"] = data.get("engineInstances")
-    if data.get("regionalLoadTestConfig") is not None:
-        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = parse_regionwise_loadtest_config(
-            data.get("regionalLoadTestConfig")
-        )
+    new_body["loadTestConfiguration"] = utils_yaml_config.yaml_parse_loadtest_configuration(data=data)
 
     if data.get("certificates"):
         new_body["certificate"] = parse_cert(data.get("certificates"))
@@ -332,14 +312,7 @@ def convert_yaml_to_test(data):
         new_body["environmentVariables"] = parse_env(data.get("env"))
     if data.get("publicIPDisabled"):
         new_body["publicIPDisabled"] = data.get("publicIPDisabled")
-    # quick test and split csv not supported currently in CLI
-    new_body["loadTestConfiguration"]["quickStartTest"] = False
-    if data.get("quickStartTest"):
-        logger.warning(
-            "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
-        )
-    if data.get("splitAllCSVs") is not None:
-        new_body["loadTestConfiguration"]["splitAllCSVs"] = utils_yaml_config.yaml_parse_splitcsv(data=data)
+
     if data.get("failureCriteria"):
         new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
     if data.get("autoStop") is not None:

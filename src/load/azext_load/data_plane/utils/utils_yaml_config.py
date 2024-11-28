@@ -97,3 +97,36 @@ def yaml_parse_failure_criteria(data):
                 "requestName"
             ] = name
     return passfail_criteria
+
+
+def parse_regionwise_loadtest_config(regionwise_loadtest_config):
+    logger.debug("Parsing regionwise load test configuration")
+    regional_load_test_config = []
+    for region_load in regionwise_loadtest_config:
+        region_name = region_load.get("region")
+        if region_name is None or not isinstance(region_name, str):
+            raise InvalidArgumentValueError("Region name is required of type string")
+        engine_instances = region_load.get("engineInstances")
+        if engine_instances is None or not isinstance(engine_instances, int):
+            raise InvalidArgumentValueError("Engine instances is required of type integer")
+        regional_load_test_config.append({"region": region_name.lower(), "engineInstances": engine_instances})
+    logger.debug("Successfully parsed regionwise load test configuration: %s", regional_load_test_config)
+    return regional_load_test_config
+
+
+def yaml_parse_loadtest_configuration(data):
+    load_test_configuration = {}
+    load_test_configuration["engineInstances"] = data.get("engineInstances")
+    if data.get("regionalLoadTestConfig") is not None:
+        load_test_configuration["regionalLoadTestConfig"] = parse_regionwise_loadtest_config(
+            data.get("regionalLoadTestConfig")
+        )
+    # quick test and split csv not supported currently in CLI
+    load_test_configuration["quickStartTest"] = False
+    if data.get("quickStartTest"):
+        logger.warning(
+            "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
+        )
+    if data.get("splitAllCSVs") is not None:
+        load_test_configuration["splitAllCSVs"] = yaml_parse_splitcsv(data=data)
+    return load_test_configuration
