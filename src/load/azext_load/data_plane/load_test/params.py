@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument("autostop", argtypes.autostop)
         c.argument("autostop_error_rate", argtypes.autostop_error_rate)
         c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
+        c.argument("regionwise_engines", argtypes.regionwise_engines)
 
     with self.argument_context("load test update") as c:
         c.argument("load_test_config_file", argtypes.load_test_config_file)
@@ -52,6 +53,7 @@ def load_arguments(self, _):
         c.argument("autostop", argtypes.autostop)
         c.argument("autostop_error_rate", argtypes.autostop_error_rate)
         c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
+        c.argument("regionwise_engines", argtypes.regionwise_engines)
 
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)

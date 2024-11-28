@@ -33,6 +33,27 @@ class LoadConstants:
     INVALID_ZIP_ARTIFACT_WITH_SUBDIR_NAME = "sample-ZIP-artifact-subdir.zip"
     INVALID_ZIP_ARTIFACT_WITH_SUBDIR_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-subdir.zip")
 
+    # Constants for Regional Load Config Unit Tests
+    REGIONAL_LOAD_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-count-mismatch.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-region.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_FLOAT = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-float.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_STRING = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-string.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_NO_PARENT_REGION = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-no-parent-region.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_NO_TOTAL = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-no-total.yaml")
+    ENGINE_INSTANCES = 5
+    REGIONWISE_ENGINES = "germanywestcentral=2 eastus=3"
+    REGIONWISE_ENGINES_1 = "eastus=1"
+    REGIONWISE_ENGINES_2 = '"southcentralus = 4" "eastus = 1"'
+    REGIONWISE_ENGINES_3 = '"southcentralus = 2" "southcentralus = 2" "eastus = 1"'
+    REGIONWISE_ENGINES_INVALID_REGION = "invalidregion=2 eastus=3"
+    REGIONWISE_ENGINES_INVALID_TYPE_FLOAT = "germanywestcentral=2 eastus=3.5"
+    REGIONWISE_ENGINES_INVALID_TYPE_STRING = "germanywestcentral=2 eastus=three"
+    REGIONWISE_ENGINES_NO_PARENT_REGION = "germanywestcentral=2 uksouth=3"
+    REGIONWISE_ENGINES_INVALID_FORMAT_1 = {"germanywestcentral": 2, "eastus": 3}
+    REGIONWISE_ENGINES_INVALID_FORMAT_2 = "germanywestcentral=2 eastus:3"
+    REGIONWISE_ENGINES_INVALID_FORMAT_3 = "=2 eastus=3"
+
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
     ENV_VAR_DURATION_LONG = "120"
@@ -98,6 +119,7 @@ class LoadTestConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     FILE_TEST_ID = "file-test-case"
+    REGIONAL_LOAD_CONFIG_TEST_ID = "regional-load-config-test-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"

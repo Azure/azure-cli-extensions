@@ -464,3 +464,32 @@ def _validate_autostop_criteria_configfile(error_rate, time_window):
         raise InvalidArgumentValueError(
             "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
         )
+
+
+def validate_regionwise_engines(namespace):
+    if namespace.regionwise_engines is None:
+        return
+    if not isinstance(namespace.regionwise_engines, list):
+        raise InvalidArgumentValueError(
+            f"Invalid regionwise-engines type: {type(namespace.regionwise_engines)}. \
+                Expected list in the format of region1=engineCount1 region2=engineCount2"
+        )
+    regionwise_engines = []
+    for item in namespace.regionwise_engines:
+        if not isinstance(item, str) or "=" not in item:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item type: {type(item)}. Expected region=engineCount"
+            )
+        key, value = item.split("=", 1)
+        if not key or not value:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item: {item}. Region or engine count cannot be empty"
+            )
+        try:
+            value = int(value.strip())
+        except ValueError:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item value: {value}. Expected integer"
+            )
+        regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
+    namespace.regionwise_engines = regionwise_engines

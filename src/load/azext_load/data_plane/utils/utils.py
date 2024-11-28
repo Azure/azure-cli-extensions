@@ -257,6 +257,21 @@ def parse_env(envs):
     return env_dict
 
 
+def parse_regionwise_loadtest_config(regionwise_loadtest_config):
+    logger.debug("Parsing regionwise load test configuration")
+    regional_load_test_config = []
+    for region_load in regionwise_loadtest_config:
+        region_name = region_load.get("region")
+        if region_name is None or not isinstance(region_name, str):
+            raise RequiredArgumentMissingError("Region name is required of type string")
+        engine_instances = region_load.get("engineInstances")
+        if engine_instances is None or not isinstance(engine_instances, int):
+            raise InvalidArgumentValueError("Engine instances is required of type integer")
+        regional_load_test_config.append({"region": region_name.lower(), "engineInstances": engine_instances})
+    logger.debug("Successfully parsed regionwise load test configuration: %s", regional_load_test_config)
+    return regional_load_test_config
+
+
 def create_autostop_criteria_from_args(autostop, error_rate, time_window):
     if (autostop is None and error_rate is None and time_window is None):
         return None
@@ -304,9 +319,12 @@ def convert_yaml_to_test(data):
         new_body["subnetId"] = data["subnetId"]
 
     new_body["loadTestConfiguration"] = {}
-    new_body["loadTestConfiguration"]["engineInstances"] = data.get(
-        "engineInstances", 1
-    )
+    new_body["loadTestConfiguration"]["engineInstances"] = data.get("engineInstances")
+    if data.get("regionalLoadTestConfig") is not None:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = parse_regionwise_loadtest_config(
+            data.get("regionalLoadTestConfig")
+        )
+
     if data.get("certificates"):
         new_body["certificate"] = parse_cert(data.get("certificates"))
     if data.get("secrets"):
@@ -399,6 +417,7 @@ def create_or_update_test_with_config(
     split_csv=None,
     disable_public_ip=None,
     autostop_criteria=None,
+    regionwise_engines=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -480,7 +499,25 @@ def create_or_update_test_with_config(
             "loadTestConfiguration"
         ]["engineInstances"]
     else:
-        new_body["loadTestConfiguration"]["engineInstances"] = 1
+        new_body["loadTestConfiguration"]["engineInstances"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("engineInstances", 1)
+    if regionwise_engines:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = regionwise_engines
+    elif (
+        yaml_test_body.get("loadTestConfiguration", {}).get("regionalLoadTestConfig")
+        is not None
+    ):
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = yaml_test_body[
+            "loadTestConfiguration"
+        ]["regionalLoadTestConfig"]
+    else:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("regionalLoadTestConfig")
+    validate_engine_data_with_regionwiseload_data(
+        new_body["loadTestConfiguration"]["engineInstances"],
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"])
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
@@ -554,6 +591,7 @@ def create_or_update_test_without_config(
     split_csv=None,
     disable_public_ip=None,
     autostop_criteria=None,
+    regionwise_engines=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -610,6 +648,15 @@ def create_or_update_test_without_config(
         new_body["loadTestConfiguration"]["engineInstances"] = body.get(
             "loadTestConfiguration", {}
         ).get("engineInstances", 1)
+    if regionwise_engines:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = regionwise_engines
+    else:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("regionalLoadTestConfig")
+    validate_engine_data_with_regionwiseload_data(
+        new_body["loadTestConfiguration"]["engineInstances"],
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"])
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
     if split_csv is not None:
@@ -802,6 +849,19 @@ def upload_files_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+
+
+def validate_engine_data_with_regionwiseload_data(engine_instances, regionwise_engines):
+    if regionwise_engines is None:
+        return
+    total_engines = 0
+    for region in regionwise_engines:
+        total_engines += region["engineInstances"]
+    if total_engines != engine_instances:
+        raise InvalidArgumentValueError(
+            f"Sum of engine instances in regionwise load test configuration ({total_engines}) "
+            f"should be equal to total engine instances ({engine_instances})"
+        )
 
 
 def validate_failure_criteria(failure_criteria):

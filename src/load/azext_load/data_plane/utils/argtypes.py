@@ -362,3 +362,10 @@ autostop_error_rate_time_window = CLIArgumentType(
     validator=validators.validate_autostop_error_rate_time_window,
     help="Time window during which the error percentage should be evaluated in seconds.",
 )
+
+regionwise_engines = CLIArgumentType(
+    options_list=["--regionwise-engines"],
+    validator=validators.validate_regionwise_engines,
+    nargs="+",
+    help="Regionwise engine count in the format of region1=engineCount1 region2=engineCount2 ... The region name should be of format accepted by ARM, and should be a region supported by Azure Load Testing.",
+)
