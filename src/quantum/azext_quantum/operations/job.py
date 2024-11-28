@@ -87,7 +87,14 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     # return
 
     return client.list(info.location, **pagination_params)
-  
+    # # FOR DEV TESTING (Comment-out the "return" above)
+    # response = client.list(info.location, **pagination_params)
+    # print()
+    # for job_details in response:
+    #     print(job_details)
+    #     print()
+    # return response
+
     # # FOR DEV TESTING (Comment-out the "return" above)
     # print()
     # print("query = " + query)
