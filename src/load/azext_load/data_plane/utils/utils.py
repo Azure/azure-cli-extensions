@@ -8,6 +8,7 @@ from enum import EnumMeta
 
 import requests
 import yaml
+from azext_load.data_plane.utils.constants import LoadTestConfigKeys
 from azext_load.data_plane.utils import validators, utils_yaml_config
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 from azure.cli.core.azclierror import (
@@ -290,32 +291,32 @@ def load_yaml(file_path):
 
 def convert_yaml_to_test(data):
     new_body = {}
-    if "displayName" in data:
-        new_body["displayName"] = data["displayName"]
-    if "description" in data:
-        new_body["description"] = data["description"]
+    if LoadTestConfigKeys.DISPLAY_NAME in data:
+        new_body["displayName"] = data[LoadTestConfigKeys.DISPLAY_NAME]
+    if LoadTestConfigKeys.DESCRIPTION in data:
+        new_body["description"] = data[LoadTestConfigKeys.DESCRIPTION]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-    if "keyVaultReferenceIdentity" in data:
-        new_body["keyvaultReferenceIdentityId"] = data["keyVaultReferenceIdentity"]
+    if LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY in data:
+        new_body["keyvaultReferenceIdentityId"] = data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
-    if "subnetId" in data:
-        new_body["subnetId"] = data["subnetId"]
+    if LoadTestConfigKeys.SUBNET_ID in data:
+        new_body["subnetId"] = data[LoadTestConfigKeys.SUBNET_ID]
 
     new_body["loadTestConfiguration"] = utils_yaml_config.yaml_parse_loadtest_configuration(data=data)
 
-    if data.get("certificates"):
-        new_body["certificate"] = parse_cert(data.get("certificates"))
-    if data.get("secrets"):
-        new_body["secrets"] = parse_secrets(data.get("secrets"))
-    if data.get("env"):
-        new_body["environmentVariables"] = parse_env(data.get("env"))
-    if data.get("publicIPDisabled"):
-        new_body["publicIPDisabled"] = data.get("publicIPDisabled")
+    if data.get(LoadTestConfigKeys.CERTIFICATES):
+        new_body["certificate"] = parse_cert(data.get(LoadTestConfigKeys.CERTIFICATES))
+    if data.get(LoadTestConfigKeys.SECRETS):
+        new_body["secrets"] = parse_secrets(data.get(LoadTestConfigKeys.SECRETS))
+    if data.get(LoadTestConfigKeys.ENV):
+        new_body["environmentVariables"] = parse_env(data.get(LoadTestConfigKeys.ENV))
+    if data.get(LoadTestConfigKeys.PUBLIC_IP_DISABLED) is not None:
+        new_body["publicIPDisabled"] = data.get(LoadTestConfigKeys.PUBLIC_IP_DISABLED)
 
-    if data.get("failureCriteria"):
+    if data.get(LoadTestConfigKeys.FAILURE_CRITERIA):
         new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
-    if data.get("autoStop") is not None:
+    if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body

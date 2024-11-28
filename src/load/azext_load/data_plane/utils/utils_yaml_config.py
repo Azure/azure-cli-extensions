@@ -5,6 +5,7 @@
 
 import uuid
 
+from azext_load.data_plane.utils.constants import LoadTestConfigKeys
 from azext_load.data_plane.utils import validators
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
@@ -16,14 +17,14 @@ logger = get_logger(__name__)
 
 
 def yaml_parse_autostop_criteria(data):
-    if (isinstance(data["autoStop"], str)):
+    if (isinstance(data[LoadTestConfigKeys.AUTOSTOP], str)):
         # pylint: disable-next=protected-access
-        validators._validate_autostop_disable_configfile(data["autoStop"])
+        validators._validate_autostop_disable_configfile(data[LoadTestConfigKeys.AUTOSTOP])
         return {
             "autoStopDisabled": True,
         }
-    error_rate = data["autoStop"].get("errorPercentage")
-    time_window = data["autoStop"].get("timeWindow")
+    error_rate = data[LoadTestConfigKeys.AUTOSTOP].get(LoadTestConfigKeys.AUTOSTOP_ERROR_RATE)
+    time_window = data[LoadTestConfigKeys.AUTOSTOP].get(LoadTestConfigKeys.AUTOSTOP_ERROR_RATE_TIME_WINDOW)
     # pylint: disable-next=protected-access
     validators._validate_autostop_criteria_configfile(error_rate, time_window)
     autostop_criteria = {
@@ -37,11 +38,11 @@ def yaml_parse_autostop_criteria(data):
 
 
 def yaml_parse_splitcsv(data):
-    if not isinstance(data.get("splitAllCSVs"), bool):
+    if not isinstance(data.get(LoadTestConfigKeys.SPLIT_CSV), bool):
         raise InvalidArgumentValueError(
             "Invalid value for splitAllCSVs. Allowed values are boolean true or false"
         )
-    return data.get("splitAllCSVs")
+    return data.get(LoadTestConfigKeys.SPLIT_CSV)
 
 
 def validate_failure_criteria(failure_criteria):
@@ -64,7 +65,7 @@ def get_random_uuid():
 def yaml_parse_failure_criteria(data):
     passfail_criteria = {}
     passfail_criteria["passFailMetrics"] = {}
-    for items in data["failureCriteria"]:
+    for items in data[LoadTestConfigKeys.FAILURE_CRITERIA]:
         metric_id = get_random_uuid()
         # check if item is string or dict. if string then no name is provided
         name = None
@@ -103,10 +104,10 @@ def parse_regionwise_loadtest_config(regionwise_loadtest_config):
     logger.debug("Parsing regionwise load test configuration")
     regional_load_test_config = []
     for region_load in regionwise_loadtest_config:
-        region_name = region_load.get("region")
+        region_name = region_load.get(LoadTestConfigKeys.REGION)
         if region_name is None or not isinstance(region_name, str):
             raise InvalidArgumentValueError("Region name is required of type string")
-        engine_instances = region_load.get("engineInstances")
+        engine_instances = region_load.get(LoadTestConfigKeys.ENGINE_INSTANCES)
         if engine_instances is None or not isinstance(engine_instances, int):
             raise InvalidArgumentValueError("Engine instances is required of type integer")
         regional_load_test_config.append({"region": region_name.lower(), "engineInstances": engine_instances})
@@ -116,17 +117,17 @@ def parse_regionwise_loadtest_config(regionwise_loadtest_config):
 
 def yaml_parse_loadtest_configuration(data):
     load_test_configuration = {}
-    load_test_configuration["engineInstances"] = data.get("engineInstances")
-    if data.get("regionalLoadTestConfig") is not None:
+    load_test_configuration["engineInstances"] = data.get(LoadTestConfigKeys.ENGINE_INSTANCES)
+    if data.get(LoadTestConfigKeys.REGIONAL_LOADTEST_CONFIG) is not None:
         load_test_configuration["regionalLoadTestConfig"] = parse_regionwise_loadtest_config(
-            data.get("regionalLoadTestConfig")
+            data.get(LoadTestConfigKeys.REGIONAL_LOADTEST_CONFIG)
         )
     # quick test and split csv not supported currently in CLI
     load_test_configuration["quickStartTest"] = False
-    if data.get("quickStartTest"):
+    if data.get(LoadTestConfigKeys.QUICK_START):
         logger.warning(
             "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
         )
-    if data.get("splitAllCSVs") is not None:
+    if data.get(LoadTestConfigKeys.SPLIT_CSV) is not None:
         load_test_configuration["splitAllCSVs"] = yaml_parse_splitcsv(data=data)
     return load_test_configuration
