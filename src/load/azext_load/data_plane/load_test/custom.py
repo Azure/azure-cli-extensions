@@ -60,8 +60,6 @@ def create_test(
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
-    if split_csv is None:
-        split_csv = False
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is None:

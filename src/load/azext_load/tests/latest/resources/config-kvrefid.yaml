@@ -1,0 +1,21 @@
+# Valid key vault reference identity configuration
+displayName: CLI-Test
+testPlan: sample-JMX-file.jmx
+description: 'Test created from az load test command'
+engineInstances: 1
+configurationFiles:
+  - additional-data.csv
+zipArtifacts:
+   - sample-ZIP-artifact.zip
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - percentage(error) > 50
+  - GetCustomerDetails: avg(latency) > 200
+env:
+  - name: 'rps'
+    value: 1
+splitAllCSVs: False
+autoStop:
+  errorPercentage: 90
+  timeWindow: 60
+keyVaultReferenceIdentity: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi
