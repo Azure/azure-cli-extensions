@@ -123,7 +123,7 @@ class BaseJavaComponentDecorator(BaseResource):
                 "minReplicas": self.get_argument_min_replicas(),
                 "maxReplicas": self.get_argument_max_replicas()
             }
-    
+
     def parse_configurations(self, configurations):
         configuration_list = []
         seen_properties = set()  # Track already seen property names
@@ -132,9 +132,7 @@ class BaseJavaComponentDecorator(BaseResource):
             key_val = pair.split('=', 1)
             if len(key_val) != 2:
                 raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
-            
             property_name = key_val[0].lower()
-
             # Check for duplicate propertyName
             if property_name in seen_properties:
                 raise ValidationError(f"Duplicate propertyName found: \"{key_val[0].lower()}\". Each propertyName must be unique with case-insensitive.")
@@ -310,7 +308,6 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
                 if existing_configuration["propertyName"].lower() == remove_configuration.lower():
                     is_existing = True
                     existing_configurations.pop(i)
-                    break
 
             if not is_existing:
                 logger.warning("configuration {} does not exist.".format(remove_configuration))
