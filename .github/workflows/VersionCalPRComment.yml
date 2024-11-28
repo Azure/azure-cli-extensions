@@ -158,6 +158,8 @@ jobs:
           ls ./"$diff_meta_path"/
           ls "$result_path"
           git checkout "$base_branch_pre"/"$base_branch" -- scripts
+          # use the latest index.json from base branch
+          git checkout "$base_branch_pre"/"$base_branch" -- src/index.json 
           python scripts/ci/release_version_cal.py
           ls "$result_path"
           cat "$result_path"/"$remove_labels_file"
