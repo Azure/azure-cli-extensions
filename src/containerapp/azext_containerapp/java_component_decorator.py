@@ -86,7 +86,7 @@ class BaseJavaComponentDecorator(BaseResource):
     def validate_configurations(self):
         if self.set_configuration_with_legacy_way() and self.set_configuration_with_new_way():
             raise ValidationError(
-                "The --configuration option cannot be used together with --[set|replace|remove|remove-all]-configurations. Please use --[set|replace|remove|remove-all]-configurations for better flexibility and clarity."
+                "The --configuration option cannot be used together with --[set|replace|remove|remove-all]-configurations. Please use the later form for better flexibility and clarity."
             )
 
     def show(self):
@@ -300,17 +300,18 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
                 existing_configurations.append(new_configuration)
 
     def remove_configurations(self, existing_configurations, remove_configurations):
-        for remove_configuration in remove_configurations:
-
-            is_existing = False
-            for i, value in enumerate(existing_configurations):
-                existing_configuration = value
-                if existing_configuration["propertyName"].lower() == remove_configuration.lower():
-                    is_existing = True
-                    existing_configurations.pop(i)
-
-            if not is_existing:
-                logger.warning("configuration {} does not exist.".format(remove_configuration))
+        remove_set = {config.lower() for config in remove_configurations}
+        
+        new_configurations = [
+            config for config in existing_configurations 
+            if config["propertyName"].lower() not in remove_set
+        ]
+        
+        for config in remove_configurations:
+            if config.lower() not in {c["propertyName"].lower() for c in existing_configurations}:
+                logger.warning("Configuration {} does not exist.".format(config))
+        
+        existing_configurations[:] = new_configurations
 
     def set_up_set_configurations(self):
         if self.get_argument_set_configurations() is not None:
