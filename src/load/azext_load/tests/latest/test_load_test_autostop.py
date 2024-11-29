@@ -70,301 +70,171 @@ class LoadTestScenarioAutostop(ScenarioTest):
             "--engine-instance {engine_instance} ",
             checks=checks,
         )
+        
         # Update load test with autostop criteria through command line arguments
-        self.kwargs.update(
-            {
-                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE,
-                "autostop_error_rate_time_window": LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--autostop-error-rate {autostop_error_rate} '
-            '--autostop-time-window {autostop_error_rate_time_window} '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, autostop_error_rate=LoadTestConstants.AUTOSTOP_ERROR_RATE, autostop_error_rate_time_window=LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW)
+        
         # Update load test with autostop criteria when error rate is integer
         # Order of this test case is important as response payload is checked in next test case
-        self.kwargs.update(
-            {
-                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--autostop-error-rate {autostop_error_rate} '
-            '--autostop-time-window {autostop_error_rate_time_window} '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, autostop_error_rate=LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)
+        
         # Update load test with autostop disabled through command line arguments
         # Order of this test case is important as response payload is checked from previous test case
-        self.kwargs.update(
-            {
-                "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
             JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--autostop {autostop} '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, autostop=LoadTestConstants.AUTOSTOP_DISABLED)
+        
         # Update load test with autostop criteria through config file
         # Order of this test case is important as response payload for time-window is checked in next test case
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", 85.0),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--load-test-config-file "{load_test_config_file}" '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP)
+        
         # Update load test with autostop criteria through config file: only error rate
         # Order of this test case is important as response payload for time-window is checked from previous test case
         # Order of this test case is important as response payload for error-rate is checked in next test case
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", 98.5),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--load-test-config-file "{load_test_config_file}" '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE)
+        
         # Update load test with autostop criteria through config file: only time window
         # Order of this test case is important as response payload for error-rate is checked from previous test case
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", 98.5),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 250),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--load-test-config-file "{load_test_config_file}" '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW)
+        
         # Update load test with CLI autostop criteria when both config file and CLI arguments are provided
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
-                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE,
-                "autostop_error_rate_time_window": LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--load-test-config-file "{load_test_config_file}" '
-            '--autostop-error-rate {autostop_error_rate} '
-            '--autostop-time-window {autostop_error_rate_time_window} '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, autostop_error_rate=LoadTestConstants.AUTOSTOP_ERROR_RATE, autostop_error_rate_time_window=LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP)
+        
         # Update load test with CLI autostop criteria disabled true when
         # config file has autostop criteria and CLI argument is --autostop disable
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
-                "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
-            }
-        )
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
             JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
         ]
-        self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            '--load-test-config-file "{load_test_config_file}" '
-            '--autostop {autostop} '
-            "--resource-group {resource_group} ",
-            checks=checks,
-        )
+        _configure_command_jmes_checks(self, checks, autostop=LoadTestConstants.AUTOSTOP_DISABLED, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP)
+        
         # Invalid autostop test case: autostop not of string type
-        self.kwargs.update({
-                "autostop": 1,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--autostop {autostop} '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Invalid autostop type" in str(e)
+        _configure_command_assert_exception(self, "Invalid autostop type", autostop=1)
+        
         # Invalid autostop test case: autostop not in allowed values
-        self.kwargs.update({
-                "autostop": "random",
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--autostop {autostop} '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Allowed values: enable, disable" in str(e)
+        _configure_command_assert_exception(self, "Allowed values: enable, disable", autostop="random")
+        
         # Invalid autostop test case: autostop error rate > 100.0
-        self.kwargs.update({
-                "autostop_error_rate": 110.5,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--autostop-error-rate {autostop_error_rate} '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Autostop error rate should be in range of [0.0,100.0]" in str(e)
+        _configure_command_assert_exception(self, "Autostop error rate should be in range of [0.0,100.0]", autostop_error_rate=110.5)
+        
         # Invalid autostop test case: autostop error rate < 0.0
-        self.kwargs.update({
-                "autostop_error_rate": -2.5,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--autostop-error-rate {autostop_error_rate} '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Autostop error rate should be in range of [0.0,100.0]" in str(e)
+        _configure_command_assert_exception(self, "Autostop error rate should be in range of [0.0,100.0]", autostop_error_rate=-2.5)
+        
         # Invalid autostop test case: autostop error rate not of float type
         # This is not needed as the argument is type checked
         # argument --autostop-error-rate: invalid float value: 'rate'
         
         # Invalid autostop test case: autostop error rate time window < 0
-        self.kwargs.update({
-                "autostop_error_rate_time_window": -1,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--autostop-time-window {autostop_error_rate_time_window} '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Autostop error rate time window should be greater than or equal to 0" in str(e)
+        _configure_command_assert_exception(self, "Autostop error rate time window should be greater than or equal to 0", autostop_error_rate_time_window=-1)
+        
         # Invalid autostop test case: autostop error rate time window not of integer type
         # This is not needed as the argument is type checked
         # argument --autostop-time-window: invalid int value: '90.4'
         # argument --autostop-time-window: invalid int value: 'window'
         
         # Invalid autostop from config test case: autostop random string
-        self.kwargs.update({
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--load-test-config-file "{load_test_config_file}" '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow" in str(e)
+        _configure_command_assert_exception(self, "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow", load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP)
         
         # Invalid autostop from config test case: autostop error rate > 100.0
-        self.kwargs.update({
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--load-test-config-file "{load_test_config_file}" '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0" in str(e)
+        _configure_command_assert_exception(self, "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0", load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE)
+        
         # Invalid autostop from config test case: autostop time window < 0
+        _configure_command_assert_exception(self, "Invalid value for timeWindow. Value should be an integer greater than or equal to 0", load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW)
+
+
+def _configure_command_jmes_checks(self, checks, autostop=None, autostop_error_rate=None, autostop_error_rate_time_window=None, load_test_config_file=None):
+    command = "az load test update " \
+        "--test-id {test_id} " \
+        "--load-test-resource {load_test_resource} " \
+        "--resource-group {resource_group} "
+    if autostop is not None:
         self.kwargs.update({
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW,
-            })
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                '--load-test-config-file "{load_test_config_file}" '
-                "--resource-group {resource_group} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "Invalid value for timeWindow. Value should be an integer greater than or equal to 0" in str(e)
+            "autostop": autostop,
+        })
+        command += '--autostop {autostop} '
+    if autostop_error_rate is not None:
+        self.kwargs.update({
+            "autostop_error_rate": autostop_error_rate,
+        })
+        command += '--autostop-error-rate {autostop_error_rate} '
+    if autostop_error_rate_time_window is not None:
+        self.kwargs.update({
+            "autostop_error_rate_time_window": autostop_error_rate_time_window,
+        })
+        command += '--autostop-time-window {autostop_error_rate_time_window} '
+    if load_test_config_file is not None:
+        self.kwargs.update({
+            "load_test_config_file": load_test_config_file,
+        })
+        command += '--load-test-config-file "{load_test_config_file}" '
+    self.cmd(
+        command,
+        checks=checks,
+    )
+
+
+def _configure_command_assert_exception(self, message, autostop=None, autostop_error_rate=None, autostop_error_rate_time_window=None, load_test_config_file=None):
+    command = "az load test update " \
+        "--test-id {test_id} " \
+        "--load-test-resource {load_test_resource} " \
+        "--resource-group {resource_group} "
+    if autostop is not None:
+        self.kwargs.update({
+            "autostop": autostop,
+        })
+        command += '--autostop {autostop} '
+    if autostop_error_rate is not None:
+        self.kwargs.update({
+            "autostop_error_rate": autostop_error_rate,
+        })
+        command += '--autostop-error-rate {autostop_error_rate} '
+    if autostop_error_rate_time_window is not None:
+        self.kwargs.update({
+            "autostop_error_rate_time_window": autostop_error_rate_time_window,
+        })
+        command += '--autostop-time-window {autostop_error_rate_time_window} '
+    if load_test_config_file is not None:
+        self.kwargs.update({
+            "load_test_config_file": load_test_config_file,
+        })
+        command += '--load-test-config-file "{load_test_config_file}" '
+    try:
+        self.cmd(
+            command,
+        )
+    except Exception as e:
+        assert message in str(e)

@@ -74,21 +74,7 @@ class LoadTestScenarioRegionalLoad(ScenarioTest):
         
         # INVALID: Update load test with regionewise engines
         # which do not match the total engine instances
-        self.kwargs.update(
-            {
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Sum of engine instances in regionwise load test configuration (5) should be equal to total engine instances (4)" in str(e)
+        _configure_command_assert_exception(self, "Sum of engine instances in regionwise load test configuration (5) should be equal to total engine instances (4)", regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES)
         
         # VALID: Update load test with regionewise engines
         # and total engine instances from CLI
@@ -141,300 +127,98 @@ class LoadTestScenarioRegionalLoad(ScenarioTest):
         # INVALID: Update load test with regional load configuration from YAML
         # which does not contain the updated total engine instances
         # and the count does not match with existing configuration
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_NO_TOTAL,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" ',
-            )
-        except Exception as e:
-            assert "Sum of engine instances in regionwise load test configuration (4) should be equal to total engine instances (5)" in str(e)
+        _configure_command_assert_exception(self, "Sum of engine instances in regionwise load test configuration (4) should be equal to total engine instances (5)", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_NO_TOTAL)
         
         # INVALID: Update load test with regional load configuration from YAML
         # where engine instances do not match count of regional load configuration
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" ',
-            )
-        except Exception as e:
-            assert "Sum of engine instances in regionwise load test configuration (2) should be equal to total engine instances (3)" in str(e)
+        _configure_command_assert_exception(self, "Sum of engine instances in regionwise load test configuration (2) should be equal to total engine instances (3)", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH)
         
         # INVALID: Update load test with regionwise engines from CLI containing invalid region
-        self.kwargs.update(
-            {
-                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_INVALID_REGION,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--engine-instances {engine_instances} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Unsupported region invalidregion in the multi-region load test configuration" in str(e)
+        _configure_command_assert_exception(self, "Unsupported region invalidregion in the multi-region load test configuration", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_REGION)
         
         # INVALID: Update load test with regionwise engines from CLI containing invalid type for engine count
-        self.kwargs.update(
-            {
-                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_INVALID_TYPE_FLOAT,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--engine-instances {engine_instances} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Expected integer" in str(e)
+        _configure_command_assert_exception(self, "Expected integer", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_TYPE_FLOAT)
         
         # INVALID: Update load test with regionwise engines from CLI containing invalid type for engine count
-        self.kwargs.update(
-            {
-                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_INVALID_TYPE_STRING,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--engine-instances {engine_instances} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Expected integer" in str(e)
+        _configure_command_assert_exception(self, "Expected integer", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_TYPE_STRING)
         
         # INVALID: Update load test with regionwise engines from CLI containing no parent region 
-        self.kwargs.update(
-            {
-                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_NO_PARENT_REGION,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--engine-instances {engine_instances} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Multi-region load test should contain at-least one engine in the parent region East US from where the test is created" in str(e)
+        _configure_command_assert_exception(self, "Multi-region load test should contain at-least one engine in the parent region East US from where the test is created", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_NO_PARENT_REGION)
         
         # INVALID: Update load test with regionwise engines from CLI where argument value has invalid format
-        self.kwargs.update(
-            {
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_INVALID_FORMAT_1,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Expected region=engineCount" in str(e)
+        _configure_command_assert_exception(self, "Expected region=engineCount", regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_FORMAT_1)
         
         # INVALID: Update load test with regionwise engines from CLI where argument value has invalid format
-        self.kwargs.update(
-            {
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_INVALID_FORMAT_2,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Expected region=engineCount" in str(e)
+        _configure_command_assert_exception(self, "Expected region=engineCount", regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_FORMAT_2)
         
         # INVALID: Update load test with regionwise engines from CLI where argument value has invalid format
-        self.kwargs.update(
-            {
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_INVALID_FORMAT_3,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Region or engine count cannot be empty" in str(e)
+        _configure_command_assert_exception(self, "Region or engine count cannot be empty", regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_FORMAT_3)
         
         # INVALID: Update load test with regional load configuration from YAML
         # which contains invalid region
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" ',
-            )
-        except Exception as e:
-            assert "Unsupported region randomregion in the multi-region load test configuration" in str(e)
+        _configure_command_assert_exception(self, "Unsupported region randomregion in the multi-region load test configuration", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION)
         
         # INVALID: Update load test with regional load configuration from YAML
         # which contains invalid type for engine count
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_FLOAT,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" ',
-            )
-        except Exception as e:
-            assert "Engine instances is required of type integer" in str(e)
+        _configure_command_assert_exception(self, "Engine instances is required of type integer", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_FLOAT)
         
         # INVALID: Update load test with regional load configuration from YAML
         # which contains invalid type for engine count
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_STRING,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" ',
-            )
-        except Exception as e:
-            assert "Engine instances is required of type integer" in str(e)
+        _configure_command_assert_exception(self, "Engine instances is required of type integer", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_STRING)
         
         # INVALID: Update load test with regional load configuration from YAML
         # where parent region is not present
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_NO_PARENT_REGION,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" ',
-            )
-        except Exception as e:
-            assert "Multi-region load test should contain at-least one engine in the parent region East US from where the test is created" in str(e)
+        _configure_command_assert_exception(self, "Multi-region load test should contain at-least one engine in the parent region East US from where the test is created", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_NO_PARENT_REGION)
         
         # INVALID: Update load test with regionwise engines containing only 1 region
-        self.kwargs.update(
-            {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_1,
-            }
-        )
-        try:
-            self.cmd(
-            "az load test update "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            '--load-test-config-file "{load_test_config_file}" '
-            "--regionwise-engines {regionwise_engines} ",
-            checks=checks,
-        )
-        except Exception as e:
-            assert "Multi-region load tests should contain a minimum of 2 geographic regions in the configuration" in str(e)
+        _configure_command_assert_exception(self, "Multi-region load tests should contain a minimum of 2 geographic regions in the configuration", regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_1, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE)
         
         # INVALID: Update load test with regionwise engines containing duplicate regions
-        self.kwargs.update(
-            {
-                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES_3,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--engine-instances {engine_instances} "
-                "--regionwise-engines {regionwise_engines} ",
-            )
-        except Exception as e:
-            assert "Multi-region load test configuration should not contain duplicate region values" in str(e)
+        _configure_command_assert_exception(self, "Multi-region load test configuration should not contain duplicate region values", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_3)
         
         # INVALID: Multi-region load test does not support private traffic mode
         result = self.cmd(
             "az network vnet subnet list --resource-group {resource_group} --vnet-name {virtual_network}"
         ).get_output_in_json()
         subnet_id = result[0]["id"]
+        _configure_command_assert_exception(self, "You can run multi-region load tests only against public endpoints. Select public test traffic mode to proceed", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES, subnet_id=subnet_id)
+        
+
+def _configure_command_assert_exception(self, message, regionwise_engines=None, engine_instances=None, load_test_config_file=None, subnet_id=None):
+    command = "az load test update " \
+                "--test-id {test_id} " \
+                "--load-test-resource {load_test_resource} " \
+                "--resource-group {resource_group} "
+    if regionwise_engines:
         self.kwargs.update(
             {
-                "engine_instances": LoadTestConstants.ENGINE_INSTANCES,
-                "regionwise_engines": LoadTestConstants.REGIONWISE_ENGINES,
+                "regionwise_engines": regionwise_engines,
+            }
+        )
+        command += "--regionwise-engines {regionwise_engines} "
+    if engine_instances:
+        self.kwargs.update(
+            {
+                "engine_instances": engine_instances,
+            }
+        )
+        command += "--engine-instances {engine_instances} "
+    if load_test_config_file:
+        self.kwargs.update(
+            {
+                "load_test_config_file": load_test_config_file,
+            }
+        )
+        command += '--load-test-config-file "{load_test_config_file}" '
+    if subnet_id:
+        self.kwargs.update(
+            {
                 "subnet_id": subnet_id,
             }
         )
-        try:
-            self.cmd(
-                "az load test update "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--engine-instances {engine_instances} "
-                "--regionwise-engines {regionwise_engines} "
-                "--subnet-id {subnet_id} ",
-            )
-        except Exception as e:
-            assert "You can run multi-region load tests only against public endpoints. Select public test traffic mode to proceed" in str(e)
+        command += "--subnet-id {subnet_id} "
+    try:
+        self.cmd(command)
+    except Exception as e:
+        assert message in str(e)
     
