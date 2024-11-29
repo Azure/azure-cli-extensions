@@ -203,7 +203,8 @@ class NspScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_nsp_logging_configuration_crud', location='eastus2euap')
     def test_nsp_logging_configuration_crud(self, resource_group):
         self.kwargs.update({
-            'nsp_name': 'TestNetworkSecurityPerimeter'
+            'nsp_name': 'TestNetworkSecurityPerimeter',
+            'logging_config_name': 'instance'
         })
 
         # Create NSP
@@ -218,7 +219,7 @@ class NspScenario(ScenarioTest):
         ])
 
         # Update logging configuration
-        self.cmd('network perimeter logging-configuration update --perimeter-name {nsp_name} --resource-group {rg} --enabled-log-categories "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']"')
+        self.cmd('network perimeter logging-configuration update --name {logging_config_name} --perimeter-name {nsp_name} --resource-group {rg} --enabled-log-categories "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']"')
 
         # Show logging configuration and verify the updated enabled log categories
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
