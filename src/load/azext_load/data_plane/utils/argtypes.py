@@ -367,5 +367,5 @@ regionwise_engines = CLIArgumentType(
     options_list=["--regionwise-engines"],
     validator=validators.validate_regionwise_engines,
     nargs="+",
-    help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints",
+    help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
 )
