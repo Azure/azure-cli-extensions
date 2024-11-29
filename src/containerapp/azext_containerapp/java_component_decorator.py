@@ -301,16 +301,16 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
 
     def remove_configurations(self, existing_configurations, remove_configurations):
         remove_set = {config.lower() for config in remove_configurations}
-        
+
         new_configurations = [
-            config for config in existing_configurations 
+            config for config in existing_configurations
             if config["propertyName"].lower() not in remove_set
         ]
-        
+
         for config in remove_configurations:
             if config.lower() not in {c["propertyName"].lower() for c in existing_configurations}:
                 logger.warning("Configuration {} does not exist.".format(config))
-        
+
         existing_configurations[:] = new_configurations
 
     def set_up_set_configurations(self):
