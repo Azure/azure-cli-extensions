@@ -6784,5 +6784,35 @@ configuration:
           users:
           - ReaNAiveD
       description: '[k8s-runtime] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z acat'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z acat'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Aa]cat)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Aa]cat)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Acat
+      - assignTo:
+          users:
+          - qinqingxu
+          - Sherylueen
+          - yongxin-ms
+          - wh-alice
+      description: '[Acat] auto assign labels and users based on issue description.'
 onFailure:
 onSuccess:
