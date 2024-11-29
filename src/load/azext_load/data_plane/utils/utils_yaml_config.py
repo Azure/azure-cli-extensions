@@ -37,7 +37,7 @@ def yaml_parse_autostop_criteria(data):
     return autostop_criteria
 
 
-def yaml_parse_splitcsv(data):
+def _yaml_parse_splitcsv(data):
     if not isinstance(data.get(LoadTestConfigKeys.SPLIT_CSV), bool):
         raise InvalidArgumentValueError(
             "Invalid value for splitAllCSVs. Allowed values are boolean true or false"
@@ -45,7 +45,7 @@ def yaml_parse_splitcsv(data):
     return data.get(LoadTestConfigKeys.SPLIT_CSV)
 
 
-def validate_failure_criteria(failure_criteria):
+def _validate_failure_criteria(failure_criteria):
     parts = failure_criteria.split("(")
     if len(parts) != 2:
         raise ValueError(f"Invalid failure criteria: {failure_criteria}")
@@ -58,7 +58,7 @@ def validate_failure_criteria(failure_criteria):
         raise ValueError(f"Invalid failure criteria: {failure_criteria}")
 
 
-def get_random_uuid():
+def _get_random_uuid():
     return str(uuid.uuid4())
 
 
@@ -66,7 +66,7 @@ def yaml_parse_failure_criteria(data):
     passfail_criteria = {}
     passfail_criteria["passFailMetrics"] = {}
     for items in data[LoadTestConfigKeys.FAILURE_CRITERIA]:
-        metric_id = get_random_uuid()
+        metric_id = _get_random_uuid()
         # check if item is string or dict. if string then no name is provided
         name = None
         components = items
@@ -75,7 +75,7 @@ def yaml_parse_failure_criteria(data):
             components = list(items.values())[0]
         # validate failure criteria
         try:
-            validate_failure_criteria(components)
+            _validate_failure_criteria(components)
         except InvalidArgumentValueError as e:
             logger.error("Invalid failure criteria: %s", str(e))
         passfail_criteria["passFailMetrics"][metric_id] = {}
@@ -100,7 +100,7 @@ def yaml_parse_failure_criteria(data):
     return passfail_criteria
 
 
-def parse_regionwise_loadtest_config(regionwise_loadtest_config):
+def _parse_regionwise_loadtest_config(regionwise_loadtest_config):
     logger.debug("Parsing regionwise load test configuration")
     regional_load_test_config = []
     for region_load in regionwise_loadtest_config:
@@ -119,7 +119,7 @@ def yaml_parse_loadtest_configuration(data):
     load_test_configuration = {}
     load_test_configuration["engineInstances"] = data.get(LoadTestConfigKeys.ENGINE_INSTANCES)
     if data.get(LoadTestConfigKeys.REGIONAL_LOADTEST_CONFIG) is not None:
-        load_test_configuration["regionalLoadTestConfig"] = parse_regionwise_loadtest_config(
+        load_test_configuration["regionalLoadTestConfig"] = _parse_regionwise_loadtest_config(
             data.get(LoadTestConfigKeys.REGIONAL_LOADTEST_CONFIG)
         )
     # quick test and split csv not supported currently in CLI
@@ -129,5 +129,5 @@ def yaml_parse_loadtest_configuration(data):
             "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
         )
     if data.get(LoadTestConfigKeys.SPLIT_CSV) is not None:
-        load_test_configuration["splitAllCSVs"] = yaml_parse_splitcsv(data=data)
+        load_test_configuration["splitAllCSVs"] = _yaml_parse_splitcsv(data=data)
     return load_test_configuration
