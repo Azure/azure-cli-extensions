@@ -32,6 +32,8 @@ class List(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
         return self.build_paging(self._execute_operations, self._output)
@@ -52,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.NetworkFabricControllersListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.NetworkFabricControllersListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.NetworkFabricControllersListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NetworkFabricControllersListByResourceGroup(AAZHttpOperation):
+    class NetworkFabricControllersListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +89,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers",
                 **self.url_parameters
             )
 
@@ -102,10 +104,6 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -273,7 +271,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class NetworkFabricControllersListBySubscription(AAZHttpOperation):
+    class NetworkFabricControllersListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -287,7 +285,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers",
                 **self.url_parameters
             )
 
@@ -302,6 +300,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -517,7 +519,7 @@ class _ListHelper:
         express_route_connection_information_read = _schema_express_route_connection_information_read
         express_route_connection_information_read.express_route_authorization_key = AAZStrType(
             serialized_name="expressRouteAuthorizationKey",
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         express_route_connection_information_read.express_route_circuit_id = AAZStrType(
             serialized_name="expressRouteCircuitId",
