@@ -51,7 +51,6 @@ class Update(AAZCommand):
             help="The name of the NSP logging configuration. Accepts 'instance' as name.",
             required=True,
             id_part="child_name_1",
-            default="instance",
         )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
