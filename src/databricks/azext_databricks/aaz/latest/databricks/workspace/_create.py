@@ -253,7 +253,6 @@ class Create(AAZCommand):
         _args_schema.enhanced_security_compliance = AAZObjectArg(
             options=["--enhanced-security-compliance"],
             arg_group="Properties",
-            registered=False,   # Hide this parameter from help without removing it, keep backward compatibility
             help="Contains settings related to the Enhanced Security and Compliance Add-On.",
         )
 
