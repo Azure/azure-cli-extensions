@@ -3,8 +3,8 @@
 Release History
 ===============
 
-upcoming
-++++++++
+1.0.2
++++++
 * az databricks workspace create/update: Add --enable-compliance-security-profile to enable the Enhanced Security and Compliance on workspace.
 * az databricks workspace create/update: Add --compliance-standards to set compliance standards on workspace.
 * az databricks workspace create/update: Add --enable-automatic-cluster-update to enable automatic cluster update feature.
