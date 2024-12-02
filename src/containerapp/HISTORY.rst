@@ -5,8 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
-* 'az containerapp env java-component': Support more flexible configuration updates with new parameters --set-configurations, --replace-configurations, --remove-configurations and --remove-all-configurations.
-* 'az containerapp env java-component gateway-for-spring': Support --bind --unbind in create/update.
+* 'az containerapp env java-component': Support more flexible configuration updates with new parameters `--set-configurations`, `--replace-configurations`, `--remove-configurations` and `--remove-all-configurations`.
+* 'az containerapp env java-component gateway-for-spring create/update': Support `--bind` and `--unbind`
 
 1.1.0b1
 ++++++

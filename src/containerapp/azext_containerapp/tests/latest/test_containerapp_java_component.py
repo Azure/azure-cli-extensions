@@ -6,7 +6,7 @@
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file, clean_up_test_file)
 from .utils import create_containerapp_env
@@ -293,6 +293,10 @@ class ContainerappJavaComponentTests(ScenarioTest):
         # List Java Components
         java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
         self.assertTrue(len(java_component_list) == 0)
+
+        with self.assertRaisesRegex(ValidationError,
+                                    "Please use the later form for better flexibility and clarity."):
+            self.cmd('containerapp env java-component eureka-server-for-spring create -g {} -n {} --environment {} --configuration eureka.server.renewal-percent-threshold=0.85 --set-configurations eureka.server.enable-self-preservation=false'.format(resource_group, eureka_name, env_name))
 
         self.cmd(
             'containerapp env java-component eureka-server-for-spring create -g {} -n {} --environment {} --set-configurations eureka.server.renewal-percent-threshold=0.85 eureka.server.enable-self-preservation=false'.format(
