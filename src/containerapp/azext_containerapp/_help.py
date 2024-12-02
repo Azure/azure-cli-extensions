@@ -1292,7 +1292,7 @@ helps['containerapp env java-component spring-cloud-config update'] = """
           az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update a Spring Cloud Config with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
@@ -1355,7 +1355,7 @@ helps['containerapp env java-component config-server-for-spring update'] = """
           az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update a Config Server for Spring with custom configurations.
       text: |
           az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
@@ -1418,7 +1418,7 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update a Spring Cloud Eureka with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
@@ -1480,7 +1480,7 @@ helps['containerapp env java-component eureka-server-for-spring update'] = """
           az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
@@ -1548,7 +1548,7 @@ helps['containerapp env java-component admin-for-spring update'] = """
           az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update an Admin for Spring with custom configurations.
       text: |
           az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
@@ -1610,7 +1610,7 @@ helps['containerapp env java-component nacos update'] = """
           az containerapp env java-component nacos update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update an Nacos with custom configurations.
       text: |
           az containerapp env java-component nacos update -g MyResourceGroup \\
@@ -1687,7 +1687,7 @@ helps['containerapp env java-component gateway-for-spring update'] = """
           az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --set-configurations
+              --remove_configurations
     - name: Update a Gateway for Spring with custom configurations.
       text: |
           az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
