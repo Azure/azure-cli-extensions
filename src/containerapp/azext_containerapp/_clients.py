@@ -364,7 +364,7 @@ class HttpRouteConfigPreviewClient:
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def update(cls, cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope):
+    def create(cls, cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
@@ -377,6 +377,22 @@ class HttpRouteConfigPreviewClient:
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(httprouteconfig_envelope))
+        return r.json()
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            httprouteconfig_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(httprouteconfig_envelope))
         return r.json()
 
     @classmethod

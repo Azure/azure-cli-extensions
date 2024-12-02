@@ -3362,6 +3362,22 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
                 conn.send(SSH_CTRL_C_MSG)
 
 
+def create_httprouteconfig(cmd, resource_group_name, name, http_route_config_name, yaml):
+    yaml_httprouteconfig = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_httprouteconfig, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    httprouteconfig_envelope = {}
+
+    httprouteconfig_envelope["properties"] = yaml_httprouteconfig
+
+    try:
+        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, httprouteconfig_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
 def update_httprouteconfig(cmd, resource_group_name, name, http_route_config_name, yaml):
     yaml_httprouteconfig = load_yaml_file(yaml)
     # check if the type is dict

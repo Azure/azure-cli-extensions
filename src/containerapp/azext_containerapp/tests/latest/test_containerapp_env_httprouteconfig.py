@@ -10,12 +10,10 @@ from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from .common import TEST_LOCATION, STAGE_LOCATION
-from .utils import prepare_containerapp_env_for_app_e2e_tests
+from .common import TEST_LOCATION, write_test_file, clean_up_test_file
 
 
 class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
@@ -23,8 +21,35 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_httprouteconfig_crudoperations_e2e(self, resource_group):
 
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        httprouteconfig1_yaml_text = """
+                                rules:
+                                  - description: "rule 1"
+                                    routes:
+                                      - match:
+                                          prefix: "/1"
+                                        action:
+                                          PrefixRewrite: "/"
+                                    targets:
+                                      - ContainerApp: "app1"
+                                """
+        httprouteconfig1_file_name = os.path.join(TEST_DIR, f"{self._testMethodName}_httprouteconfig1.yml")
+        write_test_file(httprouteconfig1_file_name, httprouteconfig1_yaml_text)
 
+        httprouteconfig2_yaml_text = """
+                                rules:
+                                  - description: "rule 2"
+                                    routes:
+                                      - match:
+                                          prefix: "/2"
+                                        action:
+                                          PrefixRewrite: "/"
+                                    targets:
+                                      - ContainerApp: "app2"
+                                """
+        httprouteconfig2_file_name = os.path.join(TEST_DIR, f"{self._testMethodName}_httprouteconfig2.yml")
+        write_test_file(httprouteconfig2_file_name, httprouteconfig2_yaml_text)
+
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='aca-httprouteconfig-env', length=30)
         self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env_name, TEST_LOCATION))
@@ -33,10 +58,13 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('name', env_name)
         ])
 
-        yaml_file = os.path.join(TEST_DIR, "./httprouteconfig1.yaml")
+        self.cmd("az containerapp env http-route-config list -g {} -n {}".format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
         route_name = "route1"
 
-        self.cmd("az containerapp env http-route-config create -g {} -n {} -r {} --yaml {}".format(resource_group, env_name, route_name, yaml_file), checks=[
+        self.cmd("az containerapp env http-route-config create -g {} -n {} -r {} --yaml {}".format(resource_group, env_name, route_name, httprouteconfig1_file_name), checks=[
             JMESPathCheck('properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('properties.provisioningErrors[0].message', "Unable to retrieve container app app1 from cluster"),
             # Not deployed yet
@@ -66,9 +94,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('[0].properties.rules[0].targets[0].containerApp', "app1"),
         ])
 
-        yaml_file = os.path.join(TEST_DIR, "./httprouteconfig2.yaml")
-
-        self.cmd("az containerapp env http-route-config update -g {} -n {} -r {} --yaml {}".format(resource_group, env_name, route_name, yaml_file), checks=[
+        self.cmd("az containerapp env http-route-config update -g {} -n {} -r {} --yaml {}".format(resource_group, env_name, route_name, httprouteconfig2_file_name), checks=[
             JMESPathCheck('properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('properties.provisioningErrors[0].message', "Unable to retrieve container app app2 from cluster"),
             # Not deployed yet
@@ -85,3 +111,6 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env delete -g {} -n {} -y'.format(resource_group, env_name))
+
+        clean_up_test_file(httprouteconfig1_file_name)
+        clean_up_test_file(httprouteconfig2_file_name)
