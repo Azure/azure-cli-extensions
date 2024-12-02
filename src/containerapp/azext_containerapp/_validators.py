@@ -28,7 +28,7 @@ logger = get_logger(__name__)
 
 
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
-def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, artifact=None, repo=None, yaml=None, environment_type=None):
+def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, revisions_mode=None, target_label=None, source=None, artifact=None, repo=None, yaml=None, environment_type=None):
     if source and repo:
         raise MutuallyExclusiveArgumentError("Usage error: --source and --repo cannot be used together. Can either deploy from a local directory or a GitHub repository")
     if (source or repo) and yaml:
@@ -54,6 +54,8 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system' or 'system-environment'")
     if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
+    if target_label and (not revisions_mode or revisions_mode.lower() != 'labels'):
+        raise InvalidArgumentValueError("--target-label must only be specified with --revisions-mode labels.")
 
 
 def validate_runtime(runtime, enable_java_metrics, enable_java_agent):

@@ -3435,11 +3435,11 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
     if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
         raise ValidationError("Ingress and traffic weights are required to add labels.")
 
-    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic'] if 'traffic' in containerapp_def['properties']['configuration']['ingress'] else {}
+    traffic_weight = safe_get(containerapp_def, 'properties', 'configuration', 'ingress', 'traffic')
 
     _validate_revision_name(cmd, revision, resource_group_name, name)
 
-    is_labels_mode = containerapp_def['properties']['configuration']['activeRevisionsMode'] == 'Labels'
+    is_labels_mode = safe_get(containerapp_def, 'properties', 'configuration', 'activeRevisionsMode', default='single').lower() == 'labels'
 
     label_added = False
     for weight in traffic_weight:
@@ -3477,11 +3477,7 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
         })
 
     containerapp_patch_def = {}
-    containerapp_patch_def['properties'] = {}
-    containerapp_patch_def['properties']['configuration'] = {}
-    containerapp_patch_def['properties']['configuration']['ingress'] = {}
-
-    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+    safe_set(containerapp_patch_def, 'properties', 'configuration', 'ingress', 'traffic', value=traffic_weight)
 
     try:
         r = ContainerAppPreviewClient.update(
@@ -3506,10 +3502,10 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
     if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
         raise ValidationError("Ingress and traffic weights are required to remove labels.")
 
-    traffic_list = containerapp_def['properties']['configuration']['ingress']['traffic']
+    traffic_list = safe_get(containerapp_def, 'properties', 'configuration', 'ingress', 'traffic')
 
     label_removed = False
-    is_labels_mode = containerapp_def['properties']['configuration']['activeRevisionsMode'] == 'Labels'
+    is_labels_mode = safe_get(containerapp_def, 'properties', 'configuration', 'activeRevisionsMode', default='single').lower() == 'labels'
 
     new_traffic_list = []
     for traffic in traffic_list:
@@ -3526,11 +3522,7 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         raise ValidationError("Please specify a label name with an associated traffic weight.")
 
     containerapp_patch_def = {}
-    containerapp_patch_def['properties'] = {}
-    containerapp_patch_def['properties']['configuration'] = {}
-    containerapp_patch_def['properties']['configuration']['ingress'] = {}
-
-    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = new_traffic_list
+    safe_set(containerapp_patch_def, 'properties', 'configuration', 'ingress', 'traffic', value=new_traffic_list)
 
     try:
         r = ContainerAppPreviewClient.update(

@@ -447,18 +447,13 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                     registries_def.append(registry)
 
         if not self.get_argument_revision_suffix():
-            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
-            self.new_containerapp["properties"]["template"]["revisionSuffix"] = None
+            safe_set(self.new_containerapp, "properties", "template", "revisionSuffix", value=None)
 
         if self.get_argument_revisions_mode():
-            self.new_containerapp["properties"]["configuration"] = {} if "configuration" not in self.new_containerapp[
-                "properties"] else self.new_containerapp["properties"]["configuration"]
-            self.new_containerapp["properties"]["configuration"]["activeRevisionsMode"] = self.get_argument_revisions_mode()
+            safe_set(self.new_containerapp, "properties", "configuration", "activeRevisionsMode", value=self.get_argument_revisions_mode())
 
         if self.get_argument_target_label():
-            self.new_containerapp["properties"]["configuration"] = {} if "configuration" not in self.new_containerapp[
-                "properties"] else self.new_containerapp["properties"]["configuration"]
-            self.new_containerapp["properties"]["configuration"]["targetLabel"] = self.get_argument_target_label()
+            safe_set(self.new_containerapp, "properties", "configuration", "targetLabel", value=self.get_argument_target_label())
 
     def set_up_update_containerapp_yaml(self, name, file_name):
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or \
@@ -923,7 +918,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         # end preview logic
 
     def validate_create(self):
-        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(),
+                        self.get_argument_no_wait(), self.get_argument_revisions_mode(), self.get_argument_target_label(), self.get_argument_source(), self.get_argument_artifact(),
+                        self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
 
     def validate_arguments(self):
         self.parent_validate_arguments()
