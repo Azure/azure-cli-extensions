@@ -92,7 +92,14 @@ test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Path to the JMeter script.",
+    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file.",
+)
+
+test_type = CLIArgumentType(
+    validator=validators.validate_test_type,
+    options_list=["--test-type"],
+    type=str,
+    help=f"Type of the load test. Allowed values: {', '.join(utils.get_enum_values(models.AllowedTestTypes))}.",
 )
 
 load_test_config_file = CLIArgumentType(

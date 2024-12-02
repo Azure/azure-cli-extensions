@@ -16,6 +16,8 @@ class AllowedFileTypes(str, Enum):
     JMX_FILE = "JMX_FILE"
     USER_PROPERTIES = "USER_PROPERTIES"
     ZIPPED_ARTIFACTS = "ZIPPED_ARTIFACTS"
+    URL_TEST_CONFIG = "URL_TEST_CONFIG"
+    TEST_SCRIPT = 'TEST_SCRIPT'
 
 
 class AllowedIntervals(str, Enum):
@@ -29,3 +31,8 @@ class AllowedIntervals(str, Enum):
 class AllowedMetricNamespaces(str, Enum):
     LoadTestRunMetrics = "LoadTestRunMetrics"
     EngineHealthMetrics = "EngineHealthMetrics"
+
+
+class AllowedTestTypes(str, Enum):
+    JMX = "JMX"
+    URL = "URL"

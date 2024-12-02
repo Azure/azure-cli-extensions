@@ -58,6 +58,15 @@ class LoadConstants:
     REGIONWISE_ENGINES_INVALID_FORMAT_2 = "germanywestcentral=2 eastus:3"
     REGIONWISE_ENGINES_INVALID_FORMAT_3 = "=2 eastus=3"
 
+    # Constants for Advanced URL Load Tests
+    ADVANCED_URL_FILE_TYPE = "URL_TEST_CONFIG"
+    ADVANCED_URL_TEST_TYPE = "URL"
+    ADVANCED_URL_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-advanced-url.yaml")
+    ADVANCED_TEST_URL_CONFIG_FILE_NAME = "sample-url-requests.json"
+    ADVANCED_TEST_URL_CONFIG_FILE_PATH = os.path.join(TEST_RESOURCES_DIR, r"sample-url-requests.json")
+    ADVANCED_TEST_URL_CONFIG_FILE_UPDATED_NAME = "sample-url-requests-updated.json"
+    ADVANCED_TEST_URL_CONFIG_FILE_UPDATED_PATH = os.path.join(TEST_RESOURCES_DIR, r"sample-url-requests-updated.json")
+
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
     ENV_VAR_DURATION_LONG = "120"
@@ -126,6 +135,7 @@ class LoadTestConstants(LoadConstants):
     REGIONAL_LOAD_CONFIG_TEST_ID = "regional-load-config-test-case"
     LOAD_TEST_KVREF_ID = "loadtest-kvrefid-case"
     LOAD_TEST_SPLITCSV_ID = "loadtest-splitcsv-case"
+    LOAD_TEST_ADVANCED_URL = "loadtest-advanced-url-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"

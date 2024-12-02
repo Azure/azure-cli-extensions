@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
 
 logger = get_logger(__name__)
 
@@ -295,6 +295,8 @@ def convert_yaml_to_test(cmd, data):
         new_body["displayName"] = data[LoadTestConfigKeys.DISPLAY_NAME]
     if LoadTestConfigKeys.DESCRIPTION in data:
         new_body["description"] = data[LoadTestConfigKeys.DESCRIPTION]
+    if LoadTestConfigKeys.TEST_TYPE in data:
+        new_body["kind"] = data[LoadTestConfigKeys.TEST_TYPE]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY in data:
         new_body["keyvaultReferenceIdentityId"] = data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]
@@ -330,6 +332,7 @@ def create_or_update_test_with_config(
     yaml_test_body,
     display_name=None,
     test_description=None,
+    test_type=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -351,6 +354,7 @@ def create_or_update_test_with_config(
         or body.get("displayName")
         or test_id
     )
+    new_body["kind"] = test_type or yaml_test_body.get("kind") or body.get("kind")
 
     test_description = test_description or yaml_test_body.get("description")
     if test_description:
@@ -504,6 +508,7 @@ def create_or_update_test_without_config(
     body,
     display_name=None,
     test_description=None,
+    test_type=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -520,6 +525,7 @@ def create_or_update_test_without_config(
     )
     new_body = {}
     new_body["displayName"] = display_name or body.get("displayName") or test_id
+    new_body["kind"] = test_type or body.get("kind")
     test_description = test_description or body.get("description")
     if test_description:
         new_body["description"] = test_description
@@ -723,32 +729,51 @@ def upload_zipped_artifacts_helper(
                 )
 
 
+def _evaluate_file_type_for_test_script(test_type, test_plan):
+    if test_type == AllowedTestTypes.URL.value:
+        _, file_extension = os.path.splitext(test_plan)
+        if file_extension.casefold() == ".json":
+            return AllowedFileTypes.URL_TEST_CONFIG
+        if file_extension.casefold() == ".jmx":
+            return AllowedFileTypes.JMX_FILE
+    return AllowedFileTypes.TEST_SCRIPT
+
+
 def upload_test_plan_helper(
-    client, test_id, yaml_data, test_plan, load_test_config_file, existing_test_files, wait
+    client, test_id, yaml_data, test_plan, load_test_config_file, existing_test_files, wait, test_type
 ):
-    if test_plan is None and yaml_data is not None and yaml_data.get("testPlan"):
-        test_plan = yaml_data.get("testPlan")
+    if test_plan is None and yaml_data is not None and yaml_data.get(LoadTestConfigKeys.TEST_PLAN) is not None:
+        test_plan = yaml_data.get(LoadTestConfigKeys.TEST_PLAN)
     existing_test_plan_files = []
     for file in existing_test_files:
-        if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
+        if (
+            validators.AllowedFileTypes.JMX_FILE.value == file["fileType"] or
+            file["fileType"] == AllowedFileTypes.TEST_SCRIPT.value
+        ):
             existing_test_plan_files.append(file)
     if test_plan:
-        logger.info("Uploading test plan file %s", test_plan)
-        file_response = upload_generic_files_helper(
-            client=client,
-            test_id=test_id, load_test_config_file=load_test_config_file,
-            existing_files=existing_test_plan_files, file_to_upload=test_plan,
-            file_type=validators.AllowedFileTypes.JMX_FILE,
-            wait=wait
-        )
-        if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
-            raise FileOperationError(
-                f"Test plan file {test_plan} is not valid. Please check the file and try again."
+        logger.info("Uploading test plan file %s to test %s of type %s", test_plan, test_id, test_type)
+        file_type = _evaluate_file_type_for_test_script(test_type, test_plan)
+        try:
+            file_response = upload_generic_files_helper(
+                client=client,
+                test_id=test_id, load_test_config_file=load_test_config_file,
+                existing_files=existing_test_files, file_to_upload=test_plan,
+                file_type=file_type,
+                wait=wait
             )
+            if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
+                raise FileOperationError(
+                    f"Test plan file {test_plan} is not valid. Please check the file and try again."
+                )
+        except Exception as e:
+            raise FileOperationError(
+                f"Error occurred while uploading test plan file {test_plan} for test {test_id} of type {test_type}: {e}"
+            ) from e
 
 
 def upload_files_helper(
-    client, test_id, yaml_data, test_plan, load_test_config_file, wait
+    client, test_id, yaml_data, test_plan, load_test_config_file, wait, test_type
 ):
     files = client.list_test_files(test_id)
 
@@ -770,7 +795,8 @@ def upload_files_helper(
     upload_test_plan_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
-        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait,
+        test_type=test_type)
 
 
 def validate_engine_data_with_regionwiseload_data(engine_instances, regionwise_engines):

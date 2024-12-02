@@ -40,6 +40,9 @@ examples:
     - name: Create a test with a multi-region load configuration using region names in the format accepted by Azure Resource Manager (ARM). Ensure the specified regions are supported by Azure Load Testing. Multi-region load tests are restricted to public endpoints only.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --engine-instances 3 --regionwise-engines eastus=1 westus2=1 germanywestcentral=1 --test-plan sample-jmx.jmx
+    - name: Create an advanced URL test with multiple HTTP requests using a JSON file.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --test-plan ~/resources/sample-url-requests.json --test-type URL
 """
 
 helps[
@@ -243,4 +246,7 @@ examples:
     - name: Upload zipped artifacts to a test.
       text: |
         az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/sample-zip.zip --file-type ZIPPED_ARTIFACTS
+    - name: Upload URL requests JSON configuration file to a test which is of type URL.
+      text: |
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/sample-url-requests.json --file-type URL_TEST_CONFIG
 """

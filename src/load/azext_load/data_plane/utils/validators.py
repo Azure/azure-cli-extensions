@@ -15,7 +15,7 @@ from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 from . import utils
-from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
+from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces, AllowedTestTypes
 
 logger = get_logger(__name__)
 
@@ -228,9 +228,23 @@ def validate_test_plan_path(namespace):
     namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
 
     _, file_extension = os.path.splitext(namespace.test_plan)
-    if file_extension.casefold() != ".jmx":
+    if file_extension.casefold() != ".jmx" and file_extension.casefold() != ".json":
         raise InvalidArgumentValueError(
             f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
+        )
+
+
+def validate_test_type(namespace):
+    if namespace.test_type is None:
+        return
+    if not isinstance(namespace.test_type, str):
+        raise InvalidArgumentValueError(
+            f"Invalid test-type type: {type(namespace.test_type)}"
+        )
+    allowed_test_types = utils.get_enum_values(AllowedTestTypes)
+    if namespace.test_type not in allowed_test_types:
+        raise InvalidArgumentValueError(
+            f"Invalid test-type value: {namespace.test_type}. Allowed values: {', '.join(allowed_test_types)}"
         )
 
 
