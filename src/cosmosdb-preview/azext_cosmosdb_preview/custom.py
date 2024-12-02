@@ -2362,9 +2362,12 @@ def cli_cosmosdb_sql_container_throughput_update(client,
                                                  database_name,
                                                  container_name,
                                                  throughput=None,
-                                                 max_throughput=None):
+                                                 max_throughput=None,
+                                                 throughput_buckets=None):
     """Update an Azure Cosmos DB SQL container throughput"""
-    throughput_update_resource = _get_throughput_settings_update_parameters(throughput, max_throughput)
+    throughput_update_resource = _get_throughput_settings_update_parameters(throughput=throughput,
+                                                                            max_throughput = max_throughput,
+                                                                            throughput_buckets = throughput_buckets)
     return client.begin_update_sql_container_throughput(resource_group_name,
                                                         account_name,
                                                         database_name,
@@ -2384,14 +2387,16 @@ def cli_cosmosdb_sql_container_throughput_migrate(client,
     return client.begin_migrate_sql_container_to_manual_throughput(resource_group_name, account_name,
                                                                    database_name, container_name)
 
-def _get_throughput_settings_update_parameters(throughput=None, max_throughput=None):
+def _get_throughput_settings_update_parameters(throughput=None, max_throughput=None, throughput_buckets=None):
     throughput_resource = None
     if throughput and max_throughput:
         raise CLIError("Please provide max-throughput if your resource is autoscale enabled otherwise provide throughput.")
     if throughput:
-        throughput_resource = ThroughputSettingsResource(throughput=throughput)
+        throughput_resource = ThroughputSettingsResource(throughput=throughput, throughput_buckets=throughput_buckets)
     elif max_throughput:
-        throughput_resource = ThroughputSettingsResource(autoscale_settings=AutoscaleSettings(max_throughput=max_throughput))
+        throughput_resource = ThroughputSettingsResource(
+            autoscale_settings=AutoscaleSettings(max_throughput=max_throughput),
+            throughput_buckets=throughput_buckets)
 
     return ThroughputSettingsUpdateParameters(resource=throughput_resource)
 
