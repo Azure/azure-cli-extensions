@@ -31,6 +31,7 @@ def create_test(
     test_id,
     display_name=None,
     test_plan=None,
+    test_type=None,
     resource_group_name=None,
     load_test_config_file=None,
     test_description=None,
@@ -68,6 +69,7 @@ def create_test(
             body,
             display_name=display_name,
             test_description=test_description,
+            test_type=test_type,
             engine_instances=engine_instances,
             env=env,
             secrets=secrets,
@@ -87,6 +89,7 @@ def create_test(
             yaml_test_body,
             display_name=display_name,
             test_description=test_description,
+            test_type=test_type,
             engine_instances=engine_instances,
             env=env,
             secrets=secrets,
@@ -104,7 +107,7 @@ def create_test(
     )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, test_type or yaml_test_body.get("kind") if yaml_test_body else None
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
@@ -189,7 +192,7 @@ def update_test(
     )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
