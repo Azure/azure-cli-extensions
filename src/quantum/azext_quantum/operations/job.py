@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-from .._storage import create_container, upload_blob
+from .._storage import create_container, ContainerClient, upload_blob
 
 from .._client_factory import cf_jobs
 from .workspace import WorkspaceInfo
@@ -80,6 +80,110 @@ def _convert_numeric_params(job_params):
                     job_params[param] = float(job_params[param])
                 except:
                     pass
+
+
+# TODO: Finish adapting this code so it doesn't need to be part of the azure-quantum-python Workspace class
+#
+# TODO: Revise the following comments before un-drafting the PR...
+# =============== Function copied from azure-quantum-python\azure-quantum\azure\quantum\workspace.py, line 649, for User Story 27643
+# ===============
+def get_container_uri(
+    # self,
+    # job_id: Optional[str] = None,
+    # container_name: Optional[str] = None,
+    # container_name_format: Optional[str] = "job-{job_id}"
+    job_id: str = None,
+    container_name: str = None,
+    container_name_format: str = "job-{job_id}"
+) -> str:
+    """
+    Get container URI based on job ID or container name.
+    Creates a new container if it does not yet exist.
+
+    :param job_id:
+        Job ID, defaults to `None`.
+
+    :param container_name:
+        Container name, defaults to `None`.
+
+    :param container_name_format:
+        Container name format, defaults to "job-{job_id}".
+    
+    :return: Container URI.
+    :rtype: str
+    """
+    if container_name is None:
+        if job_id is not None:
+            container_name = container_name_format.format(job_id=job_id)
+        elif job_id is None:
+            container_name = f"{self.name}-data"
+    # Create container URI and get container client
+    if self.storage is None:
+        # Get linked storage account from the service, create
+        # a new container if it does not yet exist
+        container_uri = self._get_linked_storage_sas_uri(
+            container_name
+        )
+        container_client = ContainerClient.from_container_url(
+            container_uri
+        )
+        create_container_using_client(container_client)
+    else:
+        # Use the storage acount specified to generate container URI,
+        # create a new container if it does not yet exist
+        container_uri = get_container_uri(
+            self.storage, container_name
+        )
+    return container_uri
+# ===============
+# =============== End of code copied from azure-quantum-python\azure-quantum\azure\quantum\workspace.py
+
+
+# Do we need this function???
+# # =============== Function copied from azure-quantum\azure\quantum\job\base_job.py, line 234, for User Story 27643
+#     # @staticmethod
+#     # def upload_input_data(
+# def upload_input_data(
+#     container_uri: str,
+#     input_data: bytes,
+#     # content_type: Optional[ContentType] = ContentType.json,
+#     content_type: str = "application/json",
+#     blob_name: str = "inputData",
+#     encoding: str = "",
+#     return_sas_token: bool = False
+# ) -> str:
+#     """Upload input data file
+
+#     :param container_uri: Container URI
+#     :type container_uri: str
+#     :param input_data: Input data in binary format
+#     :type input_data: bytes
+#     :param content_type: Content type, e.g. "application/json"
+#     :type content_type: Optional, ContentType
+#     :param blob_name: Blob name, defaults to "inputData"
+#     :type blob_name: str
+#     :param encoding: Encoding, e.g. "gzip", defaults to ""
+#     :type encoding: str
+#     :param return_sas_token: Flag to return SAS token as part of URI, defaults to False
+#     :type return_sas_token: bool
+#     :return: Uploaded data URI
+#     :rtype: str
+#     """
+#     container_client = ContainerClient.from_container_url(
+#         container_uri
+#     )
+
+#     uploaded_blob_uri = upload_blob(
+#         container_client,
+#         blob_name,
+#         content_type,
+#         encoding,
+#         input_data,
+#         return_sas_token=return_sas_token
+#     )
+#     return uploaded_blob_uri
+# # ===============
+# # =============== End of code copied from azure-quantum\azure\quantum\job\base_job.py
 
 
 def submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
@@ -235,9 +339,17 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     container_name = "quantum-job-" + job_id
-    connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
-    connection_string = connection_string_dict["connectionString"]
-    container_client = create_container(connection_string, container_name)
+    # connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
+    # connection_string = connection_string_dict["connectionString"]
+    # container_client = create_container(connection_string, container_name)
+    
+    # TODO: Revise or delete the following comments before un-drafting the PR...
+    # ========== Next line is copied from from_storage_uri at line 205 in azure-quantum-python\azure-quantum\azure\quantum\job\base_job.py
+    # container_uri = workspace.get_container_uri(job_id=job_id)
+    container_uri = get_container_uri(job_id=job_id)
+    # ========== Next line is copied from upload_input_data at line 260 in azure-quantum-python\azure-quantum\azure\quantum\job\base_job.py
+    container_client = ContainerClient.from_container_url(container_uri)
+
     blob_name = "inputData"
 
     knack_logger.warning("Uploading input data...")
@@ -254,8 +366,9 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             error_msg += f"\nReason: {e.reason}"
         raise AzureResponseError(error_msg) from e
 
-    start_of_blob_name = blob_uri.find(blob_name)
-    container_uri = blob_uri[0:start_of_blob_name - 1]
+    # Do we delete these lines???
+    # start_of_blob_name = blob_uri.find(blob_name)
+    # container_uri = blob_uri[0:start_of_blob_name - 1]
 
     # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
     if job_params is None:
