@@ -2427,12 +2427,12 @@ def delete_admin_for_spring(cmd, java_component_name, environment_name, resource
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
 
-def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, min_replicas=1, max_replicas=1, no_wait=False, route_yaml=None):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, None, None, min_replicas, max_replicas, no_wait, route_yaml)
+def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False, route_yaml=None):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml)
 
 
-def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, min_replicas=None, max_replicas=None, no_wait=False, route_yaml=None):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, None, None, min_replicas, max_replicas, no_wait, route_yaml)
+def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False, route_yaml=None):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml)
 
 
 def show_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name):
