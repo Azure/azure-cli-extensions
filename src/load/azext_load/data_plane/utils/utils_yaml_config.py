@@ -10,6 +10,7 @@ from azext_load.data_plane.utils import validators
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
+from azure.cli.core.commands.parameters import get_subscription_locations
 
 from knack.log import get_logger
 
@@ -100,13 +101,17 @@ def yaml_parse_failure_criteria(data):
     return passfail_criteria
 
 
-def _parse_regionwise_loadtest_config(regionwise_loadtest_config):
+def _parse_regionwise_loadtest_config(cmd, regionwise_loadtest_config):
     logger.debug("Parsing regionwise load test configuration")
     regional_load_test_config = []
+    subscription_locations = get_subscription_locations(cmd.cli_ctx)
+    location_names = [location.name for location in subscription_locations]
     for region_load in regionwise_loadtest_config:
         region_name = region_load.get(LoadTestConfigKeys.REGION)
         if region_name is None or not isinstance(region_name, str):
             raise InvalidArgumentValueError("Region name is required of type string")
+        if region_name.lower() not in location_names:
+            raise InvalidArgumentValueError(f"Invalid region: {region_name}. Expected Azure region")
         engine_instances = region_load.get(LoadTestConfigKeys.ENGINE_INSTANCES)
         if engine_instances is None or not isinstance(engine_instances, int):
             raise InvalidArgumentValueError("Engine instances is required of type integer")
@@ -115,11 +120,12 @@ def _parse_regionwise_loadtest_config(regionwise_loadtest_config):
     return regional_load_test_config
 
 
-def yaml_parse_loadtest_configuration(data):
+def yaml_parse_loadtest_configuration(cmd, data):
     load_test_configuration = {}
     load_test_configuration["engineInstances"] = data.get(LoadTestConfigKeys.ENGINE_INSTANCES)
     if data.get(LoadTestConfigKeys.REGIONAL_LOADTEST_CONFIG) is not None:
         load_test_configuration["regionalLoadTestConfig"] = _parse_regionwise_loadtest_config(
+            cmd,
             data.get(LoadTestConfigKeys.REGIONAL_LOADTEST_CONFIG)
         )
     # quick test and split csv not supported currently in CLI

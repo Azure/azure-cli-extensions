@@ -134,7 +134,7 @@ class LoadTestScenarioRegionalLoad(ScenarioTest):
         _configure_command_assert_exception(self, "Sum of engine instances in regionwise load test configuration (2) should be equal to total engine instances (3)", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH)
         
         # INVALID: Update load test with regionwise engines from CLI containing invalid region
-        _configure_command_assert_exception(self, "Unsupported region invalidregion in the multi-region load test configuration", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_REGION)
+        _configure_command_assert_exception(self, "Invalid regionwise-engines item key: invalidregion. Expected Azure region", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_REGION)
         
         # INVALID: Update load test with regionwise engines from CLI containing invalid type for engine count
         _configure_command_assert_exception(self, "Expected integer", engine_instances=LoadTestConstants.ENGINE_INSTANCES, regionwise_engines=LoadTestConstants.REGIONWISE_ENGINES_INVALID_TYPE_FLOAT)
@@ -156,7 +156,7 @@ class LoadTestScenarioRegionalLoad(ScenarioTest):
         
         # INVALID: Update load test with regional load configuration from YAML
         # which contains invalid region
-        _configure_command_assert_exception(self, "Unsupported region randomregion in the multi-region load test configuration", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION)
+        _configure_command_assert_exception(self, "Invalid region: randomregion. Expected Azure region", load_test_config_file=LoadTestConstants.REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION)
         
         # INVALID: Update load test with regional load configuration from YAML
         # which contains invalid type for engine count

@@ -10,6 +10,7 @@ from datetime import datetime
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
+from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
@@ -466,7 +467,7 @@ def _validate_autostop_criteria_configfile(error_rate, time_window):
         )
 
 
-def validate_regionwise_engines(namespace):
+def validate_regionwise_engines(cmd, namespace):
     if namespace.regionwise_engines is None:
         return
     if not isinstance(namespace.regionwise_engines, list):
@@ -475,6 +476,8 @@ def validate_regionwise_engines(namespace):
                 Expected list in the format of region1=engineCount1 region2=engineCount2"
         )
     regionwise_engines = []
+    subscription_locations = get_subscription_locations(cmd.cli_ctx)
+    location_names = [location.name for location in subscription_locations]
     for item in namespace.regionwise_engines:
         if not isinstance(item, str) or "=" not in item:
             raise InvalidArgumentValueError(
@@ -484,6 +487,10 @@ def validate_regionwise_engines(namespace):
         if not key or not value:
             raise InvalidArgumentValueError(
                 f"Invalid regionwise-engines item: {item}. Region or engine count cannot be empty"
+            )
+        if key.strip().lower() not in location_names:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item key: {key}. Expected Azure region"
             )
         try:
             value = int(value.strip())

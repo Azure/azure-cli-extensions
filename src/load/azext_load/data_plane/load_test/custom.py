@@ -82,7 +82,7 @@ def create_test(
         )
     else:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(yaml)
+        yaml_test_body = convert_yaml_to_test(cmd, yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -153,7 +153,7 @@ def update_test(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(yaml)
+        yaml_test_body = convert_yaml_to_test(cmd, yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,

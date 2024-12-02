@@ -289,7 +289,7 @@ def load_yaml(file_path):
         ) from e
 
 
-def convert_yaml_to_test(data):
+def convert_yaml_to_test(cmd, data):
     new_body = {}
     if LoadTestConfigKeys.DISPLAY_NAME in data:
         new_body["displayName"] = data[LoadTestConfigKeys.DISPLAY_NAME]
@@ -303,7 +303,7 @@ def convert_yaml_to_test(data):
     if LoadTestConfigKeys.SUBNET_ID in data:
         new_body["subnetId"] = data[LoadTestConfigKeys.SUBNET_ID]
 
-    new_body["loadTestConfiguration"] = utils_yaml_config.yaml_parse_loadtest_configuration(data=data)
+    new_body["loadTestConfiguration"] = utils_yaml_config.yaml_parse_loadtest_configuration(cmd=cmd, data=data)
 
     if data.get(LoadTestConfigKeys.CERTIFICATES):
         new_body["certificate"] = parse_cert(data.get(LoadTestConfigKeys.CERTIFICATES))
