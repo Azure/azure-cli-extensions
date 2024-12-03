@@ -1308,15 +1308,10 @@ def helm_install_release(
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
         helm_install_error_message = error_helm_install.decode("ascii")
-        helm_install_error_message = process_helm_error_detail(
-            helm_install_error_message
-        )
-        helm_error_detail = {
-            "Context.Default.AzureCLI.onboardingErrorType": consts.Install_HelmRelease_Fault_Type,
-            "Context.Default.AzureCLI.onboardingErrorMessage": helm_install_error_message,
+        helm_error_detail ={
+            "Context.Default.AzureCLI.onboardingErrorType":consts.Install_HelmRelease_Fault_Type,
+            "Context.Default.AzureCLI.onboardingErrorMessage":helm_install_error_message
         }
-        # Replace the existing calls with the new function
-
         telemetry.add_extension_event("connectedk8s", helm_error_detail)
         if any(
             message in helm_install_error_message
