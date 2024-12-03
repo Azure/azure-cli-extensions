@@ -2766,7 +2766,7 @@ def cli_cosmosdb_table_role_definition_exists(client,
                                               role_definition_id):
     """Checks if an Azure Cosmos DB Table Role Definition exists"""
     try:
-        client.get_table_role_definition(resource_group_name, account_name,role_definition_id)
+        client.get_table_role_definition(resource_group_name, account_name, role_definition_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 

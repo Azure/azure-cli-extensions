@@ -282,10 +282,10 @@ def validate_table_role_definition_body(cmd, ns):
 
 def validate_table_role_definition_id(ns):
     """ Extracts Guid role definition Id """
-    if ns.table_role_definition_id is not None:
-        ns.table_role_definition_id = _parse_resource_path(ns.table_role_definition_id, False, "tableRoleDefinitions")
+    if ns.role_definition_id is not None:
+        ns.role_definition_id = _parse_resource_path(ns.role_definition_id, False, "tableRoleDefinitions")
         
 def validate_table_role_assignment_id(ns):
     """ Extracts Guid role assignment Id """
-    if ns.table_role_assignment_id is not None:
-        ns.table_role_assignment_id = _parse_resource_path(ns.table_role_assignment_id, False, "tableRoleAssignments")
+    if ns.role_assignment_id is not None:
+        ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "tableRoleAssignments")
