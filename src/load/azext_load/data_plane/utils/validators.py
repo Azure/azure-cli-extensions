@@ -230,7 +230,7 @@ def validate_test_plan_path(namespace):
     _, file_extension = os.path.splitext(namespace.test_plan)
     if file_extension.casefold() != ".jmx" and file_extension.casefold() != ".json":
         raise InvalidArgumentValueError(
-            f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
+            f"Invalid test plan file extension: {file_extension}. Expected: .jmx for JMeter or .json for URL test"
         )
 
 
