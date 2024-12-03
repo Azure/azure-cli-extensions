@@ -1105,7 +1105,7 @@ type: command
 short-summary: Check if an Azure Cosmos DB role definition exists.
 examples:
   - name: Check if an Azure Cosmos DB role definition exists.
-    text: az cosmosdb table role definition exists --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+    text: az cosmosdb table role definition exists --account-name MyAccount --resource-group MyResourceGroup --taberole-definition-id be79875a-2cc4-40d5-8958-566017875b39
 """
 
 helps['cosmosdb table role definition list'] = """
