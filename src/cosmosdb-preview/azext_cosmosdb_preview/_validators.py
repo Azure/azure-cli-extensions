@@ -285,23 +285,6 @@ def validate_table_role_definition_id(ns):
     if ns.table_role_definition_id is not None:
         ns.table_role_definition_id = _parse_resource_path(ns.table_role_definition_id, False, "tableRoleDefinitions")
         
-        
-
-def validate_table_role_assignment_body(cmd, ns):
-    """ Extracts role assignment body """
-    from azure.cli.core.util import get_file_json, shell_safe_json_parse
-    import os
-
-    if ns.table_role_assignment_body is not None:
-        if os.path.exists(ns.table_role_assignment_body):
-            table_role_assignment = get_file_json(ns.table_role_assignment_body)
-        else:
-            table_role_assignment = shell_safe_json_parse(ns.table_role_assignment_body)
-
-        #todo: add some validations here
-
-        ns.table_role_assignment_body = table_role_assignment
-        
 def validate_table_role_assignment_id(ns):
     """ Extracts Guid role assignment Id """
     if ns.table_role_assignment_id is not None:

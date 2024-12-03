@@ -416,8 +416,6 @@ def build_create_update_table_role_definition_request(  # pylint: disable=name-t
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
-    print("ETC-Received kwargs:", kwargs)
-
     # Construct URL
     _url = kwargs.pop(
         "template_url",
@@ -1974,9 +1972,6 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         else:
             _json = self._serialize.body(create_update_table_role_definition_parameters, "TableRoleDefinitionResource")
 
-        print("ETC-Parameters before serialization:", create_update_table_role_definition_parameters)
-        print("ETC-Serialized JSON:", _json)
-
         _request = build_create_update_table_role_definition_request(
             resource_group_name=resource_group_name,
             account_name=account_name,
@@ -1991,9 +1986,6 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         )
         _request.url = self._client.format_url(_request.url)
 
-        print("ETC-Constructed Request Body:", _request.content)  # For raw content
-        #print("ETC-Constructed Request JSON:", _request.json())  # For JSON body (if applicable)
-
         _decompress = kwargs.pop("decompress", True)
         _stream = True
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
@@ -2001,14 +1993,6 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         )
 
         response = pipeline_response.http_response
-
-        print("Headers:")
-        for key, value in response.headers.items():
-            print(f"  {key}: {value}")
-
-        # Print the response body (decoded to string)
-        print("Body:")
-        print(response.text)
 
         if response.status_code not in [200, 202]:
             try:
