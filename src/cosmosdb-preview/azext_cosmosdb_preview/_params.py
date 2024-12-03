@@ -19,7 +19,6 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id,
     validate_table_role_definition_body,
     validate_table_role_definition_id,
-    validate_table_role_assignment_body,
     validate_table_role_assignment_id)
 
 from azext_cosmosdb_preview.actions import (
