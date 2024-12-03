@@ -109,9 +109,9 @@ def create_test(
         "Created test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
+    evaluated_test_type = test_type or yaml_test_body.get("kind") if yaml_test_body else response.get("kind")
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait,
-        test_type or yaml_test_body.get("kind") if yaml_test_body else response.get("kind")
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
