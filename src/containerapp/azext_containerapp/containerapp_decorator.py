@@ -1130,8 +1130,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             safe_set(self.containerapp_def, "properties", "template", "serviceBinds", value=service_bindings_def_list)
 
     def set_up_create_containerapp_yaml(self, name, file_name):
+        # This list can not include anything that has a default value: transport, revisions_mode, environment_type
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_target_port() or self.get_argument_ingress() or \
-                self.get_argument_revisions_mode() or self.get_argument_secrets() or self.get_argument_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_registry_server() or \
+                self.get_argument_secrets() or self.get_argument_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_registry_server() or \
                 self.get_argument_registry_user() or self.get_argument_registry_pass() or self.get_argument_dapr_enabled() or self.get_argument_dapr_app_port() or self.get_argument_dapr_app_id() or \
                 self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags() or self.get_argument_target_label():
             not self.get_argument_disable_warnings() and logger.warning(
