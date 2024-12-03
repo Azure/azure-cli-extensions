@@ -41,13 +41,14 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_advancedurl(self):
+        # Create a load test without test plan
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL,
+                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID,
             }
         )
         checks = [
-            JMESPathCheck("testId", LoadTestConstants.LOAD_TEST_ADVANCED_URL),
+            JMESPathCheck("testId", LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID),
             JMESPathCheck("kind", LoadTestConstants.ADVANCED_URL_TEST_TYPE),
         ]
         self.cmd(
@@ -58,6 +59,8 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             checks=checks,
         )
         
+        # Update the load test with advanced URL requests json using file upload
+        # file type not specified => file defaults to ADDITIONAL_ARTIFACTS
         self.kwargs.update(
             {
                 "test_url_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
@@ -76,6 +79,9 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             checks=checks,
         )
         
+        # Update the load test with advanced URL requests json using file upload
+        # file type URL_TEST_CONFIG specified
+        # assert test script is generated
         self.kwargs.update(
             {
                 "test_url_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
@@ -103,9 +109,12 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         ).get_output_in_json()
         test_script_uri = None
         for file in files:
-            if file["fileType"] == "TEST_SCRIPT":
+            if file["fileType"] == "JMX_FILE":
                 test_script_uri = urllib.parse.urlparse(file["url"]).path
+        assert test_script_uri is not None
         
+        # Update the requests in the advanced URL test
+        # assert test script is updated
         self.kwargs.update(
             {
                 "test_url_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_UPDATED_PATH,
@@ -132,10 +141,12 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             "--resource-group {resource_group} "
         ).get_output_in_json()
         for file in files:
-            if file["fileType"] == "TEST_SCRIPT":
+            if file["fileType"] == "JMX_FILE":
                 assert test_script_uri != urllib.parse.urlparse(file["url"]).path
                 test_script_uri = urllib.parse.urlparse(file["url"]).path
         
+        # Update the load test using load test config file
+        # assert test script is updated
         self.kwargs.update(
             {
                 "load_test_config_file": LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE,
@@ -156,6 +167,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         ).get_output_in_json()
         assert urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path != test_script_uri
         
+        # Update the advanced URL test to JMX using test plan
         self.kwargs.update(
             {
                 "jmx_test_plan": LoadTestConstants.TEST_PLAN,
@@ -176,6 +188,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             checks=checks,
         )
         
+        # Invalid: Try update the JMX test to URL test using requests json config file
         self.kwargs.update(
             {
                 "url_test_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
@@ -203,9 +216,10 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             "--yes",
         )
         
+        # Invalid: Try create JMX test using advanced URL requests json from YAML config file
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL,
+                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID,
                 "load_test_config_file": LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE,
                 "test_type": "JMX",
             }
@@ -222,6 +236,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         except Exception as e:
             assert "(InvalidFileType) Invalid FileType" in str(e)
         
+        # Invalid: Try upload advanced URL requests json config file to a test of type JMX
         self.kwargs.update(
             {
                 "url_test_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
@@ -238,20 +253,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
                 "--file-type {file_type} ",
             )
         except Exception as e:
-            assert "The URL config file cannot be uploaded for a quick start test" in str(e)
-        
-        checks = [
-            JMESPathCheck("fileName", LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_NAME),
-            JMESPathCheck("fileType", "URL_TEST_CONFIG"),
-        ]
-        self.cmd(
-            "az load test file upload "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            '--path "{url_test_config}" ',
-            checks=checks,
-        )
+            assert "The URL config file cannot be uploaded" in str(e)
         
         self.cmd(
             "az load test delete "
@@ -261,9 +263,11 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             "--yes",
         )
         
+        # Create a load test with advanced URL requests json using test plan CLI argument
+        # assert test script is generated
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL,
+                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID,
                 "test_plan": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
             }
         )
@@ -281,8 +285,11 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             '--test-plan "{test_plan}" ',
             checks=checks,
         ).get_output_in_json()
+        assert response["inputArtifacts"]["testScriptFileInfo"]["url"] is not None
         test_script_uri = urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path
         
+        # Update the load test with updated advanced URL requests json using test plan CLI argument
+        # assert test script is updated
         self.kwargs.update(
             {
                 "test_plan": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_UPDATED_PATH,
@@ -300,8 +307,10 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             '--test-plan "{test_plan}" ',
             checks=checks,
         ).get_output_in_json()
+        assert response["inputArtifacts"]["testScriptFileInfo"]["url"] is not None
         assert test_script_uri != urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path
         
+        # Invalid: Try upload advanced URL requests json config file as a TEST_SCRIPT
         self.kwargs.update(
             {
                 "file_path": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
@@ -328,9 +337,27 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             "--yes",
         )
         
+        # Invalid: Try create a load test with invalid test plan file extension
         self.kwargs.update(
             {
-                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL,
+                "test_plan": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--test-plan "{test_plan}" ',
+            )
+        except Exception as e:
+            assert "Invalid test plan file extension: .yaml. Expected: .jmx for JMeter or .json for URL test" in str(e)
+
+        # Create JMX load test using .jmx test plan even with test type as URL
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID,
                 "test_plan": LoadTestConstants.TEST_PLAN,
                 "test_type": LoadTestConstants.ADVANCED_URL_TEST_TYPE,
             }
