@@ -47,8 +47,15 @@ from .aaz.latest.apic.metadata import (
     Export as ExportMetadata
 )
 from .aaz.latest.apic import ImportFromApim, Create as CreateService
+from .aaz.latest.apic.integration import (
+    Create as CreateIntegration,
+    Show as ShowIntegration,
+    List as ListIntegration,
+    Delete as DeleteIntegration
+)
 
 from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg
+from azure.cli.core.aaz import register_command
 
 
 class DefaultWorkspaceParameter:
@@ -295,3 +302,71 @@ class ImportFromApimExtension(ImportFromApim):
             )
 
         args.source_resource_ids = source_resource_ids
+
+
+# `az apic integration` commands
+class ListIntegrationExtension(DefaultWorkspaceParameter, ListIntegration):
+    pass
+
+
+class DeleteIntegrationExtension(DefaultWorkspaceParameter, DeleteIntegration):
+    pass
+
+
+class ShowIntegrationExtension(DefaultWorkspaceParameter, ShowIntegration):
+    pass
+
+
+@register_command(
+    "apic integration create azure-api-management",
+    is_preview=True,
+)
+class CreateApimIntegration(DefaultWorkspaceParameter, CreateIntegration):
+    """Add Azure APIM as API source
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.apim_resource_id._registered = False
+
+        args_schema.apim_subscription_id = AAZStrArg(
+            options=["--apim-subscription"],
+            help="The subscription id of the source APIM instance.",
+            required=False
+        )
+
+        args_schema.apim_resource_group = AAZStrArg(
+            options=["--apim-resource-group"],
+            help="The resource group of the source APIM instance.",
+            required=False
+        )
+
+        args_schema.apim_name = AAZStrArg(
+            options=["--apim-name"],
+            help="The name of the source APIM instance.",
+            required=True
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        # Set apim_resource_id based on user input
+        super().pre_operations()
+        args = self.ctx.args
+
+        # Use same subscription id and resource group as API Center by default
+        resource_group = args.resource_group
+        subscription_id = self.ctx.subscription_id
+
+        # Use user provided subscription id
+        if args.apim_subscription_id:
+            subscription_id = args.apim_subscription_id
+
+        # Use user provided resource group
+        if args.apim_resource_group:
+            resource_group = args.apim_resource_group
+
+        args.apim_resource_id = (f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
+                                 f"Microsoft.ApiManagement/service/{args.apim_name}/")
