@@ -651,7 +651,7 @@ def load_arguments(self, _):
     # table role definition
     with self.argument_context('cosmosdb table role definition') as c:
         c.argument('account_name', account_name_type, id_part=None)
-        c.argument('table_role_definition_id', options_list=['--id', '-i'], validator=validate_table_role_definition_id, help="Unique ID for the Table Role Definition.")
+        c.argument('table_role_definition_id', options_list=['--role-definition-id', '-i'], validator=validate_table_role_definition_id, help="Unique ID for the Table Role Definition.")
         c.argument('table_role_definition_body', options_list=['--body', '-b'], validator=validate_table_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), RoleName, Description, AssignableScopes, Permissions.  You can enter it as a string or as a file, e.g., --body @table-role_definition-body-file.json or " + TABLE_ROLE_DEFINITION_EXAMPLE)
 
     with self.argument_context('cosmosdb table role assignment') as c:
