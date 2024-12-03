@@ -1097,7 +1097,7 @@ type: command
 short-summary: Delete a Table role definition under an Azure Cosmos DB account.
 examples:
   - name: Delete a Table role definition under an Azure Cosmos DB account.
-    text: az cosmosdb table role definition delete --account-name MyAccount --resource-group MyResourceGroup --id be79875a-2cc4-40d5-8958-566017875b39
+    text: az cosmosdb table role definition delete --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
 """
 
 helps['cosmosdb table role definition exists'] = """
@@ -1105,7 +1105,7 @@ type: command
 short-summary: Check if an Azure Cosmos DB role definition exists.
 examples:
   - name: Check if an Azure Cosmos DB role definition exists.
-    text: az cosmosdb table role definition exists --account-name MyAccount --resource-group MyResourceGroup --id be79875a-2cc4-40d5-8958-566017875b39
+    text: az cosmosdb table role definition exists --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
 """
 
 helps['cosmosdb table role definition list'] = """
@@ -1121,7 +1121,7 @@ type: command
 short-summary: Show the properties of a Table role definition under an Azure Cosmos DB account.
 examples:
   - name: Show the properties of a Table role definition under an Azure Cosmos DB account.
-    text: az cosmosdb table role definition show --account-name MyAccount --resource-group MyResourceGroup --id be79875a-2cc4-40d5-8958-566017875b39
+    text: az cosmosdb table role definition show --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
 """
 
 helps['cosmosdb table role definition update'] = """
@@ -1193,9 +1193,18 @@ helps['cosmosdb table role assignment update'] = """
 type: command
 short-summary: Update a Table role assignment under an Azure Cosmos DB account.
 examples:
-  - name: Update a Table role assignment under an Azure Cosmos DB account.
+  - name: Update a Table role assignment under an Azure Cosmos DB account using Role Definition Name.
     text: |
       az cosmosdb table role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
         --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
-        --role-definition-id updated-role-definition-id
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: update a Table role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb table role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
 """
