@@ -5,7 +5,6 @@
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-
 class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_role', location='westus2')
@@ -26,8 +25,6 @@ class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
         test_name = 'testUser'
         test_name2 = 'testUser2'
         
-        
-        #/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}
         scope = ('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/{2}').format(subscription, resource_group, acc_name)
         
         role_definition_create_body = (' {{ \\"Id\\": \\"{0}\\",\\"RoleName\\": \\"{1}\\",\\"type\\": \\"CustomRole\\",\\"description\\": \\"Custom role to read Cosmos DB metadata\\",\\"AssignableScopes\\":[\\"{2}\\"],\\"Permissions\\": [{{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}}]  }} ').format(
@@ -44,7 +41,6 @@ class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
         fully_qualified_role_def_id2 = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/{2}/tableRoleDefinitions/{3}'.format(
             subscription, resource_group, acc_name, role_def_id2)
             
-            
         # Contract violation request body
         empty_id_role_definition_create_body =  (' {{ \\"RoleName\\": \\"{1}\\",\\"type\\": \\"CustomRole\\",\\"description\\": \\"Custom role to read Cosmos DB metadata\\",\\"AssignableScopes\\":[\\"{2}\\"],\\"Permissions\\": [{{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}}]  }} ').format(
             role_def_name1, test_name, scope)  
@@ -52,27 +48,11 @@ class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
             role_def_name1, test_name, scope)  
         empty_name_role_definition_create_body = (' {{ \\"Id\\": \\"{0}\\",\\"RoleName\\": \\"\\",\\"type\\": \\"CustomRole\\",\\"description\\": \\"Custom role to read Cosmos DB metadata\\",\\"AssignableScopes\\":[\\"{2}\\"],\\"Permissions\\": [{{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}}]  }} ').format(
             role_def_name1, test_name, scope)  
-            
-        #empty_id_role_definition_create_body = ' {{ \\"RoleName\\": \\"{1}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{0}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-        #    db_name, role_def_name1)
-        #invalid_role_id_role_definition_create_body = ' {{ \\"Id\\": \\"randomid\\", \\"RoleName\\": \\"{1}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{0}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{0}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-        #    db_name, role_def_name1)
-        #empty_name_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-        #    role_def_id1, db_name)
-              
+
         no_resource_role_definition_create_body = (' {{ \\"RoleName\\": \\"{1}\\",\\"type\\": \\"CustomRole\\",\\"description\\": \\"Custom role to read Cosmos DB metadata\\",\\"Permissions\\": [{{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}}]  }} ').format(
             role_def_name1, test_name, scope)  
         no_actions_role_definition_create_body = (' {{ \\"RoleName\\": \\"{1}\\",\\"type\\": \\"CustomRole\\",\\"description\\": \\"Custom role to read Cosmos DB metadata\\",\\"AssignableScopes\\":[\\"{2}\\"] }} ').format(
             role_def_name1, test_name, scope)  
-            
-        #no_privilege_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Roles\\":[]}} '.format(
-        #    role_def_id1, db_name, role_def_name1)
-        #no_resource_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-        #    role_def_id1, db_name, role_def_name1)
-        #no_actions_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}}}}],\\"Roles\\":[]}} '.format(
-        #    role_def_id1, db_name, role_def_name1)
-        
-       
 
         self.kwargs.update({
             'acc': acc_name,
@@ -92,7 +72,6 @@ class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
             'empty_role_def_id_body': empty_id_role_definition_create_body,
             'inalid_id_role_def_create_body': invalid_role_id_role_definition_create_body,
             'empty_role_name_create_body': empty_name_role_definition_create_body,
-            #'no_privilege_role_def_body': no_privilege_role_definition_create_body,
             'no_resource_role_def_body': no_resource_role_definition_create_body,
             'no_actions_role_def_body': no_actions_role_definition_create_body,
             
@@ -114,7 +93,6 @@ class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb table role definition create -g {rg} -a {acc} -b "{empty_role_def_id_body}"', expect_failure=True)
         self.cmd('az cosmosdb table role definition create -g {rg} -a {acc} -b "{inalid_id_role_def_create_body}"', expect_failure=True)
         self.cmd('az cosmosdb table role definition create -g {rg} -a {acc} -b "{empty_role_name_create_body}"', expect_failure=True)
-        #self.cmd('az cosmosdb table role definition create -g {rg} -a {acc} -b "{no_privilege_role_def_body}"', expect_failure=True)
         self.cmd('az cosmosdb table role definition create -g {rg} -a {acc} -b "{no_resource_role_def_body}"', expect_failure=True)
         self.cmd('az cosmosdb table role definition create -g {rg} -a {acc} -b "{no_actions_role_def_body}"', expect_failure=True)
                 

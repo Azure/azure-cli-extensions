@@ -104,7 +104,15 @@ def load_command_table(self, _):
         g.custom_command('exists', 'cli_cosmosdb_table_role_definition_exists')
         g.command('list', 'list_table_role_definitions')
         g.show_command('show', 'get_table_role_definition')
-        g.command('delete', 'begin_delete_table_role_definition', confirmation=True)
+        g.command('delete', 'begin_delete_table_role_definition', confirmation=True)        
+    
+    with self.command_group('cosmosdb table role assignment', cosmosdb_rbac_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_table_role_assignment_create')
+        g.custom_command('update', 'cli_cosmosdb_table_role_assignment_update')
+        g.custom_command('exists', 'cli_cosmosdb_table_role_assignment_exists')
+        g.command('list', 'list_table_role_assignments')
+        g.show_command('show', 'get_table_role_assignment')
+        g.command('delete', 'begin_delete_table_role_assignment', confirmation=True)
 
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
