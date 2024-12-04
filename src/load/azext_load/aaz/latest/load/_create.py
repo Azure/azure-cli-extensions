@@ -109,7 +109,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Required Parameters",
-            help="Location. Values from: az account list-locations. You can configure the default location using az configure --defaults location=<location>.",
+            help="Location. Values from: az account list-locations. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -124,7 +124,7 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             arg_group="Required Parameters",
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
