@@ -34,6 +34,7 @@ DEPENDENCIES = [
     "kubernetes==24.2.0",
     "pycryptodome==3.20.0",
     "azure-mgmt-hybridcompute==7.0.0",
+    "oras==0.2.25",
 ]
 
 with open("README.md", "r", encoding="utf-8") as f:

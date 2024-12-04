@@ -53,6 +53,7 @@ from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
+import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
@@ -3474,7 +3475,7 @@ def client_side_proxy_wrapper(
         )
 
     args = []
-    operating_system = platform.system()
+    operating_system = proxybinaryutils._get_client_operating_system()
     proc_name = f"arcProxy{operating_system}"
 
     telemetry.set_debug_info("CSP Version is ", consts.CLIENT_PROXY_VERSION)
@@ -3508,13 +3509,7 @@ def client_side_proxy_wrapper(
     if port_error_string != "":
         raise ClientRequestError(port_error_string)
 
-    # Set csp url based on cloud
-    CSP_Url = consts.CSP_Storage_Url
-    if cloud == consts.Azure_ChinaCloudName:
-        CSP_Url = consts.CSP_Storage_Url_Mooncake
-    elif cloud == consts.Azure_USGovCloudName:
-        CSP_Url = consts.CSP_Storage_Url_Fairfax
-
+    proxybinaryutils.install_client_side_proxy(".clientproxy")
     # Creating installation location, request uri and older version exe location depending on OS
     if operating_system == "Windows":
         install_location_string = (
