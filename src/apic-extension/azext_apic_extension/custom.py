@@ -363,21 +363,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
 
                 # Create API Deployment -----------------------------------------------------------------------------
                 from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment
-                from .aaz.latest.apic.environment import Show as GetEnvironment
-
-                environment_id = None
-                if environment_id:
-                    # GET Environment ID
-                    environment_args = {
-                        'resource_group': resource_group,
-                        'service_name': service_name,
-                        'workspace_name': 'default',
-                        'environment_id': environment_id
-                    }
-
-                    getEnvironmentResults = GetEnvironment(cli_ctx=cmd.cli_ctx)(command_args=environment_args)
-                    environment_id = getEnvironmentResults['id']
-                    # full envId, extract actual envId if to be used later
 
                 servers = data.get('servers')
                 if environment_id and servers:

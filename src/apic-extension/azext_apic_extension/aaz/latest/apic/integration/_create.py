@@ -49,6 +49,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of Azure API Center resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
@@ -93,7 +94,7 @@ class Create(AAZCommand):
             options=["--import-specification"],
             arg_group="Properties",
             help="Indicates if the specification should be imported along with metadata.",
-            default="ondemand",
+            default="always",
             enum={"always": "always", "never": "never", "ondemand": "ondemand"},
         )
         _args_schema.target_environment_id = AAZResourceIdArg(
