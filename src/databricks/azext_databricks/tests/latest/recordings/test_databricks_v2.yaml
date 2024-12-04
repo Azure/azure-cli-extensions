@@ -369,7 +369,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/virtualNetworks/vnet000003?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/virtualNetworks/vnet000003?api-version=2024-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"vnet000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/virtualNetworks/vnet000003\",\r\n
@@ -476,7 +476,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/virtualNetworks/vnet000003?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/virtualNetworks/vnet000003?api-version=2024-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"vnet000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/virtualNetworks/vnet000003\",\r\n
@@ -2152,7 +2152,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"privateLinkServiceConnectionState": {"description": "Rejected
-      by aaaaaaaaaaaaaaaaaaa@foo.com", "status": "Rejected"}}}'
+      by databricksadmin@contoso.com", "status": "Rejected"}}}'
     headers:
       Accept:
       - application/json
@@ -2401,7 +2401,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Databricks/workspaces/wn000002/privateEndpointConnections/npe000006","name":"npe000006","type":"Microsoft.Databricks/workspaces/privateEndpointConnections","properties":{"privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/privateEndpoints/npe000006"},"groupIds":["databricks_ui_api"],"privateLinkServiceConnectionState":{"status":"Rejected","description":"Rejected
-        by aaaaaaaaaaaaaaaaaaa@foo.com","actionsRequired":"None"},"provisioningState":"Succeeded"}}'
+        by databricksadmin@contoso.com","actionsRequired":"None"},"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -2448,7 +2448,7 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Databricks/workspaces/wn000002/privateEndpointConnections/npe000006","name":"npe000006","type":"Microsoft.Databricks/workspaces/privateEndpointConnections","properties":{"privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/privateEndpoints/npe000006"},"groupIds":["databricks_ui_api"],"privateLinkServiceConnectionState":{"status":"Rejected","description":"Rejected
-        by aaaaaaaaaaaaaaaaaaa@foo.com","actionsRequired":"None"},"provisioningState":"Succeeded"}}]}'
+        by databricksadmin@contoso.com","actionsRequired":"None"},"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -2495,7 +2495,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Databricks/workspaces/wn000002/privateEndpointConnections/npe000006","name":"npe000006","type":"Microsoft.Databricks/workspaces/privateEndpointConnections","properties":{"privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_v2000001/providers/Microsoft.Network/privateEndpoints/npe000006"},"groupIds":["databricks_ui_api"],"privateLinkServiceConnectionState":{"status":"Rejected","description":"Rejected
-        by aaaaaaaaaaaaaaaaaaa@foo.com","actionsRequired":"None"},"provisioningState":"Succeeded"}}'
+        by databricksadmin@contoso.com","actionsRequired":"None"},"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
