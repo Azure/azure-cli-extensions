@@ -25,10 +25,10 @@ from .._storage import (
     ContainerClient,
     upload_blob,
     create_container_using_client,
-    generate_container_sas,
-    BlobSasPermissions,
-    get_container_uri
+    BlobSasPermissions
 )
+
+from ..vendored_sdks.azure_storage_blob import generate_container_sas
 
 # from .._client_factory import cf_jobs
 from .._client_factory import cf_quantum_mgmt, cf_quantum, cf_jobs, cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials

@@ -21,7 +21,7 @@ from .vendored_sdks.azure_storage_blob import (
     BlobClient,
     BlobSasPermissions,
     ContentSettings,
-    generate_blob_sas,
+    generate_blob_sas
 )
 
 logger = logging.getLogger(__name__)
