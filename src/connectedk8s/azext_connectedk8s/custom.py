@@ -50,8 +50,12 @@ from kubernetes import client as kube_client
 from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
+from concurrent.futures import ThreadPoolExecutor
 
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
+import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
+from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
+
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
@@ -3656,6 +3660,7 @@ def client_side_proxy_main(
                 flag = ProxyStatus.AccessTokenRefresh
 
             if flag is not None:
+                print("Refreshing tokens with flag ", flag)
                 new_hc_expiry, new_at_expiry, clientproxy_process = client_side_proxy(
                     cmd,
                     tenant_id,
@@ -3713,12 +3718,7 @@ def client_side_proxy(
     if ProxyStatus.should_hc_token_refresh(flag):
         with ThreadPoolExecutor() as executor:
             future_get_cluster_user_credentials = executor.submit(
-                proxylogic.get_cluster_user_credentials,
-                client,
-                resource_group_name,
-                cluster_name,
-                auth_method,
-            )
+                proxylogic.get_cluster_user_credentials, client, resource_group_name, cluster_name, auth_method)
 
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == ProxyStatus.FirstRun:
@@ -3741,16 +3741,14 @@ def client_side_proxy(
 
     if token is None and ProxyStatus.should_access_token_refresh(flag):
         # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
-        at_expiry = proxylogic.handle_post_at_to_csp(
-            cmd, api_server_port, tenant_id, clientproxy_process
-        )
+        at_expiry = proxylogic.handle_post_at_to_csp(cmd, api_server_port, tenant_id, clientproxy_process)
 
     # Check hybrid connection details from Userrp
-    response: Response
+    response = None
 
     if ProxyStatus.should_hc_token_refresh(flag):
         try:
-            response_data = future_get_cluster_user_credentials.result()
+            response = future_get_cluster_user_credentials.result()
         except Exception as e:
             clientproxy_process.terminate()
             utils.arm_exception_handler(
@@ -3760,7 +3758,7 @@ def client_side_proxy(
             )
             raise CLIInternalError(f"Failed to get credentials: {e}")
 
-        data = clientproxyutils.prepare_clientproxy_data(response_data)
+        data = clientproxyutils.prepare_clientproxy_data(response)
         hc_expiry = data["hybridConnectionConfig"]["expirationTime"]
 
         response = proxylogic.post_register_to_proxy(
@@ -3770,7 +3768,7 @@ def client_side_proxy(
             subscription_id,
             resource_group_name,
             cluster_name,
-            clientproxy_process,
+            clientproxy_process
         )
 
     if flag == ProxyStatus.FirstRun:
