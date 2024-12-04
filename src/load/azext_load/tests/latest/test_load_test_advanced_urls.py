@@ -352,7 +352,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
                 '--test-plan "{test_plan}" ',
             )
         except Exception as e:
-            assert "Invalid test plan file extension: .yaml. Expected: .jmx for JMeter or .json for URL test" in str(e)
+            assert "Invalid test plan file extension: .yaml. Allowed values: .jmx, .json for JMX, URL test types respectively" in str(e)
 
         # Create JMX load test using .jmx test plan even with test type as URL
         self.kwargs.update(
