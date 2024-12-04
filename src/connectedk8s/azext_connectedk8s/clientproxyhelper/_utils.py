@@ -33,6 +33,7 @@ if TYPE_CHECKING:
     from subprocess import Popen
 
     from knack.commands import CLICommand
+
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
         CredentialResults,
     )

@@ -43,8 +43,10 @@ else:
         CONFIG = json.load(f)
     for key in CONFIG:
         if not CONFIG[key]:
-            raise RequiredArgumentMissingError(f"Missing required configuration in {config_path} file. Make sure all \
-properties are populated.")
+            raise RequiredArgumentMissingError(
+                f"Missing required configuration in {config_path} file. Make sure all \
+properties are populated."
+            )
 
 
 def _get_test_data_file(filename):
@@ -148,8 +150,10 @@ def install_kubectl_client():
         elif operating_system == "linux" or operating_system == "darwin":
             kubectl_path = os.path.join(kubectl_filepath, "kubectl")
         else:
-            logger.warning(f"The {operating_system} platform is not currently supported for installing kubectl \
-client.")
+            logger.warning(
+                f"The {operating_system} platform is not currently supported for installing kubectl \
+client."
+            )
             return
 
         if os.path.isfile(kubectl_path):
@@ -712,8 +716,10 @@ only supported when auto-upgrade is set to false",
             "connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
             {managed_cluster_name}-admin"
         )
-        response = requests.post(f'https://{CONFIG["location"]}.dp.kubernetesconfiguration.azure.com/azure-\
-            arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
+        response = requests.post(
+            f'https://{CONFIG["location"]}.dp.kubernetesconfiguration.azure.com/azure-\
+            arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable'
+        )
         jsonData = json.loads(response.text)
         repo_path = jsonData["repositoryPath"]
         index_value = 0
