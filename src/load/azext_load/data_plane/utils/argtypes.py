@@ -99,7 +99,8 @@ test_type = CLIArgumentType(
     validator=validators.validate_test_type,
     options_list=["--test-type"],
     type=str,
-    help=f"Type of the load test. Allowed values: {', '.join(utils.get_enum_values(models.AllowedTestTypes))}.",
+    choices=utils.get_enum_values(models.AllowedTestTypes),
+    help="Type of the load test.",
 )
 
 load_test_config_file = CLIArgumentType(
