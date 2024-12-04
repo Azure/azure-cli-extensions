@@ -331,7 +331,7 @@ helps['spring-cloud app logs'] = """
 
 helps['spring-cloud app deployment'] = """
     type: group
-    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Cloud. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring-cloud app deploy --deployment <staging deployment>
+    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Cloud. More operations on deployments can be done on app level with parameter --deployment. e.g. `az spring-cloud app deploy --deployment <staging deployment>`
 """
 
 helps['spring-cloud app deployment list'] = """
