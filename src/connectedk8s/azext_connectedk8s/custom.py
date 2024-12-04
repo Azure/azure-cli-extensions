@@ -19,9 +19,9 @@ import time
 import urllib.request
 from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor
+from glob import glob
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
-from concurrent.futures import ThreadPoolExecutor
 
 import yaml
 from azure.cli.command_modules.role import graph_client_factory
@@ -52,15 +52,10 @@ from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
-import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
-import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
-from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
-
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
-import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
 import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 from azext_connectedk8s._client_factory import (
@@ -3717,7 +3712,12 @@ def client_side_proxy(
     if ProxyStatus.should_hc_token_refresh(flag):
         with ThreadPoolExecutor() as executor:
             future_get_cluster_user_credentials = executor.submit(
-                proxylogic.get_cluster_user_credentials, client, resource_group_name, cluster_name, auth_method)
+                proxylogic.get_cluster_user_credentials,
+                client,
+                resource_group_name,
+                cluster_name,
+                auth_method,
+            )
 
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == ProxyStatus.FirstRun:
@@ -3740,7 +3740,9 @@ def client_side_proxy(
 
     if token is None and ProxyStatus.should_access_token_refresh(flag):
         # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
-        at_expiry = proxylogic.handle_post_at_to_csp(cmd, api_server_port, tenant_id, clientproxy_process)
+        at_expiry = proxylogic.handle_post_at_to_csp(
+            cmd, api_server_port, tenant_id, clientproxy_process
+        )
 
     # Check hybrid connection details from Userrp
     response = None
@@ -3767,7 +3769,7 @@ def client_side_proxy(
             subscription_id,
             resource_group_name,
             cluster_name,
-            clientproxy_process
+            clientproxy_process,
         )
 
     if flag == ProxyStatus.FirstRun:
