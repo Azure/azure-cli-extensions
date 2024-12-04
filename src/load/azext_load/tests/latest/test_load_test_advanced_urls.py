@@ -9,7 +9,6 @@ from azure.cli.testsdk import (
     JMESPathCheck,
     ResourceGroupPreparer,
     ScenarioTest,
-    live_only,
 )
 from knack.log import get_logger
 import urllib.parse
@@ -37,7 +36,6 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         super(LoadTestScenarioAdvancedUrl, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
     
-    @live_only()
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_advancedurl(self):

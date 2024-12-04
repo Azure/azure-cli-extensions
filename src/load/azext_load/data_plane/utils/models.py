@@ -37,6 +37,7 @@ class AllowedTestTypes(str, Enum):
     JMX = "JMX"
     URL = "URL"
 
+
 class AllowedTestPlanFileExtensions(str, Enum):
     JMX = ".jmx"
     URL = ".json"
