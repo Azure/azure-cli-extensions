@@ -21,6 +21,7 @@ from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
+from concurrent.futures import ThreadPoolExecutor
 
 import yaml
 from azure.cli.command_modules.role import graph_client_factory
@@ -50,7 +51,6 @@ from kubernetes import client as kube_client
 from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
-from concurrent.futures import ThreadPoolExecutor
 
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
@@ -3660,7 +3660,6 @@ def client_side_proxy_main(
                 flag = ProxyStatus.AccessTokenRefresh
 
             if flag is not None:
-                print("Refreshing tokens with flag ", flag)
                 new_hc_expiry, new_at_expiry, clientproxy_process = client_side_proxy(
                     cmd,
                     tenant_id,
