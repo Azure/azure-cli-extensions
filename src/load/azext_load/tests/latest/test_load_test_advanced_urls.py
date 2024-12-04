@@ -189,24 +189,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         )
         
         # Invalid: Try update the JMX test to URL test using requests json config file
-        self.kwargs.update(
-            {
-                "url_test_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
-                "file_type": "URL_TEST_CONFIG",
-            }
-        )
-        try:
-            self.cmd(
-                "az load test file upload "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--path "{url_test_config}" '
-                "--file-type {file_type} ",
-                checks=checks,
-            )
-        except Exception as e:
-            assert "The URL config file cannot be uploaded for a quick start test" in str(e)
+        _configure_command_assert_exception(self, "The URL config file cannot be uploaded for a quick start test", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="URL_TEST_CONFIG")
         
         self.cmd(
             "az load test delete "
@@ -217,43 +200,10 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         )
         
         # Invalid: Try create JMX test using advanced URL requests json from YAML config file
-        self.kwargs.update(
-            {
-                "test_id": LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID,
-                "load_test_config_file": LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE,
-                "test_type": "JMX",
-            }
-        )
-        try:
-            self.cmd(
-                "az load test create "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--load-test-config-file "{load_test_config_file}" '
-                "--test-type {test_type} ",
-            )
-        except Exception as e:
-            assert "(InvalidFileType) Invalid FileType" in str(e)
+        _configure_command_assert_exception(self, "(InvalidFileType) Invalid FileType", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_type="JMX", load_test_config_file=LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE)
         
         # Invalid: Try upload advanced URL requests json config file to a test of type JMX
-        self.kwargs.update(
-            {
-                "url_test_config": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
-                "file_type": "URL_TEST_CONFIG",
-            }
-        )
-        try:
-            self.cmd(
-                "az load test file upload "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--path "{url_test_config}" '
-                "--file-type {file_type} ",
-            )
-        except Exception as e:
-            assert "The URL config file cannot be uploaded" in str(e)
+        _configure_command_assert_exception(self, "The URL config file cannot be uploaded", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="URL_TEST_CONFIG")
         
         self.cmd(
             "az load test delete "
@@ -311,23 +261,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         assert test_script_uri != urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path
         
         # Invalid: Try upload advanced URL requests json config file as a TEST_SCRIPT
-        self.kwargs.update(
-            {
-                "file_path": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
-                "file_type": "TEST_SCRIPT",
-            }
-        )
-        try:
-            self.cmd(
-                "az load test file upload "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--path "{file_path}" '
-                "--file-type {file_type} ",
-            )
-        except Exception as e:
-            assert "Test script is invalid" in str(e)
+        _configure_command_assert_exception(self, "File upload failed due to validation failure: Test script is invalid", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="TEST_SCRIPT")
         
         self.cmd(
             "az load test delete "
@@ -338,21 +272,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         )
         
         # Invalid: Try create a load test with invalid test plan file extension
-        self.kwargs.update(
-            {
-                "test_plan": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
-            }
-        )
-        try:
-            self.cmd(
-                "az load test create "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--test-plan "{test_plan}" ',
-            )
-        except Exception as e:
-            assert "Invalid test plan file extension: .yaml. Allowed values: .jmx, .json for JMX, URL test types respectively" in str(e)
+        _configure_command_assert_exception(self, "Invalid test plan file extension: .yaml. Allowed values: .jmx, .json for JMX, URL test types respectively", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_plan=LoadTestConstants.LOAD_TEST_CONFIG_FILE)
 
         # Create JMX load test using .jmx test plan even with test type as URL
         self.kwargs.update(
@@ -376,4 +296,37 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             "--test-type {test_type} ",
             checks=checks,
         )
-        
+
+
+def _configure_command_assert_exception(self, message, is_create=False, is_file_upload=False, test_id=None, test_plan=None, test_type=None, file_path=None, file_type=None, load_test_config_file=None):
+    command = "az load test "
+    if is_create:
+        command += "create "
+    elif is_file_upload:
+        command += "file upload "
+    else:
+        return
+    if test_id:
+        self.kwargs.update({"test_id": test_id})
+    command += "--test-id {test_id} " \
+        "--load-test-resource {load_test_resource} " \
+        "--resource-group {resource_group} "
+    if test_plan:
+        self.kwargs.update({"test_plan": test_plan})
+        command += '--test-plan "{test_plan}" '
+    if test_type:
+        self.kwargs.update({"test_type": test_type})
+        command += "--test-type {test_type} "
+    if file_path:
+        self.kwargs.update({"file_path": file_path})
+        command += '--path "{file_path}" '
+    if file_type:
+        self.kwargs.update({"file_type": file_type})
+        command += "--file-type {file_type} "
+    if load_test_config_file:
+        self.kwargs.update({"load_test_config_file": load_test_config_file})
+        command += '--load-test-config-file "{load_test_config_file}" '
+    try:
+        self.cmd(command)
+    except Exception as e:
+        assert message in str(e)

@@ -413,7 +413,7 @@ def upload_test_file(
     response = upload_file_to_test(
         client, test_id, path, file_type=file_type, wait=not no_wait
     )
-    if not no_wait and response.get("validationStatus") == "VALIDATION_FAILURE":
+    if not no_wait and response is not None and response.get("validationStatus") == "VALIDATION_FAILURE":
         raise FileOperationError(
             f"File upload failed due to validation failure: {response.get('validationFailureDetails')}"
         )
