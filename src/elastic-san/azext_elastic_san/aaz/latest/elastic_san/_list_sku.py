@@ -46,7 +46,7 @@ class ListSku(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="Specify $filter='location eq <location>' to filter on location.",
+            help="Specify `$filter='location eq <location>'` to filter on location.",
         )
         return cls._args_schema
 

@@ -70,7 +70,7 @@ class List(AAZCommand):
         )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="Specify $filter='volumeName eq <volume name>' to filter on volume.",
+            help="Specify `$filter='volumeName eq <volume name>'` to filter on volume.",
         )
         return cls._args_schema
 
