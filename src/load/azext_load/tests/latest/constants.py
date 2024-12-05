@@ -117,7 +117,6 @@ class LoadConstants:
     AUTOSTOP_ERROR_RATE_INTEGER = 75
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
 
-
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
     UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
@@ -168,6 +167,8 @@ class LoadTestRunConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     METRIC_TEST_ID = "metric-test-case"
+    DEBUG_MODE_TEST_ID = "debug-mode-test-case"
+    SAS_URL_TEST_ID = "sas-url-test-case"
 
     # Test Run IDs for load test run commands
     CREATE_TEST_RUN_ID = "create-test-run-case"
@@ -181,6 +182,8 @@ class LoadTestRunConstants(LoadConstants):
     DOWNLOAD_TEST_RUN_ID = "download-test-run-case"
     APP_COMPONENT_TEST_RUN_ID = "app-component-test-run-case"
     INVALID_TEST_RUN_ID = r"A$%invalid-testrun-case-testrunid"
+    DEBUG_MODE_TEST_RUN_ID = "debug-mode-test-run-case"
+    SAS_URL_TEST_RUN_ID = "sas-url-test-run-case"
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"

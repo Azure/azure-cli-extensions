@@ -184,6 +184,13 @@ certificate = CLIArgumentType(
     + quote_text.format("certificate"),
 )
 
+test_run_debug_mode = CLIArgumentType(
+    options_list=["--debug-mode"],
+    action="store_true",
+    default=False,
+    help="Enable debug level logging for the test run.",
+)
+
 dir_path = CLIArgumentType(
     validator=validators.validate_dir_path,
     options_list=["--path"],
@@ -233,6 +240,13 @@ test_run_results = CLIArgumentType(
     action="store_true",
     default=False,
     help="Download the results files zip.",
+)
+
+test_run_report = CLIArgumentType(
+    options_list=["--report"],
+    action="store_true",
+    default=False,
+    help="Download the dashboard report files zip.",
 )
 
 app_component_id = CLIArgumentType(

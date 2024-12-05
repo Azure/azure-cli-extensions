@@ -141,6 +141,14 @@ def get_enum_values(enum):
     return [item.value for item in enum]
 
 
+def get_file_info_and_download(file_info, path):
+    url = file_info.get("url")
+    file_name = file_info.get("fileName")
+    file_path = os.path.join(path, file_name)
+    download_file(url, file_path)
+    return file_path
+
+
 def download_file(url, file_path):
     logger.debug("Downloading file started")
     response = None
@@ -634,6 +642,7 @@ def create_or_update_test_run_body(
     env=None,
     secrets=None,
     certificate=None,
+    debug_mode=None,
 ):
     logger.info("Creating a request body for create test run")
     new_body = {"testId": test_id}
@@ -647,6 +656,8 @@ def create_or_update_test_run_body(
         new_body["secrets"] = secrets
     if certificate is not None:
         new_body["certificate"] = certificate
+    if debug_mode is not None:
+        new_body["debugLogsEnabled"] = debug_mode
     logger.debug("Request body for create test run: %s", new_body)
     return new_body
 
