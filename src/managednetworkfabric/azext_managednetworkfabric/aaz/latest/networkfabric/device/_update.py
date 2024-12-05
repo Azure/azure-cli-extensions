@@ -78,7 +78,7 @@ class Update(AAZCommand):
         _args_schema.host_name = AAZStrArg(
             options=["--host-name"],
             arg_group="Properties",
-            help="The Host Name of the device. All Network Device names should follow the format <Fabric Name>-<Rack Type>-<Device Type>. Example: AustinNF-AR-CE1.",
+            help="The Host Name of the device. All Network Device names should follow the format `<Fabric Name>-<Rack Type>-<Device Type>`. Example: AustinNF-AR-CE1.",
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
