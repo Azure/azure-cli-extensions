@@ -88,7 +88,6 @@ def _convert_numeric_params(job_params):
                     job_params[param] = float(job_params[param])
                 except:
                     pass
-# flake8 thinks the previous line is a blank line with whitespace. What's up with that?
 
 
 def submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
