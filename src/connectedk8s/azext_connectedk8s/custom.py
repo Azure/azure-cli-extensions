@@ -3745,11 +3745,11 @@ def client_side_proxy(
         )
 
     # Check hybrid connection details from Userrp
-    response = None
+    response: Response
 
     if ProxyStatus.should_hc_token_refresh(flag):
         try:
-            response = future_get_cluster_user_credentials.result()
+            response_data = future_get_cluster_user_credentials.result()
         except Exception as e:
             clientproxy_process.terminate()
             utils.arm_exception_handler(
@@ -3759,7 +3759,7 @@ def client_side_proxy(
             )
             raise CLIInternalError(f"Failed to get credentials: {e}")
 
-        data = clientproxyutils.prepare_clientproxy_data(response)
+        data = clientproxyutils.prepare_clientproxy_data(response_data)
         hc_expiry = data["hybridConnectionConfig"]["expirationTime"]
 
         response = proxylogic.post_register_to_proxy(
