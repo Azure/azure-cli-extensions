@@ -19,7 +19,6 @@ import time
 import urllib.request
 from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor
-from glob import glob
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
 
@@ -36,7 +35,6 @@ from azure.cli.core.azclierror import (
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
-    UnclassifiedUserFault,
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
@@ -53,12 +51,11 @@ from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
-import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
-import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
 import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 from azext_connectedk8s._client_factory import (
@@ -3509,96 +3506,9 @@ def client_side_proxy_wrapper(
     if port_error_string != "":
         raise ClientRequestError(port_error_string)
 
-    proxybinaryutils.install_client_side_proxy(".clientproxy")
-    # Creating installation location, request uri and older version exe location depending on OS
-    if operating_system == "Windows":
-        install_location_string = (
-            f".clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-        )
-        requestUri = f"{CSP_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-        older_version_string = f".clientproxy\\arcProxy{operating_system}*.exe"
-        creds_string = r".azure\accessTokens.json"
-
-    elif operating_system == "Linux" or operating_system == "Darwin":
-        install_location_string = (
-            f".clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-        )
-        requestUri = f"{CSP_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-        older_version_string = f".clientproxy/arcProxy{operating_system}*"
-        creds_string = r".azure/accessTokens.json"
-
-    else:
-        telemetry.set_exception(
-            exception="Unsupported OS",
-            fault_type=consts.Unsupported_Fault_Type,
-            summary=f"{operating_system} is not supported yet",
-        )
-        raise ClientRequestError(
-            f"The {operating_system} platform is not currently supported."
-        )
-
-    install_location = os.path.expanduser(os.path.join("~", install_location_string))
+    install_location = proxybinaryutils.install_client_side_proxy(None)
     args.append(install_location)
     install_dir = os.path.dirname(install_location)
-
-    # If version specified by install location doesnt exist, then download the executable
-    if not os.path.isfile(install_location):
-        print("Setting up environment for first time use. This can take few minutes...")
-        # Downloading the executable
-        try:
-            response = urllib.request.urlopen(requestUri)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Download_Exe_Fault_Type,
-                summary="Unable to download clientproxy executable.",
-            )
-            raise CLIInternalError(
-                f"Failed to download executable with client: {e}",
-                recommendation="Please check your internet connection.",
-            )
-
-        responseContent = response.read()
-        response.close()
-
-        # Creating the .clientproxy folder if it doesnt exist
-        if not os.path.exists(install_dir):
-            try:
-                os.makedirs(install_dir)
-            except Exception as e:
-                telemetry.set_exception(
-                    exception=e,
-                    fault_type=consts.Create_Directory_Fault_Type,
-                    summary="Unable to create installation directory",
-                )
-                raise ClientRequestError(
-                    "Failed to create installation directory." + str(e)
-                )
-        else:
-            older_version_string = os.path.expanduser(
-                os.path.join("~", older_version_string)
-            )
-            older_version_files = glob(older_version_string)
-
-            # Removing older executables from the directory
-            for file_ in older_version_files:
-                try:
-                    os.remove(file_)
-                except OSError:
-                    logger.warning("failed to delete older version files")
-
-        try:
-            with open(install_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Create_CSPExe_Fault_Type,
-                summary="Unable to create proxy executable",
-            )
-            raise ClientRequestError("Failed to create proxy executable." + str(e))
-
-        os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
 
     # Creating config file to pass config to clientproxy
     config_file_location = os.path.join(install_dir, "config.yml")
@@ -3616,7 +3526,6 @@ def client_side_proxy_wrapper(
 
     # initializations
     user_type = "sat"
-    creds = ""
     dict_file: dict[str, Any] = {
         "server": {
             "httpPort": int(client_proxy_port),
@@ -3636,47 +3545,6 @@ def client_side_proxy_wrapper(
             dict_file["identity"]["clientID"] = consts.CLIENTPROXY_CLIENT_ID
         else:
             dict_file["identity"]["clientID"] = account["user"]["name"]
-
-        if not utils.is_cli_using_msal_auth():
-            # Fetching creds
-            creds_location = os.path.expanduser(os.path.join("~", creds_string))
-            try:
-                with open(creds_location) as f:
-                    creds_list = json.load(f)
-            except Exception as e:
-                telemetry.set_exception(
-                    exception=e,
-                    fault_type=consts.Load_Creds_Fault_Type,
-                    summary="Unable to load accessToken.json",
-                )
-                raise FileOperationError("Failed to load credentials." + str(e))
-
-            user_name = account["user"]["name"]
-
-            if user_type == "user":
-                key = "userId"
-                key2 = "refreshToken"
-            else:
-                key = "servicePrincipalId"
-                key2 = "accessToken"
-
-            for i in range(len(creds_list)):
-                creds_obj = creds_list[i]
-
-                if key in creds_obj and creds_obj[key] == user_name:
-                    creds = creds_obj[key2]
-                    break
-
-            if creds == "":
-                telemetry.set_exception(
-                    exception="Credentials of user not found.",
-                    fault_type=consts.Creds_NotFound_Fault_Type,
-                    summary="Unable to find creds of user",
-                )
-                raise UnclassifiedUserFault("Credentials of user not found.")
-
-            if user_type != "user":
-                dict_file["identity"]["clientSecret"] = creds
 
     if cloud == "DOGFOOD":
         dict_file["cloud"] = "AzureDogFood"
