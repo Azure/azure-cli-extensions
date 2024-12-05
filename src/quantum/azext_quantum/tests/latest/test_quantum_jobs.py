@@ -212,6 +212,13 @@ class QuantumJobsScenarioTest(ScenarioTest):
         results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
 
+        # Submit job to Rigetti and look for evidence of SAS tokens in the URIs
+        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+        self.assertIn("?se", results)
+        self.assertIn("&sp=racw&sv=", results)
+        self.assertIn("&sr=", results)
+        self.assertIn("&sig=", results)
+
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
     @live_only()
