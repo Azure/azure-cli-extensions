@@ -15,23 +15,19 @@ import knack.log
 
 from datetime import datetime, timedelta
 from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
-from azure.cli.command_modules.storage.operations.blob import generate_sas_blob_uri
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
 from .._storage import (
     create_container,
-    ContainerClient,
     upload_blob,
-    create_container_using_client,
     BlobSasPermissions
 )
 
 from ..vendored_sdks.azure_storage_blob import generate_container_sas
 
-# from .._client_factory import cf_jobs
-from .._client_factory import cf_quantum_mgmt, cf_quantum, cf_jobs, cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
+from .._client_factory import cf_jobs
 
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
@@ -92,6 +88,7 @@ def _convert_numeric_params(job_params):
                     job_params[param] = float(job_params[param])
                 except:
                     pass
+# flake8 thinks the previous line is a blank line with whitespace. What's up with that?
 
 
 def submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
@@ -266,12 +263,12 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         expiry=datetime.utcnow() + timedelta(days=14),
     )
     container_uri = container_client.url + "?" + sas_token
-    logger.debug(f"  - container url: '{container_uri}'.")
- 
+    logger.debug("  - container uri: %s", container_uri)
+
     knack_logger.warning("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
-        logger.debug(f"  - blob url: '{blob_uri}'.")
+        logger.debug("  - blob uri: %s", blob_uri)
     except Exception as e:
         # Unexplained behavior:
         #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
