@@ -205,6 +205,13 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.amazon_api_gateway_source = AAZObjectType(
+                serialized_name="amazonApiGatewaySource",
+            )
+            properties.api_source_type = AAZStrType(
+                serialized_name="apiSourceType",
+                flags={"required": True},
+            )
             properties.azure_api_management_source = AAZObjectType(
                 serialized_name="azureApiManagementSource",
             )
@@ -220,6 +227,23 @@ class Show(AAZCommand):
             )
             properties.target_lifecycle_stage = AAZStrType(
                 serialized_name="targetLifecycleStage",
+            )
+
+            amazon_api_gateway_source = cls._schema_on_200.properties.amazon_api_gateway_source
+            amazon_api_gateway_source.access_key = AAZStrType(
+                serialized_name="accessKey",
+                flags={"required": True},
+            )
+            amazon_api_gateway_source.msi_resource_id = AAZStrType(
+                serialized_name="msiResourceId",
+            )
+            amazon_api_gateway_source.region_name = AAZStrType(
+                serialized_name="regionName",
+                flags={"required": True},
+            )
+            amazon_api_gateway_source.secret_access_key = AAZStrType(
+                serialized_name="secretAccessKey",
+                flags={"required": True},
             )
 
             azure_api_management_source = cls._schema_on_200.properties.azure_api_management_source

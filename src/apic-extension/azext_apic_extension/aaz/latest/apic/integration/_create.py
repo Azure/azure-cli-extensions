@@ -73,23 +73,25 @@ class Create(AAZCommand):
             ),
         )
 
-        # define Arg Group "AzureApiManagementSource"
-
-        _args_schema = cls._args_schema
-        _args_schema.msi_resource_id = AAZResourceIdArg(
-            options=["--msi-resource-id"],
-            arg_group="AzureApiManagementSource",
-            help="The resource ID of the managed identity that has access to the API Management instance.",
-        )
-        _args_schema.apim_resource_id = AAZResourceIdArg(
-            options=["--apim-resource-id"],
-            arg_group="AzureApiManagementSource",
-            help="API Management service resource ID.",
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.amazon_api_gateway_source = AAZObjectArg(
+            options=["--amazon-api-gateway-source"],
+            arg_group="Properties",
+            help="API source configuration for Amazon API Gateway.",
+        )
+        _args_schema.api_source_type = AAZStrArg(
+            options=["--api-source-type"],
+            arg_group="Properties",
+            help="API source type",
+            enum={"AmazonApiGateway": "AmazonApiGateway", "AzureApiManagement": "AzureApiManagement"},
+        )
+        _args_schema.azure_api_management_source = AAZObjectArg(
+            options=["--azure-api-management-source"],
+            arg_group="Properties",
+            help="API source configuration for Azure API Management.",
+        )
         _args_schema.import_specification = AAZStrArg(
             options=["--import-specification"],
             arg_group="Properties",
@@ -107,6 +109,38 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The target lifecycle stage.",
             enum={"deprecated": "deprecated", "design": "design", "development": "development", "preview": "preview", "production": "production", "retired": "retired", "testing": "testing"},
+        )
+
+        amazon_api_gateway_source = cls._args_schema.amazon_api_gateway_source
+        amazon_api_gateway_source.access_key = AAZStrArg(
+            options=["access-key"],
+            help="Amazon API Gateway Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        amazon_api_gateway_source.msi_resource_id = AAZResourceIdArg(
+            options=["msi-resource-id"],
+            help="(Optional) The resource ID of the managed identity that has access to the Azure Key Vault secrets.",
+        )
+        amazon_api_gateway_source.region_name = AAZStrArg(
+            options=["region-name"],
+            help="Amazon API Gateway Region (ex. us-east-2).",
+            required=True,
+        )
+        amazon_api_gateway_source.secret_access_key = AAZStrArg(
+            options=["secret-access-key"],
+            help="Amazon API Gateway Secret Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+
+        azure_api_management_source = cls._args_schema.azure_api_management_source
+        azure_api_management_source.msi_resource_id = AAZResourceIdArg(
+            options=["msi-resource-id"],
+            help="(Optional) The resource ID of the managed identity that has access to the API Management instance.",
+        )
+        azure_api_management_source.apim_resource_id = AAZResourceIdArg(
+            options=["apim-resource-id"],
+            help="API Management service resource ID.",
+            required=True,
         )
         return cls._args_schema
 
@@ -212,10 +246,19 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("azureApiManagementSource", AAZObjectType)
+                properties.set_prop("amazonApiGatewaySource", AAZObjectType, ".amazon_api_gateway_source")
+                properties.set_prop("apiSourceType", AAZStrType, ".api_source_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("azureApiManagementSource", AAZObjectType, ".azure_api_management_source")
                 properties.set_prop("importSpecification", AAZStrType, ".import_specification")
                 properties.set_prop("targetEnvironmentId", AAZStrType, ".target_environment_id")
                 properties.set_prop("targetLifecycleStage", AAZStrType, ".target_lifecycle_stage")
+
+            amazon_api_gateway_source = _builder.get(".properties.amazonApiGatewaySource")
+            if amazon_api_gateway_source is not None:
+                amazon_api_gateway_source.set_prop("accessKey", AAZStrType, ".access_key", typ_kwargs={"flags": {"required": True}})
+                amazon_api_gateway_source.set_prop("msiResourceId", AAZStrType, ".msi_resource_id")
+                amazon_api_gateway_source.set_prop("regionName", AAZStrType, ".region_name", typ_kwargs={"flags": {"required": True}})
+                amazon_api_gateway_source.set_prop("secretAccessKey", AAZStrType, ".secret_access_key", typ_kwargs={"flags": {"required": True}})
 
             azure_api_management_source = _builder.get(".properties.azureApiManagementSource")
             if azure_api_management_source is not None:
@@ -260,6 +303,13 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.amazon_api_gateway_source = AAZObjectType(
+                serialized_name="amazonApiGatewaySource",
+            )
+            properties.api_source_type = AAZStrType(
+                serialized_name="apiSourceType",
+                flags={"required": True},
+            )
             properties.azure_api_management_source = AAZObjectType(
                 serialized_name="azureApiManagementSource",
             )
@@ -275,6 +325,23 @@ class Create(AAZCommand):
             )
             properties.target_lifecycle_stage = AAZStrType(
                 serialized_name="targetLifecycleStage",
+            )
+
+            amazon_api_gateway_source = cls._schema_on_200_201.properties.amazon_api_gateway_source
+            amazon_api_gateway_source.access_key = AAZStrType(
+                serialized_name="accessKey",
+                flags={"required": True},
+            )
+            amazon_api_gateway_source.msi_resource_id = AAZStrType(
+                serialized_name="msiResourceId",
+            )
+            amazon_api_gateway_source.region_name = AAZStrType(
+                serialized_name="regionName",
+                flags={"required": True},
+            )
+            amazon_api_gateway_source.secret_access_key = AAZStrType(
+                serialized_name="secretAccessKey",
+                flags={"required": True},
             )
 
             azure_api_management_source = cls._schema_on_200_201.properties.azure_api_management_source
