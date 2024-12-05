@@ -85,6 +85,7 @@ if TYPE_CHECKING:
     from knack.commands import CLICommmand
     from kubernetes.client import V1NodeList
     from kubernetes.config.kube_config import ConfigNode
+    from requests.models import Response
 
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
         ConnectedClusterOperations,
@@ -3822,7 +3823,7 @@ def client_side_proxy(
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
-    flag: int,
+    flag: ProxyStatus,
     args: list[str],
     client_proxy_port: int,
     api_server_port: int,
@@ -3831,7 +3832,7 @@ def client_side_proxy(
     path: str = os.path.join(os.path.expanduser("~"), ".kube", "config"),
     context_name: str | None = None,
     clientproxy_process: Popen[bytes] | None = None,
-) -> tuple[int, Popen[bytes]]:
+) -> tuple[int, int, Popen[bytes]]:
     subscription_id = get_subscription_id(cmd.cli_ctx)
     auth_method = "Token" if token is not None else "AAD"
 
@@ -3876,11 +3877,11 @@ def client_side_proxy(
         )
 
     # Check hybrid connection details from Userrp
-    response = None
+    response: Response
 
     if ProxyStatus.should_hc_token_refresh(flag):
         try:
-            response = future_get_cluster_user_credentials.result()
+            response_data = future_get_cluster_user_credentials.result()
         except Exception as e:
             clientproxy_process.terminate()
             utils.arm_exception_handler(
@@ -3890,7 +3891,7 @@ def client_side_proxy(
             )
             raise CLIInternalError(f"Failed to get credentials: {e}")
 
-        data = clientproxyutils.prepare_clientproxy_data(response)
+        data = clientproxyutils.prepare_clientproxy_data(response_data)
         hc_expiry = data["hybridConnectionConfig"]["expirationTime"]
 
         response = proxylogic.post_register_to_proxy(

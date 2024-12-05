@@ -132,7 +132,7 @@ def fetch_and_post_at_to_csp(
     tenant_id: str,
     kid: str,
     clientproxy_process: Popen[bytes],
-) -> requests.Response:
+) -> tuple[requests.Response, int]:
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode("utf-8")).decode(
         "utf-8"
