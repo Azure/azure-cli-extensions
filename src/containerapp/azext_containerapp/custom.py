@@ -3400,11 +3400,24 @@ def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, n
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
-    # When changing modes clear the traffic section and use mode specific defaults.
-    if containerapp_def["properties"]["configuration"]["activeRevisionsMode"].lower() != mode.lower():
-        containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = None
+    # Mode unchanged, no-op
+    if containerapp_def["properties"]["configuration"]["activeRevisionsMode"].lower() == mode.lower():
+        return containerapp_def["properties"]["configuration"]["activeRevisionsMode"]
 
-    containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = mode.lower()
+    if mode.lower() == "labels" and "ingress" not in containerapp_def['properties']['configuration']:
+        raise ValidationError("Ingress is requried for labels mode.")
+
+    # If we're going into labels mode, replace the default traffic config with the target label and latest revision.
+    # Otherwise all revisions will be deactivated.
+    traffic = safe_get(containerapp_def, "properties", "configuration", "ingress", "traffic")
+    if mode.lower() == "labels" and len(traffic) == 1 and traffic[0]["latestRevision"] == True:
+        safe_set(containerapp_def, "properties", "configuration", "ingress", "traffic", value=[{
+            "revisionName": containerapp_def["properties"]["latestRevisionName"],
+            "weight": 100,
+            "label": target_label
+        }])
+
+    containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = mode
     containerapp_def["properties"]["configuration"]["targetLabel"] = target_label
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
