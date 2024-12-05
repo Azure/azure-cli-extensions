@@ -114,7 +114,7 @@ class BaseJavaComponentDecorator(BaseResource):
         except Exception as e:
             handle_raw_exception(e)
 
-    def set_up_compoment_type(self):
+    def set_up_component_type(self):
         self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
 
     def set_up_replicas(self):
@@ -252,7 +252,7 @@ class JavaComponentCreateDecorator(BaseJavaComponentDecorator):
             self.java_component_def["properties"]["configurations"] = configuration_list
 
     def construct_payload(self):
-        self.set_up_compoment_type()
+        self.set_up_component_type()
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_gateway_route()
@@ -332,7 +332,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
             self.java_component_def["properties"]["configurations"] = []
 
     def construct_payload(self):
-        self.set_up_compoment_type()
+        self.set_up_component_type()
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_gateway_route()
