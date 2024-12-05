@@ -18,7 +18,7 @@ from azext_load.data_plane.utils.utils import (
     upload_files_helper,
     create_autostop_criteria_from_args,
 )
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 
@@ -31,6 +31,7 @@ def create_test(
     test_id,
     display_name=None,
     test_plan=None,
+    test_type=None,
     resource_group_name=None,
     load_test_config_file=None,
     test_description=None,
@@ -69,6 +70,7 @@ def create_test(
             body,
             display_name=display_name,
             test_description=test_description,
+            test_type=test_type,
             engine_instances=engine_instances,
             env=env,
             secrets=secrets,
@@ -88,6 +90,7 @@ def create_test(
             body,
             yaml_test_body,
             display_name=display_name,
+            test_type=test_type,
             test_description=test_description,
             engine_instances=engine_instances,
             env=env,
@@ -106,8 +109,9 @@ def create_test(
         "Created test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
+    evaluated_test_type = test_type or yaml_test_body.get("kind") if yaml_test_body else response.get("kind")
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
@@ -195,7 +199,7 @@ def update_test(
     )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
@@ -409,6 +413,10 @@ def upload_test_file(
     response = upload_file_to_test(
         client, test_id, path, file_type=file_type, wait=not no_wait
     )
+    if not no_wait and response is not None and response.get("validationStatus") == "VALIDATION_FAILURE":
+        raise FileOperationError(
+            f"File upload failed due to validation failure: {response.get('validationFailureDetails')}"
+        )
     logger.debug("Upload test file response: %s", response)
     logger.info("Upload test file completed")
     return response.as_dict()

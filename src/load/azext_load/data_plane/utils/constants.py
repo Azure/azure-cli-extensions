@@ -10,6 +10,8 @@ from dataclasses import dataclass
 class LoadTestConfigKeys:
     DISPLAY_NAME = "displayName"
     DESCRIPTION = "description"
+    TEST_PLAN = "testPlan"
+    TEST_TYPE = "testType"
     KEYVAULT_REFERENCE_IDENTITY = "keyVaultReferenceIdentity"
     SUBNET_ID = "subnetId"
     CERTIFICATES = "certificates"
