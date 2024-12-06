@@ -249,7 +249,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     connection_string = connection_string_dict["connectionString"]
     container_client = create_container(connection_string, container_name)
 
-    # The following code is extracted from get_container_uri, line 56 in azure-quantum-python\azure-quantum\azure\quantum\storage.py (Line 66 in src\quantum\azext_quantum\_storage.py)
+    # The following code is extracted from get_container_uri, line 56 in azure-quantum-python\azure-quantum\azure\quantum\storage.py
     # get_container_uri works here, but it creates the container and doesn't return a container client.
     # The container client is needed later to upload the input data (see upload_blob call, below).
     sas_token = generate_container_sas(
