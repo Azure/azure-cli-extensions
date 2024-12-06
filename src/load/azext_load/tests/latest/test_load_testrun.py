@@ -850,6 +850,7 @@ class LoadTestRunScenario(ScenarioTest):
             checks=checks,
         )
     
+    @live_only()
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_copy_artifacts_url(self, rg, load):
