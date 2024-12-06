@@ -198,15 +198,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,microsoft-qc/learn-and-develop"
-        # The line above failed in local testing -- replaced it with the following line:
-        # test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/aqt-pay-as-you-go-cred-new,microsoft-qc/learn-and-develop"
+        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/aqt-pay-as-you-go-cred-new,microsoft-qc/learn-and-develop"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
-        # If the previous two lines cause problems when running test locally, comment them out and un-comment the next line:
-        # self.cmd(f"az quantum workspace set -g {test_resource_group} -w e2e-qsharp-tests -l {test_location}")
 
         # Submit a job to Rigetti and look for SAS tokens in URIs in the output
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
@@ -233,7 +229,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
 
-        # Comment-out the next line if the workspace create command was commented out, above
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
     @live_only()
