@@ -873,3 +873,46 @@ class LoadTestRunScenario(ScenarioTest):
         assert response is not None
         assert response.startswith("https://")
         assert "blob.storage.azure.net" in response
+
+        # Copy artifacts URL when test run is in progress
+        self.cmd(
+            "az load test-run create "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-id {test_id} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} "
+            "--existing-test-run-id {test_run_id} "
+            "--no-wait",
+        )
+        response = self.cmd(
+            "az load test-run show "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} ",
+        ).get_output_in_json()
+        assert response.get("status") != "DONE"
+        response = self.cmd(
+            "az load test-run copy-artifacts-url "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} ",
+        ).get_output_in_json()
+        assert response is not None
+        assert response.startswith("https://")
+        assert "blob.storage.azure.net" in response
+        
+        # Invalid: Copy artifacts URL for unknown test run
+        self.kwargs.update(
+            {
+                "unknown_test_run_id": LoadTestRunConstants.CREATE_TEST_RUN_ID,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test-run copy-artifacts-url "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {unknown_test_run_id} ",
+            )
+        except Exception as e:
+            assert f'(TestRunNotFound) Test run not found with given name "{LoadTestRunConstants.CREATE_TEST_RUN_ID}"' in str(e)

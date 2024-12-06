@@ -117,6 +117,8 @@ class LoadConstants:
     AUTOSTOP_ERROR_RATE_INTEGER = 75
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
 
+    FLOAT_TOLERANCE = 1e-6
+
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
     UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
@@ -184,6 +186,7 @@ class LoadTestRunConstants(LoadConstants):
     INVALID_TEST_RUN_ID = r"A$%invalid-testrun-case-testrunid"
     DEBUG_MODE_TEST_RUN_ID = "debug-mode-test-run-case"
     SAS_URL_TEST_RUN_ID = "sas-url-test-run-case"
+    SAS_URL_TEST_RUN_ID_1 = "sas-url-test-run-case-1"
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"
