@@ -8,6 +8,7 @@ from azext_load.data_plane.utils.utils import (
     get_file_info_and_download,
     get_testrun_data_plane_client,
 )
+from azext_load.data_plane.utils.constants import HighScaleThreshold
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
@@ -148,7 +149,7 @@ def copy_test_run_artifacts_url(cmd, load_test_resource, test_run_id, resource_g
         return artifacts_container.get("url")
 
 
-def _download_results_file(test_run_output_artifacts, test_run_id, path):
+def _download_results_file(test_run_output_artifacts, test_run_id, path, test_run_data):
     logger.info("Downloading results file for test run %s", test_run_id)
     if test_run_output_artifacts is not None:
         result_file_info = test_run_output_artifacts.get("resultFileInfo")
@@ -157,6 +158,11 @@ def _download_results_file(test_run_output_artifacts, test_run_id, path):
             logger.warning("Results file downloaded to %s", file_path)
         else:
             logger.info("No results file found for test run %s", test_run_id)
+    elif _is_high_scale_test_run(test_run_data):
+        logger.warning(
+            "High scale test run %s results file is not available for download",
+            test_run_id,
+        )
     else:
         logger.warning(
             "No results file found for test run %s",
@@ -164,7 +170,7 @@ def _download_results_file(test_run_output_artifacts, test_run_id, path):
         )
 
 
-def _download_reports_file(test_run_output_artifacts, test_run_id, path):
+def _download_reports_file(test_run_output_artifacts, test_run_id, path, test_run_data):
     logger.info("Downloading report file for test run %s", test_run_id)
     if test_run_output_artifacts is not None:
         report_file_info = test_run_output_artifacts.get("reportFileInfo")
@@ -173,6 +179,11 @@ def _download_reports_file(test_run_output_artifacts, test_run_id, path):
             logger.warning("Report file downloaded to %s", file_path)
         else:
             logger.info("No report file found for test run %s", test_run_id)
+    elif _is_high_scale_test_run(test_run_data):
+        logger.warning(
+            "High scale test run %s report file is not available for download",
+            test_run_id,
+        )
     else:
         logger.warning(
             "No report file found for test run %s",
@@ -180,7 +191,7 @@ def _download_reports_file(test_run_output_artifacts, test_run_id, path):
         )
 
 
-def _download_logs_file(test_run_output_artifacts, test_run_id, path):
+def _download_logs_file(test_run_output_artifacts, test_run_id, path, test_run_data):
     logger.info("Downloading log file for test run %s", test_run_id)
     if test_run_output_artifacts is not None:
         logs_file_info = test_run_output_artifacts.get("logsFileInfo")
@@ -189,6 +200,11 @@ def _download_logs_file(test_run_output_artifacts, test_run_id, path):
             logger.warning("Log file downloaded to %s", file_path)
         else:
             logger.info("No log file found for test run %s", test_run_id)
+    elif _is_high_scale_test_run(test_run_data):
+        logger.warning(
+            "High scale test run %s log file is not available for download",
+            test_run_id,
+        )
     else:
         logger.warning(
             "No results file and output artifacts found for test run %s",
@@ -211,6 +227,14 @@ def _download_input_file(test_run_input_artifacts, test_run_id, path):
         logger.warning("Input artifacts downloaded to %s", path)
     else:
         logger.warning("No input artifacts found for test run %s", test_run_id)
+
+
+def _is_high_scale_test_run(test_run_data):
+    if (test_run_data.get("loadTestConfiguration", {}).get("engineInstances") > HighScaleThreshold.MAX_ENGINE_INSTANCES_PER_TEST_RUN \
+        or test_run_data.get("duration") > HighScaleThreshold.MAX_DURATION_HOURS_PER_TEST_RUN * 60 * 60
+    ):
+        return True
+    return False
 
 
 def download_test_run_files(
@@ -237,13 +261,13 @@ def download_test_run_files(
         _download_input_file(test_run_input_artifacts, test_run_id, path)
 
     if test_run_log:
-        _download_logs_file(test_run_output_artifacts, test_run_id, path)
+        _download_logs_file(test_run_output_artifacts, test_run_id, path, test_run_data)
 
     if test_run_results:
-        _download_results_file(test_run_output_artifacts, test_run_id, path)
+        _download_results_file(test_run_output_artifacts, test_run_id, path, test_run_data)
 
     if test_run_report:
-        _download_reports_file(test_run_output_artifacts, test_run_id, path)
+        _download_reports_file(test_run_output_artifacts, test_run_id, path, test_run_data)
 
 
 # app components
