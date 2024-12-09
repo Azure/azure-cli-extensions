@@ -225,6 +225,7 @@ def acifragmentgen_confcom(
     image_target: str = "",
     algo: str = "ES384",
     fragment_path: str = None,
+    omit_id: bool = False,
     generate_import: bool = False,
     disable_stdio: bool = False,
     debug_mode: bool = False,
@@ -306,7 +307,7 @@ def acifragmentgen_confcom(
         # strip the tag or hash off the image name so there are stable feed names
         feed = get_image_name(image_target)
 
-    fragment_text = policy.generate_fragment(namespace, svn, output_type)
+    fragment_text = policy.generate_fragment(namespace, svn, output_type, omit_id=omit_id)
 
     if output_type != security_policy.OutputType.DEFAULT and not no_print:
         print(fragment_text)

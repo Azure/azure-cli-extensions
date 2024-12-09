@@ -27,6 +27,7 @@ from azext_confcom.os_util import (
     write_str_to_file,
     load_json_from_file,
     load_str_from_file,
+    load_json_from_str,
     delete_silently,
 )
 from azext_confcom.custom import acifragmentgen_confcom
@@ -277,6 +278,24 @@ class FragmentGenerating(unittest.TestCase):
         with load_policy_from_config_str(cls.custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
             cls.aci_policy = aci_policy
+
+
+    def test_fragment_omit_id(self):
+        output = self.aci_policy.get_serialized_output(
+            output_type=OutputType.RAW, rego_boilerplate=False, omit_id=True
+        )
+        output_json = load_json_from_str(output)
+
+        self.assertNotIn("id", output_json[0])
+
+        # test again with omit_id=False
+        output2 = self.aci_policy.get_serialized_output(
+            output_type=OutputType.RAW, rego_boilerplate=False
+        )
+        output_json2 = load_json_from_str(output2)
+
+        self.assertIn("id", output_json2[0])
+
 
     def test_fragment_injected_sidecar_container_msi(self):
         image = self.aci_policy.get_images()[0]

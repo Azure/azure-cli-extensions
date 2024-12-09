@@ -9,6 +9,7 @@ Release History
 * bug fixes for image-attached fragments
 * adding ability to generate a fragment import from an image name using the remote attached fragments
 * updating stdout import statement to look more like the file output
+* adding `--omit-id` to the `acifragmentgen` command
 
 1.1.1
 ++++++

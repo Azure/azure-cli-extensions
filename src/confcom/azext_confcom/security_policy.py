@@ -181,12 +181,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         # encode to base64
         return os_util.str_to_base64(policy_str)
 
-    def generate_fragment(self, namespace: str, svn: str, output_type: int) -> str:
+    def generate_fragment(self, namespace: str, svn: str, output_type: int, omit_id: bool = False) -> str:
         return config.CUSTOMER_REGO_FRAGMENT % (
             namespace,
             pretty_print_func(svn),
             pretty_print_func(self.get_fragments()),
-            self.get_serialized_output(output_type, rego_boilerplate=False, include_sidecars=False),
+            self.get_serialized_output(output_type, rego_boilerplate=False, include_sidecars=False, omit_id=omit_id),
         )
 
     def _add_rego_boilerplate(self, output: str) -> str:
@@ -388,7 +388,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         for image in regular_container_images:
             image_dict = image.get_policy_json(omit_id=omit_id)
             policy.append(image_dict)
-        if not is_sidecars and include_sidecars:
+        if (not is_sidecars or len(regular_container_images) == 0) and include_sidecars:
             # add in the default containers that have their hashes pre-computed
             policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:

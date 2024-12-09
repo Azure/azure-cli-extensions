@@ -268,6 +268,12 @@ def load_arguments(self, _):
             validator=validate_fragment_path,
         )
         c.argument(
+            "omit_id",
+            options_list=("--omit-id"),
+            required=False,
+            help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
+        )
+        c.argument(
             "generate_import",
             options_list=("--generate-import", "-g"),
             required=False,

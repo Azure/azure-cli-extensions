@@ -91,7 +91,7 @@ helps[
 
         - name: --omit-id
           type: boolean
-          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag'
+          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag. This is helpful if the image being used will be present in multiple registries and used interchangeably'
 
         - name: --include-fragments -f
           type: boolean
@@ -166,6 +166,10 @@ helps[
         - name: --fragment-path -p
           type: string
           short-summary: 'Path to an existing policy fragment file to be used with --generate-import. This option allows you to create import statements for the specified fragment without needing to pull it from an OCI registry'
+
+        - name: --omit-id
+          type: boolean
+          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag. This is helpful if the image being used will be present in multiple registries and used interchangeably'
 
         - name: --generate-import -g
           type: boolean
