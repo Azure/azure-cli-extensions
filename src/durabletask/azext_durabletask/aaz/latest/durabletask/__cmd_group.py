@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "durabletask",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Commands to manage Durabletasks.

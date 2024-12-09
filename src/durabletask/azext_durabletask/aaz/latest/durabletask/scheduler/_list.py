@@ -12,21 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask namespace list",
-    is_preview=True,
+    "durabletask scheduler list",
 )
 class List(AAZCommand):
-    """List Namespace resources by subscription ID
+    """List Schedulers by subscription
 
-    :example: List all namespaces in a resource group
-        az durabletask namespace list -g resource-group-name
+    :example: List all schedulers in a resource group
+        az durable-task scheduler list -g testrg
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.durabletask/namespaces", "2024-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/namespaces", "2024-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.durabletask/schedulers", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers", "2024-10-01-preview"],
         ]
     }
 
@@ -47,9 +46,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -57,9 +54,9 @@ class List(AAZCommand):
         condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.NamespacesListBySubscription(ctx=self.ctx)()
+            self.SchedulersListBySubscription(ctx=self.ctx)()
         if condition_1:
-            self.NamespacesListByResourceGroup(ctx=self.ctx)()
+            self.SchedulersListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NamespacesListBySubscription(AAZHttpOperation):
+    class SchedulersListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,7 +86,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.DurableTask/namespaces",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.DurableTask/schedulers",
                 **self.url_parameters
             )
 
@@ -115,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -179,23 +176,33 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.dashboard_url = AAZStrType(
-                serialized_name="dashboardUrl",
+            properties.endpoint = AAZStrType(
                 flags={"read_only": True},
             )
             properties.ip_allowlist = AAZListType(
                 serialized_name="ipAllowlist",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.url = AAZStrType(
-                flags={"read_only": True},
+            properties.sku = AAZObjectType(
+                flags={"required": True},
             )
 
             ip_allowlist = cls._schema_on_200.value.Element.properties.ip_allowlist
             ip_allowlist.Element = AAZStrType()
+
+            sku = cls._schema_on_200.value.Element.properties.sku
+            sku.capacity = AAZIntType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.redundancy_state = AAZStrType(
+                serialized_name="redundancyState",
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -222,7 +229,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class NamespacesListByResourceGroup(AAZHttpOperation):
+    class SchedulersListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -236,7 +243,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers",
                 **self.url_parameters
             )
 
@@ -266,7 +273,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -330,23 +337,33 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.dashboard_url = AAZStrType(
-                serialized_name="dashboardUrl",
+            properties.endpoint = AAZStrType(
                 flags={"read_only": True},
             )
             properties.ip_allowlist = AAZListType(
                 serialized_name="ipAllowlist",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.url = AAZStrType(
-                flags={"read_only": True},
+            properties.sku = AAZObjectType(
+                flags={"required": True},
             )
 
             ip_allowlist = cls._schema_on_200.value.Element.properties.ip_allowlist
             ip_allowlist.Element = AAZStrType()
+
+            sku = cls._schema_on_200.value.Element.properties.sku
+            sku.capacity = AAZIntType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.redundancy_state = AAZStrType(
+                serialized_name="redundancyState",
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
