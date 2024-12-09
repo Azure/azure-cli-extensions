@@ -148,17 +148,29 @@ class LoadTestScenario(ScenarioTest):
         pass_fail_metric = response.get("passFailCriteria", {}).get(
             "passFailMetrics", {}
         )
+        # Do not perform equality checks with floating point values.
+        # Use a tolerance value to check if the values are close enough.
         for item in pass_fail_metric.values():
             if item.get("clientMetric") == "requests_per_sec":
-                assert item.get("value") == 78.0
+                assert abs(item.get("value") - 78.0) < LoadTestConstants.FLOAT_TOLERANCE
                 assert item.get("condition") == ">"
                 assert item.get("aggregate") == "avg"
             elif item.get("clientMetric") == "error":
-                assert item.get("value") == 50.0
+                assert abs(item.get("value") - 50.0) < LoadTestConstants.FLOAT_TOLERANCE
                 assert item.get("condition") == ">"
                 assert item.get("aggregate") == "percentage"
+            elif item.get("clientMetric") == "response_time_ms":
+                if item.get("aggregate") == "p75":
+                    assert item.get("condition") == ">"
+                    assert abs(item.get("value") - 380.0) < LoadTestConstants.FLOAT_TOLERANCE
+                if item.get("aggregate") == "p99":
+                    assert item.get("condition") == ">"
+                    assert abs(item.get("value") - 520.0) < LoadTestConstants.FLOAT_TOLERANCE
+                if item.get("aggregate") == "p99.9":
+                    assert item.get("condition") == ">"
+                    assert abs(item.get("value") - 540.0) < LoadTestConstants.FLOAT_TOLERANCE
             else:
-                assert item.get("value") == 200.0
+                assert abs(item.get("value") - 200.0) < LoadTestConstants.FLOAT_TOLERANCE
                 assert item.get("condition") == ">"
                 assert item.get("aggregate") == "avg"
                 assert item.get("requestName") == "GetCustomerDetails"
