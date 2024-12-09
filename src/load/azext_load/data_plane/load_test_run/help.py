@@ -83,14 +83,14 @@ examples:
 """
 
 helps[
-    "load test-run copy-artifacts-url"
+    "load test-run get-artifacts-url"
 ] = """
 type: command
-short-summary: Return the SAS URL to copy artifacts to storage accounts.
+short-summary: Return the SAS URL to get artifacts from storage accounts.
 examples:
     - name: Fetch SAS URL.
       text: |
-        az load test-run copy-artifacts-url --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id
+        az load test-run get-artifacts-url --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id
 """
 
 helps[

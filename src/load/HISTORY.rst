@@ -9,7 +9,7 @@ Release History
 * Add support for advanced URL test with multiple HTTP request using JSON file. Add `--test-type` argument to 'az load test create' and honor `testType` key in YAML config file.
 * Add CLI parameter `--report` to 'az load test-run download-files' to download the dashboard reports.
 * Enable debug level logging using `--debug-mode` argument in 'az load test-run create' command .
-* Return the SAS URL to copy artifacts to storage accounts using command 'az load test-run copy-artifacts-url'.
+* Return the SAS URL to copy artifacts to storage accounts using command 'az load test-run get-artifacts-url'.
 
 
 1.3.1

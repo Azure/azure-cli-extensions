@@ -866,7 +866,7 @@ class LoadTestRunScenario(ScenarioTest):
         create_test(self)
         create_test_run(self)
         response = self.cmd(
-            "az load test-run copy-artifacts-url "
+            "az load test-run get-artifacts-url "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-run-id {test_run_id} ",
@@ -893,7 +893,7 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
         assert response.get("status") != "DONE"
         response = self.cmd(
-            "az load test-run copy-artifacts-url "
+            "az load test-run get-artifacts-url "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} ",
@@ -910,7 +910,7 @@ class LoadTestRunScenario(ScenarioTest):
         )
         try:
             self.cmd(
-                "az load test-run copy-artifacts-url "
+                "az load test-run get-artifacts-url "
                 "--load-test-resource {load_test_resource} "
                 "--resource-group {resource_group} "
                 "--test-run-id {unknown_test_run_id} ",
