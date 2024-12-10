@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "durabletask",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage Durabletasks.
+    """Commands to manage Durabletask schedulers and taskhubs
     """
     pass
 
