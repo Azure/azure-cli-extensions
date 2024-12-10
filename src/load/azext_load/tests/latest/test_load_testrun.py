@@ -4,9 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import logging
-import sys
-import io
 import tempfile
 import time
 
