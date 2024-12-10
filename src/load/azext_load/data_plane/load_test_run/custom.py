@@ -137,19 +137,21 @@ def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None
 def copy_test_run_artifacts_url(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Fetching test run copy artifacts SAS URL for test run %s", test_run_id)
+    logger.warning("You can use the SAS URL in the Azure Storage Explorer or AzCopy "
+                   "to copy the results CSV files and the log files for the test run to your storage account.")
     test_run_data = client.get_test_run(test_run_id=test_run_id)
     artifacts_container = test_run_data.get(
         "testArtifacts", {}).get(
         "outputArtifacts", {}).get(
         "artifactsContainerInfo")
-    if artifacts_container is None:
+    if artifacts_container is None or artifacts_container.get("url") is None:
         logger.warning("No test artifacts container found for test run %s", test_run_id)
     else:
         logger.info("Fetched test run copy artifacts SAS URL %s", artifacts_container)
         return artifacts_container.get("url")
 
 
-def _download_results_file(test_run_output_artifacts, test_run_id, path, test_run_data):
+def _download_results_file(test_run_output_artifacts, test_run_id, path):
     logger.info("Downloading results file for test run %s", test_run_id)
     if test_run_output_artifacts is not None:
         result_file_info = test_run_output_artifacts.get("resultFileInfo")
@@ -158,11 +160,6 @@ def _download_results_file(test_run_output_artifacts, test_run_id, path, test_ru
             logger.warning("Results file downloaded to %s", file_path)
         else:
             logger.info("No results file found for test run %s", test_run_id)
-    elif _is_high_scale_test_run(test_run_data):
-        logger.warning(
-            "High scale test run %s results file is not available for download",
-            test_run_id,
-        )
     else:
         logger.warning(
             "No results file found for test run %s",
@@ -170,7 +167,7 @@ def _download_results_file(test_run_output_artifacts, test_run_id, path, test_ru
         )
 
 
-def _download_reports_file(test_run_output_artifacts, test_run_id, path, test_run_data):
+def _download_reports_file(test_run_output_artifacts, test_run_id, path):
     logger.info("Downloading report file for test run %s", test_run_id)
     if test_run_output_artifacts is not None:
         report_file_info = test_run_output_artifacts.get("reportFileInfo")
@@ -179,11 +176,6 @@ def _download_reports_file(test_run_output_artifacts, test_run_id, path, test_ru
             logger.warning("Report file downloaded to %s", file_path)
         else:
             logger.info("No report file found for test run %s", test_run_id)
-    elif _is_high_scale_test_run(test_run_data):
-        logger.warning(
-            "High scale test run %s report file is not available for download",
-            test_run_id,
-        )
     else:
         logger.warning(
             "No report file found for test run %s",
@@ -191,7 +183,7 @@ def _download_reports_file(test_run_output_artifacts, test_run_id, path, test_ru
         )
 
 
-def _download_logs_file(test_run_output_artifacts, test_run_id, path, test_run_data):
+def _download_logs_file(test_run_output_artifacts, test_run_id, path):
     logger.info("Downloading log file for test run %s", test_run_id)
     if test_run_output_artifacts is not None:
         logs_file_info = test_run_output_artifacts.get("logsFileInfo")
@@ -200,14 +192,9 @@ def _download_logs_file(test_run_output_artifacts, test_run_id, path, test_run_d
             logger.warning("Log file downloaded to %s", file_path)
         else:
             logger.info("No log file found for test run %s", test_run_id)
-    elif _is_high_scale_test_run(test_run_data):
-        logger.warning(
-            "High scale test run %s log file is not available for download",
-            test_run_id,
-        )
     else:
         logger.warning(
-            "No results file and output artifacts found for test run %s",
+            "No logs file and output artifacts found for test run %s",
             test_run_id,
         )
 
@@ -230,8 +217,11 @@ def _download_input_file(test_run_input_artifacts, test_run_id, path):
 
 
 def _is_high_scale_test_run(test_run_data):
-    if (test_run_data.get("loadTestConfiguration", {}).get("engineInstances") > HighScaleThreshold.MAX_ENGINE_INSTANCES_PER_TEST_RUN \
-        or test_run_data.get("duration") > HighScaleThreshold.MAX_DURATION_HOURS_PER_TEST_RUN * 60 * 60
+    engines = test_run_data.get("loadTestConfiguration", {}).get("engineInstances")
+    duration = test_run_data.get("duration")
+    if (
+        (engines is not None and engines > HighScaleThreshold.MAX_ENGINE_INSTANCES_PER_TEST_RUN)
+        or (duration is not None and duration > HighScaleThreshold.MAX_DURATION_HOURS_PER_TEST_RUN * 60 * 60 * 1000)
     ):
         return True
     return False
@@ -260,14 +250,27 @@ def download_test_run_files(
     if test_run_input:
         _download_input_file(test_run_input_artifacts, test_run_id, path)
 
+    is_high_scale_test_run = _is_high_scale_test_run(test_run_data)
+    high_scale_test_run_message = ""
     if test_run_log:
-        _download_logs_file(test_run_output_artifacts, test_run_id, path, test_run_data)
+        if is_high_scale_test_run:
+            high_scale_test_run_message += f"High scale test run {test_run_id} log file " \
+                "is not available for download. "
+        else:
+            _download_logs_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_results:
-        _download_results_file(test_run_output_artifacts, test_run_id, path, test_run_data)
+        if is_high_scale_test_run:
+            high_scale_test_run_message += f"High scale test run {test_run_id} results file " \
+                "is not available for download. "
+        else:
+            _download_results_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_report:
-        _download_reports_file(test_run_output_artifacts, test_run_id, path, test_run_data)
+        _download_reports_file(test_run_output_artifacts, test_run_id, path)
+
+    if high_scale_test_run_message:
+        return high_scale_test_run_message
 
 
 # app components

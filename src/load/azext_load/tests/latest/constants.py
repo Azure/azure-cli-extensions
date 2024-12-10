@@ -119,6 +119,9 @@ class LoadConstants:
 
     FLOAT_TOLERANCE = 1e-6
 
+    HIGH_SCALE_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-high-scale-load.yaml")
+
+
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
     UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
@@ -171,6 +174,7 @@ class LoadTestRunConstants(LoadConstants):
     METRIC_TEST_ID = "metric-test-case"
     DEBUG_MODE_TEST_ID = "debug-mode-test-case"
     SAS_URL_TEST_ID = "sas-url-test-case"
+    HIGH_SCALE_LOAD_TEST_ID = "highscale-loadtest-case"
 
     # Test Run IDs for load test run commands
     CREATE_TEST_RUN_ID = "create-test-run-case"
@@ -187,6 +191,7 @@ class LoadTestRunConstants(LoadConstants):
     DEBUG_MODE_TEST_RUN_ID = "debug-mode-test-run-case"
     SAS_URL_TEST_RUN_ID = "sas-url-test-run-case"
     SAS_URL_TEST_RUN_ID_1 = "sas-url-test-run-case-1"
+    HIGH_SCALE_LOAD_TEST_RUN_ID = "highscaleload-testrun-case"
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"

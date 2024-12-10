@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import logging
+import sys
+import io
 import tempfile
 import time
 
@@ -360,7 +363,10 @@ class LoadTestRunScenario(ScenarioTest):
                 "--resource-group {resource_group} "
                 "--test-run-id {test_run_id}",
             ).get_output_in_json()
-            if response.get("testArtifacts", {}).get("outputArtifacts", {}).get("reportFileInfo") is not None:
+            if (
+                response.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo") is not None \
+                and response.get("testArtifacts", {}).get("outputArtifacts", {}).get("reportFileInfo") is not None
+            ):
                 break
             sleep_counter += 1
             time.sleep(10)
@@ -422,6 +428,35 @@ class LoadTestRunScenario(ScenarioTest):
 
             assert len(files_in_dir) >= 4
             assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
+
+        self.kwargs.update(
+            {
+                "test_id": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_ID,
+                "test_run_id": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        create_test(self)
+        create_test_run(self)
+            
+        with tempfile.TemporaryDirectory(
+            prefix="clitest-load-", suffix=create_random_name(prefix="", length=5)
+        ) as temp_dir:
+            self.kwargs.update({"path": temp_dir})
+            
+            response = self.cmd(
+                "az load test-run download-files "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "
+                '--path "{path}" '
+                "--log "
+                "--result ",
+            ).get_output_in_json()
+            
+            assert f"High scale test run {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} log file is not available for download" in response
+            assert f"High scale test run {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} results file is not available for download" in response              
+            
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
