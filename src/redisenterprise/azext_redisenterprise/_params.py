@@ -66,7 +66,7 @@ def load_arguments(self, _):
                    arg_group='KeyEncryptionKeyIdentity')
         c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id', '--identity-resource-id'],
                    type=str, help='User assigned identity to use for accessing key encryption key Url. '
-                   'Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.',
+                   'Ex: `/subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId`.',
                    arg_group='KeyEncryptionKeyIdentity')
         c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--assigned-identities'],
                    type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. '
@@ -124,7 +124,7 @@ def load_arguments(self, _):
                    arg_group='KeyEncryptionKeyIdentity')
         c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id', '--identity-resource-id'], type=str,
                    help='User assigned identity to use for accessing key encryption key Url. '
-                   'Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.',
+                   'Ex: `/subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId`.',
                    arg_group='KeyEncryptionKeyIdentity')
         c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--assigned-identities'],
                    type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. '
