@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import uuid
 from enum import EnumMeta
 
 import requests
 import yaml
-from azext_load.data_plane.utils import validators
+from azext_load.data_plane.utils import validators, utils_yaml_config
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 from azure.cli.core.azclierror import (
     FileOperationError,
@@ -296,8 +295,8 @@ def convert_yaml_to_test(data):
     if "description" in data:
         new_body["description"] = data["description"]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-    if "keyvaultReferenceIdentityId" in data:
-        new_body["keyvaultReferenceIdentityId"] = data["keyvaultReferenceIdentityId"]
+    if "keyVaultReferenceIdentity" in data:
+        new_body["keyvaultReferenceIdentityId"] = data["keyVaultReferenceIdentity"]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
     if "subnetId" in data:
@@ -322,62 +321,11 @@ def convert_yaml_to_test(data):
             "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
         )
     if data.get("splitAllCSVs") is not None:
-        new_body["loadTestConfiguration"]["splitAllCSVs"] = data.get("splitAllCSVs")
-
+        new_body["loadTestConfiguration"]["splitAllCSVs"] = utils_yaml_config.yaml_parse_splitcsv(data=data)
     if data.get("failureCriteria"):
-        new_body["passFailCriteria"] = {}
-        new_body["passFailCriteria"]["passFailMetrics"] = {}
-        for items in data["failureCriteria"]:
-            metric_id = get_random_uuid()
-            # check if item is string or dict. if string then no name is provided
-            name = None
-            components = items
-            if isinstance(items, dict):
-                name = list(items.keys())[0]
-                components = list(items.values())[0]
-            # validate failure criteria
-            try:
-                validate_failure_criteria(components)
-            except InvalidArgumentValueError as e:
-                logger.error("Invalid failure criteria: %s", str(e))
-            new_body["passFailCriteria"]["passFailMetrics"][metric_id] = {}
-            new_body["passFailCriteria"]["passFailMetrics"][metric_id]["aggregate"] = (
-                components.split("(")[0].strip()
-            )
-            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
-                "clientMetric"
-            ] = (components.split("(")[1].split(")")[0].strip())
-            new_body["passFailCriteria"]["passFailMetrics"][metric_id]["condition"] = (
-                components.split(")")[1].strip()[0]
-            )
-            new_body["passFailCriteria"]["passFailMetrics"][metric_id]["value"] = (
-                components.split(
-                    new_body["passFailCriteria"]["passFailMetrics"][metric_id]["condition"]
-                )[1].strip()
-            )
-            if name is not None:
-                new_body["passFailCriteria"]["passFailMetrics"][metric_id][
-                    "requestName"
-                ] = name
+        new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
     if data.get("autoStop") is not None:
-        if (isinstance(data["autoStop"], str)):
-            # pylint: disable-next=protected-access
-            validators._validate_autostop_disable_configfile(data["autoStop"])
-            new_body["autoStopCriteria"] = {
-                "autoStopDisabled": True,
-            }
-        else:
-            error_rate = data["autoStop"].get("errorPercentage")
-            time_window = data["autoStop"].get("timeWindow")
-            # pylint: disable-next=protected-access
-            validators._validate_autostop_criteria_configfile(error_rate, time_window)
-            new_body["autoStopCriteria"] = {
-                "autoStopDisabled": False,
-            }
-            if error_rate is not None:
-                new_body["autoStopCriteria"]["errorRate"] = error_rate
-            if time_window is not None:
-                new_body["autoStopCriteria"]["errorRateTimeWindowInSeconds"] = time_window
+        new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
@@ -421,7 +369,7 @@ def create_or_update_test_with_config(
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
     elif yaml_test_body.get("keyvaultReferenceIdentityId") is not None:
         new_body["keyvaultReferenceIdentityId"] = yaml_test_body.get(
-            "keyVaultReferenceIdentity"
+            "keyvaultReferenceIdentityId"
         )
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
     else:
@@ -802,20 +750,3 @@ def upload_files_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
-
-
-def validate_failure_criteria(failure_criteria):
-    parts = failure_criteria.split("(")
-    if len(parts) != 2:
-        raise ValueError(f"Invalid failure criteria: {failure_criteria}")
-    _, condition_value = parts
-    if (
-        ")" not in condition_value
-        or len(condition_value.split(")")) != 2
-        or condition_value.endswith(")")
-    ):
-        raise ValueError(f"Invalid failure criteria: {failure_criteria}")
-
-
-def get_random_uuid():
-    return str(uuid.uuid4())

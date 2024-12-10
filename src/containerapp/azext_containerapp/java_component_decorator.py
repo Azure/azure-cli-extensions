@@ -300,7 +300,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
                 existing_configurations.append(new_configuration)
 
     def remove_configurations(self, existing_configurations, remove_configurations):
-        remove_set = {config for config in remove_configurations}
+        remove_set = set(remove_configurations)
 
         new_configurations = [
             config for config in existing_configurations
