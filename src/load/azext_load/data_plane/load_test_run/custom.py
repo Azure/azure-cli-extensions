@@ -8,6 +8,7 @@ from azext_load.data_plane.utils.utils import (
     get_file_info_and_download,
     get_testrun_data_plane_client,
 )
+from azext_load.data_plane.utils.constants import HighScaleThreshold
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
@@ -136,12 +137,13 @@ def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None
 def copy_test_run_artifacts_url(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Fetching test run copy artifacts SAS URL for test run %s", test_run_id)
+    logger.warning("You can use the SAS URL with Azure Storage Explorer or AzCopy to access the storage resource.")
     test_run_data = client.get_test_run(test_run_id=test_run_id)
     artifacts_container = test_run_data.get(
         "testArtifacts", {}).get(
         "outputArtifacts", {}).get(
         "artifactsContainerInfo")
-    if artifacts_container is None:
+    if artifacts_container is None or artifacts_container.get("url") is None:
         logger.warning("No test artifacts container found for test run %s", test_run_id)
     else:
         logger.info("Fetched test run copy artifacts SAS URL %s", artifacts_container)
@@ -191,7 +193,7 @@ def _download_logs_file(test_run_output_artifacts, test_run_id, path):
             logger.info("No log file found for test run %s", test_run_id)
     else:
         logger.warning(
-            "No results file and output artifacts found for test run %s",
+            "No logs file and output artifacts found for test run %s",
             test_run_id,
         )
 
@@ -211,6 +213,17 @@ def _download_input_file(test_run_input_artifacts, test_run_id, path):
         logger.warning("Input artifacts downloaded to %s", path)
     else:
         logger.warning("No input artifacts found for test run %s", test_run_id)
+
+
+def _is_high_scale_test_run(test_run_data):
+    engines = test_run_data.get("loadTestConfiguration", {}).get("engineInstances")
+    duration = test_run_data.get("duration")
+    if (
+        (engines is not None and engines > HighScaleThreshold.MAX_ENGINE_INSTANCES_PER_TEST_RUN)
+        or (duration is not None and duration > HighScaleThreshold.MAX_DURATION_HOURS_PER_TEST_RUN * 60 * 60 * 1000)
+    ):
+        return True
+    return False
 
 
 def download_test_run_files(
@@ -236,14 +249,28 @@ def download_test_run_files(
     if test_run_input:
         _download_input_file(test_run_input_artifacts, test_run_id, path)
 
+    is_high_scale_test_run = _is_high_scale_test_run(test_run_data)
+    high_scale_test_run_message = ""
     if test_run_log:
-        _download_logs_file(test_run_output_artifacts, test_run_id, path)
+        if is_high_scale_test_run:
+            high_scale_test_run_message += f"Logs file for high-scale test {test_run_id} "\
+                "is not available for download. "
+        else:
+            _download_logs_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_results:
-        _download_results_file(test_run_output_artifacts, test_run_id, path)
+        if is_high_scale_test_run:
+            high_scale_test_run_message += f"Results file for high-scale test {test_run_id} "\
+                "is not available for download. "
+        else:
+            _download_results_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_report:
         _download_reports_file(test_run_output_artifacts, test_run_id, path)
+
+    if high_scale_test_run_message:
+        high_scale_test_run_message += "Use the 'get-artifacts-url' command to fetch the SAS URL and access the file."
+        return high_scale_test_run_message
 
 
 # app components

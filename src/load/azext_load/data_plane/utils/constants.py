@@ -27,3 +27,9 @@ class LoadTestConfigKeys:
     REGION = "region"
     QUICK_START = "quickStartTest"
     SPLIT_CSV = "splitAllCSVs"
+
+
+@dataclass
+class HighScaleThreshold:
+    MAX_ENGINE_INSTANCES_PER_TEST_RUN = 45
+    MAX_DURATION_HOURS_PER_TEST_RUN = 3
