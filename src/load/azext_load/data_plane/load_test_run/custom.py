@@ -253,13 +253,15 @@ def download_test_run_files(
     high_scale_test_run_message = ""
     if test_run_log:
         if is_high_scale_test_run:
-            high_scale_test_run_message += f"Logs file for high-scale test {test_run_id} is not available for download. "
+            high_scale_test_run_message += f"Logs file for high-scale test {test_run_id} "\
+                "is not available for download. "
         else:
             _download_logs_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_results:
         if is_high_scale_test_run:
-            high_scale_test_run_message += f"Results file for high-scale test {test_run_id} is not available for download. "
+            high_scale_test_run_message += f"Results file for high-scale test {test_run_id} "\
+                "is not available for download. "
         else:
             _download_results_file(test_run_output_artifacts, test_run_id, path)
 
