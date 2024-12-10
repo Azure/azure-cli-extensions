@@ -132,10 +132,10 @@ class BaseJavaComponentDecorator(BaseResource):
             key_val = pair.split('=', 1)
             if len(key_val) != 2:
                 raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
-            property_name = key_val[0].lower()
+            property_name = key_val[0]
             # Check for duplicate propertyName
             if property_name in seen_properties:
-                raise ValidationError(f"Duplicate propertyName found: \"{key_val[0].lower()}\". Each propertyName must be unique with case-insensitive.")
+                raise ValidationError(f"Duplicate propertyName found: \"{key_val[0]}\". Each propertyName must be unique.")
 
             seen_properties.add(property_name)
             configuration_list.append({
@@ -291,7 +291,7 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
             # Check if updating existing configuration
             is_existing = False
             for existing_configuration in existing_configurations:
-                if existing_configuration["propertyName"].lower() == new_configuration["propertyName"].lower():
+                if existing_configuration["propertyName"] == new_configuration["propertyName"]:
                     is_existing = True
                     existing_configuration["value"] = new_configuration["value"]
 
@@ -300,15 +300,15 @@ class JavaComponentUpdateDecorator(BaseJavaComponentDecorator):
                 existing_configurations.append(new_configuration)
 
     def remove_configurations(self, existing_configurations, remove_configurations):
-        remove_set = {config.lower() for config in remove_configurations}
+        remove_set = {config for config in remove_configurations}
 
         new_configurations = [
             config for config in existing_configurations
-            if config["propertyName"].lower() not in remove_set
+            if config["propertyName"] not in remove_set
         ]
 
         for config in remove_configurations:
-            if config.lower() not in {c["propertyName"].lower() for c in existing_configurations}:
+            if config not in {c["propertyName"] for c in existing_configurations}:
                 logger.warning("Configuration {} does not exist.".format(config))
 
         existing_configurations[:] = new_configurations
