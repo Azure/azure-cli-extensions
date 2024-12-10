@@ -137,8 +137,7 @@ def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None
 def copy_test_run_artifacts_url(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Fetching test run copy artifacts SAS URL for test run %s", test_run_id)
-    logger.warning("You can use the SAS URL in the Azure Storage Explorer or AzCopy "
-                   "to copy the results CSV files and the log files for the test run to your storage account.")
+    logger.warning("You can use the SAS URL with Azure Storage Explorer or AzCopy to access the storage resource.")
     test_run_data = client.get_test_run(test_run_id=test_run_id)
     artifacts_container = test_run_data.get(
         "testArtifacts", {}).get(
@@ -254,15 +253,13 @@ def download_test_run_files(
     high_scale_test_run_message = ""
     if test_run_log:
         if is_high_scale_test_run:
-            high_scale_test_run_message += f"High scale test run {test_run_id} log file " \
-                "is not available for download. "
+            high_scale_test_run_message += f"Logs file for high-scale test {test_run_id} is not available for download. "
         else:
             _download_logs_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_results:
         if is_high_scale_test_run:
-            high_scale_test_run_message += f"High scale test run {test_run_id} results file " \
-                "is not available for download. "
+            high_scale_test_run_message += f"Results file for high-scale test {test_run_id} is not available for download. "
         else:
             _download_results_file(test_run_output_artifacts, test_run_id, path)
 
@@ -270,6 +267,7 @@ def download_test_run_files(
         _download_reports_file(test_run_output_artifacts, test_run_id, path)
 
     if high_scale_test_run_message:
+        high_scale_test_run_message += "Use the 'get-artifacts-url' command to fetch the SAS URL and access the file."
         return high_scale_test_run_message
 
 

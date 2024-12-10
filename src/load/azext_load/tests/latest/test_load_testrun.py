@@ -451,8 +451,8 @@ class LoadTestRunScenario(ScenarioTest):
                 "--result ",
             ).get_output_in_json()
             
-            assert f"High scale test run {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} log file is not available for download" in response
-            assert f"High scale test run {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} results file is not available for download" in response              
+            assert f"Logs file for high-scale test {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} is not available for download." in response
+            assert f"Results file for high-scale test {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} is not available for download." in response              
             
 
     @ResourceGroupPreparer(**rg_params)
