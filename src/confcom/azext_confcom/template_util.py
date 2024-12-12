@@ -457,6 +457,15 @@ def convert_to_pod_spec_helper(pod_dict):
     return {}
 
 
+def get_volume_claim_templates(pod_spec: dict) -> List[dict]:
+    volume_claim_templates = []
+    if "spec" in pod_spec:
+        spec = pod_spec["spec"]
+        if "volumeClaimTemplates" in spec:
+            return spec["volumeClaimTemplates"]
+    return volume_claim_templates
+
+
 def filter_non_pod_resources(resources: List[dict]) -> List[dict]:
     """
     Filter out non-pod spawning resources from a list of resources.

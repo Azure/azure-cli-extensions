@@ -35,6 +35,7 @@ from azext_confcom.template_util import (
     get_diff_size,
     process_env_vars_from_yaml,
     convert_to_pod_spec,
+    get_volume_claim_templates,
     filter_non_pod_resources,
     decompose_confidential_properties,
     process_env_vars_from_config,
@@ -1051,7 +1052,7 @@ def load_policy_from_virtual_node_yaml_str(
     yaml_contents = filter_non_pod_resources(yaml_contents)
     for yaml in yaml_contents:
         # extract existing policy and fragments for diff mode
-        metadata = case_insensitive_dict_get(yaml, "metadata")
+        metadata = case_insensitive_dict_get(yaml, config.VIRTUAL_NODE_YAML_METADATA)
         annotations = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_ANNOTATIONS)
         labels = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_LABELS) or []
         use_workload_identity = (
@@ -1070,6 +1071,7 @@ def load_policy_from_virtual_node_yaml_str(
                 existing_containers, existing_fragments = ([], [])
         # because there are many ways to get pod information, we normalize them so the interface is the same
         normalized_yaml = convert_to_pod_spec(yaml)
+        volume_claim_templates = get_volume_claim_templates(yaml)
 
         spec = case_insensitive_dict_get(normalized_yaml, "spec")
         if not spec:
@@ -1079,17 +1081,17 @@ def load_policy_from_virtual_node_yaml_str(
         pod_security_context = case_insensitive_dict_get(spec, "securityContext") or {}
 
         policy_containers = []
-        containers = case_insensitive_dict_get(spec, "containers")
+        containers = case_insensitive_dict_get(spec, config.ACI_FIELD_TEMPLATE_CONTAINERS)
         if not containers:
             eprint("YAML file does not contain a containers field")
         # NOTE: initContainers are not treated differently in the security policy
         # but they are treated differently in the pod spec
         # e.g. lifecycle and probes are not supported in initContainers
-        init_containers = case_insensitive_dict_get(spec, "initContainers") or []
+        init_containers = case_insensitive_dict_get(spec, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS) or []
 
         for container in containers + init_containers:
             # image and name
-            image = case_insensitive_dict_get(container, "image")
+            image = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_IMAGE)
             if not image:
                 eprint("Container does not have an image field")
 
@@ -1104,12 +1106,28 @@ def load_policy_from_virtual_node_yaml_str(
                 envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
 
             # command
-            command = case_insensitive_dict_get(container, "command") or []
+            command = case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_COMMAND) or []
             args = case_insensitive_dict_get(container, "args") or []
 
             # mounts
             mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
             volumes = case_insensitive_dict_get(spec, "volumes") or []
+
+            # there can be implicit volumes from volumeClaimTemplates
+            # We need to add them to the list of volumes and note if they are readonly
+            for volume_claim_template in volume_claim_templates:
+                vct_metadata = case_insensitive_dict_get(volume_claim_template, config.VIRTUAL_NODE_YAML_METADATA)
+                temp_volume = {
+                    config.VIRTUAL_NODE_YAML_NAME:
+                    case_insensitive_dict_get(vct_metadata, config.VIRTUAL_NODE_YAML_NAME),
+                }
+                vct_spec = case_insensitive_dict_get(volume_claim_template, "spec")
+                if vct_spec:
+                    vct_access_modes = case_insensitive_dict_get(vct_spec, "accessModes")
+                    if vct_access_modes and config.VIRTUAL_NODE_YAML_READ_ONLY_MANY in vct_access_modes:
+                        temp_volume[config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY] = True
+
+                volumes.append(temp_volume)
 
             # set of volume types that are read-only by default
             read_only_types = {"configMap", "secret", "downwardAPI", "projected"}
@@ -1117,32 +1135,34 @@ def load_policy_from_virtual_node_yaml_str(
             volume_mounts = case_insensitive_dict_get(container, "volumeMounts")
             if volume_mounts:
                 for mount in volume_mounts:
-                    mount_name = case_insensitive_dict_get(mount, "name")
+                    mount_name = case_insensitive_dict_get(mount, config.VIRTUAL_NODE_YAML_NAME)
                     mount_path = case_insensitive_dict_get(mount, "mountPath")
 
                     # find the corresponding volume
                     volume = next(
-                        (vol for vol in volumes if case_insensitive_dict_get(vol, "name") == mount_name),
+                        (vol for vol in volumes if case_insensitive_dict_get(
+                            vol, config.VIRTUAL_NODE_YAML_NAME) == mount_name
+                        ),
                         None
-                    )
+                    ) or {}
 
                     # determine if this volume is one of the read-only types
-                    read_only_default = any(key in read_only_types for key in volume.keys())
+                    read_only_default = any(key in read_only_types for key in volume.keys()) or volume.get(config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY)
 
                     if read_only_default:
                         # log warning if readOnly is explicitly set to false for a read-only volume type
-                        if case_insensitive_dict_get(mount, "readOnly") is False:
+                        if case_insensitive_dict_get(mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY) is False:
                             logger.warning(
                                 "Volume '%s' in container '%s' is of a type that requires readOnly access (%s), "
                                 "but readOnly: false was specified. Enforcing readOnly: true for policy generation.",
                                 mount_name,
-                                case_insensitive_dict_get(container, "name"),
+                                case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_NAME),
                                 ', '.join(read_only_types)
                             )
                         mount_readonly = True
                     else:
                         # use the readOnly field or default to False for non-read-only volumes
-                        mount_readonly = case_insensitive_dict_get(mount, "readOnly") or False
+                        mount_readonly = case_insensitive_dict_get(mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY) or False
 
                     mounts.append({
                         config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: config.ACI_FIELD_YAML_MOUNT_TYPE,
@@ -1151,9 +1171,9 @@ def load_policy_from_virtual_node_yaml_str(
                     })
 
             # container security context
-            container_security_context = case_insensitive_dict_get(container, "securityContext") or {}
+            container_security_context = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) or {}
 
-            if case_insensitive_dict_get(container_security_context, "privileged") is True:
+            if case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED) is True:
                 mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
 
             # security context
@@ -1173,7 +1193,7 @@ def load_policy_from_virtual_node_yaml_str(
             policy_containers.append(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image,
-                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(container, "name") or image,
+                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_NAME) or image,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image,
                     config.ACI_FIELD_CONTAINERS_ENVS: envs,
                     config.ACI_FIELD_CONTAINERS_COMMAND: command + args,
