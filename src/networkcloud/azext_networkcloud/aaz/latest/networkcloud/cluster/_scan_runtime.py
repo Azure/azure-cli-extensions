@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster scan-runtime",
-    is_preview=True,
 )
 class ScanRuntime(AAZCommand):
     """Trigger the execution of a runtime protection scan to detect and remediate detected issues, in accordance with the cluster configuration.
@@ -243,7 +242,7 @@ class _ScanRuntimeHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

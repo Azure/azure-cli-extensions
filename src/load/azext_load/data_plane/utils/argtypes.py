@@ -34,6 +34,14 @@ custom_no_wait = CLIArgumentType(
     help="Do not wait for the long-running operation to finish.",
 )
 
+disable_public_ip = CLIArgumentType(
+    validator=validators.validate_disable_public_ip,
+    options_list=["--disable-public-ip"],
+    type=str,
+    help="Disable the deployment of a public IP address, load balancer, and network security group while testing a private endpoint.",
+)
+
+
 force = CLIArgumentType(
     options_list=["--force"],
     action="store_true",
@@ -332,4 +340,25 @@ dimension_filters = CLIArgumentType(
         "* is supported as a wildcard for both key and value. "
         "Example: `--dimension-filters key1=value1 key2=*`, `--dimension-filters *`"
     ),
+)
+
+autostop = CLIArgumentType(
+    validator=validators.validate_autostop_enable_disable,
+    options_list=["--autostop"],
+    type=str,
+    help="Whether auto-stop should be enabled or disabled. Allowed values are enable/disable.",
+)
+
+autostop_error_rate = CLIArgumentType(
+    options_list=["--autostop-error-rate"],
+    type=float,
+    validator=validators.validate_autostop_error_rate,
+    help="Threshold percentage of errors on which test run should be automatically stopped. Allowed values are in range of [0.0,100.0]",
+)
+
+autostop_error_rate_time_window = CLIArgumentType(
+    options_list=["--autostop-time-window"],
+    type=int,
+    validator=validators.validate_autostop_error_rate_time_window,
+    help="Time window during which the error percentage should be evaluated in seconds.",
 )

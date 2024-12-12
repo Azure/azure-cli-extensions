@@ -11,12 +11,18 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 class LoadConstants:
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-true.yaml")
     INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config.yaml"
     )
     INVALID_ZIP_ARTIFACT_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config-with-zip-artifacts.yaml"
     )
+    LOAD_TEST_CONFIG_FILE_KVREFID = os.path.join(TEST_RESOURCES_DIR, r"config-kvrefid.yaml")
+    LOAD_TEST_CONFIG_FILE_INVALID_KVREFID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kvrefid.yaml")
+    LOAD_TEST_CONFIG_FILE_SPLITCSV_FALSE = os.path.join(TEST_RESOURCES_DIR, r"config-splitcsv-false.yaml")
+    LOAD_TEST_CONFIG_FILE_INVALID_SPLITCSV = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-splitcsv.yaml")
     TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
     ADDITIONAL_FILE = os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
@@ -48,6 +54,9 @@ class LoadConstants:
     SPLIT_CSV_TRUE = "true"
     SPLIT_CSV_FALSE = "false"
 
+    DISABLE_PUBLIC_IP_TRUE = "true"
+    DISABLE_PUBLIC_IP_FALSE = "false"
+
     INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
     KEYVAULT_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     # App Component constants
@@ -67,10 +76,22 @@ class LoadConstants:
 
     INVALID_SERVER_METRIC_ID = r"/subscriptions/invalid/resource/id"
 
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-error-rate.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-time-window.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-error-rate.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-time-window.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-random-string.yaml")
+    AUTOSTOP_DISABLED = "disable"
+    AUTOSTOP_ERROR_RATE = 77.5
+    AUTOSTOP_ERROR_RATE_INTEGER = 75
+    AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
+
 
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
     UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
+    CREATE_AND_UPDATE_VNET_TEST_ID = "create-update-vnet-test-case"
     DELETE_TEST_ID = "delete-test-case"
     CREATE_TEST_ID = "create-test-case"
     UPDATE_TEST_ID = "update-test-case"
@@ -81,10 +102,13 @@ class LoadTestConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     FILE_TEST_ID = "file-test-case"
+    LOAD_TEST_KVREF_ID = "loadtest-kvrefid-case"
+    LOAD_TEST_SPLITCSV_ID = "loadtest-splitcsv-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
     INVALID_ZIP_COUNT_TEST_ID = "invalid-zip-count-test-case"
+    INVALID_DISABLED_PUBLIC_IP_TEST_ID = "invalid-disable-public-ip-test-case"
 
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"

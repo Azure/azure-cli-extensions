@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2024-05-01"],
         ]
     }
 
@@ -47,8 +47,8 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="The name of the network manager Security Configuration.",
+            options=["--config", "--config-name", "--configuration-name"],
+            help="Name of the network manager security configuration.",
             required=True,
             id_part="child_name_1",
         )
@@ -58,14 +58,14 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]*$",
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         _args_schema.rule_collection_name = AAZStrArg(
-            options=["--rule-collection-name"],
+            options=["--rc", "--rule-collection-name"],
             help="The name of the network manager security Configuration rule collection.",
             required=True,
             id_part="child_name_2",
@@ -288,7 +288,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -383,7 +383,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -448,7 +448,7 @@ class Update(AAZCommand):
 
             disc_custom = _builder.get("{kind:Custom}")
             if disc_custom is not None:
-                disc_custom.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+                disc_custom.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get("{kind:Custom}.properties")
             if properties is not None:
@@ -599,7 +599,7 @@ class _UpdateHelper:
 
         disc_custom = _schema_base_admin_rule_read.discriminate_by("kind", "Custom")
         disc_custom.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
 
         properties = _schema_base_admin_rule_read.discriminate_by("kind", "Custom").properties

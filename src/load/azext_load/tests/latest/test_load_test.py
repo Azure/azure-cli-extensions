@@ -19,6 +19,9 @@ from azure.cli.testsdk import (
     create_random_name,
     live_only,
 )
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 rg_params = {
     "name_prefix": "clitest-load-",
@@ -84,6 +87,7 @@ class LoadTestScenario(ScenarioTest):
                 "env": LoadTestConstants.VALID_ENV_RPS,
                 "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
                 "subnet_id": subnet_id,
+                "disable_public_ip": LoadTestConstants.DISABLE_PUBLIC_IP_TRUE,
             }
         )
 
@@ -98,8 +102,10 @@ class LoadTestScenario(ScenarioTest):
                 "keyvaultReferenceIdentityId", self.kwargs["keyvault_reference_id"]
             ),
             JMESPathCheck("subnetId", self.kwargs["subnet_id"]),
+            JMESPathCheck("publicIPDisabled", True),
             JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
             JMESPathCheck("environmentVariables.rps", "10"),
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
         ]
         # Create load test with all parameters
         response = self.cmd(
@@ -116,7 +122,8 @@ class LoadTestScenario(ScenarioTest):
             "--secret {secret} "
             "--keyvault-reference-id {keyvault_reference_id} "
             "--subnet-id {subnet_id} "
-            "--split-csv {split_csv} ",
+            "--split-csv {split_csv} "
+            "--disable-public-ip {disable_public_ip} ",
             checks=checks,
         ).get_output_in_json()
 
@@ -199,7 +206,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid Azure Key Vault Certificate URL:" in str(e)
 
-        # 6 Invalid secret check
+        # 4 Invalid secret check
         try:
             self.cmd(
                 "az load test create "
@@ -211,7 +218,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid Azure Key Vault Secret URL:" in str(e)
 
-        # 7 Invalid env check
+        # 5 Invalid env check
         try:
             self.cmd(
                 "az load test create "
@@ -223,7 +230,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid env argument" in str(e)
 
-        # 8 Invalid subnet id check
+        # 6 Invalid subnet id check
         self.kwargs.update(
             {
                 "subnet_id": LoadTestConstants.INVALID_SUBNET_ID,
@@ -240,7 +247,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "not a valid Azure subnet resource ID" in str(e)
 
-        # 9 Invalid test plan file
+        # 7 Invalid test plan file
         self.kwargs.update({"test_plan": LoadTestConstants.ADDITIONAL_FILE})
         try:
             self.cmd(
@@ -253,7 +260,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid test plan file extension:" in str(e)
 
-        # 10 Invalid split csv
+        # 8 Invalid split csv
         self.kwargs.update({"split_csv": "Random Text"})
         try:
             self.cmd(
@@ -266,7 +273,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid split-csv value:" in str(e)
 
-        # 11 Invalid PF criteria in config file
+        # 9 Invalid PF criteria in config file
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.INVALID_PF_TEST_ID,
@@ -284,7 +291,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid failure criteria:" in str(e)
 
-        # 12 Invalid - ZIP artifacts count exceeding limit 5 in config file
+        # 10 Invalid - ZIP artifacts count exceeding limit 5 in config file
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.INVALID_ZIP_COUNT_TEST_ID,
@@ -301,6 +308,372 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "QuotaExceeded" in str(e)
+
+        # 11 Invalid public IP disabled
+        self.kwargs.update({"public_ip_disabled": "Random"})
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--disable-public-ip "{public_ip_disabled}" ',
+            )
+        except Exception as e:
+            assert "Invalid disable-public-ip value:" in str(e)
+        
+        # 12 Invalid public IP disabled true in case of public test
+        self.kwargs.update(
+            {
+                "public_ip_disabled": "true",
+                "test_id": LoadTestConstants.INVALID_DISABLED_PUBLIC_IP_TEST_ID
+            })
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--disable-public-ip "{public_ip_disabled}" ',
+            )
+        except Exception as e:
+            assert "InvalidNetworkConfigurationException" in str(e)
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @VirtualNetworkPreparer(**vnet_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_autostop(self, rg, load, vnet):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+                "description": LoadTestConstants.DESCRIPTION,
+                "display_name": LoadTestConstants.DISPLAY_NAME,
+                "engine_instance": LoadTestConstants.ENGINE_INSTANCE,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck(
+                "loadTestConfiguration.engineInstances", self.kwargs["engine_instance"]
+            ),
+            JMESPathCheck("description", self.kwargs["description"]),
+            JMESPathCheck("displayName", self.kwargs["display_name"]),
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
+            JMESPathCheck("autoStopCriteria.errorRate", 90.0),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 60),
+        ]
+        # Create load test with autostop disabled through config file
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--description {description} "
+            "--display-name {display_name} "
+            "--engine-instance {engine_instance} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria through command line arguments
+        self.kwargs.update(
+            {
+                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE,
+                "autostop_error_rate_time_window": LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--autostop-error-rate {autostop_error_rate} '
+            '--autostop-time-window {autostop_error_rate_time_window} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria when error rate is integer
+        # Order of this test case is important as response payload is checked in next test case
+        self.kwargs.update(
+            {
+                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--autostop-error-rate {autostop_error_rate} '
+            '--autostop-time-window {autostop_error_rate_time_window} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop disabled through command line arguments
+        # Order of this test case is important as response payload is checked from previous test case
+        self.kwargs.update(
+            {
+                "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
+            JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--autostop {autostop} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria through config file
+        # Order of this test case is important as response payload for time-window is checked in next test case
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", 85.0),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria through config file: only error rate
+        # Order of this test case is important as response payload for time-window is checked from previous test case
+        # Order of this test case is important as response payload for error-rate is checked in next test case
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", 98.5),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria through config file: only time window
+        # Order of this test case is important as response payload for error-rate is checked from previous test case
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", 98.5),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 250),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with CLI autostop criteria when both config file and CLI arguments are provided
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
+                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE,
+                "autostop_error_rate_time_window": LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            '--autostop-error-rate {autostop_error_rate} '
+            '--autostop-time-window {autostop_error_rate_time_window} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with CLI autostop criteria disabled true when
+        # config file has autostop criteria and CLI argument is --autostop disable
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
+                "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
+            JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            '--autostop {autostop} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Invalid autostop test case: autostop not of string type
+        self.kwargs.update({
+                "autostop": 1,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop {autostop} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Invalid autostop type" in str(e)
+        # Invalid autostop test case: autostop not in allowed values
+        self.kwargs.update({
+                "autostop": "random",
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop {autostop} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Allowed values: enable, disable" in str(e)
+        # Invalid autostop test case: autostop error rate > 100.0
+        self.kwargs.update({
+                "autostop_error_rate": 110.5,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop-error-rate {autostop_error_rate} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Autostop error rate should be in range of [0.0,100.0]" in str(e)
+        # Invalid autostop test case: autostop error rate < 0.0
+        self.kwargs.update({
+                "autostop_error_rate": -2.5,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop-error-rate {autostop_error_rate} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Autostop error rate should be in range of [0.0,100.0]" in str(e)
+        # Invalid autostop test case: autostop error rate not of float type
+        # This is not needed as the argument is type checked
+        # argument --autostop-error-rate: invalid float value: 'rate'
+        
+        # Invalid autostop test case: autostop error rate time window < 0
+        self.kwargs.update({
+                "autostop_error_rate_time_window": -1,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop-time-window {autostop_error_rate_time_window} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Autostop error rate time window should be greater than or equal to 0" in str(e)
+        # Invalid autostop test case: autostop error rate time window not of integer type
+        # This is not needed as the argument is type checked
+        # argument --autostop-time-window: invalid int value: '90.4'
+        # argument --autostop-time-window: invalid int value: 'window'
+        
+        # Invalid autostop from config test case: autostop random string
+        self.kwargs.update({
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow" in str(e)
+        
+        # Invalid autostop from config test case: autostop error rate > 100.0
+        self.kwargs.update({
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0" in str(e)
+        # Invalid autostop from config test case: autostop time window < 0
+        self.kwargs.update({
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Invalid value for timeWindow. Value should be an integer greater than or equal to 0" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -552,6 +925,111 @@ class LoadTestScenario(ScenarioTest):
         assert response.get("environmentVariables").get("c") == "5"
         assert response.get("environmentVariables").get("rps") == "1"
         assert not response.get("environmentVariables").get("a")
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @VirtualNetworkPreparer(**vnet_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_create_and_update_vnet(self, rg, load):
+        # GET SUBNET ID
+        result = self.cmd(
+            "az network vnet subnet list --resource-group {resource_group} --vnet-name {virtual_network}"
+        ).get_output_in_json()
+        subnet_id = result[0]["id"]
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_AND_UPDATE_VNET_TEST_ID,
+                "display_name": "Create_and_update_vnet_with_config_test",
+                "test_description": "This is a load test created with config specific to vnet",
+                "test_plan": LoadTestConstants.TEST_PLAN,
+                "engine_instances": "5",
+                "subnet_id": subnet_id,
+                "disable_public_ip": LoadTestConstants.DISABLE_PUBLIC_IP_TRUE,
+            }
+        )
+
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.engineInstances", 5),
+            JMESPathCheck("subnetId", subnet_id),
+            JMESPathCheck("publicIPDisabled", True),
+        ]
+
+        # Create load test with disable public ip provided as parameters
+        test = self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--display-name '{display_name}' "
+            "--description '{test_description}' "
+            '--test-plan "{test_plan}" '
+            "--engine-instances {engine_instances} "
+            "--subnet-id {subnet_id} "
+            "--disable-public-ip {disable_public_ip} ",
+            checks=checks,
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] == test.get("testId")
+
+        checks = [
+            JMESPathCheck("publicIPDisabled", False),
+        ]
+
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE,
+            }
+        )
+        
+        # Update test with config having public IP disabled as false
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+
+        response = self.cmd(
+            "az load test show "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} ",
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] == response.get("testId")
+        assert not response.get("publicIPDisabled")
+
+        # Update test with config having public IP disabled as true
+        checks = [
+            JMESPathCheck("publicIPDisabled", True),
+        ]
+
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE,
+            }
+        )
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--subnet-id {subnet_id}",
+            checks=checks,
+        )
+
+        response = self.cmd(
+            "az load test show "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} ",
+        ).get_output_in_json()
+
+        assert response.get("publicIPDisabled")
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -956,3 +1434,275 @@ class LoadTestScenario(ScenarioTest):
         #     )
         # except Exception as e:
         #     assert "exceeds size limit of 50 MB" in str(e)
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_kvrefid(self, rg, load):
+        # Create load test from config file with keyvault reference id
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", LoadTestConstants.LOAD_TEST_KVREF_ID),
+            JMESPathCheck(
+                "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
+            ),
+        ]
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )
+        # Update test with keyvault reference id null using parameters
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": "null",
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "SystemAssigned"),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--keyvault-reference-id {keyvault_reference_id} ",
+            checks=checks,
+        )
+        # Update test with keyvault reference id using parameters
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": LoadTestConstants.KEYVAULT_REFERENCE_ID,
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "UserAssigned"),
+            JMESPathCheck(
+                "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
+            ),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--keyvault-reference-id {keyvault_reference_id} ",
+            checks=checks,
+        )
+        # Update test with keyvault reference id not provided in config file
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "SystemAssigned"),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update test with keyvault reference id using CLI arguments when
+        # both parameters and config file are provided
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": LoadTestConstants.KEYVAULT_REFERENCE_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_KVREFID,
+            }
+        )
+        checks = [
+            JMESPathCheck("keyvaultReferenceIdentityType", "UserAssigned"),
+            JMESPathCheck(
+                "keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID
+            ),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--keyvault-reference-id {keyvault_reference_id} ",
+            checks=checks,
+        )
+        # Invalid test case for keyvault reference id
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "keyvault_reference_id": "Random",
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--keyvault-reference-id {keyvault_reference_id} ",
+            )
+        except Exception as e:
+            assert "(InvalidManagedIdentity)" in str(e)
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_INVALID_KVREFID,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+            )
+        except Exception as e:
+            assert "(InvalidManagedIdentity)" in str(e)
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_splitcsv(self, rg, load):
+        # Create load test from config file with split csv true
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )
+        # Update test with split csv false from CLI arguments
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "split_csv": LoadTestConstants.SPLIT_CSV_FALSE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", False),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--split-csv {split_csv} ",
+            checks=checks,
+        )
+        # Update test with split csv true from CLI arguments
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--split-csv {split_csv} ",
+            checks=checks,
+        )
+        # Update test with split csv false using config file
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_SPLITCSV_FALSE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", False),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )
+        # Update test with split csv CLI parameter when
+        # both config file and CLI parameter are provided
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_SPLITCSV_FALSE,
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--split-csv {split_csv} ",
+            checks=checks,
+        )
+        # Invalid test case for split csv
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "split_csv": "Random",
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--split-csv {split_csv} ",
+            )
+        except Exception as e:
+            assert "Invalid split-csv value: Random. Allowed values: true, false, yes, no, y, n" in str(e)
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.LOAD_TEST_SPLITCSV_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_INVALID_SPLITCSV,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--load-test-config-file "{load_test_config_file}" '
+                "--resource-group {resource_group} ",
+            )
+        except Exception as e:
+            assert "Invalid value for splitAllCSVs. Allowed values are boolean true or false" in str(e)
