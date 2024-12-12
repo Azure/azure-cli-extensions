@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud trunkednetwork create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new trunked network or update the properties of the existing trunked network.
@@ -75,12 +74,18 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The list of resource IDs representing the Network Fabric isolation domains. It can be any combination of l2IsolationDomain and l3IsolationDomain resources.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.vlans = AAZListArg(
             options=["--vlans"],
             arg_group="Properties",
             help="The list of vlans that are selected from the isolation domains for trunking.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         isolation_domain_ids = cls._args_schema.isolation_domain_ids

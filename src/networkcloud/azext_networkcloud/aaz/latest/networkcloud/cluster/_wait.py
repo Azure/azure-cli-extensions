@@ -160,7 +160,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -399,6 +399,7 @@ class Wait(AAZWaitCommand):
             )
             associated_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
             )
 
             compute_deployment_threshold = cls._schema_on_200.properties.compute_deployment_threshold

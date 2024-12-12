@@ -106,6 +106,9 @@ class Create(AAZCommand):
             options=["address-list"],
             help="List of Addresses to be allowed or denied.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         address_list = cls._args_schema.rule_properties.address_list

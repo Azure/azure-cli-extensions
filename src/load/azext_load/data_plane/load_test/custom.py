@@ -16,6 +16,7 @@ from azext_load.data_plane.utils.utils import (
     load_yaml,
     upload_file_to_test,
     upload_files_helper,
+    create_autostop_criteria_from_args,
 )
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
@@ -40,7 +41,11 @@ def create_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
     custom_no_wait=False,
+    autostop=None,
+    autostop_error_rate=None,
+    autostop_error_rate_time_window=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
@@ -55,8 +60,8 @@ def create_test(
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
-    if split_csv is None:
-        split_csv = False
+    autostop_criteria = create_autostop_criteria_from_args(
+        autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is None:
         body = create_or_update_test_without_config(
             test_id,
@@ -70,6 +75,8 @@ def create_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
+            autostop_criteria=autostop_criteria,
         )
     else:
         yaml = load_yaml(load_test_config_file)
@@ -87,6 +94,8 @@ def create_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
+            autostop_criteria=autostop_criteria
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -119,7 +128,11 @@ def update_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
     custom_no_wait=False,
+    autostop=None,
+    autostop_error_rate=None,
+    autostop_error_rate_time_window=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Update test has started for test ID : %s", test_id)
@@ -132,6 +145,8 @@ def update_test(
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
 
     yaml, yaml_test_body = None, None
+    autostop_criteria = create_autostop_criteria_from_args(
+        autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(yaml)
@@ -148,6 +163,8 @@ def update_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
+            autostop_criteria=autostop_criteria
         )
     else:
         body = create_or_update_test_without_config(
@@ -162,6 +179,8 @@ def update_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
+            autostop_criteria=autostop_criteria
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)

@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, unused-argument, logging-fstring-interpolation, logging-not-lazy, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
+import threading
 import time
 from urllib.parse import urlparse
 import json
@@ -11,6 +12,7 @@ import requests
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
+from azure.cli.command_modules.containerapp._ssh_utils import SSH_BACKUP_ENCODING, SSH_CTRL_C_MSG, get_stdin_writer
 from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
@@ -84,6 +86,7 @@ from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
+from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -102,7 +105,8 @@ from ._clients import (
     JavaComponentPreviewClient,
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
-    DotNetComponentPreviewClient
+    DotNetComponentPreviewClient,
+    MaintenanceConfigPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -113,6 +117,8 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel
 )
+
+from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
 
 from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity
 
@@ -2864,7 +2870,10 @@ def create_session_pool(cmd,
                         target_port=None,
                         registry_server=None,
                         registry_pass=None,
-                        registry_user=None):
+                        registry_user=None,
+                        mi_user_assigned=None,
+                        registry_identity=None,
+                        mi_system_assigned=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolCreateDecorator(
         cmd=cmd,
@@ -2989,6 +2998,7 @@ def upload_session_code_interpreter(cmd,
                                     resource_group_name,
                                     identifier,
                                     filepath,
+                                    path=None,
                                     session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3009,6 +3019,7 @@ def show_file_content_session_code_interpreter(cmd,
                                                resource_group_name,
                                                identifier,
                                                filename,
+                                               path=None,
                                                session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3029,6 +3040,7 @@ def show_file_metadata_session_code_interpreter(cmd,
                                                 resource_group_name,
                                                 identifier,
                                                 filename,
+                                                path=None,
                                                 session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3069,6 +3081,7 @@ def delete_file_session_code_interpreter(cmd,
                                          resource_group_name,
                                          identifier,
                                          filename,
+                                         path=None,
                                          session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3259,3 +3272,90 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
     containerapp_job_registry_set_decorator.construct_payload()
     r = containerapp_job_registry_set_decorator.set()
     return r
+
+
+# maintenance config
+def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    maintenance_config_decorator.construct_payload()
+    maintenance_config_decorator.validate_arguments()
+    r = maintenance_config_decorator.create_or_update()
+    return r
+
+
+def update_maintenance_config(cmd, resource_group_name, env_name, duration=None, start_hour_utc=None, weekday=None):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    forUpdate = True
+    maintenance_config_decorator.construct_payload(forUpdate)
+    maintenance_config_decorator.validate_arguments()
+    r = maintenance_config_decorator.create_or_update()
+    return r
+
+
+def remove_maintenance_config(cmd, resource_group_name, env_name):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = maintenance_config_decorator.remove()
+    return r
+
+
+def list_maintenance_config(cmd, resource_group_name, env_name):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = maintenance_config_decorator.list()
+    return r
+
+
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+    logger.warning("Connecting...")
+    conn = DebugWebSocketConnection(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        name=name,
+        revision=revision,
+        replica=replica,
+        container=container
+    )
+
+    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
+    reader = threading.Thread(target=read_debug_ssh, args=(conn, encodings))
+    reader.daemon = True
+    reader.start()
+
+    writer = get_stdin_writer(conn)
+    writer.daemon = True
+    writer.start()
+
+    while conn.is_connected:
+        if not reader.is_alive() or not writer.is_alive():
+            logger.warning("Reader or Writer for WebSocket is not alive. Closing the connection.")
+            conn.disconnect()
+
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                conn.send(SSH_CTRL_C_MSG)
