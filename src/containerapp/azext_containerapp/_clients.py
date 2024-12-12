@@ -594,7 +594,7 @@ class ConnectedEnvCertificateClient():
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             poll_results(cmd, operation_url)
-            logger.warning('Certificate was successfully deleted')
+            logger.warning(f'Certificate {certificate_name} was successfully deleted')
 
         return
 
@@ -663,7 +663,7 @@ class ConnectedEnvDaprComponentClient():
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             poll_results(cmd, operation_url)
-            logger.warning('Dapr component was successfully deleted')
+            logger.warning(f'Dapr component {name} was successfully deleted')
 
         return
 
@@ -717,7 +717,7 @@ class ConnectedEnvStorageClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope, no_wait):
+    def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/storages/{}?api-version={}"
@@ -741,7 +741,7 @@ class ConnectedEnvStorageClient():
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, env_name, name, no_wait):
+    def delete(cls, cmd, resource_group_name, env_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/storages/{}?api-version={}"
@@ -760,7 +760,7 @@ class ConnectedEnvStorageClient():
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             poll_results(cmd, operation_url)
-            logger.warning('Storage was successfully deleted')
+            logger.warning(f'Storage {name} was successfully deleted')
 
         return
 
