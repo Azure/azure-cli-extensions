@@ -53,6 +53,7 @@ from .aaz.latest.apic.integration import (
     List as ListIntegration,
     Delete as DeleteIntegration
 )
+from .aaz.latest.apic import Import
 
 from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
 from azure.cli.core.aaz import register_command
@@ -426,6 +427,74 @@ class CreateAmazonApiGatewayIntegration(DefaultWorkspaceParameter, CreateIntegra
         # Remove the amazon-api-gateway-source parameter
         args_schema.amazon_api_gateway_source._registered = False
         # Remove the api_source_type parameter, will set it for users in pre_operations
+        args_schema.api_source_type._registered = False
+
+        # Create arg group for AmazonApiGatewaySource
+        # Add separate parameters for access-key, secret-access-key, and region-name
+        args_schema.access_key = AAZStrArg(
+            options=["--access-key-reference", "-a"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        args_schema.secret_access_key = AAZStrArg(
+            options=["--secret-access-key-reference", "-s"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Secret Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        args_schema.region_name = AAZStrArg(
+            options=["--region-name"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Region (ex. us-east-2).",
+            required=True,
+        )
+        args_schema.msi_resource_id = AAZResourceIdArg(
+            options=["--msi-resource-id"],
+            arg_group="AmazonApiGatewaySource",
+            help="The resource ID of the managed identity that has access to the Azure Key Vault.",
+            required=False,
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+        args.api_source_type = "AmazonApiGateway"
+
+        # Set the properties for Amazon API Gateway source
+        args.amazon_api_gateway_source = {
+            "access_key": args.access_key,
+            "secret_access_key": args.secret_access_key,
+            "region_name": args.region_name,
+            "msi_resource_id": args.msi_resource_id
+        }
+
+
+# `az apic import` commands
+@register_command(
+    "apic import amazon-api-gateway",
+    is_preview=True,
+)
+class ImportAmazonApiGatewaySource(DefaultWorkspaceParameter, Import):
+    # pylint: disable=C0301
+    """Import an Amazon API Gateway API source
+
+    :example: Import an Amazon API Gateway API source
+        az apic import amazon-api-gateway -g contoso-resources -n contoso --access-key-reference https://mykey.vault.azure.net/secrets/AccessKey --secret-access-key-reference https://mykey.vault.azure.net/secrets/SecretAccessKey --region-name us-east-2
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # Remove the azure-api-management-source parameter
+        args_schema.azure_api_management_source._registered = False
+        # Remove the amazon-api-gateway-source parameter
+        args_schema.amazon_api_gateway_source._registered = False
+        # Remove the api_source_type parameter, will set it for users in pre_operations
+        args_schema.api_source_type._required = False
         args_schema.api_source_type._registered = False
 
         # Create arg group for AmazonApiGatewaySource
