@@ -235,15 +235,117 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
     # Upload the input file to the workspace's storage account
+
+    # ===============================================================================
+    # ===== Experimental code =======================================================
+    # ===============================================================================
+    from azure.quantum import Workspace
+    # Warren's workspace:
+    # workspace = Workspace(
+    #         resource_id = "/subscriptions/677fc922-91d0-4bf6-9b06-4274d319a0fa/resourceGroups/v-warrjones/providers/Microsoft.Quantum/Workspaces/v-warrjones-workspace1",
+    #         location = "westus2")
+    # Ashwin's workspace:
+    workspace = Workspace(
+            resource_id = "/subscriptions/9ce4cfd7-cf08-41b4-b664-43609fc6b846/resourceGroups/AzureQuantum/providers/Microsoft.Quantum/Workspaces/ashwinm-quantum-test-eastus-01",
+            location = "eastus")
+    
+    # storage_client = workspace._get_workspace_storage_client()
+    job_id = str(uuid.uuid4())
+    container_name = "quantum-job-" + job_id
+    blob_name = "inputData"
+
+    # blob_details = {"container_name": container_name, "blob_name": None}
+    # sas_uri = storage_client.sas_uri(blob_details=blob_details)
+    # container_uri = sas_uri.sas_uri
+    # print()
+    # print("Container URI:")
+    # print(container_uri)
+    # print()
+    # return
+
+    from qiskit import QuantumCircuit
+    from qiskit.visualization import plot_histogram
+    import azure.quantum
+    from azure.quantum.qiskit import AzureQuantumProvider
+
+    provider = AzureQuantumProvider(workspace)
+
+    # This didn't work...
+    # circuit = QuantumCircuit.from_qasm_file("src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json")
+
+    # Used the following code to create Qiskit-3-qubit-GHZ-circuit.qpy
+    # # Qiskit Sample - 3-qubit GHZ circuit
+    # circuit = QuantumCircuit(3, 3)
+    # # circuit.name = job_name
+    # circuit.name = "Qiskit Sample"
+    # circuit.h(0)
+    # circuit.cx(0, 1)
+    # circuit.cx(1, 2)
+    # circuit.measure([0,1,2], [0, 1, 2])
+    # # Code based on https://docs.quantum.ibm.com/guides/save-circuits 
+    # from qiskit import qpy
+    # qpy_pathname = "src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.qpy"
+    # with open(qpy_pathname, "wb") as file:
+    #     qpy.dump(circuit, file)
+
+    # Code based on https://docs.quantum.ibm.com/guides/save-circuits 
+    from qiskit import qpy
+    qpy_pathname = "src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.qpy"
+    with open(qpy_pathname, "rb") as handle:
+        circuit_list = qpy.load(handle)
+
+    circuit = circuit_list[0]
+    circuit.name = job_name
+
+    # # These didn't work...
+    # qasm_string = circuit.qasm()
+    # qasm_string = "OPENQASM 2;h(0);cx(0, 1);cx(1, 2);measure([0,1,2];[0, 1, 2])"
+    # circuit = QuantumCircuit.from_qasm_str(qasm_string)
+    # circuit.name = job_name
+
+    # print("qasm_string:")
+    # print(qasm_string)
+    # return
+
+    # # export qasm string to a variable
+    # qasm_string = qc.qasm()
+    # qc_from_string = QuantumCircuit.from_qasm_str(qasm_string)
+    # print(qc == qc_from_string)
+    # # store qasm string into a file
+    # with open('qasm_file', 'w') as output_file:
+    #     output_file.write(qasm_string)
+    # qc_from_file = QuantumCircuit.from_qasm_file('qasm_file')
+
+
+    simulator_backend = provider.get_backend("ionq.simulator")
+
+    # Apparently this isn't required for the current sample code...
+    # from qiskit import transpile
+    # circuit = transpile(circuit, simulator_backend)
+    
+    job = simulator_backend.run(circuit, shots=8)
+    job_id = job.id()
+    job_metadata = job.metadata
+
+    print()
+    print("Job ID: ", job_id)
+    print("Metadata: ", job_metadata)
+    print()
+
+    return
+    # ========================================================================================
+    # ===== End of experimental code =========================================================
+    # ========================================================================================
+
     if storage is None:
         from .workspace import get as ws_get
         ws = ws_get(cmd)
         if ws.properties.storage_account is None:
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
         storage = ws.properties.storage_account.split('/')[-1]
-    job_id = str(uuid.uuid4())
-    container_name = "quantum-job-" + job_id
-    blob_name = "inputData"
+    # job_id = str(uuid.uuid4())
+    # container_name = "quantum-job-" + job_id
+    # blob_name = "inputData"
 
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
     connection_string = connection_string_dict["connectionString"]
@@ -264,9 +366,18 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     container_uri = container_client.url + "?" + sas_token
     logger.debug("  - container uri: %s", container_uri)
 
+    # ========================================================================================
+    print()
+    print("Container URI:")
+    print(container_uri)
+    print()
+    return
+    # ========================================================================================
+
     knack_logger.warning("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
+        # blob_uri = upload_blob(storage_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
         logger.debug("  - blob uri: %s", blob_uri)
     except Exception as e:
         # Unexplained behavior:
@@ -276,7 +387,9 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         error_msg = f"Input file upload failed.\nError type: {type(e)}"
         if isinstance(e, UnicodeDecodeError):
             error_msg += f"\nReason: {e.reason}"
-        raise AzureResponseError(error_msg) from e
+        # raise AzureResponseError(error_msg) from e
+        print(e)
+        return
 
     # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
     if job_params is None:
