@@ -154,6 +154,13 @@ from .aaz.latest.devcenter.admin.project_policy import (
 from .aaz.latest.devcenter.admin.project_sku import (
     List as _ProjectSkuList,
 )
+from .aaz.latest.devcenter.dev.dev_box import (
+    ListAll as _DevBoxListAll,
+    List as _DevBoxList,
+)
+from .utils import get_project_data
+from ._validators import validate_endpoint
+
 from ._validators import (
     validate_attached_network_or_dev_box_def,
     validate_env_name_already_exists,
@@ -917,3 +924,28 @@ class ScheduleWait(_ScheduleWait):
 
 
 # Data plane
+
+
+def get_dataplane_endpoint(cli_ctx, endpoint=None, dev_center=None, project_name=None):
+    validate_endpoint(endpoint, dev_center)
+
+    if endpoint is None and dev_center is not None:
+        project = get_project_data(cli_ctx, dev_center, project_name)
+        endpoint = project["devCenterUri"]
+    endpoint = endpoint.split('//', 1)[-1]
+
+    return endpoint
+
+
+def devcenter_dev_box_list(cmd, dev_center=None, endpoint=None, project_name=None, user_id=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    if user_id is not None:
+        return _DevBoxList(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "user_id": user_id,
+            "project_name": project_name
+        })
+    return _DevBoxListAll(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint
+    })

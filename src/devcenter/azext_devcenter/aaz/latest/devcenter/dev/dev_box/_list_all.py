@@ -11,14 +11,11 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter dev dev-box list-all",
-)
 class ListAll(AAZCommand):
     """List Dev Boxes that the caller has access to in the DevCenter.
 
     :example: List all dev boxes
-        az devcenter dev dev-box list-all --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/"
+        az devcenter dev dev-box list-all --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"
     """
 
     _aaz_info = {
@@ -167,7 +164,7 @@ class ListAll(AAZCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _ListAllHelper._build_schema_azure._core._foundations._error_read(_element.error)
+            _ListAllHelper._build_schema_azure_core_foundations_error_read(_element.error)
             _element.hardware_profile = AAZObjectType(
                 serialized_name="hardwareProfile",
                 flags={"read_only": True},
@@ -279,62 +276,62 @@ class ListAll(AAZCommand):
 class _ListAllHelper:
     """Helper class for ListAll"""
 
-    _schema_azure._core._foundations._error_read = None
+    _schema_azure_core_foundations_error_read = None
 
     @classmethod
-    def _build_schema_azure._core._foundations._error_read(cls, _schema):
-        if cls._schema_azure._core._foundations._error_read is not None:
-            _schema.code = cls._schema_azure._core._foundations._error_read.code
-            _schema.details = cls._schema_azure._core._foundations._error_read.details
-            _schema.innererror = cls._schema_azure._core._foundations._error_read.innererror
-            _schema.message = cls._schema_azure._core._foundations._error_read.message
-            _schema.target = cls._schema_azure._core._foundations._error_read.target
+    def _build_schema_azure_core_foundations_error_read(cls, _schema):
+        if cls._schema_azure_core_foundations_error_read is not None:
+            _schema.code = cls._schema_azure_core_foundations_error_read.code
+            _schema.details = cls._schema_azure_core_foundations_error_read.details
+            _schema.innererror = cls._schema_azure_core_foundations_error_read.innererror
+            _schema.message = cls._schema_azure_core_foundations_error_read.message
+            _schema.target = cls._schema_azure_core_foundations_error_read.target
             return
 
-        cls._schema_azure._core._foundations._error_read = _schema_azure._core._foundations._error_read = AAZObjectType(
+        cls._schema_azure_core_foundations_error_read = _schema_azure_core_foundations_error_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        azure._core._foundations._error_read = _schema_azure._core._foundations._error_read
-        azure._core._foundations._error_read.code = AAZStrType(
+        azure_core_foundations_error_read = _schema_azure_core_foundations_error_read
+        azure_core_foundations_error_read.code = AAZStrType(
             flags={"required": True},
         )
-        azure._core._foundations._error_read.details = AAZListType()
-        azure._core._foundations._error_read.innererror = AAZObjectType()
-        cls._build_schema_azure._core._foundations._inner_error_read(azure._core._foundations._error_read.innererror)
-        azure._core._foundations._error_read.message = AAZStrType(
+        azure_core_foundations_error_read.details = AAZListType()
+        azure_core_foundations_error_read.innererror = AAZObjectType()
+        cls._build_schema_azure_core_foundations_inner_error_read(azure_core_foundations_error_read.innererror)
+        azure_core_foundations_error_read.message = AAZStrType(
             flags={"required": True},
         )
-        azure._core._foundations._error_read.target = AAZStrType()
+        azure_core_foundations_error_read.target = AAZStrType()
 
-        details = _schema_azure._core._foundations._error_read.details
+        details = _schema_azure_core_foundations_error_read.details
         details.Element = AAZObjectType()
-        cls._build_schema_azure._core._foundations._error_read(details.Element)
+        cls._build_schema_azure_core_foundations_error_read(details.Element)
 
-        _schema.code = cls._schema_azure._core._foundations._error_read.code
-        _schema.details = cls._schema_azure._core._foundations._error_read.details
-        _schema.innererror = cls._schema_azure._core._foundations._error_read.innererror
-        _schema.message = cls._schema_azure._core._foundations._error_read.message
-        _schema.target = cls._schema_azure._core._foundations._error_read.target
+        _schema.code = cls._schema_azure_core_foundations_error_read.code
+        _schema.details = cls._schema_azure_core_foundations_error_read.details
+        _schema.innererror = cls._schema_azure_core_foundations_error_read.innererror
+        _schema.message = cls._schema_azure_core_foundations_error_read.message
+        _schema.target = cls._schema_azure_core_foundations_error_read.target
 
-    _schema_azure._core._foundations._inner_error_read = None
+    _schema_azure_core_foundations_inner_error_read = None
 
     @classmethod
-    def _build_schema_azure._core._foundations._inner_error_read(cls, _schema):
-        if cls._schema_azure._core._foundations._inner_error_read is not None:
-            _schema.code = cls._schema_azure._core._foundations._inner_error_read.code
-            _schema.innererror = cls._schema_azure._core._foundations._inner_error_read.innererror
+    def _build_schema_azure_core_foundations_inner_error_read(cls, _schema):
+        if cls._schema_azure_core_foundations_inner_error_read is not None:
+            _schema.code = cls._schema_azure_core_foundations_inner_error_read.code
+            _schema.innererror = cls._schema_azure_core_foundations_inner_error_read.innererror
             return
 
-        cls._schema_azure._core._foundations._inner_error_read = _schema_azure._core._foundations._inner_error_read = AAZObjectType()
+        cls._schema_azure_core_foundations_inner_error_read = _schema_azure_core_foundations_inner_error_read = AAZObjectType()
 
-        azure._core._foundations._inner_error_read = _schema_azure._core._foundations._inner_error_read
-        azure._core._foundations._inner_error_read.code = AAZStrType()
-        azure._core._foundations._inner_error_read.innererror = AAZObjectType()
-        cls._build_schema_azure._core._foundations._inner_error_read(azure._core._foundations._inner_error_read.innererror)
+        azure_core_foundations_inner_error_read = _schema_azure_core_foundations_inner_error_read
+        azure_core_foundations_inner_error_read.code = AAZStrType()
+        azure_core_foundations_inner_error_read.innererror = AAZObjectType()
+        cls._build_schema_azure_core_foundations_inner_error_read(azure_core_foundations_inner_error_read.innererror)
 
-        _schema.code = cls._schema_azure._core._foundations._inner_error_read.code
-        _schema.innererror = cls._schema_azure._core._foundations._inner_error_read.innererror
+        _schema.code = cls._schema_azure_core_foundations_inner_error_read.code
+        _schema.innererror = cls._schema_azure_core_foundations_inner_error_read.innererror
 
 
 __all__ = ["ListAll"]

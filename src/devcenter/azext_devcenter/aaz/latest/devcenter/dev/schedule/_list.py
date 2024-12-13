@@ -82,12 +82,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.project_name) and has_value(self.ctx.args.pool_name) is not True
-        condition_1 = has_value(self.ctx.args.pool_name) and has_value(self.ctx.args.project_name)
+        condition_0 = has_value(self.ctx.args.pool_name) and has_value(self.ctx.args.project_name)
+        condition_1 = has_value(self.ctx.args.project_name) and has_value(self.ctx.args.pool_name) is not True
         if condition_0:
-            self.DevBoxesListSchedulesByProject(ctx=self.ctx)()
-        if condition_1:
             self.DevBoxesListSchedulesByPool(ctx=self.ctx)()
+        if condition_1:
+            self.DevBoxesListSchedulesByProject(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -103,7 +103,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DevBoxesListSchedulesByProject(AAZHttpOperation):
+    class DevBoxesListSchedulesByPool(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
@@ -117,7 +117,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/projects/{projectName}/schedules",
+                "/projects/{projectName}/pools/{poolName}/schedules",
                 **self.url_parameters
             )
 
@@ -135,6 +135,10 @@ class List(AAZCommand):
                 **self.serialize_url_param(
                     "endpoint", self.ctx.args.endpoint,
                     skip_quote=True,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -222,7 +226,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class DevBoxesListSchedulesByPool(AAZHttpOperation):
+    class DevBoxesListSchedulesByProject(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
@@ -236,7 +240,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/projects/{projectName}/pools/{poolName}/schedules",
+                "/projects/{projectName}/schedules",
                 **self.url_parameters
             )
 
@@ -254,10 +258,6 @@ class List(AAZCommand):
                 **self.serialize_url_param(
                     "endpoint", self.ctx.args.endpoint,
                     skip_quote=True,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

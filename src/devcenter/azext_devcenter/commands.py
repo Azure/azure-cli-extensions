@@ -355,4 +355,8 @@ def load_command_table(self, _):
     self.command_table["devcenter admin schedule show"] = ScheduleShow(loader=self)
     self.command_table["devcenter admin schedule update"] = ScheduleUpdate(loader=self)
     self.command_table["devcenter admin schedule wait"] = ScheduleWait(loader=self)
+
+# Data plane
+    with self.command_group("devcenter dev dev-box") as g:
+        g.custom_command("list", "devcenter_dev_box_list")
     
