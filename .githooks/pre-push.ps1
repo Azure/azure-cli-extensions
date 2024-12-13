@@ -58,24 +58,49 @@ if ($AZURE_CLI_FOLDER) {
     # Check if current branch needs rebasing
     $cliMergeBase = git -C $AZURE_CLI_FOLDER merge-base HEAD upstream/dev
     $cliUpstreamHead = git -C $AZURE_CLI_FOLDER rev-parse upstream/dev
+    Write-Host "Initial CLI_MERGE_BASE: $cliMergeBase" -ForegroundColor Cyan
+
     if ($cliMergeBase -ne $cliUpstreamHead) {
         Write-Host ""
-        Write-Host "Your $AZURE_CLI_FOLDER repo code is not up to date with upstream/dev. Please run the following commands to rebase and setup:" -ForegroundColor Yellow
-        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
-        Write-Host "git -C $AZURE_CLI_FOLDER rebase upstream/dev" -ForegroundColor Yellow
-        if ($Extensions) {
-            Write-Host "azdev setup -c $AZURE_CLI_FOLDER -r $Extensions" -ForegroundColor Yellow
+        Write-Host "Your $AZURE_CLI_FOLDER repo code is not up to date with upstream/dev." -ForegroundColor Yellow
+        Write-Host "Would you like to automatically rebase and setup? [Y/n]" -ForegroundColor Yellow
+
+        try {
+            $reader = [System.IO.StreamReader]::new("CON")
+            $input = $reader.ReadLine()
+        } catch {
+            Write-Host "Error reading input. Aborting push..." -ForegroundColor Red
+            exit 1
+        }
+
+        if ($input -match '^[Yy]$') {
+            Write-Host "Rebasing with upstream/dev..." -ForegroundColor Green
+            git -C $AZURE_CLI_FOLDER rebase upstream/dev
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "Rebase failed. Please resolve conflicts and try again." -ForegroundColor Red
+                exit 1
+            }
+            Write-Host "Rebase completed successfully." -ForegroundColor Green
+            $cliMergeBase = git -C $AZURE_CLI_FOLDER merge-base HEAD upstream/dev
+            Write-Host "Updated CLI_MERGE_BASE: $cliMergeBase" -ForegroundColor Cyan
+
+            Write-Host "Running azdev setup..." -ForegroundColor Green
+            if ($Extensions) {
+                azdev setup -c $AZURE_CLI_FOLDER -r $Extensions
+            } else {
+                azdev setup -c $AZURE_CLI_FOLDER
+            }
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "azdev setup failed. Please check your environment." -ForegroundColor Red
+                exit 1
+            }
+            Write-Host "Setup completed successfully." -ForegroundColor Green
+        } elseif ($input -match '^[Nn]$') {
+            Write-Host "Skipping rebase and setup. Continue push..." -ForegroundColor Red
         } else {
-            Write-Host "azdev setup -c $AZURE_CLI_FOLDER" -ForegroundColor Yellow
+            Write-Host "Invalid input. Aborting push..." -ForegroundColor Red
+            exit 1
         }
-        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
-        Write-Host ""
-        Write-Host "You have 5 seconds to stop the push (Ctrl+C)..." -ForegroundColor Yellow
-        for ($i = 5; $i -gt 0; $i--) {
-            Write-Host "`rTime remaining: $i seconds..." -NoNewline -ForegroundColor Yellow
-            Start-Sleep -Seconds 1
-        }
-        Write-Host "`rContinuing without rebase..."
     }
 }
 
@@ -142,19 +167,4 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Pre-push hook passed." -ForegroundColor Green
-
-if ($AZURE_CLI_FOLDER) {
-    if ($cliMergeBase -ne $cliUpstreamHead) {
-        Write-Host ""
-        Write-Host "Your $AZURE_CLI_FOLDER repo code is not up to date with upstream/dev. Please run the following commands to rebase and setup:" -ForegroundColor Yellow
-        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
-        Write-Host "git -C $AZURE_CLI_FOLDER rebase upstream/dev" -ForegroundColor Yellow
-        if ($Extensions) {
-            Write-Host "azdev setup -c $AZURE_CLI_FOLDER -r $Extensions" -ForegroundColor Yellow
-        } else {
-            Write-Host "azdev setup -c $AZURE_CLI_FOLDER" -ForegroundColor Yellow
-        }
-        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
-    }
-}
 exit 0
