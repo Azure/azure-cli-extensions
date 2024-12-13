@@ -10,6 +10,8 @@ Release History
 * Add CLI parameter `--report` to 'az load test-run download-files' to download the dashboard reports.
 * Enable debug level logging using `--debug-mode` argument in 'az load test-run create' command .
 * Return the SAS URL to copy artifacts to storage accounts using command 'az load test-run get-artifacts-url'.
+* Add config for high-scale load tests and appropriate messaging in the 'az load test-run download-files' command for such tests.
+* Add command 'az load test convert-to-jmx' to convert URL type tests to JMX tests.
 
 
 1.3.1

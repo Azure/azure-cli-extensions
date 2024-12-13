@@ -108,6 +108,17 @@ examples:
 """
 
 helps[
+    "load test convert-to-jmx"
+] = """
+type: command
+short-summary: Convert a URL type test to JMX test.
+examples:
+    - name: Convert to JMX test.
+      text: |
+        az load test convert-to-jmx --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id
+"""
+
+helps[
     "load test download-files"
 ] = """
 type: command

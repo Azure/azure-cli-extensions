@@ -140,6 +140,7 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_KVREF_ID = "loadtest-kvrefid-case"
     LOAD_TEST_SPLITCSV_ID = "loadtest-splitcsv-case"
     LOAD_TEST_ADVANCED_URL_ID = "loadtest-advanced-url-case"
+    LOAD_TEST_CONVERT_TO_JMX_ID = "loadtest-convert-to-jmx-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
