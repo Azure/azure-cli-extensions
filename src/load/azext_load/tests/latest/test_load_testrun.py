@@ -910,7 +910,8 @@ class LoadTestRunScenario(ScenarioTest):
         # Copy artifacts URL when test run is in progress
         # This test case causes flakiness when all tests 
         # are run together in live mode
-        # due to the --no-wait flag. Hence, disabled.
+        # due to the --no-wait flag.
+        # Hence, sleep and stop cmd are added.
         # """
         self.cmd(
             "az load test-run create "
