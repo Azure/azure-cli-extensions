@@ -32,7 +32,7 @@ class CaptureSnapshot(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -106,10 +106,6 @@ class CaptureSnapshot(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
     class DevBoxesCaptureSnapshot(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
@@ -120,7 +116,7 @@ class CaptureSnapshot(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
