@@ -214,10 +214,26 @@ helps[
       - name: Get using dev center
         text: |-
                az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Get using endpoint
         text: |-
                az devcenter dev dev-box show --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box wait"
+] = """
+    type: command
+    short-summary: "Place the CLI in a waiting state until a condition is met."
+    examples:
+      - name: Wait using dev center
+        text: |-
+               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Wait using endpoint
+        text: |-
+               az devcenter dev dev-box wait --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
@@ -246,7 +262,7 @@ helps[
       - name: Delete using dev center
         text: |-
                az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Delete using endpoint
         text: |-
                az devcenter dev dev-box delete --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -278,7 +294,7 @@ helps[
       - name: Start using dev center
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Start using endpoint
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -294,7 +310,7 @@ helps[
       - name: Restart using dev center
         text: |-
                az devcenter dev dev-box restart --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Restart using endpoint
         text: |-
                az devcenter dev dev-box restart --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -310,7 +326,7 @@ helps[
       - name: Repair using dev center
         text: |-
                az devcenter dev dev-box repair --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Repair using endpoint
         text: |-
                az devcenter dev dev-box repair --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -326,7 +342,7 @@ helps[
       - name: Stop using dev center
         text: |-
                az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Stop using endpoint
         text: |-
                az devcenter dev dev-box stop --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -453,6 +469,70 @@ helps[
                az devcenter dev dev-box skip-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --name "myDevBox" --action-name \
 "schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box capture-snapshot"
+] = """
+    type: command
+    short-summary: "Captures a manual snapshot of the dev box."
+    examples:
+      - name: Capture snapshot using dev center
+        text: |-
+               az devcenter dev dev-box capture-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Capture snapshot using endpoint
+        text: |-
+               az devcenter dev dev-box capture-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box restore-snapshot"
+] = """
+    type: command
+    short-summary: "Restores a dev box to a specified snapshot."
+    examples:
+      - name: Restore snapshot using dev center
+        text: |-
+               az devcenter dev dev-box restore-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Restore snapshot using endpoint
+        text: |-
+               az devcenter dev dev-box restore-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
+    "devcenter dev dev-box show-snapshot"
+] = """
+    type: command
+    short-summary: "Get a snapshot by snapshot id."
+    examples:
+      - name: Get snapshot using dev center
+        text: |-
+               az devcenter dev dev-box show-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Get snapshot using endpoint
+        text: |-
+               az devcenter dev dev-box show-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --snapshot-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
+    "devcenter dev dev-box list-snapshot"
+] = """
+    type: command
+    short-summary: "List snapshots for a dev box"
+    examples:
+      - name: List snapshots using dev center
+        text: |-
+               az devcenter dev dev-box list-snapshot --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List snapshots using endpoint
+        text: |-
+               az devcenter dev dev-box list-snapshot --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[

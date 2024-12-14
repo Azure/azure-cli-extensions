@@ -5,7 +5,7 @@
 #
 # --------------------------------------------------------------------------
 import json
-from datetime import (timedelta, datetime)
+from datetime import datetime, timedelta, timezone
 from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
@@ -88,4 +88,5 @@ def get_delayed_time(delay_time, action_time):
     split_time = delay_time.split(":")
     hours = int(split_time[0])
     minutes = int(split_time[1])
-    return action_time + timedelta(hours=hours, minutes=minutes)
+    delayed_time = action_time + timedelta(hours=hours, minutes=minutes)
+    return delayed_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
