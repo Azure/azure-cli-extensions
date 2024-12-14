@@ -63,6 +63,49 @@ def load_arguments(self, _):
             type=str,
             help="The dev center " "project upon which to execute operations.",
         )
+    
+    with self.argument_context("devcenter dev project show-operation") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "project_name",
+            options_list=["--name", "-n"],
+            type=str,
+            help="The dev center " "project upon which to execute operations.",
+        )
+        c.argument(
+            "operation_id",
+            type=str,
+            help="The id of the operation on a project.",
+        )
+    
+    with self.argument_context("devcenter dev project list-abilities") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "project_name",
+            options_list=["--name", "-n"],
+            type=str,
+            help="The dev center " "project upon which to execute operations.",
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
 
     with self.argument_context("devcenter dev pool list") as c:
         c.argument(

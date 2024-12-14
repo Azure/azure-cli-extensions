@@ -18,7 +18,7 @@ class ShowOperation(AAZCommand):
     """Get the status of an operation.
 
     :example: Get
-        az devcenter dev project show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --name "DevProject" --operation-id "f5dbdfab- fa0e-4831-8d13-25359aa5e680"
+        az devcenter dev project show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --name "DevProject" --operation-id "f5dbdfab- fa0e-4831-8d13-25359aa5e680"
     """
 
     _aaz_info = {

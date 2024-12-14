@@ -18,7 +18,7 @@ class ListSnapshot(AAZCommand):
     """List snapshots for this Dev Box.
 
     :example: List
-        az devcenter dev dev-box list-snapshot--endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
+        az devcenter dev dev-box list-snapshot--endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
     """
 
     _aaz_info = {

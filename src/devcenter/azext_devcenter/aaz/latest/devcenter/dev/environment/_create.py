@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an environment.
 
     :example: Create
-        az devcenter dev environment create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --catalog-name "main" --environment-definition-name "helloworld" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000"
+        az devcenter dev environment create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --catalog-name "main" --environment-definition-name "helloworld" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000"
     """
 
     _aaz_info = {

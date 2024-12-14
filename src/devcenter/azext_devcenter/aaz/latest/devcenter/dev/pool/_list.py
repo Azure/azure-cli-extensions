@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List available pools.
 
     :example: List
-        az devcenter dev pool list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject"
+        az devcenter dev pool list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject"
     """
 
     _aaz_info = {

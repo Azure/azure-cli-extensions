@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get  Gets a customization group.
 
     :example: Get
-        az devcenter dev customization-group show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+        az devcenter dev customization-group show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
     """
 
     _aaz_info = {

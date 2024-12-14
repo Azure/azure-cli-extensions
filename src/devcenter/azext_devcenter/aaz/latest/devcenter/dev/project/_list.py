@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List all projects.
 
     :example: List
-        az devcenter dev project list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/"
+        az devcenter dev project list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"
     """
 
     _aaz_info = {

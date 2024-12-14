@@ -158,6 +158,20 @@ from .aaz.latest.devcenter.dev.dev_box import (
     ListAll as _DevBoxListAll,
     List as _DevBoxList,
 )
+from .aaz.latest.devcenter.dev.project import (
+    List as _ProjectListDp,
+    Show as _ProjectShowDp,
+    ListAbilities as _ProjectListAbilitiesDp,
+    ShowOperation as _ProjectShowOperationDp,
+)
+from .aaz.latest.devcenter.dev.pool import (
+    List as _PoolListDp,
+    Show as _PoolShowDp,
+)
+from .aaz.latest.devcenter.dev.schedule import (
+    List as _ScheduleListDp,
+    Show as _ScheduleShowDp,
+)
 from .utils import get_project_data
 from ._validators import validate_endpoint
 
@@ -935,6 +949,87 @@ def get_dataplane_endpoint(cli_ctx, endpoint=None, dev_center=None, project_name
     endpoint = endpoint.split('//', 1)[-1]
 
     return endpoint
+
+
+def devcenter_project_list(cmd, dev_center=None, endpoint=None):
+    if dev_center is not None and endpoint is None:
+        resource_graph_data = get_project_arg(cmd.cli_ctx, dev_center)
+        if len(resource_graph_data) == 0:
+            return []
+    
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return _ProjectListDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+        })
+
+
+def devcenter_project_show(cmd, project_name, dev_center=None, endpoint=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _ProjectShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "name": project_name
+        })
+
+def devcenter_project_list_abilities(cmd, project_name,  user_id="me", dev_center=None, endpoint=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _ProjectListAbilitiesDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "name": project_name,
+            "user_id": user_id
+        })
+
+def devcenter_project_show_operation(cmd, project_name, operation_id, dev_center=None, endpoint=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _ProjectShowOperationDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "name": project_name,
+            "operation_id": operation_id
+        })
+
+def devcenter_pool_list(cmd, project_name, dev_center=None, endpoint=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _PoolListDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name
+        })
+
+def devcenter_pool_show(
+    cmd, project_name, pool_name, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _PoolShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "pool_name": pool_name
+        })
+
+def devcenter_schedule_list(
+    cmd, project_name, pool_name=None, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _ScheduleListDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "pool_name": pool_name
+        })
+
+def devcenter_schedule_show(
+    cmd, pool_name, project_name, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    return _ScheduleShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "pool_name": pool_name,
+            "schedule_name": "default"
+        })
 
 
 def devcenter_dev_box_list(cmd, dev_center=None, endpoint=None, project_name=None, user_id=None):

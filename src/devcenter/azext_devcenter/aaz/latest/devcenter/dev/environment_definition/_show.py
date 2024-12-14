@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get an environment definition from a catalog.
 
     :example: Get
-        az devcenter dev environment-definition show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
+        az devcenter dev environment-definition show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class ShowLog(AAZCommand):
     """Get the log for an imaging build task.
 
     :example: Get
-        az devcenter dev image-build show-log --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --image-build-log-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4"
+        az devcenter dev image-build show-log --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --image-build-log-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4"
     """
 
     _aaz_info = {

@@ -18,10 +18,10 @@ class List(AAZCommand):
     """List all schedules within a project or a pool.
 
     :example: List by project
-        az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject"
+        az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject"
 
     :example: List by pool
-        az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --pool-name "DevPool" --project-name "DevProject"
+        az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --pool-name "DevPool" --project-name "DevProject"
     """
 
     _aaz_info = {

@@ -50,6 +50,38 @@ helps[
 """
 
 helps[
+    "devcenter dev project list-abilities"
+] = """
+    type: command
+    short-summary: "List the signed-in user's permitted abilities in a project."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev project list-abilities --dev-center-name "ContosoDevCenter" --user-id "00000000-0000-0000-0000-000000000000" \
+--name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev project list-abilities --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --user-id "00000000-0000-0000-0000-000000000000" \
+--name "DevProject"
+"""
+
+helps[
+    "devcenter dev project show-operation"
+] = """
+    type: command
+    short-summary: "Get the status of an operation."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev project show-operation --dev-center-name "ContosoDevCenter" \
+--name "DevProject" --operation-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev project show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "DevProject" --operation-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
     "devcenter dev pool"
 ] = """
     type: group

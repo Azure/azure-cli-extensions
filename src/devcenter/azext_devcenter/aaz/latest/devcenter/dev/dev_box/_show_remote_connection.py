@@ -18,7 +18,7 @@ class ShowRemoteConnection(AAZCommand):
     """Get RDP Connection info.
 
     :example: Gets RDP connection info
-        az devcenter dev dev-box show-remote-connection --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+        az devcenter dev dev-box show-remote-connection --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
     """
 
     _aaz_info = {

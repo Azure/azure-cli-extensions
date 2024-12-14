@@ -18,7 +18,7 @@ class ShowLogs(AAZCommand):
     """Get the log for a customization task.
 
     :example: Show logs
-        az devcenter dev customization-task show-logs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --customization-group-name "Provisioning" --customization-task-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4" --user-id "00000000-0000-0000-0000-000000000000"
+        az devcenter dev customization-task show-logs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --customization-group-name "Provisioning" --customization-task-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4" --user-id "00000000-0000-0000-0000-000000000000"
     """
 
     _aaz_info = {

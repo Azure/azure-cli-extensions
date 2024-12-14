@@ -18,7 +18,7 @@ class Validate(AAZCommand):
     """Validates a list of customization tasks.
 
     :example: Validate
-        az devcenter dev customization-task validate --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]"
+        az devcenter dev customization-task validate --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]"
     """
 
     _aaz_info = {

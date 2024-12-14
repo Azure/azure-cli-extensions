@@ -18,7 +18,7 @@ class DelayAction(AAZCommand):
     """Delays the occurrence of an action.
 
     :example: Delay an action
-        az devcenter dev environment delay-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name "myEnv-Delete" --delay-time "04:30"
+        az devcenter dev environment delay-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name "myEnv-Delete" --delay-time "04:30"
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create customizations to the Dev Box.
 
     :example: Applies customizations to the dev box
-        az devcenter dev customization-group create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+        az devcenter dev customization-group create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
     """
 
     _aaz_info = {

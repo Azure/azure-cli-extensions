@@ -19,7 +19,7 @@ class List(AAZCommand):
   task information unless specified via the include parameter.
 
     :example: List
-        az devcenter dev customization-group list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000" --include-tasks
+        az devcenter dev customization-group list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --dev-box-name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000" --include-tasks
     """
 
     _aaz_info = {

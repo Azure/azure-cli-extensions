@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get an environment type configured for a project.
 
     :example: Get an environment type configured for a project.
-        az devcenter dev environment-type show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed- contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --environment-type-name "dev"
+        az devcenter dev environment-type show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --environment-type-name "dev"
     """
 
     _aaz_info = {
