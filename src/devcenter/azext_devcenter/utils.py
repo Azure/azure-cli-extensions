@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
-
+from ._validators import validate_endpoint
 
 def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip("/")
@@ -90,3 +90,13 @@ def get_delayed_time(delay_time, action_time):
     minutes = int(split_time[1])
     delayed_time = action_time + timedelta(hours=hours, minutes=minutes)
     return delayed_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+def get_dataplane_endpoint(cli_ctx, endpoint=None, dev_center=None, project_name=None):
+    validate_endpoint(endpoint, dev_center)
+    if endpoint is None and dev_center is not None:
+        project = get_project_data(cli_ctx, dev_center, project_name)
+        endpoint = project["devCenterUri"]
+    endpoint = endpoint.split('//', 1)[-1]
+
+    return endpoint

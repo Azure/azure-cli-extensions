@@ -11,7 +11,7 @@ from azure.cli.core.aaz import has_value
 from azure.cli.core.aaz import register_callback
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import sdk_no_wait
-from .utils import get_project_arg, get_earliest_time, get_delayed_time
+from .utils import get_project_arg, get_earliest_time, get_delayed_time, get_dataplane_endpoint
 from .aaz.latest.devcenter.admin.attached_network import (
     Create as _AttachedNetworkCreate,
     Delete as _AttachedNetworkDelete,
@@ -193,8 +193,6 @@ from .aaz.latest.devcenter.dev.dev_box import (
     Stop as _DevBoxStop,
     Wait as _DevBoxWait,
 )
-from .utils import get_project_data
-from ._validators import validate_endpoint
 from ._validators import (
     validate_attached_network_or_dev_box_def,
     validate_env_name_already_exists,
@@ -958,17 +956,6 @@ class ScheduleWait(_ScheduleWait):
 
 
 # Data plane
-
-
-def get_dataplane_endpoint(cli_ctx, endpoint=None, dev_center=None, project_name=None):
-    validate_endpoint(endpoint, dev_center)
-    if endpoint is None and dev_center is not None:
-        project = get_project_data(cli_ctx, dev_center, project_name)
-        endpoint = project["devCenterUri"]
-    endpoint = endpoint.split('//', 1)[-1]
-
-    return endpoint
-
 
 def devcenter_project_list(cmd, dev_center=None, endpoint=None):
     if dev_center is not None and endpoint is None:
