@@ -154,44 +154,59 @@ from .aaz.latest.devcenter.admin.project_policy import (
 from .aaz.latest.devcenter.admin.project_sku import (
     List as _ProjectSkuList,
 )
-
 from .aaz.latest.devcenter.dev.project import (
-    List as _ProjectListDp,
-    Show as _ProjectShowDp,
-    ListAbilities as _ProjectListAbilitiesDp,
-    ShowOperation as _ProjectShowOperationDp,
+    List as ProjectListDp,
+    Show as ProjectShowDp,
+    ListAbilities as ProjectListAbilitiesDp,
+    ShowOperation as ProjectShowOperationDp,
 )
 from .aaz.latest.devcenter.dev.pool import (
-    List as _PoolListDp,
-    Show as _PoolShowDp,
+    List as PoolListDp,
+    Show as PoolShowDp,
 )
 from .aaz.latest.devcenter.dev.schedule import (
-    List as _ScheduleListDp,
-    Show as _ScheduleShowDp,
+    List as ScheduleListDp,
+    Show as ScheduleShowDp,
 )
 from .aaz.latest.devcenter.dev.dev_box import (
-    CaptureSnapshot as _DevBoxCaptureSnapshot,
-    Create as _DevBoxCreate,
-    DelayAction as _DevBoxDelayAction,
-    DelayAllActions as _DevBoxDelayAllActions,
-    Delete as _DevBoxDelete,
-    ListAction as _DevBoxListAction,
-    ListAll as _DevBoxListAll,
-    ListOperation as _DevBoxListOperation,
-    ListSnapshot as _DevBoxListSnapshot,
-    List as _DevBoxList,
-    Repair as _DevBoxRepair,
-    Restart as _DevBoxRestart,
-    RestoreSnapshot as _DevBoxRestoreSnapshot,
-    ShowAction as _DevBoxShowAction,
-    ShowOperation as _DevBoxShowOperation,
-    ShowRemoteConnection as _DevBoxShowRemoteConnection,
-    ShowSnapshot as _DevBoxShowSnapshot,
-    Show as _DevBoxShow,
-    SkipAction as _DevBoxSkipAction,
-    Start as _DevBoxStart,
-    Stop as _DevBoxStop,
-    Wait as _DevBoxWait,
+    CaptureSnapshot as DevBoxCaptureSnapshot,
+    Create as DevBoxCreate,
+    DelayAction as DevBoxDelayAction,
+    DelayAllActions as DevBoxDelayAllActions,
+    Delete as DevBoxDelete,
+    ListAction as DevBoxListAction,
+    ListAll as DevBoxListAll,
+    ListOperation as DevBoxListOperation,
+    ListSnapshot as DevBoxListSnapshot,
+    List as DevBoxList,
+    Repair as DevBoxRepair,
+    Restart as DevBoxRestart,
+    RestoreSnapshot as DevBoxRestoreSnapshot,
+    ShowAction as DevBoxShowAction,
+    ShowOperation as DevBoxShowOperation,
+    ShowRemoteConnection as DevBoxShowRemoteConnection,
+    ShowSnapshot as DevBoxShowSnapshot,
+    Show as DevBoxShow,
+    SkipAction as DevBoxSkipAction,
+    Start as DevBoxStart,
+    Stop as DevBoxStop,
+    Wait as DevBoxWait,
+)
+from .aaz.latest.devcenter.dev.environment import (
+    Create as EnvironmentCreate,
+    DelayAction as EnvironmentDelayAction,
+    Delete as EnvironmentDelete,
+    ListAction as EnvironmentListAction,
+    ListOperation as EnvironmentListOperation,
+    List as EnvironmentList,
+    ShowAction as EnvironmentShowAction,
+    ShowLogsByOperation as EnvironmentShowLogsByOperation,
+    ShowOperation as EnvironmentShowOperation,
+    ShowOutputs as EnvironmentShowOutputs,
+    Show as EnvironmentShow,
+    SkipAction as EnvironmentSkipAction,
+    UpdateExpirationDate as EnvironmentUpdateExpirationDate,
+    Wait as EnvironmentWait,
 )
 from ._validators import (
     validate_attached_network_or_dev_box_def,
@@ -964,21 +979,21 @@ def devcenter_project_list(cmd, dev_center=None, endpoint=None):
             return []
     
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _ProjectListDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return ProjectListDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
         })
 
 
 def devcenter_project_show(cmd, project_name, dev_center=None, endpoint=None):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _ProjectShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return ProjectShowDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "name": project_name
         })
 
 def devcenter_project_list_abilities(cmd, project_name,  user_id="me", dev_center=None, endpoint=None):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _ProjectListAbilitiesDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return ProjectListAbilitiesDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "name": project_name,
             "user_id": user_id
@@ -986,7 +1001,7 @@ def devcenter_project_list_abilities(cmd, project_name,  user_id="me", dev_cente
 
 def devcenter_project_show_operation(cmd, project_name, operation_id, dev_center=None, endpoint=None):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _ProjectShowOperationDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return ProjectShowOperationDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "name": project_name,
             "operation_id": operation_id
@@ -994,7 +1009,7 @@ def devcenter_project_show_operation(cmd, project_name, operation_id, dev_center
 
 def devcenter_pool_list(cmd, project_name, dev_center=None, endpoint=None):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _PoolListDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return PoolListDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name
         })
@@ -1003,7 +1018,7 @@ def devcenter_pool_show(
     cmd, project_name, pool_name, dev_center=None, endpoint=None
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _PoolShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return PoolShowDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "pool_name": pool_name
@@ -1013,7 +1028,7 @@ def devcenter_schedule_list(
     cmd, project_name, pool_name=None, dev_center=None, endpoint=None
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _ScheduleListDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return ScheduleListDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "pool_name": pool_name
@@ -1023,7 +1038,7 @@ def devcenter_schedule_show(
     cmd, pool_name, project_name, dev_center=None, endpoint=None
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _ScheduleShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+    return ScheduleShowDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "pool_name": pool_name,
@@ -1034,12 +1049,12 @@ def devcenter_schedule_show(
 def devcenter_dev_box_list(cmd, dev_center=None, endpoint=None, project_name=None, user_id=None):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
     if user_id is not None:
-        return _DevBoxList(cli_ctx=cmd.cli_ctx)(command_args={
+        return DevBoxList(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "user_id": user_id,
             "project_name": project_name
         })
-    return _DevBoxListAll(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxListAll(cli_ctx=cmd.cli_ctx)(command_args={
         "endpoint": updated_endpoint
     })
 
@@ -1047,7 +1062,7 @@ def devcenter_dev_box_show(
     cmd, dev_box_name, project_name, dev_center=None, endpoint=None, user_id="me"
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxShow(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxShow(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1067,7 +1082,7 @@ def devcenter_dev_box_create(
     local_administrator=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxCreate(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxCreate(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1088,7 +1103,7 @@ def devcenter_dev_box_delete(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxDelete(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxDelete(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1107,7 +1122,7 @@ def devcenter_dev_box_start(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxStart(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxStart(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1126,7 +1141,7 @@ def devcenter_dev_box_stop(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxStop(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxStop(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1146,7 +1161,7 @@ def devcenter_dev_box_restart(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxRestart(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxRestart(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1164,7 +1179,7 @@ def devcenter_dev_box_repair(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxRepair(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxRepair(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1177,7 +1192,7 @@ def devcenter_dev_box_get_remote_connection(
     cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxShowRemoteConnection(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxShowRemoteConnection(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1188,7 +1203,7 @@ def devcenter_dev_box_list_action(
     cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxListAction(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxListAction(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1206,7 +1221,7 @@ def devcenter_dev_box_show_action(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxShowAction(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxShowAction(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1225,7 +1240,7 @@ def devcenter_dev_box_skip_action(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxSkipAction(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxSkipAction(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1245,7 +1260,7 @@ def devcenter_dev_box_delay_action(
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
 
-    upcoming_action = _DevBoxShowAction(cli_ctx=cmd.cli_ctx)(command_args={
+    upcoming_action = DevBoxShowAction(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1254,12 +1269,10 @@ def devcenter_dev_box_delay_action(
         })
 
     upcoming_action_time = upcoming_action["next"]["scheduledTime"]
-    print(upcoming_action_time)
     action_time = datetime.strptime(upcoming_action_time, "%Y-%m-%dT%H:%M:%S.%fZ")
-
     delayed_time = get_delayed_time(delay_time, action_time)
 
-    return _DevBoxDelayAction(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxDelayAction(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1279,7 +1292,7 @@ def devcenter_dev_box_delay_all_actions(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    actions = _DevBoxListAction(cli_ctx=cmd.cli_ctx)(command_args={
+    actions = DevBoxListAction(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1291,7 +1304,7 @@ def devcenter_dev_box_delay_all_actions(
         raise ResourceNotFoundError("There are no scheduled actions for this dev box.")
 
     delayed_time = get_delayed_time(delay_time, earliest_time)
-    return _DevBoxDelayAllActions(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxDelayAllActions(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1303,7 +1316,7 @@ def devcenter_dev_box_list_operation(
     cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxListOperation(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxListOperation(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1321,7 +1334,7 @@ def devcenter_dev_box_show_operation(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxShowOperation(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxShowOperation(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1339,7 +1352,7 @@ def devcenter_dev_box_capture_snapshot(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxCaptureSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxCaptureSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1358,7 +1371,7 @@ def devcenter_dev_box_restore_snapshot(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxRestoreSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxRestoreSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1377,7 +1390,7 @@ def devcenter_dev_box_show_snapshot(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxShowSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxShowSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1394,7 +1407,7 @@ def devcenter_dev_box_list_snapshot(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxListSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxListSnapshot(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
@@ -1410,10 +1423,310 @@ def devcenter_dev_box_wait(
     endpoint=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
-    return _DevBoxWait(cli_ctx=cmd.cli_ctx)(command_args={
+    return DevBoxWait(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
             "project_name": project_name,
             "user_id": user_id,
             "dev_box_name": dev_box_name,
         })
 
+
+def devcenter_environment_list(
+    cmd, project_name, user_id=None, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentList(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id
+        })
+
+def devcenter_environment_show(
+    cmd, project_name, environment_name, user_id="me", dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentShow(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+
+def devcenter_environment_create(
+    cmd,
+    environment_name,
+    environment_type,
+    project_name,
+    catalog_name,
+    environment_definition_name,
+    expiration_date=None,
+    parameters=None,
+    no_wait=False,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    environments_iterator = EnvironmentList(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id
+        })
+
+    validate_env_name_already_exists(
+        environments_iterator, environment_name, user_id, project_name
+    )
+
+    return EnvironmentCreate(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "environment_type": environment_type,
+            "catalog_name": catalog_name,
+            "environment_definition_name": environment_definition_name,
+            "expiration_date": datetime.fromisoformat(expiration_date),
+            "parameters": parameters,
+            "no_wait": no_wait
+        })
+
+
+def devcenter_environment_update(
+    cmd,
+    environment_name,
+    project_name,
+    parameters=None,
+    no_wait=False,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+    expiration_date=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    environment = EnvironmentShow(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+    environment_type = environment["environmentType"]
+    catalog_name = environment["catalogName"]
+    environment_definition_name = environment["environmentDefinitionName"]
+
+    return EnvironmentCreate(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "environment_type": environment_type,
+            "catalog_name": catalog_name,
+            "environment_definition_name": environment_definition_name,
+            "expiration_date": datetime.fromisoformat(expiration_date),
+            "parameters": parameters,
+            "no_wait": no_wait
+        })
+
+
+def devcenter_environment_delete(
+    cmd,
+    environment_name,
+    project_name,
+    no_wait=False,
+    user_id="me",
+    force=None,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentDelete(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "no_wait": no_wait,
+            "force": force
+        })
+
+
+def devcenter_environment_operation_list(
+    cmd, project_name, environment_name, user_id="me", dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentListOperation(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+
+
+def devcenter_environment_operation_show(
+    cmd,
+    project_name,
+    environment_name,
+    operation_id,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentShowOperation(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "operation_id": operation_id,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+
+
+def devcenter_environment_show_logs_by_operation(
+    cmd,
+    project_name,
+    environment_name,
+    operation_id,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    logs = EnvironmentShowLogsByOperation(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "operation_id": operation_id,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+
+    for log in logs:
+        if log:
+            try:
+                logs_string = json.loads(log)
+                print(json.dumps(logs_string, indent=2))
+            except json.JSONDecodeError:
+                print(log)
+
+
+def devcenter_environment_show_action(
+    cmd,
+    project_name,
+    environment_name,
+    action_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentShowAction(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "action_name": action_name
+        })
+
+
+def devcenter_environment_list_action(
+    cmd, project_name, environment_name, user_id="me", dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentListAction(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+
+
+def devcenter_environment_delay_action(
+    cmd,
+    project_name,
+    environment_name,
+    action_name,
+    delay_time,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    upcoming_action = EnvironmentShowAction(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "action_name": action_name
+        })
+
+    upcoming_action_time = upcoming_action["next"]["scheduledTime"]
+    action_time = datetime.strptime(upcoming_action_time, "%Y-%m-%dT%H:%M:%S.%fZ")
+    delayed_time = get_delayed_time(delay_time, action_time)
+
+    return EnvironmentDelayAction(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "action_name": action_name,
+            "until": delayed_time
+        })
+
+
+def devcenter_environment_skip_action(
+    cmd,
+    project_name,
+    environment_name,
+    action_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentSkipAction(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "action_name": action_name
+        })
+
+
+def devcenter_environment_show_outputs(
+    cmd, project_name, environment_name, user_id="me", dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentShowOutputs(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })
+
+
+def devcenter_environment_update_expiration(
+    cmd,
+    project_name,
+    environment_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+    expiration_date=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentUpdateExpirationDate(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name,
+            "expiration_date":  datetime.fromisoformat(expiration_date)
+        })
+
+def devcenter_environment_wait(
+    cmd, project_name, environment_name, user_id="me", dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentWait(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "user_id": user_id,
+            "environment_name": environment_name
+        })

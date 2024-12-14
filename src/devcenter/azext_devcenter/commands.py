@@ -406,39 +406,40 @@ def load_command_table(self, _):
         g.custom_wait_command('wait', 'devcenter_dev_box_wait')
 
 
-    # with self.command_group("devcenter dev environment") as g:
-    #     g.custom_command("list", "devcenter_environment_list")
-    #     g.custom_show_command("show", "devcenter_environment_show")
-    #     g.custom_command(
-    #         "create", "devcenter_environment_create", supports_no_wait=True
-    #     )
-    #     g.custom_command(
-    #         "update", "devcenter_environment_update", supports_no_wait=True
-    #     )
-    #     g.custom_command(
-    #         "deploy", "devcenter_environment_update", supports_no_wait=True
-    #     )
-    #     g.custom_command(
-    #         "delete",
-    #         "devcenter_environment_delete",
-    #         supports_no_wait=True,
-    #         confirmation=True,
-    #     )
-    #     g.custom_command("list-operation", "devcenter_environment_operation_list")
-    #     g.custom_command("show-operation", "devcenter_environment_operation_show")
-    #     g.custom_command(
-    #         "show-logs-by-operation",
-    #         "devcenter_environment_operation_show_logs_by_operation",
-    #     )
-    #     g.custom_command("show-action", "devcenter_environment_operation_show_action")
-    #     g.custom_command("list-action", "devcenter_environment_operation_list_action")
-    #     g.custom_command("delay-action", "devcenter_environment_operation_delay_action")
-    #     g.custom_command("skip-action", "devcenter_environment_operation_skip_action")
-    #     g.custom_command("show-outputs", "devcenter_environment_operation_show_outputs")
-    #     g.custom_command(
-    #         "update-expiration-date",
-    #         "devcenter_environment_operation_update_environment",
-    #     )
+    with self.command_group("devcenter dev environment") as g:
+        g.custom_command("list", "devcenter_environment_list")
+        g.custom_show_command("show", "devcenter_environment_show")
+        g.custom_command(
+            "create", "devcenter_environment_create", supports_no_wait=True
+        )
+        g.custom_command(
+            "update", "devcenter_environment_update", supports_no_wait=True
+        )
+        g.custom_command(
+            "deploy", "devcenter_environment_update", supports_no_wait=True
+        )
+        g.custom_command(
+            "delete",
+            "devcenter_environment_delete",
+            supports_no_wait=True,
+            confirmation=True,
+        )
+        g.custom_command("list-operation", "devcenter_environment_operation_list")
+        g.custom_command("show-operation", "devcenter_environment_operation_show")
+        g.custom_command(
+            "show-logs-by-operation",
+            "devcenter_environment_show_logs_by_operation",
+        )
+        g.custom_command("show-action", "devcenter_environment_show_action")
+        g.custom_command("list-action", "devcenter_environment_list_action")
+        g.custom_command("delay-action", "devcenter_environment_delay_action")
+        g.custom_command("skip-action", "devcenter_environment_skip_action")
+        g.custom_command("show-outputs", "devcenter_environment_show_outputs")
+        g.custom_command(
+            "update-expiration-date",
+            "devcenter_environment_update_expiration",
+        )
+        g.custom_wait_command('wait', 'devcenter_environment_wait')
 
     # with self.command_group("devcenter dev catalog", environments_dp) as g:
     #     g.custom_command("list", "devcenter_catalog_list_dp")
