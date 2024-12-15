@@ -63,7 +63,7 @@ def load_arguments(self, _):
             type=str,
             help="The dev center " "project upon which to execute operations.",
         )
-    
+
     with self.argument_context("devcenter dev project show-operation") as c:
         c.argument(
             "dev_center",
@@ -84,7 +84,7 @@ def load_arguments(self, _):
             type=str,
             help="The id of the operation on a project.",
         )
-    
+
     with self.argument_context("devcenter dev project list-abilities") as c:
         c.argument(
             "dev_center",
@@ -228,7 +228,7 @@ def load_arguments(self, _):
             type=str,
             help="The name of a dev " "box.",
         )
-    
+
     with self.argument_context("devcenter dev dev-box wait") as c:
         c.argument(
             "dev_center",
@@ -694,7 +694,7 @@ def load_arguments(self, _):
             type=str,
             help="The name of a dev " "box.",
         )
-    
+
     with self.argument_context("devcenter dev dev-box restore-snapshot") as c:
         c.argument(
             "dev_center",
@@ -726,7 +726,7 @@ def load_arguments(self, _):
             type=str,
             help="Required parameter that specifies the snapshot id to use for the restore operation.",
         )
-    
+
     with self.argument_context("devcenter dev dev-box show-snapshot") as c:
         c.argument(
             "dev_center",
@@ -758,7 +758,7 @@ def load_arguments(self, _):
             type=str,
             help="Required parameter that specifies the snapshot id to use for the restore operation.",
         )
-    
+
     with self.argument_context("devcenter dev dev-box list-snapshot") as c:
         c.argument(
             "dev_center",
@@ -784,7 +784,6 @@ def load_arguments(self, _):
             type=str,
             help="The name of a dev " "box.",
         )
-
 
     with self.argument_context("devcenter dev environment list") as c:
         c.argument(
@@ -831,7 +830,7 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
-    
+
     with self.argument_context("devcenter dev environment wait") as c:
         c.argument(
             "dev_center",
@@ -1080,3 +1079,57 @@ def load_arguments(self, _):
             "endpoint",
             arg_type=endpoint,
         )
+
+    with self.argument_context("devcenter dev environment-type show") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument("environment_type_name", options_list=[
+                   "-n", "--name", "--environment-type-name"], type=str, help="Environment type.")
+    
+    with self.argument_context("devcenter dev environment-type list-abilities") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument("environment_type_name", options_list=[
+                   "-n", "--name", "--environment-type-name"], type=str, help="Environment type.")
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+    
+    with self.argument_context("devcenter dev image-build show-log") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument("image_build_log_id", options_list=[
+                   "-i", "--image-build-log-id"], type=str, help="An imaging build log id.")

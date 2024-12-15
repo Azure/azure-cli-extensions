@@ -75,10 +75,6 @@ class ListAbilities(AAZCommand):
                 min_length=2,
             ),
         )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
-            help="The maximum number of resources to return from the operation. Example: 'top=10'.",
-        )
 
         # define Arg Group "Default"
 
@@ -165,9 +161,6 @@ class ListAbilities(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "top", self.ctx.args.top,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2024-10-01-preview",
                     required=True,

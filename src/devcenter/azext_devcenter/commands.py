@@ -441,23 +441,29 @@ def load_command_table(self, _):
         )
         g.custom_wait_command('wait', 'devcenter_environment_wait')
 
-    # with self.command_group("devcenter dev catalog", environments_dp) as g:
-    #     g.custom_command("list", "devcenter_catalog_list_dp")
-    #     g.custom_show_command("show", "devcenter_catalog_show_dp")
+    with self.command_group("devcenter dev catalog") as g:
+        g.custom_command("list", "devcenter_catalog_list")
+        g.custom_show_command("show", "devcenter_catalog_show")
 
-    # with self.command_group(
-    #     "devcenter dev environment-definition", environments_dp
-    # ) as g:
-    #     g.custom_command("list", "devcenter_environment_definition_list_dp")
-    #     g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+    with self.command_group(
+        "devcenter dev environment-definition"
+    ) as g:
+        g.custom_command("list", "devcenter_environment_definition_list")
+        g.custom_show_command("show", "devcenter_environment_definition_show")
 
-    # with self.command_group("devcenter dev environment-type", environments_dp) as g:
-    #     g.custom_command("list", "devcenter_environment_type_list_dp")
+    with self.command_group("devcenter dev environment-type") as g:
+        g.custom_command("list", "devcenter_environment_type_list")
+        g.custom_show_command("show", "devcenter_environment_type_show")
+        g.custom_command("list-abilities", "devcenter_environment_type_list_abilities")
+    
+    with self.command_group("devcenter dev image-build") as g:
+        g.custom_command("show-log", "devcenter_image_build_show_log")
 
-    # with self.command_group("devcenter dev customization-group") as g:
-    #     g.custom_command("list", "devcenter_customization_group_list")
-    #     g.custom_show_command("show", "devcenter_customization_group_show")
-    #     g.custom_command("create", "devcenter_customization_group_create")
+
+    with self.command_group("devcenter dev customization-group") as g:
+        g.custom_command("list", "devcenter_customization_group_list")
+        g.custom_show_command("show", "devcenter_customization_group_show")
+        g.custom_command("create", "devcenter_customization_group_create")
 
     # with self.command_group("devcenter dev customization-task") as g:
     #     g.custom_command("list", "devcenter_customization_task_definition_list")

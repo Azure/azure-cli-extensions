@@ -208,6 +208,27 @@ from .aaz.latest.devcenter.dev.environment import (
     UpdateExpirationDate as EnvironmentUpdateExpirationDate,
     Wait as EnvironmentWait,
 )
+from .aaz.latest.devcenter.dev.catalog import (
+    List as CatalogListDp,
+    Show as CatalogShowDp,
+)
+from .aaz.latest.devcenter.dev.environment_definition import (
+    List as EnvironmentDefinitionListDp,
+    Show as EnvironmentDefinitionShowDp,
+)
+from .aaz.latest.devcenter.dev.environment_type import (
+    List as EnvironmentTypeListDp,
+    Show as EnvironmentTypeShowDp,
+    ListAbilities as EnvironmentTypeListAbilitiesDp,
+)
+from .aaz.latest.devcenter.dev.image_build import (
+    ShowLog as ImageBuildShowLogDp,
+)
+from .aaz.latest.devcenter.dev.customization_group import (
+    Create as CustomizationGroupCreate,
+    List as CustomizationGroupList,
+    Show as CustomizationGroupShow,
+)
 from ._validators import (
     validate_attached_network_or_dev_box_def,
     validate_env_name_already_exists,
@@ -991,7 +1012,7 @@ def devcenter_project_show(cmd, project_name, dev_center=None, endpoint=None):
             "name": project_name
         })
 
-def devcenter_project_list_abilities(cmd, project_name,  user_id="me", dev_center=None, endpoint=None):
+def devcenter_project_list_abilities(cmd, project_name, user_id="me", dev_center=None, endpoint=None):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
     return ProjectListAbilitiesDp(cli_ctx=cmd.cli_ctx)(command_args={
             "endpoint": updated_endpoint,
@@ -1730,3 +1751,231 @@ def devcenter_environment_wait(
             "user_id": user_id,
             "environment_name": environment_name
         })
+
+def devcenter_catalog_list(cmd, project_name, dev_center=None, endpoint=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return CatalogListDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name
+        })
+
+def devcenter_catalog_show(
+    cmd, project_name, catalog_name, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return CatalogShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "catalog_name": catalog_name
+        })
+
+def devcenter_environment_definition_list(
+    cmd, project_name, dev_center=None, endpoint=None, catalog_name=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentDefinitionListDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "catalog_name": catalog_name
+        })
+
+def devcenter_environment_definition_show(
+    cmd, catalog_name, definition_name, project_name, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentDefinitionShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "catalog_name": catalog_name,
+            "definition_name": definition_name
+        })
+
+def devcenter_environment_type_list(
+    cmd, project_name, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentTypeListDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name
+        })
+
+def devcenter_environment_type_show(
+    cmd, project_name,environment_type_name, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentTypeShowDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "environment_type_name":   environment_type_name
+        })
+
+def devcenter_environment_type_list_abilities(
+    cmd, project_name, environment_type_name,  user_id="me", dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return EnvironmentTypeListAbilitiesDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "environment_type_name":   environment_type_name,
+            "user_id": user_id
+        })
+
+def devcenter_image_build_show_log(cmd, project_name, image_build_log_id, dev_center=None, endpoint=None):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return ImageBuildShowLogDp(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "image_build_log_id": image_build_log_id
+        })
+
+
+def devcenter_customization_group_create(
+    cmd,
+    project_name,
+    dev_box_name,
+    customization_group_name,
+    user_id="me",
+    tasks=None,
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+
+    body = {}
+    if tasks is not None:
+        body["tasks"] = tasks
+    else:
+        body["tasks"] = []
+    return cf_dataplane.dev_boxes.create_customization_group(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        customization_group_name=customization_group_name,
+        user_id=user_id,
+        body=body,
+    )
+
+
+def devcenter_customization_group_show(
+    cmd,
+    project_name,
+    dev_box_name,
+    customization_group_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.dev_boxes.get_customization_group(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        customization_group_name=customization_group_name,
+        user_id=user_id,
+    )
+
+
+def devcenter_customization_group_list(
+    cmd,
+    project_name,
+    dev_box_name,
+    user_id="me",
+    include_tasks=None,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    include = None
+    if include_tasks:
+        include = ["tasks"]
+
+    return cf_dataplane.dev_boxes.list_customization_groups(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        user_id=user_id,
+        include=include,
+    )
+
+
+def devcenter_customization_task_definition_show(
+    cmd,
+    project_name,
+    catalog_name,
+    task_name,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.projects.get_customization_task_definition(
+        project_name=project_name,
+        catalog_name=catalog_name,
+        task_name=task_name,
+    )
+
+
+def devcenter_customization_task_definition_list(
+    cmd,
+    project_name,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.projects.list_customization_task_definitions(
+        project_name=project_name,
+    )
+
+
+def devcenter_customization_task_definition_validate(
+    cmd,
+    project_name,
+    tasks,
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    body = {}
+    body["tasks"] = tasks
+
+    return sdk_no_wait(
+        no_wait,
+        cf_dataplane.projects.begin_validate_customization_tasks,
+        project_name=project_name,
+        body=body,
+    )
+
+
+def devcenter_customization_task_log_show(
+    cmd,
+    project_name,
+    dev_box_name,
+    customization_group_name,
+    customization_task_id,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.dev_boxes.get_customization_task_log(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        customization_group_name=customization_group_name,
+        customization_task_id=customization_task_id,
+        user_id=user_id,
+    )
