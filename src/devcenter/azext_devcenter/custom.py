@@ -229,6 +229,12 @@ from .aaz.latest.devcenter.dev.customization_group import (
     List as CustomizationGroupList,
     Show as CustomizationGroupShow,
 )
+from .aaz.latest.devcenter.dev.customization_task import (
+    List as CustomizationTaskList,
+    ShowLogs as CustomizationTaskShowLogs,
+    Show as CustomizationTaskShow,
+    Validate as CustomizationTaskValidate,
+)
 from ._validators import (
     validate_attached_network_or_dev_box_def,
     validate_env_name_already_exists,
@@ -1828,7 +1834,6 @@ def devcenter_image_build_show_log(cmd, project_name, image_build_log_id, dev_ce
             "image_build_log_id": image_build_log_id
         })
 
-
 def devcenter_customization_group_create(
     cmd,
     project_name,
@@ -1841,19 +1846,14 @@ def devcenter_customization_group_create(
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
 
-    body = {}
-    if tasks is not None:
-        body["tasks"] = tasks
-    else:
-        body["tasks"] = []
-    return cf_dataplane.dev_boxes.create_customization_group(
-        project_name=project_name,
-        dev_box_name=dev_box_name,
-        customization_group_name=customization_group_name,
-        user_id=user_id,
-        body=body,
-    )
-
+    return CustomizationGroupCreate(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "dev_box_name": dev_box_name,
+            "customization_group_name": customization_group_name,
+            "user_id": user_id,
+            "tasks": tasks
+        })
 
 def devcenter_customization_group_show(
     cmd,
@@ -1864,16 +1864,14 @@ def devcenter_customization_group_show(
     dev_center=None,
     endpoint=None,
 ):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-
-    return cf_dataplane.dev_boxes.get_customization_group(
-        project_name=project_name,
-        dev_box_name=dev_box_name,
-        customization_group_name=customization_group_name,
-        user_id=user_id,
-    )
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return  CustomizationGroupShow(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "dev_box_name": dev_box_name,
+            "customization_group_name": customization_group_name,
+            "user_id": user_id
+        })
 
 
 def devcenter_customization_group_list(
@@ -1885,23 +1883,21 @@ def devcenter_customization_group_list(
     dev_center=None,
     endpoint=None,
 ):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
 
     include = None
     if include_tasks:
-        include = ["tasks"]
+        include = "tasks"
+    
+    return CustomizationGroupList(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "dev_box_name": dev_box_name,
+            "user_id": user_id,
+            "include": include
+        })
 
-    return cf_dataplane.dev_boxes.list_customization_groups(
-        project_name=project_name,
-        dev_box_name=dev_box_name,
-        user_id=user_id,
-        include=include,
-    )
-
-
-def devcenter_customization_task_definition_show(
+def devcenter_customization_task_show(
     cmd,
     project_name,
     catalog_name,
@@ -1909,33 +1905,29 @@ def devcenter_customization_task_definition_show(
     dev_center=None,
     endpoint=None,
 ):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-
-    return cf_dataplane.projects.get_customization_task_definition(
-        project_name=project_name,
-        catalog_name=catalog_name,
-        task_name=task_name,
-    )
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return CustomizationTaskShow(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "catalog_name": catalog_name,
+            "task_name": task_name
+        })
 
 
-def devcenter_customization_task_definition_list(
+def devcenter_customization_task_list(
     cmd,
     project_name,
     dev_center=None,
     endpoint=None,
 ):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-
-    return cf_dataplane.projects.list_customization_task_definitions(
-        project_name=project_name,
-    )
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return CustomizationTaskList(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name
+        })
 
 
-def devcenter_customization_task_definition_validate(
+def devcenter_customization_task_validate(
     cmd,
     project_name,
     tasks,
@@ -1943,19 +1935,13 @@ def devcenter_customization_task_definition_validate(
     dev_center=None,
     endpoint=None,
 ):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-
-    body = {}
-    body["tasks"] = tasks
-
-    return sdk_no_wait(
-        no_wait,
-        cf_dataplane.projects.begin_validate_customization_tasks,
-        project_name=project_name,
-        body=body,
-    )
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return CustomizationTaskValidate(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "tasks": tasks,
+            "no_wait": no_wait
+        })
 
 
 def devcenter_customization_task_log_show(
@@ -1968,14 +1954,12 @@ def devcenter_customization_task_log_show(
     dev_center=None,
     endpoint=None,
 ):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-
-    return cf_dataplane.dev_boxes.get_customization_task_log(
-        project_name=project_name,
-        dev_box_name=dev_box_name,
-        customization_group_name=customization_group_name,
-        customization_task_id=customization_task_id,
-        user_id=user_id,
-    )
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return CustomizationTaskShowLogs(cli_ctx=cmd.cli_ctx)(command_args={
+            "endpoint": updated_endpoint,
+            "project_name": project_name,
+            "dev_box_name": dev_box_name,
+            "customization_group_name": customization_group_name,
+            "customization_task_id": customization_task_id,
+            "user_id": user_id
+        })

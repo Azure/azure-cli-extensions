@@ -9,7 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+import json
 
 @register_command(
     "devcenter dev customization-task validate",
@@ -119,6 +119,12 @@ class Validate(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
+    
+    def _output(self, *args, **kwargs):
+        print(self.ctx.vars.instance)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
 
 
     class DevBoxesValidateCustomizationTasksAction(AAZHttpOperation):
@@ -189,7 +195,9 @@ class Validate(AAZCommand):
             return parameters
         
         def on_200(self, session):
-            pass
+            data =  self.deserialize_http_content(session)
+            print(json.dumps(data, indent=2))
+
 
         @property
         def header_parameters(self):

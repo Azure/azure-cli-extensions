@@ -463,10 +463,10 @@ def load_command_table(self, _):
     with self.command_group("devcenter dev customization-group") as g:
         g.custom_command("list", "devcenter_customization_group_list")
         g.custom_show_command("show", "devcenter_customization_group_show")
-        g.custom_command("create", "devcenter_customization_group_create")
+        g.custom_command("create", "devcenter_customization_group_create", supports_no_wait=True)
 
-    # with self.command_group("devcenter dev customization-task") as g:
-    #     g.custom_command("list", "devcenter_customization_task_definition_list")
-    #     g.custom_show_command("show", "devcenter_customization_task_definition_show")
-    #     g.custom_command("validate", "devcenter_customization_task_definition_validate")
-    #     g.custom_command("show-logs", "devcenter_customization_task_log_show")
+    with self.command_group("devcenter dev customization-task") as g:
+        g.custom_command("list", "devcenter_customization_task_list")
+        g.custom_show_command("show", "devcenter_customization_task_show")
+        g.custom_command("validate", "devcenter_customization_task_validate", supports_no_wait=True)
+        g.custom_command("show-logs", "devcenter_customization_task_log_show")
