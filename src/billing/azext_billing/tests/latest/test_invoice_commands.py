@@ -54,3 +54,25 @@ class AzureInvoiceScenarioTest(ScenarioTest):
 		# '--billing-account-name {account_name} '
 		# '--parameters {parameters}')
 		# self.assertTrue(multiple_download_by_billing_account)
+
+class AzureEaInvoiceScenarioTest(ScenarioTest):
+	def test_ea_invoices_list_get_and_download(self):
+		# list by billing account
+		self.kwargs.update({
+			'account_name': '6575495'
+		})
+		invoices_list_by_billing_account = self.cmd('billing invoice list-by-billing-account --billing-account-name {account_name} --period-start-date 2024-01-01 --period-end-date 2024-06-30').get_output_in_json()
+		self.assertTrue(invoices_list_by_billing_account)
+		# get by billing account
+		invoice_name = invoices_list_by_billing_account[0]['name']
+		self.kwargs.update({
+			'invoice_name': invoice_name
+		})
+		invoice = self.cmd('billing invoice get-by-billing-account --billing-account-name {account_name} --invoice-name {invoice_name}').get_output_in_json()
+		self.assertEqual(invoice['name'], invoice_name)
+		# download by billing account
+		download_by_billing_account = self.cmd('billing invoice download-by-billing-account --billing-account-name {account_name} --invoice-name {invoice_name}').get_output_in_json()
+		self.assertTrue(download_by_billing_account)
+		# download summary by ea billing account
+		download_summary_by_ea_billing_account = self.cmd('billing invoice download-summary-by-ea-billing-account --billing-account-name {account_name} --invoice-name {invoice_name}').get_output_in_json()
+		self.assertTrue(download_summary_by_ea_billing_account)

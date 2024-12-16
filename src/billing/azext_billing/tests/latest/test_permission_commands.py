@@ -36,3 +36,51 @@ class AzureBillingPermissionScenarioTest(ScenarioTest):
 		#list by invoice section
 		list_by_invoice_section = self.cmd('billing permission list-by-invoice-section --billing-account-name {account_name} --billing-profile-name {profile_name} --invoice-section-name {invoice_section_name}').get_output_in_json()
 		self.assertTrue(list_by_invoice_section)
+
+class AzureEaBillingPermissionScenarioTest(ScenarioTest):
+	def test_billing_permission_list_and_check_access(self):
+		self.kwargs.update({
+			'account_name': '6575495',
+			'department_name': '148446',
+			'enrollment_account_name': '261569'
+		})
+
+		# list by billing account
+		list_by_billing_account = self.cmd('billing permission list-by-billing-account --billing-account-name {account_name}').get_output_in_json()
+		self.assertTrue(list_by_billing_account)
+
+		#check access by billing account
+		account_action = list_by_billing_account[0]['actions'][0]
+		self.kwargs.update({
+			'account_action': account_action,
+			'account_no_action': 'Microsoft.Billing/billingAccounts/noAction'
+		})
+		print(account_action)
+		self.cmd('billing permission check-access-by-billing-account --billing-account-name {account_name} --actions "[{account_action},{account_no_action}]"',
+		   checks=[self.check("[0].accessDecision", "Allowed"), self.check("[1].accessDecision", "NotAllowed")])
+
+		# list by department
+		list_by_department = self.cmd('billing permission list-by-department --billing-account-name {account_name} --department-name {department_name}').get_output_in_json()
+		self.assertTrue(list_by_department)
+
+		# check access by department
+		department_action = list_by_department[0]['actions'][0]
+		self.kwargs.update({
+			'department_action': department_action,
+			'department_no_action': 'Microsoft.Billing/billingAccounts/departments/noAction'
+		})		
+		self.cmd('billing permission check-access-by-department --billing-account-name {account_name} --department-name {department_name} --actions "[{department_action},{department_no_action}]"',
+		   checks=[self.check("[0].accessDecision", "Allowed"), self.check("[1].accessDecision", "NotAllowed")])
+
+		# list by enrollment account
+		list_by_enrollment_account = self.cmd('billing permission list-by-enrollment-account --billing-account-name {account_name} --enrollment-account-name {enrollment_account_name}').get_output_in_json()
+		self.assertTrue(list_by_enrollment_account)
+
+		# check access by enrollment account
+		enrollment_account_action = list_by_enrollment_account[0]['actions'][0]
+		self.kwargs.update({
+			'enrollment_account_action': enrollment_account_action,
+			'enrollment_account_no_action': 'Microsoft.Billing/billingAccounts/enrollmentAccounts/noAction'
+		})
+		self.cmd('billing permission check-access-by-enrollment-account --billing-account-name {account_name} --enrollment-account-name {enrollment_account_name} --actions "[{enrollment_account_action},{enrollment_account_no_action}]"',
+		   checks=[self.check("[0].accessDecision", "Allowed"), self.check("[1].accessDecision", "NotAllowed")])
