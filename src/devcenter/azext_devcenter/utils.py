@@ -5,11 +5,12 @@
 #
 # --------------------------------------------------------------------------
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
 from ._validators import validate_endpoint
+
 
 def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip("/")

@@ -363,13 +363,10 @@ def load_command_table(self, _):
         g.custom_show_command("show", "devcenter_project_show")
         g.custom_command("list-abilities", "devcenter_project_list_abilities")
         g.custom_command("show-operation", "devcenter_project_show_operation")
-    
+
     with self.command_group("devcenter dev pool") as g:
         g.custom_command("list", "devcenter_pool_list")
         g.custom_show_command("show", "devcenter_pool_show")
-
-    with self.command_group("devcenter dev dev-box") as g:
-        g.custom_command("list", "devcenter_dev_box_list")
 
     with self.command_group("devcenter dev schedule") as g:
         g.custom_command("list", "devcenter_schedule_list")
@@ -403,8 +400,6 @@ def load_command_table(self, _):
         g.custom_command("restore-snapshot", "devcenter_dev_box_restore_snapshot", supports_no_wait=True)
         g.custom_command("show-snapshot", "devcenter_dev_box_show_snapshot")
         g.custom_command("list-snapshot", "devcenter_dev_box_list_snapshot")
-        g.custom_wait_command('wait', 'devcenter_dev_box_wait')
-
 
     with self.command_group("devcenter dev environment") as g:
         g.custom_command("list", "devcenter_environment_list")
@@ -439,7 +434,6 @@ def load_command_table(self, _):
             "update-expiration-date",
             "devcenter_environment_update_expiration",
         )
-        g.custom_wait_command('wait', 'devcenter_environment_wait')
 
     with self.command_group("devcenter dev catalog") as g:
         g.custom_command("list", "devcenter_catalog_list")
@@ -455,10 +449,9 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_environment_type_list")
         g.custom_show_command("show", "devcenter_environment_type_show")
         g.custom_command("list-abilities", "devcenter_environment_type_list_abilities")
-    
+
     with self.command_group("devcenter dev image-build") as g:
         g.custom_command("show-log", "devcenter_image_build_show_log")
-
 
     with self.command_group("devcenter dev customization-group") as g:
         g.custom_command("list", "devcenter_customization_group_list")

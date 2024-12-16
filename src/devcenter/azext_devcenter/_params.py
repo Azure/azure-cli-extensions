@@ -230,32 +230,6 @@ def load_arguments(self, _):
             help="The name of a dev " "box.",
         )
 
-    with self.argument_context("devcenter dev dev-box wait") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
-        )
-        c.argument(
-            "endpoint",
-            arg_type=endpoint,
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
-        )
-        c.argument(
-            "dev_box_name",
-            options_list=["--name", "-n", "--dev-box-name"],
-            type=str,
-            help="The name of a dev " "box.",
-        )
-
     with self.argument_context("devcenter dev dev-box create") as c:
         c.argument(
             "dev_center",
@@ -723,7 +697,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "snapshot_id",
-            options_list=["--snapshot_id", "-s"],
+            options_list=["--snapshot-id", "-s"],
             type=str,
             help="Required parameter that specifies the snapshot id to use for the restore operation.",
         )
@@ -755,7 +729,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "snapshot_id",
-            options_list=["--snapshot_id", "-s"],
+            options_list=["--snapshot-id", "-s"],
             type=str,
             help="Required parameter that specifies the snapshot id to use for the restore operation.",
         )
@@ -807,32 +781,6 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("devcenter dev environment show") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
-        )
-        c.argument(
-            "endpoint",
-            arg_type=endpoint,
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
-        )
-        c.argument(
-            "environment_name",
-            options_list=["--name", "-n", "--environment-name"],
-            type=str,
-            help="The name " "of the environment.",
-        )
-
-    with self.argument_context("devcenter dev environment wait") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -1120,7 +1068,7 @@ def load_arguments(self, _):
         )
         c.argument("environment_type_name", options_list=[
                    "-n", "--name", "--environment-type-name"], type=str, help="Environment type.")
-    
+
     with self.argument_context("devcenter dev environment-type list-abilities") as c:
         c.argument(
             "dev_center",
@@ -1142,7 +1090,7 @@ def load_arguments(self, _):
             help="The AAD object id of the user. If value is 'me', the identity is taken "
             "from the authentication context.",
         )
-    
+
     with self.argument_context("devcenter dev image-build show-log") as c:
         c.argument(
             "dev_center",
@@ -1158,7 +1106,6 @@ def load_arguments(self, _):
         )
         c.argument("image_build_log_id", options_list=[
                    "-i", "--image-build-log-id"], type=str, help="An imaging build log id.")
-
 
     with self.argument_context("devcenter dev environment list-operation") as c:
         c.argument(
