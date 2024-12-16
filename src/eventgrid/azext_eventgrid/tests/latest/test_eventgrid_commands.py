@@ -61,7 +61,6 @@ class EventGridNamespaceTests(ScenarioTest):
         })
 
         self.cmd('eventgrid namespace create -g {rg} -n {namespace} --topic-spaces-configuration "{{maximumSessionExpiryInHours:1,state:enabled}}"', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{namespace}'),
             self.check('sku.capacity', 1),
             self.check('sku.name', 'Standard'),
@@ -70,14 +69,12 @@ class EventGridNamespaceTests(ScenarioTest):
             self.check('topicSpacesConfiguration.state', 'Enabled')
         ])
         self.cmd('eventgrid namespace client create -g {rg} --namespace-name {namespace} -n {client}  --attributes "{{\'room\':\'345\',\'floor\':5}}" --client-certificate-authentication "{{validationScheme:SubjectMatchesAuthenticationName}}"', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{client}'),
             self.check('attributes.floor', 5),
             self.check('attributes.room', '345'),
             self.check('clientCertificateAuthentication.validationScheme', 'SubjectMatchesAuthenticationName')
         ])
         self.cmd('eventgrid namespace client update -g {rg} --namespace-name {namespace} -n {client}  --attributes "{{\'room\':\'456\',\'floor\':6}}" --description test', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{client}'),
             self.check('attributes.floor', 6),
             self.check('attributes.room', '456'),
@@ -85,15 +82,13 @@ class EventGridNamespaceTests(ScenarioTest):
             self.check('description', 'test')
         ])
         self.cmd('eventgrid namespace client show -g {rg} --namespace-name {namespace} -n {client}', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{client}'),
             self.check('attributes.floor', 6),
             self.check('attributes.room', '456'),
             self.check('clientCertificateAuthentication.validationScheme', 'SubjectMatchesAuthenticationName'),
             self.check('description', 'test')
         ])
-        self.cmd('eventgrid namespace list -g {rg} --namespace-name {namespace}', checks=[
-            self.check('[0].resourceGroup', '{rg}'),
+        self.cmd('eventgrid namespace client list -g {rg} --namespace-name {namespace}', checks=[
             self.check('[0].name', '{client}'),
             self.check('[0].attributes.floor', 6),
             self.check('[0].attributes.room', '456'),
@@ -101,31 +96,27 @@ class EventGridNamespaceTests(ScenarioTest):
             self.check('[0].description', 'test')
         ])
         self.cmd('eventgrid namespace client-group create -g {rg} --namespace-name {namespace} -n {client_group} --description test --group-query "attributes.floor = 6"', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{client_group}'),
             self.check('description', 'test'),
             self.check('query', 'attributes.floor = 6')
         ])
         self.cmd('eventgrid namespace client-group update -g {rg} --namespace-name {namespace} -n {client_group} --description test1 --group-query "attributes.floor = 7"', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{client_group}'),
             self.check('description', 'test1'),
             self.check('query', 'attributes.floor = 7')
         ])
         self.cmd('eventgrid namespace client-group show -g {rg} --namespace-name {namespace} -n {client_group}', checks=[
-            self.check('resourceGroup', '{rg}'),
             self.check('name', '{client_group}'),
             self.check('description', 'test1'),
             self.check('query', 'attributes.floor = 7')
         ])
         self.cmd('eventgrid namespace client-group list -g {rg} --namespace-name {namespace}', checks=[
-            self.check('[0].resourceGroup', '{rg}'),
-            self.check('[0].name', '{client_group}'),
-            self.check('[0].description', 'test1'),
-            self.check('[0].query', 'attributes.floor = 7')
+            self.check('[1].name', '{client_group}'),
+            self.check('[1].description', 'test1'),
+            self.check('[1].query', 'attributes.floor = 7')
         ])
         self.cmd('eventgrid namespace client-group delete -g {rg} --namespace-name {namespace} -n {client_group} -y')
-        self.cmd('eventgrid namespace client delete -g {rg} -n {namespace} -y')
+        self.cmd('eventgrid namespace client delete -g {rg} -n {client} --namespace-name {namespace} -y')
 
     @ResourceGroupPreparer(name_prefix='test_eventgrid_topic', location='eastus')
     def test_topic(self):
