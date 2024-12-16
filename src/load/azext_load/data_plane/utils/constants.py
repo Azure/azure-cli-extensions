@@ -37,6 +37,5 @@ class HighScaleThreshold:
 
 @dataclass
 class LoadCommandsConstants:
-    CONVERT_TO_JMX_CONFIRM_PROMPT = "Once the test is converted, you will not be able to revert. " \
-        "Please ensure you understand the implications.\n" \
+    CONVERT_TO_JMX_CONFIRM_PROMPT = "Once the test is converted, the process cannot be reversed.\n" \
         "Do you want to continue?"
