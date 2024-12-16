@@ -8,4 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from ._clients import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "devcenter dev",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage devcenter developer resources.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

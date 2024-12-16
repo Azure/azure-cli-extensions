@@ -8,4 +8,18 @@
 # pylint: skip-file
 # flake8: noqa
 
-from ._clients import *
+from .__cmd_group import *
+from ._create import *
+from ._delay_action import *
+from ._delete import *
+from ._list import *
+from ._list_action import *
+from ._list_operation import *
+from ._show import *
+from ._show_action import *
+from ._show_logs_by_operation import *
+from ._show_operation import *
+from ._show_outputs import *
+from ._skip_action import *
+from ._update_expiration_date import *
+from ._wait import *

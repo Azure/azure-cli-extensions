@@ -8,4 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from ._clients import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "devcenter dev schedule",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage schedules.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
