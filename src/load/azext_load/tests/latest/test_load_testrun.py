@@ -908,6 +908,11 @@ class LoadTestRunScenario(ScenarioTest):
         assert "blob.storage.azure.net" in response
 
         # Copy artifacts URL when test run is in progress
+        # This test case causes flakiness when all tests 
+        # are run together in live mode
+        # due to the --no-wait flag.
+        # Hence, sleep and stop cmd are added.
+        # """
         self.cmd(
             "az load test-run create "
             "--load-test-resource {load_test_resource} "
@@ -917,6 +922,8 @@ class LoadTestRunScenario(ScenarioTest):
             "--existing-test-run-id {test_run_id} "
             "--no-wait",
         )
+        if self.is_live:
+            time.sleep(20)
         response = self.cmd(
             "az load test-run show "
             "--load-test-resource {load_test_resource} "
@@ -933,6 +940,16 @@ class LoadTestRunScenario(ScenarioTest):
         assert response is not None
         assert response.startswith("https://")
         assert "blob.storage.azure.net" in response
+        self.cmd(
+            "az load test-run stop "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} "
+            "--yes",
+        )
+        if self.is_live:
+            time.sleep(20)
+        # """
         
         # Invalid: Copy artifacts URL for unknown test run
         self.kwargs.update(

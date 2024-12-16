@@ -33,3 +33,9 @@ class LoadTestConfigKeys:
 class HighScaleThreshold:
     MAX_ENGINE_INSTANCES_PER_TEST_RUN = 45
     MAX_DURATION_HOURS_PER_TEST_RUN = 3
+
+
+@dataclass
+class LoadCommandsConstants:
+    CONVERT_TO_JMX_CONFIRM_PROMPT = "Once the test is converted, the process cannot be reversed.\n" \
+        "Do you want to continue?"

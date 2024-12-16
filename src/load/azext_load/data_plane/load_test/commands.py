@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azext_load.data_plane.utils import validators
+from azext_load.data_plane.utils.constants import LoadCommandsConstants
 from azure.cli.core.commands import CliCommandType
 
 admin_custom_sdk = CliCommandType(
@@ -24,6 +25,11 @@ def load_test_commands(self, _):
             "download-files",
             "download_test_files",
             validator=validators.validate_download,
+        )
+        g.custom_command(
+            "convert-to-jmx",
+            "convert_to_jmx",
+            confirmation=LoadCommandsConstants.CONVERT_TO_JMX_CONFIRM_PROMPT
         )
 
     with self.command_group(

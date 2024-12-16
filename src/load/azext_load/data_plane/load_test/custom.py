@@ -18,6 +18,9 @@ from azext_load.data_plane.utils.utils import (
     upload_files_helper,
     create_autostop_criteria_from_args,
 )
+from azext_load.data_plane.utils.models import (
+    AllowedTestTypes,
+)
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
@@ -270,6 +273,33 @@ def delete_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     client.delete_test(test_id)
     logger.info("Deleted test with test ID: %s", test_id)
+
+
+def convert_to_jmx(
+    cmd,
+    load_test_resource,
+    test_id,
+    resource_group_name=None,
+):
+    logger.info("Converting test with test ID: %s to JMX", test_id)
+    client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
+    existing_test = client.get_test(test_id)
+    if (
+        existing_test is not None
+        and existing_test.get("kind") != AllowedTestTypes.URL.value
+    ):
+        raise InvalidArgumentValueError(
+            f"Test with test ID: {test_id} is not of type URL. "
+            "Only URL type tests can be converted to JMX."
+        )
+    body = create_or_update_test_without_config(
+        test_id=test_id,
+        body=existing_test,
+        test_type=AllowedTestTypes.JMX.value,
+    )
+    response = client.create_or_update_test(test_id=test_id, body=body)
+    logger.debug("Converted test with test ID: %s to JMX", test_id)
+    return response.as_dict()
 
 
 def add_test_app_component(
