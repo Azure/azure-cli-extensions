@@ -386,7 +386,7 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     import copy
     data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition,
                                           api_key_or_token=api_key_or_token)
-    if data["meta"]["isFolder"]:
+    if data.get("meta", {}).get("isFolder", False):
         raise ArgumentUsageError("The provided definition is a folder, not a dashboard")
 
     if "dashboard" in data:
