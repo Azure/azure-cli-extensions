@@ -9,7 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+import json
 
 @register_command(
     "devcenter dev dev-box restore-snapshot",
@@ -192,7 +192,8 @@ class RestoreSnapshot(AAZCommand):
             return parameters
         
         def on_200(self, session):
-            pass
+            data =  self.deserialize_http_content(session)
+            print(json.dumps(data, indent=2))
 
 
 class _RestoreSnapshotHelper:

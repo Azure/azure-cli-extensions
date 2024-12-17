@@ -2463,36 +2463,93 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     #         ],
     #     )
     
-    def test_dev_box_repair_dataplane_scenario(self):
+    # def test_dev_box_repair_dataplane_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "devBoxName": "createDevBox",
+    #         }
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev dev-box repair "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev dev-box list-operation "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 3),
+    #             self.exists("[0].endTime"),
+    #             self.exists("[0].createdByObjectId"),
+    #             self.exists("[0].operationId"),
+    #             self.exists("[0].startTime"),
+    #             self.check("[0].kind", "Repair"),
+    #             self.check("[0].result.repairOutcome", "NoIssuesDetected"),
+    #             self.check("[0].status", "Succeeded"),
+    #         ],
+    #     )
+
+    def test_dev_box_snapshot_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "devBoxName": "createDevBox",
+                "devBoxName": "devbox-no-hibernate"
             }
         )
 
         self.cmd(
-            "az devcenter dev dev-box repair "
+            "az devcenter dev dev-box capture-snapshot "
             '--name "{devBoxName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         )
 
         self.cmd(
-            "az devcenter dev dev-box list-operation "
+            "az devcenter dev dev-box list-snapshot "
             '--name "{devBoxName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
-                self.check("length(@)", 3),
-                self.exists("[0].endTime"),
-                self.exists("[0].createdByObjectId"),
-                self.exists("[0].operationId"),
-                self.exists("[0].startTime"),
-                self.check("[0].kind", "Repair"),
-                self.check("[0].result.repairOutcome", "NoIssuesDetected"),
-                self.check("[0].status", "Succeeded"),
+                self.check("[0].snapshotType", "Manual"),
             ],
         )
+
+        snapshotId = self.cmd(
+            "az devcenter dev dev-box list-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        ).get_output_in_json()[0]["snapshotId"]
+
+        self.kwargs.update(
+            {
+                "snapshotId": snapshotId,
+            }
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box show-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--snapshot-id "{snapshotId}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("snapshotType", "Manual"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box restore-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--snapshot-id "{snapshotId}" '
+            '--dev-center "{devcenterName}" '
+        )
+
 
 
     # @AllowLargeResponse()
