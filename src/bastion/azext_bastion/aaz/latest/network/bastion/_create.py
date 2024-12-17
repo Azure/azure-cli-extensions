@@ -30,7 +30,7 @@ class Create(AAZCommand):
         az network bastion create --name MyBastion --resource-group MyResourceGroup --sku Developer --vnet-name MyVnet
 
     :example: Create Developer SKU Bastion with Network ACLs IP rules
-        az network bastion create --name MyBastion --resource-group MyResourceGroup --sku Developer --vnet-name MyVnet --network-acls-ips '[{"addressPrefix":"1.1.1.1/16"},{"addressPrefix":"100.64.0.0/10"}]'
+        az network bastion create --name MyBastion --resource-group MyResourceGroup --sku Developer --vnet-name MyVnet --network-acls-ips "1.1.1.1/16 100.64.0.0/10"
     """
 
     _aaz_info = {
@@ -151,8 +151,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="IP configuration of the Bastion Host resource.",
         )
-        _args_schema.network_acls_ips = AAZListArg(
-            options=["--network-acls-ips"],
+        _args_schema.network_acls = AAZListArg(
+            options=["--network-acls"],
             arg_group="Properties",
             help="[Supported in Developer SKU only] The Network ACLs IP rules.",
         )
@@ -201,10 +201,10 @@ class Create(AAZCommand):
         )
         cls._build_args_sub_resource_create(_element.subnet)
 
-        network_acls_ips = cls._args_schema.network_acls_ips
-        network_acls_ips.Element = AAZObjectArg()
+        network_acls = cls._args_schema.network_acls
+        network_acls.Element = AAZObjectArg()
 
-        _element = cls._args_schema.network_acls_ips.Element
+        _element = cls._args_schema.network_acls.Element
         _element.address_prefix = AAZStrArg(
             options=["address-prefix"],
             help="Specifies the IP or IP range in CIDR format. Only IPV4 address is allowed.",
@@ -375,7 +375,7 @@ class Create(AAZCommand):
 
             network_acls = _builder.get(".properties.networkAcls")
             if network_acls is not None:
-                network_acls.set_prop("ipRules", AAZListType, ".network_acls_ips")
+                network_acls.set_prop("ipRules", AAZListType, ".network_acls")
 
             ip_rules = _builder.get(".properties.networkAcls.ipRules")
             if ip_rules is not None:

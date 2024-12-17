@@ -53,9 +53,16 @@ class BastionCreate(_BastionCreate):
                  "For all SKUs but Developer SKU, this virtual network must have a subnet called AzureBastionSubnet.",
             required=True,
         )
+        args_schema.network_acls_ips = AAZStrArg(
+            options=["--network-acls-ips"],
+            arg_group="Properties",
+            help="[Supported in Developer SKU only] Network ACLs IP rules. Space-separated list of IP addresses.",
+            required=False,
+        )
         # filter arguments
         args_schema.ip_configurations._registered = False
         args_schema.virtual_network._registered = False
+        args_schema.network_acls._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -82,7 +89,10 @@ class BastionCreate(_BastionCreate):
             args.virtual_network = {
                 "id": vnet_id
             }
-
+        
+        if args.network_acls_ips is not None:
+            addresses = str(args.network_acls_ips).split()
+            args.network_acls = [{"addressPrefix": address} for address in addresses]
 
 SSH_EXTENSION_NAME = "ssh"
 SSH_EXTENSION_MODULE = "azext_ssh.custom"
