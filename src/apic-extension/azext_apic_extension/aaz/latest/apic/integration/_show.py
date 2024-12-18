@@ -42,8 +42,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.integration_id = AAZStrArg(
-            options=["--integration-id"],
+        _args_schema.integration_name = AAZStrArg(
+            options=["-i", "--integration-name"],
             help="The name of the integration.",
             required=True,
             id_part="child_name_2",
@@ -128,7 +128,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiSourceName", self.ctx.args.integration_id,
+                    "apiSourceName", self.ctx.args.integration_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
