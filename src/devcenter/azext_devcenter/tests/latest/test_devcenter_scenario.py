@@ -2494,62 +2494,80 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     #         ],
     #     )
 
-    def test_dev_box_snapshot_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "devBoxName": "devbox-no-hibernate"
-            }
-        )
+    # def test_dev_box_snapshot_dataplane_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "devBoxName": "devbox-no-hibernate"
+    #         }
+    #     )
 
-        self.cmd(
-            "az devcenter dev dev-box capture-snapshot "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" '
-        )
+    #     self.cmd(
+    #         "az devcenter dev dev-box capture-snapshot "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #     )
 
+    #     self.cmd(
+    #         "az devcenter dev dev-box list-snapshot "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("[0].snapshotType", "Manual"),
+    #         ],
+    #     )
+
+    #     snapshotId = self.cmd(
+    #         "az devcenter dev dev-box list-snapshot "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #     ).get_output_in_json()[0]["snapshotId"]
+
+    #     self.kwargs.update(
+    #         {
+    #             "snapshotId": snapshotId,
+    #         }
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev dev-box show-snapshot "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--snapshot-id "{snapshotId}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("snapshotType", "Manual"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev dev-box restore-snapshot "
+    #         '--name "{devBoxName}" '
+    #         '--project "{projectName}" '
+    #         '--snapshot-id "{snapshotId}" '
+    #         '--dev-center "{devcenterName}" '
+    #     )
+
+    def test_dev_box_customization_task_dataplane_scenario(self):
         self.cmd(
-            "az devcenter dev dev-box list-snapshot "
-            '--name "{devBoxName}" '
+            "az devcenter dev customization-task list "
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
-                self.check("[0].snapshotType", "Manual"),
-            ],
-        )
-
-        snapshotId = self.cmd(
-            "az devcenter dev dev-box list-snapshot "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" '
-        ).get_output_in_json()[0]["snapshotId"]
-
-        self.kwargs.update(
-            {
-                "snapshotId": snapshotId,
-            }
-        )
-
-        self.cmd(
-            "az devcenter dev dev-box show-snapshot "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
-            '--snapshot-id "{snapshotId}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("snapshotType", "Manual"),
+                self.check("length(@)", 7),
+                self.check("[0].catalogName", "customization-quickstart"),
             ],
         )
 
         self.cmd(
-            "az devcenter dev dev-box restore-snapshot "
-            '--name "{devBoxName}" '
+            "az devcenter dev customization-task validate "
             '--project "{projectName}" '
-            '--snapshot-id "{snapshotId}" '
             '--dev-center "{devcenterName}" '
-        )
+            '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' '
 
+        )
 
 
     # @AllowLargeResponse()

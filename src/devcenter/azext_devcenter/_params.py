@@ -1502,7 +1502,8 @@ def load_arguments(self, _):
             arg_type=endpoint,
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
-        c.argument("task_name", type=str, help="The name of the task")
+        c.argument("task_name", options_list=["-n", "--name", "--task-name"],
+                   type=str, help="The name of the task")
 
     with self.argument_context("devcenter dev customization-task list") as c:
         c.argument(
