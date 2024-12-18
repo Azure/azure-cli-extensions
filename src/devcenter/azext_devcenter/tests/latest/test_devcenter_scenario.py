@@ -2550,24 +2550,69 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     #         '--dev-center "{devcenterName}" '
     #     )
 
-    def test_dev_box_customization_task_dataplane_scenario(self):
+    # def test_dev_box_customization_task_dataplane_scenario(self):
+    #     self.cmd(
+    #         "az devcenter dev customization-task list "
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 7),
+    #             self.check("[0].catalogName", "customization-quickstart"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev customization-task validate "
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #         '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' '
+
+    #     )
+
+    def test_dev_box_customization_group_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "createCustomizationGroup": "cgName",
+                "devBoxNoHibernateName": "devbox-no-hibernate",
+                "customizationGroupName": "customizationgroup"
+            }
+        )
+
         self.cmd(
-            "az devcenter dev customization-task list "
+            "az devcenter dev customization-group list "
             '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ',
+            '--dev-center "{devcenterName}" '
+            '--dev-box-name "{devBoxNoHibernateName}" ',
             checks=[
-                self.check("length(@)", 7),
-                self.check("[0].catalogName", "customization-quickstart"),
+                self.check("[0].name", "{customizationGroupName}"),
             ],
         )
 
         self.cmd(
-            "az devcenter dev customization-task validate "
+            "az devcenter dev customization-group create "
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
-            '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' '
-
+            '--name "{createCustomizationGroup}" '
+            '--dev-box-name "{devBoxNoHibernateName}" '
+            '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' ',
+             checks=[
+                self.check("status", "NotStarted"),
+                self.check("contains(keys(@), 'uri')", True),
+            ],
         )
+
+        self.cmd(
+            "az devcenter dev customization-group show "
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--dev-box-name "{devBoxNoHibernateName}" '
+            '--name "{customizationGroupName}" ',
+            checks=[
+                self.check("name", "{customizationGroupName}"),
+                self.check("tasks[0].name", "customization-quickstart/winget")
+            ],
+        )
+
 
 
     # @AllowLargeResponse()
