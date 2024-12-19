@@ -367,7 +367,7 @@ def compare_to_baseline(
     for run in all_test_runs:
         if (
             run.get("testRunId") != baseline_test_run_id
-            and count < 10 # Show only 10 most recent test runs
+            and count < 10  # Show only 10 most recent test runs
             and run.get("status") in ["CANCELLED", "DONE"]
         ):
             recent_test_runs.append(run)

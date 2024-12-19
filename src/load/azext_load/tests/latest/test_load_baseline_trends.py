@@ -15,6 +15,7 @@ from azure.cli.testsdk import (
     JMESPathCheck,
     ResourceGroupPreparer,
     ScenarioTest,
+    live_only,
 )
 
 rg_params = {
@@ -38,6 +39,8 @@ class LoadTestScenarioBaselineTrends(ScenarioTest):
         super(LoadTestScenarioBaselineTrends, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
     
+    # Live only because the test runs are created with no wait
+    @live_only()
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_mark_compare_baseline(self, rg, load):

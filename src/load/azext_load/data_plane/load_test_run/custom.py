@@ -256,7 +256,7 @@ def _update_artifacts_container_path(artifacts_container_url, logs, results):
     )
     return artifacts_container_url.replace(
         artifacts_container_path, artifacts_container_path_updated,
-    )    
+    )
 
 
 def download_test_run_files(
