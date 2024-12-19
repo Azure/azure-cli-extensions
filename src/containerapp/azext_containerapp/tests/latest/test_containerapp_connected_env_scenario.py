@@ -232,7 +232,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
                  ])
 
         self.cmd(
-            'containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {} --yes'.format(env_name,
+            'containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(env_name,
                                                                                                            resource_group,
                                                                                                            dapr_comp_name))
 
@@ -256,7 +256,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
                                                                                                              dapr_comp_name)).get_output_in_json()
             if dapr_component["properties"]["provisioningState"] == 'Succeeded':
                 self.cmd(
-                    'containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {} --yes'.format(
+                    'containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(
                         env_name, resource_group, dapr_comp_name))
 
                 self.cmd('containerapp connected-env dapr-component list -n {} -g {}'.format(env_name, resource_group),
