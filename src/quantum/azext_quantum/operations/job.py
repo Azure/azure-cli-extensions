@@ -21,13 +21,29 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from .._storage import (
     create_container,
+    create_container_using_client,
     upload_blob,
     BlobSasPermissions
 )
 
-from ..vendored_sdks.azure_storage_blob import generate_container_sas
+# from ..vendored_sdks.azure_storage_blob import generate_container_sas
+from ..vendored_sdks.azure_storage_blob import (
+    BlobServiceClient,
+    ContainerClient,
+    BlobClient,
+    BlobSasPermissions,
+    ContentSettings,
+    generate_blob_sas,
+    generate_container_sas
+)
 
-from .._client_factory import cf_jobs
+
+
+# from .._client_factory import cf_jobs
+from .._client_factory import (
+    cf_quantum,
+    cf_jobs,
+    cf_storage)
 
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
@@ -235,59 +251,49 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
     # Upload the input file to the workspace's storage account
-    # if storage is None:
-    #     from .workspace import get as ws_get
-    #     ws = ws_get(cmd)
-    #     if ws.properties.storage_account is None:
-    #         raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
-    #     storage = ws.properties.storage_account.split('/')[-1]
-    # # job_id = str(uuid.uuid4())
-    # # container_name = "quantum-job-" + job_id
-    # # blob_name = "inputData"
+    if storage is None:
+        from .workspace import get as ws_get
+        ws = ws_get(cmd)
+        if ws.properties.storage_account is None:
+            raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
+        storage = ws.properties.storage_account.split('/')[-1]
+    job_id = str(uuid.uuid4())
+    container_name = "quantum-job-" + job_id
+    blob_name = "inputData"
 
-    # connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
-    # connection_string = connection_string_dict["connectionString"]
-    # container_client = create_container(connection_string, container_name)
+    from azure.quantum import Workspace
+    # from ..quantum_python_sdk.workspace import Workspace
 
-    # # The following code is extracted from get_container_uri, line 56 in azure-quantum-python\azure-quantum\azure\quantum\storage.py
-    # # get_container_uri works here, but it creates the container and doesn't return a container client.
-    # # The container client is needed later to upload the input data (see upload_blob call, below).
-    # sas_token = generate_container_sas(
-    #     container_client.account_name,
-    #     container_client.container_name,
-    #     account_key=container_client.credential.account_key,
-    #     permission=BlobSasPermissions(
-    #         read=True, add=True, write=True, create=True
-    #     ),
-    #     expiry=datetime.utcnow() + timedelta(days=14),
-    # )
-    # container_uri = container_client.url + "?" + sas_token
-    # logger.debug("  - container uri: %s", container_uri)
+    resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
+    workspace = Workspace(resource_id=resource_id, location=location)
 
-    # # ========================================================================================
-    # print()
-    # print("Container URI:")
-    # print(container_uri)
-    # print()
-    # return
-    # # ========================================================================================
+    knack_logger.warning("")
+    knack_logger.warning("Getting Azure credential token...")
+    knack_logger.warning("")
 
-    # knack_logger.warning("Uploading input data...")
-    # try:
-    #     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
-    #     # blob_uri = upload_blob(storage_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
-    #     logger.debug("  - blob uri: %s", blob_uri)
-    # except Exception as e:
-    #     # Unexplained behavior:
-    #     #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
-    #     #    "azdev test --live", but the same commands are successful when run interactively.
-    #     #    See commented-out tests in test_submit in test_quantum_jobs.py
-    #     error_msg = f"Input file upload failed.\nError type: {type(e)}"
-    #     if isinstance(e, UnicodeDecodeError):
-    #         error_msg += f"\nReason: {e.reason}"
-    #     # raise AzureResponseError(error_msg) from e
-    #     print(e)
-    #     return
+    # TODO: Suppress the ugly series of non-fatal error messages that occur when the next line executes
+    container_uri = workspace.get_container_uri(job_id=job_id)            # Like line 205 in azure-quantum-python\azure-quantum\azure\quantum\job\base_job.py
+
+    container_client = ContainerClient.from_container_url(container_uri)
+    create_container_using_client(container_client)
+
+    knack_logger.warning("")
+    knack_logger.warning("Uploading input data...")
+    try:
+        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
+        # blob_uri = upload_blob(storage_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
+        logger.debug("  - blob uri: %s", blob_uri)
+    except Exception as e:
+        # Unexplained behavior:
+        #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
+        #    "azdev test --live", but the same commands are successful when run interactively.
+        #    See commented-out tests in test_submit in test_quantum_jobs.py
+        error_msg = f"Input file upload failed.\nError type: {type(e)}"
+        if isinstance(e, UnicodeDecodeError):
+            error_msg += f"\nReason: {e.reason}"
+        # raise AzureResponseError(error_msg) from e
+        print(e)
+        return
 
     # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
     if job_params is None:
@@ -337,42 +343,19 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             job_params = {"params": job_params}
 
     # Submit the job
-    # client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
-    # job_details = {'name': job_name,
-    #                'container_uri': container_uri,
-    #                'input_data_format': job_input_format,
-    #                'output_data_format': job_output_format,
-    #                'inputParams': job_params,
-    #                'provider_id': provider_id,
-    #                'target': target_info.target_id,
-    #                'metadata': metadata,
-    #                'tags': tags}
-
-    # knack_logger.warning("Submitting job...")
-    # return client.create(job_id, job_details)
-
-    # ========================================================================================
-    # ===== Experimental Python SDK code =====================================================
-    # Based on example code in https://learn.microsoft.com/en-us/azure/quantum/quickstart-microsoft-provider-format?tabs=tabid-portal%2Ctabid-pyquil#submit-qir-formatted-circuits
-    # ========================================================================================
-    from azure.quantum import Workspace
-
-    resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
-    workspace = Workspace(resource_id=resource_id, location=location)
-    
-    # Submit the job
-    knack_logger.warning("Getting Azure credential token...")
-    target = workspace.get_targets(name=target_id)
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    job_details = {'name': job_name,
+                   'container_uri': container_uri,
+                   'input_data_format': job_input_format,
+                   'output_data_format': job_output_format,
+                   'inputParams': job_params,
+                   'provider_id': provider_id,
+                   'target': target_info.target_id,
+                   'metadata': metadata,
+                   'tags': tags}
 
     knack_logger.warning("Submitting job...")
-    job = target.submit(
-        input_data=blob_data, 
-        input_data_format=job_input_format,
-        output_data_format=job_output_format,
-        name=job_name,
-        input_params = job_params
-    )
-    return job.details
+    return client.create(job_id, job_details)
 
 
 def _parse_blob_url(url):
