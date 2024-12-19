@@ -141,6 +141,7 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_SPLITCSV_ID = "loadtest-splitcsv-case"
     LOAD_TEST_ADVANCED_URL_ID = "loadtest-advanced-url-case"
     LOAD_TEST_CONVERT_TO_JMX_ID = "loadtest-convert-to-jmx-case"
+    LOAD_TEST_BASELINE_TRENDS_ID = "loadtest-baseline-trends-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
@@ -193,6 +194,8 @@ class LoadTestRunConstants(LoadConstants):
     SAS_URL_TEST_RUN_ID = "sas-url-test-run-case"
     SAS_URL_TEST_RUN_ID_1 = "sas-url-test-run-case-1"
     HIGH_SCALE_LOAD_TEST_RUN_ID = "highscaleload-testrun-case"
+    BASELINE_TRENDS_TEST_RUN_ID_1 = "baseline-trends-testrun-case-1"
+    BASELINE_TRENDS_TEST_RUN_ID_2 = "baseline-trends-testrun-case-2"
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"

@@ -8,7 +8,7 @@ from enum import EnumMeta
 
 import requests
 import yaml
-from azext_load.data_plane.utils.constants import LoadTestConfigKeys
+from azext_load.data_plane.utils.constants import LoadTestConfigKeys, LoadTestTrendsKeys
 from azext_load.data_plane.utils import validators, utils_yaml_config
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 from azure.cli.core.azclierror import (
@@ -18,6 +18,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
 )
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from azure.cli.core.util import run_az_cmd
 from knack.log import get_logger
 
 from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
@@ -177,6 +178,14 @@ def download_file(url, file_path):
                 if chunk:  # ignore keep-alive new chunks
                     f.write(chunk)
     logger.debug("Downloading file completed")
+
+
+def download_from_storage_container(sas_url, path):
+    logger.debug("Downloading files from storage container")
+    cmd = ["az", "storage", "copy", "--source", sas_url, "--destination", path, "--recursive"]
+    logger.debug("Executing command: %s", cmd)
+    result = run_az_cmd(cmd).result
+    logger.debug("Execution result: %s", result)
 
 
 def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
@@ -527,6 +536,7 @@ def create_or_update_test_without_config(
     disable_public_ip=None,
     autostop_criteria=None,
     regionwise_engines=None,
+    baseline_test_run_id=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -628,6 +638,7 @@ def create_or_update_test_without_config(
             "Auto stop is disabled. Error rate and time window will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
         )
+    new_body["baselineTestRunId"] = baseline_test_run_id if baseline_test_run_id else body.get("baselineTestRunId")
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
@@ -821,3 +832,36 @@ def validate_engine_data_with_regionwiseload_data(engine_instances, regionwise_e
             f"Sum of engine instances in regionwise load test configuration ({total_engines}) "
             f"should be equal to total engine instances ({engine_instances})"
         )
+
+
+def generate_trends_row(test_run):
+    trends = {
+        LoadTestTrendsKeys.NAME: test_run.get("testRunId"),
+    }
+    if test_run.get("status") is not None:
+        trends[LoadTestTrendsKeys.STATUS] = test_run.get("status")
+    if test_run.get("duration") is not None:
+        trends[LoadTestTrendsKeys.DURATION] = round(test_run.get("duration") / (60 * 1000), 2)
+    if test_run.get("virtualUsers") is not None:
+        trends[LoadTestTrendsKeys.VUSERS] = test_run.get("virtualUsers")
+    if test_run.get("testRunStatistics", {}).get("Total", {}).get("sampleCount") is not None:
+        trends[LoadTestTrendsKeys.TOTAL_REQUESTS] = test_run.get(
+            "testRunStatistics", {}
+        ).get("Total", {}).get("sampleCount")
+    if test_run.get("testRunStatistics", {}).get("Total", {}).get("meanResTime") is not None:
+        trends[LoadTestTrendsKeys.MEAN_RES_TIME] = test_run.get(
+            "testRunStatistics", {}
+        ).get("Total", {}).get("meanResTime")
+    if test_run.get("testRunStatistics", {}).get("Total", {}).get("medianResTime") is not None:
+        trends[LoadTestTrendsKeys.MEDIAN_RES_TIME] = test_run.get(
+            "testRunStatistics", {}
+        ).get("Total", {}).get("medianResTime")
+    if test_run.get("testRunStatistics", {}).get("Total", {}).get("errorPct") is not None:
+        trends[LoadTestTrendsKeys.ERROR_PCT] = test_run.get(
+            "testRunStatistics", {}
+        ).get("Total", {}).get("errorPct")
+    if test_run.get("testRunStatistics", {}).get("Total", {}).get("throughput") is not None:
+        trends[LoadTestTrendsKeys.THROUGHPUT] = round(test_run.get(
+            "testRunStatistics", {}
+        ).get("Total", {}).get("throughput"), 2)
+    return trends

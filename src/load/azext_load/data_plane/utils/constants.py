@@ -39,3 +39,20 @@ class HighScaleThreshold:
 class LoadCommandsConstants:
     CONVERT_TO_JMX_CONFIRM_PROMPT = "Once the test is converted, the process cannot be reversed.\n" \
         "Do you want to continue?"
+
+
+@dataclass
+class LoadTestTrendsKeys:
+    NAME = "Name"
+    DURATION = "Duration (in minutes)"
+    VUSERS = "Virtual Users"
+    TOTAL_REQUESTS = "Total Requests"
+    MEAN_RES_TIME = "Mean Response Time"
+    MEDIAN_RES_TIME = "Median Response Time"
+    ERROR_PCT = "Error Percentage"
+    THROUGHPUT = "Throughput"
+    STATUS = "Status"
+
+    ORDERED_HEADERS = [NAME, DURATION, VUSERS, TOTAL_REQUESTS,
+                       MEAN_RES_TIME, MEDIAN_RES_TIME, ERROR_PCT,
+                       THROUGHPUT, STATUS]

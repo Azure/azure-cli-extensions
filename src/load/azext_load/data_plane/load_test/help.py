@@ -119,6 +119,28 @@ examples:
 """
 
 helps[
+    "load test set-baseline"
+] = """
+type: command
+short-summary: Set a baseline test run for the test.
+examples:
+    - name: Set baseline test run.
+      text: |
+        az load test set-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --test-run-id sample-associated-test-run-id
+"""
+
+helps[
+    "load test compare-to-baseline"
+] = """
+type: command
+short-summary: Compare the sampler statistics of recent test runs with the baseline test run.
+examples:
+    - name: Compare recent test runs to baseline.
+      text: |
+        az load test compare-to-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id -o table
+"""
+
+helps[
     "load test download-files"
 ] = """
 type: command

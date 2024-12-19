@@ -5,12 +5,15 @@
 
 from azext_load.data_plane.utils.utils import (
     create_or_update_test_run_body,
+    download_from_storage_container,
     get_file_info_and_download,
     get_testrun_data_plane_client,
 )
 from azext_load.data_plane.utils.constants import HighScaleThreshold
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
+from urllib.parse import urlparse
+
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -226,6 +229,36 @@ def _is_high_scale_test_run(test_run_data):
     return False
 
 
+def _download_from_artifacts_container(artifacts_container, path, logs=False, results=False):
+    logger.warning(
+        "Downloading %s from artifacts container for high scale test run",
+        {"logs" if logs else "results" if results else "files"}
+    )
+    if artifacts_container is not None and artifacts_container.get("url") is not None:
+        artifacts_container_url = artifacts_container.get("url")
+        artifacts_container_url = _update_artifacts_container_path(artifacts_container_url, logs, results)
+        download_from_storage_container(artifacts_container_url, path)
+        logger.warning(
+            "%s from artifacts container downloaded to %s",
+            {"Logs" if logs else "Results" if results else "Files"},
+            path
+        )
+    else:
+        logger.warning("No artifacts container found")
+
+
+def _update_artifacts_container_path(artifacts_container_url, logs, results):
+    artifacts_container_path = urlparse(artifacts_container_url).path
+    artifacts_container_path_updated = (
+        artifacts_container_path
+        + f"{'' if artifacts_container_path.endswith('/') else '/'}"
+        + f"{'logs' if logs else 'results' if results else ''}"
+    )
+    return artifacts_container_url.replace(
+        artifacts_container_path, artifacts_container_path_updated,
+    )    
+
+
 def download_test_run_files(
     cmd,
     load_test_resource,
@@ -250,27 +283,25 @@ def download_test_run_files(
         _download_input_file(test_run_input_artifacts, test_run_id, path)
 
     is_high_scale_test_run = _is_high_scale_test_run(test_run_data)
-    high_scale_test_run_message = ""
+    artifacts_container = (
+        test_run_output_artifacts.get("artifactsContainerInfo")
+        if test_run_output_artifacts
+        else None
+    )
     if test_run_log:
         if is_high_scale_test_run:
-            high_scale_test_run_message += f"Logs file for high-scale test {test_run_id} "\
-                "is not available for download. "
+            _download_from_artifacts_container(artifacts_container, path, logs=True)
         else:
             _download_logs_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_results:
         if is_high_scale_test_run:
-            high_scale_test_run_message += f"Results file for high-scale test {test_run_id} "\
-                "is not available for download. "
+            _download_from_artifacts_container(artifacts_container, path, results=True)
         else:
             _download_results_file(test_run_output_artifacts, test_run_id, path)
 
     if test_run_report:
         _download_reports_file(test_run_output_artifacts, test_run_id, path)
-
-    if high_scale_test_run_message:
-        high_scale_test_run_message += "Use the 'get-artifacts-url' command to fetch the SAS URL and access the file."
-        return high_scale_test_run_message
 
 
 # app components
