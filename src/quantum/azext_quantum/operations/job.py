@@ -13,30 +13,13 @@ import os
 import uuid
 import knack.log
 
-from datetime import datetime, timedelta
-from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
+# from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-from .._storage import (
-    create_container,
-    create_container_using_client,
-    upload_blob,
-    BlobSasPermissions
-)
-
-# from ..vendored_sdks.azure_storage_blob import generate_container_sas
-from ..vendored_sdks.azure_storage_blob import (
-    BlobServiceClient,
-    ContainerClient,
-    BlobClient,
-    BlobSasPermissions,
-    ContentSettings,
-    generate_blob_sas,
-    generate_container_sas
-)
-
+from .._storage import create_container_using_client, upload_blob
+from ..vendored_sdks.azure_storage_blob import ContainerClient
 from .._client_factory import cf_jobs
 
 from .workspace import WorkspaceInfo
@@ -252,7 +235,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
         storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
-    container_name = "quantum-job-" + job_id
+    # container_name = "quantum-job-" + job_id
     blob_name = "inputData"
 
     from azure.quantum import Workspace
@@ -261,21 +244,16 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     workspace = Workspace(resource_id=resource_id, location=location)
 
-    knack_logger.warning("")
     knack_logger.warning("Getting Azure credential token...")
-    knack_logger.warning("")
-
     # TODO: Suppress the ugly series of non-fatal error messages that occur when the next line executes
     container_uri = workspace.get_container_uri(job_id=job_id)            # Like line 205 in azure-quantum-python\azure-quantum\azure\quantum\job\base_job.py
 
     container_client = ContainerClient.from_container_url(container_uri)
     create_container_using_client(container_client)
 
-    knack_logger.warning("")
     knack_logger.warning("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
-        # blob_uri = upload_blob(storage_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
         logger.debug("  - blob uri: %s", blob_uri)
     except Exception as e:
         # Unexplained behavior:
@@ -285,9 +263,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         error_msg = f"Input file upload failed.\nError type: {type(e)}"
         if isinstance(e, UnicodeDecodeError):
             error_msg += f"\nReason: {e.reason}"
-        # raise AzureResponseError(error_msg) from e
-        print(e)
-        return
+        raise AzureResponseError(error_msg) from e
 
     # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
     if job_params is None:
@@ -319,7 +295,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
 
     # TODO: Straighten this out...
     # There's a warning:
-    # "...azure\quantum\target\target.py:275: UserWarning: Field 'shots' from the 'input_params' parameter is subject to change in future versions. Please, use 'shots' parameter instead." 
+    # "...azure\quantum\target\target.py:275: UserWarning: Field 'shots' from the 'input_params' parameter is subject to change in future versions. Please, use 'shots' parameter instead."
     # Both count and shots are in job_params -- does that make sense?
     #
     # # Supply a default "shots" if it's not specified (like Q# does)
