@@ -37,13 +37,7 @@ from ..vendored_sdks.azure_storage_blob import (
     generate_container_sas
 )
 
-
-
-# from .._client_factory import cf_jobs
-from .._client_factory import (
-    cf_quantum,
-    cf_jobs,
-    cf_storage)
+from .._client_factory import cf_jobs
 
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
