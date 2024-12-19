@@ -2569,324 +2569,291 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
     #     )
 
-    def test_dev_box_customization_group_dataplane_scenario(self):
+    # def test_dev_box_customization_group_dataplane_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "createCustomizationGroup": "cgName",
+    #             "devBoxNoHibernateName": "devbox-no-hibernate",
+    #             "customizationGroupName": "customizationgroup"
+    #         }
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev customization-group list "
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #         '--dev-box-name "{devBoxNoHibernateName}" ',
+    #         checks=[
+    #             self.check("[0].name", "{customizationGroupName}"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev customization-group create "
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{createCustomizationGroup}" '
+    #         '--dev-box-name "{devBoxNoHibernateName}" '
+    #         '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' ',
+    #          checks=[
+    #             self.check("status", "NotStarted"),
+    #             self.check("contains(keys(@), 'uri')", True),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev customization-group show "
+    #         '--project "{projectName}" '
+    #         '--dev-center "{devcenterName}" '
+    #         '--dev-box-name "{devBoxNoHibernateName}" '
+    #         '--name "{customizationGroupName}" ',
+    #         checks=[
+    #             self.check("name", "{customizationGroupName}"),
+    #             self.check("tasks[0].name", "customization-quickstart/winget")
+    #         ],
+    #     )
+
+
+    @AllowLargeResponse()
+    def test_environment_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "createCustomizationGroup": "cgName",
-                "devBoxNoHibernateName": "devbox-no-hibernate",
-                "customizationGroupName": "customizationgroup"
+                "envName": self.create_random_name(prefix="cli", length=12),
+                "envName2": self.create_random_name(prefix="cli", length=12),
+                "appConfigName": self.create_random_name(prefix="app", length=10),
+                "appConfigName2": self.create_random_name(prefix="app", length=10),
+                "catalogName": "env-quickstart",
+                "environmentDefinitionName": "AppConfig",
+                "sandboxEnvironmentDefinitionName": "Sandbox",
+                "envTypeName": "testtags",
+                "devcenterName": "test-dev-center",
+                "projectName": "amlim-project",
             }
         )
 
         self.cmd(
-            "az devcenter dev customization-group list "
-            '--project "{projectName}" '
+            "az devcenter dev environment create "
+            '--catalog-name "{catalogName}" '
+            '--name "{envName}" '
+            '--environment-type "{envTypeName}" '
             '--dev-center "{devcenterName}" '
-            '--dev-box-name "{devBoxNoHibernateName}" ',
+            '--project "{projectName}" '
+            '--parameters "{{\\"name\\": \\"{appConfigName}\\"}}" '
+            '--environment-definition-name "{environmentDefinitionName}"',
             checks=[
-                self.check("[0].name", "{customizationGroupName}"),
+                self.check("environmentDefinitionName", "{environmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName}"),
+                self.check("provisioningState", "Succeeded"),
             ],
         )
 
         self.cmd(
-            "az devcenter dev customization-group create "
-            '--project "{projectName}" '
+            "az devcenter dev environment show "
+            '--name "{envName}" '
             '--dev-center "{devcenterName}" '
-            '--name "{createCustomizationGroup}" '
-            '--dev-box-name "{devBoxNoHibernateName}" '
-            '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' ',
-             checks=[
-                self.check("status", "NotStarted"),
-                self.check("contains(keys(@), 'uri')", True),
+            '--project "{projectName}" ',
+            checks=[
+                self.check("environmentDefinitionName", "{environmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName}"),
+                self.check("provisioningState", "Succeeded"),
             ],
         )
 
         self.cmd(
-            "az devcenter dev customization-group show "
-            '--project "{projectName}" '
+            "az devcenter dev environment deploy "
+            '--name "{envName}" '
             '--dev-center "{devcenterName}" '
-            '--dev-box-name "{devBoxNoHibernateName}" '
-            '--name "{customizationGroupName}" ',
+            '--project "{projectName}" '
+            '--parameters "{{\\"name\\": \\"{appConfigName2}\\"}}" ',
             checks=[
-                self.check("name", "{customizationGroupName}"),
-                self.check("tasks[0].name", "customization-quickstart/winget")
+                self.check("environmentDefinitionName", "{environmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName}"),
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev environment delete -y --no-wait --force "
+            '--name "{envName}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+        )
+
+
+        self.cmd(
+            "az devcenter dev environment create "
+            '--catalog-name "{catalogName}" '
+            '--name "{envName2}" '
+            '--environment-type "{envTypeName}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--environment-definition-name "{sandboxEnvironmentDefinitionName}" '
+            '--expiration "2025-11-30T22:35:00+00:00"',
+            checks=[
+                self.check("environmentDefinitionName", "{sandboxEnvironmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName2}"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("expirationDate", "2025-11-30T22:35:00+00:00"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev environment update "
+            '--name "{envName2}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--expiration "2025-12-30T22:35:00+00:00"',
+            checks=[
+                self.check("environmentDefinitionName", "{sandboxEnvironmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName2}"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("expirationDate", "2025-12-30T22:35:00+00:00"),
             ],
         )
 
 
+        self.cmd(
+            "az devcenter dev environment update-expiration-date "
+            '--name "{envName2}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--expiration "2026-12-30T22:35:00+00:00"',
+            checks=[
+                self.check("environmentDefinitionName", "{sandboxEnvironmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName2}"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("expirationDate", "2026-12-30T22:35:00+00:00"),
+            ],
+        )
 
-    # @AllowLargeResponse()
-    # def test_environment_dataplane_scenario(self):
-    #     self.kwargs.update(
-    #         {
-    #             "envName": self.create_random_name(prefix="cli", length=12),
-    #             "location": "centraluseuap",
-    #             "rg": self.create_random_name(prefix="cli", length=24),
-    #         }
-    #     )
+        self.cmd(
+            "az devcenter dev environment list-operation "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.exists("[0].endTime"),
+                self.exists("[0].createdByObjectId"),
+                self.exists("[0].operationId"),
+                self.exists("[0].startTime"),
+                self.check("[0].kind", "Deploy"),
+                self.check("[0].status", "Succeeded"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment list "
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("length(@)", 0),
-    #         ],
-    #     )
+        operationId = self.cmd(
+            "az devcenter dev environment list-operation "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        ).get_output_in_json()[0]["operationId"]
 
-    #     self.kwargs.update(
-    #         {
-    #             "environmentDefinitionName": "Sandbox",
-    #         }
-    #     )
+        self.kwargs.update(
+            {
+                "operationId": operationId,
+            }
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment create "
-    #         '--catalog-name "{catalogName}" '
-    #         '--name "{envName}" '
-    #         '--environment-type "{envTypeName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" '
-    #         '--environment-definition-name "{environmentDefinitionName}"',
-    #         checks=[
-    #             self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-    #             self.check("catalogName", "{catalogName}"),
-    #             self.check("environmentType", "{envTypeName}"),
-    #             self.check("name", "{envName}"),
-    #             self.check("provisioningState", "Succeeded"),
-    #         ],
-    #     )
+        self.cmd(
+            "az devcenter dev environment show-operation "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--operation-id "{operationId}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.exists("endTime"),
+                self.exists("createdByObjectId"),
+                self.check("operationId", "{operationId}"),
+                self.exists("startTime"),
+                self.check("kind", "Deploy"),
+                self.check("status", "Succeeded"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment show "
-    #         '--name "{envName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-    #             self.check("catalogName", "{catalogName}"),
-    #             self.check("environmentType", "{envTypeName}"),
-    #             self.check("name", "{envName}"),
-    #             self.check("provisioningState", "Succeeded"),
-    #         ],
-    #     )
+        self.cmd(
+            "az devcenter dev environment show-logs-by-operation "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--operation-id "{operationId}" '
+            '--dev-center "{devcenterName}" '
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment update "
-    #         '--name "{envName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-    #             self.check("catalogName", "{catalogName}"),
-    #             self.check("environmentType", "{envTypeName}"),
-    #             self.check("name", "{envName}"),
-    #             self.check("provisioningState", "Succeeded"),
-    #         ],
-    #     )
+        self.cmd(
+            "az devcenter dev environment list-action "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.exists("[0].next"),
+                self.check("[0].actionType", "Delete"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment deploy "
-    #         '--name "{envName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-    #             self.check("catalogName", "{catalogName}"),
-    #             self.check("environmentType", "{envTypeName}"),
-    #             self.check("name", "{envName}"),
-    #             self.check("provisioningState", "Succeeded"),
-    #         ],
-    #     )
+        deleteAction = self.cmd(
+            "az devcenter dev environment list-action "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        ).get_output_in_json()
 
-    #     self.cmd(
-    #         "az devcenter dev environment list "
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" '
-    #         '--user-id "me" ',
-    #         checks=[self.check("length(@)", 1), self.check("[0].name", "{envName}")],
-    #     )
+        self.kwargs.update(
+            {
+                "actionName": deleteAction[0]["name"],
+                "scheduledTime": deleteAction[0]["next"]["scheduledTime"],
+                "delayTime": "00:10",
+            }
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment delete -y "
-    #         '--name "{envName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" '
-    #     )
+        self.cmd(
+            "az devcenter dev environment show-action "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--action-name "{actionName}"',
+            checks=[
+                self.check("name", "{actionName}"),
+                self.check("actionType", "Delete"),
+                self.check("next.scheduledTime", "{scheduledTime}"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment list "
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("length(@)", 0),
-    #         ],
-    #     )
+        self.cmd(
+            "az devcenter dev environment delay-action "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--delay-time "{delayTime}" '
+            '--action-name "{actionName}"',
+            checks=[
+                self.check("name", "{actionName}"),
+                self.exists("next.scheduledTime"),
+            ],
+        )
 
-    # @AllowLargeResponse()
-    # def test_environment_operations_dataplane_scenario(self):
-    #     self.kwargs.update(
-    #         {
-    #             "envName": self.create_random_name(prefix="cli", length=12),
-    #             "location": "centraluseuap",
-    #             "rg": self.create_random_name(prefix="cli", length=24),
-    #             "environmentDefinitionName": "Sandbox",
-    #         }
-    #     )
+        self.cmd(
+            "az devcenter dev environment skip-action "
+            '--name "{envName2}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--action-name "{actionName}"'
+        )
 
-    #     self.cmd(
-    #         "az devcenter dev environment list "
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("length(@)", 0),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment create "
-    #         '--catalog-name "{catalogName}" '
-    #         '--name "{envName}" '
-    #         '--environment-type "{envTypeName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" '
-    #         '--environment-definition-name "{environmentDefinitionName}" '
-    #         '--expiration "2025-11-30T22:35:00+00:00"',
-    #         checks=[
-    #             self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-    #             self.check("catalogName", "{catalogName}"),
-    #             self.check("environmentType", "{envTypeName}"),
-    #             self.check("name", "{envName}"),
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("expirationDate", "2025-11-30T22:35:00+00:00"),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment deploy "
-    #         '--name "{envName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" '
-    #         '--expiration "2025-12-30T22:35:00+00:00"',
-    #         checks=[
-    #             self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-    #             self.check("catalogName", "{catalogName}"),
-    #             self.check("environmentType", "{envTypeName}"),
-    #             self.check("name", "{envName}"),
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("expirationDate", "2025-12-30T22:35:00+00:00"),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment list-operation "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" ',
-    #         checks=[
-    #             self.exists("[0].endTime"),
-    #             self.exists("[0].createdByObjectId"),
-    #             self.exists("[0].operationId"),
-    #             self.exists("[0].startTime"),
-    #             self.check("[0].kind", "Deploy"),
-    #             self.check("[0].status", "Succeeded"),
-    #         ],
-    #     )
-
-    #     operationId = self.cmd(
-    #         "az devcenter dev environment list-operation "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" '
-    #     ).get_output_in_json()[0]["operationId"]
-
-    #     self.kwargs.update(
-    #         {
-    #             "operationId": operationId,
-    #         }
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment show-operation "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--operation-id "{operationId}" '
-    #         '--dev-center "{devcenterName}" ',
-    #         checks=[
-    #             self.exists("endTime"),
-    #             self.exists("createdByObjectId"),
-    #             self.check("operationId", "{operationId}"),
-    #             self.exists("startTime"),
-    #             self.check("kind", "Deploy"),
-    #             self.check("status", "Succeeded"),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment show-logs-by-operation "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--operation-id "{operationId}" '
-    #         '--dev-center "{devcenterName}" '
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment list-action "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" ',
-    #         checks=[
-    #             self.check("length(@)", 1),
-    #             self.exists("[0].next"),
-    #             self.check("[0].actionType", "Delete"),
-    #         ],
-    #     )
-
-    #     deleteAction = self.cmd(
-    #         "az devcenter dev environment list-action "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" '
-    #     ).get_output_in_json()
-
-    #     self.kwargs.update(
-    #         {
-    #             "actionName": deleteAction[0]["name"],
-    #             "scheduledTime": deleteAction[0]["next"]["scheduledTime"],
-    #             "delayTime": "00:10",
-    #         }
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment show-action "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--action-name "{actionName}"',
-    #         checks=[
-    #             self.check("name", "{actionName}"),
-    #             self.check("actionType", "Delete"),
-    #             self.check("next.scheduledTime", "{scheduledTime}"),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment delay-action "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--delay-time "{delayTime}" '
-    #         '--action-name "{actionName}"',
-    #         checks=[
-    #             self.check("name", "{actionName}"),
-    #             self.exists("next.scheduledTime"),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter dev environment skip-action "
-    #         '--name "{envName}" '
-    #         '--project "{projectName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--action-name "{actionName}"'
-    #     )
+        self.cmd(
+            "az devcenter dev environment delete -y "
+            '--name "{envName2}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+        )

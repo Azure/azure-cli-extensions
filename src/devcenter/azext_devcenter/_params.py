@@ -261,12 +261,6 @@ def load_arguments(self, _):
             type=str,
             help="The name of the dev box pool this machine belongs to.",
         )
-        c.argument(
-            "local_administrator",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
-            help="Indicates whether the "
-            "owner of the Dev Box is a local administrator.",
-        )
 
     with self.argument_context("devcenter dev dev-box delete") as c:
         c.argument(
