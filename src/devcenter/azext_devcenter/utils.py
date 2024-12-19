@@ -5,11 +5,17 @@
 #
 # --------------------------------------------------------------------------
 import json
+import sys
 from datetime import datetime, timedelta
 from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
 from ._validators import validate_endpoint
+
+
+def clear_running_line():
+    sys.stdout.write('\r' + ' ' * 80 + '\r')
+    sys.stdout.flush()
 
 
 def get_project_arg(cli_ctx, dev_center_name, project_name=None):

@@ -10,6 +10,7 @@
 
 from azure.cli.core.aaz import *
 import json
+from ......utils import clear_running_line
 
 @register_command(
     "devcenter dev customization-task validate",
@@ -196,6 +197,7 @@ class Validate(AAZCommand):
         
         def on_200(self, session):
             data =  self.deserialize_http_content(session)
+            clear_running_line()
             print(json.dumps(data, indent=2))
 
 

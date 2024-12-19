@@ -261,12 +261,6 @@ def load_arguments(self, _):
             type=str,
             help="The name of the dev box pool this machine belongs to.",
         )
-        c.argument(
-            "local_administrator",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
-            help="Indicates whether the "
-            "owner of the Dev Box is a local administrator.",
-        )
 
     with self.argument_context("devcenter dev dev-box delete") as c:
         c.argument(
@@ -1502,7 +1496,8 @@ def load_arguments(self, _):
             arg_type=endpoint,
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
-        c.argument("task_name", type=str, help="The name of the task")
+        c.argument("task_name", options_list=["-n", "--name", "--task-name"],
+                   type=str, help="The name of the task")
 
     with self.argument_context("devcenter dev customization-task list") as c:
         c.argument(

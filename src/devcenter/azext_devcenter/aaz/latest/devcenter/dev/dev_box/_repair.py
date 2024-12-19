@@ -9,7 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+import json
+from ......utils import clear_running_line
 
 @register_command(
     "devcenter dev dev-box repair",
@@ -183,7 +184,9 @@ class Repair(AAZCommand):
             return parameters
         
         def on_200(self, session):
-            pass
+            data =  self.deserialize_http_content(session)
+            clear_running_line()
+            print(json.dumps(data, indent=2))
 
 
 class _RepairHelper:

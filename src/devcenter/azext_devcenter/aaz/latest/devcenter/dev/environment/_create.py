@@ -102,11 +102,13 @@ class Create(AAZCommand):
             options=["--expiration-date"],
             arg_group="Body",
             help="The time the expiration date will be triggered (UTC), after which the environment and associated resources will be deleted.",
+            nullable=True,
         )
         _args_schema.parameters = AAZFreeFormDictArg(
             options=["--parameters"],
             arg_group="Body",
             help="Parameters object for the environment.",
+            nullable=True,
         )
 
         # define Arg Group "Default"

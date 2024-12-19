@@ -1109,7 +1109,6 @@ def devcenter_dev_box_create(
     no_wait=False,
     dev_center=None,
     endpoint=None,
-    local_administrator=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
     return DevBoxCreate(cli_ctx=cmd.cli_ctx)(command_args={
@@ -1119,7 +1118,6 @@ def devcenter_dev_box_create(
         "dev_box_name": dev_box_name,
         "pool_name": pool_name,
         "no_wait": no_wait,
-        "local_administrator": local_administrator
     })
 
 
@@ -1511,7 +1509,7 @@ def devcenter_environment_create(
         "environment_type": environment_type,
         "catalog_name": catalog_name,
         "environment_definition_name": environment_definition_name,
-        "expiration_date": datetime.fromisoformat(expiration_date),
+        "expiration_date": expiration_date,
         "parameters": parameters,
         "no_wait": no_wait
     })
@@ -1547,7 +1545,7 @@ def devcenter_environment_update(
         "environment_type": environment_type,
         "catalog_name": catalog_name,
         "environment_definition_name": environment_definition_name,
-        "expiration_date": datetime.fromisoformat(expiration_date),
+        "expiration_date": expiration_date,
         "parameters": parameters,
         "no_wait": no_wait
     })
@@ -1742,7 +1740,7 @@ def devcenter_environment_update_expiration(
         "project_name": project_name,
         "user_id": user_id,
         "environment_name": environment_name,
-        "expiration_date": datetime.fromisoformat(expiration_date)
+        "expiration_date": expiration_date
     })
 
 
