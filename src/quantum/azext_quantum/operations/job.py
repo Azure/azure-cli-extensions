@@ -11,10 +11,6 @@ import json
 import logging
 import os
 import uuid
-
-import azure.core.configuration
-import azure.core.configuration
-import azure.core.settings
 import knack.log
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
