@@ -11,14 +11,18 @@ import json
 import logging
 import os
 import uuid
+
+import azure.core.configuration
+import azure.core.configuration
+import azure.core.settings
 import knack.log
 
-# from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-from .._storage import create_container_using_client, upload_blob
+from ..quantum_python_sdk.workspace import Workspace
+from .._storage import upload_blob
 from ..vendored_sdks.azure_storage_blob import ContainerClient
 from .._client_factory import cf_jobs
 
@@ -238,18 +242,51 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     # container_name = "quantum-job-" + job_id
     blob_name = "inputData"
 
-    from azure.quantum import Workspace
+    # # from azure.quantum import Workspace
     # from ..quantum_python_sdk.workspace import Workspace
 
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     workspace = Workspace(resource_id=resource_id, location=location)
 
     knack_logger.warning("Getting Azure credential token...")
+    
     # TODO: Suppress the ugly series of non-fatal error messages that occur when the next line executes
-    container_uri = workspace.get_container_uri(job_id=job_id)            # Like line 205 in azure-quantum-python\azure-quantum\azure\quantum\job\base_job.py
+    # container_uri = workspace.get_container_uri(job_id=job_id)
+
+    # >>>>>>>> This only suppresses the last error message, not the yellow stuff  <<<<<<<<<
+    import sys, os
+    with open(os.devnull, "w") as devnull:
+        sys.stdout = devnull
+        # sys.stderr = devnull
+        container_uri = workspace.get_container_uri(job_id=job_id)
+
+    # >>>>>>>> This variable responds to --only-show-errors or the config file [core] only_show_errors <<<<<<<<<<
+    # >>>>>>>> ...but it doesn't affect the output here:
+    # cmd.cli_ctx.only_show_errors = True
+    # container_uri = workspace.get_container_uri(job_id=job_id)
+    # cmd.cli_ctx.only_show_errors = False
+
+    # print("cmd.cli_ctx.only_show_errors:")
+    # print(cmd.cli_ctx.only_show_errors)
+    # return
+
+    # from knack.log import get_logger, CLILogging
+    # print("CLILogging.ONLY_SHOW_ERRORS_FLAG:")
+    # print(CLILogging.ONLY_SHOW_ERRORS_FLAG)       This just prints "--only-show-errors"
+    # return
+
+    # >>>>> Example from https://docs.python.org/3/library/warnings.html
+    # import warnings
+    # with warnings.catch_warnings():
+    #     warnings.simplefilter("ignore")
+    #     container_uri = workspace.get_container_uri(job_id=job_id)
+    
+    # import warnings
+    # warnings.simplefilter("ignore")
+    # container_uri = workspace.get_container_uri(job_id=job_id)
+    # warnings.resetwarnings()
 
     container_client = ContainerClient.from_container_url(container_uri)
-    create_container_using_client(container_client)
 
     knack_logger.warning("Uploading input data...")
     try:

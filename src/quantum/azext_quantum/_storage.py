@@ -22,6 +22,7 @@ from .vendored_sdks.azure_storage_blob import (
     BlobSasPermissions,
     ContentSettings,
     generate_blob_sas,
+    generate_container_sas,
 )
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,32 @@ def create_container_using_client(container_client: ContainerClient):
             container_client.container_name
         )
         container_client.create_container()
+
+
+def get_container_uri(connection_string: str, container_name: str) -> str:
+    """
+    Creates and initialize a container;
+    returns a URI with a SAS read/write token to access it.
+    """
+    container = create_container(connection_string, container_name)
+    logger.info(
+        f'{"Creating SAS token for container"}'
+        + f"'{container_name}' on account: '{container.account_name}'"
+    )
+
+    sas_token = generate_container_sas(
+        container.account_name,
+        container.container_name,
+        account_key=container.credential.account_key,
+        permission=BlobSasPermissions(
+            read=True, add=True, write=True, create=True
+        ),
+        expiry=datetime.utcnow() + timedelta(days=14),
+    )
+
+    uri = container.url + "?" + sas_token
+    logger.debug(f"  - container url: '{uri}'.")
+    return uri
 
 
 def upload_blob(

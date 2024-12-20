@@ -41,7 +41,8 @@ from azure.quantum._workspace_connection_params import (
 from azure.quantum._constants import (
     ConnectionConstants,
 )
-from azure.quantum.storage import (
+# from azure.quantum.storage import (
+from .._storage import (
     create_container_using_client,
     get_container_uri,
     ContainerClient
