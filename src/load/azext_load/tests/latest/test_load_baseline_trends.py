@@ -36,6 +36,8 @@ load_params = {
     "random_name_length": 30,
 }
 
+# Run this test in single test live mode only
+# 'azdev test test_load_test_mark_compare_baseline --live'
 class LoadTestScenarioBaselineTrends(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestScenarioBaselineTrends, self).__init__(*args, **kwargs)
