@@ -325,7 +325,7 @@ def set_baseline(
         )
     if existing_test_run.get("status") not in ["CANCELLED", "DONE"]:
         raise InvalidArgumentValueError(
-            f"Test run with ID: {test_run_id} does not have a valid "
+            f"test run status {existing_test_run.get('status')}. "
             f"test run status {existing_test_run.get("status")}. "
             "Valid test run status are: CANCELLED, DONE"
         )
