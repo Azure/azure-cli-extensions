@@ -59,6 +59,9 @@ def load_arguments(self, _):
     with self.argument_context("load test set-baseline") as c:
         c.argument("test_run_id", argtypes.test_run_id)
 
+    with self.argument_context("load test compare-to-baseline") as c:
+        c.argument("response_time_aggregate", argtypes.response_time_aggregate)
+
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)
         c.argument("force", argtypes.force)

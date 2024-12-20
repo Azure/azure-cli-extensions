@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
 import time
 
 from azext_load.tests.latest.constants import LoadTestConstants, LoadTestRunConstants
@@ -17,6 +18,7 @@ from azure.cli.testsdk import (
     ScenarioTest,
     live_only,
 )
+from unittest.mock import patch
 
 rg_params = {
     "name_prefix": "clitest-baseline-",
@@ -41,6 +43,7 @@ class LoadTestScenarioBaselineTrends(ScenarioTest):
     
     # Live only because the test runs are created with no wait
     @live_only()
+    @patch.dict(os.environ, {"AZDEV_TEST_ENV": "true"})
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_mark_compare_baseline(self, rg, load):
@@ -106,14 +109,12 @@ class LoadTestScenarioBaselineTrends(ScenarioTest):
         )
 
         time.sleep(60) # sleep to ensure test run statistics are processed
-        response = self.cmd(
+        self.cmd(
             "az load test-run list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} ",
-        ).get_output_in_json()
-        print(len(response))
-        print(response)
+        )
         
         # Create a different test and test run
         self.kwargs.update(
@@ -131,6 +132,7 @@ class LoadTestScenarioBaselineTrends(ScenarioTest):
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.LOAD_TEST_BASELINE_TRENDS_ID,
+                "response_time_aggregate": "P99",
             }
         )
         
@@ -146,9 +148,19 @@ class LoadTestScenarioBaselineTrends(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} ",
         ).get_output_in_json()
-        print(response)
         assert len(response) == 2
         assert response[0]["Name"] == LoadTestRunConstants.BASELINE_TRENDS_TEST_RUN_ID_1
+        assert "Mean Response Time" in response[0]
+        
+        # Valid: Show trends for a test with a baseline test run with aggregation param
+        response = self.cmd(
+            "az load test compare-to-baseline "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--aggregation {response_time_aggregate} ",
+        ).get_output_in_json()
+        assert "99th Percentile Response Time" in response[0]
 
 
 def _configure_command_assert_exception(self, message, is_show_trends=False):

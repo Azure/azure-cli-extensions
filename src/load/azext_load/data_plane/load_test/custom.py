@@ -23,6 +23,7 @@ from azext_load.data_plane.utils.utils import (
 )
 from azext_load.data_plane.utils.models import (
     AllowedTestTypes,
+    AllowedTrendsResponseTimeAggregations,
 )
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.core.exceptions import ResourceNotFoundError
@@ -348,6 +349,7 @@ def compare_to_baseline(
     load_test_resource,
     test_id,
     resource_group_name=None,
+    response_time_aggregate=AllowedTrendsResponseTimeAggregations.MEAN.value,
 ):
     logger.info("Showing test trends for test with test ID: %s", test_id)
     test_client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -375,11 +377,11 @@ def compare_to_baseline(
 
     logger.debug("Number of recent test runs: %s", len(recent_test_runs))
     rows = [
-        generate_trends_row(baseline_test_run)
+        generate_trends_row(baseline_test_run, response_time_aggregate=response_time_aggregate)
     ]
     for run in recent_test_runs:
         rows.append(
-            generate_trends_row(run)
+            generate_trends_row(run, response_time_aggregate=response_time_aggregate)
         )
     logger.debug("Retrieved test trends: %s", rows)
     return rows

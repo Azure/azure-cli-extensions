@@ -391,3 +391,10 @@ regionwise_engines = CLIArgumentType(
     nargs="+",
     help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
 )
+
+response_time_aggregate = CLIArgumentType(
+    options_list=["--aggregation"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
+    help="Specify the aggregation method for statistics.",
+)

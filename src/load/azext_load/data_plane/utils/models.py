@@ -41,3 +41,18 @@ class AllowedTestTypes(str, Enum):
 class AllowedTestPlanFileExtensions(str, Enum):
     JMX = ".jmx"
     URL = ".json"
+
+
+class AllowedTrendsResponseTimeAggregations(str, Enum):
+    MEAN = "MEAN"
+    MEDIAN = "MEDIAN"
+    MAX = "MAX"
+    MIN = "MIN"
+    P75 = "P75"
+    P90 = "P90"
+    P95 = "P95"
+    P96 = "P96"
+    P98 = "P98"
+    P99 = "P99"
+    P999 = "P999"
+    P9999 = "P9999"
