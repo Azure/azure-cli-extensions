@@ -7,6 +7,7 @@ import filecmp
 import json
 import os
 import sys
+import subprocess
 
 from azure.cli.core import get_default_cli
 from azure.cli.core._session import Session
@@ -23,6 +24,36 @@ az_cli = get_default_cli()
 file_name = 'extCmdTreeToUpload.json'
 
 
+def execute_command(command):
+    """Execute a shell command and return the output."""
+    try:
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode == 0:
+            return result.stdout.strip()
+        else:
+            return f"Error: {result.stderr.strip()}"
+    except Exception as e:
+        return f"Exception: {str(e)}"
+
+
+def get_package_version(package_name):
+    """Get the current version of a Python package."""
+    command = ["pip", "show", package_name]
+    output = execute_command(command)
+    if "Version:" in output:
+        for line in output.splitlines():
+            if line.startswith("Version:"):
+                version = line.split(":")[1].strip()
+                print(f"{package_name} current version: {version}")
+
+
+def upgrade_package(package_name):
+    """Upgrade a Python package to the latest version."""
+    command = ["pip", "install", "--upgrade", package_name]
+    print(f"{command}")
+    return execute_command(command)
+
+
 def merge(data, key, value):
     if isinstance(value, str):
         if key in data:
@@ -36,6 +67,10 @@ def merge(data, key, value):
 
 def update_cmd_tree(ext_name):
     print(f"Processing {ext_name}")
+    if ext_name == 'ml':
+        get_package_version("azure-storage-blob")
+        upgrade_package("azure-storage-blob")
+        get_package_version("azure-storage-blob")
 
     ext_dir = get_extension_path(ext_name)
     ext_mod = get_extension_modname(ext_name, ext_dir=ext_dir)
