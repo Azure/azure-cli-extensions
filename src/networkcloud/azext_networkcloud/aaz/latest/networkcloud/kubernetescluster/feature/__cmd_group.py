@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud kubernetescluster feature",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Kubernetes cluster's feature

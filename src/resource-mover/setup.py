@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='resource_mover',
+    name='resource-mover',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools ResourceMoverServiceAPI Extension',
     author='Microsoft Corporation',
