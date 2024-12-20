@@ -84,17 +84,7 @@ def load_arguments(self, _):
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
     # HttpRouteConfig
-    with self.argument_context('containerapp env http-route-config show') as c:
-        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
-
-    with self.argument_context('containerapp env http-route-config delete') as c:
-        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
-
-    with self.argument_context('containerapp env http-route-config create') as c:
-        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
-        c.argument('yaml', help="The path to the YAML input file.")
-
-    with self.argument_context('containerapp env http-route-config update') as c:
+    with self.argument_context('containerapp env http-route-config') as c:
         c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
         c.argument('yaml', help="The path to the YAML input file.")
 

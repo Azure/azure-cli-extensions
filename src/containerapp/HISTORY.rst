@@ -5,7 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
-* 'az containerapp env http-route-config': Add comands for the http-route-config feature area.
+* 'az containerapp env http-route-config': Add commands for the http-route-config feature area.
 
 1.1.0b1
 ++++++
