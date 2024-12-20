@@ -3410,7 +3410,7 @@ def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, n
     # If we're going into labels mode, replace the default traffic config with the target label and latest revision.
     # Otherwise all revisions will be deactivated.
     traffic = safe_get(containerapp_def, "properties", "configuration", "ingress", "traffic")
-    if mode.lower() == "labels" and len(traffic) == 1 and traffic[0]["latestRevision"] == True:
+    if mode.lower() == "labels" and len(traffic) == 1 and safe_get(traffic[0], "latestRevision") == True:
         safe_set(containerapp_def, "properties", "configuration", "ingress", "traffic", value=[{
             "revisionName": containerapp_def["properties"]["latestRevisionName"],
             "weight": 100,
@@ -3420,10 +3420,8 @@ def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, n
     containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = mode
     containerapp_def["properties"]["configuration"]["targetLabel"] = target_label
 
-    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-
     try:
-        r = ContainerAppPreviewClient.create_or_update(
+        r = ContainerAppPreviewClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         return r["properties"]["configuration"]["activeRevisionsMode"]
     except Exception as e:

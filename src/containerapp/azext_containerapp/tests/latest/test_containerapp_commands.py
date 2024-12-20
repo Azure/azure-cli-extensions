@@ -1509,7 +1509,14 @@ class ContainerappRevisionTests(ScenarioTest):
         revision_names = self.cmd(f"containerapp revision list -g {resource_group} -n {ca_name} --all --query '[].name'").get_output_in_json()
         self.assertEqual(len(revision_names), 2)
 
+        # Traffic may not be updated immidately
         traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name}").get_output_in_json()
+        for retry in range(100):
+            if len(traffic_weight) >= 2:
+                break
+            time.sleep(5)
+            traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name}").get_output_in_json()
+
         self.assertEqual(traffic_weight[0]["label"], label0)
         self.assertEqual(traffic_weight[0]["revisionName"], revision_names[0])
         self.assertEqual(traffic_weight[0]["weight"], 100)
@@ -1570,13 +1577,12 @@ class ContainerappRevisionTests(ScenarioTest):
         self.assertEqual(traffic_weight[1]["weight"], 100)
         self.assertEqual(len(traffic_weight), 2)
 
-        self.cmd(f"containerapp revision label remove -g {resource_group} -n {ca_name} --label {label1}")
+        traffic_weight = self.cmd(f"containerapp revision label remove -g {resource_group} -n {ca_name} --label {label1}").get_output_in_json()
 
-        traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name}").get_output_in_json()
         self.assertEqual(traffic_weight[0]["label"], label0)
         self.assertEqual(traffic_weight[0]["revisionName"], revision_names[0])
         self.assertEqual(traffic_weight[0]["weight"], 100)
-        self.assertEqual(len(traffic_weight), 2)
+        self.assertEqual(len(traffic_weight), 1)
 
 class ContainerappAnonymousRegistryTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
