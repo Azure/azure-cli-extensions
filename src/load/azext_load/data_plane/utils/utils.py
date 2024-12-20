@@ -883,6 +883,7 @@ def _add_response_time_trends(trends, test_run, response_time_aggregate):
             if value is not None:
                 trends[getattr(LoadTestTrendsKeys, key.upper() + "_RES_TIME")] = value
 
+
 def _add_error_and_throughput_trends(trends, test_run):
     error_pct = _get_metrics_from_sampler(test_run, "Total", "errorPct")
     if error_pct is not None:

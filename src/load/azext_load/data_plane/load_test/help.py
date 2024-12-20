@@ -122,7 +122,7 @@ helps[
     "load test set-baseline"
 ] = """
 type: command
-short-summary: Set a baseline test run for the test.
+short-summary: Set a test run as the baseline for comparison with other runs in the test.
 examples:
     - name: Set baseline test run.
       text: |
@@ -133,11 +133,14 @@ helps[
     "load test compare-to-baseline"
 ] = """
 type: command
-short-summary: Compare the sampler statistics of recent test runs with the baseline test run.
+short-summary: Compare the sampler statistics from recent test runs with those of the baseline test run.
 examples:
     - name: Compare recent test runs to baseline.
       text: |
         az load test compare-to-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id -o table
+    - name: Compare recent test runs to baseline with specific aggregation.
+      text: |
+        az load test compare-to-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --aggregation P95 -o table
 """
 
 helps[
