@@ -2235,7 +2235,7 @@ helps['containerapp env http-route-config show'] = """
     type: command
     short-summary: Show a http route config.
     examples:
-    - name: Show a route from the environment.
+    - name: Show a route in the environment.
       text: |
           az containerapp env http-route-config show -g MyResourceGroup -n MyEnvironment -r configname
 """
