@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        RequiredArgumentMissingError)
 
 from ..quantum_python_sdk.workspace import Workspace
-from .._storage import upload_blob
+from ..quantum_python_sdk.storage import upload_blob
 from ..vendored_sdks.azure_storage_blob import ContainerClient
 from .._client_factory import cf_jobs
 
@@ -244,32 +244,34 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     workspace = Workspace(resource_id=resource_id, location=location)
 
-    knack_logger.warning("Getting Azure credential token...")
+    # knack_logger.warning("Getting Azure credential token...")
+    print("Getting Azure credential token...")
     
-    # TODO: Suppress the ugly series of non-fatal error messages that occur when the next line executes
+    # TODO: Suppress the ugly series of non-fatal error messages that occur when the next line executes:
     # container_uri = workspace.get_container_uri(job_id=job_id)
 
-    # >>>>>>>> This only suppresses the last error message, not the yellow stuff  <<<<<<<<<
+    # # This only suppresses the last error message, not the yellow stuff.
+    # # We still need an "--only-show-errors" flag in the command-line to hide the other errors.
     import sys, os
+    # old_stderr = sys.stderr
+    old_stdout = sys.stdout                     # Only nulling-out stdout helps -- changing stderr has no effect
     with open(os.devnull, "w") as devnull:
-        sys.stdout = devnull
         # sys.stderr = devnull
+        sys.stdout = devnull
         container_uri = workspace.get_container_uri(job_id=job_id)
+    # sys.stderr = old_stderr
+    sys.stdout = old_stdout
 
-    # >>>>>>>> This variable responds to --only-show-errors or the config file [core] only_show_errors <<<<<<<<<<
-    # >>>>>>>> ...but it doesn't affect the output here:
+    # This variable is affected by --only-show-errors or the config file [core] only_show_errors,
+    # but it doesn't affect the output
+    #
     # cmd.cli_ctx.only_show_errors = True
     # container_uri = workspace.get_container_uri(job_id=job_id)
     # cmd.cli_ctx.only_show_errors = False
 
-    # print("cmd.cli_ctx.only_show_errors:")
-    # print(cmd.cli_ctx.only_show_errors)
-    # return
-
     # from knack.log import get_logger, CLILogging
     # print("CLILogging.ONLY_SHOW_ERRORS_FLAG:")
     # print(CLILogging.ONLY_SHOW_ERRORS_FLAG)       This just prints "--only-show-errors"
-    # return
 
     # >>>>> Example from https://docs.python.org/3/library/warnings.html
     # import warnings
@@ -281,10 +283,13 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     # warnings.simplefilter("ignore")
     # container_uri = workspace.get_container_uri(job_id=job_id)
     # warnings.resetwarnings()
+    #
+    # End of unfruitful experiments
 
     container_client = ContainerClient.from_container_url(container_uri)
 
-    knack_logger.warning("Uploading input data...")
+    # knack_logger.warning("Uploading input data...")
+    print("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
         logger.debug("  - blob uri: %s", blob_uri)
@@ -357,7 +362,8 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
                    'metadata': metadata,
                    'tags': tags}
 
-    knack_logger.warning("Submitting job...")
+    # knack_logger.warning("Submitting job...")
+    print("Submitting job...")
     return client.create(job_id, job_details)
 
 

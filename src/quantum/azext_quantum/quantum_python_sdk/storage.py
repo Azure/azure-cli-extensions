@@ -14,8 +14,8 @@
 import logging
 from datetime import datetime, timedelta
 from typing import Any
-# This "from" statment was changed so there is no dependency on the azure.storage.blob PyPI package
-from .vendored_sdks.azure_storage_blob import (
+# This "from" statement was changed so there is no dependency on the azure.storage.blob PyPI package
+from ..vendored_sdks.azure_storage_blob import (
     BlobServiceClient,
     ContainerClient,
     BlobClient,

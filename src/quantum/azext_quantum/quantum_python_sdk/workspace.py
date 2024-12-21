@@ -1,52 +1,48 @@
-##
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License.
-##
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+# This file is a reduced version of
+# https://github.com/microsoft/azure-quantum-python/blob/main/azure-quantum/azure/quantum/workspace.py
+#
+# It only contains the methods required to access storage with a SAS token.
+# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.  It was included
+# in this repo so there would not be a direct dependency on azure-quantum-python.
+
+# Unused imports were removed to reduce Pylint style-rule violations.
+# "import" and "from" statements were changed so there is no dependency on the azure.quantum PyPI package
+
 """
 Module providing the Workspace class, used to connect to
 an Azure Quantum Workspace.
 """
 
+# SDK imports modified for CLI configuration, unused imports deleted
 from __future__ import annotations
-from datetime import datetime
 import logging
 from typing import (
     Any,
-    Dict,
-    Iterable,
-    List,
     Optional,
     TYPE_CHECKING,
-    Tuple,
-    Union,
 )
-from azure.quantum._client import QuantumClient
-from azure.quantum._client.operations import (
-    JobsOperations,
-    StorageOperations,
-    QuotasOperations,
-    SessionsOperations,
-    TopLevelItemsOperations
-)
-from azure.quantum._client.models import (
+from ._client import QuantumClient
+from ._client.models import (
     BlobDetails,
-    JobStatus,
-    TargetStatus,
 )
-from azure.quantum import Job, Session
-from azure.quantum.job.workspace_item_factory import WorkspaceItemFactory
-from azure.quantum._workspace_connection_params import (
+from ._workspace_connection_params import (
     WorkspaceConnectionParams
 )
-from azure.quantum._constants import (
+from ._constants import (
     ConnectionConstants,
 )
-# from azure.quantum.storage import (
-from .._storage import (
+from .storage import (
     create_container_using_client,
     get_container_uri,
     ContainerClient
 )
+
+
 if TYPE_CHECKING:
     from azure.quantum.target import Target
 
@@ -154,55 +150,55 @@ class Workspace:
         """
         self._client = self._create_client()
 
-    @property
-    def location(self) -> str:
-        """
-        Returns the Azure location of the Quantum Workspace.
+    # @property
+    # def location(self) -> str:
+    #     """
+    #     Returns the Azure location of the Quantum Workspace.
 
-        :return: Azure location name.
-        :rtype: str
-        """
-        return self._connection_params.location
+    #     :return: Azure location name.
+    #     :rtype: str
+    #     """
+    #     return self._connection_params.location
 
-    @property
-    def subscription_id(self) -> str:
-        """
-        Returns the Azure Subscription ID of the Quantum Workspace.
+    # @property
+    # def subscription_id(self) -> str:
+    #     """
+    #     Returns the Azure Subscription ID of the Quantum Workspace.
 
-        :return: Azure Subscription ID.
-        :rtype: str
-        """
-        return self._connection_params.subscription_id
+    #     :return: Azure Subscription ID.
+    #     :rtype: str
+    #     """
+    #     return self._connection_params.subscription_id
 
-    @property
-    def resource_group(self) -> str:
-        """
-        Returns the Azure Resource Group of the Quantum Workspace.
+    # @property
+    # def resource_group(self) -> str:
+    #     """
+    #     Returns the Azure Resource Group of the Quantum Workspace.
 
-        :return: Azure Resource Group name.
-        :rtype: str
-        """
-        return self._connection_params.resource_group
+    #     :return: Azure Resource Group name.
+    #     :rtype: str
+    #     """
+    #     return self._connection_params.resource_group
 
-    @property
-    def name(self) -> str:
-        """
-        Returns the Name of the Quantum Workspace.
+    # @property
+    # def name(self) -> str:
+    #     """
+    #     Returns the Name of the Quantum Workspace.
 
-        :return: Azure Quantum Workspace name.
-        :rtype: str
-        """
-        return self._connection_params.workspace_name
+    #     :return: Azure Quantum Workspace name.
+    #     :rtype: str
+    #     """
+    #     return self._connection_params.workspace_name
 
-    @property
-    def credential(self) -> Any:
-        """
-        Returns the Credential used to connect to the Quantum Workspace.
+    # @property
+    # def credential(self) -> Any:
+    #     """
+    #     Returns the Credential used to connect to the Quantum Workspace.
 
-        :return: Azure SDK Credential from [Azure.Identity](https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes).
-        :rtype: typing.Any
-        """
-        return self._connection_params.credential
+    #     :return: Azure SDK Credential from [Azure.Identity](https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes).
+    #     :rtype: typing.Any
+    #     """
+    #     return self._connection_params.credential
 
     @property
     def storage(self) -> str:
@@ -239,77 +235,77 @@ class Workspace:
         )
         return client
 
-    @property
-    def user_agent(self) -> str:
-        """
-        Returns the Workspace's UserAgent string that is sent to
-        the service via the UserAgent header.
+    # @property
+    # def user_agent(self) -> str:
+    #     """
+    #     Returns the Workspace's UserAgent string that is sent to
+    #     the service via the UserAgent header.
 
-        :return: User Agent string.
-        :rtype: str
-        """
-        return self._connection_params.get_full_user_agent()
+    #     :return: User Agent string.
+    #     :rtype: str
+    #     """
+    #     return self._connection_params.get_full_user_agent()
 
-    def append_user_agent(self, value: str) -> None:
-        """
-        Append a new value to the Workspace's UserAgent.
-        The values are appended using a dash.
+    # def append_user_agent(self, value: str) -> None:
+    #     """
+    #     Append a new value to the Workspace's UserAgent.
+    #     The values are appended using a dash.
 
-        :param value:
-            UserAgent value to add, e.g. "azure-quantum-<plugin>"
-        """
-        self._connection_params.append_user_agent(value=value)
+    #     :param value:
+    #         UserAgent value to add, e.g. "azure-quantum-<plugin>"
+    #     """
+    #     self._connection_params.append_user_agent(value=value)
 
-    @classmethod
-    def from_connection_string(cls, connection_string: str, **kwargs) -> Workspace:
-        """
-        Creates a new Azure Quantum Workspace client from a connection string.
+    # @classmethod
+    # def from_connection_string(cls, connection_string: str, **kwargs) -> Workspace:
+    #     """
+    #     Creates a new Azure Quantum Workspace client from a connection string.
 
-        :param connection_string:
-            A valid connection string, usually obtained from the
-            `Quantum Workspace -> Operations -> Access Keys` blade in the Azure Portal.
+    #     :param connection_string:
+    #         A valid connection string, usually obtained from the
+    #         `Quantum Workspace -> Operations -> Access Keys` blade in the Azure Portal.
 
-        :return: New Azure Quantum Workspace client.
-        :rtype: Workspace
-        """
-        connection_params = WorkspaceConnectionParams(connection_string=connection_string)
-        return cls(
-            subscription_id=connection_params.subscription_id,
-            resource_group=connection_params.resource_group,
-            name=connection_params.workspace_name,
-            location=connection_params.location,
-            credential=connection_params.get_credential_or_default(),
-            **kwargs)
+    #     :return: New Azure Quantum Workspace client.
+    #     :rtype: Workspace
+    #     """
+    #     connection_params = WorkspaceConnectionParams(connection_string=connection_string)
+    #     return cls(
+    #         subscription_id=connection_params.subscription_id,
+    #         resource_group=connection_params.resource_group,
+    #         name=connection_params.workspace_name,
+    #         location=connection_params.location,
+    #         credential=connection_params.get_credential_or_default(),
+    #         **kwargs)
 
-    def _get_top_level_items_client(self) -> TopLevelItemsOperations:
-        """
-        Returns the internal Azure SDK REST API client
-        for the `{workspace}/topLevelItems` API.
+    # def _get_top_level_items_client(self) -> TopLevelItemsOperations:
+    #     """
+    #     Returns the internal Azure SDK REST API client
+    #     for the `{workspace}/topLevelItems` API.
 
-        :return: REST API client for the `topLevelItems` API.
-        :rtype: TopLevelItemsOperations
-        """
-        return self._client.top_level_items
+    #     :return: REST API client for the `topLevelItems` API.
+    #     :rtype: TopLevelItemsOperations
+    #     """
+    #     return self._client.top_level_items
 
-    def _get_sessions_client(self) -> SessionsOperations:
-        """
-        Returns the internal Azure SDK REST API client
-        for the `{workspace}/sessions` API.
+    # def _get_sessions_client(self) -> SessionsOperations:
+    #     """
+    #     Returns the internal Azure SDK REST API client
+    #     for the `{workspace}/sessions` API.
 
-        :return: REST API client for the `sessions` API.
-        :rtype: SessionsOperations
-        """
-        return self._client.sessions
+    #     :return: REST API client for the `sessions` API.
+    #     :rtype: SessionsOperations
+    #     """
+    #     return self._client.sessions
 
-    def _get_jobs_client(self) -> JobsOperations:
-        """
-        Returns the internal Azure SDK REST API client
-        for the `{workspace}/jobs` API.
+    # def _get_jobs_client(self) -> JobsOperations:
+    #     """
+    #     Returns the internal Azure SDK REST API client
+    #     for the `{workspace}/jobs` API.
 
-        :return: REST API client for the `jobs` API.
-        :rtype: JobsOperations
-        """
-        return self._client.jobs
+    #     :return: REST API client for the `jobs` API.
+    #     :rtype: JobsOperations
+    #     """
+    #     return self._client.jobs
 
     def _get_workspace_storage_client(self) -> StorageOperations:
         """
@@ -321,15 +317,15 @@ class Workspace:
         """
         return self._client.storage
 
-    def _get_quotas_client(self) -> QuotasOperations:
-        """
-        Returns the internal Azure SDK REST API client
-        for the `{workspace}/quotas` API.
+    # def _get_quotas_client(self) -> QuotasOperations:
+    #     """
+    #     Returns the internal Azure SDK REST API client
+    #     for the `{workspace}/quotas` API.
 
-        :return: REST API client for the `quotas` API.
-        :rtype: QuotasOperations
-        """
-        return self._client.quotas
+    #     :return: REST API client for the `quotas` API.
+    #     :rtype: QuotasOperations
+    #     """
+    #     return self._client.quotas
 
     def _get_linked_storage_sas_uri(
         self,
@@ -358,294 +354,294 @@ class Workspace:
         logger.debug("Container URI from service: %s", container_uri)
         return container_uri.sas_uri
 
-    def submit_job(self, job: Job) -> Job:
-        """
-        Submits a job to be processed in the Workspace.
+    # def submit_job(self, job: Job) -> Job:
+    #     """
+    #     Submits a job to be processed in the Workspace.
 
-        :param job:
-            Job to submit.
+    #     :param job:
+    #         Job to submit.
 
-        :return: Azure Quantum Job that was submitted, with an updated status.
-        :rtype: Job
-        """
-        client = self._get_jobs_client()
-        details = client.create(
-            job.details.id, job.details
-        )
-        return Job(self, details)
+    #     :return: Azure Quantum Job that was submitted, with an updated status.
+    #     :rtype: Job
+    #     """
+    #     client = self._get_jobs_client()
+    #     details = client.create(
+    #         job.details.id, job.details
+    #     )
+    #     return Job(self, details)
 
-    def cancel_job(self, job: Job) -> Job:
-        """
-        Requests the Workspace to cancel the
-        execution of a job.
+    # def cancel_job(self, job: Job) -> Job:
+    #     """
+    #     Requests the Workspace to cancel the
+    #     execution of a job.
 
-        :param job:
-            Job to cancel.
+    #     :param job:
+    #         Job to cancel.
 
-        :return: Azure Quantum Job that was requested to be cancelled, with an updated status.
-        :rtype: Job
-        """
-        client = self._get_jobs_client()
-        client.cancel(job.details.id)
-        details = client.get(job.id)
-        return Job(self, details)
+    #     :return: Azure Quantum Job that was requested to be cancelled, with an updated status.
+    #     :rtype: Job
+    #     """
+    #     client = self._get_jobs_client()
+    #     client.cancel(job.details.id)
+    #     details = client.get(job.id)
+    #     return Job(self, details)
 
-    def get_job(self, job_id: str) -> Job:
-        """
-        Returns the job corresponding to the given id.
+    # def get_job(self, job_id: str) -> Job:
+    #     """
+    #     Returns the job corresponding to the given id.
         
-        :param job_id:
-            Id of a job to fetch.
+    #     :param job_id:
+    #         Id of a job to fetch.
 
-        :return: Azure Quantum Job.
-        :rtype: Job
-        """
-        # pylint: disable=import-outside-toplevel
-        from azure.quantum.target.target_factory import TargetFactory
-        from azure.quantum.target import Target
+    #     :return: Azure Quantum Job.
+    #     :rtype: Job
+    #     """
+    #     # pylint: disable=import-outside-toplevel
+    #     from azure.quantum.target.target_factory import TargetFactory
+    #     from azure.quantum.target import Target
 
-        client = self._get_jobs_client()
-        details = client.get(job_id)
-        target_factory = TargetFactory(base_cls=Target, workspace=self)
-        # pylint: disable=protected-access
-        target_cls = target_factory._target_cls(
-            details.provider_id,
-            details.target)
-        job_cls = target_cls._get_job_class()
-        return job_cls(self, details)
+    #     client = self._get_jobs_client()
+    #     details = client.get(job_id)
+    #     target_factory = TargetFactory(base_cls=Target, workspace=self)
+    #     # pylint: disable=protected-access
+    #     target_cls = target_factory._target_cls(
+    #         details.provider_id,
+    #         details.target)
+    #     job_cls = target_cls._get_job_class()
+    #     return job_cls(self, details)
 
-    def list_jobs(
-        self,
-        name_match: Optional[str] = None,
-        status: Optional[JobStatus] = None,
-        created_after: Optional[datetime] = None
-    ) -> List[Job]:
-        """
-        Returns list of jobs that meet optional (limited) filter criteria.
+    # def list_jobs(
+    #     self,
+    #     name_match: Optional[str] = None,
+    #     status: Optional[JobStatus] = None,
+    #     created_after: Optional[datetime] = None
+    # ) -> List[Job]:
+    #     """
+    #     Returns list of jobs that meet optional (limited) filter criteria.
 
-        :param name_match:
-            Optional Regular Expression for job name matching. Defaults to `None`.
+    #     :param name_match:
+    #         Optional Regular Expression for job name matching. Defaults to `None`.
 
-        :param status:
-            Optional filter by job status. Defaults to `None`.
+    #     :param status:
+    #         Optional filter by job status. Defaults to `None`.
 
-        :param created_after:
-            Optional filter by jobs that were created after the given time. Defaults to `None`.
+    #     :param created_after:
+    #         Optional filter by jobs that were created after the given time. Defaults to `None`.
 
-        :return: Jobs that matched the search criteria.
-        :rtype: typing.List[Job]
-        """
-        client = self._get_jobs_client()
-        jobs = client.list()
+    #     :return: Jobs that matched the search criteria.
+    #     :rtype: typing.List[Job]
+    #     """
+    #     client = self._get_jobs_client()
+    #     jobs = client.list()
 
-        result = []
-        for j in jobs:
-            deserialized_job = Job(self, j)
-            if deserialized_job.matches_filter(name_match, status, created_after):
-                result.append(deserialized_job)
+    #     result = []
+    #     for j in jobs:
+    #         deserialized_job = Job(self, j)
+    #         if deserialized_job.matches_filter(name_match, status, created_after):
+    #             result.append(deserialized_job)
 
-        return result
+    #     return result
 
-    def _get_target_status(
-            self,
-            name: Optional[str] = None,
-            provider_id: Optional[str] = None,
-        ) -> List[Tuple[str, TargetStatus]]:
-        """
-        Returns a list of tuples containing the `Provider ID` and `Target Status`,
-        with the option of filtering that list by a combination of Provider ID and Target Name.
+    # def _get_target_status(
+    #         self,
+    #         name: Optional[str] = None,
+    #         provider_id: Optional[str] = None,
+    #     ) -> List[Tuple[str, TargetStatus]]:
+    #     """
+    #     Returns a list of tuples containing the `Provider ID` and `Target Status`,
+    #     with the option of filtering that list by a combination of Provider ID and Target Name.
 
-        :param name:
-            Optional name of the Target to filter for. Defaults to `None`.
+    #     :param name:
+    #         Optional name of the Target to filter for. Defaults to `None`.
 
-        :param provider_id:
-            Optional Provider ID to filter for. Defaults to `None`.
+    #     :param provider_id:
+    #         Optional Provider ID to filter for. Defaults to `None`.
 
-        :return: List of tuples containing Provider ID and TargetStatus.
-        :rtype: typing.List[typing.Tuple[str, TargetStatus]]
-        """
-        return [
-            (provider.id, target)
-            for provider in self._client.providers.get_status()
-            for target in provider.targets
-            if (provider_id is None or provider.id.lower() == provider_id.lower())
-                and (name is None or target.id.lower() == name.lower())
-        ]
+    #     :return: List of tuples containing Provider ID and TargetStatus.
+    #     :rtype: typing.List[typing.Tuple[str, TargetStatus]]
+    #     """
+    #     return [
+    #         (provider.id, target)
+    #         for provider in self._client.providers.get_status()
+    #         for target in provider.targets
+    #         if (provider_id is None or provider.id.lower() == provider_id.lower())
+    #             and (name is None or target.id.lower() == name.lower())
+    #     ]
 
-    def get_targets(
-        self,
-        name: Optional[str] = None,
-        provider_id: Optional[str] = None,
-    ) -> Union[Target, Iterable[Target]]:
-        """
-        Returns all available targets for this workspace filtered by Target name and Provider ID.
-        If the target name is passed, a single `Target` object will be returned.
-        Otherwise it returns a iterable/list of `Target` objects, optionally filtered by the Provider ID.
+    # def get_targets(
+    #     self,
+    #     name: Optional[str] = None,
+    #     provider_id: Optional[str] = None,
+    # ) -> Union[Target, Iterable[Target]]:
+    #     """
+    #     Returns all available targets for this workspace filtered by Target name and Provider ID.
+    #     If the target name is passed, a single `Target` object will be returned.
+    #     Otherwise it returns a iterable/list of `Target` objects, optionally filtered by the Provider ID.
 
-        :param name:
-            Optional target name to filter by, defaults to `None`.
+    #     :param name:
+    #         Optional target name to filter by, defaults to `None`.
         
-        :param provider_id:
-            Optional provider Id to filter by, defaults to `None`.
+    #     :param provider_id:
+    #         Optional provider Id to filter by, defaults to `None`.
 
-        :return: A single Azure Quantum Target or a iterable/list of Targets.
-        :rtype: typing.Union[Target, typing.Iterable[Target]]
-        """
-        # pylint: disable=import-outside-toplevel
-        from azure.quantum.target.target_factory import TargetFactory
-        from azure.quantum.target import Target
+    #     :return: A single Azure Quantum Target or a iterable/list of Targets.
+    #     :rtype: typing.Union[Target, typing.Iterable[Target]]
+    #     """
+    #     # pylint: disable=import-outside-toplevel
+    #     from azure.quantum.target.target_factory import TargetFactory
+    #     from azure.quantum.target import Target
 
-        target_factory = TargetFactory(
-            base_cls=Target,
-            workspace=self
-        )
-        return target_factory.get_targets(
-            name=name,
-            provider_id=provider_id
-        )
+    #     target_factory = TargetFactory(
+    #         base_cls=Target,
+    #         workspace=self
+    #     )
+    #     return target_factory.get_targets(
+    #         name=name,
+    #         provider_id=provider_id
+    #     )
 
-    def get_quotas(self) -> List[Dict[str, Any]]:
-        """
-        Get a list of quotas for the given workspace.
-        Each quota is represented as a dictionary, containing the
-        properties for that quota.
+    # def get_quotas(self) -> List[Dict[str, Any]]:
+    #     """
+    #     Get a list of quotas for the given workspace.
+    #     Each quota is represented as a dictionary, containing the
+    #     properties for that quota.
 
-        Common Quota properties are:
-        - "dimension": The dimension that the quota is applied to. 
-        - "scope": The scope that the quota is applied to.
-        - "provider_id": The provider that the quota is applied to.
-        - "utilization": The current utilization of the quota.
-        - "limit": The limit of the quota.
-        - "period": The period that the quota is applied to.
+    #     Common Quota properties are:
+    #     - "dimension": The dimension that the quota is applied to. 
+    #     - "scope": The scope that the quota is applied to.
+    #     - "provider_id": The provider that the quota is applied to.
+    #     - "utilization": The current utilization of the quota.
+    #     - "limit": The limit of the quota.
+    #     - "period": The period that the quota is applied to.
 
-        :return: Workspace quotas.
-        :rtype: typing.List[typing.Dict[str, typing.Any]
-        """
-        client = self._get_quotas_client()
-        return [q.as_dict() for q in client.list()]
+    #     :return: Workspace quotas.
+    #     :rtype: typing.List[typing.Dict[str, typing.Any]
+    #     """
+    #     client = self._get_quotas_client()
+    #     return [q.as_dict() for q in client.list()]
 
-    def list_top_level_items(
-        self
-    ) -> List[Union[Job, Session]]:
-        """
-        Get a list of top level items for the given workspace,
-        which can be standalone Jobs (Jobs not associated with a Session)
-        or Sessions (which can contain Jobs).
+    # def list_top_level_items(
+    #     self
+    # ) -> List[Union[Job, Session]]:
+    #     """
+    #     Get a list of top level items for the given workspace,
+    #     which can be standalone Jobs (Jobs not associated with a Session)
+    #     or Sessions (which can contain Jobs).
 
-        :return: List of Workspace top level Jobs or Sessions.
-        :rtype: typing.List[typing.Union[Job, Session]]
-        """
-        client = self._get_top_level_items_client()
-        item_details_list = client.list()
-        result = [WorkspaceItemFactory.__new__(workspace=self, item_details=item_details)
-                  for item_details in item_details_list]
-        return result
+    #     :return: List of Workspace top level Jobs or Sessions.
+    #     :rtype: typing.List[typing.Union[Job, Session]]
+    #     """
+    #     client = self._get_top_level_items_client()
+    #     item_details_list = client.list()
+    #     result = [WorkspaceItemFactory.__new__(workspace=self, item_details=item_details)
+    #               for item_details in item_details_list]
+    #     return result
 
-    def list_sessions(
-        self
-    ) -> List[Session]:
-        """
-        Get the list of sessions in the given workspace.
+    # def list_sessions(
+    #     self
+    # ) -> List[Session]:
+    #     """
+    #     Get the list of sessions in the given workspace.
 
-        :return: List of Workspace Sessions.
-        :rtype: typing.List[Session]
-        """
-        client = self._get_sessions_client()
-        session_details_list = client.list()
-        result = [Session(workspace=self,details=session_details)
-                  for session_details in session_details_list]
-        return result
+    #     :return: List of Workspace Sessions.
+    #     :rtype: typing.List[Session]
+    #     """
+    #     client = self._get_sessions_client()
+    #     session_details_list = client.list()
+    #     result = [Session(workspace=self,details=session_details)
+    #               for session_details in session_details_list]
+    #     return result
 
-    def open_session(
-        self,
-        session: Session,
-    ) -> None:
-        """
-        Opens/creates a session in the given workspace.
+    # def open_session(
+    #     self,
+    #     session: Session,
+    # ) -> None:
+    #     """
+    #     Opens/creates a session in the given workspace.
 
-        :param session:
-            The session to be opened/created.
+    #     :param session:
+    #         The session to be opened/created.
 
-        :return: A new open Azure Quantum Session.
-        :rtype: Session
-        """
-        client = self._get_sessions_client()
-        session.details = client.open(
-            session_id=session.id,
-            session=session.details)
+    #     :return: A new open Azure Quantum Session.
+    #     :rtype: Session
+    #     """
+    #     client = self._get_sessions_client()
+    #     session.details = client.open(
+    #         session_id=session.id,
+    #         session=session.details)
 
-    def close_session(
-        self,
-        session: Session
-    ) -> None:
-        """
-        Closes a session in the given workspace if the
-        session is not in a terminal state.
-        Otherwise, just refreshes the session details.
+    # def close_session(
+    #     self,
+    #     session: Session
+    # ) -> None:
+    #     """
+    #     Closes a session in the given workspace if the
+    #     session is not in a terminal state.
+    #     Otherwise, just refreshes the session details.
 
-        :param session:
-            The session to be closed.
-        """
-        client = self._get_sessions_client()
-        if not session.is_in_terminal_state():
-            session.details = client.close(session_id=session.id)
-        else:
-            session.details = client.get(session_id=session.id)
+    #     :param session:
+    #         The session to be closed.
+    #     """
+    #     client = self._get_sessions_client()
+    #     if not session.is_in_terminal_state():
+    #         session.details = client.close(session_id=session.id)
+    #     else:
+    #         session.details = client.get(session_id=session.id)
 
-        if session.target:
-            if (session.target.latest_session
-                and session.target.latest_session.id == session.id):
-                session.target.latest_session.details = session.details
+    #     if session.target:
+    #         if (session.target.latest_session
+    #             and session.target.latest_session.id == session.id):
+    #             session.target.latest_session.details = session.details
 
-    def refresh_session(
-        self,
-        session: Session
-    ) -> None:
-        """
-        Updates the session details with the latest information
-        from the workspace.
+    # def refresh_session(
+    #     self,
+    #     session: Session
+    # ) -> None:
+    #     """
+    #     Updates the session details with the latest information
+    #     from the workspace.
 
-        :param session:
-            The session to be refreshed.
-        """
-        session.details = self.get_session(session_id=session.id).details
+    #     :param session:
+    #         The session to be refreshed.
+    #     """
+    #     session.details = self.get_session(session_id=session.id).details
 
-    def get_session(
-        self,
-        session_id: str
-    ) -> Session:
-        """
-        Gets a session from the workspace.
+    # def get_session(
+    #     self,
+    #     session_id: str
+    # ) -> Session:
+    #     """
+    #     Gets a session from the workspace.
 
-        :param session_id:
-            The id of session to be retrieved.
+    #     :param session_id:
+    #         The id of session to be retrieved.
 
-        :return: Azure Quantum Session
-        :rtype: Session
-        """
-        client = self._get_sessions_client()
-        session_details = client.get(session_id=session_id)
-        result = Session(workspace=self, details=session_details)
-        return result
+    #     :return: Azure Quantum Session
+    #     :rtype: Session
+    #     """
+    #     client = self._get_sessions_client()
+    #     session_details = client.get(session_id=session_id)
+    #     result = Session(workspace=self, details=session_details)
+    #     return result
 
-    def list_session_jobs(
-        self,
-        session_id: str
-    ) -> List[Job]:
-        """
-        Gets all jobs associated with a session.
+    # def list_session_jobs(
+    #     self,
+    #     session_id: str
+    # ) -> List[Job]:
+    #     """
+    #     Gets all jobs associated with a session.
 
-        :param session_id:
-            The id of session.
+    #     :param session_id:
+    #         The id of session.
 
-        :return: List of all jobs associated with a session.
-        :rtype: typing.List[Job]
-        """
-        client = self._get_sessions_client()
-        job_details_list = client.jobs_list(session_id=session_id)
-        result = [Job(workspace=self, job_details=job_details)
-                  for job_details in job_details_list]
-        return result
+    #     :return: List of all jobs associated with a session.
+    #     :rtype: typing.List[Job]
+    #     """
+    #     client = self._get_sessions_client()
+    #     job_details_list = client.jobs_list(session_id=session_id)
+    #     result = [Job(workspace=self, job_details=job_details)
+    #               for job_details in job_details_list]
+    #     return result
 
     def get_container_uri(
         self,
