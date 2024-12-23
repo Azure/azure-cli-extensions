@@ -7,7 +7,8 @@ import re
 from typing import Optional
 import urllib3
 from azure.core.credentials import AccessToken
-from azure.identity import (
+# This "from" statement was changed so there is no external dependency on the azure.identity PyPI package
+from ...vendored_sdks.azure_identity import (
     AzurePowerShellCredential,
     EnvironmentCredential,
     ManagedIdentityCredential,

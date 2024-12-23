@@ -244,52 +244,12 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     workspace = Workspace(resource_id=resource_id, location=location)
 
-    # knack_logger.warning("Getting Azure credential token...")
-    print("Getting Azure credential token...")
-    
-    # TODO: Suppress the ugly series of non-fatal error messages that occur when the next line executes:
-    # container_uri = workspace.get_container_uri(job_id=job_id)
-
-    # # This only suppresses the last error message, not the yellow stuff.
-    # # We still need an "--only-show-errors" flag in the command-line to hide the other errors.
-    import sys, os
-    # old_stderr = sys.stderr
-    old_stdout = sys.stdout                     # Only nulling-out stdout helps -- changing stderr has no effect
-    with open(os.devnull, "w") as devnull:
-        # sys.stderr = devnull
-        sys.stdout = devnull
-        container_uri = workspace.get_container_uri(job_id=job_id)
-    # sys.stderr = old_stderr
-    sys.stdout = old_stdout
-
-    # This variable is affected by --only-show-errors or the config file [core] only_show_errors,
-    # but it doesn't affect the output
-    #
-    # cmd.cli_ctx.only_show_errors = True
-    # container_uri = workspace.get_container_uri(job_id=job_id)
-    # cmd.cli_ctx.only_show_errors = False
-
-    # from knack.log import get_logger, CLILogging
-    # print("CLILogging.ONLY_SHOW_ERRORS_FLAG:")
-    # print(CLILogging.ONLY_SHOW_ERRORS_FLAG)       This just prints "--only-show-errors"
-
-    # >>>>> Example from https://docs.python.org/3/library/warnings.html
-    # import warnings
-    # with warnings.catch_warnings():
-    #     warnings.simplefilter("ignore")
-    #     container_uri = workspace.get_container_uri(job_id=job_id)
-    
-    # import warnings
-    # warnings.simplefilter("ignore")
-    # container_uri = workspace.get_container_uri(job_id=job_id)
-    # warnings.resetwarnings()
-    #
-    # End of unfruitful experiments
-
+    knack_logger.warning("Getting Azure credential token...")
+    container_uri = workspace.get_container_uri(job_id=job_id)
     container_client = ContainerClient.from_container_url(container_uri)
 
-    # knack_logger.warning("Uploading input data...")
-    print("Uploading input data...")
+    knack_logger.warning("Uploading input data...")
+    # print("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
         logger.debug("  - blob uri: %s", blob_uri)
@@ -331,16 +291,11 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         if "arguments" not in job_params:
             job_params["arguments"] = []
 
-    # TODO: Straighten this out...
-    # There's a warning:
-    # "...azure\quantum\target\target.py:275: UserWarning: Field 'shots' from the 'input_params' parameter is subject to change in future versions. Please, use 'shots' parameter instead."
-    # Both count and shots are in job_params -- does that make sense?
-    #
-    # # Supply a default "shots" if it's not specified (like Q# does)
-    #     if "shots" not in job_params:
-    #         job_params["shots"] = DEFAULT_SHOTS
+    # Supply a default "shots" if it's not specified (like Q# does)
+        if "shots" not in job_params:
+            job_params["shots"] = DEFAULT_SHOTS
 
-    # TODO: Find out if QIO is deprecated (if so, there are other places where QIO code needs to ge deleted)
+    # TODO: Find out if QIO is fully deprecated (if so, there are other places where QIO code needs to ge deleted)
     # For QIO jobs, start inputParams with a "params" key and supply a default timeout
     if job_type == QIO_JOB:
         if job_params is None:
@@ -362,8 +317,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
                    'metadata': metadata,
                    'tags': tags}
 
-    # knack_logger.warning("Submitting job...")
-    print("Submitting job...")
+    knack_logger.warning("Submitting job...")
     return client.create(job_id, job_details)
 
 

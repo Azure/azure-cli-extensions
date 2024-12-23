@@ -6,7 +6,8 @@ import logging
 
 import sys
 from azure.core.exceptions import ClientAuthenticationError
-from azure.identity import CredentialUnavailableError
+# This "from" statement was changed so there is no external dependency on the azure.identity PyPI package
+from ...vendored_sdks.azure_identity import CredentialUnavailableError
 from azure.core.credentials import AccessToken, TokenCredential
 
 
