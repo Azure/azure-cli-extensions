@@ -36,6 +36,7 @@ def _parse_properties(self):
             raise CLIError("Failed to parse 'metadata' from property.")
         args.metadata = properties['metadata']
 
+
 def _parse_dashboard_json(self):
     args = self.ctx.args
     try:
@@ -57,7 +58,7 @@ def _parse_dashboard_json(self):
 
 
 class Create(_Create):
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -73,7 +74,7 @@ class Create(_Create):
 
 
 class Update(_Update):
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -109,6 +110,6 @@ class Import(_Create):
         args_schema.location._registered = False
 
         return args_schema
-    
+
     def pre_operations(self):
         _parse_dashboard_json(self)
