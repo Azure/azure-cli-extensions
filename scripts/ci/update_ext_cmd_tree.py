@@ -71,6 +71,9 @@ def update_cmd_tree(ext_name):
         get_package_version("azure-storage-blob")
         upgrade_package("azure-storage-blob")
         get_package_version("azure-storage-blob")
+        get_package_version("rpds")
+        upgrade_package("rpds")
+        get_package_version("rpds")
 
     ext_dir = get_extension_path(ext_name)
     ext_mod = get_extension_modname(ext_name, ext_dir=ext_dir)
