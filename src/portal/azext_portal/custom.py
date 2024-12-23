@@ -99,9 +99,9 @@ class Import(_Create):
             arg_group="Properties",
             help='The path to the dashboard properties JSON file. If provided, no other Properties arguments should be specified.'
         )
-        args_schema.lenses.registered = False
-        args_schema.metadata.registered = False
-        args_schema.location.registered = False
+        args_schema.lenses._registered = False
+        args_schema.metadata._registered = False
+        args_schema.location._registered = False
 
         return args_schema
     
