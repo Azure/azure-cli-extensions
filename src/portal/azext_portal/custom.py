@@ -91,13 +91,18 @@ class Update(_Update):
 
 class Import(_Create):
 
+    def __init__(self, loader=None, cli_ctx=None, callbacks=None, **kwargs):
+        super().__init__(loader, cli_ctx, callbacks, **kwargs)
+        self.help['short-summary'] = 'Import a dashboard from a JSON file.'
+        self.help['examples'] = ''
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.input_path = AAZFileArg(
             options=['--input-path'],
             arg_group="Properties",
-            help='The path to the dashboard properties JSON file. If provided, no other Properties arguments should be specified.'
+            help='The path to the dashboard JSON file.'
         )
         args_schema.lenses._registered = False
         args_schema.metadata._registered = False
