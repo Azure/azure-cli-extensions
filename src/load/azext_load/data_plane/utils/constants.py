@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from dataclasses import dataclass
+from .models import AllowedTrendsResponseTimeAggregations
 
 
 @dataclass
@@ -39,3 +40,34 @@ class HighScaleThreshold:
 class LoadCommandsConstants:
     CONVERT_TO_JMX_CONFIRM_PROMPT = "Once the test is converted, the process cannot be reversed.\n" \
         "Do you want to continue?"
+
+
+@dataclass
+class LoadTestTrendsKeys:
+    NAME = "Name"
+    DESCRIPTION = "Description"
+    DURATION = "Duration (in minutes)"
+    VUSERS = "Virtual users"
+    TOTAL_REQUESTS = "Total requests"
+    RESPONSE_TIME = "Response time"
+    ERROR_PCT = "Error percentage"
+    THROUGHPUT = "Throughput"
+    STATUS = "Status"
+
+    ORDERED_HEADERS = [NAME, DESCRIPTION, DURATION, VUSERS, TOTAL_REQUESTS,
+                       RESPONSE_TIME, ERROR_PCT, THROUGHPUT, STATUS]
+
+    RESPONSE_TIME_METRICS = {
+        AllowedTrendsResponseTimeAggregations.MEAN.value: "meanResTime",
+        AllowedTrendsResponseTimeAggregations.MEDIAN.value: "medianResTime",
+        AllowedTrendsResponseTimeAggregations.MAX.value: "maxResTime",
+        AllowedTrendsResponseTimeAggregations.MIN.value: "minResTime",
+        AllowedTrendsResponseTimeAggregations.P75.value: "pct75ResTime",
+        AllowedTrendsResponseTimeAggregations.P90.value: "pct1ResTime",
+        AllowedTrendsResponseTimeAggregations.P95.value: "pct2ResTime",
+        AllowedTrendsResponseTimeAggregations.P96.value: "pct96ResTime",
+        AllowedTrendsResponseTimeAggregations.P98.value: "pct98ResTime",
+        AllowedTrendsResponseTimeAggregations.P99.value: "pct3ResTime",
+        AllowedTrendsResponseTimeAggregations.P999.value: "pct999ResTime",
+        AllowedTrendsResponseTimeAggregations.P9999.value: "pct9999ResTime",
+    }

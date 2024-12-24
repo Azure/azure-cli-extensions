@@ -426,6 +426,13 @@ class LoadTestRunScenario(ScenarioTest):
             assert len(files_in_dir) >= 4
             assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
 
+    
+    # Live only test because download from azure storage account
+    # for high scale load test is not supported in playback mode
+    @live_only()
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_load_test_run_download_files_high_scale(self, rg, load):
         self.kwargs.update(
             {
                 "test_id": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_ID,
@@ -441,7 +448,7 @@ class LoadTestRunScenario(ScenarioTest):
         ) as temp_dir:
             self.kwargs.update({"path": temp_dir})
             
-            response = self.cmd(
+            self.cmd(
                 "az load test-run download-files "
                 "--load-test-resource {load_test_resource} "
                 "--resource-group {resource_group} "
@@ -449,10 +456,14 @@ class LoadTestRunScenario(ScenarioTest):
                 '--path "{path}" '
                 "--log "
                 "--result ",
-            ).get_output_in_json()
-            
-            assert f"Logs file for high-scale test {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} is not available for download." in response
-            assert f"Results file for high-scale test {LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID} is not available for download." in response              
+            )
+            dirs = [
+                d
+                for d in os.listdir(temp_dir)
+            ]
+            expected_dirs = ["logs", "results"]
+            for dir in expected_dirs:
+                assert dir in dirs
             
 
     @ResourceGroupPreparer(**rg_params)

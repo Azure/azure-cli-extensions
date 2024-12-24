@@ -6,6 +6,7 @@
 from azext_load.data_plane.utils import validators
 from azext_load.data_plane.utils.constants import LoadCommandsConstants
 from azure.cli.core.commands import CliCommandType
+from .transformers import trends_output_transformer
 
 admin_custom_sdk = CliCommandType(
     operations_tmpl="azext_load.data_plane.load_test.custom#{}"
@@ -31,6 +32,8 @@ def load_test_commands(self, _):
             "convert_to_jmx",
             confirmation=LoadCommandsConstants.CONVERT_TO_JMX_CONFIRM_PROMPT
         )
+        g.custom_command("set-baseline", "set_baseline")
+        g.custom_command("compare-to-baseline", "compare_to_baseline", table_transformer=trends_output_transformer)
 
     with self.command_group(
         "load test app-component",
