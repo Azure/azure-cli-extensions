@@ -396,5 +396,5 @@ response_time_aggregate = CLIArgumentType(
     options_list=["--aggregation"],
     type=str,
     choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
-    help="Specify the aggregation method for statistics.",
+    help="Specify the aggregation method for response time.",
 )

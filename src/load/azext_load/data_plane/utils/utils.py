@@ -21,7 +21,7 @@ from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.util import run_az_cmd
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, AllowedTrendsResponseTimeAggregations
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
 
 logger = get_logger(__name__)
 
@@ -840,7 +840,8 @@ def _get_metrics_from_sampler(test_run, sampler_name, metric_name):
 
 def generate_trends_row(test_run, response_time_aggregate=None):
     trends = {
-        LoadTestTrendsKeys.NAME: test_run.get("testRunId"),
+        LoadTestTrendsKeys.NAME: test_run.get("displayName"),
+        LoadTestTrendsKeys.DESCRIPTION: test_run.get("description"),
     }
     _add_basic_trends(trends, test_run)
     _add_response_time_trends(trends, test_run, response_time_aggregate)
@@ -861,27 +862,13 @@ def _add_basic_trends(trends, test_run):
 
 
 def _add_response_time_trends(trends, test_run, response_time_aggregate):
-    response_time_metrics = {
-        AllowedTrendsResponseTimeAggregations.MEAN.value: "meanResTime",
-        AllowedTrendsResponseTimeAggregations.MEDIAN.value: "medianResTime",
-        AllowedTrendsResponseTimeAggregations.MAX.value: "maxResTime",
-        AllowedTrendsResponseTimeAggregations.MIN.value: "minResTime",
-        AllowedTrendsResponseTimeAggregations.P75.value: "pct75ResTime",
-        AllowedTrendsResponseTimeAggregations.P90.value: "pct1ResTime",
-        AllowedTrendsResponseTimeAggregations.P95.value: "pct2ResTime",
-        AllowedTrendsResponseTimeAggregations.P96.value: "pct96ResTime",
-        AllowedTrendsResponseTimeAggregations.P98.value: "pct98ResTime",
-        AllowedTrendsResponseTimeAggregations.P99.value: "pct3ResTime",
-        AllowedTrendsResponseTimeAggregations.P999.value: "pct999ResTime",
-        AllowedTrendsResponseTimeAggregations.P9999.value: "pct9999ResTime",
-    }
-    for key, metric in response_time_metrics.items():
+    trends[LoadTestTrendsKeys.RESPONSE_TIME] = None
+    for key, metric in LoadTestTrendsKeys.RESPONSE_TIME_METRICS.items():
         if response_time_aggregate == key:
-            if os.getenv("AZDEV_TEST_ENV"):
-                trends[getattr(LoadTestTrendsKeys, key.upper() + "_RES_TIME")] = None
             value = _get_metrics_from_sampler(test_run, "Total", metric)
             if value is not None:
-                trends[getattr(LoadTestTrendsKeys, key.upper() + "_RES_TIME")] = value
+                trends[LoadTestTrendsKeys.RESPONSE_TIME] = value
+            break
 
 
 def _add_error_and_throughput_trends(trends, test_run):

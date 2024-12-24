@@ -230,7 +230,7 @@ def _is_high_scale_test_run(test_run_data):
 
 
 def _download_from_artifacts_container(artifacts_container, path, logs=False, results=False):
-    logger.warning(
+    logger.info(
         "Downloading %s from artifacts container for high scale test run",
         {"logs" if logs else "results" if results else "files"}
     )
@@ -238,7 +238,7 @@ def _download_from_artifacts_container(artifacts_container, path, logs=False, re
         artifacts_container_url = artifacts_container.get("url")
         artifacts_container_url = _update_artifacts_container_path(artifacts_container_url, logs, results)
         download_from_storage_container(artifacts_container_url, path)
-        logger.warning(
+        logger.info(
             "%s from artifacts container downloaded to %s",
             {"Logs" if logs else "Results" if results else "Files"},
             path

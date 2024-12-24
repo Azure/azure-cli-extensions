@@ -7,7 +7,6 @@
 
 import os
 
-from azext_load.data_plane.utils.constants import LoadTestTrendsKeys
 from azext_load.data_plane.utils.utils import (
     convert_yaml_to_test,
     create_autostop_criteria_from_args,
@@ -27,7 +26,6 @@ from azext_load.data_plane.utils.models import (
 )
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.core.exceptions import ResourceNotFoundError
-from collections import OrderedDict
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -361,7 +359,12 @@ def compare_to_baseline(
         )
     baseline_test_run_id = test.get("baselineTestRunId")
     baseline_test_run = test_run_client.get_test_run(baseline_test_run_id)
-    all_test_runs = test_run_client.list_test_runs(test_id=test_id)
+    all_test_runs = test_run_client.list_test_runs(
+        orderby="executedDateTime desc",
+        test_id=test_id,
+        status="CANCELLED,DONE",
+        maxpagesize=20,
+    )
     all_test_runs = [run.as_dict() for run in all_test_runs]
     logger.debug("Total number of test runs: %s", len(all_test_runs))
     count = 0
@@ -370,7 +373,6 @@ def compare_to_baseline(
         if (
             run.get("testRunId") != baseline_test_run_id
             and count < 10  # Show only 10 most recent test runs
-            and run.get("status") in ["CANCELLED", "DONE"]
         ):
             recent_test_runs.append(run)
             count += 1
@@ -385,13 +387,6 @@ def compare_to_baseline(
         )
     logger.debug("Retrieved test trends: %s", rows)
     return rows
-
-
-def trends_output_transformer(result):
-    table = []
-    for row in result:
-        table.append(OrderedDict([(k, row.get(k)) for k in LoadTestTrendsKeys.ORDERED_HEADERS]))
-    return table
 
 
 def add_test_app_component(

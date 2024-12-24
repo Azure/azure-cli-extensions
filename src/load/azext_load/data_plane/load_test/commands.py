@@ -6,7 +6,7 @@
 from azext_load.data_plane.utils import validators
 from azext_load.data_plane.utils.constants import LoadCommandsConstants
 from azure.cli.core.commands import CliCommandType
-from .custom import trends_output_transformer
+from .transformers import trends_output_transformer
 
 admin_custom_sdk = CliCommandType(
     operations_tmpl="azext_load.data_plane.load_test.custom#{}"
