@@ -10,8 +10,8 @@ from typing import Any, TYPE_CHECKING
 
 from azure.core.pipeline import policies
 
-# The following file is not found in the repo, but it is in Users\[alias]\AppData\Local\Programs\Python\Python38\Lib\site-packages\azure\quantum\
 from ._version import VERSION
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential

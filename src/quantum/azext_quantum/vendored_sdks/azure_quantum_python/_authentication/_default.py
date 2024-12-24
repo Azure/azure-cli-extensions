@@ -7,8 +7,8 @@ import re
 from typing import Optional
 import urllib3
 from azure.core.credentials import AccessToken
-# This "from" statement was changed so there is no external dependency on the azure.identity PyPI package
-from ...vendored_sdks.azure_identity import (
+# from azure.identity import (
+from ...azure_identity import (
     AzurePowerShellCredential,
     EnvironmentCredential,
     ManagedIdentityCredential,
@@ -20,7 +20,8 @@ from ...vendored_sdks.azure_identity import (
 )
 from ._chained import _ChainedTokenCredential
 from ._token import _TokenFileCredential
-from azure.quantum._constants import ConnectionConstants
+# from azure.quantum._constants import ConnectionConstants
+from .._constants import ConnectionConstants
 
 _LOGGER = logging.getLogger(__name__)
 WWW_AUTHENTICATE_REGEX = re.compile(

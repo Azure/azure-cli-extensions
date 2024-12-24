@@ -17,8 +17,8 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-from ..quantum_python_sdk.workspace import Workspace
-from ..quantum_python_sdk.storage import upload_blob
+from ..vendored_sdks.azure_quantum_python.workspace import Workspace
+from ..vendored_sdks.azure_quantum_python.storage import upload_blob
 from ..vendored_sdks.azure_storage_blob import ContainerClient
 from .._client_factory import cf_jobs
 
@@ -237,9 +237,6 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     job_id = str(uuid.uuid4())
     # container_name = "quantum-job-" + job_id
     blob_name = "inputData"
-
-    # # from azure.quantum import Workspace
-    # from ..quantum_python_sdk.workspace import Workspace
 
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     workspace = Workspace(resource_id=resource_id, location=location)

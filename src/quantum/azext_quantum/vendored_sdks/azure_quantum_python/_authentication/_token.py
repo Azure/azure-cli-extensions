@@ -8,10 +8,11 @@ import logging
 import os
 import time
 
-# This "from" statement was changed so there is no external dependency on the azure.identity PyPI package
-from ...vendored_sdks.azure_identity import CredentialUnavailableError
+# from azure.identity import CredentialUnavailableError
+from ...azure_identity import CredentialUnavailableError
 from azure.core.credentials import AccessToken
-from azure.quantum._constants import EnvironmentVariables
+# from azure.quantum._constants import EnvironmentVariables
+from .._constants import EnvironmentVariables
 
 _LOGGER = logging.getLogger(__name__)
 

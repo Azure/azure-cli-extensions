@@ -1,50 +1,58 @@
-# --------------------------------------------------------------------------------------------
+##
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-# --------------------------------------------------------------------------------------------
-
-# This file is a reduced version of
-# https://github.com/microsoft/azure-quantum-python/blob/main/azure-quantum/azure/quantum/workspace.py
-#
-# It only contains the methods required to access storage with a SAS token.
-# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.  It was included
-# in this repo so there would not be a direct dependency on azure-quantum-python.
-
-# Unused imports were removed to reduce Pylint style-rule violations.
-# "import" and "from" statements were changed so there is no dependency on the azure.quantum PyPI package
-
+# Licensed under the MIT License.
+##
 """
 Module providing the Workspace class, used to connect to
 an Azure Quantum Workspace.
 """
 
-# SDK imports modified for CLI configuration, unused imports deleted
 from __future__ import annotations
+from datetime import datetime
 import logging
 from typing import (
     Any,
+    Dict,
+    Iterable,
+    List,
     Optional,
     TYPE_CHECKING,
+    Tuple,
+    Union,
 )
+# from azure.quantum._client import QuantumClient
 from ._client import QuantumClient
+# from azure.quantum._client.operations import (
+#     JobsOperations,
+#     StorageOperations,
+#     QuotasOperations,
+#     SessionsOperations,
+#     TopLevelItemsOperations
+# )
+# from azure.quantum._client.models import (
 from ._client.models import (
     BlobDetails,
+    # JobStatus,
+    # TargetStatus,
 )
+# from azure.quantum import Job, Session
+# from azure.quantum.job.workspace_item_factory import WorkspaceItemFactory
+# from azure.quantum._workspace_connection_params import (
 from ._workspace_connection_params import (
     WorkspaceConnectionParams
 )
+# from azure.quantum._constants import (
 from ._constants import (
     ConnectionConstants,
 )
+# from azure.quantum.storage import (
 from .storage import (
     create_container_using_client,
     get_container_uri,
     ContainerClient
 )
-
-
-if TYPE_CHECKING:
-    from azure.quantum.target import Target
+# if TYPE_CHECKING:
+#     from azure.quantum.target import Target
 
 
 logger = logging.getLogger(__name__)

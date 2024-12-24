@@ -4,8 +4,10 @@
 ##
 
 from enum import Enum
-from azure.identity._constants import EnvironmentVariables as SdkEnvironmentVariables
-from azure.identity import _internal as AzureIdentityInternals
+# from azure.identity._constants import EnvironmentVariables as SdkEnvironmentVariables
+# from azure.identity import _internal as AzureIdentityInternals
+from ..azure_identity._constants import EnvironmentVariables as SdkEnvironmentVariables
+from ..azure_identity import _internal as AzureIdentityInternals
 
 
 class EnvironmentVariables:
