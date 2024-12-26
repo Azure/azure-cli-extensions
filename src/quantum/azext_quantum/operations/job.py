@@ -235,7 +235,6 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
         storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
-    # container_name = "quantum-job-" + job_id
     blob_name = "inputData"
 
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
@@ -246,7 +245,6 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     container_client = ContainerClient.from_container_url(container_uri)
 
     knack_logger.warning("Uploading input data...")
-    # print("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
         logger.debug("  - blob uri: %s", blob_uri)
@@ -288,11 +286,10 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         if "arguments" not in job_params:
             job_params["arguments"] = []
 
-    # Supply a default "shots" if it's not specified (like Q# does)
+    # ...supply a default "shots" if it's not specified (like Q# does)
         if "shots" not in job_params:
             job_params["shots"] = DEFAULT_SHOTS
 
-    # TODO: Find out if QIO is fully deprecated (if so, there are other places where QIO code needs to ge deleted)
     # For QIO jobs, start inputParams with a "params" key and supply a default timeout
     if job_type == QIO_JOB:
         if job_params is None:
