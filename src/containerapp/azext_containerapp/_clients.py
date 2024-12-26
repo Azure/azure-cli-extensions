@@ -364,7 +364,7 @@ class HttpRouteConfigPreviewClient:
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create(cls, cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope):
+    def create(cls, cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
@@ -373,14 +373,14 @@ class HttpRouteConfigPreviewClient:
             sub_id,
             resource_group_name,
             name,
-            httprouteconfig_name,
+            http_route_config_name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(httprouteconfig_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(http_route_config_envelope))
         return r.json()
 
     @classmethod
-    def update(cls, cmd, resource_group_name, name, httprouteconfig_name, httprouteconfig_envelope):
+    def update(cls, cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
@@ -389,10 +389,10 @@ class HttpRouteConfigPreviewClient:
             sub_id,
             resource_group_name,
             name,
-            httprouteconfig_name,
+            http_route_config_name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(httprouteconfig_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(http_route_config_envelope))
         return r.json()
 
     @classmethod
@@ -415,7 +415,7 @@ class HttpRouteConfigPreviewClient:
         return route_list
 
     @classmethod
-    def show(cls, cmd, resource_group_name, name, httprouteconfig_name):
+    def show(cls, cmd, resource_group_name, name, http_route_config_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
@@ -424,14 +424,14 @@ class HttpRouteConfigPreviewClient:
             sub_id,
             resource_group_name,
             name,
-            httprouteconfig_name,
+            http_route_config_name,
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, name, httprouteconfig_name):
+    def delete(cls, cmd, resource_group_name, name, http_route_config_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
@@ -440,7 +440,7 @@ class HttpRouteConfigPreviewClient:
             sub_id,
             resource_group_name,
             name,
-            httprouteconfig_name,
+            http_route_config_name,
             cls.api_version)
 
         send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)

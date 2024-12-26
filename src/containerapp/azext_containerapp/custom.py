@@ -3362,39 +3362,37 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
                 conn.send(SSH_CTRL_C_MSG)
 
 
-def create_httprouteconfig(cmd, resource_group_name, name, http_route_config_name, yaml):
-    yaml_httprouteconfig = load_yaml_file(yaml)
+def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
     # check if the type is dict
-    if not isinstance(yaml_httprouteconfig, dict):
+    if not isinstance(yaml_http_route_config, dict):
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
-    httprouteconfig_envelope = {}
-
-    httprouteconfig_envelope["properties"] = yaml_httprouteconfig
+    http_route_config_envelope = {"properties": yaml_http_route_config}
 
     try:
-        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, httprouteconfig_envelope)
+        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
     except Exception as e:
         handle_raw_exception(e)
 
 
-def update_httprouteconfig(cmd, resource_group_name, name, http_route_config_name, yaml):
-    yaml_httprouteconfig = load_yaml_file(yaml)
+def update_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
     # check if the type is dict
-    if not isinstance(yaml_httprouteconfig, dict):
+    if not isinstance(yaml_http_route_config, dict):
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
-    httprouteconfig_envelope = {}
-
-    httprouteconfig_envelope["properties"] = yaml_httprouteconfig
+    http_route_config_envelope = {"properties": yaml_http_route_config}
 
     try:
-        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, httprouteconfig_envelope)
+        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
     except Exception as e:
         handle_raw_exception(e)
 
 
-def list_httprouteconfigs(cmd, resource_group_name, name):
+def list_http_route_configs(cmd, resource_group_name, name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
@@ -3402,7 +3400,7 @@ def list_httprouteconfigs(cmd, resource_group_name, name):
         handle_raw_exception(e)
 
 
-def show_httprouteconfig(cmd, resource_group_name, name, http_route_config_name):
+def show_http_route_config(cmd, resource_group_name, name, http_route_config_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
@@ -3410,7 +3408,7 @@ def show_httprouteconfig(cmd, resource_group_name, name, http_route_config_name)
         handle_raw_exception(e)
 
 
-def delete_httprouteconfig(cmd, resource_group_name, name, http_route_config_name):
+def delete_http_route_config(cmd, resource_group_name, name, http_route_config_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
