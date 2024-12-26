@@ -2201,7 +2201,7 @@ helps['containerapp debug'] = """
 
 helps['containerapp label-history'] = """
     type: group
-    short-summary: Show the history for one more labels on the Container App.
+    short-summary: Show the history for one or more labels on the Container App.
     examples:
     - name: Show Label History
       text: |

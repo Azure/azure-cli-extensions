@@ -6,8 +6,7 @@ upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 * 'az containerapp create': New target-label option for Labels revision mode.
-* 'az containerapp update': New revisions-mode and target-label options for Labels revision mode.
-* 'az containerapp up': New revisions-mode and target-label options for Labels revision mode.
+* 'az containerapp up/update': New revisions-mode and target-label options for Labels revision mode.
 * 'az containerapp label-history': New list and show commands to see label revision assignment history.
 * 'az containerapp revision set-mode': New target-label option for Labels revision mode.
 
