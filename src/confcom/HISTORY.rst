@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.1.3
+++++++
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
+
 1.1.2
 ++++++
 * fixing metadata for uploaded fragments
