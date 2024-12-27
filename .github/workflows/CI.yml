@@ -27,6 +27,11 @@ jobs:
         azdev setup -r .
         azdev extension add apic-extension
 
+    - name: Re-install urllib3==2.2.3 to fix 'missing request.version_string attribute' issue
+      run: |
+        source .venv/bin/activate
+        pip install urllib3==2.2.3
+
     - name: Run style check
       run: |
         source .venv/bin/activate
