@@ -1,0 +1,170 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing policy get-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/policies/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/policies/default","name":"default","properties":{"enterpriseAgreementPolicies":{"authenticationType":"OrganizationalAccountOnly","accountOwnerViewCharges":"Allowed","departmentAdminViewCharges":"Allowed"},"marketplacePurchases":"AllAllowed","reservationPurchases":"Allowed","savingsPlanPurchases":"Allowed"},"type":"Microsoft.Billing/billingAccounts/policies"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '420'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2024 20:54:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2901.845
+      x-msedge-ref:
+      - 'Ref A: F061C7FB26E94F1B8797E0EB7AB799C6 Ref B: CO6AA3150220023 Ref C: 2024-12-27T20:54:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing policy update-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --enterprise-agreement-policies
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/policies/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/policies/default","name":"default","properties":{"enterpriseAgreementPolicies":{"authenticationType":"OrganizationalAccountOnly","accountOwnerViewCharges":"Allowed","departmentAdminViewCharges":"Allowed"},"marketplacePurchases":"AllAllowed","reservationPurchases":"Allowed","savingsPlanPurchases":"Allowed"},"type":"Microsoft.Billing/billingAccounts/policies"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '420'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2024 20:54:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2901.845
+      x-msedge-ref:
+      - 'Ref A: 749D945EEC1C473B8500610E39ADF04D Ref B: CO6AA3150217021 Ref C: 2024-12-27T20:54:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"enterpriseAgreementPolicies": {"accountOwnerViewCharges":
+      "Allowed", "authenticationType": "OrganizationalAccountOnly", "departmentAdminViewCharges":
+      "Allowed"}, "marketplacePurchases": "AllAllowed", "reservationPurchases": "Allowed",
+      "savingsPlanPurchases": "Allowed"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing policy update-by-billing-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '287'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --enterprise-agreement-policies
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/policies/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/policies/default","name":"default","properties":{"enterpriseAgreementPolicies":{"authenticationType":"OrganizationalAccountOnly","accountOwnerViewCharges":"Allowed","departmentAdminViewCharges":"Allowed"},"marketplacePurchases":"AllAllowed","reservationPurchases":"Allowed","savingsPlanPurchases":"Allowed"},"type":"Microsoft.Billing/billingAccounts/policies"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '420'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2024 20:54:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2901.845
+      x-msedge-ref:
+      - 'Ref A: 1B7E176B9F6E4488B7F7910E2D497532 Ref B: CO6AA3150217021 Ref C: 2024-12-27T20:54:09Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -15,10 +15,6 @@ class AzurePolicyScenarioTest(ScenarioTest):
 		account_policy = self.cmd('billing policy get-by-billing-account --billing-account-name {billing_account_name}')
 		self.assertTrue(account_policy)
 		# update by billing account
-		authentication_type = 'OrganizationalAccountOnly'
-		self.kwargs.update({
-			'authentication_type': authentication_type
-        })
-		self.cmd('billing policy update-by-billing-account --billing-account-name {billing_account_name} --enterprise_agreement_policies authentication-type={authentication_type}',
-		    checks=self.check('properties.enterpriseAgreementPolicies.authenticationType', authentication_type))
+		self.cmd('billing policy update-by-billing-account --billing-account-name {billing_account_name} --enterprise-agreement-policies authentication-type="OrganizationalAccountOnly"',
+		    checks=self.check('properties.enterpriseAgreementPolicies.authenticationType', "OrganizationalAccountOnly"))
 		
