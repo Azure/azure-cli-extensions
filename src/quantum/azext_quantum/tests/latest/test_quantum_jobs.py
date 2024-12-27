@@ -198,7 +198,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/aqt-pay-as-you-go-cred-new,microsoft-qc/learn-and-develop"
+        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/aqt-pay-as-you-go-cred-new"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
@@ -206,19 +206,22 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Submit a job to Rigetti and look for SAS tokens in URIs in the output
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("?se", results["containerUri"])
-        self.assertIn("&sp=racw&sv=", results["containerUri"])
-        self.assertIn("&sr=", results["containerUri"])
+        self.assertIn("?sv=", results["containerUri"])
+        self.assertIn("&st=", results["containerUri"])
+        self.assertIn("&se=", results["containerUri"])
+        self.assertIn("&sp=", results["containerUri"])
         self.assertIn("&sig=", results["containerUri"])
 
-        self.assertIn("?se", results["inputDataUri"])
-        self.assertIn("&sp=racw&sv=", results["inputDataUri"])
-        self.assertIn("&sr=", results["inputDataUri"])
+        self.assertIn("?sv=", results["inputDataUri"])
+        self.assertIn("&st=", results["inputDataUri"])
+        self.assertIn("&se=", results["inputDataUri"])
+        self.assertIn("&sp=", results["inputDataUri"])
         self.assertIn("&sig=", results["inputDataUri"])
 
-        self.assertIn("?se", results["outputDataUri"])
-        self.assertIn("&sp=racw&sv=", results["outputDataUri"])
-        self.assertIn("&sr=", results["outputDataUri"])
+        self.assertIn("?sv=", results["outputDataUri"])
+        self.assertIn("&st=", results["outputDataUri"])
+        self.assertIn("&se=", results["outputDataUri"])
+        self.assertIn("&sp=", results["outputDataUri"])
         self.assertIn("&sig=", results["outputDataUri"])
 
         # Run a Quil pass-through job on Rigetti

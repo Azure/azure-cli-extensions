@@ -9,12 +9,11 @@ TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
 TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
-TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "microsoft-qc/learn-and-develop"
+TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "microsoft-elements/elements-internal-testing"
 TEST_CAPABILITIES_DEFAULT = "new.microsoft-qc;submit.microsoft-qc"
-
-TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "microsoft-qc/learn-and-develop"
-TEST_TARGET_DEFAULT_PROVIDER = "microsoft-qc"
-TEST_TARGET_DEFAULT_TARGET = "microsoft.estimator"
+TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "microsoft-elements/elements-internal-testing"
+TEST_TARGET_DEFAULT_PROVIDER = "microsoft-elements"
+TEST_TARGET_DEFAULT_TARGET = "microsoft.dft"
 
 
 def get_from_os_environment(env_name, default):
