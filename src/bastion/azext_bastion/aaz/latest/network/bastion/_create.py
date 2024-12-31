@@ -110,7 +110,7 @@ class Create(AAZCommand):
             help="Enable/Disable Copy/Paste feature of the Bastion Host resource.",
             default=False,
         )
-        _args_schema.file_copy = AAZBoolArg(
+        _args_schema.enable_file_copy = AAZBoolArg(
             options=["--file-copy"],
             arg_group="Properties",
             help="Enable/Disable File Copy feature of the Bastion Host resource.",
@@ -122,19 +122,19 @@ class Create(AAZCommand):
             help="Enable/Disable IP Connect feature of the Bastion Host resource.",
             default=False,
         )
-        _args_schema.kerberos = AAZBoolArg(
+        _args_schema.enable_kerberos = AAZBoolArg(
             options=["--kerberos"],
             arg_group="Properties",
             help="Enable/Disable Kerberos feature of the Bastion Host resource.",
             default=False,
         )
-        _args_schema.session_recording = AAZBoolArg(
+        _args_schema.enable_session_recording = AAZBoolArg(
             options=["--session-recording"],
             arg_group="Properties",
             help="Enable/Disable Session Recording feature of the Bastion Host resource.",
             default=False,
         )
-        _args_schema.shareable_link = AAZBoolArg(
+        _args_schema.enable_shareable_link = AAZBoolArg(
             options=["--shareable-link"],
             arg_group="Properties",
             help="Enable/Disable Shareable Link of the Bastion Host resource.",
@@ -348,11 +348,11 @@ class Create(AAZCommand):
                     _CreateHelper._build_schema_sub_resource_create(properties.set_prop("virtualNetwork", AAZObjectType, ".virtual_network"))
                 else:
                     properties.set_prop("disableCopyPaste", AAZBoolType, ".disable_copy_paste")
-                    properties.set_prop("enableFileCopy", AAZBoolType, ".file_copy")
+                    properties.set_prop("enableFileCopy", AAZBoolType, ".enable_file_copy")
                     properties.set_prop("enableIpConnect", AAZBoolType, ".enable_ip_connect")
-                    properties.set_prop("enableKerberos", AAZBoolType, ".kerberos")
-                    properties.set_prop("enableSessionRecording", AAZBoolType, ".session_recording")
-                    properties.set_prop("enableShareableLink", AAZBoolType, ".shareable_link")
+                    properties.set_prop("enableKerberos", AAZBoolType, ".enable_kerberos")
+                    properties.set_prop("enableSessionRecording", AAZBoolType, ".enable_session_recording")
+                    properties.set_prop("enableShareableLink", AAZBoolType, ".enable_shareable_link")
                     properties.set_prop("enableTunneling", AAZBoolType, ".enable_tunneling")
                     properties.set_prop("ipConfigurations", AAZListType, ".ip_configurations")
                     properties.set_prop("scaleUnits", AAZIntType, ".scale_units")

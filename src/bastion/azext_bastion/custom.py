@@ -39,7 +39,7 @@ class BastionCreate(_BastionCreate):
         # custom arguments
         args_schema.public_ip_address = AAZResourceIdArg(
             options=["--public-ip-address"],
-            help="[Required for all SKUs but Developer SKU] " + 
+            help="[Required for all SKUs but Developer SKU] " +
                  "Name or Resource ID of the Public IP. The SKU of the public IP must be Standard.",
             required=False,
             fmt=AAZResourceIdArgFormat(
@@ -74,7 +74,7 @@ class BastionCreate(_BastionCreate):
             vnet_id = args.vnet_name
         else:
             vnet_id = f"/subscriptions/{self.ctx.subscription_id}/resourceGroups/{args.resource_group}" \
-                    f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}"
+                f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}"
 
         subnet_id = f"{vnet_id}/subnets/AzureBastionSubnet"
         args.ip_configurations = [{
@@ -89,10 +89,11 @@ class BastionCreate(_BastionCreate):
             args.virtual_network = {
                 "id": vnet_id
             }
-        
+
         if args.network_acls_ips is not None:
             addresses = str(args.network_acls_ips).split()
             args.network_acls = [{"addressPrefix": address} for address in addresses]
+
 
 SSH_EXTENSION_NAME = "ssh"
 SSH_EXTENSION_MODULE = "azext_ssh.custom"
