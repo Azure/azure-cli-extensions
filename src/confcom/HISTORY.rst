@@ -2,9 +2,6 @@
 
 Release History
 ===============
-1.1.3
-++++++
-* updating genpolicy to version 3.2.0.azl3.genpolicy2
 
 1.1.2
 ++++++
@@ -14,6 +11,7 @@ Release History
 * adding ability to generate a fragment import from an image name using the remote attached fragments
 * updating stdout import statement to look more like the file output
 * adding `--omit-id` to the `acifragmentgen` command
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
 
 1.1.1
 ++++++
