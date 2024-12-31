@@ -155,6 +155,21 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+class TestMaxUnavailable(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_unavailable(MaxSurgeNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxSurgeNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxSurgeNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):

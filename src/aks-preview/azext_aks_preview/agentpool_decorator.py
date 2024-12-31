@@ -1042,6 +1042,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
 
+        max_unavailable = self.context.get_max_unavailable()
+        if max_unavailable:
+            upgrade_settings.max_unavailable = max_unavailable
+
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
 
@@ -1266,6 +1270,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
             agentpool.upgrade_settings = upgrade_settings
+
+        max_unavailable = self.context.get_max_unavailable()
+        if max_unavailable:
+            upgrade_settings.max_unavailable = max_unavailable
 
         return agentpool
 
