@@ -126,3 +126,4 @@ Release History
 2.5.4
 ++++++
 * `az grafana dashboard import`: fix issue with JSON file validation
+* `az grafana folder update`: fix issue with overwrite setting

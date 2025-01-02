@@ -555,10 +555,9 @@ def list_folders(cmd, grafana_name, resource_group_name=None, api_key_or_token=N
 
 def update_folder(cmd, grafana_name, folder, title, resource_group_name=None, api_key_or_token=None):
     f = show_folder(cmd, grafana_name, folder, resource_group_name, api_key_or_token=api_key_or_token)
-    version = f['version']
     data = {
         "title": title,
-        "version": int(version)
+        "overwrite": True
     }
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + f["uid"], data,
                              api_key_or_token=api_key_or_token)
