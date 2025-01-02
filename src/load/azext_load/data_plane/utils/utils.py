@@ -21,7 +21,7 @@ from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.util import run_az_cmd
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, AllowedTestPlanFileExtensions
 
 logger = get_logger(__name__)
 
@@ -749,6 +749,19 @@ def upload_zipped_artifacts_helper(
                 raise FileOperationError(
                     f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again."
                 )
+
+
+def infer_test_type_from_test_plan(test_plan):
+    if test_plan is None:
+        return None
+    _, file_extension = os.path.splitext(test_plan)
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.JMX.value:
+        return AllowedTestTypes.JMX.value
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.URL.value:
+        return AllowedTestTypes.URL.value
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.LOCUST.value:
+        return AllowedTestTypes.LOCUST.value
+    return None
 
 
 def _evaluate_file_type_for_test_script(test_type, test_plan):

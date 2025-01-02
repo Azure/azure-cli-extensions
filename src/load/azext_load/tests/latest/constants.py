@@ -121,6 +121,11 @@ class LoadConstants:
 
     HIGH_SCALE_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-high-scale-load.yaml")
 
+    LOCUST_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-locust.yaml")
+    LOCUST_ENV_VARIABLES = 'LOCUST_HOST="https://www.google.com" LOCUST_SPAWN_RATE=0.3 LOCUST_RUN_TIME=120 LOCUST_USERS=4'
+    LOCUST_TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-locust-file.py")
+    LOCUST_TEST_PLAN_FILENAME = "sample-locust-file.py"
+
 
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
@@ -142,6 +147,7 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_ADVANCED_URL_ID = "loadtest-advanced-url-case"
     LOAD_TEST_CONVERT_TO_JMX_ID = "loadtest-convert-to-jmx-case"
     LOAD_TEST_BASELINE_TRENDS_ID = "loadtest-baseline-trends-case"
+    LOCUST_LOAD_TEST_ID = "loadtest-locust-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
