@@ -21,19 +21,19 @@ from ._validators import validate_dev_box_list, validate_time, is_iso8601
 
 dev_center_type = CLIArgumentType(
     options_list=["--dev-center-name", "--dev-center", "-d"],
-    help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+    help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
     configured_default="dev-center",
 )
 
 project_type = CLIArgumentType(
     options_list=["--project", "--project-name"],
-    help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+    help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
     configured_default="project",
 )
 
 endpoint = CLIArgumentType(
     options_list=["--endpoint"],
-    help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+    help="The API endpoint for the developer resources. Use `az configure -d endpoint=<endpoint_uri>` to configure a default.",
     configured_default="endpoint",
 )
 
