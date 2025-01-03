@@ -1,3 +1,4 @@
+#!/bin/bash
 # Following guide from: https://www.golinuxcloud.com/openssl-create-certificate-chain-linux/
 OriginalPath=`pwd`
 
@@ -31,14 +32,14 @@ chmod 400 $RootPath/rootCA/private/ca.key.pem
 openssl req -config openssl_root.cnf -key $RootPath/rootCA/private/ca.key.pem -new -x509 -days 7300 -sha256 -extensions v3_ca -out $RootPath/rootCA/certs/ca.cert.pem -subj "/C=US/ST=Georgia/L=Atlanta/O=Microsoft/OU=ACCCT/CN=Root CA"
 
 # change permissions on root key so it's not globally readable
-chmod 444 $RootPath/rootCA/certs/ca.cert.pem
+chmod 644 $RootPath/rootCA/certs/ca.cert.pem
 
 # verify root cert
 openssl x509 -noout -text -in $RootPath/rootCA/certs/ca.cert.pem
 
 # generate intermediate key
 openssl genrsa -out $RootPath/intermediateCA/private/intermediate.key.pem 4096
-chmod 400 $RootPath/intermediateCA/private/intermediate.key.pem
+chmod 600 $RootPath/intermediateCA/private/intermediate.key.pem
 
 # make CSR for intermediate
 openssl req -config openssl_intermediate.cnf -key $RootPath/intermediateCA/private/intermediate.key.pem -new -sha256 -out $RootPath/intermediateCA/certs/intermediate.csr.pem -subj "/C=US/ST=Georgia/L=Atlanta/O=Microsoft/OU=ACCCT/CN=Intermediate CA"
@@ -47,7 +48,7 @@ openssl req -config openssl_intermediate.cnf -key $RootPath/intermediateCA/priva
 openssl ca -config openssl_root.cnf -extensions v3_intermediate_ca -days 3650 -notext -md sha256 -in $RootPath/intermediateCA/certs/intermediate.csr.pem -out $RootPath/intermediateCA/certs/intermediate.cert.pem -batch
 
 # make it readable by everyone
-chmod 444 $RootPath/intermediateCA/certs/intermediate.cert.pem
+chmod 644 $RootPath/intermediateCA/certs/intermediate.cert.pem
 
 # print the cert
 # openssl x509 -noout -text -in $RootPath/intermediateCA/certs/intermediate.cert.pem
@@ -65,7 +66,7 @@ openssl verify -CAfile $RootPath/intermediateCA/certs/ca-chain.cert.pem $RootPat
 openssl ecparam -out $RootPath/intermediateCA/private/www.contoso.com.key.pem -name secp384r1 -genkey
 openssl pkcs8 -topk8 -nocrypt -in $RootPath/intermediateCA/private/www.contoso.com.key.pem -out $RootPath/intermediateCA/private/ec_p384_private.pem
 
-chmod 400 $RootPath/intermediateCA/private/www.contoso.com.key.pem
+chmod 600 $RootPath/intermediateCA/private/www.contoso.com.key.pem
 
 # create csr for server
 openssl req -config openssl_intermediate.cnf -key $RootPath/intermediateCA/private/www.contoso.com.key.pem -new -sha384 -out $RootPath/intermediateCA/csr/www.contoso.com.csr.pem -batch

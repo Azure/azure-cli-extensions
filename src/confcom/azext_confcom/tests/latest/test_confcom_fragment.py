@@ -658,6 +658,9 @@ class FragmentPolicySigning(unittest.TestCase):
             item = subprocess.run(
                 arg_list,
                 check=False,
+                shell=True,
+                cwd=cls.key_dir_parent,
+                env=os.environ.copy(),
             )
             if item.returncode != 0:
                 raise Exception("Error creating certificate chain")
@@ -691,12 +694,12 @@ class FragmentPolicySigning(unittest.TestCase):
             delete_silently(out_path)
 
     def test_generate_import(self):
-        filename = "payload2.rego"
+        filename = "payload4.rego"
         feed = "test_feed"
         algo = "ES384"
         out_path = filename + ".cose"
 
-        fragment_text = self.aci_policy.generate_fragment("payload2", 1, OutputType.RAW)
+        fragment_text = self.aci_policy.generate_fragment("payload4", 1, OutputType.RAW)
         try:
             write_str_to_file(filename, fragment_text)
 
