@@ -19,6 +19,7 @@ import uuid
 import re
 
 import requests
+from azure.cli.core.aaz import AAZUndefined
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
     UnrecognizedArgumentError, CLIInternalError, ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -90,7 +91,7 @@ class BastionCreate(_BastionCreate):
                 "id": vnet_id
             }
 
-        if args.network_acls_ips is not None:
+        if args.network_acls_ips != AAZUndefined:
             addresses = str(args.network_acls_ips).split()
             args.network_acls = [{"addressPrefix": address} for address in addresses]
 
