@@ -1022,6 +1022,7 @@ def load_policy_from_virtual_node_yaml_file(
     )
 
 
+# pylint: disable=R0912
 def load_policy_from_virtual_node_yaml_str(
         yaml_contents_str: List[str],
         debug_mode: bool = False,
@@ -1140,14 +1141,19 @@ def load_policy_from_virtual_node_yaml_str(
 
                     # find the corresponding volume
                     volume = next(
-                        (vol for vol in volumes if case_insensitive_dict_get(
-                            vol, config.VIRTUAL_NODE_YAML_NAME) == mount_name
+                        (
+                            vol for vol in volumes if case_insensitive_dict_get(
+                                vol, config.VIRTUAL_NODE_YAML_NAME
+                            ) == mount_name
                         ),
                         None
                     ) or {}
 
                     # determine if this volume is one of the read-only types
-                    read_only_default = any(key in read_only_types for key in volume.keys()) or volume.get(config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY)
+                    read_only_default = (
+                        any(key in read_only_types for key in volume.keys()) or
+                        volume.get(config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY)
+                    )
 
                     if read_only_default:
                         # log warning if readOnly is explicitly set to false for a read-only volume type
@@ -1162,7 +1168,9 @@ def load_policy_from_virtual_node_yaml_str(
                         mount_readonly = True
                     else:
                         # use the readOnly field or default to False for non-read-only volumes
-                        mount_readonly = case_insensitive_dict_get(mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY) or False
+                        mount_readonly = case_insensitive_dict_get(
+                            mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY
+                        ) or False
 
                     mounts.append({
                         config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: config.ACI_FIELD_YAML_MOUNT_TYPE,
@@ -1171,7 +1179,9 @@ def load_policy_from_virtual_node_yaml_str(
                     })
 
             # container security context
-            container_security_context = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) or {}
+            container_security_context = case_insensitive_dict_get(
+                container, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+            ) or {}
 
             if case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED) is True:
                 mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
@@ -1193,7 +1203,8 @@ def load_policy_from_virtual_node_yaml_str(
             policy_containers.append(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image,
-                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_NAME) or image,
+                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(
+                        container, config.VIRTUAL_NODE_YAML_NAME) or image,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image,
                     config.ACI_FIELD_CONTAINERS_ENVS: envs,
                     config.ACI_FIELD_CONTAINERS_COMMAND: command + args,

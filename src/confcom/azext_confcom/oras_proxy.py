@@ -154,5 +154,4 @@ def generate_imports_from_image_name(image_name: str, minimum_svn: int) -> List[
             # clean up the fragment file
             delete_silently(filename)
 
-
     return import_list

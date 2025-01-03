@@ -253,7 +253,13 @@ def acifragmentgen_confcom(
             if os.path.isfile(fragments_json):
                 fragments_file_contents = os_util.load_json_from_file(fragments_json)
                 if isinstance(fragments_file_contents, list):
-                    logger.error("Unsupported JSON file format. Please make sure the outermost structure is not an array. An empty import file should look like: %s", REGO_IMPORT_FILE_STRUCTURE)
+                    logger.error(
+                        "%s %s %s %s",
+                        "Unsupported JSON file format. ",
+                        "Please make sure the outermost structure is not an array. ",
+                        "An empty import file should look like: ",
+                        REGO_IMPORT_FILE_STRUCTURE
+                    )
                     sys.exit(1)
                 fragments_list = fragments_file_contents.get(POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS, [])
 
