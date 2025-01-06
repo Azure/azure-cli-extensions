@@ -55,7 +55,7 @@ interactions:
     body: '{"properties": {"advancedDiagnosticConsent": "No", "contactDetails": {"country":
       "USA", "firstName": "Foo", "lastName": "Bar", "preferredContactMethod": "email",
       "preferredSupportLanguage": "en-us", "preferredTimeZone": "Pacific Standard
-      Time", "primaryEmailAddress": "azengcase@microsoft.com"}, "description": "test
+      Time", "primaryEmailAddress": "aaaaaaaaaaaaaaa@foo.com"}, "description": "test
       ticket from python cli test. Do not assign and close after a day.", "problemClassificationId":
       "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f",
       "severity": "minimal", "title": "test ticket from python cli test. Do not assign
@@ -228,7 +228,7 @@ interactions:
     body:
       string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:05:21Z"}}'
@@ -309,7 +309,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"body": "test body for communication posted from azure
-      python cli", "sender": "rushar@microsoft.com", "subject": "test subject for
+      python cli", "sender": "aaaaaaaaaaaa@foo.com", "subject": "test subject for
       communication posted from azure python cli"}}'
     headers:
       Accept:
@@ -414,7 +414,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"body": "test body for communication posted from azure
-      python cli", "sender": "rushar@microsoft.com", "subject": "test subject for
+      python cli", "sender": "aaaaaaaaaaaa@foo.com", "subject": "test subject for
       communication posted from azure python cli"}}'
     headers:
       Accept:
@@ -577,7 +577,7 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","name":"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"rushar@microsoft.com","subject":"test
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","name":"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"aaaaaaaaaaaa@foo.com","subject":"test
         subject for communication posted from azur... - TrackingID#2405100010003369","body":"<pre>test
         body for communication posted from azure python cli</pre>","createdDate":"2024-05-10T19:05:47Z"}}'
     headers:
@@ -626,7 +626,7 @@ interactions:
       string: "{\"value\":[{\"id\":\"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9\"\
         ,\"name\":\"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9\",\"type\":\"Microsoft.Support/communications\"\
         ,\"properties\":{\"communicationType\":\"Web\",\"communicationDirection\"\
-        :\"Outbound\",\"sender\":\"rushar@microsoft.com\",\"subject\":\"test subject\
+        :\"Outbound\",\"sender\":\"aaaaaaaaaaaa@foo.com\",\"subject\":\"test subject\
         \ for communication posted from azur... - TrackingID#2405100010003369\",\"\
         body\":\"<pre>test body for communication posted from azure python cli</pre>\"\
         ,\"createdDate\":\"2024-05-10T19:05:47Z\"}},{\"id\":\"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/a93a873b-000f-ef11-9f8a-00224833c206\"\
@@ -770,7 +770,7 @@ interactions:
         \ 5.4pt\\\">\\n<div>\\n<div style=\\\"text-align:center\\\"><span style=\\\
         \"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\"><span style=\\\
         \"font-family:Calibri,sans-serif\\\"><span><span style=\\\"font-family:'Segoe\
-        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">azengcase@microsoft.com</span></span></span></span></span></span></span></div>\\\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">aaaaaaaaaaaaaaa@foo.com</span></span></span></span></span></span></span></div>\\\
         n</div>\\n</td>\\n</tr>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\"\
         \ style=\\\"border:none; background:white; width:40.0%; padding:2.85pt 5.4pt\
         \ 2.85pt 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span style=\\\
@@ -909,7 +909,7 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","name":"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"rushar@microsoft.com","subject":"test
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","name":"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"aaaaaaaaaaaa@foo.com","subject":"test
         subject for communication posted from azur... - TrackingID#2405100010003369","body":"<pre>test
         body for communication posted from azure python cli</pre>","createdDate":"2024-05-10T19:05:47Z"}}'
     headers:
@@ -957,13 +957,13 @@ interactions:
     body:
       string: '{"value":[{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:05:51Z"}},{"id":"/providers/Microsoft.Support/supportTickets/testgrace_2024_04_23_2","name":"testgrace_2024_04_23_2","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket - please ignore and close","problemClassificationId":"/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6/problemClassifications/fcbb0be8-bb43-03e8-9abe-63fdb8bb4462","problemClassificationDisplayName":"Account
         Review","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"newNAme","lastName":"test","preferredContactMethod":"Phone","primaryEmailAddress":"test@test.com","phoneNumber":"123456","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"es-ES"},"supportEngineer":{"emailAddress":"grhuang@microsoft.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        Standard Time","country":"USA","preferredSupportLanguage":"es-ES"},"supportEngineer":{"emailAddress":"aaaaaaaaaaaaa@foo.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2404230040012866","supportTicketId":"2404230040012866","title":"test
         ticket - please ignore and close","serviceId":"/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6","serviceDisplayName":"Subscription
         management","status":"Open","createdDate":"2024-04-23T20:20:28Z","modifiedDate":"2024-04-24T19:12:12Z"}},{"id":"/providers/Microsoft.Support/supportTickets/f3dc5421-965a777d-d191f729-3245-4520-9544-4d8f446b1082","name":"f3dc5421-965a777d-d191f729-3245-4520-9544-4d8f446b1082","type":"Microsoft.Support/supportTickets","properties":{"description":"Question:
@@ -975,7 +975,7 @@ interactions:
         test account that is used by multiple people across a team and also automated
         tests that works on the Azure support case submission experience. The MFA
         requirement is causing many of our automated tests to fail.","problemClassificationId":"/providers/Microsoft.Support/services/516fe906-3a1a-2878-02fd-8dd37ea207de/problemClassifications/c526e8c2-4ce8-b375-7632-67265634d2da","problemClassificationDisplayName":"Multi-Factor
-        Authentication (MFA)","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Grace","lastName":"Huang","preferredContactMethod":"Email","primaryEmailAddress":"grhuang@microsoft.com","preferredTimeZone":"Eastern
+        Authentication (MFA)","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Grace","lastName":"Huang","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaa@foo.com","preferredTimeZone":"Eastern
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"problemScopingQuestions":"{\"articleId\":\"problemscopingquestion-paymentissues\",\"scopingDetails\":[{\"question\":\"Problem
         Start Date\",\"controlId\":\"problem_start_time\",\"orderId\":1,\"inputType\":\"static\",\"answer\":{\"displayValue\":\"2024-04-23T18:53:00.719Z\",\"value\":\"2024-04-23T18:53:00.719Z\",\"type\":\"datetime\"}},{\"question\":\"Subscription
         ID\",\"controlId\":\"subscription_details\",\"orderId\":2,\"inputType\":\"nonstatic\",\"answer\":{\"displayValue\":\"N/A\",\"value\":\"N/A\",\"type\":\"string\"}},{\"question\":\"Choose
@@ -990,13 +990,13 @@ interactions:
         you please help disable MFA for the account bhshah@TestTest06172019GBL.onmicrosoft.com?
         This is a test account that is used by multiple people across a team and also
         automated tests that works on the Azure support case submission experience.
-        The MFA requirement is causing many of our automated tests to fail. \",\"type\":\"string\"}}]}","serviceLevelAgreement":{"startTime":"2024-04-23T18:57:05Z","expirationTime":"2024-04-24T14:58:00Z","slaMinutes":480},"supportEngineer":{"emailAddress":"v-habakare@microsoft.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        The MFA requirement is causing many of our automated tests to fail. \",\"type\":\"string\"}}]}","serviceLevelAgreement":{"startTime":"2024-04-23T18:57:05Z","expirationTime":"2024-04-24T14:58:00Z","slaMinutes":480},"supportEngineer":{"emailAddress":"aaaaaaaaaaaaaaaa@foo.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2404230040011514","supportTicketId":"2404230040011514","title":"Disable
         MFA for bhshah@TestTest06172019GBL.onmicrosoft.com account","serviceId":"/providers/Microsoft.Support/services/516fe906-3a1a-2878-02fd-8dd37ea207de","serviceDisplayName":"Microsoft
         Entra Sign-in and Multifactor Authentication","status":"Open","problemStartTime":"2024-04-23T18:53:00Z","createdDate":"2024-04-23T18:57:05Z","modifiedDate":"2024-05-10T12:39:59Z"}},{"id":"/providers/Microsoft.Support/supportTickets/testgrace_2024_03_20_1","name":"testgrace_2024_03_20_1","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket - please ignore and close","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/3ec1a070-f242-9ecf-5a7c-e1a88ce029ef","problemClassificationDisplayName":"Add
         or update VAT, tax id, PO number or profile information","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"test","lastName":"test","preferredContactMethod":"Email","primaryEmailAddress":"test@test.com","preferredTimeZone":"Pacific
-        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-03-20T17:49:55Z","expirationTime":"2024-03-21T13:50:00Z","slaMinutes":480},"supportEngineer":{"emailAddress":"grhuang@microsoft.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-03-20T17:49:55Z","expirationTime":"2024-03-21T13:50:00Z","slaMinutes":480},"supportEngineer":{"emailAddress":"aaaaaaaaaaaaa@foo.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2403200040010605","supportTicketId":"2403200040010605","title":"test
         ticket - please ignore and close","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","createdDate":"2024-03-20T17:49:55Z","modifiedDate":"2024-04-16T15:44:04Z"}}],"nextLink":"https://management.azure.com:443/providers/Microsoft.Support/supportTickets?$filter=status+eq+%27Open%27&api-version=2024-04-01&$skipToken=%255B%257B%2522compositeToken%2522%253A%257B%2522token%2522%253Anull%252C%2522range%2522%253A%257B%2522min%2522%253A%252205C1E7FFFFFFFE%2522%252C%2522max%2522%253A%252205C1E9673399CA%2522%257D%257D%252C%2522orderByItems%2522%253A%255B%257B%2522item%2522%253A%25222024-04-10T16%253A35%253A49Z%2522%257D%255D%252C%2522rid%2522%253A%2522e6dtAI34RR9fu0IAAAAgDA%253D%253D%2522%252C%2522skipCount%2522%253A1%252C%2522filter%2522%253A%2522%2528%2520c.CreatedOn%2520%253C%253D%2520%255C%25222024-04-13T03%253A48%253A05Z%255C%2522%2520OR%2520NOT%2520IS_DEFINED%2528c.CreatedOn%2529%2520OR%2520IS_NULL%2528c.CreatedOn%2529%2520OR%2520IS_BOOLEAN%2528c.CreatedOn%2529%2520OR%2520IS_NUMBER%2528c.CreatedOn%2529%2520%2529%2522%257D%255D"}'
     headers:
@@ -1049,7 +1049,7 @@ interactions:
     body:
       string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:05:51Z"}}'
@@ -1104,7 +1104,7 @@ interactions:
     body:
       string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:27Z"}}'
@@ -1159,7 +1159,7 @@ interactions:
     body:
       string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:32Z"}}'
@@ -1214,7 +1214,7 @@ interactions:
     body:
       string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"closed","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:38Z"}}'
@@ -1265,7 +1265,7 @@ interactions:
     body:
       string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
         ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
-        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"aaaaaaaaaaaaaaa@foo.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
         Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
         support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
         ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Closed","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:38Z"}}'

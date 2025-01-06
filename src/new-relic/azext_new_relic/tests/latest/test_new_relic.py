@@ -16,7 +16,7 @@ class NewRelicScenario(ScenarioTest):
     def test_new_relic_monitor(self, resource_group):
         self.kwargs.update({
             'new_relic_monitor_name': 'test-new-relic-monitor',
-            'user_email': 'dipeshbhakat@microsoft.com',
+            'user_email': 'aaaaaaaaaaaaaaaaaa@foo.com',
             'loc': 'eastus'
         })
 

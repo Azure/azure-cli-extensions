@@ -47,7 +47,7 @@ interactions:
 - request:
     body: '{"properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
       "Active", "userInfo": {"firstName": "Ethan", "lastName": "Yang", "emailAddress":
-      "ethanyang@microsoft.com", "phoneNumber": "01234567"}, "planData": {"usageType":
+      "aaaaaaaaaaaaaaa@foo.com", "phoneNumber": "01234567"}, "planData": {"usageType":
       "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
       "2021-08-31T13:14:33.000Z"}}, "tags": {"Environment": "Dev"}, "location": "westus2"}'
     headers:
@@ -73,9 +73,9 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
         "name": "monitor1", "type": "microsoft.logz/monitors", "location": "westus2",
-        "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "aaaaaaaaaaaaaaa@foo.com",
         "createdByType": "User", "createdAt": "2021-10-26T06:41:53.2657619Z", "lastModifiedBy":
-        "ethanyang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "aaaaaaaaaaaaaaa@foo.com", "lastModifiedByType": "User", "lastModifiedAt":
         "2021-10-26T06:41:53.2657619Z"}, "properties": {"provisioningState": "Accepted",
         "monitoringStatus": "Enabled", "marketplaceSubscriptionStatus": "Active",
         "logzOrganizationProperties": {"companyName": null, "id": null, "enterpriseAppId":
@@ -333,7 +333,7 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
         "name": "monitor1", "type": "microsoft.logz/monitors", "location": "westus2",
-        "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "aaaaaaaaaaaaaaa@foo.com",
         "createdByType": "User", "createdAt": "2021-10-26T06:41:53.2657619Z", "lastModifiedBy":
         "a5472e16-e1d2-4bbe-81b3-ecdcd459b536", "lastModifiedByType": "Application",
         "lastModifiedAt": "2021-10-26T06:43:40.3459529Z"}, "properties": {"provisioningState":
@@ -418,7 +418,7 @@ interactions:
 - request:
     body: '{"properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
       "Active", "userInfo": {"firstName": "Ethan", "lastName": "Yang", "emailAddress":
-      "ethanyang@microsoft.com", "phoneNumber": "01234567"}, "planData": {"usageType":
+      "aaaaaaaaaaaaaaa@foo.com", "phoneNumber": "01234567"}, "planData": {"usageType":
       "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
       "2021-08-31T13:14:33.000Z"}}, "tags": {"Environment": "Dev"}, "location": "westus2"}'
     headers:
@@ -444,9 +444,9 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2",
         "name": "monitor2", "type": "microsoft.logz/monitors/accounts", "location":
-        "westus2", "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "westus2", "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "aaaaaaaaaaaaaaa@foo.com",
         "createdByType": "User", "createdAt": "2021-10-26T06:44:07.7320248Z", "lastModifiedBy":
-        "ethanyang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "aaaaaaaaaaaaaaa@foo.com", "lastModifiedByType": "User", "lastModifiedAt":
         "2021-10-26T06:44:07.7320248Z"}, "properties": {"provisioningState": "Accepted",
         "monitoringStatus": "Enabled", "marketplaceSubscriptionStatus": "Active",
         "logzOrganizationProperties": {"companyName": "monitor1", "id": null, "enterpriseAppId":
@@ -557,7 +557,7 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2",
         "name": "monitor2", "type": "microsoft.logz/monitors/accounts", "location":
-        "westus2", "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "westus2", "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "aaaaaaaaaaaaaaa@foo.com",
         "createdByType": "User", "createdAt": "2021-10-26T06:44:07.7320248Z", "lastModifiedBy":
         "a5472e16-e1d2-4bbe-81b3-ecdcd459b536", "lastModifiedByType": "Application",
         "lastModifiedAt": "2021-10-26T06:44:27.4707006Z"}, "properties": {"provisioningState":
@@ -622,8 +622,8 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
         "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
-        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
-        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        {"createdBy": "aaaaaaaaaaaaaaa@foo.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "aaaaaaaaaaaaaaa@foo.com",
         "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
         "properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
         true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment",
@@ -681,8 +681,8 @@ interactions:
     body:
       string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
         "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
-        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
-        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        {"createdBy": "aaaaaaaaaaaaaaa@foo.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "aaaaaaaaaaaaaaa@foo.com",
         "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
         "properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
         true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment",
@@ -734,8 +734,8 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
         "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
-        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
-        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        {"createdBy": "aaaaaaaaaaaaaaa@foo.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "aaaaaaaaaaaaaaa@foo.com",
         "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
         "properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
         true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment",
@@ -795,8 +795,8 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
         "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
-        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
-        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        {"createdBy": "aaaaaaaaaaaaaaa@foo.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "aaaaaaaaaaaaaaa@foo.com",
         "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
         "properties": {"logRules": {"sendAadLogs": true, "sendSubscriptionLogs": true,
         "sendActivityLogs": true, "filteringTags": [{"name": "Environment", "value":
@@ -854,8 +854,8 @@ interactions:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
         "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
-        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
-        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        {"createdBy": "aaaaaaaaaaaaaaa@foo.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "aaaaaaaaaaaaaaa@foo.com",
         "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
         "properties": {"logRules": {"sendAadLogs": true, "sendSubscriptionLogs": true,
         "sendActivityLogs": true, "filteringTags": [{"name": "Environment", "value":

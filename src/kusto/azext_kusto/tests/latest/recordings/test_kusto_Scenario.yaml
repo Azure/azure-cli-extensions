@@ -3444,7 +3444,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/addPrincipals?api-version=2022-02-01
   response:
     body:
-      string: '{"value":[{"name":"Zohar Hen (zoharhen@microsoft.com)","role":"Admin","type":"User","fqn":"aaduser=0f54ad84-ce5e-49d1-90b3-c553e7c96382;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"zoharhen@microsoft.com","appId":"","tenantName":"Microsoft"},{"name":"testcli1","role":"Admin","type":"App","fqn":"aadapp=ad064aa1-8b51-41ec-9c64-0d3037577d63;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"ad064aa1-8b51-41ec-9c64-0d3037577d63","tenantName":"Microsoft"},{"name":"clitest","role":"Admin","type":"App","fqn":"aadapp=7bd74dc8-dd5f-4cee-8e64-866138abcf89;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"7bd74dc8-dd5f-4cee-8e64-866138abcf89","tenantName":"Microsoft"}]}'
+      string: '{"value":[{"name":"Zohar Hen (aaaaaaaaaaaaaa@foo.com)","role":"Admin","type":"User","fqn":"aaduser=0f54ad84-ce5e-49d1-90b3-c553e7c96382;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"aaaaaaaaaaaaaa@foo.com","appId":"","tenantName":"Microsoft"},{"name":"testcli1","role":"Admin","type":"App","fqn":"aadapp=ad064aa1-8b51-41ec-9c64-0d3037577d63;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"ad064aa1-8b51-41ec-9c64-0d3037577d63","tenantName":"Microsoft"},{"name":"clitest","role":"Admin","type":"App","fqn":"aadapp=7bd74dc8-dd5f-4cee-8e64-866138abcf89;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"7bd74dc8-dd5f-4cee-8e64-866138abcf89","tenantName":"Microsoft"}]}'
     headers:
       cache-control:
       - no-cache
@@ -3851,7 +3851,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts/kustoScript?api-version=2022-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","scriptUrlSasToken":"","continueOnErrors":true,"scriptContent":"","provisioningState":"Creating"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","scriptUrlSasToken":"","continueOnErrors":true,"scriptContent":"","provisioningState":"Creating"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/West
@@ -3947,7 +3947,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts/kustoScript?api-version=2022-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -3991,7 +3991,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts/kustoScript?api-version=2022-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -4455,7 +4455,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/ManagedPrivateEndpoints/kustoManagedPrivateEndpoint4","name":"kustoCluster/kustoManagedPrivateEndpoint4","type":"Microsoft.Kusto/Clusters/ManagedPrivateEndpoints","location":"DummyLocation","properties":{"privateLinkResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Storage/storageAccounts/clisatest","groupId":"blob","requestMessage":"Please
-        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}'
+        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -4502,7 +4502,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/ManagedPrivateEndpoints/kustoManagedPrivateEndpoint4","name":"kustoCluster/kustoManagedPrivateEndpoint4","type":"Microsoft.Kusto/Clusters/ManagedPrivateEndpoints","location":"DummyLocation","properties":{"privateLinkResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Storage/storageAccounts/clisatest","groupId":"blob","requestMessage":"Please
-        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}'
+        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -6991,7 +6991,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/PrivateEndpointConnections/kustoPrivateEndpoint4-e14d3c51-32e3-429b-8f72-f6ce28ee9561","name":"kustoCluster/kustoPrivateEndpoint4-e14d3c51-32e3-429b-8f72-f6ce28ee9561","type":"Microsoft.Kusto/Clusters/PrivateEndpointConnections","properties":{"properties":{"privateLinkServiceConnectionState":{"status":"Approved","description":"Approved
-        by test"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/PrivateEndpointConnections/kustoPrivateEndpoint4-e14d3c51-32e3-429b-8f72-f6ce28ee9561","systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T16:17:26.7800525Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:17:26.7800525Z"},"provisioningState":"Accepted"}}'
+        by test"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/PrivateEndpointConnections/kustoPrivateEndpoint4-e14d3c51-32e3-429b-8f72-f6ce28ee9561","systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T16:17:26.7800525Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:17:26.7800525Z"},"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/West
@@ -7332,7 +7332,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts/kustoScript?api-version=2022-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -7523,7 +7523,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/ManagedPrivateEndpoints/kustoManagedPrivateEndpoint4","name":"kustoCluster/kustoManagedPrivateEndpoint4","type":"Microsoft.Kusto/Clusters/ManagedPrivateEndpoints","location":"DummyLocation","properties":{"privateLinkResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Storage/storageAccounts/clisatest","groupId":"blob","requestMessage":"Please
-        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}'
+        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -7847,7 +7847,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts?api-version=2022-02-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:05.3440745Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -8268,8 +8268,8 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/principalAssignments?api-version=2022-02-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/PrincipalAssignments/ff5c92da-d195-4744-8fe0-27158b4d50d5","name":"kustoCluster/KustoDatabase/ff5c92da-d195-4744-8fe0-27158b4d50d5","type":"Microsoft.Kusto/Clusters/Databases/PrincipalAssignments","properties":{"principalId":"zoharhen@microsoft.com","role":"Admin","principalType":"User","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","tenantName":"Microsoft","principalName":"Zohar
-        Hen (zoharhen@microsoft.com)","aadObjectId":"0f54ad84-ce5e-49d1-90b3-c553e7c96382","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/PrincipalAssignments/testcli1","name":"kustoCluster/KustoDatabase/testcli1","type":"Microsoft.Kusto/Clusters/Databases/PrincipalAssignments","properties":{"principalId":"ad064aa1-8b51-41ec-9c64-0d3037577d63","role":"Admin","principalType":"App","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","tenantName":"Microsoft","principalName":"testcli1","aadObjectId":"5d67d9cd-c517-4114-858f-466831b02bf3","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/PrincipalAssignments/13785376-3a98-4007-a177-ca83946a7239","name":"kustoCluster/KustoDatabase/13785376-3a98-4007-a177-ca83946a7239","type":"Microsoft.Kusto/Clusters/Databases/PrincipalAssignments","properties":{"principalId":"7bd74dc8-dd5f-4cee-8e64-866138abcf89","role":"Admin","principalType":"App","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","tenantName":"Microsoft","principalName":"clitest","aadObjectId":"4fee4950-b16d-448c-b37a-2748cff298cd","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/PrincipalAssignments/ff5c92da-d195-4744-8fe0-27158b4d50d5","name":"kustoCluster/KustoDatabase/ff5c92da-d195-4744-8fe0-27158b4d50d5","type":"Microsoft.Kusto/Clusters/Databases/PrincipalAssignments","properties":{"principalId":"aaaaaaaaaaaaaa@foo.com","role":"Admin","principalType":"User","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","tenantName":"Microsoft","principalName":"Zohar
+        Hen (aaaaaaaaaaaaaa@foo.com)","aadObjectId":"0f54ad84-ce5e-49d1-90b3-c553e7c96382","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/PrincipalAssignments/testcli1","name":"kustoCluster/KustoDatabase/testcli1","type":"Microsoft.Kusto/Clusters/Databases/PrincipalAssignments","properties":{"principalId":"ad064aa1-8b51-41ec-9c64-0d3037577d63","role":"Admin","principalType":"App","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","tenantName":"Microsoft","principalName":"testcli1","aadObjectId":"5d67d9cd-c517-4114-858f-466831b02bf3","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/PrincipalAssignments/13785376-3a98-4007-a177-ca83946a7239","name":"kustoCluster/KustoDatabase/13785376-3a98-4007-a177-ca83946a7239","type":"Microsoft.Kusto/Clusters/Databases/PrincipalAssignments","properties":{"principalId":"7bd74dc8-dd5f-4cee-8e64-866138abcf89","role":"Admin","principalType":"App","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","tenantName":"Microsoft","principalName":"clitest","aadObjectId":"4fee4950-b16d-448c-b37a-2748cff298cd","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -8319,7 +8319,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/listPrincipals?api-version=2022-02-01
   response:
     body:
-      string: '{"value":[{"name":"Zohar Hen (zoharhen@microsoft.com)","role":"Admin","type":"User","fqn":"aaduser=0f54ad84-ce5e-49d1-90b3-c553e7c96382;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"zoharhen@microsoft.com","appId":"","tenantName":"Microsoft"},{"name":"testcli1","role":"Admin","type":"App","fqn":"aadapp=ad064aa1-8b51-41ec-9c64-0d3037577d63;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"ad064aa1-8b51-41ec-9c64-0d3037577d63","tenantName":"Microsoft"},{"name":"clitest","role":"Admin","type":"App","fqn":"aadapp=7bd74dc8-dd5f-4cee-8e64-866138abcf89;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"7bd74dc8-dd5f-4cee-8e64-866138abcf89","tenantName":"Microsoft"}]}'
+      string: '{"value":[{"name":"Zohar Hen (aaaaaaaaaaaaaa@foo.com)","role":"Admin","type":"User","fqn":"aaduser=0f54ad84-ce5e-49d1-90b3-c553e7c96382;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"aaaaaaaaaaaaaa@foo.com","appId":"","tenantName":"Microsoft"},{"name":"testcli1","role":"Admin","type":"App","fqn":"aadapp=ad064aa1-8b51-41ec-9c64-0d3037577d63;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"ad064aa1-8b51-41ec-9c64-0d3037577d63","tenantName":"Microsoft"},{"name":"clitest","role":"Admin","type":"App","fqn":"aadapp=7bd74dc8-dd5f-4cee-8e64-866138abcf89;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"","appId":"7bd74dc8-dd5f-4cee-8e64-866138abcf89","tenantName":"Microsoft"}]}'
     headers:
       cache-control:
       - no-cache
@@ -8458,7 +8458,7 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/ManagedPrivateEndpoints/kustoManagedPrivateEndpoint4","name":"kustoCluster/kustoManagedPrivateEndpoint4","type":"Microsoft.Kusto/Clusters/ManagedPrivateEndpoints","location":"DummyLocation","properties":{"privateLinkResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Storage/storageAccounts/clisatest","groupId":"blob","requestMessage":"Please
-        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}]}'
+        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T15:51:39.1180391Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -9294,7 +9294,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/ManagedPrivateEndpoints/kustoManagedPrivateEndpoint4","name":"kustoCluster/kustoManagedPrivateEndpoint4","type":"Microsoft.Kusto/Clusters/ManagedPrivateEndpoints","location":"DummyLocation","properties":{"privateLinkResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Storage/storageAccounts/clisatest","groupId":"blob","requestMessage":"Please
-        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:22:12.5172609Z"}}'
+        Approve.","provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:39.1180391Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:22:12.5172609Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -9545,7 +9545,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts/kustoScript?api-version=2022-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Accepted","scriptUrlSasToken":"","scriptContent":""},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T16:23:48.6404628Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:23:48.6404628Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Accepted","scriptUrlSasToken":"","scriptContent":""},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T16:23:48.6404628Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:23:48.6404628Z"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/West
@@ -9647,7 +9647,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/scripts/kustoScript?api-version=2022-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"zoharhen@microsoft.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"zoharhen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:23:48.6404628Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/kustoCluster/Databases/KustoDatabase/Scripts/kustoScript","name":"kustoCluster/KustoDatabase/kustoScript","type":"Microsoft.Kusto/Clusters/Databases/Scripts","properties":{"scriptUrl":"https://clisatest.blob.core.windows.net/kustosa/kustoscript.txt","continueOnErrors":true,"provisioningState":"Succeeded"},"systemData":{"createdBy":"aaaaaaaaaaaaaa@foo.com","createdByType":"User","createdAt":"2022-04-06T15:51:05.3440745Z","lastModifiedBy":"aaaaaaaaaaaaaa@foo.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-06T16:23:48.6404628Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -15136,7 +15136,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/kustoCluster/databases/KustoDatabase/removePrincipals?api-version=2022-02-01
   response:
     body:
-      string: '{"value":[{"name":"Zohar Hen (zoharhen@microsoft.com)","role":"Admin","type":"User","fqn":"aaduser=0f54ad84-ce5e-49d1-90b3-c553e7c96382;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"zoharhen@microsoft.com","appId":"","tenantName":"Microsoft"}]}'
+      string: '{"value":[{"name":"Zohar Hen (aaaaaaaaaaaaaa@foo.com)","role":"Admin","type":"User","fqn":"aaduser=0f54ad84-ce5e-49d1-90b3-c553e7c96382;72f988bf-86f1-41af-91ab-2d7cd011db47","email":"aaaaaaaaaaaaaa@foo.com","appId":"","tenantName":"Microsoft"}]}'
     headers:
       cache-control:
       - no-cache
