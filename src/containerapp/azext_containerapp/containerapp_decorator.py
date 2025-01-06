@@ -671,8 +671,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_enable_consumption_gpu() is not None:
             if self.get_argument_enable_consumption_gpu().lower() not in ["consumption-gpu-nc8as-t4", "consumption-gpu-nc4as-t4", "consumption-gpu-nc24-a100", "consumption-gpu-nc12-a100", "consumption-gpu-nv6ads-a10"]:
                 raise InvalidArgumentValueError('Containerapp consumption GPU workload profile must be one of the following: Consumption-GPU-NC8as-T4, Consumption-GPU-NC4as-T4, Consumption-GPU-NC24-A100, Consumption-GPU-NC12-A100, Consumption-GPU-NV6ads-A10.')
-            else:
-                return self.get_argument_enable_consumption_gpu().lower()
+            return self.get_argument_enable_consumption_gpu().lower()
         return None
 
     # not craete role assignment if it's env system msi
