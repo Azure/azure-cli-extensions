@@ -182,7 +182,7 @@ jobs:
         git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
         declare -A secret_files
         for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
-          detected=$(azdev scan -f $FILE | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          detected=$(azdev scan -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
           if [ $detected == 'True' ]; then
             echo "\033[0;31mSecrets detected from \033[0m"$FILE"\033[0;31m, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m" 1>&2
             secret_files+=$FILE
@@ -213,9 +213,9 @@ jobs:
         git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
         declare -A secret_files
         for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
-          detected=$(azdev scan --confidence-level MEDIUM -f $FILE | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          detected=$(azdev scan --confidence-level MEDIUM -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
           if [ $detected == 'True' ]; then
-            echo "Secrets detected from "$FILE", Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix." 1>&2
+            echo "\033[0;31mSecrets detected from \033[0m"$FILE"\033[0;31m, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m" 1>&2
             secret_files+=$FILE
           fi
         done
