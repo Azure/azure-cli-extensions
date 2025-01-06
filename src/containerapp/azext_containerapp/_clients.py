@@ -594,7 +594,7 @@ class ConnectedEnvCertificateClient():
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             poll_results(cmd, operation_url)
-            logger.warning(f'Certificate {certificate_name} was successfully deleted')
+            logger.warning('Certificate %s was successfully deleted', certificate_name)
 
         return
 
@@ -663,7 +663,7 @@ class ConnectedEnvDaprComponentClient():
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             poll_results(cmd, operation_url)
-            logger.warning(f'Dapr component {name} was successfully deleted')
+            logger.warning('Dapr component %s was successfully deleted', name)
 
         return
 
@@ -760,7 +760,7 @@ class ConnectedEnvStorageClient():
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             poll_results(cmd, operation_url)
-            logger.warning(f'Storage {name} was successfully deleted')
+            logger.warning('Storage %s was successfully deleted', name)
 
         return
 
