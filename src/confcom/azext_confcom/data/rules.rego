@@ -51,6 +51,10 @@ default WriteStreamRequest := false
 # them and inspect OPA logs for the root cause of a failure.
 default AllowRequestsFailingPolicy := false
 
+# Constants
+S_NAME_KEY = "io.kubernetes.cri.sandbox-name"
+S_NAMESPACE_KEY = "io.kubernetes.cri.sandbox-namespace"
+
 CreateContainerRequest {
     # Check if the input request should be rejected even before checking the
     # policy_data.containers information.
@@ -155,16 +159,14 @@ allow_anno_key(i_key, p_oci) {
     print("allow_anno_key 2: true")
 }
 
-# Get the value of the "io.kubernetes.cri.sandbox-name" annotation and
+# Get the value of the S_NAME_KEY annotation and
 # correlate it with other annotations and process fields.
 allow_by_anno(p_oci, i_oci, p_storages, i_storages) {
     print("allow_by_anno 1: start")
 
-    s_name := "io.kubernetes.cri.sandbox-name"
+    not p_oci.Annotations[S_NAME_KEY]
 
-    not p_oci.Annotations[s_name]
-
-    i_s_name := i_oci.Annotations[s_name]
+    i_s_name := i_oci.Annotations[S_NAME_KEY]
     print("allow_by_anno 1: i_s_name =", i_s_name)
 
     allow_by_sandbox_name(p_oci, i_oci, p_storages, i_storages, i_s_name)
@@ -174,10 +176,8 @@ allow_by_anno(p_oci, i_oci, p_storages, i_storages) {
 allow_by_anno(p_oci, i_oci, p_storages, i_storages) {
     print("allow_by_anno 2: start")
 
-    s_name := "io.kubernetes.cri.sandbox-name"
-
-    p_s_name := p_oci.Annotations[s_name]
-    i_s_name := i_oci.Annotations[s_name]
+    p_s_name := p_oci.Annotations[S_NAME_KEY]
+    i_s_name := i_oci.Annotations[S_NAME_KEY]
     print("allow_by_anno 2: i_s_name =", i_s_name, "p_s_name =", p_s_name)
 
     allow_sandbox_name(p_s_name, i_s_name)
@@ -189,16 +189,14 @@ allow_by_anno(p_oci, i_oci, p_storages, i_storages) {
 allow_by_sandbox_name(p_oci, i_oci, p_storages, i_storages, s_name) {
     print("allow_by_sandbox_name: start")
 
-    s_namespace := "io.kubernetes.cri.sandbox-namespace"
-
-    p_namespace := p_oci.Annotations[s_namespace]
-    i_namespace := i_oci.Annotations[s_namespace]
+    p_namespace := p_oci.Annotations[S_NAMESPACE_KEY]
+    i_namespace := i_oci.Annotations[S_NAMESPACE_KEY]
     print("allow_by_sandbox_name: p_namespace =", p_namespace, "i_namespace =", i_namespace)
     p_namespace == i_namespace
 
     allow_by_container_types(p_oci, i_oci, s_name, p_namespace)
     allow_by_bundle_or_sandbox_id(p_oci, i_oci, p_storages, i_storages)
-    allow_process(p_oci, i_oci, s_name)
+    allow_process(p_oci.Process, i_oci.Process, s_name)
 
     print("allow_by_sandbox_name: true")
 }
@@ -489,25 +487,54 @@ allow_by_bundle_or_sandbox_id(p_oci, i_oci, p_storages, i_storages) {
     print("allow_by_bundle_or_sandbox_id: true")
 }
 
-allow_process(p_oci, i_oci, s_name) {
-    p_process := p_oci.Process
-    i_process := i_oci.Process
+allow_process_common(p_process, i_process, s_name) {
+    print("allow_process_common: p_process =", p_process)
+    print("allow_process_common: i_process = ", i_process)
+    print("allow_process_common: s_name =", s_name)
 
-    print("allow_process: i terminal =", i_process.Terminal, "p terminal =", p_process.Terminal)
-    p_process.Terminal == i_process.Terminal
-
-    print("allow_process: i cwd =", i_process.Cwd, "i cwd =", p_process.Cwd)
     p_process.Cwd == i_process.Cwd
-
-    print("allow_process: i noNewPrivileges =", i_process.NoNewPrivileges, "p noNewPrivileges =", p_process.NoNewPrivileges)
     p_process.NoNewPrivileges == i_process.NoNewPrivileges
 
-    allow_caps(p_process.Capabilities, i_process.Capabilities)
     allow_user(p_process, i_process)
-    allow_args(p_process, i_process, s_name)
     allow_env(p_process, i_process, s_name)
 
+    print("allow_process_common: true")
+}
+
+# Compare the OCI Process field of a policy container with the input OCI Process from a CreateContainerRequest
+allow_process(p_process, i_process, s_name) {
+    print("allow_process: start")
+
+    allow_args(p_process, i_process, s_name)
+    allow_process_common(p_process, i_process, s_name)
+    allow_caps(p_process.Capabilities, i_process.Capabilities)
+    p_process.Terminal == i_process.Terminal
+
     print("allow_process: true")
+}
+
+# Compare the OCI Process field of a policy container with the input process field from ExecProcessRequest
+allow_interactive_process(p_process, i_process, s_name) {
+    print("allow_interactive_process: start")
+
+    allow_process_common(p_process, i_process, s_name)
+    allow_exec_caps(i_process.Capabilities)
+
+    # These are commands enabled using ExecProcessRequest commands and/or regex from the settings file.
+    # They can be executed interactively so allow them to use any value for i_process.Terminal.
+
+    print("allow_interactive_process: true")
+}
+
+# Compare the OCI Process field of a policy container with the input process field from ExecProcessRequest
+allow_probe_process(p_process, i_process, s_name) {
+    print("allow_probe_process: start")
+
+    allow_process_common(p_process, i_process, s_name)
+    allow_exec_caps(i_process.Capabilities)
+    p_process.Terminal == i_process.Terminal
+
+    print("allow_probe_process: true")
 }
 
 allow_user(p_process, i_process) {
@@ -941,15 +968,15 @@ allow_storage_options(p_storage, i_storage, layer_ids, root_hashes) {
     print("allow_storage_options 4: start")
 
     p_storage.driver == "smb"
-    count(i_storage.options) == 8
-    i_storage.options[0] == "dir_mode=0666"
-    i_storage.options[1] == "file_mode=0666"
-    i_storage.options[2] == "mfsymlinks"    
-    i_storage.options[3] == "cache=strict"  
-    i_storage.options[4] == "nosharesock"
-    i_storage.options[5] == "actimeo=30"    
-    startswith(i_storage.options[6], "addr=")
-    creds = split(i_storage.options[7], ",")
+    p_opts_count := count(p_storage.options)
+    i_opts_count := count(i_storage.options)
+    i_opts_count == p_opts_count + 2
+
+    i_opt_matches := [i | i := idx; idx < p_opts_count; p_storage.options[idx] == i_storage.options[idx]]
+    count(i_opt_matches) == p_opts_count
+
+    startswith(i_storage.options[i_opts_count-2], "addr=")
+    creds = split(i_storage.options[i_opts_count-1], ",")
     count(creds) == 2
     startswith(creds[0], "username=")
     startswith(creds[1], "password=")
@@ -1079,7 +1106,16 @@ allow_direct_vol_driver(p_storage, i_storage) {
     print("allow_direct_vol_driver 2: true")
 }
 
-# process.Capabilities
+# ExecProcessRequest.process.Capabilities
+allow_exec_caps(i_caps) {
+    not i_caps.Ambient
+    not i_caps.Bounding
+    not i_caps.Effective
+    not i_caps.Inheritable
+    not i_caps.Permitted
+}
+
+# OCI.Process.Capabilities
 allow_caps(p_caps, i_caps) {
     print("allow_caps: policy Ambient =", p_caps.Ambient)
     print("allow_caps: input Ambient =", i_caps.Ambient)
@@ -1136,20 +1172,28 @@ match_caps(p_caps, i_caps) {
 check_directory_traversal(i_path) {
     contains(i_path, "../") == false
     endswith(i_path, "/..") == false
-    i_path != ".."
 }
 
-check_symlink_source {
-    # TODO: delete this rule once the symlink_src field gets implemented
-    # by all/most Guest VMs.
-    not input.symlink_src
+check_symlink_source(i_src) {
+    i_src == ""
+    print("check_symlink_source 1: true")
 }
-check_symlink_source {
-    i_src := input.symlink_src
-    print("check_symlink_source: i_src =", i_src)
+check_symlink_source(i_src) {
+    i_src != ""
+    print("check_symlink_source 2: i_src =", i_src)
 
-    startswith(i_src, "/") == false
+    regex.match(policy_data.common.s_source1, i_src)
+
+    print("check_symlink_source 2: true")
+}
+check_symlink_source(i_src) {
+    i_src != ""
+    print("check_symlink_source 3: i_src =", i_src)
+
+    regex.match(policy_data.common.s_source2, i_src)
     check_directory_traversal(i_src)
+
+    print("check_symlink_source 3: true")
 }
 
 allow_sandbox_storages(i_storages) {
@@ -1176,7 +1220,7 @@ allow_sandbox_storage(p_storages, i_storage) {
 CopyFileRequest {
     print("CopyFileRequest: input.path =", input.path)
 
-    check_symlink_source
+    check_symlink_source(input.symlink_src)
     check_directory_traversal(input.path)
 
     some regex1 in policy_data.request_defaults.CopyFileRequest
@@ -1204,6 +1248,27 @@ CreateSandboxRequest {
     allow_sandbox_storages(input.storages)
 }
 
+allow_exec(p_container, i_process) {
+    print("allow_exec: start")
+
+    p_oci = p_container.OCI
+    p_s_name = p_oci.Annotations[S_NAME_KEY]
+    allow_probe_process(p_oci.Process, i_process, p_s_name)
+
+    print("allow_exec: true")
+}
+
+allow_interactive_exec(p_container, i_process) {
+    print("allow_interactive_exec: start")
+
+    p_oci = p_container.OCI
+    p_s_name = p_oci.Annotations[S_NAME_KEY]
+    allow_interactive_process(p_oci.Process, i_process, p_s_name)
+
+    print("allow_interactive_exec: true")
+}
+
+# TODO: should other ExecProcessRequest input data fields be validated as well?
 ExecProcessRequest {
     print("ExecProcessRequest 1: input =", input)
 
@@ -1214,6 +1279,10 @@ ExecProcessRequest {
     print("ExecProcessRequest 1: p_command =", p_command)
     p_command == i_command
 
+    # TODO: match p_container's ID with the input container_id.
+    some p_container in policy_data.containers
+    allow_interactive_exec(p_container, input.process)
+
     print("ExecProcessRequest 1: true")
 }
 ExecProcessRequest {
@@ -1221,14 +1290,15 @@ ExecProcessRequest {
 
     # TODO: match input container ID with its corresponding container.exec_commands.
     i_command = concat(" ", input.process.Args)
-    print("ExecProcessRequest 3: i_command =", i_command)
+    print("ExecProcessRequest 2: i_command =", i_command)
 
-    some container in policy_data.containers
-    some p_command in container.exec_commands
+    # TODO: match p_container's ID with the input container_id.
+    some p_container in policy_data.containers
+    some p_command in p_container.exec_commands
     print("ExecProcessRequest 2: p_command =", p_command)
-
-    # TODO: should other input data fields be validated as well?
     p_command == i_command
+
+    allow_exec(p_container, input.process)
 
     print("ExecProcessRequest 2: true")
 }
@@ -1242,6 +1312,10 @@ ExecProcessRequest {
     print("ExecProcessRequest 3: p_regex =", p_regex)
 
     regex.match(p_regex, i_command)
+
+    # TODO: match p_container's ID with the input container_id.
+    some p_container in policy_data.containers
+    allow_interactive_exec(p_container, input.process)
 
     print("ExecProcessRequest 3: true")
 }
