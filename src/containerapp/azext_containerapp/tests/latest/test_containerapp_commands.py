@@ -1439,22 +1439,22 @@ class ContainerappRevisionTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_revision_label_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        self.cmd(f"configure --defaults location={TEST_LOCATION}")
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env))
+        self.cmd(f"containerapp create -g {resource_group} -n {ca_name} --environment {env} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80")
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
+        self.cmd(f"containerapp ingress show -g {resource_group} -n {ca_name}", checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
         ])
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --image nginx'.format(resource_group, ca_name, env))
+        self.cmd(f"containerapp create -g {resource_group} -n {ca_name} --environment {env} --ingress external --target-port 80 --image nginx")
 
-        self.cmd('containerapp revision set-mode -g {} -n {} --mode multiple'.format(resource_group, ca_name, env))
+        self.cmd(f"containerapp revision set-mode -g {resource_group} -n {ca_name} --mode multiple")
 
         revision_names = self.cmd(f"containerapp revision list -g {resource_group} -n {ca_name} --all --query '[].name'").get_output_in_json()
 
@@ -1503,24 +1503,24 @@ class ContainerappRevisionTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_revision_labels_mode_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        self.cmd(f"configure --defaults location={TEST_LOCATION}")
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --container-name c1 --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env))
+        self.cmd(f"containerapp create -g {resource_group} -n {ca_name} --environment {env} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80")
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
+        self.cmd(f"containerapp ingress show -g {resource_group} -n {ca_name}", checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
         ])
 
         label0 = 'label0'
-        self.cmd('containerapp revision set-mode -g {} -n {} --mode labels --target-label {}'.format(resource_group, ca_name, label0))
+        self.cmd(f"containerapp revision set-mode -g {resource_group} -n {ca_name} --mode labels --target-label {label0}")
 
         label1 = 'label1'
-        self.cmd('containerapp update -g {} -n {} --container-name c2 --image mcr.microsoft.com/k8se/quickstart:latest --target-label {}'.format(resource_group, ca_name, label1))
+        self.cmd(f"containerapp update -g {resource_group} -n {ca_name} --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --target-label {label1}")
 
         revision_names = self.cmd(f"containerapp revision list -g {resource_group} -n {ca_name} --all --query '[].name'").get_output_in_json()
         self.assertEqual(len(revision_names), 2)

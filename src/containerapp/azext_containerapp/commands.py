@@ -272,8 +272,8 @@ def load_command_table(self, args):
         g.custom_show_command('list', 'list_maintenance_config')
 
     with self.command_group('containerapp label-history', is_preview=True) as g:
-        g.custom_show_command('show', 'show_labelhistory')
-        g.custom_command('list', 'list_labelhistory')
+        g.custom_show_command('show', 'show_label_history')
+        g.custom_command('list', 'list_label_history')
 
     with self.command_group('containerapp revision') as g:
         g.custom_command('set-mode', 'set_revision_mode', exception_handler=ex_handler_factory())

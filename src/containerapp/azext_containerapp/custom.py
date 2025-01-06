@@ -3372,7 +3372,7 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
                 conn.send(SSH_CTRL_C_MSG)
 
 
-def list_labelhistory(cmd, resource_group_name, name):
+def list_label_history(cmd, resource_group_name, name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         return LabelHistoryPreviewClient.list(cmd, resource_group_name, name)
@@ -3380,7 +3380,7 @@ def list_labelhistory(cmd, resource_group_name, name):
         handle_raw_exception(e)
 
 
-def show_labelhistory(cmd, resource_group_name, name, label):
+def show_label_history(cmd, resource_group_name, name, label):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         return LabelHistoryPreviewClient.show(cmd, resource_group_name, name, label)
@@ -3394,8 +3394,8 @@ def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, n
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
+    except Exception as e:
+        handle_raw_exception(e)
 
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
@@ -3407,22 +3407,22 @@ def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, n
     if mode.lower() == "labels" and "ingress" not in containerapp_def['properties']['configuration']:
         raise ValidationError("Ingress is requried for labels mode.")
 
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, "properties", "configuration", "activeRevisionsMode", value=mode)
+    safe_set(containerapp_patch_def, "properties", "configuration", "targetLabel", value=target_label)
+
     # If we're going into labels mode, replace the default traffic config with the target label and latest revision.
     # Otherwise all revisions will be deactivated.
     traffic = safe_get(containerapp_def, "properties", "configuration", "ingress", "traffic")
-    if mode.lower() == "labels" and len(traffic) == 1 and safe_get(traffic[0], "latestRevision") == True:
-        safe_set(containerapp_def, "properties", "configuration", "ingress", "traffic", value=[{
+    if mode.lower() == "labels" and len(traffic) == 1 and safe_get(traffic[0], "latestRevision") is True:
+        safe_set(containerapp_patch_def, "properties", "configuration", "ingress", "traffic", value=[{
             "revisionName": containerapp_def["properties"]["latestRevisionName"],
             "weight": 100,
             "label": target_label
         }])
-
-    containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = mode
-    containerapp_def["properties"]["configuration"]["targetLabel"] = target_label
-
     try:
         r = ContainerAppPreviewClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
         return r["properties"]["configuration"]["activeRevisionsMode"]
     except Exception as e:
         handle_raw_exception(e)
@@ -3437,8 +3437,8 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
+    except Exception as e:
+        handle_raw_exception(e)
 
     if not containerapp_def:
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
@@ -3504,8 +3504,8 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
+    except Exception as e:
+        handle_raw_exception(e)
 
     if not containerapp_def:
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
