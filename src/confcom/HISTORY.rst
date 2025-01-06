@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.2
+1.2.0
 ++++++
 * fixing metadata for uploaded fragments
 * fixing support for non-image feed names and attaching fragments to an image
