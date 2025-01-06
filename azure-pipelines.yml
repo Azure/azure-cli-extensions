@@ -184,7 +184,7 @@ jobs:
         for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
           detected=$(azdev scan -f $FILE | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
           if [ $detected == 'True' ]; then
-            echo "Secrets detected from "$FILE", Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix." 1>&2
+            echo "\033[0;31mSecrets detected from \033[0m"$FILE"\033[0;31m, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m" 1>&2
             secret_files+=$FILE
           fi
         done
