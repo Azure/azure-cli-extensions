@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b2
++++++++
+* `az account create`: Fix `--owner-upn` and ` --owner-spn ` not working
+
 1.0.0b1
 +++++++
 * Migrate to AAZ commands
