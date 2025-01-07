@@ -1853,18 +1853,18 @@ def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_n
     return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
-def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name, no_wait=no_wait)
         logger.warning("Dapr componenet successfully deleted.")
         return r
     except Exception as e:
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_dapr_component = load_yaml_file(yaml)
@@ -1893,7 +1893,8 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
         r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
                                                              environment_name=environment_name,
                                                              dapr_component_envelope=dapr_component_envelope,
-                                                             name=dapr_component_name)
+                                                             name=dapr_component_name,
+                                                             no_wait=no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1929,7 +1930,7 @@ def connected_env_list_certificates(cmd, name, resource_group_name, location=Non
             handle_raw_exception(e)
 
 
-def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
@@ -1972,7 +1973,7 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
             handle_raw_exception(e)
 
     try:
-        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate, no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -2010,7 +2011,7 @@ def connected_env_list_storages(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
+def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     r = None
@@ -2033,16 +2034,16 @@ def connected_env_create_or_update_storage(cmd, storage_name, resource_group_nam
     storage_envelope["properties"]["azureFile"] = storage_def
 
     try:
-        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope)
+        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
 
-def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
+def connected_env_remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
+        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
