@@ -47,7 +47,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
@@ -565,9 +565,7 @@ class _UpdateHelper:
         )
 
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info

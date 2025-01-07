@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent resource list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Retrieves relevant information about all Microsoft Connected Cache for Enterprise resources under the resource group.
@@ -779,9 +780,7 @@ class _ListHelper:
         )
 
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info

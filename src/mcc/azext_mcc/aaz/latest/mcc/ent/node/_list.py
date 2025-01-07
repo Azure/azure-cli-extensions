@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent node list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Retrieves relevant information about all Microsoft Connected Cache for Enterprise cache nodes under the Microsoft Connected Cache for Enterprise resource.
@@ -47,7 +48,7 @@ class List(AAZCommand):
             help="Name of Microsoft Connected Cache for Enterprise resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),

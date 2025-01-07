@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent node create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a Microsoft Connected Cache for Enterprise cache node with specified parameters.
@@ -47,7 +48,7 @@ class Create(AAZCommand):
             help="Name of Microsoft Connected Cache for Enterprise cache node.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
@@ -57,7 +58,7 @@ class Create(AAZCommand):
             help="Name of Microsoft Connected Cache for Enterprise resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
