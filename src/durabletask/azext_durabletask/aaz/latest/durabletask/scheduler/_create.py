@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Scheduler
 
-    :example: Create a scheduler in eastus
-        az durable-task scheduler create --resource-group testrg --scheduler-name testscheduler --location eastus --ip-allowlist "[0.0.0.0/0]" --sku "{capacity: 1, name:Dedicated, redundancyState: None}" --tags "{}"
+    :example: Create a scheduler in northcentralus
+        az durable-task scheduler create --resource-group testrg --scheduler-name testscheduler --location northcentralus --ip-allowlist "[0.0.0.0/0]" --sku-capacity "1", --sku-name "Dedicated" --tags "{}"
     """
 
     _aaz_info = {
@@ -65,25 +65,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="IP allow list for durable task scheduler. Values can be IPv4, IPv6 or CIDR",
         )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
-            arg_group="Properties",
-            help="SKU of the durable task scheduler",
-        )
 
         ip_allowlist = cls._args_schema.ip_allowlist
         ip_allowlist.Element = AAZStrArg()
-
-        sku = cls._args_schema.sku
-        sku.capacity = AAZIntArg(
-            options=["capacity"],
-            help="The SKU capacity. This allows scale out/in for the resource and impacts zone redundancy",
-        )
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="The name of the SKU",
-            required=True,
-        )
 
         # define Arg Group "Resource"
 
@@ -104,6 +88,20 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku_capacity = AAZIntArg(
+            options=["--sku-capacity"],
+            arg_group="Sku",
+            help="The SKU capacity. This allows scale out/in for the resource and impacts zone redundancy",
+        )
+        _args_schema.sku_name = AAZStrArg(
+            options=["--sku-name"],
+            arg_group="Sku",
+            help="The name of the SKU",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -219,7 +217,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             ip_allowlist = _builder.get(".properties.ipAllowlist")
             if ip_allowlist is not None:
@@ -227,8 +225,8 @@ class Create(AAZCommand):
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
-                sku.set_prop("capacity", AAZIntType, ".capacity")
-                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                sku.set_prop("capacity", AAZIntType, ".sku_capacity")
+                sku.set_prop("name", AAZStrType, ".sku_name", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:

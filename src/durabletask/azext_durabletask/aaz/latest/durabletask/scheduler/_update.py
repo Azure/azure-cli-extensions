@@ -65,26 +65,10 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="IP allow list for durable task scheduler. Values can be IPv4, IPv6 or CIDR",
         )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
-            arg_group="Properties",
-            help="SKU of the durable task scheduler",
-        )
 
         ip_allowlist = cls._args_schema.ip_allowlist
         ip_allowlist.Element = AAZStrArg(
             nullable=True,
-        )
-
-        sku = cls._args_schema.sku
-        sku.capacity = AAZIntArg(
-            options=["capacity"],
-            help="The SKU capacity. This allows scale out/in for the resource and impacts zone redundancy",
-            nullable=True,
-        )
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="The name of the SKU",
         )
 
         # define Arg Group "Resource"
@@ -100,6 +84,21 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
+        )
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku_capacity = AAZIntArg(
+            options=["--sku-capacity"],
+            arg_group="Sku",
+            help="The SKU capacity. This allows scale out/in for the resource and impacts zone redundancy",
+            nullable=True,
+        )
+        _args_schema.sku_name = AAZStrArg(
+            options=["--sku-name"],
+            arg_group="Sku",
+            help="The name of the SKU",
         )
         return cls._args_schema
 
@@ -344,7 +343,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             ip_allowlist = _builder.get(".properties.ipAllowlist")
             if ip_allowlist is not None:
@@ -352,8 +351,8 @@ class Update(AAZCommand):
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
-                sku.set_prop("capacity", AAZIntType, ".capacity")
-                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                sku.set_prop("capacity", AAZIntType, ".sku_capacity")
+                sku.set_prop("name", AAZStrType, ".sku_name", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
