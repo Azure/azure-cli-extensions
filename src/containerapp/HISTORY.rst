@@ -5,6 +5,9 @@ Release History
 upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
+* 'az containerapp connected-env certificate upload/remove': Support `--no-wait`.
+* 'az containerapp connected-env dapr-component set/remove': Support `--no-wait`.
+* 'az containerapp connected-env storage set/remove': Support `--no-wait`.
 
 1.1.0b1
 ++++++
