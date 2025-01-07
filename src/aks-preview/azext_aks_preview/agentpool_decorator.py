@@ -477,6 +477,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return undrainable_node_behavior
 
+    def get_max_unavailable(self) -> str:
+        """Obtain the value of max_unavailable.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        max_unavailable = self.raw_param.get("max_unavailable")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.max_unavailable is not None
+            ):
+                max_unavailable = self.agentpool.upgrade_settings.max_unavailable
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return max_unavailable
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
