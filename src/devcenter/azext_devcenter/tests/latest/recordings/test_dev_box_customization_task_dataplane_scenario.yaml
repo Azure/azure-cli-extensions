@@ -1,0 +1,445 @@
+interactions:
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-task list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-proj2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '217'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 00:59:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1522120'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 999AC541CA5E44A698073A14A1F94534 Ref B: SJC211051205045 Ref C: 2024-12-18T00:59:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-task list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --project --dev-center
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"name\": \"git-clone\",\n      \"catalogName\":
+        \"customization-quickstart\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/customization-quickstart/git-clone\",\n
+        \     \"description\": \"Clones a git repository.\",\n      \"parameters\":
+        {\n        \"repositoryUrl\": {\n          \"description\": \"The URL of the
+        repository to clone.\",\n          \"type\": \"string\",\n          \"required\":
+        true,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"directory\": {\n          \"description\": \"The directory under
+        which the repository will be cloned. This is the\\nequivalent of the working
+        directory under which the git command will\\nexecute.\\n\",\n          \"type\":
+        \"string\",\n          \"required\": false,\n          \"default\": \"C:\\\\Workspaces\",\n
+        \         \"allowed\": []\n        },\n        \"branch\": {\n          \"description\":
+        \"The branch to clone.\",\n          \"type\": \"string\",\n          \"required\":
+        false,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"pat\": {\n          \"description\": \"The PAT (personal access
+        token) to use when cloning the repository.\",\n          \"type\": \"string\",\n
+        \         \"required\": false,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        }\n      }\n    },\n    {\n      \"name\": \"install-vs-extension\",\n
+        \     \"catalogName\": \"customization-quickstart\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/customization-quickstart/install-vs-extension\",\n
+        \     \"description\": \"Installs a Visual Studio extension\",\n      \"parameters\":
+        {\n        \"marketplaceItemName\": {\n          \"description\": \"The name
+        of the Visual Studio extension to install.\\nVisit https://marketplace.visualstudio.com
+        to learn\\nmore about Visual Studio extensions.\\n\",\n          \"type\":
+        \"string\",\n          \"required\": true,\n          \"allowed\": []\n        }\n
+        \     }\n    },\n    {\n      \"name\": \"powershell\",\n      \"catalogName\":
+        \"customization-quickstart\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/customization-quickstart/powershell\",\n
+        \     \"description\": \"Execute a powershell command.\",\n      \"parameters\":
+        {\n        \"command\": {\n          \"description\": \"The command to execute.\",\n
+        \         \"type\": \"string\",\n          \"required\": true,\n          \"default\":
+        \"\",\n          \"allowed\": []\n        },\n        \"workingDirectory\":
+        {\n          \"description\": \"The working directory to execute the command
+        in.\",\n          \"type\": \"string\",\n          \"required\": false,\n
+        \         \"default\": \"\",\n          \"allowed\": []\n        }\n      }\n
+        \   },\n    {\n      \"name\": \"choco\",\n      \"catalogName\": \"customization-quickstart\",\n
+        \     \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/customization-quickstart/choco\",\n
+        \     \"description\": \"Installs a Chocolatey package.\",\n      \"parameters\":
+        {\n        \"package\": {\n          \"description\": \"The name of the Chocolatey
+        package to install.\\nFor example, \\\"git\\\".\\nVisit https://chocolatey.org/packages
+        to learn\\nmore about Chocolatey packages. \\n\",\n          \"type\": \"string\",\n
+        \         \"required\": true,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        },\n        \"version\": {\n          \"description\": \"The version
+        of the Chocolatey package to install.\",\n          \"type\": \"string\",\n
+        \         \"required\": false,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        },\n        \"switches\": {\n          \"description\": \"Additional
+        params required for the package to install.\",\n          \"type\": \"string\",\n
+        \         \"required\": false,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        },\n        \"ignoreChecksums\": {\n          \"description\":
+        \"Whether to ignore checksums when installing the package.\",\n          \"type\":
+        \"boolean\",\n          \"required\": false,\n          \"default\": \"false\",\n
+        \         \"allowed\": []\n        }\n      }\n    },\n    {\n      \"name\":
+        \"winget\",\n      \"catalogName\": \"customization-quickstart\",\n      \"uri\":
+        \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/customization-quickstart/winget\",\n
+        \     \"description\": \"Applies a winget configuration to the Dev Box.\",\n
+        \     \"parameters\": {\n        \"configurationFile\": {\n          \"description\":
+        \"The path to the winget config yaml file. The file must be located in the
+        local machine. \\n\",\n          \"type\": \"string\",\n          \"required\":
+        false,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"downloadUrl\": {\n          \"description\": \"A publicly accessible
+        URL where the config yaml file is stored. This file will be downloaded to
+        the path given in 'configurationFile'.\\n\",\n          \"type\": \"string\",\n
+        \         \"required\": false,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        },\n        \"inlineConfigurationBase64\": {\n          \"description\":
+        \"A base64 encoded string of the winget config yaml file. This file will be
+        decoded and saved to the path given in 'configurationFile' or to a temporary
+        file if not specified.\\n\",\n          \"type\": \"string\",\n          \"required\":
+        false,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"package\": {\n          \"description\": \"The name of the package
+        to install. This is an alternative way. \\nIf a config yaml file is provided
+        under other parameters, there is no need for the package name.\\n\",\n          \"type\":
+        \"string\",\n          \"required\": false,\n          \"default\": \"\",\n
+        \         \"allowed\": []\n        },\n        \"version\": {\n          \"description\":
+        \"The version of the package to install.\\nIf a config yaml file is provided
+        under other parameters, there is no need for the package version.\\n\",\n
+        \         \"type\": \"string\",\n          \"required\": false,\n          \"default\":
+        \"\",\n          \"allowed\": []\n        },\n        \"runAsUser\": {\n          \"description\":
+        \"Whether to run the installation as the current user or as an administrator.
+        \\nIf set to true, the installation will run during the user's first login
+        to the machine.\\n\",\n          \"type\": \"boolean\",\n          \"required\":
+        false,\n          \"default\": \"false\",\n          \"allowed\": []\n        }\n
+        \     }\n    },\n    {\n      \"name\": \"__INTRINSIC_PowerShell__\",\n      \"catalogName\":
+        \"__INTRINSIC__\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/__INTRINSIC__/__INTRINSIC_PowerShell__\",\n
+        \     \"parameters\": {\n        \"command\": {\n          \"description\":
+        \"The command to execute.\",\n          \"type\": \"string\",\n          \"required\":
+        true,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"workingDirectory\": {\n          \"description\": \"The working
+        directory to execute the command in.\",\n          \"type\": \"string\",\n
+        \         \"required\": false,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        }\n      }\n    },\n    {\n      \"name\": \"__INTRINSIC_Winget__\",\n
+        \     \"catalogName\": \"__INTRINSIC__\",\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks/__INTRINSIC__/__INTRINSIC_Winget__\",\n
+        \     \"parameters\": {\n        \"configurationFile\": {\n          \"description\":
+        \"The path to the winget config yaml file. The file must be located in the
+        local machine.\\n\",\n          \"type\": \"string\",\n          \"required\":
+        false,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"downloadUrl\": {\n          \"description\": \"A publicly accessible
+        URL where the config yaml file is stored. This file will be downloaded to
+        the path given in 'configurationFile'.\\n\",\n          \"type\": \"string\",\n
+        \         \"required\": false,\n          \"default\": \"\",\n          \"allowed\":
+        []\n        },\n        \"inlineConfigurationBase64\": {\n          \"description\":
+        \"A base64 encoded string of the winget config yaml file. This file will be
+        decoded and saved to the path given in 'configurationFile' or to a temporary
+        file if not specified.\\n\",\n          \"type\": \"string\",\n          \"required\":
+        false,\n          \"default\": \"\",\n          \"allowed\": []\n        },\n
+        \       \"package\": {\n          \"description\": \"The name of the package
+        to install. This is an alternative way. \\nIf a config yaml file is provided
+        under other parameters, there is no need for the package name.\\n\",\n          \"type\":
+        \"string\",\n          \"required\": false,\n          \"default\": \"\",\n
+        \         \"allowed\": []\n        },\n        \"version\": {\n          \"description\":
+        \"The version of the package to install.\\nIf a config yaml file is provided
+        under other parameters, there is no need for the package version.\",\n          \"type\":
+        \"string\",\n          \"required\": false,\n          \"default\": \"\",\n
+        \         \"allowed\": []\n        }\n      }\n    }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '9011'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 01:00:00 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '297'
+      x-rate-limit-reset:
+      - '2024-12-18T01:00:13.7853127Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-task validate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center --tasks
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-proj2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '217'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 01:00:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '13'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1502533'
+      x-ms-user-quota-remaining:
+      - '13'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: BB329CF2EFFD4A7382A5F2367D9C829F Ref B: SJC211051205033 Ref C: 2024-12-18T01:00:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tasks": [{"name": "customization-quickstart/winget", "runAs": "User"}]}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-task validate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center --tasks
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationTasks:validateGroup?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/customizationValidationStatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8\",\n
+        \ \"name\": \"5441351f-18a3-4ee9-8a4e-76bf4a180cf8\",\n  \"status\": \"NotStarted\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '174'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 01:00:01 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationvalidationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationvalidationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-18T01:01:01.5147918Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-task validate
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --project --dev-center --tasks
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationvalidationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/projects/amlim/customizationValidationStatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8\",\n
+        \ \"name\": \"5441351f-18a3-4ee9-8a4e-76bf4a180cf8\",\n  \"status\": \"NotStarted\",\n
+        \ \"startTime\": \"2024-12-18T01:00:01.5178134+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '226'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 01:00:01 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2024-12-18T01:00:12.7712483Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-task validate
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --project --dev-center --tasks
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/customizationvalidationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"result\": {\n    \"validationResult\": \"Succeeded\",\n    \"errors\":
+        []\n  },\n  \"id\": \"/projects/amlim/customizationValidationStatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8\",\n
+        \ \"name\": \"5441351f-18a3-4ee9-8a4e-76bf4a180cf8\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2024-12-18T01:00:01.5178134+00:00\",\n  \"endTime\": \"2024-12-18T01:00:16.9868412+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '348'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 01:00:31 GMT
+      location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview&monitor=true
+      operation-location:
+      - https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/operationstatuses/5441351f-18a3-4ee9-8a4e-76bf4a180cf8?api-version=2024-10-01-preview
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2024-12-18T01:01:01.5147918Z'
+    status:
+      code: 200
+      message: OK
+version: 1

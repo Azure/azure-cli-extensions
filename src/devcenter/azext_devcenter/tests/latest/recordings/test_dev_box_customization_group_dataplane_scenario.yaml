@@ -1,0 +1,351 @@
+interactions:
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-group list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center --dev-box-name
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '212'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 02:46:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.3866443'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 0C5BEB60FF6A485F95CB88FC78BE61F0 Ref B: SJC211051201047 Ref C: 2024-12-18T02:46:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-group list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --project --dev-center --dev-box-name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"tasks\": [],\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/customizationgroup\",\n
+        \     \"name\": \"customizationgroup\",\n      \"status\": \"Running\",\n
+        \     \"startTime\": \"2024-12-18T01:15:08.6483489+00:00\"\n    },\n    {\n
+        \     \"tasks\": [],\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/customizationgrouptest\",\n
+        \     \"name\": \"customizationgrouptest\",\n      \"status\": \"NotStarted\"\n
+        \   },\n    {\n      \"tasks\": [],\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/ctest\",\n
+        \     \"name\": \"ctest\",\n      \"status\": \"NotStarted\"\n    }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '972'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 02:46:02 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-18T02:47:02.1773534Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center --name --dev-box-name --tasks
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '211'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 02:46:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '13'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1578867'
+      x-ms-user-quota-remaining:
+      - '13'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: FA05379BD6854181823F46E5462979F2 Ref B: SJC211051201051 Ref C: 2024-12-18T02:46:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tasks": [{"name": "customization-quickstart/winget", "runAs": "User"}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center --name --dev-box-name --tasks
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/cgName?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"tasks\": [\n    {\n      \"name\": \"customization-quickstart/winget\",\n
+        \     \"parameters\": {},\n      \"runAs\": \"User\"\n    }\n  ],\n  \"uri\":
+        \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/cgName\",\n
+        \ \"status\": \"NotStarted\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '346'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 02:46:03 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2024-12-18T02:46:27.4403126Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-group show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --project --dev-center --dev-box-name --name
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '212'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 02:46:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '12'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.0677440'
+      x-ms-user-quota-remaining:
+      - '12'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 010A84285CE74AEB8002C78DC4C2A4D2 Ref B: SJC211051203049 Ref C: 2024-12-18T02:46:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev customization-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --project --dev-center --dev-box-name --name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/customizationgroup?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"tasks\": [\n    {\n      \"name\": \"customization-quickstart/winget\",\n
+        \     \"parameters\": {},\n      \"runAs\": \"User\",\n      \"id\": \"b395c202-ba5f-4d95-ae01-ac5dfa681735\",\n
+        \     \"logUri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/customizationgroup/logs/b395c202-ba5f-4d95-ae01-ac5dfa681735\",\n
+        \     \"status\": \"WaitingForUserSession\",\n      \"startTime\": \"2024-12-18T02:24:29.0585624+00:00\"\n
+        \   }\n  ],\n  \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/users/me/devboxes/devbox-no-hibernate/customizationGroups/customizationgroup\",\n
+        \ \"name\": \"customizationgroup\",\n  \"status\": \"Running\",\n  \"startTime\":
+        \"2024-12-18T01:15:08.6483489+00:00\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '842'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Dec 2024 02:46:04 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-18T02:47:04.2276495Z'
+    status:
+      code: 200
+      message: OK
+version: 1
