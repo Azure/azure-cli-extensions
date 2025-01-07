@@ -3186,12 +3186,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         add_nodepool_cmd = (
             "aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} "
-            "--mode user --max-unavailable 1"
+            "--mode user --max-surge 0 --max-unavailable 1"
         )
         self.cmd(
             add_nodepool_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.maxSurge", "0"),
                 self.check("upgradeSettings.maxUnavailable", "1"),
             ],
         )
@@ -3204,6 +3205,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_nodepool_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.maxSurge", "0"),
                 self.check("upgradeSettings.maxUnavailable", "5%"),
             ],
         )
