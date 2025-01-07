@@ -31,6 +31,12 @@ class Update(AAZCommand):
 
     :example: Revert encryption to Microsoft Managed Keys
         az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --key-source Default
+
+    :example: Enable enhanced security monitoring feature
+        az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --enable-enhanced-security-monitoring
+
+    :example: Enable compliance security profile feature with specific compliance standards
+        az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --enable-compliance-security-profile --compliance-standards='["HIPAA","PCI_DSS"]'
     """
 
     _aaz_info = {
@@ -219,6 +225,51 @@ class Update(AAZCommand):
             help="Gets or Sets Default Storage Firewall configuration information",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.enable_automatic_cluster_update = AAZBoolArg(
+            options=["--enable-automatic-cluster-update", "--enable-acu"],
+            arg_group="Enhanced Security Compliance",
+            help="Enable Automatic Cluster Update feature.",
+            nullable=True,
+            enum={
+                'true': True, 't': True, 'yes': True, 'y': True, '1': True,
+                "false": False, 'f': False, 'no': False, 'n': False, '0': False,
+                "Enabled": True, "Disabled": False, "enabled": True, "disabled": False, 
+            }
+        )
+        _args_schema.compliance_standards = AAZListArg(
+            options=["--compliance-standards"],
+            arg_group="Enhanced Security Compliance",
+            help="Compliance Standards associated with the workspace, allowed values: NONE, HIPAA, PCI_DSS.",
+            nullable=True,
+        )
+        _args_schema.compliance_standards.Element = AAZStrArg(
+            nullable=True,
+            arg_group="Enhanced Security Compliance",
+            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS.",
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+        )
+        _args_schema.enable_compliance_security_profile = AAZBoolArg(
+            options=["--enable-compliance-security-profile", "--enable-csp"],
+            arg_group="Enhanced Security Compliance",
+            help="Enable Compliance Security Profile.",
+            nullable=True,
+            enum={
+                'true': True, 't': True, 'yes': True, 'y': True, '1': True,
+                "false": False, 'f': False, 'no': False, 'n': False, '0': False,
+                "Enabled": True, "Disabled": False, "enabled": True, "disabled": False, 
+            }
+        )
+        _args_schema.enable_enhanced_security_monitoring = AAZBoolArg(
+            options=["--enable-enhanced-security-monitoring", "--enable-esm"],
+            arg_group="Enhanced Security Compliance",
+            help="Enable Enhanced Security Monitoring feature.",
+            nullable=True,
+            enum={
+                'true': True, 't': True, 'yes': True, 'y': True, '1': True,
+                "false": False, 'f': False, 'no': False, 'n': False, '0': False,
+                "Enabled": True, "Disabled": False, "enabled": True, "disabled": False, 
+            }
         )
         _args_schema.enhanced_security_compliance = AAZObjectArg(
             options=["--enhanced-security-compliance"],
@@ -663,6 +714,49 @@ class Update(AAZCommand):
             enhanced_security_monitoring = _builder.get(".properties.enhancedSecurityCompliance.enhancedSecurityMonitoring")
             if enhanced_security_monitoring is not None:
                 enhanced_security_monitoring.set_prop("value", AAZStrType, ".value")
+
+            args = self.ctx.args.to_serialized_data()
+            # Check if any of the enhanced security compliance parameters are set
+            if set(['enable_compliance_security_profile', 'enable_csp',
+                    'enable_enhanced_security_monitoring', 'enable_esm',
+                    'enable_automatic_cluster_update', 'enable_acu',
+                    'compliance_standards']).intersection(set(args.keys())):
+                if enhanced_security_compliance is None:
+                    # In case the `--enhanced-security-compliance` parameter doesn't exist, this object should be created
+                    properties.set_prop("enhancedSecurityCompliance", AAZObjectType)
+                    enhanced_security_compliance = _builder.get(".properties.enhancedSecurityCompliance")
+                if 'enable_compliance_security_profile' in args or 'enable_csp' in args:
+                    compliance_security_profile = enhanced_security_compliance.set_prop("complianceSecurityProfile", AAZObjectType)
+                    if args.get('enable_compliance_security_profile') or args.get('enable_csp'):
+                        compliance_security_profile.set_const("value", "Enabled", AAZStrType)
+                        # Process the compliance standards only if the compliance security profile is enabled
+                        compliance_standards = compliance_security_profile.set_prop("complianceStandards", AAZListType, ".compliance_standards")
+                        if compliance_standards is None:
+                            # Create an empty list if it doesn't exist
+                            compliance_security_profile.set_const("complianceStandards", [], AAZListType)
+                        else:
+                            compliance_standards.set_elements(AAZStrType, ".")
+                    else:
+                        compliance_security_profile.set_const("value", "Disabled", AAZStrType)
+                        compliance_security_profile.set_const("complianceStandards", [], AAZListType)
+                else:
+                    # Set default values if these parameters are not set
+                    enhanced_security_compliance.set_prop("complianceSecurityProfile", AAZObjectType)
+                    compliance_security_profile = _builder.get(".properties.enhancedSecurityCompliance.complianceSecurityProfile")
+                    compliance_security_profile.set_const("value", "Disabled", AAZStrType)
+                    compliance_security_profile.set_const("complianceStandards", [], AAZListType)
+                if 'enable_enhanced_security_monitoring' in args or 'enable_esm' in args:
+                    enhanced_security_monitoring = enhanced_security_compliance.set_prop("enhancedSecurityMonitoring", AAZObjectType)
+                    if args.get('enable_enhanced_security_monitoring') or args.get('enable_esm'):
+                        enhanced_security_monitoring.set_const("value", "Enabled", AAZStrType)
+                    else:
+                        enhanced_security_monitoring.set_const("value", "Disabled", AAZStrType)
+                if 'enable_automatic_cluster_update' in args or 'enable_acu' in args:
+                    automatic_cluster_update = enhanced_security_compliance.set_prop("automaticClusterUpdate", AAZObjectType)
+                    if args.get('enable_automatic_cluster_update') or args.get('enable_acu'):
+                        automatic_cluster_update.set_const("value", "Enabled", AAZStrType)
+                    else:
+                        automatic_cluster_update.set_const("value", "Disabled", AAZStrType)
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
