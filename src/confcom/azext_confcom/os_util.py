@@ -225,3 +225,15 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
     image_info["Architecture"] = image_info_raw.get("architecture")
 
     return image_info
+
+
+# helper function to delete a file that may or may not exist
+def delete_silently(filename: str) -> None:
+    try:
+        os.remove(filename)
+    except FileNotFoundError:
+        pass
+    except PermissionError:
+        eprint(f"Permission denied to delete file: {filename}")
+    except OSError as e:
+        eprint(f"Error deleting file: {filename}, {e}")
