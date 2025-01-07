@@ -1350,12 +1350,6 @@ helps['containerapp env java-component config-server-for-spring update'] = """
     type: command
     short-summary: Command to update the Config Server for Spring.
     examples:
-    - name: Delete all configurations of the Config Server for Spring.
-      text: |
-          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --remove-all-configurations
     - name: Update a Config Server for Spring with custom configurations.
       text: |
           az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
@@ -1493,12 +1487,6 @@ helps['containerapp env java-component eureka-server-for-spring update'] = """
     type: command
     short-summary: Command to update the Eureka Server for Spring.
     examples:
-    - name: Delete all configurations of the Eureka Server for Spring.
-      text: |
-          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --remove-all-configurations
     - name: Update an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
@@ -1579,12 +1567,6 @@ helps['containerapp env java-component admin-for-spring update'] = """
     type: command
     short-summary: Command to update the Admin for Spring.
     examples:
-    - name: Delete all configurations of the Admin for Spring.
-      text: |
-          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --remove-all-configurations
     - name: Update an Admin for Spring with custom configurations.
       text: |
           az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
@@ -1659,12 +1641,6 @@ helps['containerapp env java-component nacos update'] = """
     type: command
     short-summary: Command to update the Nacos.
     examples:
-    - name: Delete all configurations of the Nacos.
-      text: |
-          az containerapp env java-component nacos update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --remove-all-configurations
     - name: Update an Nacos with custom configurations.
       text: |
           az containerapp env java-component nacos update -g MyResourceGroup \\
