@@ -3156,7 +3156,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
+        random_name_length=17, name_prefix="clitest", location="westcentralus"
     )
     def test_aks_nodepool_max_unavailable(
         self, resource_group, resource_group_location
