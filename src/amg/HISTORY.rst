@@ -122,3 +122,8 @@ Release History
 2.5.3
 ++++++
 * `az grafana service-account token create`: set token default expiration time to 1 day as stated in the documentation
+
+2.5.4
+++++++
+* `az grafana dashboard import`: fix issue with JSON file validation
+* `az grafana folder update`: fix issue with overwrite setting
