@@ -87,6 +87,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env http-route-config') as c:
         c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
         c.argument('yaml', help="The path to the YAML input file.")
+        c.argument('name', id_part=None)
 
     # Telemetry
     with self.argument_context('containerapp env telemetry') as c:

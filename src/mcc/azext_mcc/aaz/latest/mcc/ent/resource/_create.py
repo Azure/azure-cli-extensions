@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent resource create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a Microsoft Connected Cache for Enterprise resource with specified create parameters.
@@ -47,7 +48,7 @@ class Create(AAZCommand):
             help="Name of Microsoft Connected Cache for Enterprise resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
@@ -668,9 +669,7 @@ class _CreateHelper:
         )
 
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info
