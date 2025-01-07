@@ -670,7 +670,7 @@ For information on what a policy fragment is, see [policy fragments](#policy-fra
 Example 1: The following command creates a security fragment and prints it to stdout as well as saving it to a file `contoso.rego`:
 
 ```bash
-az confcom acifragmentgen --config ./fragment_config.json --svn 1 --namespace contoso
+az confcom acifragmentgen --input ./fragment_config.json --svn 1 --namespace contoso
 ```
 
 The config file is a JSON file that contains the following information:
@@ -708,7 +708,7 @@ The `--svn` argument is used to specify the security version number of the fragm
 Example 2: This command creates a signed security fragment and attaches it to a container image in an ORAS-compliant registry:
 
 ```bash
-az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --config ./samples/config.json --upload-fragment
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/config.json --upload-fragment
 ```
 
 Example 3: This command creates a file to be used by `acipolicygen` that says which fragments should be included in the policy. Note that the policy must be [COSE](https://www.iana.org/assignments/cose/cose.xhtml) signed:
@@ -721,18 +721,29 @@ This outputs a file `fragments.json` that contains the following information:
 
 ```json
 {
- "path": "./contoso.rego.cose",
- "feed": "contoso.azurecr.io/example",
- "includes": [
-  "containers",
-  "fragments"
- ],
- "issuer": "did:x509:0:sha256:mLzv0uyBNQvC6hi4y9qy8hr6NSZuYFv6gfCwAEWBNqc::subject:CN:Contoso",
- "minimum_svn": "1"
+    "fragments": [
+        {
+            "feed": "contoso.azurecr.io/example",
+            "includes": [
+            "containers",
+            "fragments"
+            ],
+            "issuer": "did:x509:0:sha256:mLzv0uyBNQvC6hi4y9qy8hr6NSZuYFv6gfCwAEWBNqc::subject:CN:Contoso",
+            "minimum_svn": "1"
+        }
+    ]
 }
 ```
 
 This file is then used by `acipolicygen` to generate a policy that includes custom fragments.
+
+Example 4: The command creates a signed policy fragment and attaches it to a specified image in an ORAS-compliant registry:
+
+```bash
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/<my-config>.json --upload-fragment --image-target contoso.azurecr.io/<my-image>:latest --feed contoso.azurecr.io/<my-feed>
+```
+
+This could be useful in scenarios where an image-attached fragment is required but the fragment's feed is different from the image's location.
 
 ## Microsoft Azure CLI 'confcom katapolicygen' Extension Examples
 

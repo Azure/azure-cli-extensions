@@ -236,6 +236,41 @@ spec:
         - python3
 """
 
+    custom_yaml_volume_claim = """
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadOnlyMany" ]
+      resources:
+        requests:
+          storage: 1Gi
+"""
+
     def test_compare_policy_sources(self):
         custom_policy = load_policy_from_str(self.custom_json)
         custom_policy.populate_policy_content_for_all_images()
@@ -328,3 +363,21 @@ spec:
 
         for var in config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY:
           self.assertTrue(var['name'] in env_rule_names)
+
+    def test_volume_claim(self):
+        virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_volume_claim)[0]
+        virtual_node_policy.populate_policy_content_for_all_images()
+        container_start = "containers := "
+        containers = json.loads(extract_containers_from_text(virtual_node_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        # get the volume mount from the first container
+        mounts = [
+            mount
+            for mount in
+            containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]
+        ]
+        self.assertTrue("/usr/share/nginx/html" in [mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] for mount in mounts])
+        mount = [mount for mount in mounts if mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] == "/usr/share/nginx/html"][0]
+        self.assertTrue("ro" in mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS])
+
+        # get the nginx mount and make sure it is readonly
+        containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]

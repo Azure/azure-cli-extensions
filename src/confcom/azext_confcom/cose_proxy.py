@@ -115,6 +115,10 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             payload_path,
             "-key",
             key_path,
+            "-salt",
+            "zero",
+            "-content-type",
+            "application/unknown+rego",
             "-out",
             out_path,
         ]
@@ -183,3 +187,17 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
 
         stdout = item.stdout.decode("utf-8")
         return stdout.split("payload:")[1]
+
+    def extract_feed_from_path(self, fragment_path: str) -> str:
+        policy_bin_str = str(self.policy_bin)
+        if not os.path.exists(fragment_path):
+            eprint(f"The fragment file at {fragment_path} does not exist")
+
+        arg_list_chain = [policy_bin_str, "check", "--in", fragment_path, "--verbose"]
+
+        item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
+
+        stdout = item.stdout.decode("utf-8")
+
+        # we want the text between the name and the next newline
+        return stdout.split("feed: ")[1].split("\n")[0]

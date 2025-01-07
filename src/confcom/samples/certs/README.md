@@ -23,12 +23,12 @@ The image in `fragment_config.json` must be updated from `<your-image>` to the i
 ./create_certchain.sh
 ```
 
-You will need to select (y) for four prompts to sign the certs needed to create a cert chain.
-
 After completion, this will create the following files to be used in the confcom signing process:
 
 - `intermediate/private/ec_p384_private.pem`
 - `intermediateCA/certs/www.contoso.com.chain.cert.pem`
+
+Note that for consecutive runs, the script will not completely overwrite the existing key and cert files. It is recommended to either delete the existing files or modify the path to create the new files elsewhere.
 
 ## Run confcom
 
@@ -37,7 +37,7 @@ After completion, this will create the following files to be used in the confcom
 You may need to change the path to the chain and key files in the following command:
 
 ```bash
-az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --config ./samples/config.json --upload-fragment
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/config.json --upload-fragment
 ```
 
 After running the command, there will be the following files created:
@@ -65,20 +65,25 @@ The fragment can be seen in the Azure portal under the container repo's artifact
 To create an import statement for the newly created rego fragment, run the following command:
 
 ```bash
-az confcom acifragmentgen --generate-import -p ./contoso.rego.cose --minimum-svn 1
+az confcom acifragmentgen --generate-import -p ./contoso.rego.cose --minimum-svn 1 --fragments-json fragments.json
 ```
 
-Which will output the fragment's import in json format. **Place this import statement into a new `fragments.json` file.**
+Which will output the fragment's import in json format to the file `fragments.json`.
 
 example output:
 
 ```json
 {
-    "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
-    "feed": "contoso.azurecr.io/infra",
-    "minimum_svn": "1",
-    "includes": [
-        "containers"
+    "fragments": [
+        {
+        "feed": "mcr.microsoft.com/acc/samples/aci/helloworld",
+        "includes": [
+            "containers",
+            "fragments"
+        ],
+        "issuer": "did:x509:0:sha256:0NWnhcxjUwmwLCd7A-PubQRq08ig3icQxpW5d2f4Rbc::subject:CN:Contoso",
+        "minimum_svn": "1"
+        }
     ]
 }
 ```

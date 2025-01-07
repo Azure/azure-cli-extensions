@@ -91,7 +91,7 @@ helps[
 
         - name: --omit-id
           type: boolean
-          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag'
+          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag. This is helpful if the image being used will be present in multiple registries and used interchangeably'
 
         - name: --include-fragments -f
           type: boolean
@@ -167,6 +167,10 @@ helps[
           type: string
           short-summary: 'Path to an existing policy fragment file to be used with --generate-import. This option allows you to create import statements for the specified fragment without needing to pull it from an OCI registry'
 
+        - name: --omit-id
+          type: boolean
+          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag. This is helpful if the image being used will be present in multiple registries and used interchangeably'
+
         - name: --generate-import -g
           type: boolean
           short-summary: 'Generate an import statement for a policy fragment'
@@ -201,9 +205,15 @@ helps[
         - name: Input a config file to generate a fragment with a custom namespace and debug mode enabled
           text: az confcom acifragmentgen --input "./config.json" --namespace "my-namespace" --debug-mode
         - name: Generate an import statement for a signed local fragment
-          text: az confcom acifragmentgen --fragment-path "./fragment.json" --generate-import --minimum-svn 1
+          text: az confcom acifragmentgen --fragment-path "./fragment.rego.cose" --generate-import --minimum-svn 1
         - name: Generate a fragment and COSE sign it with a key and chain
-          text: az confcom acifragmentgen --image mcr.microsoft.com/azuredocs/aci-helloworld --key "./key.pem" --chain "./chain.pem" --svn 1 --namespace contoso --no-print
+          text: az confcom acifragmentgen --input "./config.json" --key "./key.pem" --chain "./chain.pem" --svn 1 --namespace contoso --no-print
+        - name: Generate a fragment import from an image name
+          text: az confcom acifragmentgen --image <my-image> --generate-import --minimum-svn 1
+        - name: Attach a fragment to a specified image
+          text: az confcom acifragmentgen --input "./config.json" --key "./key.pem" --chain "./chain.pem" --svn 1 --namespace contoso --upload-fragment --image-target <my-image>
+
+
 """
 
 helps[

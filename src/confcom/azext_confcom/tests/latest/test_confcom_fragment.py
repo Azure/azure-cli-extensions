@@ -6,6 +6,7 @@
 import os
 import unittest
 import json
+import errno
 import subprocess
 from knack.util import CLIError
 
@@ -15,16 +16,24 @@ from azext_confcom.security_policy import (
     load_policy_from_config_str
 )
 
+from azext_confcom.cose_proxy import CoseSignToolProxy
+
 import azext_confcom.config as config
 from azext_confcom.template_util import (
     case_insensitive_dict_get,
     extract_containers_and_fragments_from_text,
 )
+from azext_confcom.os_util import (
+    write_str_to_file,
+    load_json_from_file,
+    load_str_from_file,
+    load_json_from_str,
+    delete_silently,
+)
 from azext_confcom.custom import acifragmentgen_confcom
 from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
-
 
 class FragmentMountEnforcement(unittest.TestCase):
     custom_json = """
@@ -270,6 +279,24 @@ class FragmentGenerating(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             cls.aci_policy = aci_policy
 
+
+    def test_fragment_omit_id(self):
+        output = self.aci_policy.get_serialized_output(
+            output_type=OutputType.RAW, rego_boilerplate=False, omit_id=True
+        )
+        output_json = load_json_from_str(output)
+
+        self.assertNotIn("id", output_json[0])
+
+        # test again with omit_id=False
+        output2 = self.aci_policy.get_serialized_output(
+            output_type=OutputType.RAW, rego_boilerplate=False
+        )
+        output_json2 = load_json_from_str(output2)
+
+        self.assertIn("id", output_json2[0])
+
+
     def test_fragment_injected_sidecar_container_msi(self):
         image = self.aci_policy.get_images()[0]
         env_vars = [
@@ -499,6 +526,265 @@ class FragmentSidecarValidation(unittest.TestCase):
 
         self.assertEqual(diff, expected_diff)
 
+
+class FragmentPolicySigning(unittest.TestCase):
+    custom_json = """
+{
+    "version": "1.0",
+    "fragments": [
+        {
+            "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
+            "feed": "contoso.azurecr.io/infra",
+            "minimum_svn": "1",
+            "includes": [
+                "containers"
+            ]
+        }
+    ],
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8",
+                "execProcesses": [
+                    {
+                        "command": [
+                            "echo",
+                            "Hello World"
+                        ]
+                    }
+                ],
+                "volumeMounts": [
+                    {
+                        "name": "azurefile",
+                        "mountPath": "/mount/azurefile",
+                        "mountType": "azureFile",
+                        "readOnly": true
+                    }
+                ],
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ]
+            }
+        }
+    ]
+}
+    """
+    custom_json2 = """
+{
+    "version": "1.0",
+    "fragments": [
+    ],
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/cbl-mariner/busybox:1.35",
+                "execProcesses": [
+                    {
+                        "command": [
+                            "sleep",
+                            "infinity"
+                        ]
+                    }
+                ],
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/another/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV2",
+                        "value": "test_regexp_env2(.*)",
+                        "regex": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8",
+                "execProcesses": [
+                    {
+                        "command": [
+                            "echo",
+                            "Hello World"
+                        ]
+                    }
+                ],
+                "volumeMounts": [
+                    {
+                        "name": "azurefile",
+                        "mountPath": "/mount/azurefile",
+                        "mountType": "azureFile",
+                        "readOnly": true
+                    }
+                ],
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ]
+            }
+        }
+    ]
+}
+    """
+    @classmethod
+    def setUpClass(cls):
+    #     cls.key_dir_parent = os.path.join(TEST_DIR, '..', '..', '..', 'samples', 'certs')
+    #     cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
+    #     cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
+    #     if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
+    #         script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
+
+    #         arg_list = [
+    #             script_path,
+    #         ]
+    #         os.chmod(script_path, 0o755)
+
+    #         # NOTE: this will raise an exception if it's run on windows and the key/cert files don't exist
+    #         item = subprocess.run(
+    #             arg_list,
+    #             check=False,
+    #             shell=True,
+    #             cwd=cls.key_dir_parent,
+    #             env=os.environ.copy(),
+    #         )
+    #         if item.returncode != 0:
+    #             raise Exception("Error creating certificate chain")
+
+        with load_policy_from_config_str(cls.custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+            cls.aci_policy = aci_policy
+        with load_policy_from_config_str(cls.custom_json2) as aci_policy2:
+            aci_policy2.populate_policy_content_for_all_images()
+            cls.aci_policy2 = aci_policy2
+
+    # def test_signing(self):
+    #     filename = "payload.rego"
+    #     feed = "test_feed"
+    #     algo = "ES384"
+    #     out_path = filename + ".cose"
+
+    #     fragment_text = self.aci_policy.generate_fragment("payload", 1, OutputType.RAW)
+    #     try:
+    #         write_str_to_file(filename, fragment_text)
+
+    #         cose_proxy = CoseSignToolProxy()
+    #         iss = cose_proxy.create_issuer(self.chain)
+
+    #         cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
+    #         self.assertTrue(os.path.exists(filename))
+    #         self.assertTrue(os.path.exists(out_path))
+    #     except Exception as e:
+    #         raise e
+    #     finally:
+    #         delete_silently(filename)
+    #         delete_silently(out_path)
+
+    # def test_generate_import(self):
+    #     filename = "payload4.rego"
+    #     feed = "test_feed"
+    #     algo = "ES384"
+    #     out_path = filename + ".cose"
+
+    #     fragment_text = self.aci_policy.generate_fragment("payload4", 1, OutputType.RAW)
+    #     try:
+    #         write_str_to_file(filename, fragment_text)
+
+    #         cose_proxy = CoseSignToolProxy()
+    #         iss = cose_proxy.create_issuer(self.chain)
+    #         cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
+
+    #         import_statement = cose_proxy.generate_import_from_path(out_path, 1)
+    #         self.assertTrue(import_statement)
+    #         self.assertEquals(
+    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,""),iss
+    #         )
+    #         self.assertEquals(
+    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,""),feed
+    #         )
+    #         self.assertEquals(
+    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,""),1
+    #         )
+    #         self.assertEquals(
+    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES,[]),[config.POLICY_FIELD_CONTAINERS, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS]
+    #         )
+
+    #     except Exception as e:
+    #         raise e
+    #     finally:
+    #         delete_silently(filename)
+    #         delete_silently(out_path)
+
+    # def test_local_fragment_references(self):
+    #     filename = "payload2.rego"
+    #     filename2 = "payload3.rego"
+    #     fragment_json = "fragment.json"
+    #     feed = "test_feed"
+    #     feed2 = "test_feed2"
+    #     algo = "ES384"
+    #     out_path = filename + ".cose"
+    #     out_path2 = filename2 + ".cose"
+
+    #     fragment_text = self.aci_policy.generate_fragment("payload2", 1, OutputType.RAW)
+
+    #     try:
+    #         write_str_to_file(filename, fragment_text)
+    #         write_str_to_file(fragment_json, self.custom_json2)
+
+    #         cose_proxy = CoseSignToolProxy()
+    #         iss = cose_proxy.create_issuer(self.chain)
+    #         cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
+
+    #         # this will insert the import statement from the first fragment into the second one
+    #         acifragmentgen_confcom(
+    #             None, None, None, None, None, None, None, None, generate_import=True, minimum_svn=1, fragments_json=fragment_json, fragment_path=out_path
+    #         )
+    #         # put the "path" field into the import statement
+    #         temp_json = load_json_from_file(fragment_json)
+    #         temp_json["fragments"][0]["path"] = out_path
+
+    #         write_str_to_file(fragment_json, json.dumps(temp_json))
+
+    #         acifragmentgen_confcom(
+    #             None, fragment_json, None, "payload3", 1, feed2, self.key, self.chain, None, output_filename=filename2
+    #         )
+
+    #         # make sure all of our output files exist
+    #         self.assertTrue(os.path.exists(filename2))
+    #         self.assertTrue(os.path.exists(out_path2))
+    #         self.assertTrue(os.path.exists(fragment_json))
+    #         # check the contents of the unsigned rego file
+    #         rego_str = load_str_from_file(filename2)
+    #         # see if the import statement is in the rego file
+    #         self.assertTrue("test_feed" in rego_str)
+    #         # make sure the image covered by the first fragment isn't in the second fragment
+    #         self.assertFalse("mcr.microsoft.com/acc/samples/aci/helloworld:2.8" in rego_str)
+    #     except Exception as e:
+        #     raise e
+        # finally:
+        #     delete_silently(filename)
+        #     delete_silently(out_path)
+        #     delete_silently(filename2)
+        #     delete_silently(out_path2)
+        #     delete_silently(fragment_json)
 
 class InitialFragmentErrors(ScenarioTest):
     def test_invalid_input(self):

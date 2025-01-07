@@ -608,6 +608,9 @@ class ContainerImage:
     def get_name(self) -> str:
         return self.containerName
 
+    def get_container_image(self) -> str:
+        return self.containerImage
+
     def get_working_dir(self) -> str:
         return self._workingDir
 

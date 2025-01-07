@@ -2,6 +2,17 @@
 
 Release History
 ===============
+
+1.2.0
+++++++
+* fixing metadata for uploaded fragments
+* fixing support for non-image feed names and attaching fragments to an image
+* bug fixes for image-attached fragments
+* adding ability to generate a fragment import from an image name using the remote attached fragments
+* updating stdout import statement to look more like the file output
+* adding `--omit-id` to the `acifragmentgen` command
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
+
 1.1.1
 ++++++
 * updating dmverity-vhd version with bugfix for empty image layers
