@@ -888,7 +888,7 @@ ConnectedVMwareVsphereResources
     for vm in vm_list:
         biosId2VM[vm["biosId"]].append(vm)
     for i, vm in enumerate(vm_list):
-        prefix = f"[{i+1}/{len(vm_list)}]"
+        prefix = f"[{i + 1}/{len(vm_list)}]"
         machineId = vm["machineId"]
         machineName = vm["name"]
         machineRG = vm["resourceGroup"]
