@@ -2198,3 +2198,53 @@ helps['containerapp debug'] = """
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
 """
+
+helps['containerapp env http-route-config'] = """
+    type: group
+    short-summary: Commands to manage environment level http routing.
+"""
+
+helps['containerapp env http-route-config list'] = """
+    type: command
+    short-summary: List the http route configs in the environment.
+    examples:
+    - name: List the http route configs in the environment.
+      text: |
+          az containerapp env http-route-config list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env http-route-config create'] = """
+    type: command
+    short-summary: Create a new http route config.
+    examples:
+    - name: Create a new route from a yaml file.
+      text: |
+          az containerapp env http-route-config create -g MyResourceGroup -n MyEnvironment -r configname --yaml config.yaml
+"""
+
+helps['containerapp env http-route-config update'] = """
+    type: command
+    short-summary: Update a http route config.
+    examples:
+    - name: Update a route in the environment from a yaml file.
+      text: |
+          az containerapp env http-route-config update -g MyResourceGroup -n MyEnvironment -r configname --yaml config.yaml
+"""
+
+helps['containerapp env http-route-config show'] = """
+    type: command
+    short-summary: Show a http route config.
+    examples:
+    - name: Show a route in the environment.
+      text: |
+          az containerapp env http-route-config show -g MyResourceGroup -n MyEnvironment -r configname
+"""
+
+helps['containerapp env http-route-config delete'] = """
+    type: command
+    short-summary: Delete a http route config.
+    examples:
+    - name: Delete a route from the environment.
+      text: |
+          az containerapp env http-route-config delete -g MyResourceGroup -n MyEnvironment -r configname
+"""
