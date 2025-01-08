@@ -12,17 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask namespace update",
-    is_preview=True,
+    "durabletask scheduler update",
 )
 class Update(AAZCommand):
-    """Update a Namespace
+    """Update a Scheduler
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/namespaces/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -45,18 +44,17 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.namespace_name = AAZStrArg(
-            options=["-n", "--name", "--namespace-name"],
-            help="The name of the service",
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+        _args_schema.scheduler_name = AAZStrArg(
+            options=["-n", "--name", "--scheduler-name"],
+            help="The name of the Scheduler",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group",
-            required=True,
         )
 
         # define Arg Group "Properties"
@@ -65,8 +63,7 @@ class Update(AAZCommand):
         _args_schema.ip_allowlist = AAZListArg(
             options=["--ip-allowlist"],
             arg_group="Properties",
-            help="IP allow list for durable task service. Values can be Pv4, IPv6 or CIDR",
-            nullable=True,
+            help="IP allow list for durable task scheduler. Values can be IPv4, IPv6 or CIDR",
         )
 
         ip_allowlist = cls._args_schema.ip_allowlist
@@ -88,16 +85,31 @@ class Update(AAZCommand):
         tags.Element = AAZStrArg(
             nullable=True,
         )
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku_capacity = AAZIntArg(
+            options=["--sku-capacity"],
+            arg_group="Sku",
+            help="The SKU capacity. This allows scale out/in for the resource and impacts zone redundancy",
+            nullable=True,
+        )
+        _args_schema.sku_name = AAZStrArg(
+            options=["--sku-name"],
+            arg_group="Sku",
+            help="The name of the SKU",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NamespacesGet(ctx=self.ctx)()
+        self.SchedulersGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.NamespacesCreateOrUpdate(ctx=self.ctx)()
+        yield self.SchedulersCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -120,7 +132,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NamespacesGet(AAZHttpOperation):
+    class SchedulersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -134,7 +146,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces/{namespaceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}",
                 **self.url_parameters
             )
 
@@ -150,11 +162,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "namespaceName", self.ctx.args.namespace_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "schedulerName", self.ctx.args.scheduler_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -168,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -199,11 +211,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_namespace_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_scheduler_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class NamespacesCreateOrUpdate(AAZHttpOperation):
+    class SchedulersCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -233,7 +245,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces/{namespaceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}",
                 **self.url_parameters
             )
 
@@ -249,11 +261,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "namespaceName", self.ctx.args.namespace_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "schedulerName", self.ctx.args.scheduler_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -267,7 +279,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -310,7 +322,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_namespace_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_scheduler_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -330,11 +342,17 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist")
+                properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             ip_allowlist = _builder.get(".properties.ipAllowlist")
             if ip_allowlist is not None:
                 ip_allowlist.set_elements(AAZStrType, ".")
+
+            sku = _builder.get(".properties.sku")
+            if sku is not None:
+                sku.set_prop("capacity", AAZIntType, ".sku_capacity")
+                sku.set_prop("name", AAZStrType, ".sku_name", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -354,62 +372,72 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_namespace_read = None
+    _schema_scheduler_read = None
 
     @classmethod
-    def _build_schema_namespace_read(cls, _schema):
-        if cls._schema_namespace_read is not None:
-            _schema.id = cls._schema_namespace_read.id
-            _schema.location = cls._schema_namespace_read.location
-            _schema.name = cls._schema_namespace_read.name
-            _schema.properties = cls._schema_namespace_read.properties
-            _schema.system_data = cls._schema_namespace_read.system_data
-            _schema.tags = cls._schema_namespace_read.tags
-            _schema.type = cls._schema_namespace_read.type
+    def _build_schema_scheduler_read(cls, _schema):
+        if cls._schema_scheduler_read is not None:
+            _schema.id = cls._schema_scheduler_read.id
+            _schema.location = cls._schema_scheduler_read.location
+            _schema.name = cls._schema_scheduler_read.name
+            _schema.properties = cls._schema_scheduler_read.properties
+            _schema.system_data = cls._schema_scheduler_read.system_data
+            _schema.tags = cls._schema_scheduler_read.tags
+            _schema.type = cls._schema_scheduler_read.type
             return
 
-        cls._schema_namespace_read = _schema_namespace_read = AAZObjectType()
+        cls._schema_scheduler_read = _schema_scheduler_read = AAZObjectType()
 
-        namespace_read = _schema_namespace_read
-        namespace_read.id = AAZStrType(
+        scheduler_read = _schema_scheduler_read
+        scheduler_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        namespace_read.location = AAZStrType(
+        scheduler_read.location = AAZStrType(
             flags={"required": True},
         )
-        namespace_read.name = AAZStrType(
+        scheduler_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        namespace_read.properties = AAZObjectType()
-        namespace_read.system_data = AAZObjectType(
+        scheduler_read.properties = AAZObjectType()
+        scheduler_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        namespace_read.tags = AAZDictType()
-        namespace_read.type = AAZStrType(
+        scheduler_read.tags = AAZDictType()
+        scheduler_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_namespace_read.properties
-        properties.dashboard_url = AAZStrType(
-            serialized_name="dashboardUrl",
+        properties = _schema_scheduler_read.properties
+        properties.endpoint = AAZStrType(
             flags={"read_only": True},
         )
         properties.ip_allowlist = AAZListType(
             serialized_name="ipAllowlist",
+            flags={"required": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.url = AAZStrType(
+        properties.sku = AAZObjectType(
+            flags={"required": True},
+        )
+
+        ip_allowlist = _schema_scheduler_read.properties.ip_allowlist
+        ip_allowlist.Element = AAZStrType()
+
+        sku = _schema_scheduler_read.properties.sku
+        sku.capacity = AAZIntType()
+        sku.name = AAZStrType(
+            flags={"required": True},
+        )
+        sku.redundancy_state = AAZStrType(
+            serialized_name="redundancyState",
             flags={"read_only": True},
         )
 
-        ip_allowlist = _schema_namespace_read.properties.ip_allowlist
-        ip_allowlist.Element = AAZStrType()
-
-        system_data = _schema_namespace_read.system_data
+        system_data = _schema_scheduler_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -429,16 +457,16 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_namespace_read.tags
+        tags = _schema_scheduler_read.tags
         tags.Element = AAZStrType()
 
-        _schema.id = cls._schema_namespace_read.id
-        _schema.location = cls._schema_namespace_read.location
-        _schema.name = cls._schema_namespace_read.name
-        _schema.properties = cls._schema_namespace_read.properties
-        _schema.system_data = cls._schema_namespace_read.system_data
-        _schema.tags = cls._schema_namespace_read.tags
-        _schema.type = cls._schema_namespace_read.type
+        _schema.id = cls._schema_scheduler_read.id
+        _schema.location = cls._schema_scheduler_read.location
+        _schema.name = cls._schema_scheduler_read.name
+        _schema.properties = cls._schema_scheduler_read.properties
+        _schema.system_data = cls._schema_scheduler_read.system_data
+        _schema.tags = cls._schema_scheduler_read.tags
+        _schema.type = cls._schema_scheduler_read.type
 
 
 __all__ = ["Update"]
