@@ -616,7 +616,6 @@ class MaintenanceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
-    @live_only() 
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)
