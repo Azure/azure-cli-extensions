@@ -29,7 +29,6 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            is_registry_msi_system, validate_container_app_name, AppType,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
-                                                           get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
                                                            clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id,
                                                            create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env,
@@ -43,7 +42,7 @@ from azure.cli.command_modules.containerapp._models import (
     ManagedServiceIdentity as ManagedServiceIdentityModel,
 )
 
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
@@ -52,7 +51,7 @@ from knack.util import CLIError
 from msrest.exceptions import DeserializationError
 
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
-from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception, get_linker_client
 from ._models import (
     RegistryCredentials as RegistryCredentialsModel,
     ContainerResources as ContainerResourcesModel,
@@ -70,7 +69,7 @@ from ._decorator_utils import (create_deserializer,
                                infer_runtime_option
                                )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
-    env_has_managed_identity, create_acrpull_role_assignment_if_needed
+    env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector
 from ._validators import validate_create, validate_runtime
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
@@ -1592,25 +1591,26 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def post_process(self, r):
         # Delete managed bindings
-        linker_client = None
-        if self.get_argument_unbind_service_bindings():
-            linker_client = get_linker_client(self.cmd)
-            for item in self.get_argument_unbind_service_bindings():
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
+        if is_cloud_supported_by_service_connector(self.cmd.cli_ctx):
+            linker_client = None
+            if self.get_argument_unbind_service_bindings():
+                linker_client = get_linker_client(self.cmd)
+                for item in self.get_argument_unbind_service_bindings():
+                    while r["properties"]["provisioningState"].lower() == "inprogress":
+                        r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                        time.sleep(1)
+                    linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
 
-        # Update managed bindings
-        if self.get_argument_service_connectors_def_list() is not None:
-            linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
-            for item in self.get_argument_service_connectors_def_list():
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
-                                                            parameters=item["parameters"],
-                                                            linker_name=item["linker_name"]).result()
+            # Update managed bindings
+            if self.get_argument_service_connectors_def_list() is not None:
+                linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
+                for item in self.get_argument_service_connectors_def_list():
+                    while r["properties"]["provisioningState"].lower() == "inprogress":
+                        r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                        time.sleep(1)
+                    linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                                parameters=item["parameters"],
+                                                                linker_name=item["linker_name"]).result()
         return r
 
     def set_up_service_bindings(self):
@@ -1644,11 +1644,12 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             for update_item in service_bindings_def_list:
                 if service_bindings_used_map[update_item["name"]] is False:
                     # Check if it doesn't exist in existing service linkers
-                    managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
-                    if managed_bindings:
-                        managed_bindings_list = [item.name for item in managed_bindings]
-                        if update_item["name"] in managed_bindings_list:
-                            raise ValidationError("Binding names across managed and dev services should be unique.")
+                    if is_cloud_supported_by_service_connector(self.cmd.cli_ctx):
+                        managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
+                        if managed_bindings:
+                            managed_bindings_list = [item.name for item in managed_bindings]
+                            if update_item["name"] in managed_bindings_list:
+                                raise ValidationError("Binding names across managed and dev services should be unique.")
 
                     self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
 

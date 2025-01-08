@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 * 'az containerapp connected-env certificate upload/remove': Support `--no-wait`.
 * 'az containerapp connected-env dapr-component set/remove': Support `--no-wait`.
