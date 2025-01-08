@@ -184,7 +184,7 @@ jobs:
         for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
           detected=$(azdev scan -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
           if [ $detected == 'True' ]; then
-            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m" "$FILE"
+            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m\n" "$FILE"
             secret_files+=$FILE
           fi
         done
@@ -215,7 +215,7 @@ jobs:
         for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
           detected=$(azdev scan --confidence-level MEDIUM -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
           if [ $detected == 'True' ]; then
-            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m" "$FILE"
+            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan --confidence-level MEDIUM'/'azdev mask --confidence-level MEDIUM' locally to fix.\033[0m\n" "$FILE"
             secret_files+=$FILE
           fi
         done
