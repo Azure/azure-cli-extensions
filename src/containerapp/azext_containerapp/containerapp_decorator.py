@@ -42,7 +42,7 @@ from azure.cli.command_modules.containerapp._models import (
     ManagedServiceIdentity as ManagedServiceIdentityModel,
 )
 
-from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
@@ -1629,53 +1629,55 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         return r
 
     def set_up_service_bindings(self):
-        if self.get_argument_service_bindings() is not None:
-            linker_client = get_linker_client(self.cmd)
+        if self.get_argument_service_bindings() is None:
+            return
 
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
-                                                                                            self.get_argument_service_bindings(),
-                                                                                            self.get_argument_resource_group_name(),
-                                                                                            self.get_argument_name(),
-                                                                                            safe_get(self.containerapp_def, "properties", "environmentId"),
-                                                                                            self.get_argument_customized_keys())
-            self.set_argument_service_connectors_def_list(service_connectors_def_list)
-            service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
+        linker_client = get_linker_client(self.cmd)
 
-            safe_set(self.new_containerapp, "properties", "template", "serviceBinds", value=self.containerapp_def["properties"]["template"]["serviceBinds"])
+        service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
+                                                                                        self.get_argument_service_bindings(),
+                                                                                        self.get_argument_resource_group_name(),
+                                                                                        self.get_argument_name(),
+                                                                                        safe_get(self.containerapp_def, "properties", "environmentId"),
+                                                                                        self.get_argument_customized_keys())
+        self.set_argument_service_connectors_def_list(service_connectors_def_list)
+        service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
 
-            if self.new_containerapp["properties"]["template"]["serviceBinds"] is None:
-                self.new_containerapp["properties"]["template"]["serviceBinds"] = []
+        safe_set(self.new_containerapp, "properties", "template", "serviceBinds", value=self.containerapp_def["properties"]["template"]["serviceBinds"])
 
-            for item in self.new_containerapp["properties"]["template"]["serviceBinds"]:
-                for update_item in service_bindings_def_list:
-                    if update_item["name"] in item.values():
-                        item["serviceId"] = update_item["serviceId"]
-                        if update_item.get("clientType"):
-                            item["clientType"] = update_item.get("clientType")
-                        if update_item.get("customizedKeys"):
-                            item["customizedKeys"] = update_item.get("customizedKeys")
-                        service_bindings_used_map[update_item["name"]] = True
+        if self.new_containerapp["properties"]["template"]["serviceBinds"] is None:
+            self.new_containerapp["properties"]["template"]["serviceBinds"] = []
 
+        for item in self.new_containerapp["properties"]["template"]["serviceBinds"]:
             for update_item in service_bindings_def_list:
-                if service_bindings_used_map[update_item["name"]] is False:
-                    # Check if it doesn't exist in existing service linkers
-                    if is_cloud_supported_by_service_connector(self.cmd.cli_ctx):
-                        managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
-                        if managed_bindings:
-                            managed_bindings_list = [item.name for item in managed_bindings]
-                            if update_item["name"] in managed_bindings_list:
-                                raise ValidationError("Binding names across managed and dev services should be unique.")
+                if update_item["name"] in item.values():
+                    item["serviceId"] = update_item["serviceId"]
+                    if update_item.get("clientType"):
+                        item["clientType"] = update_item.get("clientType")
+                    if update_item.get("customizedKeys"):
+                        item["customizedKeys"] = update_item.get("customizedKeys")
+                    service_bindings_used_map[update_item["name"]] = True
 
-                    self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
-
-            if service_connectors_def_list is not None:
-                for item in service_connectors_def_list:
-                    # Check if it doesn't exist in existing service bindings
-                    service_bindings_list = []
-                    for binds in self.new_containerapp["properties"]["template"]["serviceBinds"]:
-                        service_bindings_list.append(binds["name"])
-                        if item["linker_name"] in service_bindings_list:
+        for update_item in service_bindings_def_list:
+            if service_bindings_used_map[update_item["name"]] is False:
+                # Check if it doesn't exist in existing service linkers
+                if is_cloud_supported_by_service_connector(self.cmd.cli_ctx):
+                    managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
+                    if managed_bindings:
+                        managed_bindings_list = [item.name for item in managed_bindings]
+                        if update_item["name"] in managed_bindings_list:
                             raise ValidationError("Binding names across managed and dev services should be unique.")
+
+                self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
+
+        if service_connectors_def_list is not None:
+            for item in service_connectors_def_list:
+                # Check if it doesn't exist in existing service bindings
+                service_bindings_list = []
+                for binds in self.new_containerapp["properties"]["template"]["serviceBinds"]:
+                    service_bindings_list.append(binds["name"])
+                    if item["linker_name"] in service_bindings_list:
+                        raise ValidationError("Binding names across managed and dev services should be unique.")
 
     def set_up_unbind_service_bindings(self):
         if self.get_argument_unbind_service_bindings():
