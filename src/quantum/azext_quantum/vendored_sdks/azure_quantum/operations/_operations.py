@@ -103,7 +103,7 @@ def build_jobs_list_request(
     # print()
     httpRequest = HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
     print()
-    print("httpRequest:  (From vendored_sdks\azure_quantum\operations\_operations.py)")
+    print("httpRequest:     (From vendored_sdks/azure_quantum/operations/_operations.py, line 104)")
     print(httpRequest)
     print()
     return httpRequest
