@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask namespace create",
-    is_preview=True,
+    "durabletask scheduler create",
 )
 class Create(AAZCommand):
-    """Create a Namespace
+    """Create a Scheduler
 
-    :example: Create a namespace in northcentralus
-        az durabletask namespace create -g resource-group-name -n namespace-name --location northcentralus
+    :example: Create a scheduler in northcentralus
+        az durable-task scheduler create --resource-group testrg --scheduler-name testscheduler --location northcentralus --ip-allowlist "[0.0.0.0/0]" --sku-capacity "1", --sku-name "Dedicated" --tags "{}"
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/namespaces/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -46,17 +45,16 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.namespace_name = AAZStrArg(
-            options=["-n", "--name", "--namespace-name"],
-            help="The name of the service",
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+        _args_schema.scheduler_name = AAZStrArg(
+            options=["-n", "--name", "--scheduler-name"],
+            help="The name of the Scheduler",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group",
-            required=True,
         )
 
         # define Arg Group "Properties"
@@ -65,7 +63,7 @@ class Create(AAZCommand):
         _args_schema.ip_allowlist = AAZListArg(
             options=["--ip-allowlist"],
             arg_group="Properties",
-            help="IP allow list for durable task service. Values can be Pv4, IPv6 or CIDR",
+            help="IP allow list for durable task scheduler. Values can be IPv4, IPv6 or CIDR",
         )
 
         ip_allowlist = cls._args_schema.ip_allowlist
@@ -90,11 +88,25 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku_capacity = AAZIntArg(
+            options=["--sku-capacity"],
+            arg_group="Sku",
+            help="The SKU capacity. This allows scale out/in for the resource and impacts zone redundancy",
+        )
+        _args_schema.sku_name = AAZStrArg(
+            options=["--sku-name"],
+            arg_group="Sku",
+            help="The name of the SKU",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NamespacesCreateOrUpdate(ctx=self.ctx)()
+        yield self.SchedulersCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -109,7 +121,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NamespacesCreateOrUpdate(AAZHttpOperation):
+    class SchedulersCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -139,7 +151,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces/{namespaceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}",
                 **self.url_parameters
             )
 
@@ -155,11 +167,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "namespaceName", self.ctx.args.namespace_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "schedulerName", self.ctx.args.scheduler_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -173,7 +185,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -204,11 +216,17 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist")
+                properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             ip_allowlist = _builder.get(".properties.ipAllowlist")
             if ip_allowlist is not None:
                 ip_allowlist.set_elements(AAZStrType, ".")
+
+            sku = _builder.get(".properties.sku")
+            if sku is not None:
+                sku.set_prop("capacity", AAZIntType, ".sku_capacity")
+                sku.set_prop("name", AAZStrType, ".sku_name", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -254,23 +272,33 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.dashboard_url = AAZStrType(
-                serialized_name="dashboardUrl",
+            properties.endpoint = AAZStrType(
                 flags={"read_only": True},
             )
             properties.ip_allowlist = AAZListType(
                 serialized_name="ipAllowlist",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.url = AAZStrType(
-                flags={"read_only": True},
+            properties.sku = AAZObjectType(
+                flags={"required": True},
             )
 
             ip_allowlist = cls._schema_on_200_201.properties.ip_allowlist
             ip_allowlist.Element = AAZStrType()
+
+            sku = cls._schema_on_200_201.properties.sku
+            sku.capacity = AAZIntType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.redundancy_state = AAZStrType(
+                serialized_name="redundancyState",
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

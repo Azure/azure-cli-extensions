@@ -12,21 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask namespace delete",
-    is_preview=True,
+    "durabletask scheduler delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Namespace
+    """Delete a Scheduler
 
-    :example: Delete a namespace
-        az durabletask namespace delete -g resource-group-name -n namespace-name
+    :example: Delete a scheduler
+        az durable-task scheduler delete --resource-group testrg --scheduler-name testscheduler
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/namespaces/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -47,24 +46,23 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.namespace_name = AAZStrArg(
-            options=["-n", "--name", "--namespace-name"],
-            help="The name of the service",
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+        _args_schema.scheduler_name = AAZStrArg(
+            options=["-n", "--name", "--scheduler-name"],
+            help="The name of the Scheduler",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group",
-            required=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NamespacesDelete(ctx=self.ctx)()
+        yield self.SchedulersDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +73,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class NamespacesDelete(AAZHttpOperation):
+    class SchedulersDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +112,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces/{namespaceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}",
                 **self.url_parameters
             )
 
@@ -130,11 +128,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "namespaceName", self.ctx.args.namespace_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "schedulerName", self.ctx.args.scheduler_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -148,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
