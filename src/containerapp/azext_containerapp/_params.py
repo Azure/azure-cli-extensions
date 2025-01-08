@@ -83,6 +83,12 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    # HttpRouteConfig
+    with self.argument_context('containerapp env http-route-config') as c:
+        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
+        c.argument('yaml', help="The path to the YAML input file.")
+        c.argument('name', id_part=None)
+
     # Telemetry
     with self.argument_context('containerapp env telemetry') as c:
         c.argument('name', id_part=None)
