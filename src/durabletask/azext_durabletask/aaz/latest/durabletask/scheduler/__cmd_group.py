@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "durabletask namespace",
-    is_preview=True,
+    "durabletask scheduler",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage Durabletask namespaces
+    """Commands to manage Durabletask schedulers
     """
     pass
 

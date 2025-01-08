@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask taskhub show",
+    "durabletask scheduler show",
 )
 class Show(AAZCommand):
-    """Get a Task Hub
+    """Get a Scheduler
 
-    :example: Show information on a particular taskhub
-        az durabletask taskhub show --resource-group testrg --scheduler-name testscheduler --task-hub-name testtuskhub
+    :example: Show information on a particular scheduler
+        az durable-task scheduler show --resource-group testrg --scheduler-name testscheduler
     """
 
     _aaz_info = {
         "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -48,19 +48,10 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["--scheduler-name"],
+            options=["-n", "--name", "--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,64}$",
-            ),
-        )
-        _args_schema.task_hub_name = AAZStrArg(
-            options=["-n", "--name", "--task-hub-name"],
-            help="The name of the TaskHub",
-            required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
@@ -69,7 +60,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TaskHubsGet(ctx=self.ctx)()
+        self.SchedulersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,7 +75,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TaskHubsGet(AAZHttpOperation):
+    class SchedulersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,7 +89,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/taskHubs/{taskHubName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}",
                 **self.url_parameters
             )
 
@@ -123,10 +114,6 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.task_hub_name,
                     required=True,
                 ),
             }
@@ -172,6 +159,9 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -180,17 +170,37 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.dashboard_url = AAZStrType(
-                serialized_name="dashboardUrl",
+            properties.endpoint = AAZStrType(
                 flags={"read_only": True},
+            )
+            properties.ip_allowlist = AAZListType(
+                serialized_name="ipAllowlist",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+
+            ip_allowlist = cls._schema_on_200.properties.ip_allowlist
+            ip_allowlist.Element = AAZStrType()
+
+            sku = cls._schema_on_200.properties.sku
+            sku.capacity = AAZIntType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.redundancy_state = AAZStrType(
+                serialized_name="redundancyState",
                 flags={"read_only": True},
             )
 
@@ -213,6 +223,9 @@ class Show(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
