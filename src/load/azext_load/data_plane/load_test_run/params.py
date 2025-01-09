@@ -20,6 +20,7 @@ def load_arguments(self, _):
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
+        c.argument("debug_mode", argtypes.test_run_debug_mode)
 
     with self.argument_context("load test-run update") as c:
         c.argument("test_id", argtypes.test_id)
@@ -31,6 +32,7 @@ def load_arguments(self, _):
         c.argument("test_run_input", argtypes.test_run_input)
         c.argument("test_run_log", argtypes.test_run_log)
         c.argument("test_run_results", argtypes.test_run_results)
+        c.argument("test_run_report", argtypes.test_run_report)
         c.argument("force", argtypes.force)
 
     with self.argument_context("load test-run list") as c:

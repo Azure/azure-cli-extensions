@@ -2,6 +2,19 @@
 
 Release History
 ===============
+1.4.0
+++++++
+* Add support for multi-region load test configuration. Multi-region load test configuration can be set using `--regionwise-engines` argument in 'az load test create' and 'az load test update' commands. Multi-region load test configuration set in YAML config file under key `regionalLoadTestConfig` will also be honoured.
+* Bug fix for `engineInstances` being reset to 1 and not getting backfilled using test's existing configuration when engine instances are not explicitly specified either in YAML config file or CLI argument.
+* Add support for advanced URL test with multiple HTTP request using JSON file. Add `--test-type` argument to 'az load test create' and honor `testType` key in YAML config file.
+* Add CLI parameter `--report` to 'az load test-run download-files' to download the dashboard reports.
+* Enable debug level logging using `--debug-mode` argument in 'az load test-run create' command .
+* Return the SAS URL to copy artifacts to storage accounts using command 'az load test-run get-artifacts-url'.
+* Add config for high-scale load tests and extend 'az load test-run download-files' to support download of logs and results from artifacts container for such tests.
+* Add command 'az load test convert-to-jmx' to convert URL type tests to JMX tests.
+* Add commands 'az load test set-baseline' to set the baseline for a test and 'az load test compare-to-baseline' to compare recent test runs to the baseline test run.
+
+
 1.3.1
 ++++++
 * Bug fix for `splitAllCSVs` not being honoured from config file due to CLI argument being set as false by default leading to configuration not being selected from the config file.

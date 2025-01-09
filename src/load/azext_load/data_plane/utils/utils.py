@@ -8,6 +8,7 @@ from enum import EnumMeta
 
 import requests
 import yaml
+from azext_load.data_plane.utils.constants import LoadTestConfigKeys, LoadTestTrendsKeys
 from azext_load.data_plane.utils import validators, utils_yaml_config
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 from azure.cli.core.azclierror import (
@@ -17,9 +18,10 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
 )
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from azure.cli.core.util import run_az_cmd
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
 
 logger = get_logger(__name__)
 
@@ -140,6 +142,14 @@ def get_enum_values(enum):
     return [item.value for item in enum]
 
 
+def get_file_info_and_download(file_info, path):
+    url = file_info.get("url")
+    file_name = file_info.get("fileName")
+    file_path = os.path.join(path, file_name)
+    download_file(url, file_path)
+    return file_path
+
+
 def download_file(url, file_path):
     logger.debug("Downloading file started")
     response = None
@@ -168,6 +178,14 @@ def download_file(url, file_path):
                 if chunk:  # ignore keep-alive new chunks
                     f.write(chunk)
     logger.debug("Downloading file completed")
+
+
+def download_from_storage_container(sas_url, path):
+    logger.debug("Downloading files from storage container")
+    cmd = ["az", "storage", "copy", "--source", sas_url, "--destination", path, "--recursive"]
+    logger.debug("Executing command: %s", cmd)
+    result = run_az_cmd(cmd).result
+    logger.debug("Execution result: %s", result)
 
 
 def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
@@ -288,43 +306,36 @@ def load_yaml(file_path):
         ) from e
 
 
-def convert_yaml_to_test(data):
+def convert_yaml_to_test(cmd, data):
     new_body = {}
-    if "displayName" in data:
-        new_body["displayName"] = data["displayName"]
-    if "description" in data:
-        new_body["description"] = data["description"]
+    if LoadTestConfigKeys.DISPLAY_NAME in data:
+        new_body["displayName"] = data[LoadTestConfigKeys.DISPLAY_NAME]
+    if LoadTestConfigKeys.DESCRIPTION in data:
+        new_body["description"] = data[LoadTestConfigKeys.DESCRIPTION]
+    if LoadTestConfigKeys.TEST_TYPE in data:
+        new_body["kind"] = data[LoadTestConfigKeys.TEST_TYPE]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-    if "keyVaultReferenceIdentity" in data:
-        new_body["keyvaultReferenceIdentityId"] = data["keyVaultReferenceIdentity"]
+    if LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY in data:
+        new_body["keyvaultReferenceIdentityId"] = data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
-    if "subnetId" in data:
-        new_body["subnetId"] = data["subnetId"]
+    if LoadTestConfigKeys.SUBNET_ID in data:
+        new_body["subnetId"] = data[LoadTestConfigKeys.SUBNET_ID]
 
-    new_body["loadTestConfiguration"] = {}
-    new_body["loadTestConfiguration"]["engineInstances"] = data.get(
-        "engineInstances", 1
-    )
-    if data.get("certificates"):
-        new_body["certificate"] = parse_cert(data.get("certificates"))
-    if data.get("secrets"):
-        new_body["secrets"] = parse_secrets(data.get("secrets"))
-    if data.get("env"):
-        new_body["environmentVariables"] = parse_env(data.get("env"))
-    if data.get("publicIPDisabled"):
-        new_body["publicIPDisabled"] = data.get("publicIPDisabled")
-    # quick test and split csv not supported currently in CLI
-    new_body["loadTestConfiguration"]["quickStartTest"] = False
-    if data.get("quickStartTest"):
-        logger.warning(
-            "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
-        )
-    if data.get("splitAllCSVs") is not None:
-        new_body["loadTestConfiguration"]["splitAllCSVs"] = utils_yaml_config.yaml_parse_splitcsv(data=data)
-    if data.get("failureCriteria"):
+    new_body["loadTestConfiguration"] = utils_yaml_config.yaml_parse_loadtest_configuration(cmd=cmd, data=data)
+
+    if data.get(LoadTestConfigKeys.CERTIFICATES):
+        new_body["certificate"] = parse_cert(data.get(LoadTestConfigKeys.CERTIFICATES))
+    if data.get(LoadTestConfigKeys.SECRETS):
+        new_body["secrets"] = parse_secrets(data.get(LoadTestConfigKeys.SECRETS))
+    if data.get(LoadTestConfigKeys.ENV):
+        new_body["environmentVariables"] = parse_env(data.get(LoadTestConfigKeys.ENV))
+    if data.get(LoadTestConfigKeys.PUBLIC_IP_DISABLED) is not None:
+        new_body["publicIPDisabled"] = data.get(LoadTestConfigKeys.PUBLIC_IP_DISABLED)
+
+    if data.get(LoadTestConfigKeys.FAILURE_CRITERIA):
         new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
-    if data.get("autoStop") is not None:
+    if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
@@ -338,6 +349,7 @@ def create_or_update_test_with_config(
     yaml_test_body,
     display_name=None,
     test_description=None,
+    test_type=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -347,6 +359,7 @@ def create_or_update_test_with_config(
     split_csv=None,
     disable_public_ip=None,
     autostop_criteria=None,
+    regionwise_engines=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -358,6 +371,7 @@ def create_or_update_test_with_config(
         or body.get("displayName")
         or test_id
     )
+    new_body["kind"] = test_type or yaml_test_body.get("kind") or body.get("kind")
 
     test_description = test_description or yaml_test_body.get("description")
     if test_description:
@@ -428,7 +442,25 @@ def create_or_update_test_with_config(
             "loadTestConfiguration"
         ]["engineInstances"]
     else:
-        new_body["loadTestConfiguration"]["engineInstances"] = 1
+        new_body["loadTestConfiguration"]["engineInstances"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("engineInstances", 1)
+    if regionwise_engines:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = regionwise_engines
+    elif (
+        yaml_test_body.get("loadTestConfiguration", {}).get("regionalLoadTestConfig")
+        is not None
+    ):
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = yaml_test_body[
+            "loadTestConfiguration"
+        ]["regionalLoadTestConfig"]
+    else:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("regionalLoadTestConfig")
+    validate_engine_data_with_regionwiseload_data(
+        new_body["loadTestConfiguration"]["engineInstances"],
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"])
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
@@ -493,6 +525,7 @@ def create_or_update_test_without_config(
     body,
     display_name=None,
     test_description=None,
+    test_type=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -502,12 +535,15 @@ def create_or_update_test_without_config(
     split_csv=None,
     disable_public_ip=None,
     autostop_criteria=None,
+    regionwise_engines=None,
+    baseline_test_run_id=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
     )
     new_body = {}
     new_body["displayName"] = display_name or body.get("displayName") or test_id
+    new_body["kind"] = test_type or body.get("kind")
     test_description = test_description or body.get("description")
     if test_description:
         new_body["description"] = test_description
@@ -558,6 +594,15 @@ def create_or_update_test_without_config(
         new_body["loadTestConfiguration"]["engineInstances"] = body.get(
             "loadTestConfiguration", {}
         ).get("engineInstances", 1)
+    if regionwise_engines:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = regionwise_engines
+    else:
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("regionalLoadTestConfig")
+    validate_engine_data_with_regionwiseload_data(
+        new_body["loadTestConfiguration"]["engineInstances"],
+        new_body["loadTestConfiguration"]["regionalLoadTestConfig"])
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
     if split_csv is not None:
@@ -593,6 +638,7 @@ def create_or_update_test_without_config(
             "Auto stop is disabled. Error rate and time window will be ignored. "
             "This can lead to incoming charges for an incorrectly configured test."
         )
+    new_body["baselineTestRunId"] = baseline_test_run_id if baseline_test_run_id else body.get("baselineTestRunId")
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
@@ -607,6 +653,7 @@ def create_or_update_test_run_body(
     env=None,
     secrets=None,
     certificate=None,
+    debug_mode=None,
 ):
     logger.info("Creating a request body for create test run")
     new_body = {"testId": test_id}
@@ -620,6 +667,8 @@ def create_or_update_test_run_body(
         new_body["secrets"] = secrets
     if certificate is not None:
         new_body["certificate"] = certificate
+    if debug_mode is not None:
+        new_body["debugLogsEnabled"] = debug_mode
     logger.debug("Request body for create test run: %s", new_body)
     return new_body
 
@@ -702,32 +751,51 @@ def upload_zipped_artifacts_helper(
                 )
 
 
+def _evaluate_file_type_for_test_script(test_type, test_plan):
+    if test_type == AllowedTestTypes.URL.value:
+        _, file_extension = os.path.splitext(test_plan)
+        if file_extension.casefold() == ".json":
+            return AllowedFileTypes.URL_TEST_CONFIG
+        if file_extension.casefold() == ".jmx":
+            return AllowedFileTypes.JMX_FILE
+    return AllowedFileTypes.TEST_SCRIPT
+
+
 def upload_test_plan_helper(
-    client, test_id, yaml_data, test_plan, load_test_config_file, existing_test_files, wait
+    client, test_id, yaml_data, test_plan, load_test_config_file, existing_test_files, wait, test_type
 ):
-    if test_plan is None and yaml_data is not None and yaml_data.get("testPlan"):
-        test_plan = yaml_data.get("testPlan")
+    if test_plan is None and yaml_data is not None and yaml_data.get(LoadTestConfigKeys.TEST_PLAN) is not None:
+        test_plan = yaml_data.get(LoadTestConfigKeys.TEST_PLAN)
     existing_test_plan_files = []
     for file in existing_test_files:
-        if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
+        if (
+            validators.AllowedFileTypes.JMX_FILE.value == file["fileType"] or
+            file["fileType"] == AllowedFileTypes.TEST_SCRIPT.value
+        ):
             existing_test_plan_files.append(file)
     if test_plan:
-        logger.info("Uploading test plan file %s", test_plan)
-        file_response = upload_generic_files_helper(
-            client=client,
-            test_id=test_id, load_test_config_file=load_test_config_file,
-            existing_files=existing_test_plan_files, file_to_upload=test_plan,
-            file_type=validators.AllowedFileTypes.JMX_FILE,
-            wait=wait
-        )
-        if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
-            raise FileOperationError(
-                f"Test plan file {test_plan} is not valid. Please check the file and try again."
+        logger.info("Uploading test plan file %s to test %s of type %s", test_plan, test_id, test_type)
+        file_type = _evaluate_file_type_for_test_script(test_type, test_plan)
+        try:
+            file_response = upload_generic_files_helper(
+                client=client,
+                test_id=test_id, load_test_config_file=load_test_config_file,
+                existing_files=existing_test_files, file_to_upload=test_plan,
+                file_type=file_type,
+                wait=wait
             )
+            if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
+                raise FileOperationError(
+                    f"Test plan file {test_plan} is not valid. Please check the file and try again."
+                )
+        except Exception as e:
+            raise FileOperationError(
+                f"Error occurred while uploading test plan file {test_plan} for test {test_id} of type {test_type}: {e}"
+            ) from e
 
 
 def upload_files_helper(
-    client, test_id, yaml_data, test_plan, load_test_config_file, wait
+    client, test_id, yaml_data, test_plan, load_test_config_file, wait, test_type
 ):
     files = client.list_test_files(test_id)
 
@@ -749,4 +817,64 @@ def upload_files_helper(
     upload_test_plan_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
-        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait,
+        test_type=test_type)
+
+
+def validate_engine_data_with_regionwiseload_data(engine_instances, regionwise_engines):
+    if regionwise_engines is None:
+        return
+    total_engines = 0
+    for region in regionwise_engines:
+        total_engines += region["engineInstances"]
+    if total_engines != engine_instances:
+        raise InvalidArgumentValueError(
+            f"Sum of engine instances in regionwise load test configuration ({total_engines}) "
+            f"should be equal to total engine instances ({engine_instances})"
+        )
+
+
+def _get_metrics_from_sampler(test_run, sampler_name, metric_name):
+    return test_run.get("testRunStatistics", {}).get(sampler_name, {}).get(metric_name)
+
+
+def generate_trends_row(test_run, response_time_aggregate=None):
+    trends = {
+        LoadTestTrendsKeys.NAME: test_run.get("displayName"),
+        LoadTestTrendsKeys.DESCRIPTION: test_run.get("description"),
+    }
+    _add_basic_trends(trends, test_run)
+    _add_response_time_trends(trends, test_run, response_time_aggregate)
+    _add_error_and_throughput_trends(trends, test_run)
+    return trends
+
+
+def _add_basic_trends(trends, test_run):
+    if test_run.get("status") is not None:
+        trends[LoadTestTrendsKeys.STATUS] = test_run.get("status")
+    if test_run.get("duration") is not None:
+        trends[LoadTestTrendsKeys.DURATION] = round(test_run.get("duration") / (60 * 1000), 2)
+    if test_run.get("virtualUsers") is not None:
+        trends[LoadTestTrendsKeys.VUSERS] = test_run.get("virtualUsers")
+    sample_count = _get_metrics_from_sampler(test_run, "Total", "sampleCount")
+    if sample_count is not None:
+        trends[LoadTestTrendsKeys.TOTAL_REQUESTS] = sample_count
+
+
+def _add_response_time_trends(trends, test_run, response_time_aggregate):
+    trends[LoadTestTrendsKeys.RESPONSE_TIME] = None
+    for key, metric in LoadTestTrendsKeys.RESPONSE_TIME_METRICS.items():
+        if response_time_aggregate == key:
+            value = _get_metrics_from_sampler(test_run, "Total", metric)
+            if value is not None:
+                trends[LoadTestTrendsKeys.RESPONSE_TIME] = value
+            break
+
+
+def _add_error_and_throughput_trends(trends, test_run):
+    error_pct = _get_metrics_from_sampler(test_run, "Total", "errorPct")
+    if error_pct is not None:
+        trends[LoadTestTrendsKeys.ERROR_PCT] = round(error_pct, 2)
+    throughput = _get_metrics_from_sampler(test_run, "Total", "throughput")
+    if throughput is not None:
+        trends[LoadTestTrendsKeys.THROUGHPUT] = round(throughput, 2)

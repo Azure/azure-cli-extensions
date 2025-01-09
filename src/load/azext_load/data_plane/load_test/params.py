@@ -15,6 +15,7 @@ def load_arguments(self, _):
     with self.argument_context("load test create") as c:
         c.argument("test_id", argtypes.test_id_no_completer)
         c.argument("test_plan", argtypes.test_plan)
+        c.argument("test_type", argtypes.test_type)
         c.argument("display_name", argtypes.test_display_name)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env, help="space-separated environment variables: key[=value] [key[=value] ...].")
@@ -32,6 +33,7 @@ def load_arguments(self, _):
         c.argument("autostop", argtypes.autostop)
         c.argument("autostop_error_rate", argtypes.autostop_error_rate)
         c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
+        c.argument("regionwise_engines", argtypes.regionwise_engines)
 
     with self.argument_context("load test update") as c:
         c.argument("load_test_config_file", argtypes.load_test_config_file)
@@ -52,6 +54,13 @@ def load_arguments(self, _):
         c.argument("autostop", argtypes.autostop)
         c.argument("autostop_error_rate", argtypes.autostop_error_rate)
         c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
+        c.argument("regionwise_engines", argtypes.regionwise_engines)
+
+    with self.argument_context("load test set-baseline") as c:
+        c.argument("test_run_id", argtypes.test_run_id)
+
+    with self.argument_context("load test compare-to-baseline") as c:
+        c.argument("response_time_aggregate", argtypes.response_time_aggregate)
 
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)

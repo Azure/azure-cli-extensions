@@ -26,6 +26,7 @@ def load_test_run_commands(self, _):
             validator=validators.validate_download,
         )
         g.custom_command("stop", "stop_test_run", confirmation=True)
+        g.custom_command("get-artifacts-url", "copy_test_run_artifacts_url")
 
     with self.command_group(
         "load test-run app-component",
