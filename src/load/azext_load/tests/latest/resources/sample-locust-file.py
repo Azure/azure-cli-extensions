@@ -1,4 +1,8 @@
-# END
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 from locust import HttpUser, constant_throughput, task
 
 base_url = "https://app-petclinic-yalrccgejv64o.azurewebsites.net/"
