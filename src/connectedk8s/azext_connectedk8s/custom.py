@@ -19,7 +19,6 @@ import time
 import urllib.request
 from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor
-from glob import glob
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
 
@@ -56,6 +55,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
 import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 from azext_connectedk8s._client_factory import (

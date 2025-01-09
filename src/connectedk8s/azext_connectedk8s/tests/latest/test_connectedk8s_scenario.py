@@ -722,8 +722,8 @@ only supported when auto-upgrade is set to false",
             {managed_cluster_name}-admin"
         )
         response = requests.post(
-            f'https://{CONFIG["location"]}.dp.kubernetesconfiguration.azure.com/azure-\
-            arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable'
+            f"https://{CONFIG['location']}.dp.kubernetesconfiguration.azure.com/azure-\
+            arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable"
         )
         jsonData = json.loads(response.text)
         repo_path = jsonData["repositoryPath"]
