@@ -3,6 +3,11 @@ This is an extension to Azure CLI to create and manage Playwright Testing resour
 
 ## How to use ##
 
+Install this extension using the below CLI command
+```
+az extension add --name playwright-cli-extension
+```
+
 ### Create Azure Playwright Testing resource ###
 
 ```
