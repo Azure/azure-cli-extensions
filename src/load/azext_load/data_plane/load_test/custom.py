@@ -9,16 +9,22 @@ import os
 
 from azext_load.data_plane.utils.utils import (
     convert_yaml_to_test,
+    create_autostop_criteria_from_args,
     create_or_update_test_with_config,
     create_or_update_test_without_config,
     download_file,
+    generate_trends_row,
     get_admin_data_plane_client,
+    get_testrun_data_plane_client,
     load_yaml,
     upload_file_to_test,
     upload_files_helper,
-    create_autostop_criteria_from_args,
 )
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azext_load.data_plane.utils.models import (
+    AllowedTestTypes,
+    AllowedTrendsResponseTimeAggregations,
+)
+from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 
@@ -31,6 +37,7 @@ def create_test(
     test_id,
     display_name=None,
     test_plan=None,
+    test_type=None,
     resource_group_name=None,
     load_test_config_file=None,
     test_description=None,
@@ -46,6 +53,7 @@ def create_test(
     autostop=None,
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
+    regionwise_engines=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
@@ -68,6 +76,7 @@ def create_test(
             body,
             display_name=display_name,
             test_description=test_description,
+            test_type=test_type,
             engine_instances=engine_instances,
             env=env,
             secrets=secrets,
@@ -77,15 +86,17 @@ def create_test(
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
+            regionwise_engines=regionwise_engines,
         )
     else:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(yaml)
+        yaml_test_body = convert_yaml_to_test(cmd, yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
             yaml_test_body,
             display_name=display_name,
+            test_type=test_type,
             test_description=test_description,
             engine_instances=engine_instances,
             env=env,
@@ -95,7 +106,8 @@ def create_test(
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
-            autostop_criteria=autostop_criteria
+            autostop_criteria=autostop_criteria,
+            regionwise_engines=regionwise_engines,
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -103,8 +115,9 @@ def create_test(
         "Created test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
+    evaluated_test_type = test_type or yaml_test_body.get("kind") if yaml_test_body else response.get("kind")
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
@@ -133,6 +146,7 @@ def update_test(
     autostop=None,
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
+    regionwise_engines=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Update test has started for test ID : %s", test_id)
@@ -149,7 +163,7 @@ def update_test(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(yaml)
+        yaml_test_body = convert_yaml_to_test(cmd, yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -164,7 +178,8 @@ def update_test(
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
-            autostop_criteria=autostop_criteria
+            autostop_criteria=autostop_criteria,
+            regionwise_engines=regionwise_engines,
         )
     else:
         body = create_or_update_test_without_config(
@@ -180,7 +195,8 @@ def update_test(
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
-            autostop_criteria=autostop_criteria
+            autostop_criteria=autostop_criteria,
+            regionwise_engines=regionwise_engines,
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -189,7 +205,7 @@ def update_test(
     )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(
-        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
@@ -260,6 +276,117 @@ def delete_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     client.delete_test(test_id)
     logger.info("Deleted test with test ID: %s", test_id)
+
+
+def convert_to_jmx(
+    cmd,
+    load_test_resource,
+    test_id,
+    resource_group_name=None,
+):
+    logger.info("Converting test with test ID: %s to JMX", test_id)
+    client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
+    existing_test = client.get_test(test_id)
+    if (
+        existing_test is not None
+        and existing_test.get("kind") != AllowedTestTypes.URL.value
+    ):
+        raise InvalidArgumentValueError(
+            f"Test with test ID: {test_id} is not of type URL. "
+            "Only URL type tests can be converted to JMX."
+        )
+    body = create_or_update_test_without_config(
+        test_id=test_id,
+        body=existing_test,
+        test_type=AllowedTestTypes.JMX.value,
+    )
+    response = client.create_or_update_test(test_id=test_id, body=body)
+    logger.debug("Converted test with test ID: %s to JMX", test_id)
+    return response.as_dict()
+
+
+def set_baseline(
+    cmd,
+    load_test_resource,
+    test_id,
+    test_run_id,
+    resource_group_name=None,
+):
+    logger.info("Setting baseline for test with test ID: %s", test_id)
+    test_client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
+    test_run_client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    existing_test = test_client.get_test(test_id)
+    existing_test_run = test_run_client.get_test_run(test_run_id)
+    if existing_test_run.get("testId") != test_id:
+        raise InvalidArgumentValueError(
+            f"Test run with ID: {test_run_id} is not associated with test ID: {test_id}"
+        )
+    if existing_test_run.get("status") not in ["CANCELLED", "DONE"]:
+        raise InvalidArgumentValueError(
+            f"Test run with ID: {test_run_id} does not have a valid "
+            f"test run status {existing_test_run.get('status')}. "
+            "Valid test run status are: CANCELLED, DONE"
+        )
+    if existing_test_run.get("testRunStatistics", {}).get("Total") is None:
+        raise InvalidArgumentValueError(
+            f"Sampler statistics are not yet available for test run ID {test_run_id}. "
+            "Please try again later."
+        )
+    body = create_or_update_test_without_config(
+        test_id=test_id,
+        body=existing_test,
+        baseline_test_run_id=test_run_id,
+    )
+    response = test_client.create_or_update_test(test_id=test_id, body=body)
+    logger.debug("Set test run %s as baseline for test: %s", test_run_id, test_id)
+    return response.as_dict()
+
+
+def compare_to_baseline(
+    cmd,
+    load_test_resource,
+    test_id,
+    resource_group_name=None,
+    response_time_aggregate=AllowedTrendsResponseTimeAggregations.MEAN.value,
+):
+    logger.info("Showing test trends for test with test ID: %s", test_id)
+    test_client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
+    test_run_client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    test = test_client.get_test(test_id)
+    if test.get("baselineTestRunId") is None:
+        raise InvalidArgumentValueError(
+            f"Test with ID: {test_id} does not have a baseline test run associated with it."
+        )
+    baseline_test_run_id = test.get("baselineTestRunId")
+    baseline_test_run = test_run_client.get_test_run(baseline_test_run_id)
+    all_test_runs = test_run_client.list_test_runs(
+        orderby="executedDateTime desc",
+        test_id=test_id,
+        status="CANCELLED,DONE",
+        maxpagesize=20,
+    )
+    all_test_runs = [run.as_dict() for run in all_test_runs]
+    logger.debug("Total number of test runs: %s", len(all_test_runs))
+    count = 0
+    recent_test_runs = []
+    for run in all_test_runs:
+        if (
+            run.get("testRunId") != baseline_test_run_id
+            and count < 10  # Show only 10 most recent test runs
+        ):
+            recent_test_runs.append(run)
+            count += 1
+
+    logger.debug("Number of recent test runs: %s", len(recent_test_runs))
+    rows = [
+        generate_trends_row(baseline_test_run, response_time_aggregate=response_time_aggregate)
+    ]
+    for run in recent_test_runs:
+        rows.append(
+            generate_trends_row(run, response_time_aggregate=response_time_aggregate)
+        )
+    logger.debug("Retrieved test trends: %s", rows)
+    return rows
 
 
 def add_test_app_component(
@@ -403,6 +530,10 @@ def upload_test_file(
     response = upload_file_to_test(
         client, test_id, path, file_type=file_type, wait=not no_wait
     )
+    if not no_wait and response is not None and response.get("validationStatus") == "VALIDATION_FAILURE":
+        raise FileOperationError(
+            f"File upload failed due to validation failure: {response.get('validationFailureDetails')}"
+        )
     logger.debug("Upload test file response: %s", response)
     logger.info("Upload test file completed")
     return response.as_dict()
