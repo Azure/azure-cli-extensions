@@ -49,7 +49,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["-n", "--name", "--scheduler-name"],
+            options=["-n", "--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             fmt=AAZStrArgFormat(
