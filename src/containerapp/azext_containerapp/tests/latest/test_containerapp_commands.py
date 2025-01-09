@@ -1292,17 +1292,33 @@ class ContainerappServiceBindingTests(ScenarioTest):
         mysqlserver = "mysqlflexsb"
         postgresqlserver = "postgresqlflexsb"
         postgresqldb = 'flexibleserverdb'
-
-        mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None"), expect_failure=False).output
-        postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -d {} -y'.format(resource_group, postgresqlserver, "None", postgresqldb), expect_failure=False).output
-        mysqlflex_dict = json.loads(mysqlflex_json)
+        mysqlflex_dict = {
+            "username": "username",
+            "password": "password",
+            "databaseName": "databaseName"
+        }
+        postgresqlflex_dict = {
+            "username": "username",
+            "password": "password"
+        }
+        # In this case, we need to create mysql and postgres.
+        # Their api-version is updated very frequently and we don't want this recording file fail due to the api-version update
+        try:
+            mysqlflex_json = self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None"), expect_failure=False).output
+            postgresqlflex_json = self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -d {} -y'.format(resource_group, postgresqlserver, "None", postgresqldb), expect_failure=False).output
+            mysqlflex_dict = json.loads(mysqlflex_json)
+            postgresqlflex_dict = json.loads(postgresqlflex_json)
+        except AssertionError as e:
+            if str(e).__contains__("Can't overwrite existing cassette"):
+                pass
+            else:
+                raise e
 
         mysqlusername = mysqlflex_dict['username']
         mysqlpassword = mysqlflex_dict['password']
 
         mysqldb = mysqlflex_dict['databaseName']
-        flex_binding="mysqlflex_binding"
-        postgresqlflex_dict = json.loads(postgresqlflex_json)
+        flex_binding ="mysqlflex_binding"
         postgresqlusername = postgresqlflex_dict['username']
         postgresqlpassword = postgresqlflex_dict['password']
         create_containerapp_env(self, env_name, resource_group, location=location)

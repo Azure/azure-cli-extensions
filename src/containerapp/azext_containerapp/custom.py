@@ -110,7 +110,8 @@ from ._clients import (
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient,
-    MaintenanceConfigPreviewClient
+    MaintenanceConfigPreviewClient,
+    HttpRouteConfigPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -1857,18 +1858,18 @@ def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_n
     return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
-def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name, no_wait=no_wait)
         logger.warning("Dapr componenet successfully deleted.")
         return r
     except Exception as e:
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_dapr_component = load_yaml_file(yaml)
@@ -1897,7 +1898,8 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
         r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
                                                              environment_name=environment_name,
                                                              dapr_component_envelope=dapr_component_envelope,
-                                                             name=dapr_component_name)
+                                                             name=dapr_component_name,
+                                                             no_wait=no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1933,7 +1935,7 @@ def connected_env_list_certificates(cmd, name, resource_group_name, location=Non
             handle_raw_exception(e)
 
 
-def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
@@ -1976,7 +1978,7 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
             handle_raw_exception(e)
 
     try:
-        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate, no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -2014,7 +2016,7 @@ def connected_env_list_storages(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
+def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     r = None
@@ -2037,16 +2039,16 @@ def connected_env_create_or_update_storage(cmd, storage_name, resource_group_nam
     storage_envelope["properties"]["azureFile"] = storage_def
 
     try:
-        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope)
+        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
 
-def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
+def connected_env_remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
+        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -3363,3 +3365,57 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
+
+
+def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_http_route_config, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    http_route_config_envelope = {"properties": yaml_http_route_config}
+
+    try:
+        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_http_route_config, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    http_route_config_envelope = {"properties": yaml_http_route_config}
+
+    try:
+        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_http_route_configs(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_http_route_config(cmd, resource_group_name, name, http_route_config_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_http_route_config(cmd, resource_group_name, name, http_route_config_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)

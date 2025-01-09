@@ -660,7 +660,3 @@ def create_dev_box_dependencies(self):
     add_dev_box_user_role_to_project(self)
     create_pool(self)
 
-
-def login_account(self):
-    if self.is_live:
-        self.cmd("az login -t 003b06c3-d471-4452-9686-9e7f3ca85f0a")

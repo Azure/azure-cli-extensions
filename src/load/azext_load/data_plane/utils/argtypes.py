@@ -92,7 +92,15 @@ test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Path to the JMeter script.",
+    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file.",
+)
+
+test_type = CLIArgumentType(
+    validator=validators.validate_test_type,
+    options_list=["--test-type"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTestTypes),
+    help="Type of the load test.",
 )
 
 load_test_config_file = CLIArgumentType(
@@ -176,6 +184,13 @@ certificate = CLIArgumentType(
     + quote_text.format("certificate"),
 )
 
+test_run_debug_mode = CLIArgumentType(
+    options_list=["--debug-mode"],
+    action="store_true",
+    default=False,
+    help="Enable debug level logging for the test run.",
+)
+
 dir_path = CLIArgumentType(
     validator=validators.validate_dir_path,
     options_list=["--path"],
@@ -225,6 +240,13 @@ test_run_results = CLIArgumentType(
     action="store_true",
     default=False,
     help="Download the results files zip.",
+)
+
+test_run_report = CLIArgumentType(
+    options_list=["--report"],
+    action="store_true",
+    default=False,
+    help="Download the dashboard report files zip.",
 )
 
 app_component_id = CLIArgumentType(
@@ -361,4 +383,18 @@ autostop_error_rate_time_window = CLIArgumentType(
     type=int,
     validator=validators.validate_autostop_error_rate_time_window,
     help="Time window during which the error percentage should be evaluated in seconds.",
+)
+
+regionwise_engines = CLIArgumentType(
+    options_list=["--regionwise-engines"],
+    validator=validators.validate_regionwise_engines,
+    nargs="+",
+    help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
+)
+
+response_time_aggregate = CLIArgumentType(
+    options_list=["--aggregation"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
+    help="Specify the aggregation method for response time.",
 )
