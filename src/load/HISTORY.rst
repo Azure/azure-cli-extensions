@@ -18,7 +18,6 @@ Release History
 * Add config for high-scale load tests and extend 'az load test-run download-files' to support download of logs and results from artifacts container for such tests.
 * Add command 'az load test convert-to-jmx' to convert URL type tests to JMX tests.
 * Add commands 'az load test set-baseline' to set the baseline for a test and 'az load test compare-to-baseline' to compare recent test runs to the baseline test run.
-* Add support for Locust based load tests.
 
 
 1.3.1
