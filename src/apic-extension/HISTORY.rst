@@ -3,6 +3,25 @@
 Release History
 ===============
 
+1.2.0b1
+++++++++++++++++++
+
+**New Features:**
+
+* Added url option for ``--api-location`` parameter in ``az apic api register`` command.
+* Added new command ``az apic integration create`` to manage integrations in Azure API Center.
+* Added new command ``az apic import aws`` to import an API from an Amazon API Gateway instance.
+
+**Updates:**
+
+* Added examples for using ``@filename`` syntax in several commands help documentations.
+
+**Fixes:**
+
+* Optimized error handling in ``az apic api register`` command.
+* Fixed wrong example for ``az apic update`` command.
+* Fixed expired link in ``az apic api definition import-specification`` command help documentation.
+
 1.1.0
 ++++++++++++++++++
 
