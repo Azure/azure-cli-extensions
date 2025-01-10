@@ -158,12 +158,37 @@ def update_release_body(release_id: int, commit_sha: str, old_body: str, sha: st
         return False
 
 
+def upload_wheel_file(wheel_url: str, upload_url: str) -> None:
+    """
+    Download and upload a wheel file to GitHub release.
+    Args:
+        wheel_url: URL to download the wheel file from
+        upload_url: GitHub API upload URL
+    Raises:
+        requests.RequestException: If download or upload fails
+    """
+    print(f"Downloading wheel from {wheel_url}")
+    wheel_response = requests.get(wheel_url)
+    wheel_response.raise_for_status()
+
+    upload_url = upload_url.replace("{?name,label}", "")
+    params = {"name": os.path.basename(wheel_url)}
+
+    print(f"Uploading wheel to {upload_url}")
+    upload_headers = headers.copy()
+    upload_headers["Content-Type"] = "application/octet-stream"
+    upload_response = requests.post(
+        upload_url,
+        headers=upload_headers,
+        params=params,
+        data=wheel_response.content
+    )
+    upload_response.raise_for_status()
+    print("Successfully uploaded wheel file")
+
+
 def update_release_asset(wheel_url: str, asset_id: int, release_id: int) -> bool:
     try:
-        print(f"Downloading wheel from {wheel_url}")
-        wheel_response = requests.get(wheel_url)
-        wheel_response.raise_for_status()
-
         if asset_id is not None:
             delete_url = f"{base_url}/releases/assets/{asset_id}"
             delete_response = requests.delete(delete_url, headers=headers)
@@ -174,21 +199,8 @@ def update_release_asset(wheel_url: str, asset_id: int, release_id: int) -> bool
         response = requests.get(release_url, headers=headers)
         response.raise_for_status()
         release_info = response.json()
-        upload_url = release_info["upload_url"].replace("{?name,label}", "")
 
-        upload_headers = headers.copy()
-        upload_headers["Content-Type"] = "application/octet-stream"
-        params = {"name": os.path.basename(wheel_url)}
-
-        print(f"Uploading new wheel to {upload_url}")
-        upload_response = requests.post(
-            upload_url,
-            headers=upload_headers,
-            params=params,
-            data=wheel_response.content
-        )
-        upload_response.raise_for_status()
-        print("Successfully updated wheel file")
+        upload_wheel_file(wheel_url, release_info["upload_url"])
         return True
 
     except requests.RequestException as e:
@@ -247,7 +259,6 @@ def check_tag_exists(tag_name: str) -> bool:
 def create_release(release_data: Dict[str, str], wheel_url: str = None) -> None:
     try:
         url = f"{base_url}/releases"
-        # Create release
         response = requests.post(
             url,
             json=release_data,
@@ -259,24 +270,7 @@ def create_release(release_data: Dict[str, str], wheel_url: str = None) -> None:
 
         # Upload wheel file if URL is provided
         if wheel_url:
-            print(f"Downloading wheel from {wheel_url}")
-            wheel_response = requests.get(wheel_url)
-            wheel_response.raise_for_status()
-
-            upload_url = release_info["upload_url"].replace("{?name,label}", "")
-            params = {"name": os.path.basename(wheel_url)}
-
-            print(f"Uploading wheel to {upload_url}")
-            upload_headers = headers.copy()
-            upload_headers["Content-Type"] = "application/octet-stream"
-            upload_response = requests.post(
-                upload_url,
-                headers=upload_headers,
-                params=params,
-                data=wheel_response.content
-            )
-            upload_response.raise_for_status()
-            print("Successfully uploaded wheel file")
+            upload_wheel_file(wheel_url, release_info["upload_url"])
 
     except requests.exceptions.RequestException as e:
         print(f"\nError creating release for {release_data['tag_name']}")
@@ -293,62 +287,57 @@ def generate_release_body(history_note: str, sha256_digest: str, filename: str) 
     return f"{history_note}\n\nSHA256 hashes of the release artifacts:\n```\n{sha256_digest} {filename}\n```\n"
 
 
-def get_history_note(wheel_url: str, version: str) -> str:
-    """Download wheel package and extract HISTORY.rst to find version notes"""
-    try:
-        # Download wheel file
-        response = requests.get(wheel_url)
-        response.raise_for_status()
+def get_history_note(version: str, extension_name: str, wheel_url: str = None) -> str:
+    """
+    Get history notes for a version, first trying from source code then from wheel package.
 
-        with tempfile.TemporaryFile() as temp_file:
-            temp_file.write(response.content)
-            temp_file.seek(0)
+    Args:
+        version: Version string to search for
+        extension_name: Name of the extension
+        wheel_url: Optional URL to download wheel package if source check fails
 
-            # Open wheel as zip
-            with zipfile.ZipFile(temp_file, 'r') as wheel:
-                # Find DESCRIPTION.rst file
-                history_files = [f for f in wheel.namelist() if f.endswith('DESCRIPTION.rst')]
-                if not history_files:
-                    return "No history notes found"
-
-                history_content = wheel.read(history_files[0]).decode('utf-8')
-
-                # Match any line starting with the version number
-                version_pattern = rf"^{re.escape(version)}.*?\n(?:[-=+~]+\n)?(.*?)(?=^[\d.]+[a-z0-9].*?(?:\n[-=+~]+)?|\Z)"
-                match = re.search(version_pattern, history_content, re.DOTALL | re.MULTILINE)
-
-                if match:
-                    return match.group(1).strip()
-
-                return "No history notes found for this version"
-
-    except Exception as e:
-        print(f"Error getting history notes: {e}")
-        return "No history notes found for this version"
-
-
-def get_history_note_from_source(version: str, extension_name: str) -> str:
-    """Get history notes from source code HISTORY.rst"""
+    Returns:
+        str: History notes for the version or default message if none found
+    """
+    version_pattern = rf"^{re.escape(version)}.*?\n(?:[-=+~]+\n)?(.*?)(?=^[\d.]+[a-z0-9].*?(?:\n[-=+~]+)?|\Z)"
+    # First try to get history from source code
     try:
         history_path = f"src/{extension_name}/HISTORY.rst"
-        if not os.path.exists(history_path):
-            return "No history notes found"
+        if os.path.exists(history_path):
+            with open(history_path, 'r', encoding='utf-8') as f:
+                history_content = f.read()
 
-        with open(history_path, 'r', encoding='utf-8') as f:
-            history_content = f.read()
-
-        # Match any line starting with the version number
-        version_pattern = rf"^{re.escape(version)}.*?\n(?:[-=+~]+\n)?(.*?)(?=^[\d.]+[a-z0-9].*?(?:\n[-=+~]+)?|\Z)"
-        match = re.search(version_pattern, history_content, re.DOTALL | re.MULTILINE)
-
-        if match:
-            return match.group(1).strip()
-
-        return "No history notes found in source code"
-
+            # Match any line starting with the version number
+            match = re.search(version_pattern, history_content, re.DOTALL | re.MULTILINE)
+            if match:
+                return match.group(1).strip()
     except Exception as e:
         print(f"Error reading history from source: {e}")
-        return "No history notes found for this version"
+
+    # If source check failed and wheel_url is provided, try wheel package
+    if wheel_url:
+        try:
+            response = requests.get(wheel_url)
+            response.raise_for_status()
+
+            with tempfile.TemporaryFile() as temp_file:
+                temp_file.write(response.content)
+                temp_file.seek(0)
+
+                with zipfile.ZipFile(temp_file, 'r') as wheel:
+                    history_files = [f for f in wheel.namelist() if f.endswith('DESCRIPTION.rst')]
+                    if history_files:
+                        history_content = wheel.read(history_files[0]).decode('utf-8')
+
+                        # Match any line starting with the version number
+                        match = re.search(version_pattern, history_content, re.DOTALL | re.MULTILINE)
+                        if match:
+                            return match.group(1).strip()
+        except Exception as e:
+            print(f"Error getting history notes from wheel: {e}")
+
+    # Return default message if no history found
+    return f"Release {extension_name} {version}"
 
 
 def main():
@@ -362,9 +351,9 @@ def main():
         # Parse filenames from added lines
         filenames = parse_filenames(added_lines)
         commit_sha = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"],
-            text=True
-        ).strip()
+                    ["git", "rev-parse", "HEAD"],
+                    text=True
+                ).strip()
         if not filenames:
             print("No filenames found in changes")
             shas = parse_sha256_digest(added_lines)
@@ -397,20 +386,13 @@ def main():
                     print(f"Tag {tag_name} already exists, skipping...")
                     continue
 
-                # Try to get history notes from source code first
-                print(f"Getting history notes from source code...")
                 extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
-                history_note = get_history_note_from_source(version, extension_name)
-
-                # If no notes found in source code, try wheel package
-                if "No history notes found" in history_note:
-                    print(f"No history notes found in source code, trying wheel package...")
-                    history_note = get_history_note(extension_info["downloadUrl"], version)
-
-                    # If still no notes found, use default release note
-                    if "No history notes found" in history_note:
-                        print(f"No history notes found in wheel package, using default release note...")
-                        history_note = f"Release {extension_name} {version}"
+                print(f"Getting history notes...")
+                history_note = get_history_note(
+                    version,
+                    extension_name,
+                    extension_info["downloadUrl"]
+                )
 
                 # Generate release body
                 release_body = generate_release_body(history_note, extension_info["sha256Digest"], filename)
