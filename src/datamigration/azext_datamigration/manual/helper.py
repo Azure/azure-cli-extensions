@@ -279,7 +279,7 @@ def check_and_download_console_app(exePath, baseFolder):
 
     # Downloading console app zip and extracting it
     if not testPath:
-        zipSource = "https://sqlassess.blob.core.windows.net/app/SqlAssessment.zip"
+        zipSource = "https://aka.ms/sqlassessmentpackage"
         zipDestination = os.path.join(baseFolder, "SqlAssessment.zip")
 
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
