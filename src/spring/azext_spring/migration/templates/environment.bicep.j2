@@ -1,0 +1,53 @@
+param containerAppEnvName string = {{containerAppEnvName}}
+param containerAppLogAnalyticsName string = {{containerAppLogAnalyticsName}}
+param location string = {{location}}
+param daprAIInstrumentationKey string? = {{daprAIInstrumentationKey}}
+param daprAIConnectionString string? = {{daprAIConnectionString}}
+
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: containerAppLogAnalyticsName
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+  }
+}
+
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
+  name: containerAppEnvName
+  location: location
+  properties: {
+    daprAIInstrumentationKey: daprAIInstrumentationKey
+    daprAIConnectionString: daprAIConnectionString
+    // vnetConfiguration: {}
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalytics.properties.customerId
+        sharedKey: logAnalytics.listKeys().primarySharedKey
+      }
+    }
+    zoneRedundant: '{{zoneRedundant}}'
+    // customDomainConfiguration: {}
+    workloadProfiles: [
+      {
+        name: '{{workloadProfileName}}'
+        workloadProfiles: '{{workloadProfiles}}'
+        minimumCount: '{{minimumCount}}'
+        maximumCount: '{{maximumCount}}'
+      }
+    ]
+    // kedaConfiguration: {}
+    // daprConfiguration: {}
+    infrastructureResourceGroup: '{{infrastructureResourceGroup}}'
+    peerAuthentication: {
+      mtls: {
+        enabled: '{{mtlsEnabled}}'
+      }
+    }
+    //peerTrafficConfiguration: {}
+  }
+}
+
+output containerAppEnvId string = containerAppEnv.id

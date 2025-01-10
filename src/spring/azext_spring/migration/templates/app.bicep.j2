@@ -1,0 +1,74 @@
+param containerAppName string = {{containerAppName}}
+param containerImage string = {{containerImage}}
+param targetPort int = {{targetPort}}
+
+param cpuCore string = {{cpuCore}}
+param memorySize string = {{memorySize}}
+
+@description('Minimum number of replicas that will be deployed')
+@minValue(0)
+param minReplicas int = {{minReplicas}}
+
+@description('Maximum number of replicas that will be deployed')
+@minValue(1)
+param maxReplicas int = {{maxReplicas}}
+
+param containerAppEnvId string
+
+resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
+  name: containerAppName
+  location: resourceGroup().location
+  properties: {
+    managedEnvironmentId: containerAppEnvId
+    configuration: {
+      ingress: {
+        external: true
+        targetPort: targetPort
+        allowInsecure: false
+        traffic: [
+          {
+            latestRevision: true
+            weight: 100
+          }
+        ]
+      }
+    }
+    template: {
+      containers: [
+        {
+          name: containerAppName
+          image: containerImage
+          resources: {
+            cpu: json(cpuCore)
+            memory: '${memorySize}Gi'
+          }
+        }
+      ]
+      scale: {
+        minReplicas: minReplicas
+        maxReplicas: maxReplicas
+      }
+    }
+  }
+}
+
+resource conainerAppRevision 'Microsoft.App/containerApp/revisions@2024-03-01' = [for revision in range(1, 2): {
+  name: '${containerAppName}-${revision}'
+  parent: containerApp
+  properties: {
+    template: {
+      containers: [
+        {
+          name: containerAppName
+          image: containerImage
+          resources: {
+            cpu: json(cpuCore)
+            memory: '${memorySize}Gi'
+          }
+        }
+      ]
+    }
+  }
+}]
+
+output containerAppFQDN string = containerApp.properties.configuration.ingress.fqdn

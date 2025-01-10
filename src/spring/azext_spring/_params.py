@@ -1307,3 +1307,6 @@ def load_arguments(self, _):
         c.argument('zone_id', help='The resource id of the private DNS zone which you would like to configure with the service instance.')
     with self.argument_context('spring private-dns-zone clean') as c:
         c.argument('service', service_name_type)
+
+    with self.argument_context('spring migration-aca start') as c:
+        c.argument('service', service_name_type)
