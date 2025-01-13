@@ -158,6 +158,7 @@ Test Name | Image Used | Purpose
 ---|---|---
 test_fragment_user_container_customized_mounts | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if mounts are translated correctly to the appropriate source and destination locations
 test_fragment_user_container_mount_injected_dns | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if the resolvconf mount works properly
+test_fragment_omit_id | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1 | Check that the id field is omitted from the policy
 test_fragment_injected_sidecar_container_msi | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1 | Make sure User mounts and env vars aren't added to sidecar containers, using JSON output format
 test_debug_processes | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Enable exec_processes via debug_mode
 test_fragment_sidecar | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | See if sidecar fragments can be created by a given policy.json

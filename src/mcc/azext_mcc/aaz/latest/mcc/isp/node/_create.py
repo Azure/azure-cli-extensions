@@ -44,7 +44,7 @@ class Create(AAZCommand):
             help="Name of Microsoft Connected Cache for Enterprise cache node.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
@@ -54,7 +54,7 @@ class Create(AAZCommand):
             help="Name of Microsoft Connected Cache for Enterprise resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),

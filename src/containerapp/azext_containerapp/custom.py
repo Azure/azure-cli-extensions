@@ -82,7 +82,11 @@ from .containerapp_env_telemetry_decorator import (
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
-from .java_component_decorator import JavaComponentDecorator
+from .java_component_decorator import (
+    BaseJavaComponentDecorator,
+    JavaComponentCreateDecorator,
+    JavaComponentUpdateDecorator
+)
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
@@ -106,7 +110,8 @@ from ._clients import (
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient,
-    MaintenanceConfigPreviewClient
+    MaintenanceConfigPreviewClient,
+    HttpRouteConfigPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -1854,18 +1859,18 @@ def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_n
     return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
-def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name, no_wait=no_wait)
         logger.warning("Dapr componenet successfully deleted.")
         return r
     except Exception as e:
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_dapr_component = load_yaml_file(yaml)
@@ -1894,7 +1899,8 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
         r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
                                                              environment_name=environment_name,
                                                              dapr_component_envelope=dapr_component_envelope,
-                                                             name=dapr_component_name)
+                                                             name=dapr_component_name,
+                                                             no_wait=no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1930,7 +1936,7 @@ def connected_env_list_certificates(cmd, name, resource_group_name, location=Non
             handle_raw_exception(e)
 
 
-def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
@@ -1973,7 +1979,7 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
             handle_raw_exception(e)
 
     try:
-        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate, no_wait)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -2011,7 +2017,7 @@ def connected_env_list_storages(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
+def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     r = None
@@ -2034,16 +2040,16 @@ def connected_env_create_or_update_storage(cmd, storage_name, resource_group_nam
     storage_envelope["properties"]["azureFile"] = storage_def
 
     try:
-        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope)
+        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
 
-def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
+def connected_env_remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
+        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -2288,7 +2294,7 @@ def show_env_managed_identity(cmd, name, resource_group_name):
 
 def list_java_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = BaseJavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2299,7 +2305,7 @@ def list_java_components(cmd, environment_name, resource_group_name):
 
 def show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = BaseJavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2316,7 +2322,7 @@ def show_java_component(cmd, java_component_name, environment_name, resource_gro
 
 def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = BaseJavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2336,9 +2342,9 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.delete()
 
 
-def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = JavaComponentCreateDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2348,9 +2354,9 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.create()
 
 
-def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
     raw_parameters = locals()
-    java_component_decorator = JavaComponentDecorator(
+    java_component_decorator = JavaComponentUpdateDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
@@ -2360,12 +2366,12 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2376,12 +2382,12 @@ def delete_config_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2392,12 +2398,12 @@ def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
 
 
-def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_nacos(cmd, java_component_name, environment_name, resource_group_name):
@@ -2408,12 +2414,12 @@ def delete_nacos(cmd, java_component_name, environment_name, resource_group_name
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, no_wait)
 
 
-def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
+def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2424,12 +2430,12 @@ def delete_admin_for_spring(cmd, java_component_name, environment_name, resource
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
 
-def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, min_replicas=1, max_replicas=1, no_wait=False, route_yaml=None):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, None, None, min_replicas, max_replicas, no_wait, route_yaml)
+def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False, route_yaml=None):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml)
 
 
-def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, min_replicas=None, max_replicas=None, no_wait=False, route_yaml=None):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, None, None, min_replicas, max_replicas, no_wait, route_yaml)
+def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, set_configurations=None, replace_configurations=None, remove_configurations=None, remove_all_configurations=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False, route_yaml=None):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, set_configurations, replace_configurations, remove_configurations, remove_all_configurations, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml)
 
 
 def show_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -3360,3 +3366,57 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
+
+
+def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_http_route_config, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    http_route_config_envelope = {"properties": yaml_http_route_config}
+
+    try:
+        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    yaml_http_route_config = load_yaml_file(yaml)
+    # check if the type is dict
+    if not isinstance(yaml_http_route_config, dict):
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
+
+    http_route_config_envelope = {"properties": yaml_http_route_config}
+
+    try:
+        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_http_route_configs(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_http_route_config(cmd, resource_group_name, name, http_route_config_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_http_route_config(cmd, resource_group_name, name, http_route_config_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)

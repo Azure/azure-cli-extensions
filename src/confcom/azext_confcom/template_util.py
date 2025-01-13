@@ -76,6 +76,12 @@ def image_has_hash(image: str) -> bool:
     return "@sha256:" in image
 
 
+def get_image_name(image: str) -> str:
+    if image_has_hash(image):
+        return image.split("@")[0]
+    return image.split(":")[0]
+
+
 def get_image_info(progress, message_queue, tar_mapping, image):
     image_info = None
     raw_image = None
@@ -449,6 +455,15 @@ def convert_to_pod_spec_helper(pod_dict):
         if key in pod_dict:
             return convert_to_pod_spec_helper(pod_dict[key])
     return {}
+
+
+def get_volume_claim_templates(pod_spec: dict) -> List[dict]:
+    volume_claim_templates = []
+    if "spec" in pod_spec:
+        spec = pod_spec["spec"]
+        if "volumeClaimTemplates" in spec:
+            return spec["volumeClaimTemplates"]
+    return volume_claim_templates
 
 
 def filter_non_pod_resources(resources: List[dict]) -> List[dict]:

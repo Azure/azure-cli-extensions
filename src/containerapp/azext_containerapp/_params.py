@@ -84,6 +84,12 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    # HttpRouteConfig
+    with self.argument_context('containerapp env http-route-config') as c:
+        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
+        c.argument('yaml', help="The path to the YAML input file.")
+        c.argument('name', id_part=None)
+
     # Telemetry
     with self.argument_context('containerapp env telemetry') as c:
         c.argument('name', id_part=None)
@@ -366,7 +372,11 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or other Java components to be connected to this Java Component. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this Java Component. e.g. BIND_NAME1...")
-        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format `<propertyName>=<value>` `<propertyName>=<value>`...")
+        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format `<propertyName>=<value>` `<propertyName>=<value>`...", deprecate_info=c.deprecate(target="--configuration", redirect='--[set|replace|remove|remove-all]-configurations', hide=True))
+        c.argument('set_configurations', nargs="*", options_list=['--set-configurations', '--set-configs'], help="Add or update Java component configuration(s). Other existing configurations are not modified. Configuration must be in format `<propertyName>=<value>` `<propertyName>=<value>`...")
+        c.argument('replace_configurations', nargs="*", options_list=['--replace-configurations', '--replace-configs'], help="Replace Java component configuration(s), Other existing configurations are removed. Configuration must be in format `<propertyName>=<value>` `<propertyName>=<value>`...")
+        c.argument('remove_configurations', nargs="*", options_list=['--remove-configurations', '--remove-configs'], help="Remove Java component configuration(s). Specify configuration names separated by space, in format `<propertyName>` `<propertyName>`...")
+        c.argument('remove_all_configurations', arg_type=get_three_state_flag(), options_list=['--remove-all-configurations', '--remove-all-configs'], help="Remove all Java component configuration(s).")
         c.argument('min_replicas', type=int, help="Minimum number of replicas to run for the Java component.")
         c.argument('max_replicas', type=int, help="Maximum number of replicas to run for the Java component.")
         c.argument('route_yaml', options_list=['--route-yaml', '--yaml'], help="Path to a .yaml file with the configuration of a Spring Cloud Gateway route. For an example, see https://aka.ms/gateway-for-spring-routes-yaml")
