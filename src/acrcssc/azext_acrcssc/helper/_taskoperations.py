@@ -407,6 +407,9 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
 def _transform_task_list(tasks):
     transformed = []
     for task in tasks:
+        if task.name not in CONTINUOUSPATCH_ALL_TASK_NAMES:
+            continue
+
         transformed_obj = {
             "creationDate": task.creation_date,
             "location": task.location,
