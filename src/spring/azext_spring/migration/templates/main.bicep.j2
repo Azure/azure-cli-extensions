@@ -4,6 +4,8 @@ param containerAppLogAnalyticsName string
 param location string
 param apps array
 param revisions object
+param workloadProfileName string
+param workloadProfileType string
 
 // App 
 param containerAppName string
@@ -20,6 +22,8 @@ module containerAppEnv 'environment.bicep' = {
     containerAppEnvName: containerAppEnvName
     containerAppLogAnalyticsName: containerAppLogAnalyticsName
     location: location
+    workloadProfileName: workloadProfileName
+    workloadProfileType: workloadProfileType
   }
 }
 
