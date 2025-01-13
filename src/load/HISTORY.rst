@@ -4,7 +4,7 @@ Release History
 ===============
 1.4.1
 ++++++
-* Update minimum required version of azure-cli-core to 2.66.0. This is needed to use `from azure.cli.core.util import run_az_cmd`. 
+* Move the `from azure.cli.core.util import run_az_cmd` to function scope to unblock users of existing features and most of the new features. Only the high scale download files feature requires this import, and it will be fixed in the next release.
 
 
 1.4.0
