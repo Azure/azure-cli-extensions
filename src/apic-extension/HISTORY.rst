@@ -8,9 +8,11 @@ Release History
 
 **New Features:**
 
-* Added url option for ``--api-location`` parameter in ``az apic api register`` command.
 * Added new command ``az apic integration create`` to manage integrations in Azure API Center.
+  * Added ``az apic integration create apim`` to manage Azure API Management integrations as an API source.
+  * Added ``az apic integration create aws`` to manage Amazon API Gateway as an API source.
 * Added new command ``az apic import aws`` to import an API from an Amazon API Gateway instance.
+* Added url option for ``--api-location`` parameter in ``az apic api register`` command.
 
 **Updates:**
 
