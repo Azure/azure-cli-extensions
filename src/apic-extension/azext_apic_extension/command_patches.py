@@ -54,10 +54,29 @@ from .aaz.latest.apic.integration import (
     Delete as DeleteIntegration
 )
 from .aaz.latest.apic import Import
+from .aaz.latest.apic.api_analysis import (
+    Create as CreateApiAnalysis,
+    Delete as DeleteApiAnalysis,
+    ImportRuleset,
+    ExportRuleset,
+    List as ListAPIAnalysis,
+    Show as ShowAPIAnalysis,
+    Update as UpdateAPIAnalysis
+)
 
-from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
 from azure.cli.core.aaz import register_command
+from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
+from azure.cli.core.azclierror import FileOperationError, AzureResponseError
 from msrestazure.tools import is_valid_resource_id
+import base64
+import zipfile
+import os
+import io
+import requests
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class DefaultWorkspaceParameter:
@@ -519,3 +538,119 @@ class ImportAmazonApiGatewaySource(DefaultWorkspaceParameter, Import):
             "region_name": args.region_name,
             "msi_resource_id": args.msi_resource_id
         }
+
+
+# `az apic api-analysis` commands
+class CreateApiAnalysisConfig(DefaultWorkspaceParameter, CreateApiAnalysis):
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+        args.analyzer_type = "spectral"
+
+
+class DeleteApiAnalysisConfig(DefaultWorkspaceParameter, DeleteApiAnalysis):
+    pass
+
+
+class ImportApiAnalysisRuleset(DefaultWorkspaceParameter, ImportRuleset):
+    # pylint: disable=C0301
+    # Zip and encode the ruleset folder to base64
+    def zip_folder_to_buffer(self, folder_path):
+        # pylint: disable=unused-variable
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for root, dirs, files in os.walk(folder_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zip_file.write(file_path, os.path.relpath(file_path, folder_path))
+        return base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.format._registered = False
+        args_schema.value._registered = False
+
+        args_schema.ruleset_folder_path = AAZStrArg(
+            options=["--path"],
+            help="The folder path containing the ruleset files.",
+            required=True,
+        )
+        return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        args.format = 'inline-zip'
+        args.value = self.zip_folder_to_buffer(str(args.ruleset_folder_path))
+
+
+class ExportApiAnalysisRuleset(DefaultWorkspaceParameter, ExportRuleset):
+    # pylint: disable=C0301
+    # Decode and extract the ruleset folder from base64
+    def unzip_buffer_to_folder(self, buffer, folder_path):
+        zip_file = io.BytesIO(base64.b64decode(buffer))
+        with zipfile.ZipFile(zip_file) as zip_ref:
+            zip_ref.extractall(folder_path)
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        args_schema.ruleset_folder_path = AAZStrArg(
+            options=["--path"],
+            help="The folder path to extract the ruleset files.",
+            required=True,
+        )
+        # args_schema.result = None
+        return args_schema
+
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        arguments = self.ctx.args
+
+        if result:
+            response_format = result['format']
+            exportedResults = result['value']
+
+            if response_format == 'link':
+                logger.info('Fetching specification from: %s', exportedResults)
+                getReponse = requests.get(exportedResults, timeout=10)
+                if getReponse.status_code == 200:
+                    exportedResults = getReponse.content.decode()
+                else:
+                    error_message = f'Error while fetching the results from the link. Status code: {getReponse.status_code}'
+                    logger.error(error_message)
+                    raise getReponse.raise_for_status()
+
+            try:
+                self.unzip_buffer_to_folder(exportedResults, str(arguments.ruleset_folder_path))
+                logger.info('Results exported to %s', arguments.ruleset_folder_path)
+            except Exception as e:  # pylint: disable=broad-except
+                error_message = f'Error while writing the results to the file. Error: {e}'
+                logger.error(error_message)
+                raise FileOperationError(error_message)
+        else:
+            error_message = 'No results found.'
+            logger.error(error_message)
+            raise AzureResponseError(error_message)
+
+        return result
+
+
+class ListAPIAnalysisConfig(DefaultWorkspaceParameter, ListAPIAnalysis):
+    pass
+
+
+class ShowAPIAnalysisConfig(DefaultWorkspaceParameter, ShowAPIAnalysis):
+    pass
+
+
+class UpdateAPIAnalysisConfig(DefaultWorkspaceParameter, UpdateAPIAnalysis):
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+        args.analyzer_type = "spectral"
