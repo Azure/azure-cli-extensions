@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.4.1
+++++++
+* Move the `from azure.cli.core.util import run_az_cmd` to function scope to unblock users of existing features and most of the new features. Only the high scale download files feature requires this import, and it will be fixed in the next release.
+
+
 1.4.0
 ++++++
 * Add support for multi-region load test configuration. Multi-region load test configuration can be set using `--regionwise-engines` argument in 'az load test create' and 'az load test update' commands. Multi-region load test configuration set in YAML config file under key `regionalLoadTestConfig` will also be honoured.
