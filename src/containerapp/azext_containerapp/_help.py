@@ -1258,7 +1258,7 @@ helps['containerapp env java-component spring-cloud-config create'] = """
           az containerapp env java-component spring-cloud-config create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
 """
 
 helps['containerapp env java-component spring-cloud-config delete'] = """
@@ -1292,13 +1292,13 @@ helps['containerapp env java-component spring-cloud-config update'] = """
           az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration
+              --remove-all-configurations
     - name: Update a Spring Cloud Config with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
 """
 
 helps['containerapp env java-component config-server-for-spring'] = """
@@ -1315,7 +1315,7 @@ helps['containerapp env java-component config-server-for-spring create'] = """
           az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
     - name: Create a Config Server for Spring with multiple replicas.
       text: |
           az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
@@ -1350,18 +1350,30 @@ helps['containerapp env java-component config-server-for-spring update'] = """
     type: command
     short-summary: Command to update the Config Server for Spring.
     examples:
-    - name: Delete all configurations of the Config Server for Spring.
-      text: |
-          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --configuration
     - name: Update a Config Server for Spring with custom configurations.
       text: |
           az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Replace all configurations of the Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --replace-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Delete configurations of the Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-configurations PropertyName1 PropertyName2
+    - name: Delete all configurations of the Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-all-configurations
 """
 
 helps['containerapp env java-component spring-cloud-eureka'] = """
@@ -1384,7 +1396,7 @@ helps['containerapp env java-component spring-cloud-eureka create'] = """
           az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
 """
 
 helps['containerapp env java-component spring-cloud-eureka delete'] = """
@@ -1418,13 +1430,13 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration
+              --remove-all-configurations
     - name: Update a Spring Cloud Eureka with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
 """
 
 helps['containerapp env java-component eureka-server-for-spring'] = """
@@ -1446,7 +1458,7 @@ helps['containerapp env java-component eureka-server-for-spring create'] = """
           az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
 """
 
 helps['containerapp env java-component eureka-server-for-spring delete'] = """
@@ -1475,18 +1487,30 @@ helps['containerapp env java-component eureka-server-for-spring update'] = """
     type: command
     short-summary: Command to update the Eureka Server for Spring.
     examples:
-    - name: Delete all configurations of the Eureka Server for Spring.
-      text: |
-          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --configuration
     - name: Update an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Replace all configurations of the Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --replace-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Delete configurations of the Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-configurations PropertyName1 PropertyName2
+    - name: Delete all configurations of the Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-all-configurations
 """
 
 helps['containerapp env java-component admin-for-spring'] = """
@@ -1508,7 +1532,7 @@ helps['containerapp env java-component admin-for-spring create'] = """
           az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
     - name: Create an Admin for Spring with multiple replicas.
       text: |
           az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
@@ -1543,18 +1567,30 @@ helps['containerapp env java-component admin-for-spring update'] = """
     type: command
     short-summary: Command to update the Admin for Spring.
     examples:
-    - name: Delete all configurations of the Admin for Spring.
-      text: |
-          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --configuration
     - name: Update an Admin for Spring with custom configurations.
       text: |
           az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Replace all configurations of the Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --replace-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Delete configurations of the Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-configurations PropertyName1 PropertyName2
+    - name: Delete all configurations of the Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-all-configurations
 """
 
 helps['containerapp env java-component nacos'] = """
@@ -1576,7 +1612,7 @@ helps['containerapp env java-component nacos create'] = """
           az containerapp env java-component nacos create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
 """
 
 helps['containerapp env java-component nacos delete'] = """
@@ -1605,18 +1641,30 @@ helps['containerapp env java-component nacos update'] = """
     type: command
     short-summary: Command to update the Nacos.
     examples:
-    - name: Delete all configurations of the Nacos.
-      text: |
-          az containerapp env java-component nacos update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --configuration
     - name: Update an Nacos with custom configurations.
       text: |
           az containerapp env java-component nacos update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Replace all configurations of the nacos.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --replace-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Delete configurations of the nacos.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-configurations PropertyName1 PropertyName2
+    - name: Delete all configurations of the nacos.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-all-configurations
 """
 
 helps['containerapp env java-component gateway-for-spring'] = """
@@ -1640,7 +1688,7 @@ helps['containerapp env java-component gateway-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --route-yaml MyRouteYamlFilePath \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
     - name: Create a Gateway for Spring with multiple replicas.
       text: |
           az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
@@ -1682,18 +1730,30 @@ helps['containerapp env java-component gateway-for-spring update'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --route-yaml MyRouteYamlFilePath
-    - name: Delete all configurations of the Gateway for Spring.
-      text: |
-          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
-              -n MyJavaComponentName \\
-              --environment MyEnvironment \\
-              --configuration
     - name: Update a Gateway for Spring with custom configurations.
       text: |
           az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
-              --configuration PropertyName1=Value1 PropertyName2=Value2
+              --set-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Replace all configurations of the Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --replace-configurations PropertyName1=Value1 PropertyName2=Value2
+    - name: Delete configurations of the Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-configurations PropertyName1 PropertyName2
+    - name: Delete all configurations of the Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --remove-all-configurations
 """
 
 # Container Apps Telemetry Commands
