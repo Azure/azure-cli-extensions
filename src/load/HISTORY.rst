@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.4.1
+++++++
+* Update minimum required version of azure-cli-core to 2.66.0. This is needed to use `from azure.cli.core.util import run_az_cmd`. 
+
+
 1.4.0
 ++++++
 * Add support for multi-region load test configuration. Multi-region load test configuration can be set using `--regionwise-engines` argument in 'az load test create' and 'az load test update' commands. Multi-region load test configuration set in YAML config file under key `regionalLoadTestConfig` will also be honoured.
