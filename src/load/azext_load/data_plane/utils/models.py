@@ -36,11 +36,13 @@ class AllowedMetricNamespaces(str, Enum):
 class AllowedTestTypes(str, Enum):
     JMX = "JMX"
     URL = "URL"
+    LOCUST = "Locust"
 
 
 class AllowedTestPlanFileExtensions(str, Enum):
     JMX = ".jmx"
     URL = ".json"
+    LOCUST = ".py"
 
 
 class AllowedTrendsResponseTimeAggregations(str, Enum):
