@@ -14,13 +14,13 @@ Release History
 
 **Updates:**
 
-* Added examples for using ``@filename`` syntax in several commands help documentations.
+* Added examples for using ``@filename`` syntax in several commands' help documentations.
+* Improved error messages for the ``az apic api register`` command.
 
 **Fixes:**
 
-* Optimized error handling in ``az apic api register`` command.
-* Fixed wrong example for ``az apic update`` command.
-* Fixed expired link in ``az apic api definition import-specification`` command help documentation.
+* Corrected the example for ``az apic update`` command.
+* Fixed an expired link in ``az apic api definition import-specification`` command's help documentation.
 
 1.1.0
 ++++++++++++++++++
