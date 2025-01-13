@@ -108,6 +108,7 @@ class TestCommandOutputSettings(unittest.TestCase):
             False,  # ContainerURL is not passed
         )
         args = Mock()
+        args.command_output_settings.container_url = None
 
         with self.assertRaises(RequiredArgumentMissingError):
             self.command_output_settings.pre_operations_update(args)
