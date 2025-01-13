@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a Scheduler
 
     :example: Show information on a particular scheduler
-        az durable-task scheduler show --resource-group testrg --scheduler-name testscheduler
+        az durabletask scheduler show --resource-group testrg --scheduler-name testscheduler
     """
 
     _aaz_info = {

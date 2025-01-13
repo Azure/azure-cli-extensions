@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a Scheduler
 
     :example: Delete a scheduler
-        az durable-task scheduler delete --resource-group testrg --scheduler-name testscheduler
+        az durabletask scheduler delete --resource-group testrg --scheduler-name testscheduler
     """
 
     _aaz_info = {
