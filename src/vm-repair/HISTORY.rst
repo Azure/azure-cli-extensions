@@ -2,7 +2,7 @@
 Release History
 ===============
 
-2.02
+2.0.2
 ++++++
 Updated parameter descriptions and examples for `az vm repair create`.
 
