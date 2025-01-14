@@ -14,7 +14,7 @@ interactions:
       - -g -w -l -a -r
       User-Agent:
       - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-        az-cli-ext/1.0.0b4.dev5
+        az-cli-ext/1.0.0b4
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/westus/offerings?api-version=2023-11-13-preview
   response:
@@ -129,11 +129,14 @@ interactions:
         Count\",\"description\":\"Number of jobs you can run in a month.\",\"unit\":\"job\",\"unitPlural\":\"jobs\"}],\"pricingDimensions\":[{\"id\":\"features\",\"name\":\"Features\"},{\"id\":\"quota\",\"name\":\"Quota\"},{\"id\":\"price\",\"name\":\"Pricing\"}]}},{\"id\":\"quantinuum\",\"name\":\"Quantinuum\",\"properties\":{\"description\":\"Access
         to Quantinuum's trapped-ion systems\",\"providerType\":\"qe\",\"company\":\"Quantinuum\",\"managedApplication\":{\"publisherId\":\"quantinuumllc1640113159771\",\"offerId\":\"quantinuum-aq\"},\"targets\":[{\"id\":\"quantinuum.qpu.h1-1\",\"name\":\"Quantinuum
         H1-1\",\"description\":\"Quantinuum H1-1, Powered by Honeywell\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.qpu.h2-1\",\"name\":\"Quantinuum
-        H2-1\",\"description\":\"Quantinuum H2-1, Powered by Honeywell\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h1-1sc\",\"name\":\"Quantinuum
+        H2-1\",\"description\":\"Quantinuum H2-1, Powered by Honeywell\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.qpu.h2-2\",\"name\":\"Quantinuum
+        H2-2\",\"description\":\"Quantinuum H2-2, Powered by Honeywell\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h1-1sc\",\"name\":\"Quantinuum
         H1-1 Syntax Checker\",\"description\":\"Quantinuum H1-1 Syntax Checker\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h2-1sc\",\"name\":\"Quantinuum
-        H2-1 Syntax Checker\",\"description\":\"Quantinuum H2-1 Syntax Checker\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h1-1e\",\"name\":\"Quantinuum
+        H2-1 Syntax Checker\",\"description\":\"Quantinuum H2-1 Syntax Checker\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h2-2sc\",\"name\":\"Quantinuum
+        H2-2 Syntax Checker\",\"description\":\"Quantinuum H2-2 Syntax Checker\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h1-1e\",\"name\":\"Quantinuum
         H1-1 Emulator\",\"description\":\"Quantinuum H1-1 Emulator\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h2-1e\",\"name\":\"Quantinuum
-        H2-1 Emulator\",\"description\":\"Quantinuum H2-1 Emulator\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.copilot\",\"name\":\"Quantinuum
+        H2-1 Emulator\",\"description\":\"Quantinuum H2-1 Emulator\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h2-2e\",\"name\":\"Quantinuum
+        H2-2 Emulator\",\"description\":\"Quantinuum H2-2 Emulator\",\"acceptedDataFormats\":[\"honeywell.openqasm.v1\",\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.copilot\",\"name\":\"Quantinuum
         H1 Emulator for Copilot\",\"description\":\"Quantinuum H1 Emulator for Copilot\",\"acceptedDataFormats\":[\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h1-1sc-preview\",\"name\":\"Quantinuum
         H1-1 Syntax Checker Preview\",\"description\":\"Quantinuum H1-1 Syntax Checker
         Preview\",\"acceptedDataFormats\":[\"honeywell.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"quantinuum.sim.h1-1e-preview\",\"name\":\"Quantinuum
@@ -157,7 +160,7 @@ interactions:
         limits\"},{\"id\":\"price\",\"value\":\"Priced per H-system Quantum Credit\"}]},{\"id\":\"usage1-h2\",\"version\":\"1.0.0\",\"name\":\"H2
         Pay As You Go\",\"description\":\"Pay as you go subscription plan supporting
         incremental credit purchases of Quantinuum H-System quantum credits (HQCs)
-        .\",\"autoAdd\":false,\"targets\":[\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\"],\"quotaDimensions\":[{\"id\":\"hqc\",\"scope\":\"Subscription\",\"quota\":1000},{\"id\":\"ehqc\",\"scope\":\"Subscription\",\"quota\":2000}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
+        .\",\"autoAdd\":false,\"targets\":[\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\",\"quantinuum.qpu.h2-2\",\"quantinuum.sim.h2-2sc\",\"quantinuum.sim.h2-2e\"],\"quotaDimensions\":[{\"id\":\"hqc\",\"scope\":\"Subscription\",\"quota\":1000},{\"id\":\"ehqc\",\"scope\":\"Subscription\",\"quota\":2000}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
         System Model H2 Syntax Checker<br />Quantinuum System Model H2 Emulator<br
         />Quantinuum System Model H2, Powered by Honeywell\"},{\"id\":\"limits\",\"value\":\"Credit
         limits\"},{\"id\":\"price\",\"value\":\"Priced per H-System Quantum Credit\"}]},{\"id\":\"usage2\",\"version\":\"1.0.0\",\"name\":\"Discounted
@@ -186,19 +189,19 @@ interactions:
         Quantum Credits (HQCs) / month\"},{\"id\":\"price\",\"value\":\"$ 175,000
         USD / Month\"}]},{\"id\":\"standardh1h2-2\",\"version\":\"1.0.0\",\"name\":\"Standard\",\"description\":\"Monthly
         subscription plan with 10K Quantinuum H-System quantum credits (HQCs) / month,
-        available through queue\",\"autoAdd\":false,\"restrictedAccessUri\":\"mailto:QuantinuumAzureQuantumSupport@Quantinuum.com\",\"targets\":[\"quantinuum.qpu.h1-1\",\"quantinuum.sim.h1-1sc\",\"quantinuum.sim.h1-1e\",\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\"],\"quotaDimensions\":[{\"id\":\"hqc\",\"scope\":\"Subscription\",\"quota\":10000,\"period\":\"Monthly\"},{\"id\":\"ehqc\",\"scope\":\"Subscription\",\"quota\":100000,\"period\":\"Monthly\"}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
+        available through queue\",\"autoAdd\":false,\"restrictedAccessUri\":\"mailto:QuantinuumAzureQuantumSupport@Quantinuum.com\",\"targets\":[\"quantinuum.qpu.h1-1\",\"quantinuum.sim.h1-1sc\",\"quantinuum.sim.h1-1e\",\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\",\"quantinuum.qpu.h2-2\",\"quantinuum.sim.h2-2sc\",\"quantinuum.sim.h2-2e\"],\"quotaDimensions\":[{\"id\":\"hqc\",\"scope\":\"Subscription\",\"quota\":10000,\"period\":\"Monthly\"},{\"id\":\"ehqc\",\"scope\":\"Subscription\",\"quota\":100000,\"period\":\"Monthly\"}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
         System Model H1 and H2 Syntax Checkers<br />Quantinuum System Model H1 and
         H2 Emulators<br />Quantinuum System Model H1 and H2\"},{\"id\":\"limits\",\"value\":\"10K
         H-System Quantum Credits (HQCs) / month\"},{\"id\":\"price\",\"value\":\"$
         135,000 USD / Month\"}]},{\"id\":\"premiumh1h2-2\",\"version\":\"1.0.0\",\"name\":\"Premium\",\"description\":\"Monthly
         subscription plan with 17K Quantinuum H-System Quantum Credits (HQCs) / month,
-        available through queue\",\"autoAdd\":false,\"restrictedAccessUri\":\"mailto:QuantinuumAzureQuantumSupport@Quantinuum.com\",\"targets\":[\"quantinuum.qpu.h1-1\",\"quantinuum.sim.h1-1sc\",\"quantinuum.sim.h1-1e\",\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\"],\"quotaDimensions\":[{\"id\":\"hqc\",\"scope\":\"Subscription\",\"quota\":17000,\"period\":\"Monthly\"},{\"id\":\"ehqc\",\"scope\":\"Subscription\",\"quota\":170000,\"period\":\"Monthly\"}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
+        available through queue\",\"autoAdd\":false,\"restrictedAccessUri\":\"mailto:QuantinuumAzureQuantumSupport@Quantinuum.com\",\"targets\":[\"quantinuum.qpu.h1-1\",\"quantinuum.sim.h1-1sc\",\"quantinuum.sim.h1-1e\",\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\",\"quantinuum.qpu.h2-2\",\"quantinuum.sim.h2-2sc\",\"quantinuum.sim.h2-2e\"],\"quotaDimensions\":[{\"id\":\"hqc\",\"scope\":\"Subscription\",\"quota\":17000,\"period\":\"Monthly\"},{\"id\":\"ehqc\",\"scope\":\"Subscription\",\"quota\":170000,\"period\":\"Monthly\"}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
         System Model H1 and H2 Syntax Checkers<br />Quantinuum System Model H1 and
         H2 Emulators<br />Quantinuum System Model H1 and H2\"},{\"id\":\"limits\",\"value\":\"17K
         H-System Quantum Credits (HQCs) / month\"},{\"id\":\"price\",\"value\":\"$
         185,000 USD / Month\"}]},{\"id\":\"test1\",\"version\":\"1.0.0\",\"name\":\"Partner
         Access\",\"description\":\"Charge-free access to Quantinuum H-Series for Azure
-        integration verification\",\"autoAdd\":false,\"targets\":[\"quantinuum.qpu.h1-1\",\"quantinuum.sim.h1-1sc\",\"quantinuum.sim.h1-1e\",\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\",\"quantinuum.sim.h1-1sc-preview\",\"quantinuum.sim.h1-1e-preview\",\"quantinuum.sim.h1-2e-preview\",\"quantinuum.qpu.h1-1-preview\"],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
+        integration verification\",\"autoAdd\":false,\"targets\":[\"quantinuum.qpu.h1-1\",\"quantinuum.sim.h1-1sc\",\"quantinuum.sim.h1-1e\",\"quantinuum.qpu.h2-1\",\"quantinuum.sim.h2-1sc\",\"quantinuum.sim.h2-1e\",\"quantinuum.qpu.h2-2\",\"quantinuum.sim.h2-2sc\",\"quantinuum.sim.h2-2e\",\"quantinuum.sim.h1-1sc-preview\",\"quantinuum.sim.h1-1e-preview\",\"quantinuum.sim.h1-2e-preview\",\"quantinuum.qpu.h1-1-preview\"],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"Quantinuum
         System Model H1 Syntax Checker<br />Quantinuum System Model H1 Emulator<br
         />Quantinuum System Model H1\"},{\"id\":\"limits\",\"value\":\"No limit for
         integration testing\"},{\"id\":\"price\",\"value\":\"Free for validation\"}]},{\"id\":\"copilot-emulator\",\"version\":\"1.0.0\",\"name\":\"Copilot
@@ -215,13 +218,14 @@ interactions:
         superconducting qubit-based quantum processors.\",\"providerType\":\"qe\",\"company\":\"Rigetti
         Computing\",\"managedApplication\":{\"publisherId\":\"rigetticoinc1644276861431\",\"offerId\":\"rigetti-aq\"},\"targets\":[{\"id\":\"rigetti.sim.qvm\",\"name\":\"QVM\",\"description\":\"Simulate
         Quil and QIR programs on the open-source Quantum Virtual Machine.\",\"acceptedDataFormats\":[\"rigetti.quil.v1\",\"rigetti.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"rigetti.qpu.ankaa-9q-3\",\"name\":\"Ankaa-9Q-3\",\"description\":\"A
-        9-Qubit 4th-Generation, Square-Lattice QPU\",\"acceptedDataFormats\":[\"rigetti.quil.v1\",\"rigetti.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]}],\"skus\":[{\"id\":\"rigetti-private-beta-metered\",\"version\":\"0.0.0\",\"name\":\"Metered
+        9-Qubit 4th-Generation, Square-Lattice QPU\",\"acceptedDataFormats\":[\"rigetti.quil.v1\",\"rigetti.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]},{\"id\":\"rigetti.qpu.ankaa-3\",\"name\":\"Ankaa-9Q-3\",\"description\":\"A
+        84-Qubit 4th-Generation, Square-Lattice QPU\",\"acceptedDataFormats\":[\"rigetti.quil.v1\",\"rigetti.qir.v1\"],\"acceptedContentEncodings\":[\"gzip\",\"identity\"]}],\"skus\":[{\"id\":\"rigetti-private-beta-metered\",\"version\":\"0.0.0\",\"name\":\"Metered
         Private Preview\",\"description\":\"Limited-time free access to Rigetti quantum
-        computers with the ability to see your utilization.\",\"autoAdd\":false,\"targets\":[\"rigetti.sim.qvm\",\"rigetti.qpu.ankaa-9q-3\"],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"<a
+        computers with the ability to see your utilization.\",\"autoAdd\":false,\"targets\":[\"rigetti.sim.qvm\",\"rigetti.qpu.ankaa-9q-3\",\"rigetti.qpu.ankaa-3\"],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"<a
         href=\\\"https://aka.ms/AQ/Rigetti/ProviderDocumentation\\\">Learn more about
         Rigetti Targets</a>\"},{\"id\":\"quota\",\"value\":\"This plan has no quota.\"},{\"id\":\"price\",\"value\":\"This
         plan is free.\"}]},{\"id\":\"rigetti-pay-as-you-go\",\"version\":\"0.0.0\",\"name\":\"Pay
-        As You Go\",\"description\":\"Pay-as-you-go access to Rigetti quantum computers.\",\"autoAdd\":false,\"targets\":[\"rigetti.sim.qvm\"],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"<a
+        As You Go\",\"description\":\"Pay-as-you-go access to Rigetti quantum computers.\",\"autoAdd\":false,\"targets\":[\"rigetti.sim.qvm\",\"rigetti.qpu.ankaa-3\"],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"<a
         href=\\\"https://aka.ms/AQ/Rigetti/ProviderDocumentation\\\">Learn more about
         Rigetti Targets</a>\"},{\"id\":\"quota\",\"value\":\"This plan has no quota.\"},{\"id\":\"price\",\"value\":\"$0.02
         per 10 milliseconds (rounded up) of QPU execution time.\"}]},{\"id\":\"rigetti-pay-as-you-go-1-30\",\"version\":\"0.0.0\",\"name\":\"Pay
@@ -231,7 +235,7 @@ interactions:
         Rigetti Targets</a>\"},{\"id\":\"quota\",\"value\":\"This plan has no quota.\"},{\"id\":\"price\",\"value\":\"$0.013
         per 10 milliseconds (rounded up) of QPU execution time.\"}]},{\"id\":\"azure-quantum-credits\",\"version\":\"0.0.0\",\"name\":\"Azure
         Quantum Credits\",\"description\":\"Pay with Azure credits for access to Rigetti
-        quantum computers.\",\"autoAdd\":true,\"targets\":[\"rigetti.sim.qvm\",\"rigetti.qpu.ankaa-9q-3\"],\"quotaDimensions\":[{\"id\":\"provider-credit\",\"scope\":\"Subscription\"}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"<a
+        quantum computers.\",\"autoAdd\":true,\"targets\":[\"rigetti.sim.qvm\",\"rigetti.qpu.ankaa-9q-3\",\"rigetti.qpu.ankaa-3\"],\"quotaDimensions\":[{\"id\":\"provider-credit\",\"scope\":\"Subscription\"}],\"pricingDetails\":[{\"id\":\"features\",\"value\":\"<a
         href=\\\"https://aka.ms/AQ/Rigetti/ProviderDocumentation\\\">Learn more about
         Rigetti Targets</a>\"},{\"id\":\"quota\",\"value\":\"$500 worth of Rigetti
         compute, unless you have received an additional <a href=\\\"https://aka.ms/AQ/Credits\\\"
@@ -246,15 +250,15 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '34090'
+      - '35322'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:00 GMT
+      - Tue, 14 Jan 2025 19:53:47 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 0bf14edb-388e-4ce2-a5d3-d84eb841841a
+      - c993d45c-a860-4c68-84f4-3aa96893116d
       pragma:
       - no-cache
       request-context:
@@ -271,7 +275,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 20250101T001700Z-186c86bbc589mv69hC1SJC25f0000000072000000000b1dm
+      - 20250114T195348Z-186c86bbc58h2fdmhC1SJCvpqs0000001gqg000000000cfp
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -281,7 +285,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 95C7F3CF11914F1D9CE8B22C42C15ECA Ref B: CO6AA3150220027 Ref C: 2025-01-01T00:17:00Z'
+      - 'Ref A: B16C7FF1D3C541BFA69F7205A744FB1B Ref B: CO6AA3150220021 Ref C: 2025-01-14T19:53:48Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -306,7 +310,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current","name":"aqt-pay-as-you-go-cred-new","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"aqt-pay-as-you-go-cred-new","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24AQT%253a2DPAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a2DNEW%253a24S35Q3GLZ63YLK5WGHS23JZJQ4KHQFCUKUR53AFNAOGPS2IDGGO2Y4D7KLF2ZZCQXJ37XXRTRN6S4KOAXRRMYGAPOIM6G36MKCRRSGYI.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:02.4149287Z","signature":"3YBEVY2RUEZAU737GSNEX3UYOACCR6XUP6BJBQ4AJOBHRVBSSPZ76U7NEXMMSKLGBTFCCLX3QAWBSHNKV7HKWVLK3UDV5L5VIU3WN7I","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:02.5398999+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:02.5398999+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current","name":"aqt-pay-as-you-go-cred-new","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"aqt-pay-as-you-go-cred-new","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24AQT%253a2DPAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a2DNEW%253a24S35Q3GLZ63YLK5WGHS23JZJQ4KHQFCUKUR53AFNAOGPS2IDGGO2Y4D7KLF2ZZCQXJ37XXRTRN6S4KOAXRRMYGAPOIM6G36MKCRRSGYI.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:49.6771417Z","signature":"PG4VMKI4ZGUQFUJU2RBB2IUZTYM6VW3KWAL7ZL4ZJAPFMVSSFCLV4XROZVH6L4VGFX5X4UNGU236XDRXARNBIEAKIMWM64EAGMRFBPQ","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:49.6927355+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:49.6927355+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -315,7 +319,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:02 GMT
+      - Tue, 14 Jan 2025 19:53:49 GMT
       expires:
       - '-1'
       pragma:
@@ -333,7 +337,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 86FB718A6BFD48529A3A1891E263487D Ref B: CO6AA3150218045 Ref C: 2025-01-01T00:17:00Z'
+      - 'Ref A: 4806FD6010384E2BBC4922EA07563334 Ref B: CO6AA3150217053 Ref C: 2025-01-14T19:53:48Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -358,215 +362,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current","name":"pasqal-aq-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"pasqal1672665369086","product":"pasqalcloudservices-privatepreview-aq","plan":"pasqal-aq-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_PASQAL1672665369086%253a24PASQALCLOUDSERVICES%253a2DPRIVATEPREVIEW%253a2DAQ%253a24PASQAL%253a2DAQ%253a2DCREDITS%253a24GK6KZW7SK3Z7CLDVLDDUEQDEFWNGMGPSQYCZROPCP4RGUTWDGBQDJJSJQ7BERH6ZA3TOY3NMTUCCAW24REVF6R4VAWPIKLFSRC2I74A.txt","privacyPolicyLink":"https://portal.pasqal.cloud/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:03.676687Z","signature":"BVF7IFBS5VRQ7JPXY7JRCVKHCVWBSKFEX2IJ7KPWEYWHT3UUV5PEP6BTBKHBUVH67FZSMILMS2NPXMNAZJYMLP4K5ESB2IDMJ27PIWQ","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:03.7860829+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:03.7860829+00:00"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1551'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 01 Jan 2025 00:17:03 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - SAMEORIGIN
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 17FF6CFD70A1481088DFF1BA19EED71F Ref B: CO6AA3150219039 Ref C: 2025-01-01T00:17:02Z'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - quantum workspace create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -w -l -a -r
-      User-Agent:
-      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current?api-version=2021-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24FLVYSXWDR2TMILQA4VIK75OXTY6ROOK7P7GWPSSQ7JR6ZTFPMCB53VGPLHLSQDXSSBDCRR4Z45LF2QF2CJ6XZA6KU5YUTKWNJKLCDRI.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:05.1926886Z","signature":"IGZKP5BMHP5Y3DKIRSBTZLTO37YW3G4ZKN2UDBCUTCAOEKNCS5FL532N6WS7FGOVBOB2P7C63246VAXESKGKTWTDRFTHMR77PL4DEPY","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:05.3031906+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:05.3031906+00:00"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1456'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 01 Jan 2025 00:17:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - SAMEORIGIN
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 2E14C3CCDDED45D0870E6A38CD3E84EF Ref B: CO6AA3150217019 Ref C: 2025-01-01T00:17:03Z'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - quantum workspace create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -w -l -a -r
-      User-Agent:
-      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current?api-version=2021-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24OVHBY2OOJTPQLL57Y6RKGYOKBGSXRSGZIJWTMBIVS2NOTHUSSHDKKG74CB67KGNC6YTDCSMPYRAS65R6VUK4CKUBOM65RQGSXQSQMXY.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:06.3203957Z","signature":"G6C3AKBW3ELJNWM2AOVWR5VOIYO5ETMGR7FLMAJZKFV7CX4SRSXHSPUCROFYSNCITHFB72VTJ45QFOQLZWGFQKHT46SHMLWSNK5QWZQ","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:06.3828921+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:06.3828921+00:00"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 01 Jan 2025 00:17:05 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - SAMEORIGIN
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 5DCEEE08D89A4C69A9ABF63CB6BFA72E Ref B: CO6AA3150220045 Ref C: 2025-01-01T00:17:05Z'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - quantum workspace create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -w -l -a -r
-      User-Agent:
-      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current?api-version=2021-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current","name":"aqt-pay-as-you-go-cred-new","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"aqt-pay-as-you-go-cred-new","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24AQT%253a2DPAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a2DNEW%253a24S35Q3GLZ63YLK5WGHS23JZJQ4KHQFCUKUR53AFNAOGPS2IDGGO2Y4D7KLF2ZZCQXJ37XXRTRN6S4KOAXRRMYGAPOIM6G36MKCRRSGYI.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:08.4116298Z","signature":"FBCXXDVWYRVBBCPDFB6LUBVFYZT67NCPKWUZSS2GFOOQEANVCZ6TTI4N4X4MKG3XHILHLRLDENNU5NBR3TGCZZUK4EQWK7FLN7T7R7Q","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:08.4116298+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:08.4116298+00:00"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1508'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 01 Jan 2025 00:17:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - SAMEORIGIN
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: E7DD804F26FA43DCA788417515615FF0 Ref B: CO6AA3150218037 Ref C: 2025-01-01T00:17:06Z'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - quantum workspace create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -w -l -a -r
-      User-Agent:
-      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current?api-version=2021-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current","name":"pasqal-aq-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"pasqal1672665369086","product":"pasqalcloudservices-privatepreview-aq","plan":"pasqal-aq-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_PASQAL1672665369086%253a24PASQALCLOUDSERVICES%253a2DPRIVATEPREVIEW%253a2DAQ%253a24PASQAL%253a2DAQ%253a2DCREDITS%253a24GK6KZW7SK3Z7CLDVLDDUEQDEFWNGMGPSQYCZROPCP4RGUTWDGBQDJJSJQ7BERH6ZA3TOY3NMTUCCAW24REVF6R4VAWPIKLFSRC2I74A.txt","privacyPolicyLink":"https://portal.pasqal.cloud/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:10.8113911Z","signature":"WYOP5BN7QZP3VQ6CWHFNJZE6LKIHAFT3PSTCQSIIPQI6AXD22ERNQ5UVKUQHIA4I2Y52VB7P6Y67IR6VHYIT6MQVV4LODG6H7R7BKSI","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:10.8894537+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:10.8894537+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current","name":"pasqal-aq-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"pasqal1672665369086","product":"pasqalcloudservices-privatepreview-aq","plan":"pasqal-aq-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_PASQAL1672665369086%253a24PASQALCLOUDSERVICES%253a2DPRIVATEPREVIEW%253a2DAQ%253a24PASQAL%253a2DAQ%253a2DCREDITS%253a24GK6KZW7SK3Z7CLDVLDDUEQDEFWNGMGPSQYCZROPCP4RGUTWDGBQDJJSJQ7BERH6ZA3TOY3NMTUCCAW24REVF6R4VAWPIKLFSRC2I74A.txt","privacyPolicyLink":"https://portal.pasqal.cloud/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:51.2383946Z","signature":"R3NKDHJS5R7P5TU4WB6OS7BLUDITIOPJAJTBFEDVRYZHKJHBQEGOLKYOKDMTMSMT7J6QRLZOHIEIVFVUQRZ5VHZUPLBQMZL4HSD6R3Y","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:51.3321447+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:51.3321447+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -575,7 +371,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:10 GMT
+      - Tue, 14 Jan 2025 19:53:50 GMT
       expires:
       - '-1'
       pragma:
@@ -593,7 +389,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 0C3E824566764E76B881A2338D841714 Ref B: CO6AA3150220023 Ref C: 2025-01-01T00:17:08Z'
+      - 'Ref A: E4D59B817EB14A69BF125D2F1418FFE5 Ref B: CO6AA3150219029 Ref C: 2025-01-14T19:53:49Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -618,7 +414,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24FLVYSXWDR2TMILQA4VIK75OXTY6ROOK7P7GWPSSQ7JR6ZTFPMCB53VGPLHLSQDXSSBDCRR4Z45LF2QF2CJ6XZA6KU5YUTKWNJKLCDRI.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:12.0443413Z","signature":"QJSL4XRN7PP2CIAQDLJEPKCVE7H7ROAH24E3ICNLBGPSQTE2TUYH2LPWUPDNMYRFFALGYVKBQK5LYHJDGIVDZ2NDXQAKJN4ZDSZTICY","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:12.1537492+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:12.1537492+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24FLVYSXWDR2TMILQA4VIK75OXTY6ROOK7P7GWPSSQ7JR6ZTFPMCB53VGPLHLSQDXSSBDCRR4Z45LF2QF2CJ6XZA6KU5YUTKWNJKLCDRI.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:52.8957516Z","signature":"J3XZ5UFR5NSXOUXMIMX343SMKCJSWSV7OJKCPFSBDVFNIAPMWK3OEHIE6T6FRPMZNAPWMTTXABFNVCXBSQENMCMG7ZZMKRCVEI4IFDA","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:52.8957516+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:52.8957516+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -627,7 +423,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:11 GMT
+      - Tue, 14 Jan 2025 19:53:52 GMT
       expires:
       - '-1'
       pragma:
@@ -645,7 +441,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 7947F2BE2CE54125BDCB245BDA655927 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:17:11Z'
+      - 'Ref A: 9CA017DB759D40528FAF78EA09B84567 Ref B: CO6AA3150219023 Ref C: 2025-01-14T19:53:51Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -670,7 +466,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24OVHBY2OOJTPQLL57Y6RKGYOKBGSXRSGZIJWTMBIVS2NOTHUSSHDKKG74CB67KGNC6YTDCSMPYRAS65R6VUK4CKUBOM65RQGSXQSQMXY.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-01T00:17:13.1554523Z","signature":"RJ45T2HYG5W2Z65U7ASM663UHFOPZKYW6MC23A7GEBYT34HTIDZYDJG4EAUDQDDL4SHYBIWICL56JVOJNMBLVD3RUZQUX4EAU7RZRSY","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-01T00:17:13.1554523+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-01T00:17:13.1554523+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24OVHBY2OOJTPQLL57Y6RKGYOKBGSXRSGZIJWTMBIVS2NOTHUSSHDKKG74CB67KGNC6YTDCSMPYRAS65R6VUK4CKUBOM65RQGSXQSQMXY.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:54.2496624Z","signature":"BLDQWNVFF4VFK6NNLBNP4LK44GT4BS5JER7FS27MOZJIXM5CSDHKKO5T4YWSCG3LWAIU2DCS7QE2PWHCJXK2XIYSW6RXIENDVL2QABI","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:54.3278197+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:54.3278197+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -679,7 +475,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:12 GMT
+      - Tue, 14 Jan 2025 19:53:53 GMT
       expires:
       - '-1'
       pragma:
@@ -697,7 +493,163 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 50613EE6917541558DD055BD31889730 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:17:12Z'
+      - 'Ref A: 604E6A2F507D44DABCB8D9E356440034 Ref B: CO6AA3150219029 Ref C: 2025-01-14T19:53:53Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -w -l -a -r
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current?api-version=2021-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/aqt-pay-as-you-go-cred-new/agreements/current","name":"aqt-pay-as-you-go-cred-new","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"aqt-pay-as-you-go-cred-new","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24AQT%253a2DPAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a2DNEW%253a24S35Q3GLZ63YLK5WGHS23JZJQ4KHQFCUKUR53AFNAOGPS2IDGGO2Y4D7KLF2ZZCQXJ37XXRTRN6S4KOAXRRMYGAPOIM6G36MKCRRSGYI.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:55.4716791Z","signature":"J4HCIUS4GQCQ2YIE4DAYKVQUQGZL3ZKF6B24NBN7GEOG4L733RUZD5Y45EUA3GV6LDBQYDV7AIK2V2CXMT3OEUG3IIK6JLCM5KS7Q5Y","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:55.5342214+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:55.5342214+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jan 2025 19:53:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BFFF9D13F5024508B3CFFD564007D80F Ref B: CO6AA3150217019 Ref C: 2025-01-14T19:53:54Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -w -l -a -r
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current?api-version=2021-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/pasqal1672665369086/offers/pasqalcloudservices-privatepreview-aq/plans/pasqal-aq-credits/agreements/current","name":"pasqal-aq-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"pasqal1672665369086","product":"pasqalcloudservices-privatepreview-aq","plan":"pasqal-aq-credits","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_PASQAL1672665369086%253a24PASQALCLOUDSERVICES%253a2DPRIVATEPREVIEW%253a2DAQ%253a24PASQAL%253a2DAQ%253a2DCREDITS%253a24GK6KZW7SK3Z7CLDVLDDUEQDEFWNGMGPSQYCZROPCP4RGUTWDGBQDJJSJQ7BERH6ZA3TOY3NMTUCCAW24REVF6R4VAWPIKLFSRC2I74A.txt","privacyPolicyLink":"https://portal.pasqal.cloud/privacy","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:57.04609Z","signature":"6W64KDCQGPAJJ7XTXIHO57PEF2L6YMQ2NR7FRN5YBRR7JXBEIG3EFILJ7GHZTBTMAHIMMH3GF2LG5DDLQWEMXDRXGTIYQVZ2OKMOUMQ","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:57.1085815+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:57.1085815+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jan 2025 19:53:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 165602D0032E4D8C8CF6FBC1A83197F6 Ref B: CO6AA3150219019 Ref C: 2025-01-14T19:53:55Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -w -l -a -r
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current?api-version=2021-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://storeordersprodsn.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24FLVYSXWDR2TMILQA4VIK75OXTY6ROOK7P7GWPSSQ7JR6ZTFPMCB53VGPLHLSQDXSSBDCRR4Z45LF2QF2CJ6XZA6KU5YUTKWNJKLCDRI.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://storeordersprodsn.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2025-01-14T19:53:58.5071986Z","signature":"HOJFJHYMBNLZ2PMWHHFHYKDN44YQNJR2QFS57IPV6EMQD2BY76F4ZILMCHTCPUX76HDIRLO37CPJQD72IQ45LOO2ZBLMB6HJN2N7BKI","accepted":true},"systemData":{"createdBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","createdByType":"ManagedIdentity","createdAt":"2025-01-14T19:53:58.5696991+00:00","lastModifiedBy":"677fc922-91d0-4bf6-9b06-4274d319a0fa","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2025-01-14T19:53:58.5696991+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jan 2025 19:53:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - SAMEORIGIN
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E466F91B44074AE3B70B98ECB9478A06 Ref B: CO6AA3150220027 Ref C: 2025-01-14T19:53:57Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -731,7 +683,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:13 GMT
+      - Tue, 14 Jan 2025 19:53:58 GMT
       expires:
       - '-1'
       pragma:
@@ -743,13 +695,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 7ffd55eb-c0c4-4f39-936b-2d5d7c51df4d
-      - 70a53ce7-7959-48f7-8777-58487ab0631d
-      - 24cab98a-61f8-4ab0-b65c-930870647045
+      - 111dd078-30e6-4248-8f63-6fe5562db842
+      - 7654022a-2804-437b-9426-1d2ee47448f7
+      - 4903463b-8b26-4145-8ee5-115f4fcf7382
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5EA42213841A44A9916ECE971173F783 Ref B: CO6AA3150218027 Ref C: 2025-01-01T00:17:13Z'
+      - 'Ref A: 1A0727D6833A45E98AB746BB88A554B8 Ref B: CO6AA3150220031 Ref C: 2025-01-14T19:53:58Z'
     status:
       code: 200
       message: OK
@@ -792,17 +744,16 @@ interactions:
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
       ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
-      {"quantumWorkspaceName": {"value": "e2e-test-w7312278"}, "location": {"value":
-      "westus"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "Microsoft.ChemistryHpc",
-      "providerSku": "Basic"}, {"providerId": "ionq", "providerSku": "aqt-pay-as-you-go-cred-new"},
-      {"providerId": "microsoft-elements", "providerSku": "elements-internal-testing"},
-      {"providerId": "pasqal", "providerSku": "pasqal-aq-credits"}, {"providerId":
-      "quantinuum", "providerSku": "credits1"}, {"providerId": "rigetti", "providerSku":
-      "azure-quantum-credits"}]}, "storageAccountName": {"value": "e2eqsharptests"},
-      "storageAccountId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},
+      {"quantumWorkspaceName": {"value": "e2e-test-w8924082"}, "location": {"value":
+      "westus"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "rigetti",
+      "providerSku": "azure-quantum-credits"}, {"providerId": "ionq", "providerSku":
+      "aqt-pay-as-you-go-cred-new"}, {"providerId": "microsoft-elements", "providerSku":
+      "elements-internal-testing"}, {"providerId": "pasqal", "providerSku": "pasqal-aq-credits"},
+      {"providerId": "quantinuum", "providerSku": "credits1"}]}, "storageAccountName":
+      {"value": "e2eqsharptests"}, "storageAccountId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},
       "storageAccountLocation": {"value": "westus"}, "storageAccountSku": {"value":
       "Standard_LRS"}, "storageAccountKind": {"value": "StorageV2"}, "storageAccountDeploymentName":
-      {"value": "Microsoft.StorageAccount-01-Jan-2025-00-17-14"}}, "mode": "Incremental"}}'
+      {"value": "Microsoft.StorageAccount-14-Jan-2025-19-54-00"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -811,7 +762,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4439'
+      - '4373'
       Content-Type:
       - application/json
       User-Agent:
@@ -820,18 +771,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7312278","name":"Microsoft.AzureQuantum-e2e-test-w7312278","type":"Microsoft.Resources/deployments","properties":{"templateHash":"8780732195960594757","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w7312278"},"location":{"type":"String","value":"westus"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"Microsoft.ChemistryHpc","providerSku":"Basic"},{"providerId":"ionq","providerSku":"aqt-pay-as-you-go-cred-new"},{"providerId":"microsoft-elements","providerSku":"elements-internal-testing"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits"},{"providerId":"quantinuum","providerSku":"credits1"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"}]},"storageAccountName":{"type":"String","value":"e2eqsharptests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},"storageAccountLocation":{"type":"String","value":"westus"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-01-Jan-2025-00-17-14"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-01-01T00:17:15.945466Z","duration":"PT0.0004777S","correlationId":"9cfb2b38-9df2-4803-bd28-8ae40784e391","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/Workspaces/e2e-test-w7312278","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w7312278"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w7312278","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-01-Jan-2025-00-17-14","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-01-Jan-2025-00-17-14"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8924082","name":"Microsoft.AzureQuantum-e2e-test-w8924082","type":"Microsoft.Resources/deployments","properties":{"templateHash":"8780732195960594757","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w8924082"},"location":{"type":"String","value":"westus"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"rigetti","providerSku":"azure-quantum-credits"},{"providerId":"ionq","providerSku":"aqt-pay-as-you-go-cred-new"},{"providerId":"microsoft-elements","providerSku":"elements-internal-testing"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits"},{"providerId":"quantinuum","providerSku":"credits1"}]},"storageAccountName":{"type":"String","value":"e2eqsharptests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},"storageAccountLocation":{"type":"String","value":"westus"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-14-Jan-2025-19-54-00"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-01-14T19:54:00.8720615Z","duration":"PT0.0009029S","correlationId":"2d572cd8-5fc7-45c0-bb3d-4dd330109777","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/Workspaces/e2e-test-w8924082","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w8924082"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w8924082","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-14-Jan-2025-19-54-00","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-14-Jan-2025-19-54-00"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7312278/operationStatuses/08584659162507503466?api-version=2022-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8924082/operationStatuses/08584647224455473730?api-version=2022-09-01
       cache-control:
       - no-cache
       content-length:
-      - '2634'
+      - '2573'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:16 GMT
+      - Tue, 14 Jan 2025 19:54:01 GMT
       expires:
       - '-1'
       pragma:
@@ -849,7 +800,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 651D61D016114529AE8A26BC2C32F459 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:17:13Z'
+      - 'Ref A: 690FBF9A4F404126AABC98D6CA92EE9F Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:53:59Z'
     status:
       code: 201
       message: Created
@@ -865,7 +816,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -877,7 +828,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:16 GMT
+      - Tue, 14 Jan 2025 19:54:01 GMT
       expires:
       - '-1'
       pragma:
@@ -891,7 +842,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 63F2BF1E0A904C31A5BBE64D4111DC2B Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:17:16Z'
+      - 'Ref A: 87F3535821204A3FB5EA79DBCA89E7A3 Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:54:01Z'
     status:
       code: 200
       message: OK
@@ -907,7 +858,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -919,7 +870,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:17:46 GMT
+      - Tue, 14 Jan 2025 19:54:31 GMT
       expires:
       - '-1'
       pragma:
@@ -933,7 +884,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 31FD8917E8834E65BAEC50975BB223DC Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:17:46Z'
+      - 'Ref A: E2C3004C00E54A71BDAA1E464117F69E Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:54:31Z'
     status:
       code: 200
       message: OK
@@ -949,7 +900,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -961,7 +912,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:18:16 GMT
+      - Tue, 14 Jan 2025 19:55:01 GMT
       expires:
       - '-1'
       pragma:
@@ -975,7 +926,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3C60A0BCF93D42E6B85D37327583034C Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:18:17Z'
+      - 'Ref A: E0E00B712FE04E34A420D2F18B33C2CC Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:55:02Z'
     status:
       code: 200
       message: OK
@@ -991,7 +942,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1003,7 +954,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:18:46 GMT
+      - Tue, 14 Jan 2025 19:55:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1017,7 +968,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AF24EF713C064F6E85E22562662C6E0F Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:18:47Z'
+      - 'Ref A: 3592520488CE434A91A9C7AFD90BB3F2 Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:55:32Z'
     status:
       code: 200
       message: OK
@@ -1033,7 +984,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1045,7 +996,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:19:17 GMT
+      - Tue, 14 Jan 2025 19:56:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1059,7 +1010,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F8DD14B5E24B4C4C9A8BA2B5EA199D9C Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:19:17Z'
+      - 'Ref A: 5926DF97166F4F758936BAB780E4AA38 Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:56:02Z'
     status:
       code: 200
       message: OK
@@ -1075,7 +1026,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1087,7 +1038,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:19:47 GMT
+      - Tue, 14 Jan 2025 19:56:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1101,7 +1052,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: DB3DBB2CA69B4173B9597D1215075AE0 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:19:47Z'
+      - 'Ref A: 75EA94A22C484688A159A720B8130276 Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:56:32Z'
     status:
       code: 200
       message: OK
@@ -1117,7 +1068,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1129,7 +1080,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:20:17 GMT
+      - Tue, 14 Jan 2025 19:57:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1143,7 +1094,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 519DA9D309724F44A4239C52A7B7E98D Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:20:17Z'
+      - 'Ref A: E9A17C71009E4131A84E4A30B553533D Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:57:02Z'
     status:
       code: 200
       message: OK
@@ -1159,7 +1110,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1171,7 +1122,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:20:47 GMT
+      - Tue, 14 Jan 2025 19:57:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1185,7 +1136,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 2E747E39AF424434B221F485BC49B60B Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:20:48Z'
+      - 'Ref A: 6BE8818DC4AB4A8B926161BB44E16ABE Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:57:33Z'
     status:
       code: 200
       message: OK
@@ -1201,7 +1152,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1213,7 +1164,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:21:17 GMT
+      - Tue, 14 Jan 2025 19:58:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1227,7 +1178,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 16C0A3AE3D9E4CD9A932874B2E36A8F9 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:21:18Z'
+      - 'Ref A: 362BA6C6E3F347A69AED45BA3E7E12D9 Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:58:03Z'
     status:
       code: 200
       message: OK
@@ -1243,7 +1194,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1255,7 +1206,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:21:48 GMT
+      - Tue, 14 Jan 2025 19:58:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1269,7 +1220,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: A73FDDE4CC9F4FA19EAE591EC8D0A379 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:21:48Z'
+      - 'Ref A: 3D58E6576E5F4413A56FC51DE4423D1A Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:58:33Z'
     status:
       code: 200
       message: OK
@@ -1285,7 +1236,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1297,49 +1248,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:22:18 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16498'
-      x-msedge-ref:
-      - 'Ref A: 8ACA5EEBE2F2402EB98A1D32695B4734 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:22:18Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 01 Jan 2025 00:22:48 GMT
+      - Tue, 14 Jan 2025 19:59:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1353,7 +1262,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 908F3DDF328C43E9A97E68180DC829A6 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:22:48Z'
+      - 'Ref A: 31290B0907C54D169517172F84300500 Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:59:03Z'
     status:
       code: 200
       message: OK
@@ -1369,7 +1278,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1381,7 +1290,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:18 GMT
+      - Tue, 14 Jan 2025 19:59:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1395,7 +1304,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: FBBFB8DDF1324FD8A533556234A262DD Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:23:19Z'
+      - 'Ref A: 44AEAD5895774FCDBF17AD6F24E27D4D Ref B: CO6AA3150217023 Ref C: 2025-01-14T19:59:33Z'
     status:
       code: 200
       message: OK
@@ -1411,7 +1320,91 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584659162507503466?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jan 2025 20:00:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A86231EC15454F58A8F6C3E643415F9A Ref B: CO6AA3150217023 Ref C: 2025-01-14T20:00:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jan 2025 20:00:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 315F4996F10147CEA8A3CEA06531162C Ref B: CO6AA3150217023 Ref C: 2025-01-14T20:00:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-azure-mgmt-resource/23.1.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584647224455473730?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1423,7 +1416,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:48 GMT
+      - Tue, 14 Jan 2025 20:01:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1437,7 +1430,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 4E9A9737093543EABDA6C31A4BB0FF61 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:23:49Z'
+      - 'Ref A: 250B75057EE6464EB36B2348844ACA8A Ref B: CO6AA3150217023 Ref C: 2025-01-14T20:01:04Z'
     status:
       code: 200
       message: OK
@@ -1456,16 +1449,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-warrjones/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7312278","name":"Microsoft.AzureQuantum-e2e-test-w7312278","type":"Microsoft.Resources/deployments","properties":{"templateHash":"8780732195960594757","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w7312278"},"location":{"type":"String","value":"westus"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"Microsoft.ChemistryHpc","providerSku":"Basic"},{"providerId":"ionq","providerSku":"aqt-pay-as-you-go-cred-new"},{"providerId":"microsoft-elements","providerSku":"elements-internal-testing"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits"},{"providerId":"quantinuum","providerSku":"credits1"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"}]},"storageAccountName":{"type":"String","value":"e2eqsharptests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},"storageAccountLocation":{"type":"String","value":"westus"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-01-Jan-2025-00-17-14"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-01-01T00:23:42.9654117Z","duration":"PT6M27.0204234S","correlationId":"9cfb2b38-9df2-4803-bd28-8ae40784e391","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/Workspaces/e2e-test-w7312278","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w7312278"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w7312278","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-01-Jan-2025-00-17-14","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-01-Jan-2025-00-17-14"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests/providers/Microsoft.Authorization/roleAssignments/034b0b93-964b-5145-95a2-8329344e9639"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8924082","name":"Microsoft.AzureQuantum-e2e-test-w8924082","type":"Microsoft.Resources/deployments","properties":{"templateHash":"8780732195960594757","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w8924082"},"location":{"type":"String","value":"westus"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"rigetti","providerSku":"azure-quantum-credits"},{"providerId":"ionq","providerSku":"aqt-pay-as-you-go-cred-new"},{"providerId":"microsoft-elements","providerSku":"elements-internal-testing"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits"},{"providerId":"quantinuum","providerSku":"credits1"}]},"storageAccountName":{"type":"String","value":"e2eqsharptests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},"storageAccountLocation":{"type":"String","value":"westus"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-14-Jan-2025-19-54-00"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-01-14T20:00:43.7515913Z","duration":"PT6M42.8804327S","correlationId":"2d572cd8-5fc7-45c0-bb3d-4dd330109777","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/Workspaces/e2e-test-w8924082","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w8924082"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w8924082","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-14-Jan-2025-19-54-00","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-14-Jan-2025-19-54-00"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests/providers/Microsoft.Authorization/roleAssignments/f62bec95-9d04-56df-b25b-de2e637042ee"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3366'
+      - '3304'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:49 GMT
+      - Tue, 14 Jan 2025 20:01:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1479,7 +1472,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 42DDE57BE9514FAF96B214C40E4A58A3 Ref B: CO6AA3150220019 Ref C: 2025-01-01T00:23:49Z'
+      - 'Ref A: E3FFFA41739A433991C6D551749CF6B6 Ref B: CO6AA3150217023 Ref C: 2025-01-14T20:01:04Z'
     status:
       code: 200
       message: OK
@@ -1493,23 +1486,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b4.dev5 azsdk-python-quantum/0.0.0.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - az-cli-ext/1.0.0b4 azsdk-python-quantum/0.0.0.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278/providerStatus
+    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"Microsoft.ChemistryHpc","currentAvailability":"Unavailable","targets":[{"id":"microsoft.hpc","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-elements","currentAvailability":"Available","targets":[{"id":"microsoft.dft","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Available","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":361,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Available","averageQueueTime":66933,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":125177,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-3","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-elements","currentAvailability":"Available","targets":[{"id":"microsoft.dft","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Available","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":361,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Available","averageQueueTime":286670,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Available","averageQueueTime":1745651,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":1966,"statusPage":"https://www.quantinuum.com/hardware/h1"}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1905'
+      - '1859'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:51 GMT
+      - Tue, 14 Jan 2025 20:01:06 GMT
       mise-correlation-id:
-      - 306101ac-15e8-4386-80f2-4c64142e9295
+      - 108d2c41-703a-443e-9bd8-82b2c8e5c249
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1541,23 +1534,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b4.dev5 azsdk-python-quantum/0.0.0.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - az-cli-ext/1.0.0b4 azsdk-python-quantum/0.0.0.1 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278/providerStatus
+    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"Microsoft.ChemistryHpc","currentAvailability":"Unavailable","targets":[{"id":"microsoft.hpc","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-elements","currentAvailability":"Available","targets":[{"id":"microsoft.dft","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Available","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":361,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Available","averageQueueTime":66933,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":125177,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-3","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-elements","currentAvailability":"Available","targets":[{"id":"microsoft.dft","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Available","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":361,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Available","averageQueueTime":286670,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Available","averageQueueTime":1745651,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":1966,"statusPage":"https://www.quantinuum.com/hardware/h1"}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1905'
+      - '1859'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:51 GMT
+      - Tue, 14 Jan 2025 20:01:06 GMT
       mise-correlation-id:
-      - a9bc1b01-360a-4046-9273-ca8b55f4fd0a
+      - e55b2309-dcf8-403f-887e-ec2ecb5a4371
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1596,15 +1589,15 @@ interactions:
       - -g -w
       User-Agent:
       - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-        az-cli-ext/1.0.0b4.dev5
+        az-cli-ext/1.0.0b4
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082?api-version=2023-11-13-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS/operationStatuses/c0af01b1-8545-4097-9890-45e1c7ec248c*C3C7DDEB2FA0FD51DB78C3085F26CB2D8ABBCE0978160EDCA517CEF6821E5A1D?api-version=2023-11-13-preview&t=638712878328540147&c=MIIHhzCCBm-gAwIBAgITHgVxvH65_BmPrKxDIgAABXG8fjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTI1MTkzNzA4WhcNMjUwMzI0MTkzNzA4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKlHcl7gn1b6aLS1hLftgvWE8n-Z9liLRsNGgjYfyY_1N6TVDEHJTtctREIaCRDPEC-hePKBe7OS45JIAD6cl5AGU_dQlGd-3bBZeVfAPJFUnC910pwhDca2OXlf4LyB1KSofXaA4xDB6G7cHXRld_URCnol2LHQEGox0vBzaPz30AUB0ZhAatZgqhXy5qnroV3zbEZC3m4qLDSnG8QNEnw8Wv5GpYH_MxK9mgDPwoIObeDBnjtQonKzvItZ8jXwF-wEmcVAnhr6Dvq3rWdBY9616kXvQ7E3eEvGqMn9W_NZTAqlaanfaACfITkIJZkgsSoJGw5USCMC-vzAb1Ms0j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTELag1gS_F07Xj1us9l4ySYrHYYjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABJx3Gb3LtjBZ4x70SioNIk8ap3qwt2DMEu9dXEhi28jFB87BBsTCkNeuhGlLzHm7Ykx6xpUjJp4F2_qmJKrQjDH4U0VYT_yc8Ow5mxrFJcewgTXzwmwqXOodok5WWOUVP4Mmdp_O_3je1dVgw4TrdrypIZImBn2jVDrXQ79fFXTR-Td0XMOtWPDwreoMRagD769QW4hlGtVaZCqOAzyomfSc8PhDzKhllbZQrmP-UgiLU14SDsxwq6AHG413ClcJIDGfEsEKwlUyIIAKHDwSdbO41Zs7ZQG5k_eBlGTkr-5Zye8vT7OeGf1_mGZSme6otyTUL_3-6gJ282qCPXoflc&s=b5lvMiiCTkcmIJd2Sxd0GzA1d1GBwy6eDRUnpaapuI5pgVfL5uF-us6FawOEL_bSq3ktWrzElfoqbMfSYzW3J9JSpB2Vi0SOrRIWs3upHzkE9GkGq1OqbEt5CN2Xy-0UV8OIKxxUuVDovzDJYGMR7_5JXB1BUUipdi7BaBcYhXkFEZGxYhz5RS7u5eMG4Bzpm6q7xUFghzbvQoBYGwTx-JAH5-rHXavqCqsdeivQccPwu5wKTdKPeLLUr6PiQZYnnY74GB2ps0iMmSTwGT7fz-98Bzi3I7hiZRYW5x_OlBzEBGIZXoIWr42dl6tNhh5ruV6u11GLJWmaiRalGQBfKQ&h=nBvr5SZ1-9wXm7jRAGBtdUpYK-nphgMFxqJo9y5EeZc
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS/operationStatuses/c312f227-50d9-4f96-b9bb-368649b4d465*2ECAC34CD0242ED654AC0585B241B5FF586A2F3E031071C09ADDBD2C1A729BC3?api-version=2023-11-13-preview&t=638724816673913698&c=MIIHpTCCBo2gAwIBAgITOgM6dTLGpzYZpvPtgQAEAzp1MjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI2MDEzMjIxWhcNMjUwNjIxMDEzMjIxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPPPKY5bDN03KptFFhiyLIyn86BlrXYFIZWYXA-hY7_WbLyWN0IxcLIUBW_I-9u-YsXOHk9WPMlUYHIFPgHW7A3FsSGfl9dd6YGapKoSSw0NkTpNXM58R54BBgLp7AhiWzK15D9T-XELNSU4Wq9sEeA5T24kazcgS2MUkzELH0I9dwu7g0dwJIuIJkoJjEzg1b1Q3Ie5HKHHNbjottJn7Q5LBS-9QtQyruuwaNTgSJpCoi4PBKVIOTBYL_Nv1wecmKmfWcT0mnhQE9zjhJTbcoN9hKSvAMqsDHtxWUFZosiw3JKIY0zb59CrVGSuOhfN3qaarwN9EAlXLqc4ZyKpsTkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRk_38CqdKjPVylWUR4uuqhbFGeHTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFsx7FtYAzSo98T5ydNFa0ukjPZ6XCQc9zo7ldqy235P_zJAUkaNgCU4EGOzbZJDoMa8mAfhyukL_0GfPeApUaY2e44ZOzoYAkeEuDiwcs-9zoQ1fCyXhn0pCumGFXRilX9KjAPaYTzDvQMEllTy_ZViwTahuKaGtFVamZguBPdaeYC_0oybtTVNQCs8hGnffhNZOMASB-5pFs35MNxsDWTVIQksDee419jqpsbWLkh6rnanILO1O_ihwb-WpvRQByQ5NGpG1-z0MQ6nRpr9wWxUi-DsrVsD38NTMIPc2uei4Ivf6qnGRvOOj0fmsciWuTTEXMaD-5a81mGlzhZc09Q&s=GkIHtWEU6We4d50-wrHMxKMcgMqBmEjqKs3B5mFlqVcBqJe8pPCOOi57ZhQoz9bELtR2ZYzWAVbTewSbGQ4uGJqmPDFjeciekhfgRkTn-ZfgEZ5NL_6tf0h4n4r_qNNSvT_E6BrG1tTl0Bp8oyKjcf9GDmqTBA7pKJDBAVLQW_VsG-AVL6VCfmlljuDfiAHjQoWQl0YncajyWArzBaUxGWdDrEvnui1ZEBz-5S5KBQpi4L5vAnZcf-MspOm3jTqM2mwgWncGRoeVUpriZ9MT58sc30-8S2saEU1e-8Opo8s0fW81JzVswky-0svRrvpYM7rKSycVupqBzvW7dw6OrQ&h=hgApOBF-yM1w3Ep9Fa1i4JSJjHXHeTuIn2XyL_wnJb8
       cache-control:
       - no-cache
       content-length:
@@ -1612,15 +1605,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:52 GMT
+      - Tue, 14 Jan 2025 20:01:06 GMT
       etag:
-      - '"f602eb26-0000-0700-0000-67748b180000"'
+      - '"3c0dde84-0000-0700-0000-6786c2830000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS/operationStatuses/c0af01b1-8545-4097-9890-45e1c7ec248c*C3C7DDEB2FA0FD51DB78C3085F26CB2D8ABBCE0978160EDCA517CEF6821E5A1D?api-version=2023-11-13-preview&t=638712878328696096&c=MIIHhzCCBm-gAwIBAgITHgVxvH65_BmPrKxDIgAABXG8fjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTI1MTkzNzA4WhcNMjUwMzI0MTkzNzA4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKlHcl7gn1b6aLS1hLftgvWE8n-Z9liLRsNGgjYfyY_1N6TVDEHJTtctREIaCRDPEC-hePKBe7OS45JIAD6cl5AGU_dQlGd-3bBZeVfAPJFUnC910pwhDca2OXlf4LyB1KSofXaA4xDB6G7cHXRld_URCnol2LHQEGox0vBzaPz30AUB0ZhAatZgqhXy5qnroV3zbEZC3m4qLDSnG8QNEnw8Wv5GpYH_MxK9mgDPwoIObeDBnjtQonKzvItZ8jXwF-wEmcVAnhr6Dvq3rWdBY9616kXvQ7E3eEvGqMn9W_NZTAqlaanfaACfITkIJZkgsSoJGw5USCMC-vzAb1Ms0j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBTELag1gS_F07Xj1us9l4ySYrHYYjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABJx3Gb3LtjBZ4x70SioNIk8ap3qwt2DMEu9dXEhi28jFB87BBsTCkNeuhGlLzHm7Ykx6xpUjJp4F2_qmJKrQjDH4U0VYT_yc8Ow5mxrFJcewgTXzwmwqXOodok5WWOUVP4Mmdp_O_3je1dVgw4TrdrypIZImBn2jVDrXQ79fFXTR-Td0XMOtWPDwreoMRagD769QW4hlGtVaZCqOAzyomfSc8PhDzKhllbZQrmP-UgiLU14SDsxwq6AHG413ClcJIDGfEsEKwlUyIIAKHDwSdbO41Zs7ZQG5k_eBlGTkr-5Zye8vT7OeGf1_mGZSme6otyTUL_3-6gJ282qCPXoflc&s=EoOkCKtbkLOwe0Om71lYfRvVuaEK5FScH3K6dxhPDAkepsvmPJ_vrjkU_zwvL2qIR-zx8r9MNueH2IHjZkX-tCa4KKLlnKt38WgaMJhP79ss7ZnEGamvYI0d5LenoJDoEfI1Z58gtLtrks7fs50Birxew6s7vMYuWpHi0fOH8F-FbsFdPqXoJgQ6-lZSISmb3mYbsvozRS8GQ76DWIZNj4AEUa9dnNQKs3cYoyIt8cu_ubLftusJ0kJAAbpbZ1MTg4pn3aPg3xCDHGuZ0l5iSySDYYqv2kseOJM9-X49_OOhvPfWXHBc4Fq6hkdVtQYsvAF4Wpwh9JRgyZNViRfRMg&h=_v4T5TF6LwzNXIggir_KYW9JUmslg6FNjh068JvH68Q
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS/operationStatuses/c312f227-50d9-4f96-b9bb-368649b4d465*2ECAC34CD0242ED654AC0585B241B5FF586A2F3E031071C09ADDBD2C1A729BC3?api-version=2023-11-13-preview&t=638724816674069922&c=MIIHpTCCBo2gAwIBAgITOgM6dTLGpzYZpvPtgQAEAzp1MjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI2MDEzMjIxWhcNMjUwNjIxMDEzMjIxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPPPKY5bDN03KptFFhiyLIyn86BlrXYFIZWYXA-hY7_WbLyWN0IxcLIUBW_I-9u-YsXOHk9WPMlUYHIFPgHW7A3FsSGfl9dd6YGapKoSSw0NkTpNXM58R54BBgLp7AhiWzK15D9T-XELNSU4Wq9sEeA5T24kazcgS2MUkzELH0I9dwu7g0dwJIuIJkoJjEzg1b1Q3Ie5HKHHNbjottJn7Q5LBS-9QtQyruuwaNTgSJpCoi4PBKVIOTBYL_Nv1wecmKmfWcT0mnhQE9zjhJTbcoN9hKSvAMqsDHtxWUFZosiw3JKIY0zb59CrVGSuOhfN3qaarwN9EAlXLqc4ZyKpsTkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRk_38CqdKjPVylWUR4uuqhbFGeHTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFsx7FtYAzSo98T5ydNFa0ukjPZ6XCQc9zo7ldqy235P_zJAUkaNgCU4EGOzbZJDoMa8mAfhyukL_0GfPeApUaY2e44ZOzoYAkeEuDiwcs-9zoQ1fCyXhn0pCumGFXRilX9KjAPaYTzDvQMEllTy_ZViwTahuKaGtFVamZguBPdaeYC_0oybtTVNQCs8hGnffhNZOMASB-5pFs35MNxsDWTVIQksDee419jqpsbWLkh6rnanILO1O_ihwb-WpvRQByQ5NGpG1-z0MQ6nRpr9wWxUi-DsrVsD38NTMIPc2uei4Ivf6qnGRvOOj0fmsciWuTTEXMaD-5a81mGlzhZc09Q&s=TDI841wW0gbDtzR1hEkX6h9Wt2im1SC6rgSS5mfG2q-ePESwx2KPzPU_-us9H89FqjEMPi_x5iBzkbhLaLpfjxREP5v2RWuOMTG6YuPSAJgyYikQeXbhyiuTEqBAH5xgNtaVWZer7WSYYClkQZ_HI7QbyOMduFKeS01NkrgVlbbpJDj--g_Tvyn95bBZ5Q7uXrEfe0n_PBPuO72kKeIVn6l6tu3a2nzlv1TqDzVKlJsejwoaPlioPVhfMCCWybHh1nmb_hHxc7xfWzzNNLXRUk5lMIhdYGpePkFCviNos9Wf9uEaZ0n8l5PfXOpkTUF2KpMDGKp5sXCI2MZBcI4cSw&h=tXvKUdZqaDhjRRAsc2ONBBH5JoToZsKh1hOCmJWxv1c
       mise-correlation-id:
-      - e3d773cb-e228-4975-a8ae-9baf40af69a3
+      - 721c56fb-fd20-4c4a-9f49-a2e27b559ae0
       pragma:
       - no-cache
       request-context:
@@ -1635,7 +1628,7 @@ interactions:
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250101T002352Z-186c86bbc584lwrqhC1SJCgh1g000000078g000000000dtn
+      - 20250114T200107Z-r19fdc5c9f9g6fbmhC1SJC2m3s00000000qg0000000085g4
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1647,7 +1640,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: 1D0E503035CF4BB19AB797720FB26242 Ref B: CO6AA3150219049 Ref C: 2025-01-01T00:23:51Z'
+      - 'Ref A: AB0697D4189B44609216D335AF775F5F Ref B: CO6AA3150220053 Ref C: 2025-01-14T20:01:06Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -1671,23 +1664,23 @@ interactions:
       - -g -w
       User-Agent:
       - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-        az-cli-ext/1.0.0b4.dev5
+        az-cli-ext/1.0.0b4
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w7312278","name":"e2e-test-w7312278","type":"microsoft.quantum/workspaces","location":"westus","tags":{},"systemData":{"createdBy":"v-warrjones@microsoft.com","createdByType":"User","createdAt":"2025-01-01T00:17:20.3067021Z","lastModifiedBy":"v-warrjones@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-01T00:17:20.3067021Z"},"identity":{"principalId":"5708af37-d363-4c62-85a9-ccb1fc59ef86","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"Microsoft.ChemistryHpc","providerSku":"Basic","applicationName":"e2e-test-w7312278-Microsoft.ChemistryHpc","provisioningState":"Succeeded"},{"providerId":"ionq","providerSku":"aqt-pay-as-you-go-cred-new","applicationName":"e2e-test-w7312278-ionq","provisioningState":"Succeeded","resourceUsageId":"b20bdfef-229d-498d-a55c-1e56be819296"},{"providerId":"microsoft-elements","providerSku":"elements-internal-testing","applicationName":"e2e-test-w7312278-microsoft-elements","provisioningState":"Succeeded"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits","applicationName":"e2e-test-w7312278-pasqal","provisioningState":"Succeeded","resourceUsageId":"5f3a8703-bd37-4a88-b320-91c8ac94ae2e"},{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w7312278-quantinuum","provisioningState":"Succeeded","resourceUsageId":"0a939140-e781-4237-ad8a-c3ad2fa15095"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w7312278-rigetti","provisioningState":"Succeeded","resourceUsageId":"987df8d6-f4d8-4845-822a-22f005450699"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests","apiKeyEnabled":false,"endpointUri":"https://e2e-test-w7312278.westus.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Quantum/workspaces/e2e-test-w8924082","name":"e2e-test-w8924082","type":"microsoft.quantum/workspaces","location":"westus","tags":{},"systemData":{"createdBy":"v-warrjones@microsoft.com","createdByType":"User","createdAt":"2025-01-14T19:54:03.4955257Z","lastModifiedBy":"v-warrjones@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-14T19:54:03.4955257Z"},"identity":{"principalId":"5590e2df-faab-43d5-ace6-67c40b615879","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w8924082-rigetti","provisioningState":"Succeeded","resourceUsageId":"f6c8d6be-0345-42b3-bdaa-1c1f62ed5129"},{"providerId":"ionq","providerSku":"aqt-pay-as-you-go-cred-new","applicationName":"e2e-test-w8924082-ionq","provisioningState":"Succeeded","resourceUsageId":"c53b1dc6-d21c-4aa8-b61f-9ec0083e9d37"},{"providerId":"microsoft-elements","providerSku":"elements-internal-testing","applicationName":"e2e-test-w8924082-microsoft-elements","provisioningState":"Succeeded"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits","applicationName":"e2e-test-w8924082-pasqal","provisioningState":"Succeeded","resourceUsageId":"5cfa7635-817b-40fa-8d0f-8242471eddd9"},{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w8924082-quantinuum","provisioningState":"Succeeded","resourceUsageId":"96d4dbb3-e73f-45af-883a-0c0048d943ba"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-warrjones/providers/Microsoft.Storage/storageAccounts/e2eqsharptests","apiKeyEnabled":false,"endpointUri":"https://e2e-test-w8924082.westus.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2042'
+      - '1887'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Jan 2025 00:23:52 GMT
+      - Tue, 14 Jan 2025 20:01:06 GMT
       etag:
-      - '"f602eb26-0000-0700-0000-67748b180000"'
+      - '"3c0dde84-0000-0700-0000-6786c2830000"'
       expires:
       - '-1'
       pragma:
@@ -1703,7 +1696,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 2C5FDED212204EEBBE9619A516B3DCED Ref B: CO6AA3150219049 Ref C: 2025-01-01T00:23:52Z'
+      - 'Ref A: C599731502C94ED0BD32515D4C6006A7 Ref B: CO6AA3150220053 Ref C: 2025-01-14T20:01:07Z'
     status:
       code: 200
       message: OK

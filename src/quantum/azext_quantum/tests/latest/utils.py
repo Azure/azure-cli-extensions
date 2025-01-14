@@ -9,11 +9,11 @@ TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
 TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
-TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft.ChemistryHpc/Basic"
-TEST_CAPABILITIES_DEFAULT = "new.Microsoft.ChemistryHpc;submit.Microsoft.ChemistryHpc"
-TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "Microsoft.ChemistryHpc/Basic"
-TEST_TARGET_DEFAULT_PROVIDER = "Microsoft.ChemistryHpc"
-TEST_TARGET_DEFAULT_TARGET = "microsoft.hpc"
+TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "rigetti/azure-quantum-credits"
+TEST_CAPABILITIES_DEFAULT = "new.rigetti;submit.rigetti"
+TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "rigetti/azure-quantum-credits"
+TEST_TARGET_DEFAULT_PROVIDER = "rigetti"
+TEST_TARGET_DEFAULT_TARGET = "rigetti.sim.qvm"
 
 
 def get_from_os_environment(env_name, default):
