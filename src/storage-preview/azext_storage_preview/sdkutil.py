@@ -7,7 +7,7 @@
 
 from azure.cli.core.profiles import get_sdk, supported_api_version, ResourceType
 from azure.cli.core.profiles._shared import APIVersionException
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS
+from .profiles import CUSTOM_DATA_STORAGE
 
 
 def cosmosdb_table_exists(cli_ctx):
