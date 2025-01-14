@@ -37,19 +37,6 @@ def get_blob_service_by_type(cli_ctx, blob_type):
         return None
 
 
-def get_adls_blob_service_by_type(cli_ctx, blob_type):
-    type_to_service = {
-        'block': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE_ADLS, 'BlockBlobService', mod='blob'),
-        'page': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE_ADLS, 'PageBlobService', mod='blob'),
-        'append': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE_ADLS, 'AppendBlobService', mod='blob')
-    }
-
-    try:
-        return type_to_service[blob_type](cli_ctx)
-    except KeyError:
-        return None
-
-
 def get_blob_types():
     return 'block', 'page', 'append'
 
