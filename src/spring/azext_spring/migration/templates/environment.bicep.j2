@@ -1,6 +1,8 @@
 param containerAppEnvName string = {{containerAppEnvName}}
 param containerAppLogAnalyticsName string = {{containerAppLogAnalyticsName}}
 param location string = {{location}}
+param workloadProfileName string
+param workloadProfileType string
 param daprAIInstrumentationKey string? = {{daprAIInstrumentationKey}}
 param daprAIConnectionString string? = {{daprAIConnectionString}}
 
@@ -32,8 +34,8 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
     // customDomainConfiguration: {}
     workloadProfiles: [
       {
-        name: '{{workloadProfileName}}'
-        workloadProfiles: '{{workloadProfiles}}'
+        name: workloadProfileName
+        workloadProfileType: workloadProfileType
         minimumCount: '{{minimumCount}}'
         maximumCount: '{{maximumCount}}'
       }
