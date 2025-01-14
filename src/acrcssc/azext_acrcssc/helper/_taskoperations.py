@@ -420,10 +420,13 @@ def _transform_task_list(tasks):
             "description": CONTINUOUSPATCH_TASK_DEFINITION[task.name][DESCRIPTION]
         }
 
-        # Extract schedule from trigger.timerTriggers if available
         trigger = task.trigger
         if trigger and trigger.timer_triggers:
+            # convert the cron expression to a 'days' format to keep consistent with the command's options
             transformed_obj["schedule"] = transform_cron_to_schedule(trigger.timer_triggers[0].schedule)
+
+            # add a 'nextOccurrence' field to the task, only for the scheduling task
+            transformed_obj["nextOccurrence"] = get_next_date(task.trigger.timer_triggers[0].schedule)
         transformed.append(transformed_obj)
 
     return transformed
