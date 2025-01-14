@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "healthcareapis deidservice update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a DeidService by name
 
     :example: deidservice_update
-        az deidservice update --name deidTest -g rgopenapi --tags tag=test
+        az healthcareapis deidservice update --name deidTest -g rgopenapi --tags tag=test
     """
 
     _aaz_info = {
-        "version": "2024-02-28-preview",
+        "version": "2024-09-20",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}", "2024-02-28-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}", "2024-09-20"],
         ]
     }
 
@@ -190,7 +189,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-28-preview",
+                    "api-version", "2024-09-20",
                     required=True,
                 ),
             }
@@ -289,7 +288,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-28-preview",
+                    "api-version", "2024-09-20",
                     required=True,
                 ),
             }
