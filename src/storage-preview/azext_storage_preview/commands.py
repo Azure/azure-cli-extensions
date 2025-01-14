@@ -158,7 +158,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage account local-user', local_users_sdk,
                             custom_command_type=local_users_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01') as g:
         g.custom_command('create', 'create_local_user')
         g.custom_command('update', 'update_local_user')
         g.command('delete', 'delete')

@@ -947,15 +947,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
             c.argument('has_ssh_password', arg_type=get_three_state_flag(),
                        help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
-            c.argument('group_id',
+            c.argument('group_id', is_preview=True,
                        help='An identifier for associating a group of users.')
             c.argument('allow_acl_authorization', options_list=['--allow-acl-authorization', '--allow-acl-auth'],
-                       arg_type=get_three_state_flag(),
+                       arg_type=get_three_state_flag(), is_preview=True,
                        help='Indicate whether ACL authorization is allowed for this user. '
                             'Set it to false to disallow using ACL authorization.')
-            c.argument('extended_groups', nargs='+',
+            c.argument('extended_groups', nargs='+', is_preview=True,
                        help='Supplementary group membership. Only applicable for local users enabled for NFSv3 access.')
 
     with self.argument_context('storage account local-user create') as c:
-        c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(),
+        c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(), is_preview=True,
                    help='Indicate if the local user is enabled for access with NFSv3 protocol.')
