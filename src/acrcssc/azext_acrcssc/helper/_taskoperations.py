@@ -264,7 +264,7 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
 
     image_status = WorkflowTaskStatus.from_taskrun(cmd, acr_task_run_client, registry, scan_taskruns, patch_taskruns, progress_indicator=progress_indicator)
     if workflow_status:
-        filtered_image_status = [image for image in image_status if image.status() == workflow_status]
+        filtered_image_status = [image for image in image_status if image["patch_status"] == workflow_status or image["scan_status"] == workflow_status]
         image_status = filtered_image_status
 
     end_time = time.time()

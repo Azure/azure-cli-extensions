@@ -254,7 +254,6 @@ class WorkflowTaskStatus:
                 patch_task = next(task for task in patch_taskruns if task.run_id == patch_task_id)
                 all_status[image].patch_task = patch_task
 
-        # don't return a list of WorkflowTaskStatus object, 
         return [status.get_status() for status in all_status.values()]
 
     def get_status(self):
