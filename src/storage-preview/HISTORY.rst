@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b5
++++++++
+* `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021
+* `az storage account local-user` only mark some params in `create/update` as preview as the rest have been GA in main rep
+
 1.0.0b4
 +++++++
 * `az storage account create/update`: Support `--enable-extended-groups`

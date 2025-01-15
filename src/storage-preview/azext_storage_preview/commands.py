@@ -5,9 +5,9 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_sa, blob_data_service_factory, adls_blob_data_service_factory,
+from ._client_factory import (cf_sa, blob_data_service_factory,
                               cf_share_client, cf_share_file_client, cf_share_directory_client, cf_local_users)
-from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_STORAGE,
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE,
                        CUSTOM_DATA_STORAGE_FILESHARE)
 
 
@@ -57,85 +57,14 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage azcopy', custom_command_type=get_custom_sdk('azcopy', None)) as g:
         g.custom_command('run-command', 'storage_run_command', validator=lambda namespace: None)
 
-    # pylint: disable=line-too-long
-    adls_base_blob_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_adls_storage_preview.blob.baseblobservice'
-                        '#BaseBlobService.{}',
-        client_factory=adls_blob_data_service_factory,
-        resource_type=CUSTOM_DATA_STORAGE_ADLS)
-
-    def _adls_deprecate_message(self):
-        msg = "This {} has been deprecated and will be removed in future release.".format(self.object_type)
-        msg += " Use '{}' instead.".format(self.redirect)
-        msg += " For more information go to"
-        msg += " https://github.com/Azure/azure-cli/blob/dev/src/azure-cli/azure/cli/command_modules/storage/docs/ADLS%20Gen2.md"
-        return msg
-
-    # New Blob Commands
-    with self.command_group('storage blob', command_type=adls_base_blob_sdk,
-                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
-                                                               CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        g.storage_command_oauth('move', 'rename_path', is_preview=True,
-                                deprecate_info=self.deprecate(redirect="az storage fs file move", hide=True,
-                                                              message_func=_adls_deprecate_message))
-
-    with self.command_group('storage blob access', command_type=adls_base_blob_sdk,
-                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
-                                                               CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS,
-                            deprecate_info=self.deprecate(redirect="az storage fs access", hide=True,
-                                                          message_func=_adls_deprecate_message)) as g:
-        g.storage_command_oauth('set', 'set_path_access_control')
-        g.storage_command_oauth('update', 'set_path_access_control')
-        g.storage_command_oauth('show', 'get_path_access_control')
-
-    # TODO: Remove them after deprecate for two sprints
-    # Blob directory Commands Group
-    with self.command_group('storage blob directory', command_type=adls_base_blob_sdk,
-                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
-                                                               CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS, is_preview=True) as g:
-        from ._format import transform_blob_output
-        from ._transformers import (transform_storage_list_output, create_boolean_result_output_transformer)
-        g.storage_command_oauth('create', 'create_directory')
-        g.storage_command_oauth('delete', 'delete_directory')
-        g.storage_custom_command_oauth('move', 'rename_directory')
-        g.storage_custom_command_oauth('show', 'show_directory', table_transformer=transform_blob_output,
-                                       exception_handler=show_exception_handler)
-        g.storage_custom_command_oauth('list', 'list_directory', transform=transform_storage_list_output,
-                                       table_transformer=transform_blob_output)
-        g.storage_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
-        g.storage_command_oauth(
-            'metadata show', 'get_blob_metadata', exception_handler=show_exception_handler)
-        g.storage_command_oauth('metadata update', 'set_blob_metadata')
-
-    with self.command_group('storage blob directory', is_preview=True,
-                            custom_command_type=get_custom_sdk('azcopy', adls_blob_data_service_factory,
-                                                               CUSTOM_DATA_STORAGE_ADLS))as g:
-        g.storage_custom_command_oauth('upload', 'storage_blob_upload')
-        g.storage_custom_command_oauth('download', 'storage_blob_download')
-
-    with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk, is_preview=True,
-                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
-                                                               CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        g.storage_command_oauth('set', 'set_path_access_control')
-        g.storage_command_oauth('update', 'set_path_access_control')
-        g.storage_command_oauth('show', 'get_path_access_control')
-
-    with self.command_group('storage blob directory',
-                            deprecate_info=self.deprecate(redirect="az storage fs directory", hide=True,
-                                                          message_func=_adls_deprecate_message)) as g:
-        pass
-
     share_client_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storagev2.fileshare._share_client#ShareClient.{}',
         client_factory=cf_share_client,
         resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
 
     directory_client_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._directory_client#ShareDirectoryClient.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._directory_client'
+                        '#ShareDirectoryClient.{}',
         client_factory=cf_share_directory_client,
         resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
 
@@ -155,7 +84,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage directory', command_type=directory_client_sdk,
                             resource_type=CUSTOM_DATA_STORAGE_FILESHARE,
                             custom_command_type=get_custom_sdk('directory', cf_share_directory_client)) as g:
-        from ._transformers import transform_share_directory_json_output
+        from ._transformers import transform_share_directory_json_output, create_boolean_result_output_transformer
         from ._format import transform_file_directory_result, transform_file_output, transform_boolean_for_table
         g.storage_custom_command_oauth('create', 'create_directory',
                                        transform=create_boolean_result_output_transformer('created'),
@@ -229,7 +158,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage account local-user', local_users_sdk,
                             custom_command_type=local_users_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01') as g:
         g.custom_command('create', 'create_local_user')
         g.custom_command('update', 'update_local_user')
         g.command('delete', 'delete')
