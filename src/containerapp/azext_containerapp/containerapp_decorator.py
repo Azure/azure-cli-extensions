@@ -663,6 +663,16 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_no_wait(self, no_wait):
         self.set_param("no_wait", no_wait)
 
+    def get_argument_enable_consumption_gpu(self):
+        return self.get_param("consumption_gpu_profile")
+
+    def validate_consumption_gpu_profile(self):
+        if self.get_argument_enable_consumption_gpu() is not None:
+            if self.get_argument_enable_consumption_gpu().lower() not in ["consumption-gpu-nc8as-t4", "consumption-gpu-nc4as-t4", "consumption-gpu-nc24-a100", "consumption-gpu-nc12-a100", "consumption-gpu-nv6ads-a10"]:
+                raise InvalidArgumentValueError('Containerapp consumption GPU workload profile must be one of the following: Consumption-GPU-NC8as-T4, Consumption-GPU-NC4as-T4, Consumption-GPU-NC24-A100, Consumption-GPU-NC12-A100, Consumption-GPU-NV6ads-A10.')
+            return self.get_argument_enable_consumption_gpu().lower()
+        return None
+
     # not craete role assignment if it's env system msi
     def check_create_acrpull_role_assignment(self):
         identity = self.get_argument_registry_identity()
@@ -698,6 +708,47 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                         return
                 self.set_argument_registry_identity('system')
 
+    def set_up_consumption_gpu_wp_payload(self, consumption_gpu_profile_type):
+        consumption_gpu_profile_type_lower = consumption_gpu_profile_type.lower()
+        if consumption_gpu_profile_type_lower == "consumption-gpu-nc8as-t4":
+            payload = {
+                "workloadProfileType": "Consumption-GPU-NC8as-T4",
+                "name": "consumption-8core-t4"
+            }
+        elif consumption_gpu_profile_type_lower == "consumption-gpu-nc4as-t4":
+            payload = {
+                "workloadProfileType": "Consumption-GPU-NC4as-T4",
+                "name": "consumption-4core-t4"
+            }
+        elif consumption_gpu_profile_type_lower == "consumption-gpu-nc24-a100":
+            payload = {
+                "workloadProfileType": "Consumption-GPU-NC24-A100",
+                "name": "consumption-24core-a100"
+            }
+        elif consumption_gpu_profile_type_lower == "consumption-gpu-nc12-a100":
+            payload = {
+                "workloadProfileType": "Consumption-GPU-NC12-A100",
+                "name": "consumption-12core-a100"
+            }
+        else:
+            raise ValidationError(f"Invalid consumption GPU profile type: {consumption_gpu_profile_type}.")
+        return payload
+
+    def update_consumption_gpu_wp(self, managed_env_info, consumption_gpu_profile_type):
+        existing_wp = safe_get(managed_env_info, "properties", "workloadProfiles")
+        env_name = safe_get(managed_env_info, "name")
+        if existing_wp is None:
+            raise ValidationError(f"Existing environment {env_name} cannot enable workload profiles. If you want to use Consumption GPU, please create a new one.")
+        consumption_gpu_profile = self.set_up_consumption_gpu_wp_payload(consumption_gpu_profile_type)
+        existing_wp.append(consumption_gpu_profile)
+        payload = {
+            "properties": {
+                "workloadProfiles": existing_wp
+            }
+        }
+        consumption_wp_name = consumption_gpu_profile["name"]
+        return payload, consumption_wp_name
+
     def parent_construct_payload(self):
         # preview logic
         self.check_create_acrpull_role_assignment()
@@ -726,6 +777,26 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if not managed_env_info:
             raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
 
+        consumption_gpu_wp = self.validate_consumption_gpu_profile()
+        if consumption_gpu_wp is not None:
+            logger.warning("Enabled preview feature: Consumption GPU workload profile.")
+            if self.get_argument_workload_profile_name() is not None:
+                raise ValidationError("Both --consumption-gpu-profile and --workload-profile-name (-w) are specified. Only one can be selected.")
+            existing_wp = safe_get(managed_env_info, "properties", "workloadProfiles", default=None)
+            consumption_gpu_wp_name = None
+            if existing_wp is not None:
+                for wp in existing_wp:
+                    if wp["workloadProfileType"].lower() == consumption_gpu_wp:
+                        consumption_gpu_wp_name = wp["name"]
+                        break
+            if consumption_gpu_wp_name is None:
+                env_client = self.get_environment_client
+                wp_payload, consumption_gpu_wp_name = self.update_consumption_gpu_wp(managed_env_info, consumption_gpu_wp)
+                env_client().update(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name, managed_environment_envelope=wp_payload)
+                managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+
+            self.set_argument_workload_profile_name(consumption_gpu_wp_name)
+
         while not self.get_argument_no_wait() and safe_get(managed_env_info, "properties", "provisioningState", default="").lower() in ["inprogress", "updating"]:
             logger.info("Waiting for environment provisioning to finish before creating container app")
             time.sleep(5)
@@ -734,7 +805,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         location = managed_env_info["location"]
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "containerApps")
 
-        if not self.get_argument_workload_profile_name() and "workloadProfiles" in managed_env_info:
+        if not self.get_argument_workload_profile_name() and "workloadProfiles" in managed_env_info and consumption_gpu_wp_name is None:
             workload_profile_name = get_default_workload_profile_name_from_env(self.cmd, managed_env_info, managed_env_rg)
             self.set_argument_workload_profile_name(workload_profile_name)
 
