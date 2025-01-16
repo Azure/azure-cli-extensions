@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.3
++++++
+* Deprecate blueprint commands
+
 0.3.2
 +++++
 * Migrate to atomic commands
