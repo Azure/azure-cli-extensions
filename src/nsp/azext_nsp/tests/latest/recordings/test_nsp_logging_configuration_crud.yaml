@@ -1,0 +1,392 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNetworkSecurityPerimeter"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"26e9edf0-0842-41aa-9991-c4e7a4dcdba4","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '438'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C8D580BE3C9E4DE9B41192D4A9C63CFA Ref B: MNZ221060619029 Ref C: 2024-11-29T07:09:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"enabledLogCategories": ["NspPublicInboundPerimeterRulesDenied"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '82'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --perimeter-name --resource-group --enabled-log-categories
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '417'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: B0AD18223F2D488B919CE0D2F3F6C970 Ref B: MNZ221060618051 Ref C: 2024-11-29T07:09:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '417'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0234301372BD4B3BBCF8D3E794125844 Ref B: MNZ221060619019 Ref C: 2024-11-29T07:09:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --enabled-log-categories
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '417'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 40F17B104FF547F59FA01BF9EF4A7E14 Ref B: MNZ221060618039 Ref C: 2024-11-29T07:09:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"enabledLogCategories": ["NspPublicInboundPerimeterRulesDenied",
+      "NspPublicOutboundPerimeterRulesDenied"], "version": "1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '139'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --enabled-log-categories
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"2","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesDenied"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '457'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E5387F4EE9D5477D8270D93AFC2BAB40 Ref B: MNZ221060618039 Ref C: 2024-11-29T07:09:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"2","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesDenied"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '457'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 60A8BDE25D7F4AE7A4E597B568E4736E Ref B: MNZ221060610053 Ref C: 2024-11-29T07:09:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 29 Nov 2024 07:09:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: FFCAE95EC5C84D918308319776A0E95F Ref B: MNZ221060609045 Ref C: 2024-11-29T07:09:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter logging-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2023-08-01-preview
+  response:
+    body:
+      string: '{"error":{"message":"Resource [/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance]
+        does not exist or has been deleted","code":"NotFound"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '310'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 29 Nov 2024 07:09:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0085CEA4E05B40F59BD922427D50088C Ref B: MNZ221060608017 Ref C: 2024-11-29T07:09:29Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1
