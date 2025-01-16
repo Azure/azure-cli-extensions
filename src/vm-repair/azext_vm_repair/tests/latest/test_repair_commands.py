@@ -1187,6 +1187,8 @@ class LinuxLongParametersParsing(LiveScenarioTest):
         # Run a script using long parameter parsing
         result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-on-repair --run-id linux-alar2 --parameters test ++initiator=SELFHELP -o json').get_output_in_json()
         assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
+        log_contains_initiator_selfhelp = "initiator=selfhelp" in result_run['logs'].lower()  
+        assert log_contains_initiator_selfhelp, "The logs do not contain 'initiator=selfhelp'"  
 
         # Call Restore
         self.cmd('vm repair restore -g {rg} -n {vm} --yes')
