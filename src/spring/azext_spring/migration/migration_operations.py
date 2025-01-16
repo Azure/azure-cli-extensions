@@ -61,7 +61,7 @@ def export_asa_arm_template(cmd, resource_group, service):
         subscription, resource_group, service)
     logger.info("service_resource_id: '%s'", service_resource_id)
     resources.append(service_resource_id)
-    options = None
+    options = "SkipAllParameterization,IncludeParameterDefaultValue"
 
     ExportTemplateRequest = cmd.get_models('ExportTemplateRequest')
     export_template_request = ExportTemplateRequest(resources=resources, options=options)
