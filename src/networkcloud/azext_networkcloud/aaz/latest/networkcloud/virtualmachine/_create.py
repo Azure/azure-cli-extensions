@@ -90,7 +90,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.console_extended_location = AAZObjectArg(
-            options=["--console-extended-location"],
+            options=["--ce-location", "--console-extended-location"],
             arg_group="Properties",
             help="The extended location to use for creation of a VM console resource.",
         )

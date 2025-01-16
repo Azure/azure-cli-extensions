@@ -144,7 +144,7 @@ class Update(AAZCommand):
         )
         cls._build_args_rack_definition_update(_args_schema.aggregator_or_single_rack_definition)
         _args_schema.analytics_output_settings = AAZObjectArg(
-            options=["--analytics-output-settings"],
+            options=["--ao-settings", "--analytics-output-settings"],
             arg_group="Properties",
             help="The settings for the log analytics workspace used for output of logs from this cluster.",
             nullable=True,
@@ -196,7 +196,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.vulnerability_scanning_settings = AAZObjectArg(
-            options=["--vulnerability-scanning-settings"],
+            options=["--vs-settings", "--vulnerability-scanning-settings"],
             arg_group="Properties",
             help="The settings for how security vulnerability scanning is applied to the cluster.",
             nullable=True,
