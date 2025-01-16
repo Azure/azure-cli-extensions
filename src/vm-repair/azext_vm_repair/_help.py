@@ -52,7 +52,7 @@ helps['vm repair run'] = """
         - name: Run a script with parameters on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
-        - name: Run a verified script with some parameters where just the value is sent to the script, and the entire key=value string of another parameter called \'initiator\' to the script. 
+        - name: Run a verified script with some parameters. In the first parameter named 'key', only the value 'test' is sent to the script. The second parameter named \'initiator\', uses the prefix '++' to send the entire following string 'initiator=selfhelp' to the script. 
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id linux-alar2 --parameters key=test ++initiator=selfhelp --verbose --debug
         - name: Run a local custom script on the VM.
