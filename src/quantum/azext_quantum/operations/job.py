@@ -479,7 +479,7 @@ def _get_job_output(cmd, job, item=None):
         if len(lines) == 0:
             return
 
-        if job.target.startswith("microsoft.simulator") and job.target != "microsoft.simulator.resources-estimator":
+        if job.target.startswith("microsoft.simulator"):
             result_start_line = len(lines) - 1
             is_result_string = lines[-1].endswith('"')
             if is_result_string:

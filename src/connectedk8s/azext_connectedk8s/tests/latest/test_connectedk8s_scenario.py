@@ -2,24 +2,32 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
-import os
+import contextlib
 import json
-import requests
+import os
 import platform
-import stat
-import psutil
-from knack.util import CLIError
-import azext_connectedk8s._constants as consts
-import urllib.request
 import shutil
-import time
-from knack.log import get_logger
-from azure.cli.core import get_default_cli
+import stat
 import subprocess
+import time
+import urllib.request
 from subprocess import PIPE
-from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer, live_only  # pylint: disable=import-error
+
+import psutil
+import requests
+from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
+from azure.cli.testsdk import (  # pylint: disable=import-error
+    LiveScenarioTest,
+    ResourceGroupPreparer,
+    live_only,
+)
+from knack.log import get_logger
+from knack.util import CLIError
+
+import azext_connectedk8s._constants as consts
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 logger = get_logger(__name__)
@@ -31,7 +39,7 @@ if not os.path.isfile(config_path):
     CONFIG["customLocationsOid"] = ""
     CONFIG["location"] = "eastus2euap"
 else:
-    with open(config_path, "r") as f:
+    with open(config_path) as f:
         CONFIG = json.load(f)
     for key in CONFIG:
         if not CONFIG[key]:
@@ -130,10 +138,8 @@ def install_kubectl_client():
         home_dir = os.path.expanduser("~")
         kubectl_filepath = os.path.join(home_dir, ".azure", "kubectl-client")
 
-        try:
+        with contextlib.suppress(FileExistsError):
             os.mkdir(kubectl_filepath)
-        except FileExistsError:
-            pass
 
         operating_system = platform.system().lower()
         # Setting path depending on the OS being used
@@ -171,7 +177,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # 1.1.59-preview')
 
         managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "rg": resource_group,
@@ -203,7 +209,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -211,7 +217,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     )
     def test_connect_withoidcandworkloadidentity(self, resource_group):
         managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "rg": resource_group,
@@ -249,7 +255,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -257,7 +263,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     )
     def test_connect_withoidcandselfhostedissuer(self, resource_group):
         managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "rg": resource_group,
@@ -299,7 +305,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -309,7 +315,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         managed_cluster_name = self.create_random_name(
             prefix="test-force-delete", length=24
         )
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "rg": resource_group,
@@ -361,7 +367,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -374,7 +380,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         managed_cluster_name = self.create_random_name(
             prefix="test-enable-disable", length=24
         )
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
 
         if CONFIG["customLocationsOid"] is None or CONFIG["customLocationsOid"] == "":
             cli = get_default_cli()
@@ -527,7 +533,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -538,8 +544,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         managed_cluster_name_second = self.create_random_name(
             prefix="second", length=24
         )
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
-        kubeconfigpls = "%s" % (_get_test_data_file("pls-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
+        kubeconfigpls = _get_test_data_file("pls-config.yaml")
         name = self.create_random_name(prefix="cc-", length=12)
         name_second = self.create_random_name(prefix="cc-", length=12)
         managed_cluster_list = []
@@ -607,7 +613,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # checking if the output is correct with original list of cluster names
         cluster_name_list.sort()
-        for i in range(0, len(cluster_name_list)):
+        for i in range(len(cluster_name_list)):
             assert cluster_name_list[i] == managed_cluster_list[i]
 
         # deleting the clusters
@@ -624,8 +630,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
-        os.remove("%s" % (_get_test_data_file("pls-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        os.remove(_get_test_data_file("pls-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -636,7 +642,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # 1.1.59-preview')
 
         managed_cluster_name = self.create_random_name(prefix="test-upgrade", length=24)
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "name": self.create_random_name(prefix="cc-", length=12),
@@ -711,7 +717,7 @@ only supported when auto-upgrade is set to false",
         jsonData = json.loads(response.text)
         repo_path = jsonData["repositoryPath"]
         index_value = 0
-        for ind in range(0, len(repo_path)):
+        for ind in range(len(repo_path)):
             if repo_path[ind] == ":":
                 break
             index_value += 1
@@ -738,7 +744,7 @@ only supported when auto-upgrade is set to false",
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -749,7 +755,7 @@ only supported when auto-upgrade is set to false",
         # 1.1.59-preview')
 
         managed_cluster_name = self.create_random_name(prefix="test-update", length=24)
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "name": self.create_random_name(prefix="cc-", length=12),
@@ -872,7 +878,7 @@ only supported when auto-upgrade is set to false",
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -882,7 +888,7 @@ only supported when auto-upgrade is set to false",
         managed_cluster_name = self.create_random_name(
             prefix="test-troubleshoot", length=24
         )
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "name": self.create_random_name(prefix="cc-", length=12),
@@ -923,7 +929,7 @@ only supported when auto-upgrade is set to false",
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
 
     @live_only()
     @ResourceGroupPreparer(
@@ -1156,7 +1162,7 @@ stderr: {proxy_process_stderr}""")
     )
     def test_skipping_ssl_verification(self, resource_group):
         managed_cluster_name = self.create_random_name(prefix="test-ssl", length=24)
-        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml"))
+        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
         self.kwargs.update(
             {
                 "rg": resource_group,
@@ -1188,4 +1194,4 @@ stderr: {proxy_process_stderr}""")
         self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
 
         # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + "-config.yaml")))
+        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
