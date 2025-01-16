@@ -535,7 +535,7 @@ def test_notification_channel(cmd, grafana_name, notification_channel, resource_
                                       api_key_or_token=api_key_or_token)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
                              data, api_key_or_token=api_key_or_token)
-    return response
+    return json.loads(response.content)
 
 
 def create_folder(cmd, grafana_name, title, resource_group_name=None, api_key_or_token=None, subscription=None):
