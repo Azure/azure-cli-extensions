@@ -908,6 +908,12 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
+    - name: Create a container app with resource requirements and GPU defined.
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-gpu-app:v1.0 --environment MyContainerappEnv \\
+              --cpu 2 --memory 4.0Gi \\
+              --gpu 1 --workload-profile-name my-gpu-wlp
 """
 
 # containerapp update for preview

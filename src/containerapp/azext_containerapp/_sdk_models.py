@@ -3900,6 +3900,8 @@ class ContainerResources(_serialization.Model):
     :vartype memory: str
     :ivar ephemeral_storage: Ephemeral Storage, e.g. "1Gi".
     :vartype ephemeral_storage: str
+    :ivar gpu: Required GPUs, e.g. 1.
+    :vartype gpu: float
     """
 
     _validation = {
@@ -3910,6 +3912,7 @@ class ContainerResources(_serialization.Model):
         "cpu": {"key": "cpu", "type": "float"},
         "memory": {"key": "memory", "type": "str"},
         "ephemeral_storage": {"key": "ephemeralStorage", "type": "str"},
+        "gpu": {"key": "gpu", "type": "float"},
     }
 
     def __init__(
@@ -3927,6 +3930,7 @@ class ContainerResources(_serialization.Model):
         self.cpu = cpu
         self.memory = memory
         self.ephemeral_storage = None
+        self.gpu = None
 
 
 class CookieExpiration(_serialization.Model):

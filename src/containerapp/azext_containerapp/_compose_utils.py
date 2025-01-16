@@ -6,6 +6,8 @@
 
 from knack.log import get_logger
 
+from azure.cli.command_modules.containerapp._compose_utils import service_deploy_resources_exists
+
 logger = get_logger(__name__)
 
 
@@ -47,3 +49,14 @@ def validate_memory_and_cpu_setting(cpu, memory, managed_environment):
         logger.warning(  # pylint: disable=W1203
             f"Invalid CPU reservation request of {cpu}. The default resource values will be used.")
     return (None, None)
+
+
+def resolve_gpu_configuration_from_service(service):
+    gpu = None
+    if service_deploy_resources_exists(service):
+        resources = service.deploy.resources
+        if resources.reservations is not None and resources.reservations.gpu is not None:
+            gpu = str(resources.reservations.gpu)
+    elif service.gpu is not None:
+        gpu = str(service.gpu)
+    return gpu

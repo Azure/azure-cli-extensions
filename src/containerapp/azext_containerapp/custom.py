@@ -455,6 +455,7 @@ def create_containerapp(cmd,
                         env_vars=None,
                         cpu=None,
                         memory=None,
+                        gpu=None,
                         registry_server=None,
                         registry_user=None,
                         registry_pass=None,
@@ -537,6 +538,7 @@ def update_containerapp_logic(cmd,
                               remove_all_env_vars=False,
                               cpu=None,
                               memory=None,
+                              gpu=None,
                               revision_suffix=None,
                               startup_command=None,
                               args=None,
@@ -603,6 +605,7 @@ def update_containerapp(cmd,
                         remove_all_env_vars=False,
                         cpu=None,
                         memory=None,
+                        gpu=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -643,6 +646,7 @@ def update_containerapp(cmd,
                                      remove_all_env_vars=remove_all_env_vars,
                                      cpu=cpu,
                                      memory=memory,
+                                     gpu=gpu,
                                      revision_suffix=revision_suffix,
                                      startup_command=startup_command,
                                      args=args,
@@ -902,6 +906,7 @@ def create_containerappsjob(cmd,
                             env_vars=None,
                             cpu=None,
                             memory=None,
+                            gpu=None,
                             registry_server=None,
                             registry_user=None,
                             registry_pass=None,
@@ -958,6 +963,7 @@ def update_containerappsjob(cmd,
                             remove_all_env_vars=False,
                             cpu=None,
                             memory=None,
+                            gpu=None,
                             startup_command=None,
                             args=None,
                             scale_rule_metadata=None,
@@ -1438,7 +1444,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                                        resolve_replicas_from_service,
                                                                        resolve_environment_from_service,
                                                                        resolve_secret_from_service)
-    from ._compose_utils import validate_memory_and_cpu_setting
+    from ._compose_utils import resolve_gpu_configuration_from_service, validate_memory_and_cpu_setting
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
@@ -1483,6 +1489,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             resolve_memory_configuration_from_service(service),
             managed_environment
         )
+        gpu = resolve_gpu_configuration_from_service(service)
         replicas = resolve_replicas_from_service(service)
         environment = resolve_environment_from_service(service)
         secret_vars, secret_env_ref = resolve_secret_from_service(service, parsed_compose_file.secrets)
@@ -1529,6 +1536,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 args=startup_args,
                                 cpu=cpu,
                                 memory=memory,
+                                gpu=gpu,
                                 env_vars=environment,
                                 secrets=secret_vars,
                                 min_replicas=replicas,
