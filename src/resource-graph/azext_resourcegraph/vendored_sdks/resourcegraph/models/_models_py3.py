@@ -54,12 +54,12 @@ class DateTimeInterval(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param start: Required. A datetime indicating the inclusive/closed start of the time interval,
-     i.e. ``[``\ **\ ``start``\ **\ ``, end)``. Specifying a ``start`` that occurs chronologically
+    :param start: Required. A datetime indicating the inclusive/closed start of the time interval.
+     Specifying a ``start`` that occurs chronologically
      after ``end`` will result in an error.
     :type start: ~datetime.datetime
-    :param end: Required. A datetime indicating the exclusive/open end of the time interval, i.e.
-     ``[start,``\ **\ ``end``\ **\ ``)``. Specifying an ``end`` that occurs chronologically before
+    :param end: Required. A datetime indicating the exclusive/open end of the time interval.
+     Specifying an ``end`` that occurs chronologically before
      ``start`` will result in an error.
     :type end: ~datetime.datetime
     """
@@ -1197,12 +1197,12 @@ class ResourceChangesRequestParametersInterval(DateTimeInterval):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param start: Required. A datetime indicating the inclusive/closed start of the time interval,
-     i.e. ``[``\ **\ ``start``\ **\ ``, end)``. Specifying a ``start`` that occurs chronologically
+    :param start: Required. A datetime indicating the inclusive/closed start of the time interval.
+     Specifying a ``start`` that occurs chronologically
      after ``end`` will result in an error.
     :type start: ~datetime.datetime
-    :param end: Required. A datetime indicating the exclusive/open end of the time interval, i.e.
-     ``[start,``\ **\ ``end``\ **\ ``)``. Specifying an ``end`` that occurs chronologically before
+    :param end: Required. A datetime indicating the exclusive/open end of the time interval.
+     Specifying an ``end`` that occurs chronologically before
      ``start`` will result in an error.
     :type end: ~datetime.datetime
     """
