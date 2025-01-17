@@ -6,6 +6,10 @@ upcoming
 ++++++
 * 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
+* 'az containerapp create': New target-label option for Labels revision mode.
+* 'az containerapp up/update': New revisions-mode and target-label options for Labels revision mode.
+* 'az containerapp label-history': New list and show commands to see label revision assignment history.
+* 'az containerapp revision set-mode': New target-label option for Labels revision mode.
 * 'az containerapp connected-env certificate upload/remove': Support `--no-wait`.
 * 'az containerapp connected-env dapr-component set/remove': Support `--no-wait`.
 * 'az containerapp connected-env storage set/remove': Support `--no-wait`.

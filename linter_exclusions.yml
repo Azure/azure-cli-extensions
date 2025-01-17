@@ -401,6 +401,12 @@ containerapp github-action add:
     service_principal_tenant_id:
       rule_exclusions:
       - option_length_too_long
+containerapp label-history show:
+  rule_exclusions:
+  -  missing_command_test_coverage
+containerapp label-history list:
+  rule_exclusions:
+  -  missing_command_test_coverage
 costmanagement export create:
   parameters:
     definition_dataset_configuration:
