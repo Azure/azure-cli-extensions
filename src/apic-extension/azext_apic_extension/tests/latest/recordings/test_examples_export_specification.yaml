@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"format": "link", "specification": {"name": "openapi", "version": "3.0.0"},
-      "value": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json"}'
+      "value": "https://petstore3.swagger.io/api/v3/openapi.json"}'
     headers:
       Accept:
       - '*/*'
@@ -12,13 +12,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '181'
+      - '137'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --api-id --version-id --definition-id --format --value --specification
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/importSpecification?api-version=2024-03-01
   response:
@@ -32,11 +32,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 09 Oct 2024 08:18:41 GMT
+      - Tue, 03 Dec 2024 09:30:37 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/6ef2106f635c4b51b0ff5a0253a18254?api-version=2024-03-01&t=638640587222917074&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=N0-MWQkrJqhkP6248JlSQqU9mVjDkQZFrEr4V9BTTTaMvbULW1WOgLx5UMNmJyCg4Ei_5Oxexum1iX6dq5-RYprbrpY9WmdKK752StkGJRx6BVwHB0xQ-EkRexQy44asKXcSlLmrHAp5XZ7TNoP5SkdaGomaCTOw_XkEy6nYLScN4p1TwjFf64bYLRsx0NCkRog14nI3ebwHT3lFihfHxAKroG7jkMnkRVQpwMmvHYO3xRJQK_2gQmZZSKJAVBZpqVxJ96ZQfvUSZ-rkvMdJzGwEWNHKF0L98hAP5tulBIxe6Avxh5reuPvq63Fle_ns2bALpSJ8djBd-xlSHx_oIA&h=HVRl7m7aD2jr2nXeAc5yNZbZ2QA0-gUv-49whsE3mIY
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/2d8e47a6803c4241ba4fbfe6a91c440f?api-version=2024-03-01&t=638688150383587935&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=s3eKgO9_DqLyerwdQ36HAu-PAAa5a64915Cs9rlwpZ6fznfybJ6aD90rXqVN-3-V2i5L2uQ6iXdta1Rj-8G71WKttM_rxncAMpUnGfXm1VDlc-ESZwB0RKTUS8rErfpwZL60I9hHr6QRS2cB1NpZmaZ6pRq4NOFUmTslREVjieOG8WSMR84L2Jxca_TTEPzPMWrUto3WgwVLc8DF3Y6eyv9w4LZHAKJCs8cFUVRdKJsnyBKNaxcjNxpWCFWkR22JSqhf6AYG0AECjUwl03QOyRi87JK4etjmJGtaJaRow4383xs-4L129sAAycmqBx5YaIYEMeyucp3t-X2ZPemaqQ&h=wdtMMKRdmRxq7tKtRHVHEkaeRUVkHLsinTn18VFsBik
       pragma:
       - no-cache
       strict-transport-security:
@@ -46,11 +46,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2998'
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '198'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: EF8C4C500C874D9795BB5F161E394DCB Ref B: MAA201060513035 Ref C: 2024-10-09T08:18:41Z'
+      - 'Ref A: 9AF09CF8A62A4BE29C25E64568C3BB59 Ref B: MAA201060514023 Ref C: 2024-12-03T09:30:36Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -70,12 +70,66 @@ interactions:
       ParameterSetName:
       - -g -n --api-id --version-id --definition-id --format --value --specification
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/6ef2106f635c4b51b0ff5a0253a18254?api-version=2024-03-01&t=638640587222917074&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=N0-MWQkrJqhkP6248JlSQqU9mVjDkQZFrEr4V9BTTTaMvbULW1WOgLx5UMNmJyCg4Ei_5Oxexum1iX6dq5-RYprbrpY9WmdKK752StkGJRx6BVwHB0xQ-EkRexQy44asKXcSlLmrHAp5XZ7TNoP5SkdaGomaCTOw_XkEy6nYLScN4p1TwjFf64bYLRsx0NCkRog14nI3ebwHT3lFihfHxAKroG7jkMnkRVQpwMmvHYO3xRJQK_2gQmZZSKJAVBZpqVxJ96ZQfvUSZ-rkvMdJzGwEWNHKF0L98hAP5tulBIxe6Avxh5reuPvq63Fle_ns2bALpSJ8djBd-xlSHx_oIA&h=HVRl7m7aD2jr2nXeAc5yNZbZ2QA0-gUv-49whsE3mIY
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/2d8e47a6803c4241ba4fbfe6a91c440f?api-version=2024-03-01&t=638688150383587935&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=s3eKgO9_DqLyerwdQ36HAu-PAAa5a64915Cs9rlwpZ6fznfybJ6aD90rXqVN-3-V2i5L2uQ6iXdta1Rj-8G71WKttM_rxncAMpUnGfXm1VDlc-ESZwB0RKTUS8rErfpwZL60I9hHr6QRS2cB1NpZmaZ6pRq4NOFUmTslREVjieOG8WSMR84L2Jxca_TTEPzPMWrUto3WgwVLc8DF3Y6eyv9w4LZHAKJCs8cFUVRdKJsnyBKNaxcjNxpWCFWkR22JSqhf6AYG0AECjUwl03QOyRi87JK4etjmJGtaJaRow4383xs-4L129sAAycmqBx5YaIYEMeyucp3t-X2ZPemaqQ&h=wdtMMKRdmRxq7tKtRHVHEkaeRUVkHLsinTn18VFsBik
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/6ef2106f635c4b51b0ff5a0253a18254","name":"6ef2106f635c4b51b0ff5a0253a18254","status":"Succeeded","startTime":"2024-10-09T08:18:42.7763342+00:00","endTime":"2024-10-09T08:18:43.2150906+00:00"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/2d8e47a6803c4241ba4fbfe6a91c440f","name":"2d8e47a6803c4241ba4fbfe6a91c440f","status":"NotStarted"}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 03 Dec 2024 09:30:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/2d8e47a6803c4241ba4fbfe6a91c440f?api-version=2024-03-01&t=638688150398029744&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=EcR-gFJeaplT8A0zkMcaIObMQ6Re1iQKmvRNBYuUFqZJztiJaeaMKxjGJqnTDTKkwZgM-px_iCTm5F1sq8l3T6Wfgonyak1RN85Z5x5HQuiPROJCfuD89xhgi1VmgeSnu_E2737keol11tOBbSXlW_A-UgDb9FTluGHY3Wvur1pNnQ8Pv9E7_0MFnlNkZ6R5wPlUeL3ngx3f3ytONNQyxX_Ag65WF3UEgDM5R69lz7e4h3l9J5dwVi3t64dEiwa7Pa5iqbkzuQdk8HkjbP-C0rrt5gSS_Vhn1vOgG9pEG47LVUHaQdolegGMbcDyGWeDADSX7jtQYNJHzbdMsEgFag&h=_yEbH-EON2a6-QHWx7wwgbbpSWoukYE1daVhjMRve5w
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 58FB93DF2AAA44279BA45860946B8D25 Ref B: MAA201060514023 Ref C: 2024-12-03T09:30:38Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api definition import-specification
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --api-id --version-id --definition-id --format --value --specification
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/2d8e47a6803c4241ba4fbfe6a91c440f?api-version=2024-03-01&t=638688150398029744&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=EcR-gFJeaplT8A0zkMcaIObMQ6Re1iQKmvRNBYuUFqZJztiJaeaMKxjGJqnTDTKkwZgM-px_iCTm5F1sq8l3T6Wfgonyak1RN85Z5x5HQuiPROJCfuD89xhgi1VmgeSnu_E2737keol11tOBbSXlW_A-UgDb9FTluGHY3Wvur1pNnQ8Pv9E7_0MFnlNkZ6R5wPlUeL3ngx3f3ytONNQyxX_Ag65WF3UEgDM5R69lz7e4h3l9J5dwVi3t64dEiwa7Pa5iqbkzuQdk8HkjbP-C0rrt5gSS_Vhn1vOgG9pEG47LVUHaQdolegGMbcDyGWeDADSX7jtQYNJHzbdMsEgFag&h=_yEbH-EON2a6-QHWx7wwgbbpSWoukYE1daVhjMRve5w
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/apis/clitest000003/versions/clitest000004/definitions/clitest000005/operationResults/2d8e47a6803c4241ba4fbfe6a91c440f","name":"2d8e47a6803c4241ba4fbfe6a91c440f","status":"Succeeded","startTime":"2024-12-03T09:30:40.2477434+00:00","endTime":"2024-12-03T09:30:40.7587303+00:00"}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -86,7 +140,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 09 Oct 2024 08:18:42 GMT
+      - Tue, 03 Dec 2024 09:31:10 GMT
       expires:
       - '-1'
       pragma:
@@ -102,7 +156,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: B0FE1240E2B6482B9B6BFA76987AA940 Ref B: MAA201060513035 Ref C: 2024-10-09T08:18:42Z'
+      - 'Ref A: 2A067028093145979B387BE520F0C535 Ref B: MAA201060514023 Ref C: 2024-12-03T09:31:09Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -124,70 +178,122 @@ interactions:
       ParameterSetName:
       - -g -n --api-id --version-id --definition-id --file-name
       User-Agent:
-      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/exportSpecification?api-version=2024-03-01
   response:
     body:
-      string: '{"format":"inline","value":"{\n  \"openapi\": \"3.0.0\",\n  \"info\":
-        {\n    \"version\": \"1.0.0\",\n    \"title\": \"Swagger Petstore\",\n    \"license\":
-        {\n      \"name\": \"MIT\"\n    }\n  },\n  \"servers\": [\n    {\n      \"url\":
-        \"http://petstore.swagger.io/v1\"\n    }\n  ],\n  \"paths\": {\n    \"/pets\":
-        {\n      \"get\": {\n        \"summary\": \"List all pets\",\n        \"operationId\":
-        \"listPets\",\n        \"tags\": [\n          \"pets\"\n        ],\n        \"parameters\":
-        [\n          {\n            \"name\": \"limit\",\n            \"in\": \"query\",\n            \"description\":
-        \"How many items to return at one time (max 100)\",\n            \"required\":
-        false,\n            \"schema\": {\n              \"type\": \"integer\",\n              \"maximum\":
-        100,\n              \"format\": \"int32\"\n            }\n          }\n        ],\n        \"responses\":
-        {\n          \"200\": {\n            \"description\": \"A paged array of pets\",\n            \"headers\":
-        {\n              \"x-next\": {\n                \"description\": \"A link
-        to the next page of responses\",\n                \"schema\": {\n                  \"type\":
-        \"string\"\n                }\n              }\n            },\n            \"content\":
-        {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\":
-        \"#/components/schemas/Pets\"\n                }\n              }\n            }\n          },\n          \"default\":
-        {\n            \"description\": \"unexpected error\",\n            \"content\":
-        {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\":
-        \"#/components/schemas/Error\"\n                }\n              }\n            }\n          }\n        }\n      },\n      \"post\":
-        {\n        \"summary\": \"Create a pet\",\n        \"operationId\": \"createPets\",\n        \"tags\":
-        [\n          \"pets\"\n        ],\n        \"requestBody\": {\n          \"content\":
-        {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\":
-        \"#/components/schemas/Pet\"\n              }\n            }\n          },\n          \"required\":
-        true\n        },\n        \"responses\": {\n          \"201\": {\n            \"description\":
-        \"Null response\"\n          },\n          \"default\": {\n            \"description\":
-        \"unexpected error\",\n            \"content\": {\n              \"application/json\":
-        {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Error\"\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/pets/{petId}\":
-        {\n      \"get\": {\n        \"summary\": \"Info for a specific pet\",\n        \"operationId\":
-        \"showPetById\",\n        \"tags\": [\n          \"pets\"\n        ],\n        \"parameters\":
-        [\n          {\n            \"name\": \"petId\",\n            \"in\": \"path\",\n            \"required\":
-        true,\n            \"description\": \"The id of the pet to retrieve\",\n            \"schema\":
-        {\n              \"type\": \"string\"\n            }\n          }\n        ],\n        \"responses\":
-        {\n          \"200\": {\n            \"description\": \"Expected response
-        to a valid request\",\n            \"content\": {\n              \"application/json\":
-        {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Pet\"\n                }\n              }\n            }\n          },\n          \"default\":
-        {\n            \"description\": \"unexpected error\",\n            \"content\":
-        {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\":
-        \"#/components/schemas/Error\"\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\":
-        {\n    \"schemas\": {\n      \"Pet\": {\n        \"type\": \"object\",\n        \"required\":
-        [\n          \"id\",\n          \"name\"\n        ],\n        \"properties\":
-        {\n          \"id\": {\n            \"type\": \"integer\",\n            \"format\":
-        \"int64\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"tag\":
-        {\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"Pets\":
-        {\n        \"type\": \"array\",\n        \"maxItems\": 100,\n        \"items\":
-        {\n          \"$ref\": \"#/components/schemas/Pet\"\n        }\n      },\n      \"Error\":
-        {\n        \"type\": \"object\",\n        \"required\": [\n          \"code\",\n          \"message\"\n        ],\n        \"properties\":
-        {\n          \"code\": {\n            \"type\": \"integer\",\n            \"format\":
-        \"int32\"\n          },\n          \"message\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"}'
+      string: '{"format":"inline","value":"{\"openapi\":\"3.0.2\",\"info\":{\"title\":\"Swagger
+        Petstore - OpenAPI 3.0\",\"description\":\"This is a sample Pet Store Server
+        based on the OpenAPI 3.0 specification.  You can find out more about\\nSwagger
+        at [http://swagger.io](http://swagger.io). In the third iteration of the pet
+        store, we''ve switched to the design first approach!\\nYou can now help us
+        improve the API whether it''s by making changes to the definition itself or
+        to the code.\\nThat way, with time, we can improve the API in general, and
+        expose some of the new features in OAS3.\\n\\nSome useful links:\\n- [The
+        Pet Store repository](https://github.com/swagger-api/swagger-petstore)\\n-
+        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)\",\"termsOfService\":\"http://swagger.io/terms/\",\"contact\":{\"email\":\"apiteam@swagger.io\"},\"license\":{\"name\":\"Apache
+        2.0\",\"url\":\"http://www.apache.org/licenses/LICENSE-2.0.html\"},\"version\":\"1.0.19\"},\"externalDocs\":{\"description\":\"Find
+        out more about Swagger\",\"url\":\"http://swagger.io\"},\"servers\":[{\"url\":\"/api/v3\"}],\"tags\":[{\"name\":\"pet\",\"description\":\"Everything
+        about your Pets\",\"externalDocs\":{\"description\":\"Find out more\",\"url\":\"http://swagger.io\"}},{\"name\":\"store\",\"description\":\"Access
+        to Petstore orders\",\"externalDocs\":{\"description\":\"Find out more about
+        our store\",\"url\":\"http://swagger.io\"}},{\"name\":\"user\",\"description\":\"Operations
+        about user\"}],\"paths\":{\"/pet\":{\"put\":{\"tags\":[\"pet\"],\"summary\":\"Update
+        an existing pet\",\"description\":\"Update an existing pet by Id\",\"operationId\":\"updatePet\",\"requestBody\":{\"description\":\"Update
+        an existent pet in the store\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/x-www-form-urlencoded\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"required\":true},\"responses\":{\"200\":{\"description\":\"Successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}}},\"400\":{\"description\":\"Invalid
+        ID supplied\"},\"404\":{\"description\":\"Pet not found\"},\"405\":{\"description\":\"Validation
+        exception\"}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]},\"post\":{\"tags\":[\"pet\"],\"summary\":\"Add
+        a new pet to the store\",\"description\":\"Add a new pet to the store\",\"operationId\":\"addPet\",\"requestBody\":{\"description\":\"Create
+        a new pet in the store\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/x-www-form-urlencoded\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"required\":true},\"responses\":{\"200\":{\"description\":\"Successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}}},\"405\":{\"description\":\"Invalid
+        input\"}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]}},\"/pet/findByStatus\":{\"get\":{\"tags\":[\"pet\"],\"summary\":\"Finds
+        Pets by status\",\"description\":\"Multiple status values can be provided
+        with comma separated strings\",\"operationId\":\"findPetsByStatus\",\"parameters\":[{\"name\":\"status\",\"in\":\"query\",\"description\":\"Status
+        values that need to be considered for filter\",\"required\":false,\"explode\":true,\"schema\":{\"type\":\"string\",\"default\":\"available\",\"enum\":[\"available\",\"pending\",\"sold\"]}}],\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"application/json\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/Pet\"}}}}},\"400\":{\"description\":\"Invalid
+        status value\"}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]}},\"/pet/findByTags\":{\"get\":{\"tags\":[\"pet\"],\"summary\":\"Finds
+        Pets by tags\",\"description\":\"Multiple tags can be provided with comma
+        separated strings. Use tag1, tag2, tag3 for testing.\",\"operationId\":\"findPetsByTags\",\"parameters\":[{\"name\":\"tags\",\"in\":\"query\",\"description\":\"Tags
+        to filter by\",\"required\":false,\"explode\":true,\"schema\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}],\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"application/json\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/Pet\"}}}}},\"400\":{\"description\":\"Invalid
+        tag value\"}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]}},\"/pet/{petId}\":{\"get\":{\"tags\":[\"pet\"],\"summary\":\"Find
+        pet by ID\",\"description\":\"Returns a single pet\",\"operationId\":\"getPetById\",\"parameters\":[{\"name\":\"petId\",\"in\":\"path\",\"description\":\"ID
+        of pet to return\",\"required\":true,\"schema\":{\"type\":\"integer\",\"format\":\"int64\"}}],\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}}},\"400\":{\"description\":\"Invalid
+        ID supplied\"},\"404\":{\"description\":\"Pet not found\"}},\"security\":[{\"api_key\":[]},{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]},\"post\":{\"tags\":[\"pet\"],\"summary\":\"Updates
+        a pet in the store with form data\",\"description\":\"\",\"operationId\":\"updatePetWithForm\",\"parameters\":[{\"name\":\"petId\",\"in\":\"path\",\"description\":\"ID
+        of pet that needs to be updated\",\"required\":true,\"schema\":{\"type\":\"integer\",\"format\":\"int64\"}},{\"name\":\"name\",\"in\":\"query\",\"description\":\"Name
+        of pet that needs to be updated\",\"schema\":{\"type\":\"string\"}},{\"name\":\"status\",\"in\":\"query\",\"description\":\"Status
+        of pet that needs to be updated\",\"schema\":{\"type\":\"string\"}}],\"responses\":{\"405\":{\"description\":\"Invalid
+        input\"}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]},\"delete\":{\"tags\":[\"pet\"],\"summary\":\"Deletes
+        a pet\",\"description\":\"\",\"operationId\":\"deletePet\",\"parameters\":[{\"name\":\"api_key\",\"in\":\"header\",\"description\":\"\",\"required\":false,\"schema\":{\"type\":\"string\"}},{\"name\":\"petId\",\"in\":\"path\",\"description\":\"Pet
+        id to delete\",\"required\":true,\"schema\":{\"type\":\"integer\",\"format\":\"int64\"}}],\"responses\":{\"400\":{\"description\":\"Invalid
+        pet value\"}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]}},\"/pet/{petId}/uploadImage\":{\"post\":{\"tags\":[\"pet\"],\"summary\":\"uploads
+        an image\",\"description\":\"\",\"operationId\":\"uploadFile\",\"parameters\":[{\"name\":\"petId\",\"in\":\"path\",\"description\":\"ID
+        of pet to update\",\"required\":true,\"schema\":{\"type\":\"integer\",\"format\":\"int64\"}},{\"name\":\"additionalMetadata\",\"in\":\"query\",\"description\":\"Additional
+        Metadata\",\"required\":false,\"schema\":{\"type\":\"string\"}}],\"requestBody\":{\"content\":{\"application/octet-stream\":{\"schema\":{\"type\":\"string\",\"format\":\"binary\"}}}},\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/ApiResponse\"}}}}},\"security\":[{\"petstore_auth\":[\"write:pets\",\"read:pets\"]}]}},\"/store/inventory\":{\"get\":{\"tags\":[\"store\"],\"summary\":\"Returns
+        pet inventories by status\",\"description\":\"Returns a map of status codes
+        to quantities\",\"operationId\":\"getInventory\",\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"additionalProperties\":{\"type\":\"integer\",\"format\":\"int32\"}}}}}},\"security\":[{\"api_key\":[]}]}},\"/store/order\":{\"post\":{\"tags\":[\"store\"],\"summary\":\"Place
+        an order for a pet\",\"description\":\"Place a new order in the store\",\"operationId\":\"placeOrder\",\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Order\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Order\"}},\"application/x-www-form-urlencoded\":{\"schema\":{\"$ref\":\"#/components/schemas/Order\"}}}},\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Order\"}}}},\"405\":{\"description\":\"Invalid
+        input\"}}}},\"/store/order/{orderId}\":{\"get\":{\"tags\":[\"store\"],\"summary\":\"Find
+        purchase order by ID\",\"description\":\"For valid response try integer IDs
+        with value <= 5 or > 10. Other values will generate exceptions.\",\"operationId\":\"getOrderById\",\"parameters\":[{\"name\":\"orderId\",\"in\":\"path\",\"description\":\"ID
+        of order that needs to be fetched\",\"required\":true,\"schema\":{\"type\":\"integer\",\"format\":\"int64\"}}],\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Order\"}},\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Order\"}}}},\"400\":{\"description\":\"Invalid
+        ID supplied\"},\"404\":{\"description\":\"Order not found\"}}},\"delete\":{\"tags\":[\"store\"],\"summary\":\"Delete
+        purchase order by ID\",\"description\":\"For valid response try integer IDs
+        with value < 1000. Anything above 1000 or nonintegers will generate API errors\",\"operationId\":\"deleteOrder\",\"parameters\":[{\"name\":\"orderId\",\"in\":\"path\",\"description\":\"ID
+        of the order that needs to be deleted\",\"required\":true,\"schema\":{\"type\":\"integer\",\"format\":\"int64\"}}],\"responses\":{\"400\":{\"description\":\"Invalid
+        ID supplied\"},\"404\":{\"description\":\"Order not found\"}}}},\"/user\":{\"post\":{\"tags\":[\"user\"],\"summary\":\"Create
+        user\",\"description\":\"This can only be done by the logged in user.\",\"operationId\":\"createUser\",\"requestBody\":{\"description\":\"Created
+        user object\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/x-www-form-urlencoded\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}}}},\"responses\":{\"default\":{\"description\":\"successful
+        operation\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}}}}}}},\"/user/createWithList\":{\"post\":{\"tags\":[\"user\"],\"summary\":\"Creates
+        list of users with given input array\",\"description\":\"Creates list of users
+        with given input array\",\"operationId\":\"createUsersWithListInput\",\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/User\"}}}}},\"responses\":{\"200\":{\"description\":\"Successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}}}},\"default\":{\"description\":\"successful
+        operation\"}}}},\"/user/login\":{\"get\":{\"tags\":[\"user\"],\"summary\":\"Logs
+        user into the system\",\"description\":\"\",\"operationId\":\"loginUser\",\"parameters\":[{\"name\":\"username\",\"in\":\"query\",\"description\":\"The
+        user name for login\",\"required\":false,\"schema\":{\"type\":\"string\"}},{\"name\":\"password\",\"in\":\"query\",\"description\":\"The
+        password for login in clear text\",\"required\":false,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"headers\":{\"X-Rate-Limit\":{\"description\":\"calls per hour
+        allowed by the user\",\"schema\":{\"type\":\"integer\",\"format\":\"int32\"}},\"X-Expires-After\":{\"description\":\"date
+        in UTC when token expires\",\"schema\":{\"type\":\"string\",\"format\":\"date-time\"}}},\"content\":{\"application/xml\":{\"schema\":{\"type\":\"string\"}},\"application/json\":{\"schema\":{\"type\":\"string\"}}}},\"400\":{\"description\":\"Invalid
+        username/password supplied\"}}}},\"/user/logout\":{\"get\":{\"tags\":[\"user\"],\"summary\":\"Logs
+        out current logged in user session\",\"description\":\"\",\"operationId\":\"logoutUser\",\"parameters\":[],\"responses\":{\"default\":{\"description\":\"successful
+        operation\"}}}},\"/user/{username}\":{\"get\":{\"tags\":[\"user\"],\"summary\":\"Get
+        user by user name\",\"description\":\"\",\"operationId\":\"getUserByName\",\"parameters\":[{\"name\":\"username\",\"in\":\"path\",\"description\":\"The
+        name that needs to be fetched. Use user1 for testing. \",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"200\":{\"description\":\"successful
+        operation\",\"content\":{\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}}}},\"400\":{\"description\":\"Invalid
+        username supplied\"},\"404\":{\"description\":\"User not found\"}}},\"put\":{\"tags\":[\"user\"],\"summary\":\"Update
+        user\",\"description\":\"This can only be done by the logged in user.\",\"operationId\":\"updateUser\",\"parameters\":[{\"name\":\"username\",\"in\":\"path\",\"description\":\"name
+        that needs to be updated\",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"requestBody\":{\"description\":\"Update
+        an existent user in the store\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}},\"application/x-www-form-urlencoded\":{\"schema\":{\"$ref\":\"#/components/schemas/User\"}}}},\"responses\":{\"default\":{\"description\":\"successful
+        operation\"}}},\"delete\":{\"tags\":[\"user\"],\"summary\":\"Delete user\",\"description\":\"This
+        can only be done by the logged in user.\",\"operationId\":\"deleteUser\",\"parameters\":[{\"name\":\"username\",\"in\":\"path\",\"description\":\"The
+        name that needs to be deleted\",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"400\":{\"description\":\"Invalid
+        username supplied\"},\"404\":{\"description\":\"User not found\"}}}}},\"components\":{\"schemas\":{\"Order\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":10},\"petId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":198772},\"quantity\":{\"type\":\"integer\",\"format\":\"int32\",\"example\":7},\"shipDate\":{\"type\":\"string\",\"format\":\"date-time\"},\"status\":{\"type\":\"string\",\"description\":\"Order
+        Status\",\"example\":\"approved\",\"enum\":[\"placed\",\"approved\",\"delivered\"]},\"complete\":{\"type\":\"boolean\"}},\"xml\":{\"name\":\"order\"}},\"Customer\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":100000},\"username\":{\"type\":\"string\",\"example\":\"fehguy\"},\"address\":{\"type\":\"array\",\"xml\":{\"name\":\"addresses\",\"wrapped\":true},\"items\":{\"$ref\":\"#/components/schemas/Address\"}}},\"xml\":{\"name\":\"customer\"}},\"Address\":{\"type\":\"object\",\"properties\":{\"street\":{\"type\":\"string\",\"example\":\"437
+        Lytton\"},\"city\":{\"type\":\"string\",\"example\":\"Palo Alto\"},\"state\":{\"type\":\"string\",\"example\":\"CA\"},\"zip\":{\"type\":\"string\",\"example\":\"94301\"}},\"xml\":{\"name\":\"address\"}},\"Category\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":1},\"name\":{\"type\":\"string\",\"example\":\"Dogs\"}},\"xml\":{\"name\":\"category\"}},\"User\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":10},\"username\":{\"type\":\"string\",\"example\":\"theUser\"},\"firstName\":{\"type\":\"string\",\"example\":\"John\"},\"lastName\":{\"type\":\"string\",\"example\":\"James\"},\"email\":{\"type\":\"string\",\"example\":\"john@email.com\"},\"password\":{\"type\":\"string\",\"example\":\"12345\"},\"phone\":{\"type\":\"string\",\"example\":\"12345\"},\"userStatus\":{\"type\":\"integer\",\"description\":\"User
+        Status\",\"format\":\"int32\",\"example\":1}},\"xml\":{\"name\":\"user\"}},\"Tag\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"format\":\"int64\"},\"name\":{\"type\":\"string\"}},\"xml\":{\"name\":\"tag\"}},\"Pet\":{\"required\":[\"name\",\"photoUrls\"],\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":10},\"name\":{\"type\":\"string\",\"example\":\"doggie\"},\"category\":{\"$ref\":\"#/components/schemas/Category\"},\"photoUrls\":{\"type\":\"array\",\"xml\":{\"wrapped\":true},\"items\":{\"type\":\"string\",\"xml\":{\"name\":\"photoUrl\"}}},\"tags\":{\"type\":\"array\",\"xml\":{\"wrapped\":true},\"items\":{\"$ref\":\"#/components/schemas/Tag\"}},\"status\":{\"type\":\"string\",\"description\":\"pet
+        status in the store\",\"enum\":[\"available\",\"pending\",\"sold\"]}},\"xml\":{\"name\":\"pet\"}},\"ApiResponse\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"integer\",\"format\":\"int32\"},\"type\":{\"type\":\"string\"},\"message\":{\"type\":\"string\"}},\"xml\":{\"name\":\"##default\"}}},\"requestBodies\":{\"Pet\":{\"description\":\"Pet
+        object that needs to be added to the store\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}},\"application/xml\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}}},\"UserArray\":{\"description\":\"List
+        of user object\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/User\"}}}}}},\"securitySchemes\":{\"petstore_auth\":{\"type\":\"oauth2\",\"flows\":{\"implicit\":{\"authorizationUrl\":\"https://petstore3.swagger.io/oauth/authorize\",\"scopes\":{\"write:pets\":\"modify
+        pets in your account\",\"read:pets\":\"read your pets\"}}}},\"api_key\":{\"type\":\"apiKey\",\"name\":\"api_key\",\"in\":\"header\"}}}}"}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '4805'
+      - '18399'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 09 Oct 2024 08:18:45 GMT
+      - Tue, 03 Dec 2024 09:31:12 GMT
       expires:
       - '-1'
       pragma:
@@ -205,7 +311,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: C8A1D1EBF5E34B5488D6A3E04BC8E6CF Ref B: MAA201060513019 Ref C: 2024-10-09T08:18:44Z'
+      - 'Ref A: 3B2E1F41FC1041EBA7231863CBD559F8 Ref B: MAA201060513021 Ref C: 2024-12-03T09:31:11Z'
       x-powered-by:
       - ASP.NET
     status:

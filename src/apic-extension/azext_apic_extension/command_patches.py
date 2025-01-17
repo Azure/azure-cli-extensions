@@ -47,8 +47,17 @@ from .aaz.latest.apic.metadata import (
     Export as ExportMetadata
 )
 from .aaz.latest.apic import ImportFromApim, Create as CreateService
+from .aaz.latest.apic.integration import (
+    Create as CreateIntegration,
+    Show as ShowIntegration,
+    List as ListIntegration,
+    Delete as DeleteIntegration
+)
+from .aaz.latest.apic import Import
 
-from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg
+from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
+from azure.cli.core.aaz import register_command
+from msrestazure.tools import is_valid_resource_id
 
 
 class DefaultWorkspaceParameter:
@@ -295,3 +304,218 @@ class ImportFromApimExtension(ImportFromApim):
             )
 
         args.source_resource_ids = source_resource_ids
+
+
+# `az apic integration` commands
+class ListIntegrationExtension(DefaultWorkspaceParameter, ListIntegration):
+    pass
+
+
+class DeleteIntegrationExtension(DefaultWorkspaceParameter, DeleteIntegration):
+    pass
+
+
+class ShowIntegrationExtension(DefaultWorkspaceParameter, ShowIntegration):
+    pass
+
+
+@register_command(
+    "apic integration create apim",
+    is_preview=True,
+)
+class CreateApimIntegration(DefaultWorkspaceParameter, CreateIntegration):
+    # pylint: disable=C0301
+    """Add Azure APIM as an API source
+
+    :example: Add Azure APIM in the same resource group as the Azure API Center instance as an API source
+        az apic integration create apim -g contoso-resources -n contoso -i sync-from-my-apim --azure-apim myapim
+
+    :example: Add Azure APIM in another resource group as an API source
+        az apic integration create apim -g contoso-resources -n contoso -i sync-from-my-apim --azure-apim /subscriptions/12345678-1234-1234-1234-123456789abc/resourceGroups/samplegroup/providers/Microsoft.ApiManagement/service/sampleapim
+
+    """
+    # pylint: enable=C0301
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # Remove the azure-api-management-source parameter
+        args_schema.azure_api_management_source._registered = False
+        # Remove the amazon-api-gateway-source parameter
+        args_schema.amazon_api_gateway_source._registered = False
+        # Remove the api_source_type parameter, will set it for users in pre_operations
+        args_schema.api_source_type._registered = False
+
+        # Create arg group for AzureApiManagementSource
+
+        args_schema.msi_resource_id = AAZResourceIdArg(
+            options=["--msi-resource-id"],
+            arg_group="AzureApiManagementSource",
+            help="The resource ID of the managed identity that has access to the API Management instance.",
+        )
+
+        args_schema.azure_apim = AAZStrArg(
+            options=["--azure-apim"],
+            arg_group="AzureApiManagementSource",
+            help="The name or resource id of the source APIM instance.",
+            required=True
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        # Set apim_resource_id based on user input
+        super().pre_operations()
+        args = self.ctx.args
+
+        if not is_valid_resource_id(args.azure_apim.to_serialized_data()):
+            # The APIM is in the same resource group
+            resource_group = args.resource_group
+            subscription_id = self.ctx.subscription_id
+            apim_resource_id = (f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
+                                f"Microsoft.ApiManagement/service/{args.azure_apim}")
+        else:
+            apim_resource_id = args.azure_apim
+
+        args.azure_api_management_source = {
+            "msi_resource_id": args.msi_resource_id,
+            "apim_resource_id": apim_resource_id
+        }
+
+        # Set api_source_type
+        args.api_source_type = "AzureApiManagement"
+
+
+@register_command(
+    "apic integration create aws",
+    is_preview=True,
+)
+class CreateAmazonApiGatewayIntegration(DefaultWorkspaceParameter, CreateIntegration):
+    # pylint: disable=C0301
+    """Add Amazon API Gateway as an API source
+
+    :example: Add Amazon API Gateway as an API source
+        az apic integration create aws -g contoso-resources -n contoso -i sync-from-my-amazon-api-gateway -a https://{keyvaultName}.vault.azure.net/secrets/{secretName1} -s https://{keyvaultName}.vault.azure.net/secrets/{secretName2} -r us-east-2
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # Remove the azure-api-management-source parameter
+        args_schema.azure_api_management_source._registered = False
+        # Remove the amazon-api-gateway-source parameter
+        args_schema.amazon_api_gateway_source._registered = False
+        # Remove the api_source_type parameter, will set it for users in pre_operations
+        args_schema.api_source_type._registered = False
+
+        # Create arg group for AmazonApiGatewaySource
+        # Add separate parameters for access-key, secret-access-key, and region-name
+        args_schema.access_key = AAZStrArg(
+            options=["--aws-access-key-reference", "-a"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        args_schema.secret_access_key = AAZStrArg(
+            options=["--aws-secret-access-key-reference", "-s"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Secret Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        args_schema.region_name = AAZStrArg(
+            options=["--aws-region-name", "-r"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Region (ex. us-east-2).",
+            required=True,
+        )
+        args_schema.msi_resource_id = AAZResourceIdArg(
+            options=["--msi-resource-id"],
+            arg_group="AmazonApiGatewaySource",
+            help="The resource ID of the managed identity that has access to the Azure Key Vault.",
+            required=False,
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+        args.api_source_type = "AmazonApiGateway"
+
+        # Set the properties for Amazon API Gateway source
+        args.amazon_api_gateway_source = {
+            "access_key": args.access_key,
+            "secret_access_key": args.secret_access_key,
+            "region_name": args.region_name,
+            "msi_resource_id": args.msi_resource_id
+        }
+
+
+# `az apic import` commands
+@register_command(
+    "apic import aws",
+    is_preview=True,
+)
+class ImportAmazonApiGatewaySource(DefaultWorkspaceParameter, Import):
+    # pylint: disable=C0301
+    """Import an Amazon API Gateway API source
+
+    :example: Import an Amazon API Gateway API source
+        az apic import aws -g contoso-resources -n contoso -a https://{keyvaultName}.vault.azure.net/secrets/{secretName1} -s https://{keyvaultName}.vault.azure.net/secrets/{secretName2} -r us-east-2
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # Remove the azure-api-management-source parameter
+        args_schema.azure_api_management_source._registered = False
+        # Remove the amazon-api-gateway-source parameter
+        args_schema.amazon_api_gateway_source._registered = False
+        # Remove the api_source_type parameter, will set it for users in pre_operations
+        args_schema.api_source_type._required = False
+        args_schema.api_source_type._registered = False
+
+        # Create arg group for AmazonApiGatewaySource
+        # Add separate parameters for access-key, secret-access-key, and region-name
+        args_schema.access_key = AAZStrArg(
+            options=["--aws-access-key-reference", "-a"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        args_schema.secret_access_key = AAZStrArg(
+            options=["--aws-secret-access-key-reference", "-s"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Secret Access Key. Must be an Azure Key Vault secret reference.",
+            required=True,
+        )
+        args_schema.region_name = AAZStrArg(
+            options=["--aws-region-name", "-r"],
+            arg_group="AmazonApiGatewaySource",
+            help="Amazon API Gateway Region (ex. us-east-2).",
+            required=True,
+        )
+        args_schema.msi_resource_id = AAZResourceIdArg(
+            options=["--msi-resource-id"],
+            arg_group="AmazonApiGatewaySource",
+            help="The resource ID of the managed identity that has access to the Azure Key Vault.",
+            required=False,
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+        args.api_source_type = "AmazonApiGateway"
+
+        # Set the properties for Amazon API Gateway source
+        args.amazon_api_gateway_source = {
+            "access_key": args.access_key,
+            "secret_access_key": args.secret_access_key,
+            "region_name": args.region_name,
+            "msi_resource_id": args.msi_resource_id
+        }
