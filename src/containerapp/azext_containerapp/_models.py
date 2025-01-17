@@ -64,7 +64,8 @@ EnvironmentVar = {
 
 ContainerResources = {
     "cpu": None,
-    "memory": None
+    "memory": None,
+    "gpu": None,
 }
 
 VolumeMount = {
