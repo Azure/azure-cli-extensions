@@ -1,4 +1,4 @@
-from converter import ConverterTemplate
+from .base_converter import ConverterTemplate
 
 # Concrete Converter Subclass for Read Me
 class ReadMeConverter(ConverterTemplate):

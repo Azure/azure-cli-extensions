@@ -5,7 +5,12 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from jinja2 import Environment, FileSystemLoader
-from converter import ConversionContext, EnvironmentConverter, AppConverter, RevisionConverter, ReadMeConverter
+from .converter.conversion_context import ConversionContext
+from .converter.environment_converter import EnvironmentConverter
+from .converter.app_converter import AppConverter
+from .converter.revision_converter import RevisionConverter
+from .converter.gateway_converter import GatewayConverter
+from .converter.readme_converter import ReadMeConverter
 
 logger = get_logger(__name__)
 
@@ -20,6 +25,7 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.add_converter(EnvironmentConverter())
     context.add_converter(AppConverter())
     context.add_converter(RevisionConverter())
+    context.add_converter(GatewayConverter(client))
     context.add_converter(ReadMeConverter())
 
     # Define the parameters for the Bicep template and output the Bicep files
