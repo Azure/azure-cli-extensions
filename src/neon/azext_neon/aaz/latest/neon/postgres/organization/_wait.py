@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Name of the Neon resource",
+            help="Name of the Neon organization",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
