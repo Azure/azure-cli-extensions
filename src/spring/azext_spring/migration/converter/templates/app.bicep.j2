@@ -52,23 +52,4 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   }
 }
 
-resource conainerAppRevision 'Microsoft.App/containerApp/revisions@2024-03-01' = [for revision in range(1, 2): {
-  name: '${containerAppName}-${revision}'
-  parent: containerApp
-  properties: {
-    template: {
-      containers: [
-        {
-          name: containerAppName
-          image: containerImage
-          resources: {
-            cpu: json(cpuCore)
-            memory: '${memorySize}Gi'
-          }
-        }
-      ]
-    }
-  }
-}]
-
 output containerAppFQDN string = containerApp.properties.configuration.ingress.fqdn
