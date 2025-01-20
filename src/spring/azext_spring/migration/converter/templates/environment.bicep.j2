@@ -6,13 +6,12 @@ param maxNodes int
 
 param containerAppEnvName string = '{{data.containerAppEnvName}}'
 param containerAppLogAnalyticsName string = '{{data.containerAppLogAnalyticsName}}'
-param location string = '{{data.location}}'
 param daprAIInstrumentationKey string = '{{data.daprAIInstrumentationKey}}'
 param daprAIConnectionString string = '{{data.daprAIConnectionString}}'
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: containerAppLogAnalyticsName
-  location: location
+  location: resourceGroup().location
   properties: {
     sku: {
       name: 'PerGB2018'
@@ -22,7 +21,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvName
-  location: location
+  location: resourceGroup().location
   properties: {
     daprAIInstrumentationKey: daprAIInstrumentationKey
     daprAIConnectionString: daprAIConnectionString

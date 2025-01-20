@@ -8,7 +8,6 @@ class EnvironmentConverter(ConverterTemplate):
     def calculate_data(self):
         self.data = {
             "containerAppEnvName": self.source['name'],
-            "location": self.source['location'],
             "containerAppLogAnalyticsName": f"log-{self.source['name']}",
             "daprAIInstrumentationKey": "",
             "daprAIConnectionString": "",
