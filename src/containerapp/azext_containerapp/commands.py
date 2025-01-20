@@ -187,6 +187,9 @@ def load_command_table(self, args):
             g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
             g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp arc', is_preview=True) as g:
+        g.custom_command('setup-core-dns', 'setup_core_dns', confirmation=True, exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp env java-component') as g:
         g.custom_command('list', 'list_java_components')
 

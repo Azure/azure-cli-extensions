@@ -1015,6 +1015,23 @@ helps['containerapp connected-env list'] = """
           az containerapp connected-env list -g MyResourceGroup
 """
 
+helps['containerapp arc'] = """
+    type: group
+    short-summary: Install prerequisites for Kubernetes cluster on Arc
+"""
+
+helps['containerapp arc setup-core-dns'] = """
+    type: command
+    short-summary: Setup CoreDNS for Kubernetes cluster on Arc
+    examples:
+    - name: Setup CoreDNS for Aks on Azure Local on Arc
+      text: |
+          az containerapp arc setup-core-dns --distro AksAzureLocal
+    - name: Setup CoreDNS for Aks on Azure Local on Arc by specifying the kubeconfig and kubecontext.
+      text: |
+          az containerapp arc setup-core-dns --distro AksAzureLocal --kube-config /path/to/kubeconfig --kube-context kubeContextName
+"""
+
 helps['containerapp connected-env dapr-component'] = """
     type: group
     short-summary: Commands to manage Dapr components for Container Apps connected environments.
