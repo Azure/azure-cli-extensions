@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a Neon Resource
+    """Get a Neon Organization
 
     :example: Organizations_Get
         az neon postgres organization show --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
