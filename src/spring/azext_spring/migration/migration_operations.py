@@ -11,17 +11,19 @@ from .converter.app_converter import AppConverter
 from .converter.revision_converter import RevisionConverter
 from .converter.gateway_converter import GatewayConverter
 from .converter.readme_converter import ReadMeConverter
+from .converter.main_converter import MainConverter
 
 logger = get_logger(__name__)
 
 
 def migration_aca_start(cmd, client, resource_group, service):
     # API calls
-    print("Start API calls to get ASA service, apps and deployments...")
+    print("Start export ARM template for ASA service...")
     asa_arm = export_asa_arm_template(cmd, resource_group, service)
 
     # Create context and add converters
     context = ConversionContext()
+    context.add_converter(MainConverter())
     context.add_converter(EnvironmentConverter())
     context.add_converter(AppConverter())
     context.add_converter(RevisionConverter())

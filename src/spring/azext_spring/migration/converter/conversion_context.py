@@ -29,34 +29,35 @@ class ConversionContext:
                 converter.set_params(params)
 
     def run_converters(self, source):
-        converted_contents = []
+        converted_contents = {}
         source_wrapper = SourceDataWrapper(source)
-        # converted_contents.append(self.get_converter(MainConverter).convert(None))
-        converted_contents.append(
-            self.get_converter(EnvironmentConverter).convert(
-                source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
-            )
+        converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert(
+            source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
+        )
+        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(
+            source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
         )
         # converted_contents.append(
         #     self.get_converter(AppConverter).convert(
-        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/apps')
+        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
         #     )
         # )
         # converted_contents.append(
         #     self.get_converter(RevisionConverter).convert(
-        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/apps/deployments')
+        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
         #     )
         # )
-        converted_contents.append(self.get_converter(ReadMeConverter).convert(None))
+        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):
         print("Start to save the converted content to files ...")
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        for i, content in enumerate(converted_contents):
-            filename = f"{output_path}/export_script_{i+1}.bicep"
-            with open(filename, 'w', encoding='utf-8') as output_file:
-                print("Start to generate the {filename} file ...")
+
+        for filename, content in converted_contents.items():
+            output_filename = f"{output_path}/{filename}"
+            with open(output_filename, 'w', encoding='utf-8') as output_file:
+                print(f"Start to generate the {output_filename} file ...")
                 output_file.write(content)
 
 class SourceDataWrapper:
