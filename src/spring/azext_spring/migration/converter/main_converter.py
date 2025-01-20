@@ -5,17 +5,22 @@ class MainConverter(ConverterTemplate):
     def load_source(self, source):
         self.source = []
         for resource in source:
-            print("resource: ", resource)
             self.source.append(resource)
 
     def calculate_data(self):
         self.data.setdefault("apps", [])
-        for app in self.source:
+        for item in self.source:
+            appName = item['name'].split('/')[-1]
+            moduleName = appName.replace("-", "")
+            templateName = f"{appName}_app.bicep"
+
+            print(f"appName: {appName}, moduleName: {moduleName}, templateName: {templateName}")
+
             self.data["apps"].append({
-                "name": app["name"],
+                "appName": appName,
+                "moduleName": moduleName,
+                "templateName": templateName,
             })
-            print("app: ", app)
-        print(self.data["apps"])
 
     def get_template_name(self):
         return "main.bicep"

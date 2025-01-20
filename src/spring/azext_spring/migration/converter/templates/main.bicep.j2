@@ -1,23 +1,22 @@
-// Env
-param containerAppEnvName string
-param location string
-
+// Params
 param workloadProfileName string
 param workloadProfileType string
+param minNodes int
+param maxNodes int
 
 module containerAppEnv 'environment.bicep' = {
   name: 'containerAppEnvDeployment'
   params: {
-    containerAppEnvName: containerAppEnvName
-    location: location
     workloadProfileName: workloadProfileName
     workloadProfileType: workloadProfileType
+    minNodes: minNodes
+    maxNodes: maxNodes
   }
 }
 
-{% for app in data.apps %}
-module {{ app.name }} 'app-{{ app.name }}.bicep' = {
-  name: '{{ app.name }}'
+{% for item in data.apps %}
+module {{ item.moduleName }} '{{ item.templateName }}' = {
+  name: '{{ item.appName }}'
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
   }

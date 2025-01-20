@@ -8,6 +8,7 @@ from .app_converter import AppConverter
 from .revision_converter import RevisionConverter
 from .readme_converter import ReadMeConverter
 from .main_converter import MainConverter
+from .param_converter import ParamConverter
 
 # Context Class
 class ConversionContext:
@@ -37,16 +38,17 @@ class ConversionContext:
         converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(
             source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
         )
-        # converted_contents.append(
-        #     self.get_converter(AppConverter).convert(
-        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-        #     )
-        # )
+
+        for app in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps'):
+            appName = app['name'].split('/')[-1]
+            converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app)
+            
         # converted_contents.append(
         #     self.get_converter(RevisionConverter).convert(
         #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
         #     )
         # )
+        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(None)
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)
         return converted_contents
 
@@ -55,7 +57,7 @@ class ConversionContext:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         for filename, content in converted_contents.items():
-            output_filename = f"{output_path}/{filename}"
+            output_filename = os.path.join(output_path, filename)
             with open(output_filename, 'w', encoding='utf-8') as output_file:
                 print(f"Start to generate the {output_filename} file ...")
                 output_file.write(content)

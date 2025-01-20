@@ -10,6 +10,11 @@ class EnvironmentConverter(ConverterTemplate):
             "containerAppEnvName": self.source['name'],
             "location": self.source['location'],
             "containerAppLogAnalyticsName": f"log-{self.source['name']}",
+            "daprAIInstrumentationKey": "",
+            "daprAIConnectionString": "",
+            "zoneRedundant": str(self.source['properties']['zoneRedundant']).lower(),
+            "infrastructureResourceGroup": self.source['properties'].get('infraResourceGroup'),
+            "mtlsEnabled": "true"
         }
 
     def get_template_name(self):
