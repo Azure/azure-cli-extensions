@@ -1,0 +1,24 @@
+// Env
+param containerAppEnvName string
+param location string
+param apps array
+param workloadProfileName string
+param workloadProfileType string
+
+module containerAppEnv 'environment.bicep' = {
+  name: 'containerAppEnvDeployment'
+  params: {
+    containerAppEnvName: containerAppEnvName
+    location: location
+    workloadProfileName: workloadProfileName
+    workloadProfileType: workloadProfileType
+  }
+}
+
+module appModule 'app.bicep' = [for app in apps: {
+  name: '${app.name}'
+  dependsOn: [containerAppEnv]
+  params: {
+    containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
+  }
+}]

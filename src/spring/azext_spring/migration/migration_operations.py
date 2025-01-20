@@ -41,7 +41,7 @@ def migration_aca_start(cmd, client, resource_group, service):
     converted_contents = context.run_converters(asa_arm)
 
     # Save each line of converted content to a separate file
-    context.save_to_files(converted_contents, 'output')
+    context.save_to_files(converted_contents, os.path.join("output",""))
     print("Succeed to generate Bicep files")
 
 def export_asa_arm_template(cmd, resource_group, service):
@@ -69,18 +69,3 @@ def export_asa_arm_template(cmd, resource_group, service):
 
 def get_aca_bicep_params(aca_arm):
     return {"key1": "value1"}
-
-def replace_variables_in_template(template_path, output_path, variables):
-    if not os.path.exists(template_path):
-        raise FileNotFoundError(f"Template file {template_path} not found")
-
-    with open(template_path, 'r', encoding='utf-8') as template_file:
-        content = template_file.read()
-
-    for key, value in variables.items():
-        placeholder = f"{{{{{key}}}}}"
-        content = content.replace(placeholder, f"'{value}'")
-
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as output_file:
-        output_file.write(content)

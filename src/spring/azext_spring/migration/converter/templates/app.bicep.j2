@@ -15,21 +15,6 @@ param maxReplicas int = {{maxReplicas}}
 
 param containerAppEnvId string
 
-module appModule 'app.bicep' = [for app in data.apps: {
-  name: '${app.name}'
-  dependsOn: [containerAppEnv]
-  params: {
-    containerAppName: containerAppName
-    containerImage: containerImage
-    targetPort: targetPort
-    cpuCore: cpuCore
-    memorySize: memorySize
-    minReplicas: minReplicas
-    maxReplicas: maxReplicas
-    containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
-  }
-}]
-
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: resourceGroup().location

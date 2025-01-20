@@ -7,6 +7,7 @@ from .environment_converter import EnvironmentConverter
 from .app_converter import AppConverter
 from .revision_converter import RevisionConverter
 from .readme_converter import ReadMeConverter
+from .main_converter import MainConverter
 
 # Context Class
 class ConversionContext:
@@ -30,26 +31,27 @@ class ConversionContext:
     def run_converters(self, source):
         converted_contents = []
         source_wrapper = SourceDataWrapper(source)
-
+        # converted_contents.append(self.get_converter(MainConverter).convert(None))
         converted_contents.append(
             self.get_converter(EnvironmentConverter).convert(
                 source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
             )
         )
-        converted_contents.append(
-            self.get_converter(AppConverter).convert(
-                source_wrapper.get_resources_by_type('Microsoft.AppPlatform/apps')
-            )
-        )
-        converted_contents.append(
-            self.get_converter(RevisionConverter).convert(
-                source_wrapper.get_resources_by_type('Microsoft.AppPlatform/apps/deployments')
-            )
-        )
+        # converted_contents.append(
+        #     self.get_converter(AppConverter).convert(
+        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/apps')
+        #     )
+        # )
+        # converted_contents.append(
+        #     self.get_converter(RevisionConverter).convert(
+        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/apps/deployments')
+        #     )
+        # )
         converted_contents.append(self.get_converter(ReadMeConverter).convert(None))
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):
+        print("Start to save the converted content to files ...")
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         for i, content in enumerate(converted_contents):
             filename = f"{output_path}/export_script_{i+1}.bicep"

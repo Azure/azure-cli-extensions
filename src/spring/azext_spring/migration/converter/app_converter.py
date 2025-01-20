@@ -11,10 +11,10 @@ class AppConverter(ConverterTemplate):
         self.data.apps = []
         for app in self.source:
             self.data.apps.append({
-                "containerAppName": app["properties"]["name"],
-                "containerImage": app["container_image"],
-                "targetPort": app["target_port"],
-                "cpuCore": app["cpu_core"],
+                "containerAppName": app["name"],
+                "containerImage": self.params["container_image"],
+                "targetPort": self.params["target_port"],
+                "cpuCore": app['properties']["cpu_core"],
                 "memorySize": app["memory_size"],
                 "minReplicas": app["min_replicas"],
                 "maxReplicas": app["max_replicas"],

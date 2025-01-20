@@ -6,17 +6,6 @@ param workloadProfileType string
 param daprAIInstrumentationKey string? = {{daprAIInstrumentationKey}}
 param daprAIConnectionString string? = {{daprAIConnectionString}}
 
-module containerAppEnv 'environment.bicep' = {
-  name: 'containerAppEnvDeployment'
-  params: {
-    containerAppEnvName: containerAppEnvName
-    containerAppLogAnalyticsName: containerAppLogAnalyticsName
-    location: location
-    workloadProfileName: workloadProfileName
-    workloadProfileType: workloadProfileType
-  }
-}
-
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: containerAppLogAnalyticsName
   location: location
