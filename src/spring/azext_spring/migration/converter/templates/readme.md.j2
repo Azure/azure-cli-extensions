@@ -30,8 +30,8 @@ Deploy the Bicep files using the Azure CLI:
 
 az deployment group create \
   --resource-group <resource-group-name> \
-  --template-file <main.bicep> \
-  --parameters <parameters-file>.json
+  --template-file main.bicep \
+  --parameters param.bicepparam
 
 Replace <parameters-file>.json with the path to your parameter file.
 

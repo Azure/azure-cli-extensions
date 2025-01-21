@@ -1,14 +1,17 @@
-param containerAppEnvName string = {{containerAppEnvName}}
-param containerAppLogAnalyticsName string = {{containerAppLogAnalyticsName}}
-param location string = {{location}}
+// Params
 param workloadProfileName string
 param workloadProfileType string
-param daprAIInstrumentationKey string? = {{daprAIInstrumentationKey}}
-param daprAIConnectionString string? = {{daprAIConnectionString}}
+param minNodes int
+param maxNodes int
+
+param containerAppEnvName string = '{{data.containerAppEnvName}}'
+param containerAppLogAnalyticsName string = '{{data.containerAppLogAnalyticsName}}'
+param daprAIInstrumentationKey string = '{{data.daprAIInstrumentationKey}}'
+param daprAIConnectionString string = '{{data.daprAIConnectionString}}'
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: containerAppLogAnalyticsName
-  location: location
+  location: resourceGroup().location
   properties: {
     sku: {
       name: 'PerGB2018'
@@ -18,7 +21,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvName
-  location: location
+  location: resourceGroup().location
   properties: {
     daprAIInstrumentationKey: daprAIInstrumentationKey
     daprAIConnectionString: daprAIConnectionString
@@ -30,22 +33,22 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
         sharedKey: logAnalytics.listKeys().primarySharedKey
       }
     }
-    zoneRedundant: '{{zoneRedundant}}'
+    zoneRedundant: {{data.zoneRedundant}}
     // customDomainConfiguration: {}
     workloadProfiles: [
       {
         name: workloadProfileName
         workloadProfileType: workloadProfileType
-        minimumCount: '{{minimumCount}}'
-        maximumCount: '{{maximumCount}}'
+        minimumCount: minNodes
+        maximumCount: maxNodes
       }
     ]
     // kedaConfiguration: {}
     // daprConfiguration: {}
-    infrastructureResourceGroup: '{{infrastructureResourceGroup}}'
+    infrastructureResourceGroup: '{{data.infrastructureResourceGroup}}'
     peerAuthentication: {
       mtls: {
-        enabled: '{{mtlsEnabled}}'
+        enabled: {{data.mtlsEnabled}}
       }
     }
     //peerTrafficConfiguration: {}
