@@ -18,7 +18,6 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
 )
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
-from azure.cli.core.util import run_az_cmd
 from knack.log import get_logger
 
 from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
@@ -181,6 +180,7 @@ def download_file(url, file_path):
 
 
 def download_from_storage_container(sas_url, path):
+    from azure.cli.core.util import run_az_cmd
     logger.debug("Downloading files from storage container")
     cmd = ["az", "storage", "copy", "--source", sas_url, "--destination", path, "--recursive"]
     logger.debug("Executing command: %s", cmd)
