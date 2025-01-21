@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -231,7 +230,7 @@ class _DeleteHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

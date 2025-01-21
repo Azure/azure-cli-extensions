@@ -34,6 +34,14 @@ custom_no_wait = CLIArgumentType(
     help="Do not wait for the long-running operation to finish.",
 )
 
+disable_public_ip = CLIArgumentType(
+    validator=validators.validate_disable_public_ip,
+    options_list=["--disable-public-ip"],
+    type=str,
+    help="Disable the deployment of a public IP address, load balancer, and network security group while testing a private endpoint.",
+)
+
+
 force = CLIArgumentType(
     options_list=["--force"],
     action="store_true",
@@ -84,7 +92,15 @@ test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Path to the JMeter script.",
+    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file.",
+)
+
+test_type = CLIArgumentType(
+    validator=validators.validate_test_type,
+    options_list=["--test-type"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTestTypes),
+    help="Type of the load test.",
 )
 
 load_test_config_file = CLIArgumentType(
@@ -168,6 +184,13 @@ certificate = CLIArgumentType(
     + quote_text.format("certificate"),
 )
 
+test_run_debug_mode = CLIArgumentType(
+    options_list=["--debug-mode"],
+    action="store_true",
+    default=False,
+    help="Enable debug level logging for the test run.",
+)
+
 dir_path = CLIArgumentType(
     validator=validators.validate_dir_path,
     options_list=["--path"],
@@ -217,6 +240,13 @@ test_run_results = CLIArgumentType(
     action="store_true",
     default=False,
     help="Download the results files zip.",
+)
+
+test_run_report = CLIArgumentType(
+    options_list=["--report"],
+    action="store_true",
+    default=False,
+    help="Download the dashboard report files zip.",
 )
 
 app_component_id = CLIArgumentType(
@@ -332,4 +362,39 @@ dimension_filters = CLIArgumentType(
         "* is supported as a wildcard for both key and value. "
         "Example: `--dimension-filters key1=value1 key2=*`, `--dimension-filters *`"
     ),
+)
+
+autostop = CLIArgumentType(
+    validator=validators.validate_autostop_enable_disable,
+    options_list=["--autostop"],
+    type=str,
+    help="Whether auto-stop should be enabled or disabled. Allowed values are enable/disable.",
+)
+
+autostop_error_rate = CLIArgumentType(
+    options_list=["--autostop-error-rate"],
+    type=float,
+    validator=validators.validate_autostop_error_rate,
+    help="Threshold percentage of errors on which test run should be automatically stopped. Allowed values are in range of [0.0,100.0]",
+)
+
+autostop_error_rate_time_window = CLIArgumentType(
+    options_list=["--autostop-time-window"],
+    type=int,
+    validator=validators.validate_autostop_error_rate_time_window,
+    help="Time window during which the error percentage should be evaluated in seconds.",
+)
+
+regionwise_engines = CLIArgumentType(
+    options_list=["--regionwise-engines"],
+    validator=validators.validate_regionwise_engines,
+    nargs="+",
+    help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
+)
+
+response_time_aggregate = CLIArgumentType(
+    options_list=["--aggregation"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
+    help="Specify the aggregation method for response time.",
 )

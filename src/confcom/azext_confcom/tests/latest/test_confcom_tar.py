@@ -7,7 +7,6 @@ import os
 import unittest
 import deepdiff
 import json
-import docker
 
 from azext_confcom.security_policy import (
     OutputType,

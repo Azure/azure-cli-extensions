@@ -42,7 +42,7 @@ def create_containerapp_env(test_cls, env_name, resource_group, location=None, s
     logs_workspace_location = location
     if logs_workspace_location is None or format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
         logs_workspace_location = "eastus"
-    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location)).get_output_in_json()["customerId"]
+    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location), expect_failure=False).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
     env_command = f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key}'
@@ -271,7 +271,7 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
         connected_cluster_id = connected_cluster.get('id')
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "eastasia"
         extension = test_cls.cmd(f'az k8s-extension create'
                                  f' --resource-group {resource_group}'
                                  f' --name containerapp-ext'
@@ -386,7 +386,7 @@ def create_and_verify_containerapp_create_and_update(
         # Ensure that the Container App environment is created
         env_id = None
         if env_name is None:
-            env_id = prepare_containerapp_env_for_app_e2e_tests(test_cls)
+            env_id = prepare_containerapp_env_for_app_e2e_tests(test_cls, location=location)
             env_name = parse_resource_id(env_id).get('name')
 
         if app_name is None:

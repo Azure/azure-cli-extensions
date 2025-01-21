@@ -6,7 +6,7 @@
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file, clean_up_test_file)
 from .utils import create_containerapp_env
@@ -276,3 +276,75 @@ class ContainerappJavaComponentTests(ScenarioTest):
         # Clean up route files
         clean_up_test_file(route_yaml_name_create)
         clean_up_test_file(route_yaml_name_update)
+
+    @ResourceGroupPreparer(location='eastus')
+    def test_containerapp_java_component_configurations(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "francecentral"
+        self.cmd('configure --defaults location={}'.format(location))
+        env_name = self.create_random_name(prefix='aca-java-env', length=24)
+        ca_name = self.create_random_name(prefix='javaapp1', length=24)
+        eureka_name = "myeureka"
+
+        create_containerapp_env(self, env_name, resource_group)
+        env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        # List Java Components
+        java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
+        self.assertTrue(len(java_component_list) == 0)
+
+        with self.assertRaisesRegex(ValidationError,
+                                    "Please use the later form for better flexibility and clarity."):
+            self.cmd('containerapp env java-component eureka-server-for-spring create -g {} -n {} --environment {} --configuration eureka.server.renewal-percent-threshold=0.85 --set-configurations eureka.server.enable-self-preservation=false'.format(resource_group, eureka_name, env_name))
+
+        self.cmd(
+            'containerapp env java-component eureka-server-for-spring create -g {} -n {} --environment {} --set-configurations eureka.server.renewal-percent-threshold=0.85 eureka.server.enable-self-preservation=false'.format(
+                resource_group, eureka_name, env_name), checks=[
+                JMESPathCheck('name', eureka_name),
+                JMESPathCheck('properties.componentType', "SpringCloudEureka"),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.configurations)', 2),
+            ])
+        
+        self.cmd(
+            'containerapp env java-component eureka-server-for-spring update -g {} -n {} --environment {} --set-configurations eureka.server.renewal-percent-threshold=0.95 eureka.server.renewal-threshold-update-interval-ms=1000'.format(
+                resource_group, eureka_name, env_name), checks=[
+                JMESPathCheck('name', eureka_name),
+                JMESPathCheck('properties.componentType', "SpringCloudEureka"),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.configurations)', 3)
+            ])
+
+        self.cmd(
+            'containerapp env java-component eureka-server-for-spring update -g {} -n {} --environment {} --remove-configurations eureka.server.renewal-percent-threshold eureka.server.enable-self-preservation'.format(
+                resource_group, eureka_name, env_name), checks=[
+                JMESPathCheck('name', eureka_name),
+                JMESPathCheck('properties.componentType', "SpringCloudEureka"),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.configurations)', 1)
+            ])
+
+        self.cmd(
+            'containerapp env java-component eureka-server-for-spring update -g {} -n {} --environment {} --replace-configurations eureka.server.expected-client-renewal-interval-seconds=100 eureka.server.response-cache-auto-expiration-in-seconds=100'.format(
+                resource_group, eureka_name, env_name), checks=[
+                JMESPathCheck('name', eureka_name),
+                JMESPathCheck('properties.componentType', "SpringCloudEureka"),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.configurations)', 2)
+            ])
+
+        self.cmd(
+            'containerapp env java-component eureka-server-for-spring update -g {} -n {} --environment {} --remove-all-configurations'.format(
+                resource_group, eureka_name, env_name), checks=[
+                JMESPathCheck('name', eureka_name),
+                JMESPathCheck('properties.componentType', "SpringCloudEureka"),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.configurations)', 0)
+            ])
+
+        self.cmd('containerapp env java-component eureka-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)  
+
+        # List Java Components
+        java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
+        self.assertTrue(len(java_component_list) == 0)

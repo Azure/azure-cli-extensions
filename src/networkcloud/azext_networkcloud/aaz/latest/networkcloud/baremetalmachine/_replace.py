@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine replace",
-    is_preview=True,
 )
 class Replace(AAZCommand):
     """Replace the provided bare metal machine.
@@ -304,7 +303,7 @@ class _ReplaceHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
