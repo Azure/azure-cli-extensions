@@ -13,13 +13,11 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent resource delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Deletes an existing Microsoft Connected Cache for Enterprise resource.
-
-    :example: Delete an MCC resource
-        az mcc ent resource delete --mcc-resource-name MyMCCResourceName --resource-group MyResourceGroupName
     """
 
     _aaz_info = {
@@ -52,7 +50,7 @@ class Delete(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),

@@ -39,6 +39,13 @@ def load_command_table(self, args):
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp env http-route-config', is_preview=True) as g:
+        g.custom_show_command('show', 'show_http_route_config')
+        g.custom_command('list', 'list_http_route_configs')
+        g.custom_command('create', 'create_http_route_config', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_http_route_config', exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_http_route_config', confirmation=True, exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
         g.custom_command('list', 'list_containerappsjob')
@@ -166,13 +173,13 @@ def load_command_table(self, args):
         with self.command_group('containerapp connected-env dapr-component', is_preview=True) as g:
             g.custom_command('list', 'connected_env_list_dapr_components')
             g.custom_show_command('show', 'connected_env_show_dapr_component')
-            g.custom_command('set', 'connected_env_create_or_update_dapr_component')
-            g.custom_command('remove', 'connected_env_remove_dapr_component')
+            g.custom_command('set', 'connected_env_create_or_update_dapr_component', supports_no_wait=True, exception_handler=ex_handler_factory())
+            g.custom_command('remove', 'connected_env_remove_dapr_component', supports_no_wait=True, exception_handler=ex_handler_factory())
 
         with self.command_group('containerapp connected-env certificate', is_preview=True) as g:
             g.custom_command('list', 'connected_env_list_certificates')
-            g.custom_command('upload', 'connected_env_upload_certificate')
-            g.custom_command('delete', 'connected_env_delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
+            g.custom_command('upload', 'connected_env_upload_certificate', supports_no_wait=True, exception_handler=ex_handler_factory())
+            g.custom_command('delete', 'connected_env_delete_certificate', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
         with self.command_group('containerapp connected-env storage', is_preview=True) as g:
             g.custom_show_command('show', 'connected_env_show_storage')
@@ -270,3 +277,14 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_maintenance_config')
         g.custom_command('remove', 'remove_maintenance_config', confirmation=True)
         g.custom_show_command('list', 'list_maintenance_config')
+
+    with self.command_group('containerapp label-history', is_preview=True) as g:
+        g.custom_show_command('show', 'show_label_history')
+        g.custom_command('list', 'list_label_history')
+
+    with self.command_group('containerapp revision') as g:
+        g.custom_command('set-mode', 'set_revision_mode', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp revision label') as g:
+        g.custom_command('add', 'add_revision_label')
+        g.custom_command('remove', 'remove_revision_label')

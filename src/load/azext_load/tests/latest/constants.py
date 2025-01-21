@@ -37,6 +37,36 @@ class LoadConstants:
     INVALID_ZIP_ARTIFACT_WITH_SUBDIR_NAME = "sample-ZIP-artifact-subdir.zip"
     INVALID_ZIP_ARTIFACT_WITH_SUBDIR_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-subdir.zip")
 
+    # Constants for Regional Load Config Unit Tests
+    REGIONAL_LOAD_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-count-mismatch.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-region.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_FLOAT = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-float.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_STRING = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-string.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_NO_PARENT_REGION = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-no-parent-region.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_NO_TOTAL = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-no-total.yaml")
+    ENGINE_INSTANCES = 5
+    REGIONWISE_ENGINES = "germanywestcentral=2 eastus=3"
+    REGIONWISE_ENGINES_1 = "eastus=1"
+    REGIONWISE_ENGINES_2 = '"southcentralus = 4" "eastus = 1"'
+    REGIONWISE_ENGINES_3 = '"southcentralus = 2" "southcentralus = 2" "eastus = 1"'
+    REGIONWISE_ENGINES_INVALID_REGION = "invalidregion=2 eastus=3"
+    REGIONWISE_ENGINES_INVALID_TYPE_FLOAT = "germanywestcentral=2 eastus=3.5"
+    REGIONWISE_ENGINES_INVALID_TYPE_STRING = "germanywestcentral=2 eastus=three"
+    REGIONWISE_ENGINES_NO_PARENT_REGION = "germanywestcentral=2 uksouth=3"
+    REGIONWISE_ENGINES_INVALID_FORMAT_1 = {"germanywestcentral": 2, "eastus": 3}
+    REGIONWISE_ENGINES_INVALID_FORMAT_2 = "germanywestcentral=2 eastus:3"
+    REGIONWISE_ENGINES_INVALID_FORMAT_3 = "=2 eastus=3"
+
+    # Constants for Advanced URL Load Tests
+    ADVANCED_URL_FILE_TYPE = "URL_TEST_CONFIG"
+    ADVANCED_URL_TEST_TYPE = "URL"
+    ADVANCED_URL_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-advanced-url.yaml")
+    ADVANCED_TEST_URL_CONFIG_FILE_NAME = "sample-url-requests.json"
+    ADVANCED_TEST_URL_CONFIG_FILE_PATH = os.path.join(TEST_RESOURCES_DIR, r"sample-url-requests.json")
+    ADVANCED_TEST_URL_CONFIG_FILE_UPDATED_NAME = "sample-url-requests-updated.json"
+    ADVANCED_TEST_URL_CONFIG_FILE_UPDATED_PATH = os.path.join(TEST_RESOURCES_DIR, r"sample-url-requests-updated.json")
+
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
     ENV_VAR_DURATION_LONG = "120"
@@ -87,6 +117,10 @@ class LoadConstants:
     AUTOSTOP_ERROR_RATE_INTEGER = 75
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
 
+    FLOAT_TOLERANCE = 1e-6
+
+    HIGH_SCALE_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-high-scale-load.yaml")
+
 
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
@@ -102,8 +136,12 @@ class LoadTestConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     FILE_TEST_ID = "file-test-case"
+    REGIONAL_LOAD_CONFIG_TEST_ID = "regional-load-config-test-case"
     LOAD_TEST_KVREF_ID = "loadtest-kvrefid-case"
     LOAD_TEST_SPLITCSV_ID = "loadtest-splitcsv-case"
+    LOAD_TEST_ADVANCED_URL_ID = "loadtest-advanced-url-case"
+    LOAD_TEST_CONVERT_TO_JMX_ID = "loadtest-convert-to-jmx-case"
+    LOAD_TEST_BASELINE_TRENDS_ID = "loadtest-baseline-trends-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
@@ -136,6 +174,9 @@ class LoadTestRunConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     METRIC_TEST_ID = "metric-test-case"
+    DEBUG_MODE_TEST_ID = "debug-mode-test-case"
+    SAS_URL_TEST_ID = "sas-url-test-case"
+    HIGH_SCALE_LOAD_TEST_ID = "highscale-loadtest-case"
 
     # Test Run IDs for load test run commands
     CREATE_TEST_RUN_ID = "create-test-run-case"
@@ -149,6 +190,12 @@ class LoadTestRunConstants(LoadConstants):
     DOWNLOAD_TEST_RUN_ID = "download-test-run-case"
     APP_COMPONENT_TEST_RUN_ID = "app-component-test-run-case"
     INVALID_TEST_RUN_ID = r"A$%invalid-testrun-case-testrunid"
+    DEBUG_MODE_TEST_RUN_ID = "debug-mode-test-run-case"
+    SAS_URL_TEST_RUN_ID = "sas-url-test-run-case"
+    SAS_URL_TEST_RUN_ID_1 = "sas-url-test-run-case-1"
+    HIGH_SCALE_LOAD_TEST_RUN_ID = "highscaleload-testrun-case"
+    BASELINE_TRENDS_TEST_RUN_ID_1 = "baseline-trends-testrun-case-1"
+    BASELINE_TRENDS_TEST_RUN_ID_2 = "baseline-trends-testrun-case-2"
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"
