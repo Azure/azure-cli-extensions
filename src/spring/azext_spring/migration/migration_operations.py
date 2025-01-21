@@ -12,6 +12,7 @@ from .converter.revision_converter import RevisionConverter
 from .converter.gateway_converter import GatewayConverter
 from .converter.readme_converter import ReadMeConverter
 from .converter.main_converter import MainConverter
+from .converter.param_converter import ParamConverter
 
 logger = get_logger(__name__)
 
@@ -29,6 +30,7 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.add_converter(RevisionConverter())
     context.add_converter(GatewayConverter(client))
     context.add_converter(ReadMeConverter())
+    context.add_converter(ParamConverter())
 
     # Define the parameters for the Bicep template and output the Bicep files
     print("Start to generate ACA bicep files based on parameters...")

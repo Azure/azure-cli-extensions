@@ -1,7 +1,7 @@
 from .base_converter import ConverterTemplate
 
-# Concrete Converter Subclass for Read Me
-class ReadMeConverter(ConverterTemplate):
+# Concrete Converter Subclass for paramter
+class ParamConverter(ConverterTemplate):
     def load_source(self, source):
         pass
 
@@ -9,4 +9,4 @@ class ReadMeConverter(ConverterTemplate):
         pass
 
     def get_template_name(self):
-        return "readme.md"
+        return "param.bicepparam"

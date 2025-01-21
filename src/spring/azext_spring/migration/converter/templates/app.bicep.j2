@@ -1,21 +1,21 @@
-param containerAppName string = {{containerAppName}}
-param containerImage string = {{containerImage}}
-param targetPort int = {{targetPort}}
+param containerAppName string = '{{data.containerAppName}}'
+param containerImage string = '{{data.containerImage}}'
+param targetPort int = {{data.targetPort}}
 
-param cpuCore string = {{cpuCore}}
-param memorySize string = {{memorySize}}
+param cpuCore string = '{{data.cpuCore}}'
+param memorySize string = '{{data.memorySize}}'
 
 @description('Minimum number of replicas that will be deployed')
 @minValue(0)
-param minReplicas int = {{minReplicas}}
+param minReplicas int = {{data.minReplicas}}
 
 @description('Maximum number of replicas that will be deployed')
 @minValue(1)
-param maxReplicas int = {{maxReplicas}}
+param maxReplicas int = {{data.maxReplicas}}
 
 param containerAppEnvId string
 
-resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
+resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: resourceGroup().location
   properties: {
@@ -52,4 +52,4 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   }
 }
 
-output containerAppFQDN string = containerApp.properties.configuration.ingress.fqdn
+output containerAppFQDN string = {{data.moduleName}}.properties.configuration.ingress.fqdn
