@@ -7,9 +7,9 @@ from knack.help_files import helps
 
 helps['vm repair'] = """
     type: group
-    short-summary: Auto repair commands to fix VMs.
+    short-summary: Setup repair VMs with copied source OS Disk to resolve issues.
     long-summary: |
-        VM repair command will enable Azure users to self-repair non-bootable VMs by copying the source VM's OS disk and attaching it to a newly created repair VM.
+        When your VM is non-bootable, VM Repair enables users to setup new repair VMs and copy over the source VM's OS Disk and attach it as a data disk. Then the user can run their own scripts or use [pre-built](https://github.com/Azure/repair-script-library) ones to fix the disk.
 """
 
 helps['vm repair create'] = """
@@ -25,6 +25,18 @@ helps['vm repair create'] = """
         - name: Create a repair VM of a specific distro or a specific URN could also be provided
           text: >
             az vm repair create -g MyResourceGroup -n myVM --distro 'rhel7|sles12|ubuntu20|centos6|oracle8|sles15'
+        - name: Create a repair VM with a Private IP address without any pop up asking for confirmation.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --yes --repair-username <username> --repair-password <password>
+        - name: Create a repair VM with a Public IP address without any user input.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --associate-public-ip --yes --repair-username <username> --repair-password <password>
+        - name: Create a repair VM with Standard Security type.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --yes --repair-username <username> --repair-password <password> --disable-trusted-launch
+        - name: Create a repair VM from a source VM with an encrypted disk. The repair VM is created with the data disk unencrypted and accessible.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --yes --repair-username <username> --repair-password <password> --unlock-encrypted-vm --encrypt-recovery-key <key>
 """
 
 helps['vm repair restore'] = """
