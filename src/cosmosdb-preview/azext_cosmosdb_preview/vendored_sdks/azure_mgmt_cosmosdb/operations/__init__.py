@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from ._chaos_fault_operations import ChaosFaultOperations
 from ._database_accounts_operations import DatabaseAccountsOperations
 from ._operations import Operations
 from ._database_operations import DatabaseOperations
@@ -50,13 +51,13 @@ from ._throughput_pools_operations import ThroughputPoolsOperations
 from ._throughput_pool_operations import ThroughputPoolOperations
 from ._throughput_pool_accounts_operations import ThroughputPoolAccountsOperations
 from ._throughput_pool_account_operations import ThroughputPoolAccountOperations
-from ._chaos_fault_operations import ChaosFaultOperations
 
 from ._patch import __all__ as _patch_all
 from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
+    "ChaosFaultOperations",
     "DatabaseAccountsOperations",
     "Operations",
     "DatabaseOperations",
@@ -101,7 +102,6 @@ __all__ = [
     "ThroughputPoolOperations",
     "ThroughputPoolAccountsOperations",
     "ThroughputPoolAccountOperations",
-    "ChaosFaultOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])
 _patch_sdk()
