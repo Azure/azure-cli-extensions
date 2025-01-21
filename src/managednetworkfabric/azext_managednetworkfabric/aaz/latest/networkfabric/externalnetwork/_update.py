@@ -237,18 +237,30 @@ class Update(AAZCommand):
         route_targets.export_ipv4_route_targets = AAZListArg(
             options=["export-ipv4-route-targets"],
             help="Route Targets to be applied for outgoing routes into CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         route_targets.export_ipv6_route_targets = AAZListArg(
             options=["export-ipv6-route-targets"],
             help="Route Targets to be applied for outgoing routes from CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         route_targets.import_ipv4_route_targets = AAZListArg(
             options=["import-ipv4-route-targets"],
             help="Route Targets to be applied for incoming routes into CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         route_targets.import_ipv6_route_targets = AAZListArg(
             options=["import-ipv6-route-targets"],
             help="Route Targets to be applied for incoming routes from CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         export_ipv4_route_targets = cls._args_schema.option_b_properties.route_targets.export_ipv4_route_targets

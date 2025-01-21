@@ -9,22 +9,23 @@
 NFC tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+    """Env setup_scenario1"""
     pass
 
 
 def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+    """Env cleanup_scenario1"""
     pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
+    """# Testcase: scenario1"""
     setup_scenario1(test)
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
@@ -34,52 +35,67 @@ def call_scenario1(test):
 
 
 def step_show(test, checks=None):
-    '''nfc show operation'''
+    """nfc show operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric controller show --resource-name {name} --resource-group {rg}')
+        "az networkfabric controller show --resource-name {name} --resource-group {rg}"
+    )
 
 
 def step_list_resource_group(test, checks=None):
-    '''nfc list by resource group operation'''
+    """nfc list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd('az networkfabric controller list --resource-group {rg}')
+    test.cmd("az networkfabric controller list --resource-group {rg}")
 
 
 def step_list_subscription(test, checks=None):
-    '''nfc list by subscription'''
+    """nfc list by subscription"""
     if checks is None:
         checks = []
-    test.cmd('az networkfabric controller list')
+    test.cmd("az networkfabric controller list")
 
 
 def step_delete(test, checks=None):
-    '''nfc delete operation'''
+    """nfc delete operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric controller delete --resource-name {deleteNFCName} --resource-group {rg}')
+        "az networkfabric controller delete --resource-name {deleteNFCName} --resource-group {rg}"
+    )
 
 
 class GA_NFCScenarioTest1(ScenarioTest):
-    ''' NFCScenario test'''
+    """NFCScenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            'name': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'name'),
-            'rg': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'resource_group'),
-            'location': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'location'),
-            'infraERConnections': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'infra_ER_Connections'),
-            'workloadERConnections': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'workload_ER_Connections'),
-            'ipv4AddressSpace': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'ipv4_address_space'),
-            'isWorkloadManagementNetworkEnabled': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'is_workload_management_network_enabled'),
-            'deleteNFCName': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'delete_nfc_name'),
-            'nfcSku': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'nfc_sku')
-        })
+        self.kwargs.update(
+            {
+                "name": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "name"),
+                "rg": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "resource_group"),
+                "location": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "location"),
+                "infraERConnections": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "infra_ER_Connections"
+                ),
+                "workloadERConnections": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "workload_ER_Connections"
+                ),
+                "ipv4AddressSpace": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "ipv4_address_space"
+                ),
+                "isWorkloadManagementNetworkEnabled": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER",
+                    "is_workload_management_network_enabled",
+                ),
+                "deleteNFCName": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "delete_nfc_name"
+                ),
+                "nfcSku": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "nfc_sku"),
+            }
+        )
 
     def test_GA_nfc_scenario1(self):
-        ''' test scenario for NFC CRUD operations'''
+        """test scenario for NFC CRUD operations"""
         call_scenario1(self)

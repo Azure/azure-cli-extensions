@@ -19,22 +19,12 @@ from .helper import (
     create_virtual_network_with_subnet,
     create_sig_role_assignments,
     create_project,
-    create_project_with_dev_box_limit,
     create_sig,
     create_network_connection,
     create_attached_network_dev_box_definition,
     create_kv_policy,
     create_env_type,
-    add_dev_box_user_role_to_project,
-    create_catalog,
     create_catalog_control_plane,
-    create_proj_env_type,
-    create_environment_dependencies,
-    create_pool,
-    create_dev_box_dependencies,
-    get_endpoint,
-    login_account,
-    get_aad_id,
     create_project_with_identity
 )
 
@@ -1799,36 +1789,20 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "canadacentral",
-                "userName": "amlim@fidalgosh010.onmicrosoft.com",  # update to your guest account
+                "devcenterName": "amlim-dev-center-euap",
+                "projectName": "amlim",
+                "poolNoHibernate": "pool-no-hibernate",
+                "poolHibernate" : "pool-hibernate",
+                "endpoint": "https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"
+                
             }
         )
-        login_account(self)
-        get_aad_id(self)
 
     def test_project_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "devcenterName": self.create_random_name(prefix="cli", length=24),
-                "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24),
-            }
-        )
-
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-
-        create_dev_center(self)
-        create_project_with_dev_box_limit(self)
-        get_endpoint(self)
-        add_dev_box_user_role_to_project(self)
-        login_account(self)
-
         self.cmd(
             "az devcenter dev project list " '--dev-center "{devcenterName}" ',
             checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{projectName}"),
-                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}"),
+                self.check("length(@)", 4),
             ],
         )
 
@@ -1838,7 +1812,16 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("name", "{projectName}"),
-                self.check("maxDevBoxesPerUser", "{devBoxLimit}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev project list-abilities "
+            '--name "{projectName}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("length(abilitiesAsAdmin)", 11),
+                self.check("length(abilitiesAsDeveloper)", 14),
             ],
         )
 
@@ -1847,9 +1830,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.cmd(
             "az devcenter dev project list " '--endpoint "{endpoint}" ',
             checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{projectName}"),
-                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}"),
+                self.check("length(@)", 4),
             ],
         )
 
@@ -1859,61 +1840,62 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--endpoint "{endpoint}" ',
             checks=[
                 self.check("name", "{projectName}"),
-                self.check("maxDevBoxesPerUser", "{devBoxLimit}"),
             ],
         )
+
+        self.cmd(
+            "az devcenter dev project list-abilities "
+            '--name "{projectName}" '
+            '--endpoint "{endpoint}" ',
+            checks=[
+                self.check("length(abilitiesAsAdmin)", 11),
+                self.check("length(abilitiesAsDeveloper)", 14),
+            ],
+        )
+
 
     def test_pool_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "canadacentral",
-                "devcenterName": self.create_random_name(prefix="cli", length=24),
-                "rg": self.create_random_name(prefix="cli", length=24),
+                "skuName": "general_i_8c32gb256ssd_v2",
+                "location": "uksouth"
+                
             }
         )
-
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-
-        create_dev_center(self)
-        create_project(self)
-        get_endpoint(self)
-        add_dev_box_user_role_to_project(self)
-        create_pool(self)
-        login_account(self)
 
         self.cmd(
             "az devcenter dev pool list "
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{poolName}"),
+                self.check("length(@)", 2),
+                self.check("[0].name", "{poolNoHibernate}"),
             ],
         )
 
         self.cmd(
             "az devcenter dev pool show "
-            '--name "{poolName}" '
+            '--name "{poolNoHibernate}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("name", "{poolName}"),
-                self.check("storageProfile.osDisk.diskSizeGB", 1024),
+                self.check("name", "{poolNoHibernate}"),
+                self.check("storageProfile.osDisk.diskSizeGB", 256),
                 self.check("hardwareProfile.skuName", "{skuName}"),
                 self.check("localAdministrator", "Enabled"),
                 self.check("osType", "Windows"),
                 self.check("location", "{location}"),
-                self.check("hibernateSupport", "Enabled"),
+                self.check("hibernateSupport", "Disabled"),
                 self.check(
                     "imageReference.name",
-                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                    "microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc",
                 ),
             ],
         )
 
         self.cmd(
             "az devcenter dev schedule list "
-            '--pool "{poolName}" '
+            '--pool "{poolHibernate}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
@@ -1932,14 +1914,14 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev schedule show "
-            '--pool "{poolName}" '
+            '--pool "{poolHibernate}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
                 self.check("name", "default"),
                 self.check("frequency", "Daily"),
-                self.check("time", "{time}"),
-                self.check("timeZone", "{timeZone}"),
+                self.check("time", "19:00"),
+                self.check("timeZone", "America/Los_Angeles"),
                 self.check("type", "StopDevBox"),
             ],
         )
@@ -1951,64 +1933,59 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--endpoint "{endpoint}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{poolName}"),
+                self.check("length(@)", 2),
+                self.check("[0].name", "{poolNoHibernate}"),
             ],
         )
 
         self.cmd(
             "az devcenter dev pool show "
-            '--name "{poolName}" '
+            '--name "{poolNoHibernate}" '
             '--endpoint "{endpoint}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("name", "{poolName}"),
-                self.check("storageProfile.osDisk.diskSizeGB", 1024),
+                self.check("name", "{poolNoHibernate}"),
+                self.check("storageProfile.osDisk.diskSizeGB", 256),
                 self.check("hardwareProfile.skuName", "{skuName}"),
                 self.check("localAdministrator", "Enabled"),
                 self.check("osType", "Windows"),
                 self.check("location", "{location}"),
-                self.check("hibernateSupport", "Enabled"),
+                self.check("hibernateSupport", "Disabled"),
                 self.check(
                     "imageReference.name",
-                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                    "microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc",
                 ),
             ],
         )
 
         self.cmd(
             "az devcenter dev schedule show "
-            '--pool "{poolName}" '
+            '--pool "{poolHibernate}" '
             '--endpoint "{endpoint}" '
             '--project "{projectName}" ',
             checks=[
                 self.check("name", "default"),
                 self.check("frequency", "Daily"),
-                self.check("time", "{time}"),
-                self.check("timeZone", "{timeZone}"),
+                self.check("time", "19:00"),
+                self.check("timeZone", "America/Los_Angeles"),
                 self.check("type", "StopDevBox"),
             ],
         )
 
+
     def test_catalog_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24),
+                "catalogName": "env-quickstart",
+                
             }
         )
-
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_catalog(self)
-        login_account(self)
-
         self.cmd(
             "az devcenter dev catalog list "
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{catalogName}"),
+                self.check("length(@)", 3),
             ],
         )
 
@@ -2029,8 +2006,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--endpoint "{endpoint}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{catalogName}"),
+                self.check("length(@)", 3),
             ],
         )
 
@@ -2047,24 +2023,20 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_env_definition_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24),
+                "catalogName": "env-quickstart",
             }
         )
 
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_catalog(self)
-        login_account(self)
-        function_app_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/functionapp"
+        container_app_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/containerapp"
         sandbox_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/sandbox"
         webapp_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/webapp"
 
         self.kwargs.update(
             {
-                "functionAppName": "FunctionApp",
+                "containerAppName": "ContainerApp",
                 "sandboxName": "Sandbox",
                 "webAppName": "WebApp",
-                "functionAppId": function_app_id,
+                "containerAppId": container_app_id,
                 "sandboxId": sandbox_id,
                 "webAppId": webapp_id,
             }
@@ -2075,8 +2047,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
+                self.check("length(@)", 15),
             ],
         )
 
@@ -2086,7 +2057,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--project "{projectName}" '
             '--catalog-name  "{catalogName}" ',
             checks=[
-                self.check("length(@)", 3),
+                self.check("length(@)", 7),
                 self.check("[0].catalogName", "{catalogName}"),
             ],
         )
@@ -2110,8 +2081,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--endpoint "{endpoint}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
+                self.check("length(@)", 15),
             ],
         )
 
@@ -2121,7 +2091,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--project "{projectName}" '
             '--catalog-name  "{catalogName}" ',
             checks=[
-                self.check("length(@)", 3),
+                self.check("length(@)", 7),
                 self.check("[0].catalogName", "{catalogName}"),
             ],
         )
@@ -2138,17 +2108,13 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
+
     def test_env_type_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24),
+                "envTypeName": "testtags",
             }
         )
-
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_proj_env_type(self)
-        login_account(self)
 
         self.cmd(
             "az devcenter dev environment-type list "
@@ -2158,62 +2124,123 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("length(@)", 1),
                 self.check("[0].name", "{envTypeName}"),
                 self.check("[0].deploymentTargetId", "/subscriptions/{subscriptionId}"),
+                self.check("[0].status", "Enabled")
             ],
         )
+
+        self.cmd(
+            "az devcenter dev environment-type show "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--name "{envTypeName}"',
+            checks=[
+                self.check("name", "{envTypeName}"),
+                self.check("deploymentTargetId", "/subscriptions/{subscriptionId}"),
+                self.check("status", "Enabled")
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev environment-type list-abilities "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--name "{envTypeName}"',
+            checks=[
+                self.check("length(abilitiesAsAdmin)", 6),
+                self.check("length(abilitiesAsDeveloper)", 5),
+            ],
+        )
+
+        # test endpoint
+
+        self.cmd(
+            "az devcenter dev environment-type list "
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{envTypeName}"),
+                self.check("[0].deploymentTargetId", "/subscriptions/{subscriptionId}"),
+                self.check("[0].status", "Enabled")
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev environment-type show "
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" '
+            '--name "{envTypeName}"',
+            checks=[
+                self.check("name", "{envTypeName}"),
+                self.check("deploymentTargetId", "/subscriptions/{subscriptionId}"),
+                self.check("status", "Enabled")
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev environment-type list-abilities "
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" '
+            '--name "{envTypeName}"',
+            checks=[
+                self.check("length(abilitiesAsAdmin)", 6),
+                self.check("length(abilitiesAsDeveloper)", 5),
+            ],
+        )
+
 
     def test_dev_box_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "canadacentral",
-                "devBoxName": self.create_random_name(prefix="cli", length=24),
-                "rg": self.create_random_name(prefix="cli", length=24),
+                "createDevBoxName": "createDevBox",
+                "devBoxNoHibernateName": "devbox-no-hibernate",
+                "devBoxHibernateName": "devbox-hibernate",
+                "location": "uksouth",
+                "skuName": "general_i_8c32gb256ssd_v2"
             }
         )
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_dev_box_dependencies(self)
-        login_account(self)
 
         self.cmd(
             "az devcenter dev dev-box list " '--dev-center "{devcenterName}" ',
             checks=[
-                self.check("length(@)", 0),
+                self.check("length(@)", 2),
             ],
         )
 
         self.cmd(
             "az devcenter dev dev-box create "
-            '--name "{devBoxName}" '
+            '--name "{createDevBoxName}" '
             '--project "{projectName}" '
-            '--pool "{poolName}" '
+            '--pool "{poolNoHibernate}" '
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("actionState", "Unknown"),
                 self.check("hardwareProfile.memoryGB", 32),
                 self.check("hardwareProfile.skuName", "{skuName}"),
                 self.check("hardwareProfile.vCPUs", 8),
-                self.check("hibernateSupport", "Enabled"),
+                self.check("hibernateSupport", "Disabled"),
                 self.check(
                     "imageReference.name",
-                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                    "microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc",
                 ),
                 self.check("imageReference.operatingSystem", "Windows11"),
-                self.check("imageReference.osBuildNumber", "win11-22h2-ent-cpc-os"),
+                self.check("imageReference.osBuildNumber", "win11-24H2-ent-cpc"),
                 self.check("imageReference.version", "1.0.0"),
                 self.check("localAdministrator", "Enabled"),
                 self.check("location", "{location}"),
-                self.check("name", "{devBoxName}"),
+                self.check("name", "{createDevBoxName}"),
                 self.check("osType", "Windows"),
-                self.check("poolName", "{poolName}"),
+                self.check("poolName", "{poolNoHibernate}"),
                 self.check("powerState", "Running"),
                 self.check("projectName", "{projectName}"),
                 self.check("provisioningState", "Succeeded"),
-                self.check("storageProfile.osDisk.diskSizeGB", 1024),
+                self.check("storageProfile.osDisk.diskSizeGB", 256),
             ],
         )
 
         self.cmd(
             "az devcenter dev dev-box show-remote-connection "
-            '--name "{devBoxName}" '
+            '--name "{createDevBoxName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
@@ -2225,33 +2252,33 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.cmd(
             "az devcenter dev dev-box list " '--dev-center "{devcenterName}" ',
             checks=[
-                self.check("length(@)", 1),
+                self.check("length(@)", 3),
             ],
         )
 
         self.cmd(
             "az devcenter dev dev-box show "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("actionState", "Unknown"),
-                self.check("hardwareProfile.memoryGB", 32),
-                self.check("hardwareProfile.skuName", "{skuName}"),
-                self.check("hardwareProfile.vCPUs", 8),
+                self.check("hardwareProfile.memoryGB", 64),
+                self.check("hardwareProfile.skuName", "general_i_16c64gb1024ssd_v2"),
+                self.check("hardwareProfile.vCPUs", 16),
                 self.check("hibernateSupport", "Enabled"),
                 self.check(
                     "imageReference.name",
-                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                    "microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc",
                 ),
                 self.check("imageReference.operatingSystem", "Windows11"),
-                self.check("imageReference.osBuildNumber", "win11-22h2-ent-cpc-os"),
+                self.check("imageReference.osBuildNumber", "win11-24H2-ent-cpc"),
                 self.check("imageReference.version", "1.0.0"),
                 self.check("localAdministrator", "Enabled"),
-                self.check("location", "{location}"),
-                self.check("name", "{devBoxName}"),
+                self.check("location", "australiaeast"),
+                self.check("name", "{devBoxHibernateName}"),
                 self.check("osType", "Windows"),
-                self.check("poolName", "{poolName}"),
+                self.check("poolName", "{poolHibernate}"),
                 self.check("powerState", "Running"),
                 self.check("projectName", "{projectName}"),
                 self.check("provisioningState", "Succeeded"),
@@ -2261,15 +2288,15 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev dev-box stop "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
-            '--hibernate "true"'
+            '--hibernate '
         )
 
         self.cmd(
             "az devcenter dev dev-box show "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
@@ -2280,21 +2307,21 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev dev-box start "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         )
 
         self.cmd(
             "az devcenter dev dev-box restart "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         )
 
         self.cmd(
             "az devcenter dev dev-box show "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
@@ -2305,14 +2332,14 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev dev-box list-action "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("length(@)", 1),
                 self.check(
                     "[0].sourceId",
-                    "/projects/{projectName}/pools/{poolName}/schedules/default",
+                    "/projects/{projectName}/pools/{poolHibernate}/schedules/default",
                 ),
                 self.check("[0].name", "schedule-default"),
                 self.check("[0].actionType", "Stop"),
@@ -2321,7 +2348,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         stopAction = self.cmd(
             "az devcenter dev dev-box list-action "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         ).get_output_in_json()
@@ -2336,7 +2363,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev dev-box show-action "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--action-name "{actionName}"',
@@ -2346,14 +2373,14 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("next.scheduledTime", "{scheduledTime}"),
                 self.check(
                     "sourceId",
-                    "/projects/{projectName}/pools/{poolName}/schedules/default",
+                    "/projects/{projectName}/pools/{poolHibernate}/schedules/default",
                 ),
             ],
         )
 
         self.cmd(
             "az devcenter dev dev-box delay-action "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--delay-time "{delayTime}" '
@@ -2364,14 +2391,14 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.exists("suspendedUntil"),
                 self.check(
                     "sourceId",
-                    "/projects/{projectName}/pools/{poolName}/schedules/default",
+                    "/projects/{projectName}/pools/{poolHibernate}/schedules/default",
                 ),
             ],
         )
 
         self.cmd(
             "az devcenter dev dev-box delay-all-actions "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--delay-time "00:10" ',
@@ -2382,7 +2409,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.exists("[0].action.suspendedUntil"),
                 self.check(
                     "[0].action.sourceId",
-                    "/projects/{projectName}/pools/{poolName}/schedules/default",
+                    "/projects/{projectName}/pools/{poolHibernate}/schedules/default",
                 ),
                 self.check("[0].result", "Succeeded"),
             ],
@@ -2390,7 +2417,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev dev-box skip-action "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--action-name "{actionName}"'
@@ -2398,7 +2425,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev dev-box list-action "
-            '--name "{devBoxName}" '
+            '--name "{devBoxHibernateName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
@@ -2408,14 +2435,14 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.exists("[0].next.scheduledTime"),
                 self.check(
                     "[0].sourceId",
-                    "/projects/{projectName}/pools/{poolName}/schedules/default",
+                    "/projects/{projectName}/pools/{poolHibernate}/schedules/default",
                 ),
             ],
         )
 
         self.cmd(
             "az devcenter dev dev-box delete -y "
-            '--name "{devBoxName}" '
+            '--name "{createDevBoxName}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         )
@@ -2423,35 +2450,175 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.cmd(
             "az devcenter dev dev-box list " '--dev-center "{devcenterName}" ',
             checks=[
-                self.check("length(@)", 0),
+                self.check("length(@)", 2),
             ],
         )
+    
+    def test_dev_box_repair_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "devBoxName": "createDevBox",
+            }
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box repair "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box list-operation "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("length(@)", 3),
+                self.exists("[0].endTime"),
+                self.exists("[0].createdByObjectId"),
+                self.exists("[0].operationId"),
+                self.exists("[0].startTime"),
+                self.check("[0].kind", "Repair"),
+                self.check("[0].result.repairOutcome", "NoIssuesDetected"),
+                self.check("[0].status", "Succeeded"),
+            ],
+        )
+
+    def test_dev_box_snapshot_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "devBoxName": "devbox-no-hibernate"
+            }
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box capture-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box list-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("[0].snapshotType", "Manual"),
+            ],
+        )
+
+        snapshotId = self.cmd(
+            "az devcenter dev dev-box list-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        ).get_output_in_json()[0]["snapshotId"]
+
+        self.kwargs.update(
+            {
+                "snapshotId": snapshotId,
+            }
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box show-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--snapshot-id "{snapshotId}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("snapshotType", "Manual"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box restore-snapshot "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--snapshot-id "{snapshotId}" '
+            '--dev-center "{devcenterName}" '
+        )
+
+    def test_dev_box_customization_task_dataplane_scenario(self):
+        self.cmd(
+            "az devcenter dev customization-task list "
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" ',
+            checks=[
+                self.check("length(@)", 7),
+                self.check("[0].catalogName", "customization-quickstart"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev customization-task validate "
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' '
+
+        )
+
+    def test_dev_box_customization_group_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "createCustomizationGroup": "cgName",
+                "devBoxNoHibernateName": "devbox-no-hibernate",
+                "customizationGroupName": "customizationgroup"
+            }
+        )
+
+        self.cmd(
+            "az devcenter dev customization-group list "
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--dev-box-name "{devBoxNoHibernateName}" ',
+            checks=[
+                self.check("[0].name", "{customizationGroupName}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev customization-group create "
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--name "{createCustomizationGroup}" '
+            '--dev-box-name "{devBoxNoHibernateName}" '
+            '--tasks \'[{{"name": "customization-quickstart/winget", "runAs": "User"}}]\' ',
+             checks=[
+                self.check("status", "NotStarted"),
+                self.check("contains(keys(@), 'uri')", True),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev customization-group show "
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--dev-box-name "{devBoxNoHibernateName}" '
+            '--name "{customizationGroupName}" ',
+            checks=[
+                self.check("name", "{customizationGroupName}"),
+                self.check("tasks[0].name", "customization-quickstart/winget")
+            ],
+        )
+
 
     @AllowLargeResponse()
     def test_environment_dataplane_scenario(self):
         self.kwargs.update(
             {
                 "envName": self.create_random_name(prefix="cli", length=12),
-                "location": "centraluseuap",
-                "rg": self.create_random_name(prefix="cli", length=24),
-            }
-        )
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_environment_dependencies(self)
-        login_account(self)
-
-        self.cmd(
-            "az devcenter dev environment list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
-
-        self.kwargs.update(
-            {
-                "environmentDefinitionName": "Sandbox",
+                "envName2": self.create_random_name(prefix="cli", length=12),
+                "appConfigName": self.create_random_name(prefix="app", length=10),
+                "appConfigName2": self.create_random_name(prefix="app", length=10),
+                "catalogName": "env-quickstart",
+                "environmentDefinitionName": "AppConfig",
+                "sandboxEnvironmentDefinitionName": "Sandbox",
+                "envTypeName": "testtags",
+                "devcenterName": "test-dev-center",
+                "projectName": "amlim-project",
             }
         )
 
@@ -2462,6 +2629,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--environment-type "{envTypeName}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" '
+            '--parameters "{{\\"name\\": \\"{appConfigName}\\"}}" '
             '--environment-definition-name "{environmentDefinitionName}"',
             checks=[
                 self.check("environmentDefinitionName", "{environmentDefinitionName}"),
@@ -2487,24 +2655,11 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         )
 
         self.cmd(
-            "az devcenter dev environment update "
-            '--name "{envName}" '
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("environmentDefinitionName", "{environmentDefinitionName}"),
-                self.check("catalogName", "{catalogName}"),
-                self.check("environmentType", "{envTypeName}"),
-                self.check("name", "{envName}"),
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
-
-        self.cmd(
             "az devcenter dev environment deploy "
             '--name "{envName}" '
             '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
+            '--project "{projectName}" '
+            '--parameters "{{\\"name\\": \\"{appConfigName2}\\"}}" ',
             checks=[
                 self.check("environmentDefinitionName", "{environmentDefinitionName}"),
                 self.check("catalogName", "{catalogName}"),
@@ -2515,90 +2670,68 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         )
 
         self.cmd(
-            "az devcenter dev environment list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" '
-            '--user-id "me" ',
-            checks=[self.check("length(@)", 1), self.check("[0].name", "{envName}")],
-        )
-
-        self.cmd(
-            "az devcenter dev environment delete -y "
+            "az devcenter dev environment delete -y --no-wait --force "
             '--name "{envName}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" '
         )
 
-        self.cmd(
-            "az devcenter dev environment list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
-
-    @AllowLargeResponse()
-    def test_environment_operations_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "envName": self.create_random_name(prefix="cli", length=12),
-                "location": "centraluseuap",
-                "rg": self.create_random_name(prefix="cli", length=24),
-                "environmentDefinitionName": "Sandbox",
-            }
-        )
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_environment_dependencies(self)
-        login_account(self)
-
-        self.cmd(
-            "az devcenter dev environment list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
 
         self.cmd(
             "az devcenter dev environment create "
             '--catalog-name "{catalogName}" '
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--environment-type "{envTypeName}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" '
-            '--environment-definition-name "{environmentDefinitionName}" '
+            '--environment-definition-name "{sandboxEnvironmentDefinitionName}" '
             '--expiration "2025-11-30T22:35:00+00:00"',
             checks=[
-                self.check("environmentDefinitionName", "{environmentDefinitionName}"),
+                self.check("environmentDefinitionName", "{sandboxEnvironmentDefinitionName}"),
                 self.check("catalogName", "{catalogName}"),
                 self.check("environmentType", "{envTypeName}"),
-                self.check("name", "{envName}"),
+                self.check("name", "{envName2}"),
                 self.check("provisioningState", "Succeeded"),
                 self.check("expirationDate", "2025-11-30T22:35:00+00:00"),
             ],
         )
 
         self.cmd(
-            "az devcenter dev environment deploy "
-            '--name "{envName}" '
+            "az devcenter dev environment update "
+            '--name "{envName2}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" '
             '--expiration "2025-12-30T22:35:00+00:00"',
             checks=[
-                self.check("environmentDefinitionName", "{environmentDefinitionName}"),
+                self.check("environmentDefinitionName", "{sandboxEnvironmentDefinitionName}"),
                 self.check("catalogName", "{catalogName}"),
                 self.check("environmentType", "{envTypeName}"),
-                self.check("name", "{envName}"),
+                self.check("name", "{envName2}"),
                 self.check("provisioningState", "Succeeded"),
                 self.check("expirationDate", "2025-12-30T22:35:00+00:00"),
             ],
         )
 
+
+        self.cmd(
+            "az devcenter dev environment update-expiration-date "
+            '--name "{envName2}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--expiration "2026-12-30T22:35:00+00:00"',
+            checks=[
+                self.check("environmentDefinitionName", "{sandboxEnvironmentDefinitionName}"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName2}"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("expirationDate", "2026-12-30T22:35:00+00:00"),
+            ],
+        )
+
         self.cmd(
             "az devcenter dev environment list-operation "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
@@ -2613,7 +2746,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         operationId = self.cmd(
             "az devcenter dev environment list-operation "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         ).get_output_in_json()[0]["operationId"]
@@ -2626,7 +2759,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment show-operation "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--operation-id "{operationId}" '
             '--dev-center "{devcenterName}" ',
@@ -2642,7 +2775,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment show-logs-by-operation "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--operation-id "{operationId}" '
             '--dev-center "{devcenterName}" '
@@ -2650,7 +2783,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment list-action "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" ',
             checks=[
@@ -2662,7 +2795,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         deleteAction = self.cmd(
             "az devcenter dev environment list-action "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
         ).get_output_in_json()
@@ -2677,7 +2810,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment show-action "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--action-name "{actionName}"',
@@ -2690,7 +2823,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment delay-action "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--delay-time "{delayTime}" '
@@ -2703,89 +2836,15 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment skip-action "
-            '--name "{envName}" '
+            '--name "{envName2}" '
             '--project "{projectName}" '
             '--dev-center "{devcenterName}" '
             '--action-name "{actionName}"'
         )
 
-    def test_dev_box_repair_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "location": "centraluseuap",
-                "devBoxName": self.create_random_name(prefix="cli", length=24),
-                "rg": self.create_random_name(prefix="cli", length=24),
-            }
-        )
-        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
-        create_dev_box_dependencies(self)
-        login_account(self)
-
         self.cmd(
-            "az devcenter dev dev-box create "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
-            '--pool "{poolName}" '
-            '--dev-center "{devcenterName}" ',
-        )
-
-        self.cmd(
-            "az devcenter dev dev-box repair "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.exists("endTime"),
-                self.exists("id"),
-                self.exists("name"),
-                self.exists("startTime"),
-                self.check("status", "Succeeded"),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev dev-box list-operation "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.exists("[0].endTime"),
-                self.exists("[0].createdByObjectId"),
-                self.exists("[0].operationId"),
-                self.exists("[0].startTime"),
-                self.check("[0].kind", "Repair"),
-                self.check("[0].result.repairOutcome", "NoIssuesDetected"),
-                self.check("[0].status", "Succeeded"),
-            ],
-        )
-
-        operationId = self.cmd(
-            "az devcenter dev dev-box list-operation "
-            '--name "{devBoxName}" '
-            '--project "{projectName}" '
+            "az devcenter dev environment delete -y "
+            '--name "{envName2}" '
             '--dev-center "{devcenterName}" '
-        ).get_output_in_json()[0]["operationId"]
-
-        self.kwargs.update(
-            {
-                "operationId": operationId,
-            }
-        )
-
-        self.cmd(
-            "az devcenter dev dev-box show-operation "
-            '--name "{devBoxName}" '
             '--project "{projectName}" '
-            '--operation-id "{operationId}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.exists("endTime"),
-                self.exists("createdByObjectId"),
-                self.check("operationId", "{operationId}"),
-                self.exists("startTime"),
-                self.check("kind", "Repair"),
-                self.check("result.repairOutcome", "NoIssuesDetected"),
-                self.check("status", "Succeeded"),
-            ],
         )

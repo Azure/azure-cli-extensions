@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mcc ent node show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Retrieves relevant information for a Microsoft Connected Cache for Enterprise cache node.
@@ -47,7 +48,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
@@ -58,7 +59,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\_\-]*",
+                pattern="^[a-zA-Z0-9\\_\\-]*",
                 max_length=90,
                 min_length=1,
             ),
