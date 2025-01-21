@@ -783,7 +783,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create virtual network
         create_vnet = (
             "network vnet create --resource-group={resource_group} --name={vnet_name} "
-            "--network-plugin azure "
             "--address-prefix 11.0.0.0/16 --subnet-name aks-subnet --subnet-prefix 11.0.0.0/24  -o json"
         )
         vnet = self.cmd(
@@ -807,6 +806,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create aks cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity "
+            "--network-plugin azure "
             "--vnet-subnet-id {vnet_id}/subnets/aks-subnet -a ingress-appgw "
             "--appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet "
             "--yes --ssh-key-value={ssh_key_value} -o json"
@@ -859,7 +859,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create virtual network
         create_vnet = (
             "network vnet create --resource-group={resource_group} --name={vnet_name} "
-            "--network-plugin azure "
             "--address-prefix 11.0.0.0/16 --subnet-name aks-subnet --subnet-prefix 11.0.0.0/24 -o json"
         )
         vnet = self.cmd(
@@ -928,6 +927,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create aks cluster
         create_cmd = (
             "aks create -n {aks_name} -g {resource_group} --enable-managed-identity "
+            "--network-plugin azure "
             "--vnet-subnet-id {vnet_id}/subnets/aks-subnet "
             "-a ingress-appgw --appgw-id {appgw_id} --yes "
             "--ssh-key-value={ssh_key_value} -o json"
