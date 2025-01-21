@@ -283,8 +283,9 @@ def step_assignment_list_parent(test):
 
 
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test):
-   test.cmd('az maintenance public-configuration show ''--resource-name "sql3"',
-          checks=[])
+    test.cmd('az maintenance public-configuration show '
+            '--resource-name "{publicMaintenanceConfiguration}"',
+            checks=[])
 
 
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test):
@@ -323,7 +324,7 @@ def step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforre
 def step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delete(test):
     test.cmd('az maintenance configuration delete '
              '--resource-group "{rg}" '
-             '--resource-name "sqlcli" '
+             '--resource-name "{publicMaintenanceConfiguration}" '
              '--yes ',
              checks=[])
 
@@ -340,8 +341,8 @@ def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createor
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Public" '
              '--resource-group "{rg}" '
-             '--resource-name "sqlcli" '
-             '--extension-properties publicMaintenanceConfigurationId=sqlcli isAvailable=true',
+             '--resource-name "{publicMaintenanceConfiguration}" '
+             '--extension-properties publicMaintenanceConfigurationId={publicMaintenanceConfiguration} isAvailable=true',
              checks=[])
 
 
@@ -540,9 +541,9 @@ def call_scenario(test):
     step__configurationassignments_get_configurationassignments_show(test)
 
     # public maintenance config
-    step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test)
     step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test)
     step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createorupdateforresource(test)
+    step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test)
     step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delete(test)
 
     # pending updates for vmss
@@ -609,12 +610,12 @@ class MaintenanceScenarioTest(ScenarioTest):
             'myMaintenanceConfiguration2': 'configuration2',
             'myConfigurationAssignment': 'workervmPolicy2',
             'myConfigurationAssignment2': 'workervmConfiguration2',
-            'HSProbeSettings': '{"protocol": "https", "port": "80", "requestPath": "/"}'
+            'HSProbeSettings': '{"protocol": "https", "port": "80", "requestPath": "/"}',
+            'publicMaintenanceConfiguration': 'sqlcli'
         })
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
-    @live_only() 
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)

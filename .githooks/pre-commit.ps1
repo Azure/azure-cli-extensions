@@ -28,7 +28,10 @@ foreach ($file in $files) {
     # Check if the file contains secrets
     $detected = $(azdev scan -f $file | ConvertFrom-Json).secrets_detected
     if ($detected -eq "True") {
-        Write-Host "Detected secrets from $file. You can run 'azdev mask' to remove secrets before commit." -ForegroundColor Red
+        Write-Host "Detected secrets from $file. Please run the following command to mask it:" -ForegroundColor Red
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
+        Write-Host "azdev mask -f $file" -ForegroundColor Red
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
         $hasSecrets = 1
     }
 }

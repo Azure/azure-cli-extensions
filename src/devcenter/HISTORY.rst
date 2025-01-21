@@ -2,6 +2,10 @@
 
 Release History
 ===============
+6.2.0
+++++++
+* Update data plane API to v2024-10-01-preview
+
 6.1.0
 ++++++
 * Update control plane API to v2024-10-01-preview

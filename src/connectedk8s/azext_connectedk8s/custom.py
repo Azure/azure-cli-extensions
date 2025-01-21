@@ -2289,10 +2289,6 @@ def update_connected_cluster(
     if disable_proxy:
         helm_content_values["global.isProxyEnabled"] = "False"
 
-    # Disable proxy if disable_proxy flag is set
-    if disable_proxy:
-        helm_content_values["global.isProxyEnabled"] = "False"
-
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
         agent_version = connected_cluster.agent_version  # type: ignore[unreachable]
@@ -3271,7 +3267,7 @@ def disable_cluster_connect(
 def load_kubernetes_configuration(filename: str) -> dict[str, Any]:
     try:
         with open(filename) as stream:
-            k8s_config: dict[str, Any] = yaml.safe_load(stream)
+            k8s_config: dict[str, Any] = yaml.safe_load(stream) or {}
             return k8s_config
     except OSError as ex:
         if getattr(ex, "errno", 0) == errno.ENOENT:
@@ -3373,10 +3369,13 @@ def merge_kubernetes_configurations(
         except (KeyError, TypeError):
             continue
 
-    handle_merge(existing, addition, "clusters", replace)
-    handle_merge(existing, addition, "users", replace)
-    handle_merge(existing, addition, "contexts", replace)
-    existing["current-context"] = addition["current-context"]
+    if not existing:
+        existing = addition
+    else:
+        handle_merge(existing, addition, "clusters", replace)
+        handle_merge(existing, addition, "users", replace)
+        handle_merge(existing, addition, "contexts", replace)
+        existing["current-context"] = addition["current-context"]
 
     # check that ~/.kube/config is only read- and writable by its owner
     if platform.system() != "Windows":
