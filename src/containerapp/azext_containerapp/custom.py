@@ -144,8 +144,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
                          JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE,
-                         SETUP_CORE_DNS_SUPPORTED_DISTRO, CUSTOM_CORE_DNS_VOLUME_NAME, CUSTOM_CORE_DNS_VOLUME_MOUNT_PATH,
-                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM, EMPTY_CUSTOM_CORE_DNS)
+                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM)
 
 
 logger = get_logger(__name__)
@@ -2074,14 +2073,6 @@ def connected_env_remove_storage(cmd, storage_name, name, resource_group_name, n
 
 
 def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_ssl_verification=False):
-    if not distro:
-        raise ValidationError("To setup core dns, Distro is required.")
-
-    if distro not in SETUP_CORE_DNS_SUPPORTED_DISTRO:
-        raise ValidationError(("'{}' is not valid value for '--distro' for core dns setup."
-                               " Allowed values: {}.").format(distro, ', '.join(SETUP_CORE_DNS_SUPPORTED_DISTRO))
-                              )
-
     # Checking the connection to kubernetes cluster.
     check_kube_connection(kube_config, kube_context, skip_ssl_verification)
 
