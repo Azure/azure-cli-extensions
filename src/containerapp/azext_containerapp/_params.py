@@ -368,9 +368,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp arc setup-core-dns') as c:
         c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO]), help="The distro supported to setup CoreDNS.")
-        c.argument('kube_config', options_list=["--kube-config"], help="Path to the kube config file.")
-        c.argument('kube_context', options_list=["--kube-context"], help="Kube context from current machine.")
-        c.argument('skip_ssl_verification', options_list=["--skip-ssl-verification"], help="Skip SSL verification for any cluster connection.")
+        c.argument('kube_config', help="Path to the kube config file.")
+        c.argument('kube_context', help="Kube context from current machine.")
+        c.argument('skip_ssl_verification', help="Skip SSL verification for any cluster connection.")
 
     with self.argument_context('containerapp github-action add') as c:
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",

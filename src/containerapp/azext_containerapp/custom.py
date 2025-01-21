@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long, unused-argument, logging-fstring-interpolation, logging-not-lazy, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
 import threading
-import os
 import time
 from urllib.parse import urlparse
 import json
@@ -13,7 +12,6 @@ import requests
 import copy
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from http import HTTPStatus
 
 from azure.cli.command_modules.containerapp._ssh_utils import SSH_BACKUP_ENCODING, SSH_CTRL_C_MSG, get_stdin_writer
 from azure.cli.core import telemetry as telemetry_core
@@ -56,8 +54,6 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from msrest.exceptions import DeserializationError
-
-from kubernetes import client, utils
 
 from ._decorator_utils import create_deserializer
 from ._validators import validate_create
@@ -133,9 +129,12 @@ from ._models import (
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
 
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
-                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity,
-                     create_folder, create_sub_folder,
-                     check_kube_connection, create_kube_client)
+                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+
+from ._arc_utils import (get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
+                         replace_configmap, replace_deployment, delete_configmap, patch_coredns,
+                         create_folder, create_sub_folder,
+                         check_kube_connection, create_kube_client)
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -145,28 +144,11 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
                          JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE,
-                         SETUP_CORE_DNS_SUPPORTED_DISTRO)
+                         SETUP_CORE_DNS_SUPPORTED_DISTRO, CUSTOM_CORE_DNS_VOLUME_NAME, CUSTOM_CORE_DNS_VOLUME_MOUNT_PATH,
+                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM, EMPTY_CUSTOM_CORE_DNS)
 
 
 logger = get_logger(__name__)
-
-CUSTOM_CORE_DNS_VOLUME_NAME = 'custom-config-volume'
-CUSTOM_CORE_DNS_VOLUME_MOUNT_PATH = '/etc/coredns/custom'
-CUSTOM_CORE_DNS = 'coredns-custom'
-CORE_DNS = 'coredns'
-KUBE_SYSTEM = 'kube-system'
-EMPTY_CUSTOM_CORE_DNS = """
-apiVersion: v1
-data:
-kind: ConfigMap
-metadata:
-  labels:
-    addonmanager.kubernetes.io/mode: EnsureExists
-    k8s-app: kube-dns
-    kubernetes.io/cluster-service: "true"
-  name: coredns-custom
-  namespace: kube-system
-"""
 
 
 def list_all_services(cmd, environment_name, resource_group_name):
@@ -2163,8 +2145,8 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
         patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
                       original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
     except Exception as e:
-        logger.error(f"Failed to patch coredns. Exception {e}")
-        logger.error("Start to reverted coredns")
+        logger.error(f"Failed to setup custom coredns. {e}")
+        logger.info("Start to reverted coredns")
         replace_succeeded = False
         retry_count = 0
         while not replace_succeeded and retry_count < 10:
@@ -2196,242 +2178,6 @@ def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_s
         if not replace_succeeded:
             logger.error(f"Failed to revert the deployment and configuration. "
                          f"You can get the original coredns config and deployment from {original_folder}")
-
-
-def patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
-                  custom_core_dns_configmap_exists, create_volume, create_volume_mount):
-    import re
-
-    if not create_volume and not create_volume_mount:
-        return
-
-    # create custom core dns config map
-    if not custom_core_dns_configmap_exists:
-        logger.info("coredns-custom configmap doesn't exist in namespace kube-system, create a new one")
-        filepath = os.path.join(new_filepath_with_timestamp, "coredns-custom.yaml")
-        with open(filepath, "w") as f:  # Opens file and casts as f
-            f.write(EMPTY_CUSTOM_CORE_DNS)
-        utils.create_from_yaml(kube_client, filepath, verbose=True)
-
-    # update core dns config map.
-    core_file_data = coredns_configmap.data.get('Corefile')
-    lines = core_file_data.split("\n")
-    has_import_custom_server = False
-    for line in lines:
-        if re.match(r'^\S*import custom/\*\.server$', line):
-            has_import_custom_server = True
-            break
-    if not has_import_custom_server:
-        core_file_data = rreplace(core_file_data, "\n", "\nimport custom/*.server\n", 1)
-        coredns_configmap.data['Corefile'] = core_file_data
-        update_configmap(CORE_DNS, KUBE_SYSTEM, kube_client, coredns_configmap)
-
-    # update deployment
-    if create_volume:
-        logger.info(f"create volume {CUSTOM_CORE_DNS_VOLUME_NAME}")
-        custom_coredns_volume = client.V1Volume(
-            name=CUSTOM_CORE_DNS_VOLUME_NAME,
-            config_map=client.V1ConfigMapVolumeSource(
-                default_mode=420,
-                name=CUSTOM_CORE_DNS,
-                optional=True
-            )
-        )
-        coredns_deployment.spec.template.spec.volumes.append(custom_coredns_volume)
-
-    if create_volume_mount:
-        logger.info(f"create volume mount {CUSTOM_CORE_DNS_VOLUME_NAME}")
-        custom_coredns_volume_mount = client.V1VolumeMount(
-            mount_path=CUSTOM_CORE_DNS_VOLUME_MOUNT_PATH,
-            name=CUSTOM_CORE_DNS_VOLUME_NAME,
-            read_only=True
-        )
-        coredns_deployment.spec.template.spec.containers[0].volume_mounts.append(custom_coredns_volume_mount)
-
-    deployment = client.V1Deployment(
-        spec=client.V1DeploymentSpec(
-            selector=coredns_deployment.spec.selector,
-            template=client.V1PodTemplateSpec(
-                spec=client.V1PodSpec(
-                    volumes=coredns_deployment.spec.template.spec.volumes,
-                    containers=[client.V1Container(
-                        name=coredns_deployment.spec.template.spec.containers[0].name,
-                        volume_mounts=coredns_deployment.spec.template.spec.containers[0].volume_mounts
-                    )]
-                )
-            )
-        )
-    )
-    update_deployment(CORE_DNS, KUBE_SYSTEM, kube_client, deployment)
-
-
-def rreplace(s, old, new, occurrence):
-    li = s.rsplit(old, occurrence)
-    return new.join(li)
-
-
-def get_core_dns_deployment(kube_client, folder=None):
-    response = get_and_save_deployment(CORE_DNS, KUBE_SYSTEM, kube_client, folder)
-    if response is None:
-        raise ValidationError("CoreDns deployment cannot be found in kube-system namespace")
-
-    return response
-
-
-def get_core_dns_configmap(kube_client, folder=None):
-    response = get_and_save_configmap(CORE_DNS, KUBE_SYSTEM, kube_client, folder)
-    if response is None:
-        raise ValidationError("CoreDns Configmap cannot be found in kube-system namespace")
-
-    return response
-
-
-def backup_custom_core_dns_configmap(kube_client, folder=None):
-    return get_and_save_configmap(CUSTOM_CORE_DNS, KUBE_SYSTEM, kube_client, folder)
-
-
-def get_and_save_configmap(resource_name, resource_namespace, kube_client, folder=None):
-    configmap = get_configmap(resource_name, resource_namespace, kube_client)
-    if configmap is not None:
-        if folder is not None:
-            filepath = os.path.join(folder, f"configmap-{resource_name}.json")
-            try:
-                logger.info(f"Save ConfigMap '{resource_name}' in namespace '{resource_namespace}' to {filepath} ")
-                with open(filepath, "w") as f:  # Opens file and casts as f
-                    configmap_dict = json.loads(configmap.data)
-                    f.write(json.dumps(configmap_dict, indent=2))
-            except Exception as e:
-                raise ValidationError(f"Failed to save file {filepath} with error '{str(e)}'")
-        return kube_client.deserialize(configmap, client.models.v1_config_map.V1ConfigMap)
-
-    logger.info(f"ConfigMap '{resource_name}' in namespace '{resource_namespace}' does not exist")
-    return None
-
-
-def get_and_save_deployment(resource_name, resource_namespace, kube_client, folder=None):
-    deployment = get_deployment(resource_name, resource_namespace, kube_client)
-    if deployment is not None:
-        if folder is not None:
-            filepath = os.path.join(folder, f"deployment-{resource_name}.json")
-            try:
-                logger.info(f"Save Deployment '{resource_name}' in namespace '{resource_namespace}' to {filepath} ")
-                with open(filepath, "w") as f:  # Opens file and casts as f
-                    deployment_dict = json.loads(deployment.data)
-                    f.write(json.dumps(deployment_dict, indent=2))
-            except Exception as e:
-                raise ValidationError(f"Failed to save file {filepath} with error '{str(e)}'")
-
-        return kube_client.deserialize(deployment, client.models.v1_deployment.V1Deployment)
-
-    logger.info(f"Deployment '{resource_name}' in namespace '{resource_namespace}' does not exist")
-    return None
-
-
-def get_deployment(resource_name, resource_namespace, kube_client):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Get Deployment '{resource_name}' from namespace '{resource_namespace}'")
-        apps_v1_api = client.AppsV1Api(kube_client)
-        deployment = apps_v1_api.read_namespaced_deployment(name=resource_name, namespace=resource_namespace, pretty=True, _preload_content=False)
-    except client.exceptions.ApiException as e:
-        if e.status == 404:
-            deployment = None
-        else:
-            raise e
-    except Exception as e:
-        raise ValidationError(f"other errors while getting deployment coredns in kube-system {str(e)}")
-
-    return deployment
-
-
-def update_deployment(resource_name, resource_namespace, kube_client, deployment):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Start to patch deployment {resource_name} in namespace {resource_namespace}")
-        appsV1Api = client.AppsV1Api(kube_client)
-        appsV1Api.patch_namespaced_deployment(name=resource_name, namespace=resource_namespace, body=deployment)
-    except Exception as e:
-        raise ValidationError(f"other errors while patching deployment coredns in kube-system {str(e)}")
-
-
-def replace_deployment(resource_name, resource_namespace, kube_client, deployment):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Start to replace deployment {resource_name} in namespace {resource_namespace}")
-        apps_v1_api = client.AppsV1Api(kube_client)
-        apps_v1_api.replace_namespaced_deployment(name=resource_name, namespace=resource_namespace, body=deployment)
-    except Exception as e:
-        raise ValidationError(f"other errors while replacing deployment coredns in kube-system {str(e)}")
-
-
-def get_configmap(resource_name, resource_namespace, kube_client):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Get ConfigMap '{resource_name}' from namespace '{resource_namespace}'")
-        core_v1_api = client.api.core_v1_api.CoreV1Api(kube_client)
-        config_map = core_v1_api.read_namespaced_config_map(name=resource_name, namespace=resource_namespace, pretty=True, _preload_content=False)
-    except client.exceptions.ApiException as e:
-        if e.status == 404:
-            config_map = None
-        else:
-            raise e
-    except Exception as e:
-        raise ValidationError(f"other errors while getting config map coredns in kube-system {str(e)}")
-
-    return config_map
-
-
-def update_configmap(resource_name, resource_namespace, kube_client, config_map):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Start to update configmap {resource_name} in namespace {resource_namespace}")
-        core_v1_api = client.api.core_v1_api.CoreV1Api(kube_client)
-        core_v1_api.patch_namespaced_config_map(name=resource_name, namespace=resource_namespace, body=config_map)
-
-    except Exception as e:
-        raise CLIError(f"other errors while patching config map coredns in kube-system {str(e)}")
-
-
-def replace_configmap(resource_name, resource_namespace, kube_client, config_map):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Start to replace configmap {resource_name} in namespace {resource_namespace}")
-        core_v1_api = client.api.core_v1_api.CoreV1Api(kube_client)
-        core_v1_api.replace_namespaced_config_map(name=resource_name, namespace=resource_namespace, body=config_map)
-
-    except Exception as e:
-        raise CLIError(f"other errors while replacing config map coredns in kube-system {str(e)}")
-
-
-def delete_configmap(resource_name, resource_namespace, kube_client):
-    validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace)
-
-    try:
-        logger.info(f"Start to delete configmap {resource_name} in namespace {resource_namespace}")
-        core_v1_api = client.api.core_v1_api.CoreV1Api(kube_client)
-        core_v1_api.delete_namespaced_config_map(name=resource_name, namespace=resource_namespace)
-
-    except client.rest.ApiException as e:
-        if e.status == HTTPStatus.NOT_FOUND:
-            logger.info(f"Configmap {resource_name} in namespace {resource_namespace} has been deleted")
-            return
-        raise CLIError(f"other ApiException while deleting config map coredns in kube-system {str(e)}")
-
-    except Exception as e:
-        raise CLIError(f"other errors while deleting config map coredns in kube-system {str(e)}")
-
-
-def validate_resource_name_and_resource_namespace_not_empty(resource_name, resource_namespace):
-    if resource_name is None or len(resource_name) == 0:
-        raise InvalidArgumentValueError("Arg resource_name should not be None or Empty")
-    if resource_namespace is None or len(resource_namespace) == 0:
-        raise InvalidArgumentValueError("Arg namespace should not be None or Empty")
 
 
 def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
