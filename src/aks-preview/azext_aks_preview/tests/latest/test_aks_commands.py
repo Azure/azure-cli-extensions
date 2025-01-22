@@ -5907,6 +5907,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # this case relatively frequently requires updating the corresponding recording file after network/virtualnetwork
+    # bumps its default API version in core azure-cli, thereby blocking some PRs that are not related to it.
+    # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
+    # so mark this case as live_only.
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
