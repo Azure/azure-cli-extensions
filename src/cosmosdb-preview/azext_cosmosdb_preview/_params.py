@@ -105,7 +105,7 @@ SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE = """--conflict-resolution-policy
 }"
 """
 
-SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--tb "[
+SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--throughput-buckets "[
     { \\"id\\": 1, \\"maxThroughputPercentage\\" : 10 },
     { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20 }
 ]"
@@ -577,7 +577,7 @@ def load_arguments(self, _):
         c.argument('container_name', options_list=['--name', '-n'], help="Container name")
         c.argument('throughput', type=int, help='The throughput of SQL container (RU/s).')
         c.argument('max_throughput', max_throughput_type)
-        c.argument('throughput_buckets', options_list=['--throughput-buckets', '-tb'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Throughput Buckets, you can enter it as a string or as a file, e.g., --tb @throughput-buckets-file.json or ' + SQL_THROUGHPUT_BUCKETS_EXAMPLE)
+        c.argument('throughput_buckets', options_list=['--throughput-buckets'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Throughput Buckets, you can enter it as a string or as a file, e.g., --throughput-buckets @throughput-buckets-file.json or ' + SQL_THROUGHPUT_BUCKETS_EXAMPLE)
 
     for scope in ['sql container throughput migrate']:
         with self.argument_context('cosmosdb {}'.format(scope)) as c:
