@@ -27,6 +27,7 @@ CONFIG_SETTINGS_HELM_TRUST_DOMAIN = 'global.workload-iam.trustDomain'
 CONFIG_SETTINGS_HELM_TENANT_ID = 'global.workload-iam.tenantID'
 CONFIG_SETTINGS_HELM_JOIN_TOKEN = 'workload-iam-local-authority.localAuthorityArgs.joinToken'
 
+
 def settings_dict_to_lowercase(settings):
     """
     Create new dictionary where the keys of the known user settings are all lowercase (but leave the
@@ -46,6 +47,7 @@ def settings_dict_to_lowercase(settings):
             validated_settings[key] = value
 
     return validated_settings
+
 
 class EntraWorkloadIAM(DefaultExtension):
 
