@@ -6,7 +6,6 @@
 # pylint: disable=too-many-lines
 
 from datetime import datetime
-import json
 from azure.cli.core.aaz import register_callback, has_value
 from azure.cli.core.azclierror import ResourceNotFoundError
 from .utils import get_project_arg, get_earliest_time, get_delayed_time, get_dataplane_endpoint
@@ -1621,13 +1620,7 @@ def devcenter_environment_show_logs_by_operation(
         "environment_name": environment_name
     })
 
-    for log in logs:
-        if log:
-            try:
-                logs_string = json.loads(log)
-                print(json.dumps(logs_string, indent=2))
-            except json.JSONDecodeError:
-                print(log)
+    print(logs)
 
 
 def devcenter_environment_show_action(
