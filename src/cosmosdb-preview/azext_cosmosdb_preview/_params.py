@@ -111,6 +111,7 @@ SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--throughput-buckets "[
 ]"
 """
 
+
 class ThroughputTypes(str, Enum):
     autoscale = "autoscale"
     manual = "manual"

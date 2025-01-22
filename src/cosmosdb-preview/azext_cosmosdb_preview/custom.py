@@ -2356,6 +2356,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
 
     return async_partition_retrieve_throughput_result.result()
 
+
 def cli_cosmosdb_sql_container_throughput_update(client,
                                                  resource_group_name,
                                                  account_name,
@@ -2366,13 +2367,14 @@ def cli_cosmosdb_sql_container_throughput_update(client,
                                                  throughput_buckets=None):
     """Update an Azure Cosmos DB SQL container throughput"""
     throughput_update_resource = _get_throughput_settings_update_parameters(throughput=throughput,
-                                                                            max_throughput = max_throughput,
-                                                                            throughput_buckets = throughput_buckets)
+                                                                            max_throughput=max_throughput,
+                                                                            throughput_buckets=throughput_buckets)
     return client.begin_update_sql_container_throughput(resource_group_name,
                                                         account_name,
                                                         database_name,
                                                         container_name,
                                                         throughput_update_resource)
+
 
 def cli_cosmosdb_sql_container_throughput_migrate(client,
                                                   resource_group_name,
@@ -2387,6 +2389,7 @@ def cli_cosmosdb_sql_container_throughput_migrate(client,
     return client.begin_migrate_sql_container_to_manual_throughput(resource_group_name, account_name,
                                                                    database_name, container_name)
 
+
 def _get_throughput_settings_update_parameters(throughput=None, max_throughput=None, throughput_buckets=None):
     throughput_resource = None
     if throughput and max_throughput:
@@ -2399,6 +2402,7 @@ def _get_throughput_settings_update_parameters(throughput=None, max_throughput=N
             throughput_buckets=throughput_buckets)
 
     return ThroughputSettingsUpdateParameters(resource=throughput_resource)
+
 
 # pylint: disable=dangerous-default-value
 def cli_begin_redistribute_sql_container_partition_throughput(client,
