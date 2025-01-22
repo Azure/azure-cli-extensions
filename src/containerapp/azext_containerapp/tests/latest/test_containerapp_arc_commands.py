@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from azure.cli.testsdk.decorators import serial_test
 from .custom_preparers import ConnectedClusterPreparer
 
@@ -24,6 +24,7 @@ class ContainerAppArcTest(ScenarioTest):
         self.assertNotEqual(cm.exception.code, 0)
 
     @serial_test()
+    @live_only()
     @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location="southcentralus", skip_connected_cluster=True)
     def test_containerapp_arc_setup_core_dns_e2e(self, resource_group, connected_cluster_name):

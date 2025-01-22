@@ -57,16 +57,17 @@ def check_kube_connection(kube_config, kube_context, skip_ssl_verification=False
 
 def create_folder(folder_name, time_stamp):
     error = ""
+    # Fetching path to user directory to create the arc diagnostic folder
+    home_dir = os.path.expanduser("~")
+    filepath = os.path.join(home_dir, ".azure", folder_name)
+    filepath_with_timestamp = os.path.join(filepath, time_stamp)
     try:
-        # Fetching path to user directory to create the arc diagnostic folder
-        home_dir = os.path.expanduser("~")
-        filepath = os.path.join(home_dir, ".azure", folder_name)
+
         # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
         try:
             os.mkdir(filepath)
         except FileExistsError:
             pass
-        filepath_with_timestamp = os.path.join(filepath, time_stamp)
         try:
             os.mkdir(filepath_with_timestamp)
         except FileExistsError:
@@ -80,7 +81,7 @@ def create_folder(folder_name, time_stamp):
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
         if "[Errno 28]" in str(e):
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onexc=None)
             error = "No space left on device"
         else:
             error = f"Error while trying to create diagnostic logs folder. Exception: {str(e)}"
@@ -100,18 +101,16 @@ def create_sub_folder(parent_path, subfolder_name):
         return "", False, "subfolder_name is required."
 
     error = ""
+    filepath = os.path.join(parent_path, subfolder_name)
     try:
-        filepath = os.path.join(parent_path, subfolder_name)
-        try:
-            os.mkdir(filepath)
-        except FileExistsError:
-            pass
-
+        os.mkdir(filepath)
+        return filepath, True, ""
+    except FileExistsError:
         return filepath, True, ""
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
         if "[Errno 28]" in str(e):
-            shutil.rmtree(filepath, ignore_errors=False, onerror=None)
+            shutil.rmtree(filepath, ignore_errors=False, onexc=None)
             error = "No space left on device"
         else:
             error = f"Error while trying to create diagnostic logs folder. Exception: {str(e)}"
