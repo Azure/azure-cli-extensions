@@ -29,10 +29,10 @@ class Cosmosdb_throughputBucketingTest(ScenarioTest):
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
         #Create container
-        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk --throughput 18000').get_output_in_json()
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk --throughput 3000').get_output_in_json()
 
-        # update container
-        self.cmd('az cosmosdb sql container throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 3000 -tb {throughput_buckets}')
+        # update throughput buckets
+        self.cmd('az cosmosdb sql container throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 3000 --throughput-buckets {throughput_buckets}')
 
         throughput_resource_json = self.cmd('az cosmosdb sql container throughput show -g {rg} -a {acc} -d {db_name} -n {col}').get_output_in_json()
 
