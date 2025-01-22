@@ -355,4 +355,4 @@ def validate_resource_name_and_resource_namespace_not_empty(resource_name, resou
     if resource_name is None or len(resource_name) == 0:
         raise InvalidArgumentValueError("Arg resource_name should not be None or Empty")
     if resource_namespace is None or len(resource_namespace) == 0:
-        raise InvalidArgumentValueError("Arg namespace should not be None or Empty")
+        raise InvalidArgumentValueError("Arg resource_namespace should not be None or Empty")
