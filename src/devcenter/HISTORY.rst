@@ -2,6 +2,11 @@
 
 Release History
 ===============
+6.2.1
+++++++
+* Fix environment data plane command examples
+* Fix 'az devcenter dev environment show-logs-by-operation' output format
+
 6.2.0
 ++++++
 * Update data plane API to v2024-10-01-preview
