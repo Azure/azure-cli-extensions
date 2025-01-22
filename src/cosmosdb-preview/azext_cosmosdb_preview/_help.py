@@ -1025,7 +1025,7 @@ short-summary: Update the throughput of the SQL container under an Azure Cosmos 
 examples:
       - name: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
         text: |-
-               az cosmosdb sql database throughput update --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput 1000
+               az cosmosdb sql container throughput update --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput 1000
 """
 
 helps['cosmosdb sql container throughput migrate'] = """
@@ -1034,7 +1034,7 @@ short-summary: Migrate the throughput of the SQL container between autoscale and
 examples:
       - name: Migrate the throughput of the SQL container between autoscale and manually provisioned.
         text: |-
-               az cosmosdb sql database throughput migrate --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput-type Manual
+               az cosmosdb sql container throughput migrate --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput-type Manual
 """
 
 # in-account restore of a deleted mongodb database
