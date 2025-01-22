@@ -47,7 +47,7 @@ _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 def list(cmd, resource_group_name, workspace_name, location, job_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
-         skip=None, jobs_per_page=None, orderby=None, order=None):
+         skip=None, top=None, orderby=None, order=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
@@ -76,7 +76,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
 
     pagination_params = {'filter': query,
                          'skip': skip,
-                         'top': jobs_per_page,
+                         'top': top,
                          'orderby': orderby_expression}
 
     # FOR DEV TESTING
@@ -84,9 +84,9 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     print("pagination_params =")
     print(pagination_params)
     print()
-    # return
 
     return client.list(info.location, **pagination_params)
+    
     # # FOR DEV TESTING (Comment-out the "return" above)
     # response = client.list(info.location, **pagination_params)
     # print()
@@ -94,15 +94,6 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     #     print(job_details)
     #     print()
     # return response
-
-    # # FOR DEV TESTING (Comment-out the "return" above)
-    # print()
-    # print("query = " + query)
-    # print()
-    # if orderby_expression is not None:
-    #     print("orderby = " + orderby_expression)
-    #     print()
-    # return
 
 
 def _parse_pagination_param_values(param_name, query, raw_values, logic_operator=None):

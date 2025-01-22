@@ -62,7 +62,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     created_after_type = CLIArgumentType(options_list=['--created-after'], help='Jobs created after this date/time to be listed.')
     created_before_type = CLIArgumentType(options_list=['--created-before'], help='Jobs created before this date/time to be listed.')
     skip_type = CLIArgumentType(options_list=['--skip'], help='How many jobs to skip when returning a job list')
-    jobs_per_page_type = CLIArgumentType(options_list=['--jobs-per-page'], help='The number of jobs listed per page.')
+    top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
 
@@ -100,7 +100,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('created_after', created_after_type)
         c.argument('created_before', created_before_type)
         c.argument('skip', skip_type)
-        c.argument('jobs_per_page', jobs_per_page_type)
+        c.argument('top', top_type)
         c.argument('orderby', orderby_type)
         c.argument('order', order_type)
 
