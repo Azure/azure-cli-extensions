@@ -16,6 +16,7 @@ upcoming
 * 'az containerapp env http-route-config': Add commands for the http-route-config feature area.
 * 'az containerapp env java-component': Support more flexible configuration updates with new parameters `--set-configurations`, `--replace-configurations`, `--remove-configurations` and `--remove-all-configurations`.
 * 'az containerapp env java-component gateway-for-spring create/update': Support `--bind` and `--unbind`
+* 'az containerapp arc': Enable setup custom core dns for Aks AzureCore on Arc.
 
 1.1.0b1
 ++++++
