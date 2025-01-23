@@ -163,7 +163,7 @@ class WorkflowTaskStatus:
             return repository, patched_tag, original_tag
         return None
 
-    def _get_skip_patch_reason_from_tasklog(self):
+    def _get_patch_skip_reason_from_tasklog(self):
         if self.scan_task is None:
             return None
         match = re.search(r'PATCHING will be skipped as (.+)\n', self.scan_logs)
@@ -265,11 +265,11 @@ class WorkflowTaskStatus:
         patch_task_id = WORKFLOW_STATUS_NOT_AVAILABLE if self.patch_task is None else self.patch_task.run_id
         patched_image = self._get_patched_image_name_from_tasklog()
         workflow_type = CSSCTaskTypes.ContinuousPatchV1.value
-        skipped_patch_reason = ""
+        patch_skipped_reason = ""
 
         # this situation means that we don't have a patched image
         if self.patch_status() == WorkflowTaskState.SKIPPED.value:
-            skipped_patch_reason = self._get_skip_patch_reason_from_tasklog()
+            patch_skipped_reason = self._get_patch_skip_reason_from_tasklog()
 
         if patched_image == self.image():
             patched_image = WORKFLOW_STATUS_PATCH_NOT_AVAILABLE
@@ -282,8 +282,8 @@ class WorkflowTaskStatus:
             "patch_status": patch_status
         }
 
-        if skipped_patch_reason != "":
-            result["skipped_patch_reason"] = skipped_patch_reason
+        if patch_skipped_reason != "":
+            result["patch_skipped_reason"] = patch_skipped_reason
 
         result["patch_date"] = patch_date
         result["patch_task_ID"] = patch_task_id
@@ -300,8 +300,8 @@ class WorkflowTaskStatus:
                  f"\tscan task ID: {status.scan_task_id}\n" \
                  f"\tpatch status: {status.patch_status}\n"
 
-        if hasattr(status, "skipped_patch_reason"):
-            result += f"\tskipped patch reason: {status.skipped_patch_reason}\n"
+        if hasattr(status, "patch_skipped_reason"):
+            result += f"\tpatch skipped reason: {status.patch_skipped_reason}\n"
 
         result += f"\tpatch date: {status.patch_date}\n" \
                   f"\tpatch task ID: {status.patch_task_id}\n" \
