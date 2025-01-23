@@ -54,25 +54,8 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
-    query = ""
-
-    # Construct a the filter query
-    query = _parse_pagination_param_values("JobType", query, job_type)
-    query = _parse_pagination_param_values("ProviderId", query, provider_id)
-    query = _parse_pagination_param_values("Target", query, target_id)
-    query = _parse_pagination_param_values("State", query, job_status)
-
-    query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
-    query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
-    query = _parse_pagination_param_values("Name", query, job_name, "startswith")
-
-    if query == "":
-        query = None
-
-    # Construct the orderby expression
-    orderby_expression = orderby
-    if orderby_expression is not None and order is not None:
-        orderby_expression += " " + order
+    query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+    orderby_expression = construct_orderby_expression(orderby, order)
 
     pagination_params = {'filter': query,
                          'skip': skip,
@@ -95,8 +78,39 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     #     print()
     # return response
 
+def _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name):
+    """
+    Construct a job-list filter query expression
+    """
+    query = ""
+
+    query = _parse_pagination_param_values("JobType", query, job_type)
+    query = _parse_pagination_param_values("ProviderId", query, provider_id)
+    query = _parse_pagination_param_values("Target", query, target_id)
+    query = _parse_pagination_param_values("State", query, job_status)
+
+    query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
+    query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
+    query = _parse_pagination_param_values("Name", query, job_name, "startswith")
+
+    if query == "":
+        query = None
+    return query
+
+def construct_orderby_expression(orderby, order):
+    """
+    Construct a job-list orderby expression
+    """
+    orderby_expression = orderby
+    if orderby_expression is not None and order is not None:
+        orderby_expression += " " + order
+    return orderby_expression
+
 
 def _parse_pagination_param_values(param_name, query, raw_values, logic_operator=None):
+    """
+    Parse the pagination parameter values for a job-list filter query expression
+    """
     if raw_values is not None:
         if len(query) > 0:
             query += " and "
