@@ -12,28 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "nginx deployment configuration delete",
+    "nginx deployment api-key delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an Nginx configuration
-
-    :example: Configuration Delete
-        az nginx deployment configuration delete --name default --deployment-name myDeployment --resource-group myResourceGroup
+    """Delete API key for Nginx deployment
     """
 
     _aaz_info = {
         "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/apikeys/{}", "2024-09-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -46,15 +43,18 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="The name of configuration, only 'default' is supported value due to the singleton of Nginx conf",
+        _args_schema.api_key_name = AAZStrArg(
+            options=["-n", "--name", "--api-key-name"],
+            help="The resource name of the API key",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.deployment_name = AAZStrArg(
             options=["--deployment-name"],
-            help="The name of targeted Nginx deployment",
+            help="The name of targeted NGINX deployment",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -68,7 +68,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConfigurationsDelete(ctx=self.ctx)()
+        self.ApiKeysDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,46 +79,23 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ConfigurationsDelete(AAZHttpOperation):
+    class ApiKeysDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/configurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/apiKeys/{apiKeyName}",
                 **self.url_parameters
             )
 
@@ -134,7 +111,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "apiKeyName", self.ctx.args.api_key_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

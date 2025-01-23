@@ -12,29 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "nginx deployment certificate update",
+    "nginx deployment api-key update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update an NGINX deployment certificate
-
-    :example: Update the certificate virtual path, key virtual path and certificate
-        az nginx deployment certificate update --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key --key-vault-secret-id newKeyVaultSecretId
+    """Update an API Key for the Nginx deployment in order to access the dataplane API endpoint
     """
 
     _aaz_info = {
         "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/apikeys/{}", "2024-09-01-preview"],
         ]
     }
-
-    AZ_SUPPORT_NO_WAIT = True
 
     AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -47,15 +44,18 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_name = AAZStrArg(
-            options=["-n", "--name", "--certificate-name"],
-            help="The name of certificate",
+        _args_schema.api_key_name = AAZStrArg(
+            options=["-n", "--name", "--api-key-name"],
+            help="The resource name of the API key",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.deployment_name = AAZStrArg(
             options=["--deployment-name"],
-            help="The name of targeted Nginx deployment",
+            help="The name of targeted NGINX deployment",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -66,45 +66,34 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            nullable=True,
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_path = AAZStrArg(
-            options=["--certificate-path"],
+        _args_schema.end_date_time = AAZDateTimeArg(
+            options=["--end-date-time"],
             arg_group="Properties",
-            help={"short-summary": "Certificate path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
+            help="The time after which this Dataplane API Key is no longer valid.",
             nullable=True,
         )
-        _args_schema.key_vault_secret_id = AAZStrArg(
-            options=["--key-vault-secret-id"],
+        _args_schema.secret_text = AAZPasswordArg(
+            options=["--secret-text"],
             arg_group="Properties",
-            help="The secret ID for your certificate from Azure Key Vault",
+            help="Secret text to be used as a Dataplane API Key. This is a write only property that can never be read back, but the first three characters will be returned in the 'hint' property.",
             nullable=True,
-        )
-        _args_schema.key_path = AAZStrArg(
-            options=["--key-path"],
-            arg_group="Properties",
-            help={"short-summary": "Key path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
-            nullable=True,
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CertificatesGet(ctx=self.ctx)()
+        self.ApiKeysGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.CertificatesCreateOrUpdate(ctx=self.ctx)()
+        self.ApiKeysCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -127,7 +116,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CertificatesGet(AAZHttpOperation):
+    class ApiKeysGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -141,7 +130,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/certificates/{certificateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/apiKeys/{apiKeyName}",
                 **self.url_parameters
             )
 
@@ -157,7 +146,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "certificateName", self.ctx.args.certificate_name,
+                    "apiKeyName", self.ctx.args.api_key_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -210,41 +199,25 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_nginx_certificate_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nginx_deployment_api_key_response_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class CertificatesCreateOrUpdate(AAZHttpOperation):
+    class ApiKeysCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/certificates/{certificateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/apiKeys/{apiKeyName}",
                 **self.url_parameters
             )
 
@@ -260,7 +233,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "certificateName", self.ctx.args.certificate_name,
+                    "apiKeyName", self.ctx.args.api_key_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -325,7 +298,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_nginx_certificate_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nginx_deployment_api_key_response_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -340,14 +313,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
-                properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
-                properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
+                properties.set_prop("endDateTime", AAZStrType, ".end_date_time")
+                properties.set_prop("secretText", AAZStrType, ".secret_text", typ_kwargs={"flags": {"secret": True}})
 
             return _instance_value
 
@@ -363,98 +334,43 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_nginx_certificate_read = None
+    _schema_nginx_deployment_api_key_response_read = None
 
     @classmethod
-    def _build_schema_nginx_certificate_read(cls, _schema):
-        if cls._schema_nginx_certificate_read is not None:
-            _schema.id = cls._schema_nginx_certificate_read.id
-            _schema.location = cls._schema_nginx_certificate_read.location
-            _schema.name = cls._schema_nginx_certificate_read.name
-            _schema.properties = cls._schema_nginx_certificate_read.properties
-            _schema.system_data = cls._schema_nginx_certificate_read.system_data
-            _schema.type = cls._schema_nginx_certificate_read.type
+    def _build_schema_nginx_deployment_api_key_response_read(cls, _schema):
+        if cls._schema_nginx_deployment_api_key_response_read is not None:
+            _schema.id = cls._schema_nginx_deployment_api_key_response_read.id
+            _schema.name = cls._schema_nginx_deployment_api_key_response_read.name
+            _schema.properties = cls._schema_nginx_deployment_api_key_response_read.properties
+            _schema.type = cls._schema_nginx_deployment_api_key_response_read.type
             return
 
-        cls._schema_nginx_certificate_read = _schema_nginx_certificate_read = AAZObjectType()
+        cls._schema_nginx_deployment_api_key_response_read = _schema_nginx_deployment_api_key_response_read = AAZObjectType()
 
-        nginx_certificate_read = _schema_nginx_certificate_read
-        nginx_certificate_read.id = AAZStrType(
+        nginx_deployment_api_key_response_read = _schema_nginx_deployment_api_key_response_read
+        nginx_deployment_api_key_response_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_certificate_read.location = AAZStrType()
-        nginx_certificate_read.name = AAZStrType(
+        nginx_deployment_api_key_response_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_certificate_read.properties = AAZObjectType()
-        nginx_certificate_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        nginx_certificate_read.type = AAZStrType(
+        nginx_deployment_api_key_response_read.properties = AAZObjectType()
+        nginx_deployment_api_key_response_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_nginx_certificate_read.properties
-        properties.certificate_error = AAZObjectType(
-            serialized_name="certificateError",
+        properties = _schema_nginx_deployment_api_key_response_read.properties
+        properties.end_date_time = AAZStrType(
+            serialized_name="endDateTime",
         )
-        properties.certificate_virtual_path = AAZStrType(
-            serialized_name="certificateVirtualPath",
-        )
-        properties.key_vault_secret_created = AAZStrType(
-            serialized_name="keyVaultSecretCreated",
-            flags={"read_only": True},
-        )
-        properties.key_vault_secret_id = AAZStrType(
-            serialized_name="keyVaultSecretId",
-        )
-        properties.key_vault_secret_version = AAZStrType(
-            serialized_name="keyVaultSecretVersion",
-            flags={"read_only": True},
-        )
-        properties.key_virtual_path = AAZStrType(
-            serialized_name="keyVirtualPath",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.sha1_thumbprint = AAZStrType(
-            serialized_name="sha1Thumbprint",
+        properties.hint = AAZStrType(
             flags={"read_only": True},
         )
 
-        certificate_error = _schema_nginx_certificate_read.properties.certificate_error
-        certificate_error.code = AAZStrType()
-        certificate_error.message = AAZStrType()
-
-        system_data = _schema_nginx_certificate_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.id = cls._schema_nginx_certificate_read.id
-        _schema.location = cls._schema_nginx_certificate_read.location
-        _schema.name = cls._schema_nginx_certificate_read.name
-        _schema.properties = cls._schema_nginx_certificate_read.properties
-        _schema.system_data = cls._schema_nginx_certificate_read.system_data
-        _schema.type = cls._schema_nginx_certificate_read.type
+        _schema.id = cls._schema_nginx_deployment_api_key_response_read.id
+        _schema.name = cls._schema_nginx_deployment_api_key_response_read.name
+        _schema.properties = cls._schema_nginx_deployment_api_key_response_read.properties
+        _schema.type = cls._schema_nginx_deployment_api_key_response_read.type
 
 
 __all__ = ["Update"]

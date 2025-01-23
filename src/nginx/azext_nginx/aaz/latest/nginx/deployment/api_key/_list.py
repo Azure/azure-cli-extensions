@@ -12,28 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "nginx deployment configuration delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "nginx deployment api-key list",
+    is_preview=True,
 )
-class Delete(AAZCommand):
-    """Delete an Nginx configuration
-
-    :example: Configuration Delete
-        az nginx deployment configuration delete --name default --deployment-name myDeployment --resource-group myResourceGroup
+class List(AAZCommand):
+    """List all API Keys of the given Nginx deployment
     """
 
     _aaz_info = {
         "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/apikeys", "2024-09-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -46,17 +43,10 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="The name of configuration, only 'default' is supported value due to the singleton of Nginx conf",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.deployment_name = AAZStrArg(
             options=["--deployment-name"],
-            help="The name of targeted Nginx deployment",
+            help="The name of targeted NGINX deployment",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
             ),
@@ -68,7 +58,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConfigurationsDelete(ctx=self.ctx)()
+        self.ApiKeysList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,52 +69,32 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ConfigurationsDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
+
+    class ApiKeysList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/configurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/apiKeys",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "GET"
 
         @property
         def error_format(self):
@@ -133,10 +103,6 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "deploymentName", self.ctx.args.deployment_name,
                     required=True,
@@ -162,15 +128,66 @@ class Delete(AAZCommand):
             }
             return parameters
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
         def on_200(self, session):
-            pass
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
 
-        def on_204(self, session):
-            pass
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.end_date_time = AAZStrType(
+                serialized_name="endDateTime",
+            )
+            properties.hint = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            return cls._schema_on_200
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Delete"]
+__all__ = ["List"]
