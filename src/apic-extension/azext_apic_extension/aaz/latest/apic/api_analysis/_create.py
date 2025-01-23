@@ -88,7 +88,85 @@ class Create(AAZCommand):
             help="The type of API analyzer.",
             enum={"spectral": "spectral"},
         )
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Properties",
+            help="The description of the analyzer configuration.",
+        )
+        _args_schema.filter = AAZObjectArg(
+            options=["--filter"],
+            arg_group="Properties",
+            help="The API analyzer filter.",
+        )
+        _args_schema.title = AAZStrArg(
+            options=["--title"],
+            arg_group="Properties",
+            help="The title of the analyzer configuration, e.g. \"Spectral (OpenAPI)\".",
+        )
+
+        filter = cls._args_schema.filter
+        filter.api_definitions = AAZListArg(
+            options=["api-definitions"],
+            help="Api definition filter conditions.",
+            required=True,
+        )
+        filter.api_versions = AAZListArg(
+            options=["api-versions"],
+            help="APi version filter conditions.",
+            required=True,
+        )
+        filter.apis = AAZListArg(
+            options=["apis"],
+            help="API filter conditions.",
+            required=True,
+        )
+
+        api_definitions = cls._args_schema.filter.api_definitions
+        api_definitions.Element = AAZObjectArg()
+        cls._build_args_analyzer_filter_condition_create(api_definitions.Element)
+
+        api_versions = cls._args_schema.filter.api_versions
+        api_versions.Element = AAZObjectArg()
+        cls._build_args_analyzer_filter_condition_create(api_versions.Element)
+
+        apis = cls._args_schema.filter.apis
+        apis.Element = AAZObjectArg()
+        cls._build_args_analyzer_filter_condition_create(apis.Element)
         return cls._args_schema
+
+    _args_analyzer_filter_condition_create = None
+
+    @classmethod
+    def _build_args_analyzer_filter_condition_create(cls, _schema):
+        if cls._args_analyzer_filter_condition_create is not None:
+            _schema.operator = cls._args_analyzer_filter_condition_create.operator
+            _schema.property = cls._args_analyzer_filter_condition_create.property
+            _schema.value = cls._args_analyzer_filter_condition_create.value
+            return
+
+        cls._args_analyzer_filter_condition_create = AAZObjectArg()
+
+        analyzer_filter_condition_create = cls._args_analyzer_filter_condition_create
+        analyzer_filter_condition_create.operator = AAZStrArg(
+            options=["operator"],
+            help="The operator to use for the filter, e.g. \"equals\".",
+            required=True,
+            enum={"contains": "contains", "equals": "equals"},
+        )
+        analyzer_filter_condition_create.property = AAZStrArg(
+            options=["property"],
+            help="The property to filter on, e.g. \"lifecycleStage\".",
+            required=True,
+        )
+        analyzer_filter_condition_create.value = AAZFreeFormDictArg(
+            options=["value"],
+            help="The value to filter on, e.g. \"production\".",
+            required=True,
+        )
+
+        _schema.operator = cls._args_analyzer_filter_condition_create.operator
+        _schema.property = cls._args_analyzer_filter_condition_create.property
+        _schema.value = cls._args_analyzer_filter_condition_create.value
 
     def _execute_operations(self):
         self.pre_operations()
@@ -193,6 +271,27 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("analyzerType", AAZStrType, ".analyzer_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("filter", AAZObjectType, ".filter")
+                properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
+
+            filter = _builder.get(".properties.filter")
+            if filter is not None:
+                filter.set_prop("apiDefinitions", AAZListType, ".api_definitions", typ_kwargs={"flags": {"required": True}})
+                filter.set_prop("apiVersions", AAZListType, ".api_versions", typ_kwargs={"flags": {"required": True}})
+                filter.set_prop("apis", AAZListType, ".apis", typ_kwargs={"flags": {"required": True}})
+
+            api_definitions = _builder.get(".properties.filter.apiDefinitions")
+            if api_definitions is not None:
+                _CreateHelper._build_schema_analyzer_filter_condition_create(api_definitions.set_elements(AAZObjectType, "."))
+
+            api_versions = _builder.get(".properties.filter.apiVersions")
+            if api_versions is not None:
+                _CreateHelper._build_schema_analyzer_filter_condition_create(api_versions.set_elements(AAZObjectType, "."))
+
+            apis = _builder.get(".properties.filter.apis")
+            if apis is not None:
+                _CreateHelper._build_schema_analyzer_filter_condition_create(apis.set_elements(AAZObjectType, "."))
 
             return self.serialize_content(_content_value)
 
@@ -236,9 +335,39 @@ class Create(AAZCommand):
                 serialized_name="analyzerType",
                 flags={"required": True},
             )
+            properties.description = AAZStrType()
+            properties.filter = AAZObjectType()
             properties.state = AAZStrType(
                 flags={"read_only": True},
             )
+            properties.title = AAZStrType(
+                flags={"required": True},
+            )
+
+            filter = cls._schema_on_200_201.properties.filter
+            filter.api_definitions = AAZListType(
+                serialized_name="apiDefinitions",
+                flags={"required": True},
+            )
+            filter.api_versions = AAZListType(
+                serialized_name="apiVersions",
+                flags={"required": True},
+            )
+            filter.apis = AAZListType(
+                flags={"required": True},
+            )
+
+            api_definitions = cls._schema_on_200_201.properties.filter.api_definitions
+            api_definitions.Element = AAZObjectType()
+            _CreateHelper._build_schema_analyzer_filter_condition_read(api_definitions.Element)
+
+            api_versions = cls._schema_on_200_201.properties.filter.api_versions
+            api_versions.Element = AAZObjectType()
+            _CreateHelper._build_schema_analyzer_filter_condition_read(api_versions.Element)
+
+            apis = cls._schema_on_200_201.properties.filter.apis
+            apis.Element = AAZObjectType()
+            _CreateHelper._build_schema_analyzer_filter_condition_read(apis.Element)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -265,6 +394,45 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    @classmethod
+    def _build_schema_analyzer_filter_condition_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("property", AAZStrType, ".property", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("value", AAZFreeFormDictType, ".value", typ_kwargs={"flags": {"required": True}})
+
+        value = _builder.get(".value")
+        if value is not None:
+            value.set_anytype_elements(".")
+
+    _schema_analyzer_filter_condition_read = None
+
+    @classmethod
+    def _build_schema_analyzer_filter_condition_read(cls, _schema):
+        if cls._schema_analyzer_filter_condition_read is not None:
+            _schema.operator = cls._schema_analyzer_filter_condition_read.operator
+            _schema.property = cls._schema_analyzer_filter_condition_read.property
+            _schema.value = cls._schema_analyzer_filter_condition_read.value
+            return
+
+        cls._schema_analyzer_filter_condition_read = _schema_analyzer_filter_condition_read = AAZObjectType()
+
+        analyzer_filter_condition_read = _schema_analyzer_filter_condition_read
+        analyzer_filter_condition_read.operator = AAZStrType(
+            flags={"required": True},
+        )
+        analyzer_filter_condition_read.property = AAZStrType(
+            flags={"required": True},
+        )
+        analyzer_filter_condition_read.value = AAZFreeFormDictType(
+            flags={"required": True},
+        )
+
+        _schema.operator = cls._schema_analyzer_filter_condition_read.operator
+        _schema.property = cls._schema_analyzer_filter_condition_read.property
+        _schema.value = cls._schema_analyzer_filter_condition_read.value
 
 
 __all__ = ["Create"]

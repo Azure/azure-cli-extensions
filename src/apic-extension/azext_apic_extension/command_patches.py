@@ -261,70 +261,6 @@ class ExportMetadataExtension(ExportMetadata):
         return args_schema
 
 
-# `az apic service commands`
-class ImportFromApimExtension(ImportFromApim):
-    # pylint: disable=too-few-public-methods
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        # pylint: disable=protected-access
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_resource_ids._required = False
-        args_schema.source_resource_ids._registered = False
-
-        args_schema.apim_subscription_id = AAZStrArg(
-            options=["--apim-subscription"],
-            help="The subscription id of the source APIM instance.",
-            required=False
-        )
-
-        args_schema.apim_resource_group = AAZStrArg(
-            options=["--apim-resource-group"],
-            help="The resource group of the source APIM instance.",
-            required=False
-        )
-
-        args_schema.apim_name = AAZStrArg(
-            options=["--apim-name"],
-            help="The name of the source APIM instance.",
-            required=True
-        )
-
-        args_schema.apim_apis = AAZListArg(
-            options=["--apim-apis"],
-            help="The APIs to be imported.",
-            required=True
-        )
-        args_schema.apim_apis.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_operations(self):
-        super().pre_operations()
-        args = self.ctx.args
-
-        # compose sourceResourceIds property in the request body
-        # Use same subscription id and resource group as API Center by default
-        resource_group = args.resource_group
-        subscription_id = self.ctx.subscription_id
-
-        # Use user provided subscription id
-        if args.apim_subscription_id:
-            subscription_id = args.apim_subscription_id
-
-        # Use user provided resource group
-        if args.apim_resource_group:
-            resource_group = args.apim_resource_group
-
-        source_resource_ids = []
-        for item in args.apim_apis:
-            source_resource_ids.append(
-                f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
-                f"Microsoft.ApiManagement/service/{args.apim_name}/apis/{item}"
-            )
-
-        args.source_resource_ids = source_resource_ids
-
-
 # `az apic integration` commands
 class ListIntegrationExtension(DefaultWorkspaceParameter, ListIntegration):
     pass
@@ -538,6 +474,70 @@ class ImportAmazonApiGatewaySource(DefaultWorkspaceParameter, Import):
             "region_name": args.region_name,
             "msi_resource_id": args.msi_resource_id
         }
+
+
+@register_command(
+    "apic import apim",
+    is_preview=True,
+)
+class ImportAzureApiManagementSource(DefaultWorkspaceParameter, Import):
+    # pylint: disable=C0301
+    """Import an Azure API Management API source
+
+    :example: Import an Azure API Management API source
+        az apic import apim -g contoso-resources -n contoso --azure-apim myapim
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # Remove the azure-api-management-source parameter
+        args_schema.azure_api_management_source._registered = False
+        # Remove the amazon-api-gateway-source parameter
+        args_schema.amazon_api_gateway_source._registered = False
+        # Remove the api_source_type parameter, will set it for users in pre_operations
+        args_schema.api_source_type._required = False
+        args_schema.api_source_type._registered = False
+
+        # Create arg group for AzureApiManagementSource
+
+        args_schema.msi_resource_id = AAZResourceIdArg(
+            options=["--msi-resource-id"],
+            arg_group="AzureApiManagementSource",
+            help="The resource ID of the managed identity that has access to the API Management instance.",
+        )
+
+        args_schema.azure_apim = AAZStrArg(
+            options=["--azure-apim"],
+            arg_group="AzureApiManagementSource",
+            help="The name or resource id of the source APIM instance.",
+            required=True
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        # Set apim_resource_id based on user input
+        super().pre_operations()
+        args = self.ctx.args
+
+        if not is_valid_resource_id(args.azure_apim.to_serialized_data()):
+            # The APIM is in the same resource group
+            resource_group = args.resource_group
+            subscription_id = self.ctx.subscription_id
+            apim_resource_id = (f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
+                                f"Microsoft.ApiManagement/service/{args.azure_apim}")
+        else:
+            apim_resource_id = args.azure_apim
+
+        args.azure_api_management_source = {
+            "msi_resource_id": args.msi_resource_id,
+            "apim_resource_id": apim_resource_id
+        }
+
+        # Set api_source_type
+        args.api_source_type = "AzureApiManagement"      
 
 
 # `az apic api-analysis` commands
