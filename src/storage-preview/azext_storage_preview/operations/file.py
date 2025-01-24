@@ -443,3 +443,7 @@ def file_exists(client, **kwargs):
 
 def file_updates(client, **kwargs):
     return client.set_http_headers(**kwargs)
+
+
+def create_hard_link(client, **kwargs):
+    return client.create_hard_link(**kwargs)

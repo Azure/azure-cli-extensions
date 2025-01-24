@@ -958,3 +958,38 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage account local-user create') as c:
         c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(), is_preview=True,
                    help='Indicate if the local user is enabled for access with NFSv3 protocol.')
+
+    with self.argument_context('storage share create') as c:
+        c.extra('share_name', share_name_type, options_list=('--name', '-n'), required=True)
+        c.argument('fail_on_exist', help='Specify whether to throw an exception when the share exists. False by '
+                                         'default.')
+        c.argument('quota', type=int, help='Specifies the maximum size of the share, in gigabytes. Must be greater '
+                                           'than 0, and less than or equal to 5TB (5120).')
+        t_share_protocols_type = self.get_sdk('_models#ShareProtocols', resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+        c.extra('protocols', options_list=['--protocol'], arg_type=get_enum_type(t_share_protocols_type),
+                help='The protocol to enable for the share.')
+
+    # nfs related params
+    for cmd in ['directory create', 'file update', 'file copy start', 'file copy start-batch']:
+        with self.argument_context(f'storage {cmd}') as c:
+            c.extra('file_mode', is_preview=True,
+                    help='Only applicable to NFS Directory. The mode permissions to be set on the directory. '
+                         'Symbolic (rwxrw-rw-) is supported. The sticky bit is also supported and its represented '
+                         'either by the letter t or T in the final character-place depending on whether the execution '
+                         'bit for the others category is set or unset respectively, absence of t or T indicates sticky '
+                         'bit not set."')
+            c.extra('owner', is_preview=True, help='Only applicable to NFS Directory. The owner user identifier (UID) '
+                                                   'to be set on the directory. The default value is 0 (root).')
+            c.extra('group', is_preview=True, help='Only applicable to NFS Directory. The owner group identifier (GID) '
+                                                   'to be set on the directory. The default value is 0 (root group).')
+
+    for cmd in ['file copy start', 'file copy start-batch']:
+        with self.argument_context(f'storage {cmd}') as c:
+            c.extra('mode_copy_mode', is_preview=True,
+                    help='Only applicable to NFS Files. Applicable only when the copy source is a File. '
+                         'Determines the copy behavior of the mode bits of the destination file. '
+                         'If not populated, the destination file will have the default File Mode.')
+            c.extra('owner_copy_mode', is_preview=True,
+                    help='Only applicable to NFS Files. Applicable only when the copy source is a File. '
+                         'Determines the copy behavior of the owner and group of the destination file. '
+                         'If not populated, the destination file will have the default Owner and Group.')

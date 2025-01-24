@@ -101,3 +101,10 @@ class StorageFileSharePreviewScenarios(StorageScenarioMixin, ScenarioTest):
                          share, source_file, filename)
         self.storage_cmd('storage file exists -s {} -p {} --disallow-trailing-dot', account_info, share, filename) \
             .assert_with_checks(JMESPathCheck('exists', True))
+
+    # @ResourceGroupPreparer()
+    # @StorageAccountPreparer(location='eastus2euap')
+    # def test_storage_file_share_nfs_scenario(self, resource_group, storage_account):
+    #     account_info = self.get_account_info(resource_group, storage_account)
+    #     s1 = self.create_share(account_info)
+

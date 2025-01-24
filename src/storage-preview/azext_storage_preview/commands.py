@@ -77,7 +77,11 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             custom_command_type=get_custom_sdk('fileshare', cf_share_client,
                                                                CUSTOM_DATA_STORAGE_FILESHARE),
                             resource_type=CUSTOM_DATA_STORAGE_FILESHARE, min_api='2022-11-02') as g:
-        from ._transformers import transform_share_list_handle
+        from ._format import transform_boolean_for_table
+        from ._transformers import (create_boolean_result_output_transformer, transform_share_list_handle)
+        g.storage_custom_command('create', 'create_share',
+                                 transform=create_boolean_result_output_transformer('created'),
+                                 table_transformer=transform_boolean_for_table)
         g.storage_custom_command_oauth('list-handle', 'list_handle', transform=transform_share_list_handle)
         g.storage_custom_command_oauth('close-handle', 'close_handle')
 
@@ -142,6 +146,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=file_related_exception_handler,
                                        transform=transform_file_show_result)
         g.storage_custom_command('download-batch', 'storage_file_download_batch', client_factory=cf_share_client)
+        g.storage_custom_command_oauth('create-hard-link', 'create_hard_link')
 
     local_users_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
