@@ -1008,6 +1008,35 @@ helps['cosmosdb sql container restore'] = """
                az cosmosdb sql container restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_container_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
 """
 
+# sql container throughput commands
+helps['cosmosdb sql container throughput'] = """
+type: group
+short-summary: Manage throughput of SQL container under an Azure Cosmos DB account.
+"""
+
+helps['cosmosdb sql container throughput show'] = """
+type: command
+short-summary: Get the throughput of the SQL container under an Azure Cosmos DB SQL database.
+"""
+
+helps['cosmosdb sql container throughput update'] = """
+type: command
+short-summary: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
+examples:
+      - name: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
+        text: |-
+               az cosmosdb sql container throughput update --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput 1000
+"""
+
+helps['cosmosdb sql container throughput migrate'] = """
+type: command
+short-summary: Migrate the throughput of the SQL container between autoscale and manually provisioned.
+examples:
+      - name: Migrate the throughput of the SQL container between autoscale and manually provisioned.
+        text: |-
+               az cosmosdb sql container throughput migrate --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput-type Manual
+"""
+
 # in-account restore of a deleted mongodb database
 helps['cosmosdb mongodb database restore'] = """
     type: command

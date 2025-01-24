@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
+from enum import Enum
 import argparse
 from argcomplete.completers import FilesCompleter
 
@@ -103,6 +104,17 @@ SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE = """--conflict-resolution-policy
     \\"conflictResolutionPath\\": \\"/path\\"
 }"
 """
+
+SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--throughput-buckets "[
+    { \\"id\\": 1, \\"maxThroughputPercentage\\" : 10 },
+    { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20 }
+]"
+"""
+
+
+class ThroughputTypes(str, Enum):
+    autoscale = "autoscale"
+    manual = "manual"
 
 
 def load_arguments(self, _):
@@ -499,6 +511,7 @@ def load_arguments(self, _):
             c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the container copy job.', required=True)
 
     max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
+    throughput_type = CLIArgumentType(options_list=['--throughput-type', '-t'], arg_type=get_enum_type(ThroughputTypes), help='The type of throughput to migrate to.')
 
 
 # SQL container
@@ -557,6 +570,19 @@ def load_arguments(self, _):
         c.argument('evenly_distribute', arg_type=get_three_state_flag(), help="switch to distribute throughput equally among all physical partitions")
         c.argument('target_partition_info', nargs='+', action=CreateTargetPhysicalPartitionThroughputInfoAction, required=False, help="information about desired target physical partition throughput eg: 0=1200 1=1200")
         c.argument('source_partition_info', nargs='+', action=CreateSourcePhysicalPartitionThroughputInfoAction, required=False, help="space separated source physical partition ids eg: 1 2")
+
+    # Sql container throughput
+    with self.argument_context('cosmosdb sql container throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('database_name', database_name_type)
+        c.argument('container_name', options_list=['--name', '-n'], help="Container name")
+        c.argument('throughput', type=int, help='The throughput of SQL container (RU/s).')
+        c.argument('max_throughput', max_throughput_type)
+        c.argument('throughput_buckets', options_list=['--throughput-buckets'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Throughput Buckets, you can enter it as a string or as a file, e.g., --throughput-buckets @throughput-buckets-file.json or ' + SQL_THROUGHPUT_BUCKETS_EXAMPLE)
+
+    for scope in ['sql container throughput migrate']:
+        with self.argument_context('cosmosdb {}'.format(scope)) as c:
+            c.argument('throughput_type', throughput_type)
 
     # Mongodb collection partition retrieve throughput
     with self.argument_context('cosmosdb mongodb collection retrieve-partition-throughput') as c:

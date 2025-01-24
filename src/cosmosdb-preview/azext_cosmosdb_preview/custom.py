@@ -63,7 +63,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     GraphAPIComputeServiceResourceCreateUpdateProperties,
     MaterializedViewsBuilderServiceResourceCreateUpdateProperties,
     DedicatedGatewayType,
-    ServiceType
+    ServiceType,
+    ThroughputSettingsResource,
+    ThroughputSettingsUpdateParameters
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -2353,6 +2355,53 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
                                                                                                              retrieve_throughput_parameters=retrieve_throughput_parameters)
 
     return async_partition_retrieve_throughput_result.result()
+
+
+def cli_cosmosdb_sql_container_throughput_update(client,
+                                                 resource_group_name,
+                                                 account_name,
+                                                 database_name,
+                                                 container_name,
+                                                 throughput=None,
+                                                 max_throughput=None,
+                                                 throughput_buckets=None):
+    """Update an Azure Cosmos DB SQL container throughput"""
+    throughput_update_resource = _get_throughput_settings_update_parameters(throughput=throughput,
+                                                                            max_throughput=max_throughput,
+                                                                            throughput_buckets=throughput_buckets)
+    return client.begin_update_sql_container_throughput(resource_group_name,
+                                                        account_name,
+                                                        database_name,
+                                                        container_name,
+                                                        throughput_update_resource)
+
+
+def cli_cosmosdb_sql_container_throughput_migrate(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  database_name,
+                                                  container_name,
+                                                  throughput_type):
+    """Migrate an Azure Cosmos DB SQL container throughput"""
+    if throughput_type == "autoscale":
+        return client.begin_migrate_sql_container_to_autoscale(resource_group_name, account_name,
+                                                               database_name, container_name)
+    return client.begin_migrate_sql_container_to_manual_throughput(resource_group_name, account_name,
+                                                                   database_name, container_name)
+
+
+def _get_throughput_settings_update_parameters(throughput=None, max_throughput=None, throughput_buckets=None):
+    throughput_resource = None
+    if throughput and max_throughput:
+        raise CLIError("Please provide max-throughput if your resource is autoscale enabled otherwise provide throughput.")
+    if throughput:
+        throughput_resource = ThroughputSettingsResource(throughput=throughput, throughput_buckets=throughput_buckets)
+    elif max_throughput:
+        throughput_resource = ThroughputSettingsResource(
+            autoscale_settings=AutoscaleSettings(max_throughput=max_throughput),
+            throughput_buckets=throughput_buckets)
+
+    return ThroughputSettingsUpdateParameters(resource=throughput_resource)
 
 
 # pylint: disable=dangerous-default-value
