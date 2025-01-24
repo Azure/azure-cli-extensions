@@ -212,6 +212,13 @@ class QuantumJobsScenarioTest(ScenarioTest):
         results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
 
+        # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
+        results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
+        self.assertIsNotNone(results["ProviderId"])
+        self.assertTrue(len(results["ProviderId"]) == 1)
+        self.assertTrue(results["ProviderId"] == "rigetti")
+        # TODO: Add more list command variations here
+
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
     @live_only()
@@ -259,11 +266,68 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
     def test_job_list_param_formating(self):
-
-        # query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-        query = _construct_filter_query()
+        # Validate filter query formatting for each param
+        #
+        # Should return None if params are set to None
+        job_type = None
+        item_type = None
+        provider_id = None
+        target_id = None
+        job_status = None
+        created_after = None
+        created_before = None
+        job_name = None
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
         assert query is None
 
-        # orderby_expression = _construct_orderby_expression(orderby, order)
-        orderby_expression = _construct_orderby_expression()
+        job_type = "QuantumComputing"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "JobType eq 'QuantumComputing'"
+        job_type = None
+
+        item_type = "job"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ItemType eq 'job'"
+        item_type = None
+
+        provider_id = "Microsoft"
+        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ProviderId eq 'Microsoft'"
+        provider_id = None
+
+        target_id = "AwesomeQuantumSuperComputer"
+        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "TargetId eq 'AwesomeQuantumSuperComputer'"
+        target_id = None
+
+        job_status = "Failed"        
+        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "State eq 'Failed'"
+        job_status = None        
+
+        # TODO: add date and name params
+        # query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
+        # query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
+        # query = _parse_pagination_param_values("Name", query, job_name, "startswith")
+        # --created-after     : Jobs created after this date/time to be listed.
+        # --created-before    : Jobs created before this date/time to be listed.
+        # --job-name          : A friendly name to give to this run of the program.
+
+        # TODO: add combinations of params
+        # TODO: param[s] with comma-separated list of values
+
+        # Validate orderby expression formatting
+        #  
+        # Should return None if params a set to None
+        orderby = None
+        order = None
+        orderby_expression = _construct_orderby_expression(orderby, order)
         assert orderby_expression is None
+
+        # TODO: Test orderby/order errors too
+        # Code similar to this...
+        # try:
+        #     wait_secs = _validate_max_poll_wait_secs(-1.0)
+        #     assert False
+        # except InvalidArgumentValueError as e:
+        #     assert str(e) == "--max-poll-wait-secs parameter is not valid: -1.0"

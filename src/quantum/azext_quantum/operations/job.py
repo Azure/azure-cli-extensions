@@ -46,7 +46,7 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
-def list(cmd, resource_group_name, workspace_name, location, job_type=None, provider_id=None,
+def list(cmd, resource_group_name, workspace_name, location, job_type=None, item_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
          skip=None, top=None, orderby=None, order=None):
     """
@@ -55,7 +55,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
-    query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+    query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
     orderby_expression = _construct_orderby_expression(orderby, order)
 
     pagination_params = {'filter': query,
@@ -80,13 +80,14 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     # return response
 
 
-def _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name):
+def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
     """
     Construct a job-list filter query expression
     """
     query = ""
 
     query = _parse_pagination_param_values("JobType", query, job_type)
+    query = _parse_pagination_param_values("ItemType", query, item_type)
     query = _parse_pagination_param_values("ProviderId", query, provider_id)
     query = _parse_pagination_param_values("Target", query, target_id)
     query = _parse_pagination_param_values("State", query, job_status)
