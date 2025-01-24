@@ -266,4 +266,4 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # orderby_expression = _construct_orderby_expression(orderby, order)
         orderby_expression = _construct_orderby_expression()
-        assert query is None
+        assert orderby_expression is None
