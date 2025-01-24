@@ -56,7 +56,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
     query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-    orderby_expression = construct_orderby_expression(orderby, order)
+    orderby_expression = _construct_orderby_expression(orderby, order)
 
     pagination_params = {'filter': query,
                          'skip': skip,
@@ -140,7 +140,7 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
     return query
 
 
-def construct_orderby_expression(orderby, order):
+def _construct_orderby_expression(orderby, order):
     """
     Construct a job-list orderby expression
     """

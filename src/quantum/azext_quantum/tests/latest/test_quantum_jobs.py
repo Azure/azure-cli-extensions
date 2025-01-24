@@ -17,7 +17,7 @@ from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _parse_blob_url, _validate_max_poll_wait_secs, _convert_numeric_params
+from ...operations.job import _parse_blob_url, _validate_max_poll_wait_secs, _convert_numeric_params, _construct_filter_query, _construct_orderby_expression
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -257,3 +257,13 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertFalse(results["results"][0]["success"])
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+
+    def test_job_list_param_formating(self):
+
+        # query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        query = _construct_filter_query()
+        assert query is None
+
+        # orderby_expression = _construct_orderby_expression(orderby, order)
+        orderby_expression = _construct_orderby_expression()
+        assert query is None
