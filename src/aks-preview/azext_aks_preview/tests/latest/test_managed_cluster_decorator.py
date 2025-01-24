@@ -3972,6 +3972,16 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
         self.assertEqual(outbound_type_2,expect_outbound_type_2)
 
+        ctx3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic", "vnet_subnet_id": "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        outbound_type_2 = ctx2._get_outbound_type(False, False, None)
+        expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+        self.assertEqual(outbound_type_2,expect_outbound_type_2)
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
