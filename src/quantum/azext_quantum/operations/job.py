@@ -29,6 +29,7 @@ MINIMUM_MAX_POLL_WAIT_SECS = 1
 DEFAULT_SHOTS = 500
 QIO_DEFAULT_TIMEOUT = 100
 
+ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
 ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
@@ -69,7 +70,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     print()
 
     return client.list(info.location, **pagination_params)
-    
+
     # # FOR DEV TESTING (Comment-out the "return" above)
     # response = client.list(info.location, **pagination_params)
     # print()
@@ -77,6 +78,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     #     print(job_details)
     #     print()
     # return response
+
 
 def _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name):
     """
@@ -97,15 +99,6 @@ def _construct_filter_query(job_type, provider_id, target_id, job_status, create
         query = None
     return query
 
-def construct_orderby_expression(orderby, order):
-    """
-    Construct a job-list orderby expression
-    """
-    orderby_expression = orderby
-    if orderby_expression is not None and order is not None:
-        orderby_expression += " " + order
-    return orderby_expression
-
 
 def _parse_pagination_param_values(param_name, query, raw_values, logic_operator=None):
     """
@@ -118,7 +111,6 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
         # Special handling of --job-name
         if param_name == "Name":
             query += logic_operator + "(Name, '" + raw_values + "')"
-            # query += logic_operator + "(Name, \"" + raw_values + "\")"
             return query
 
         # Special handling of --created-before and --created-after (No quotes around the date)
@@ -146,6 +138,19 @@ def _parse_pagination_param_values(param_name, query, raw_values, logic_operator
                     query += " or " + param_name + padded_logic_operator + value + "'"
             query += ")"
     return query
+
+
+def construct_orderby_expression(orderby, order):
+    """
+    Construct a job-list orderby expression
+    """
+    orderby_expression = orderby
+    if orderby_expression is not None and order is not None:
+        # Validate order, otherwise the error message will be vague
+        if not (order == "asc" or order == "desc"):
+            raise InvalidArgumentValueError(ERROR_MSG_INVALID_ORDER_ARGUMENT)
+        orderby_expression += " " + order
+    return orderby_expression
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
