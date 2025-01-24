@@ -3958,6 +3958,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
+        self.create_attach_agentpool_context(ctx1)
         outbound_type_1 = ctx1._get_outbound_type(False, False, None)
         expect_outbound_type_1 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
         self.assertEqual(outbound_type_1,expect_outbound_type_1)
@@ -3968,6 +3969,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
+        self.create_attach_agentpool_context(ctx2)
         outbound_type_2 = ctx2._get_outbound_type(False, False, None)
         expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
         self.assertEqual(outbound_type_2,expect_outbound_type_2)
@@ -3978,6 +3980,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
+        self.create_attach_agentpool_context(ctx3)
         outbound_type_3 = ctx3._get_outbound_type(False, False, None)
         expect_outbound_type_3 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
         self.assertEqual(outbound_type_3,expect_outbound_type_3)
