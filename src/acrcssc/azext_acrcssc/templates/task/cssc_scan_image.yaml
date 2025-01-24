@@ -13,6 +13,9 @@ steps:
     cmd: bash mkdir ./data
 
   - id: generate-trivy-report
+    retries: 3
+    retryDelay: 3
+    timeout: 1800
     cmd: |
       cssc trivy image \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
