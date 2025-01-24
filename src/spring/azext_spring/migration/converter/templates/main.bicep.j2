@@ -4,7 +4,7 @@ param workloadProfileType string
 param minNodes int
 param maxNodes int
 
-module containerAppEnv 'environment.bicep' = {
+module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
   params: {
     workloadProfileName: workloadProfileName
@@ -22,3 +22,10 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
   }
 }
 {% endfor %}
+
+module managedGateway 'gateway.bicep' = {
+  name: 'gatewayDeployment'
+  params: {
+    managedEnvironments_ninpan_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}

@@ -9,6 +9,7 @@ from .revision_converter import RevisionConverter
 from .readme_converter import ReadMeConverter
 from .main_converter import MainConverter
 from .param_converter import ParamConverter
+from .gateway_converter import GatewayConverter
 
 # Context Class
 class ConversionContext:
@@ -50,6 +51,21 @@ class ConversionContext:
         # )
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(None)
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)
+
+        for gateway in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways'):
+            gateway_name = gateway['name'].split('/')[-1]
+            gateway_key = gateway_name+"_"+self.get_converter(GatewayConverter).get_template_name()
+            routes = []
+            for gateway_route in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
+                routes.append(gateway_route)
+            gateway_source = {
+                "gateway": gateway,
+                "routes": routes,
+            }
+            converted_contents[gateway_key] = self.get_converter(GatewayConverter).convert(gateway_source)
+            print("converted_contents for gateway: \n", converted_contents[gateway_key])
+            break
+
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):

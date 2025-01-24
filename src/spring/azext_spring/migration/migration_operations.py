@@ -28,7 +28,7 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.add_converter(EnvironmentConverter())
     context.add_converter(AppConverter())
     context.add_converter(RevisionConverter())
-    context.add_converter(GatewayConverter(client))
+    context.add_converter(GatewayConverter(client, resource_group, service))
     context.add_converter(ReadMeConverter())
     context.add_converter(ParamConverter())
 
@@ -42,11 +42,13 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.set_params_for_converter(EnvironmentConverter, main_bicep_params)
 
     # Run all converters
+    print("Start to run all converters...")
     converted_contents = context.run_converters(asa_arm)
 
     # Save each line of converted content to a separate file
     context.save_to_files(converted_contents, os.path.join("output",""))
     print("Succeed to generate Bicep files")
+
 
 def export_asa_arm_template(cmd, resource_group, service):
     resources = []
@@ -71,5 +73,6 @@ def export_asa_arm_template(cmd, resource_group, service):
                                                            parameters=export_template_request)
     return result.template
 
-def get_aca_bicep_params(aca_arm):
+
+def get_aca_bicep_params(asa_arm):
     return {"key1": "value1"}
