@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.1.0b2
+++++++
 * 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 * 'az containerapp create': New target-label option for Labels revision mode.
