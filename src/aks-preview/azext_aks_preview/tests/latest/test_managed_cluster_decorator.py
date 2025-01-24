@@ -3978,9 +3978,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        outbound_type_2 = ctx2._get_outbound_type(False, False, None)
-        expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
-        self.assertEqual(outbound_type_2,expect_outbound_type_2)
+        outbound_type_3 = ctx3._get_outbound_type(False, False, None)
+        expect_outbound_type_3 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+        self.assertEqual(outbound_type_3,expect_outbound_type_3)
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
