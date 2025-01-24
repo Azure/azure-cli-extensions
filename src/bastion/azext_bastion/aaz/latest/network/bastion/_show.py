@@ -44,7 +44,7 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.bastion_host_name = AAZStrArg(
+        _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
             help="The name of the Bastion Host.",
             required=True,
@@ -103,7 +103,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "bastionHostName", self.ctx.args.bastion_host_name,
+                    "bastionHostName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -409,7 +409,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
-        force_single_container_updates=None
+        force_single_container_updates=None,
+        registry_identity=None,
+        user_assigned=None,
+        system_assigned=None,
+        revisions_mode=None,
+        target_label=None,
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -419,13 +424,19 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.registry_server = registry_server
         self.registry_user = registry_user
         self.registry_pass = registry_pass
+        self.registry_identity = registry_identity
+        self.user_assigned = user_assigned
+        self.system_assigned = system_assigned
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
         self.force_single_container_updates = force_single_container_updates
+        self.revisions_mode = revisions_mode
+        self.target_label = target_label
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
+        self.get_acr_creds = True
 
     def _get(self):
         return ContainerAppPreviewClient.show(self.cmd, self.resource_group.name, self.name)
@@ -455,7 +466,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
             environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
-            force_single_container_updates=self.force_single_container_updates
+            force_single_container_updates=self.force_single_container_updates,
+            registry_identity=self.registry_identity,
+            system_assigned=self.system_assigned,
+            user_assigned=self.user_assigned,
+            revisions_mode=self.revisions_mode,
+            target_label=self.target_label,
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):
@@ -483,10 +499,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         if not self.acr:
             self.acr = AzureContainerRegistry(registry_name, registry_rg)
-
-        self.registry_user, self.registry_pass, _ = _get_acr_cred(
-            self.cmd.cli_ctx, registry_name
-        )
+        if self.get_acr_creds:
+            self.registry_user, self.registry_pass, _ = _get_acr_cred(
+                self.cmd.cli_ctx, registry_name
+            )
 
     def _docker_push_to_container_registry(self, image_name, forced_acr_login=False):
         from azure.cli.command_modules.acr.custom import acr_login
@@ -1246,29 +1262,14 @@ def _get_acr_from_image(cmd, app):
         app.registry_server = app.image.split("/")[
             0
         ]  # TODO what if this conflicts with registry_server param?
+
         parsed = urlparse(app.image)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
-        if app.registry_user is None or app.registry_pass is None:
-            logger.info(
-                "No credential was provided to access Azure Container Registry. Trying to look up..."
-            )
-            try:
-                app.registry_user, app.registry_pass, registry_rg = _get_acr_cred(
-                    cmd.cli_ctx, registry_name
-                )
-                app.acr = AzureContainerRegistry(
-                    registry_name, ResourceGroup(cmd, registry_rg, None, None)
-                )
-            except Exception as ex:
-                raise RequiredArgumentMissingError(
-                    "Failed to retrieve credentials for container registry. Please provide the registry username and password"
-                ) from ex
-        else:
-            acr_rg = _get_acr_rg(app)
-            app.acr = AzureContainerRegistry(
-                name=registry_name,
-                resource_group=ResourceGroup(app.cmd, acr_rg, None, None),
-            )
+        acr_rg = _get_acr_rg(app)
+        app.acr = AzureContainerRegistry(
+            name=registry_name,
+            resource_group=ResourceGroup(cmd, acr_rg, None, None),
+        )
 
 
 def _get_registry_from_app(app, source):
@@ -1337,6 +1338,30 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
         registry_name, registry_rg = find_existing_acr(cmd, app)
         if registry_name and registry_rg:
             _set_acr_creds(cmd, app, registry_name)
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
+        else:
+            registry_rg = app.resource_group.name
+            registry_name = _get_default_registry_name(app)
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
+            app.should_create_acr = True
+
+    app.acr = AzureContainerRegistry(
+        registry_name, ResourceGroup(cmd, registry_rg, None, None)
+    )
+
+
+def _get_registry_details_without_get_creds(cmd, app: "ContainerApp", source):
+    if app.registry_server:
+        if "azurecr.io" not in app.registry_server and source:
+            raise ValidationError(
+                "Cannot supply non-Azure registry when using --source."
+            )
+        parsed = urlparse(app.registry_server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
+        registry_rg = _get_acr_rg(app)
+    else:
+        registry_name, registry_rg = find_existing_acr(cmd, app)
+        if registry_name and registry_rg:
             app.registry_server = registry_name + ACR_IMAGE_SUFFIX
         else:
             registry_rg = app.resource_group.name

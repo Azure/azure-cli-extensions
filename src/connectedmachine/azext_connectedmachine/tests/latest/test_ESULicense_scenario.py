@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_show
 from .example_steps import step_list
 from .example_steps import step_extension_create
@@ -24,21 +25,27 @@ from .. import (
     raise_if,
     calc_coverage
 )
-
+import json
+import subprocess
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ESULicenseScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli_test_esulicense')
     def test_esu_license(self):
         self.kwargs.update({
             'customScriptName': 'custom-test',
-            'machine': 'testmachine2',
-            'rg': 'ytongtest3',
-            'location': 'eastus2',
+            'machine': 'testmachine',
+            'machineSA': 'WIN-A3C7NS0B144',
+            'machinePaygo': 'WIN-IAH3TLSP7A8',
+            'rg': 'ytongtest',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
+            'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PayGo_cmdlet/providers/Microsoft.HybridCompute/machines/WIN-IAH3TLSP7A8/licenseProfiles/default', 
+            'rgProfile': 'PayGo_cmdlet',
+            'productFfeatures': '[{ \'name\':\'Hotpatch\', \'subscriptionStatus\':\'Enabled\'}]'
         })
 
         self.cmd('az connectedmachine license create '
@@ -56,7 +63,7 @@ class ESULicenseScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az connectedmachine license list --subscription {subscription}', checks=[
-            self.check('length(@)', 7)
+            self.check('length(@)', 8)
         ])
 
         self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName} --subscription {subscription}', checks=[
@@ -80,4 +87,48 @@ class ESULicenseScenarioTest(ScenarioTest):
                 '--name "{licenseName}" '
                 '--subscription "{subscription}" '
                 '--resource-group "{rg}"',
+                checks=[])
+
+        self.cmd('az connectedmachine license-profile create '
+                '--machine-name "{machinePaygo}" '
+                '--resource-group "{rgProfile}" '
+                '--location "{location}" '
+                '--product-type "WindowsServer" '
+                '--subscription-status "Enabled" '
+                '--product-features "{productFfeatures}"',
+                checks=[
+                    self.check('id', '{licenseResourceIdProfile}'),
+        ])
+
+        # test SA service
+        # self.cmd('az connectedmachine license-profile create '
+        #         '--machine-name "{machineSA}" '
+        #         '--resource-group "{rgProfile}" '
+        #         '--location "{location}" '
+        #         '--software-assurance-customer True',
+        #         checks=[
+        #             self.check('provisioningState', 'Succeeded'),
+        # ])
+
+        self.cmd('az connectedmachine license-profile update '
+                '--machine-name "{machinePaygo}" '
+                '--resource-group "{rgProfile}" '
+                '--product-type "WindowsServer" '
+                '--subscription-status "Enabled" '
+                '--product-features "{productFfeatures}"',
+                checks=[
+                    self.check('id', '{licenseResourceIdProfile}'),
+        ])
+
+        self.cmd('az connectedmachine license-profile list --subscription {subscription} --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
+            self.check('length(@)', 1)
+        ])
+
+        self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo} --subscription {subscription}', checks=[
+            self.check('length(@)', 15)
+        ])
+
+        self.cmd('az connectedmachine license-profile delete -y '
+                '--machine-name "{machinePaygo}" '
+                '--resource-group "{rgProfile}"',
                 checks=[])

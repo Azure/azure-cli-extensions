@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a PublicCloudConnector
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: publicCloudConnectors_Get
-        az arc-multicloud public-cloud-connector show --resource-group rgpublicCloud --name rzygvnpsnrdylwzdbsscjazvamyxmh
+        az arc-multicloud public-cloud-connector show --resource-group multiCloudRG --name awsConnector
     """
 
     _aaz_info = {
@@ -184,14 +186,25 @@ class Show(AAZCommand):
                 serialized_name="connectorPrimaryIdentifier",
                 flags={"read_only": True},
             )
+            properties.host_type = AAZStrType(
+                serialized_name="hostType",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
 
             aws_cloud_profile = cls._schema_on_200.properties.aws_cloud_profile
+            aws_cloud_profile.account_id = AAZStrType(
+                serialized_name="accountId",
+                flags={"required": True},
+            )
             aws_cloud_profile.excluded_accounts = AAZListType(
                 serialized_name="excludedAccounts",
+            )
+            aws_cloud_profile.is_organizational_account = AAZBoolType(
+                serialized_name="isOrganizationalAccount",
             )
 
             excluded_accounts = cls._schema_on_200.properties.aws_cloud_profile.excluded_accounts

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.maintenance/maintenanceconfigurations/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.maintenance/maintenanceconfigurations/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -96,7 +96,7 @@ class Create(AAZCommand):
         install_patches_linux_parameters.classifications_to_include_list = AAZListArg(
             options=["classifications-to-include-list"],
             singular_options=["classifications-to-include"],
-            help="Classification category of patches to be patched",
+            help="Classification category of patches to be patched. Allowed values are 'Critical', 'Security', and 'Other'.",
         )
         install_patches_linux_parameters.package_name_masks_to_exclude_list = AAZListArg(
             options=["package-name-masks-to-exclude-list"],
@@ -122,7 +122,7 @@ class Create(AAZCommand):
         install_patches_windows_parameters.classifications_to_include_list = AAZListArg(
             options=["classifications-to-include-list"],
             singular_options=["classifications-to-include"],
-            help="Classification category of patches to be patched",
+            help="Classification category of patches to be patched. Allowed values are 'Critical', 'Security', 'UpdateRollup', 'FeaturePack', 'ServicePack', 'Definition', 'Tools', and 'Updates'.",
         )
         install_patches_windows_parameters.exclude_kbs_requiring_reboot = AAZBoolArg(
             options=["exclude-kbs-requiring-reboot"],
@@ -135,7 +135,7 @@ class Create(AAZCommand):
         )
         install_patches_windows_parameters.kb_numbers_to_include_list = AAZListArg(
             options=["kb-numbers-to-include-list"],
-            singular_options=["kb-numbers-to-include"],
+            singular_options=["kb-numbers-to-exclude"],
             help="Windows KBID to be included for patching.",
         )
 
@@ -272,7 +272,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

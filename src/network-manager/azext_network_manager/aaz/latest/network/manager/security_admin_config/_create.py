@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a network manager security admin configuration.
 
     :example: Create a network manager security admin configuration.
-        az network manager security-admin-config create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+        az network manager security-admin-config create --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-05-01"],
         ]
     }
 
@@ -45,14 +45,17 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
+            options=["--config", "--config-name", "--configuration-name"],
             help="Name of the network manager security configuration.",
             required=True,
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
-            help="Name of the network manager.",
+            options=["-n", "--name", "--manager-name", "--network-manager-name"],
+            help="The name of the network manager.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -69,6 +72,16 @@ class Create(AAZCommand):
         apply_on_network_intent_policy = cls._args_schema.apply_on_network_intent_policy
         apply_on_network_intent_policy.Element = AAZStrArg(
             enum={"All": "All", "AllowRulesOnly": "AllowRulesOnly", "None": "None"},
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
+            options=["--aggregation", "--network-group-address-space-aggregation-option"],
+            arg_group="Properties",
+            help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
+            enum={"Manual": "Manual", "None": "None"},
         )
         return cls._args_schema
 
@@ -113,7 +126,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -141,7 +154,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -172,6 +185,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("applyOnNetworkIntentPolicyBasedServices", AAZListType, ".apply_on_network_intent_policy")
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("networkGroupAddressSpaceAggregationOption", AAZStrType, ".network_group_address_space_aggregation_option")
 
             apply_on_network_intent_policy_based_services = _builder.get(".properties.applyOnNetworkIntentPolicyBasedServices")
             if apply_on_network_intent_policy_based_services is not None:
@@ -197,9 +211,6 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -222,8 +233,15 @@ class Create(AAZCommand):
                 serialized_name="applyOnNetworkIntentPolicyBasedServices",
             )
             properties.description = AAZStrType()
+            properties.network_group_address_space_aggregation_option = AAZStrType(
+                serialized_name="networkGroupAddressSpaceAggregationOption",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 

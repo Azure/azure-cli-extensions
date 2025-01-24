@@ -46,6 +46,7 @@ sa_params = {
     "parameter_name": "storage_account",
     "resource_group_parameter_name": "rg",
     "length": 20,
+    "allow_shared_key_access": False,
 }
 
 
@@ -350,6 +351,23 @@ class LoadTestRunScenario(ScenarioTest):
         create_test(self)
         create_test_run(self)
 
+        # wait for the output artifacts to be generated
+        sleep_counter = 0
+        while sleep_counter < 10:
+            response = self.cmd(
+                "az load test-run show "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id}",
+            ).get_output_in_json()
+            if (
+                response.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo") is not None \
+                and response.get("testArtifacts", {}).get("outputArtifacts", {}).get("reportFileInfo") is not None
+            ):
+                break
+            sleep_counter += 1
+            time.sleep(10)
+
         with tempfile.TemporaryDirectory(
             prefix="clitest-load-", suffix=create_random_name(prefix="", length=5)
         ) as temp_dir:
@@ -363,7 +381,8 @@ class LoadTestRunScenario(ScenarioTest):
                 '--path "{path}" '
                 "--input "
                 "--log "
-                "--result ",
+                "--result "
+                "--report",
             )
 
             files_in_dir = [
@@ -371,9 +390,12 @@ class LoadTestRunScenario(ScenarioTest):
                 for f in os.listdir(temp_dir)
                 if os.path.isfile(os.path.join(temp_dir, f))
             ]
+            expected_files = ["logs.zip", "csv.zip", "reports.zip", "inputartifacts.zip"]
+            for file in expected_files:
+                assert file in files_in_dir
             exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
 
-            assert len(files_in_dir) >= 3
+            assert len(files_in_dir) >= 4
             assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
 
             # download files in a new directory using force argument
@@ -388,6 +410,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "--input "
                 "--log "
                 "--result "
+                "--report "
                 "--force",
             )
 
@@ -396,10 +419,52 @@ class LoadTestRunScenario(ScenarioTest):
                 for f in os.listdir(temp_new_dir)
                 if os.path.isfile(os.path.join(temp_new_dir, f))
             ]
+            for file in expected_files:
+                assert file in files_in_dir
             exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
 
-            assert len(files_in_dir) >= 3
+            assert len(files_in_dir) >= 4
             assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
+
+    
+    # Live only test because download from azure storage account
+    # for high scale load test is not supported in playback mode
+    @live_only()
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_load_test_run_download_files_high_scale(self, rg, load):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_ID,
+                "test_run_id": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.HIGH_SCALE_LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        create_test(self)
+        create_test_run(self)
+            
+        with tempfile.TemporaryDirectory(
+            prefix="clitest-load-", suffix=create_random_name(prefix="", length=5)
+        ) as temp_dir:
+            self.kwargs.update({"path": temp_dir})
+            
+            self.cmd(
+                "az load test-run download-files "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "
+                '--path "{path}" '
+                "--log "
+                "--result ",
+            )
+            dirs = [
+                d
+                for d in os.listdir(temp_dir)
+            ]
+            expected_dirs = ["logs", "results"]
+            for dir in expected_dirs:
+                assert dir in dirs
+            
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -789,3 +854,126 @@ class LoadTestRunScenario(ScenarioTest):
         assert self.kwargs["metric_dimension_value"] in [
             dimension["value"] for dimension in dimensions_list
         ]
+    
+    
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_load_test_run_debug_mode(self, rg, load):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestRunConstants.DEBUG_MODE_TEST_ID,
+                "test_run_id": LoadTestRunConstants.DEBUG_MODE_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.REGIONAL_LOAD_CONFIG_FILE,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.engineInstances", 4)
+        ]
+        self.cmd(
+            "az load test create "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-id {test_id} "
+            '--load-test-config-file "{load_test_config_file}" ',
+            checks=checks,
+        )
+        checks = [
+            JMESPathCheck("testRunId", self.kwargs["test_run_id"]),
+            JMESPathCheck("debugLogsEnabled", True),
+            JMESPathCheck("loadTestConfiguration.engineInstances", 1)
+        ]
+        self.cmd(
+            "az load test-run create "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-id {test_id} "
+            "--test-run-id {test_run_id} "
+            "--debug-mode ",
+            checks=checks,
+        )
+    
+    @live_only()
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_load_test_run_copy_artifacts_url(self, rg, load):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestRunConstants.SAS_URL_TEST_ID,
+                "test_run_id": LoadTestRunConstants.SAS_URL_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
+            }
+        )
+
+        create_test(self)
+        create_test_run(self)
+        response = self.cmd(
+            "az load test-run get-artifacts-url "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id} ",
+        ).get_output_in_json()
+        assert response is not None
+        assert response.startswith("https://")
+        assert "blob.storage.azure.net" in response
+
+        # Copy artifacts URL when test run is in progress
+        # This test case causes flakiness when all tests 
+        # are run together in live mode
+        # due to the --no-wait flag.
+        # Hence, sleep and stop cmd are added.
+        # """
+        self.cmd(
+            "az load test-run create "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-id {test_id} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} "
+            "--existing-test-run-id {test_run_id} "
+            "--no-wait",
+        )
+        if self.is_live:
+            time.sleep(20)
+        response = self.cmd(
+            "az load test-run show "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} ",
+        ).get_output_in_json()
+        assert response.get("status") != "DONE"
+        response = self.cmd(
+            "az load test-run get-artifacts-url "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} ",
+        ).get_output_in_json()
+        assert response is not None
+        assert response.startswith("https://")
+        assert "blob.storage.azure.net" in response
+        self.cmd(
+            "az load test-run stop "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            f"--test-run-id {LoadTestRunConstants.SAS_URL_TEST_RUN_ID_1} "
+            "--yes",
+        )
+        if self.is_live:
+            time.sleep(20)
+        # """
+        
+        # Invalid: Copy artifacts URL for unknown test run
+        self.kwargs.update(
+            {
+                "unknown_test_run_id": LoadTestRunConstants.CREATE_TEST_RUN_ID,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test-run get-artifacts-url "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {unknown_test_run_id} ",
+            )
+        except Exception as e:
+            assert f'(TestRunNotFound) Test run not found with given name "{LoadTestRunConstants.CREATE_TEST_RUN_ID}"' in str(e)

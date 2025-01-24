@@ -123,7 +123,7 @@ def load_arguments(self: ConnectedvmwareCommandsLoader, _):
             'rg_name', options_list=['--resource-group', '-g'],
             help=(
                 "Name of the resource group which will be scanned for HCRP machines. "
-                "NOTE: The default group configured using 'az configure --defaults group=<name>' "
+                "NOTE: The default group configured using `az configure --defaults group=<name>` "
                 "is not used, and it must be specified explicitly."
             )
         )
@@ -204,9 +204,9 @@ def load_arguments(self: ConnectedvmwareCommandsLoader, _):
             action=VmNicAddAction,
             nargs='+',
             help="Network overrides for the vm. "
-            "Usage: --nic name=<> network=<> nic-type=<> power-on-boot=<> "
+            "Usage: `--nic name=<> network=<> nic-type=<> power-on-boot=<> "
             "allocation-method=<> ip-address=<> subnet-mask=<> device-key=<> "
-            "gateway=<command separated list of gateways>.",
+            "gateway=<command separated list of gateways>`.",
         )
         c.argument(
             'disks',

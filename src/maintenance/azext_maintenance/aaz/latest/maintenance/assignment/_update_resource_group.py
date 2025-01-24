@@ -19,7 +19,7 @@ class UpdateResourceGroup(AAZCommand):
     """Update configuration for resource.
 
     :example: ConfigurationAssignments_UpdateResourceGroup
-        az maintenance assignment create-or-update-resource-group --maintenance-configuration-id "/subscriptions/00000000-0000-0000-0000-00000000/resourcegroups/exmaplerg2/providers/Microsoft. Maintenance/maintenanceConfigurations/config1" --name assignmentname --filter-locations eastus2euap centraluseuap --filter-os-types windows linux --filter-tags "{{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}}" --filter-tags-operator All --resource-group examplerg1
+        az maintenance assignment create-or-update-resource-group --maintenance-configuration-id "/subscriptions/00000000-0000-0000-0000-00000000/resourcegroups/exmaplerg2/providers/Microsoft. Maintenance/maintenanceConfigurations/config1" --name assignmentname --filter-locations eastus2euap centraluseuap --filter-os-types windows linux --filter-tags "{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}" --filter-tags-operator All --resource-group examplerg1
     """
 
     _aaz_info = {

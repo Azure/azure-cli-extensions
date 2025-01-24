@@ -3,6 +3,49 @@
 Release History
 ===============
 
+1.2.0b1
+++++++++++++++++++
+
+**New Features:**
+
+* Added new command ``az apic integration create`` to manage integrations in Azure API Center.
+  * Added ``az apic integration create apim`` to manage Azure API Management integrations as an API source.
+  * Added ``az apic integration create aws`` to manage Amazon API Gateway as an API source.
+* Added new command ``az apic import aws`` to import an API from an Amazon API Gateway instance.
+* Added url option for ``--api-location`` parameter in ``az apic api register`` command.
+
+**Updates:**
+
+* Added examples for using ``@filename`` syntax in several commands' help documentations.
+* Improved error messages for the ``az apic api register`` command.
+
+**Fixes:**
+
+* Corrected the example for ``az apic update`` command.
+* Fixed an expired link in ``az apic api definition import-specification`` command's help documentation.
+
+1.1.0
+++++++++++++++++++
+
+**New Features:**
+
+* Added ``--custom-metadata-only`` parameter to ``az apic metadata export`` command.
+* Added single custom metadata update for ``az apic api update`` command.
+
+**Updates:**
+
+* Added example for ``az apic api update`` command.
+* Added examples with system assigned identity for ``az apic create`` and ``az apic update`` commands.
+
+**Fixes:**
+
+* Set external document correctly in ``az apic api register`` command.
+* Do not use API description as summary in ``az apic api register`` command. 
+
+**Removals:**
+
+* Eliminated duplicate example for ``az apic create`` command.
+
 1.0.0
 ++++++++++++++++++
 Potential Impact: The changes in this release, including the renaming of commands and parameters, may require changes to existing scripts and integrations. Please review the changes carefully and update your code accordingly.

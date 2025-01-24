@@ -7,6 +7,7 @@ Release History
 * Added Managed Identity (MI) authentication support for Azure Files
 * Introduced versioning property for better version control
 * Implemented Service Principal Certificate Authentication in RestService and SharePointOnlineList Linked 
+* Fix PostgreSqlV2 missing authenticationType property
 
 1.0.2
 * Support new features in ADF

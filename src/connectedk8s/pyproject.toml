@@ -1,0 +1,50 @@
+[tool.ruff]
+extend-exclude = [
+  "azext_connectedk8s/vendored_sdks",
+]
+target-version = "py38"
+
+[tool.ruff.lint]
+extend-select = [
+  "I",   # isort
+  "PIE", # flake8-pie
+  "RUF", # ruff
+  "SIM", # flake8-simplify
+  "UP",  # pyupgrade
+  "TCH", # flake8-type-checking
+]
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.mypy]
+files = "azext_connectedk8s"
+strict = true
+enable_error_code = [
+  "ignore-without-code",
+  "redundant-expr",
+  "truthy-bool",
+  "truthy-iterable",
+  "unused-awaitable",
+]
+warn_unreachable = true
+namespace_packages = false
+exclude = [
+  "azext_connectedk8s/vendored_sdks",
+  "azext_connectedk8s/tests",
+]
+
+[[tool.mypy.overrides]]
+module = [
+  'azure.cli.*',
+  'azure.mgmt.hybridcompute.*',
+  'knack.*',
+  'kubernetes.*',
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  'azext_connectedk8s.vendored_sdks.*',
+]
+follow_imports = "silent"

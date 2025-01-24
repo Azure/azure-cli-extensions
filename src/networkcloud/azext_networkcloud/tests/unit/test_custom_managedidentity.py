@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+
 import unittest
 from unittest.mock import Mock, patch
 
@@ -105,7 +106,7 @@ class TestManagedIdentity(unittest.TestCase):
 
         self.managed_identity.pre_operations_create(args)
 
-        self.assertEquals(
+        self.assertEqual(
             args.identity.type, "None"
         )  # Expecting None as identity type is passed
         self.assertIsNone(

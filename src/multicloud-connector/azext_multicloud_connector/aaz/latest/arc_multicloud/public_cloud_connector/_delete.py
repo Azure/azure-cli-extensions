@@ -18,8 +18,10 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a PublicCloudConnector
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: PublicCloudConnectors_Delete
-        az arc-multicloud public-cloud-connector delete --resource-group rgpublicCloud --name skcfyjvflkhibdywjay
+        az arc-multicloud public-cloud-connector delete --resource-group multiCloudRG --name awsConnector
     """
 
     _aaz_info = {

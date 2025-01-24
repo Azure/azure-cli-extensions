@@ -11,6 +11,8 @@
 Helper class for all POST commands that return extra properties back to the customer
 """
 
+import os
+import subprocess
 import tarfile
 import urllib
 
@@ -24,7 +26,7 @@ logger = get_logger(__name__)
 class CustomActionProperties:
     """Helper class for all POST commands that return extra properties back to the customer"""
 
-    # Custom handling of response will display the output head and the result URL
+    # Custom handling of response will display the output head and the result_URL/result_ref
     # it will also save files into output directory if provided
     @staticmethod
     def _output(parent_cmd, *args, **kwargs):  # pylint: disable=unused-argument
@@ -37,15 +39,22 @@ class CustomActionProperties:
             logger.warning("\n================================")
 
         # Display the result URL
-        if has_value(properties.result_url):
-            result_url = properties.result_url.to_serialized_data()
+        if (
+            has_value(properties.resultUrl)
+            and properties.resultUrl.to_serialized_data() != ""
+        ):
+            result_url = properties.resultUrl.to_serialized_data()
             logger.warning(
                 "Script execution result can be found in storage account: \n %s \n",
                 result_url,
             )
             # extract result to the provided directory
             if has_value(args.output):
-                output_directory = args.output.to_serialized_data()
+                output_directory = (
+                    args.output
+                    if isinstance(args.output, str)
+                    else args.output.to_serialized_data()
+                )
 
                 try:
                     with urllib.request.urlopen(result_url) as result:
@@ -59,6 +68,74 @@ class CustomActionProperties:
                     raise AzureInternalError(
                         f"failed to retrieve output, error {excep}"
                     ) from excep
+        elif (
+            has_value(properties.resultRef)
+            and properties.resultRef.to_serialized_data() != ""
+        ):
+            result_ref = properties.resultRef.to_serialized_data()
+            # parse the resultRef to get .gz filename
+            try:
+                parsed_url = urllib.parse.urlparse(result_ref)
+                path = parsed_url.path
+                downloaded_blob_name = path.split("/")[-1]
+            except Exception as ex:
+                error_message = (
+                    f"failed to parse resultRef URL for download. Error: {str(ex)}"
+                )
+                logger.error(error_message)
+                raise AzureInternalError(error_message) from ex
+
+            logger.warning(
+                "Script execution result can be downloaded from storage account using the "
+                "command: \n az storage blob download --blob-url %s --file %s --auth-mode login  > /dev/null 2>&1 \n",
+                result_ref,
+                downloaded_blob_name,
+            )
+            # extract result to the provided directory
+            if has_value(args.output):
+                output_directory = (
+                    args.output
+                    if isinstance(args.output, str)
+                    else args.output.to_serialized_data()
+                )
+                # download the blob using "az storage blob download --blob-url %s --auth-mode login"
+                download_command = [
+                    "az",
+                    "storage",
+                    "blob",
+                    "download",
+                    "--blob-url",
+                    result_ref,
+                    "--file",
+                    downloaded_blob_name,
+                    "--auth-mode",
+                    "login",
+                ]
+                try:
+                    result = subprocess.run(
+                        download_command, check=True, capture_output=True, text=True
+                    )
+                    logger.info("Blob downloaded successfully.")
+                except subprocess.CalledProcessError as e:
+                    error_message = (
+                        f"Failed to download blob. Error: {e.stderr.strip()}"
+                    )
+                    logger.error(error_message)
+                    raise AzureInternalError(error_message) from e
+
+                try:
+                    # Extract the downloaded blob
+                    with tarfile.open(downloaded_blob_name, mode="r:gz") as tar:
+                        tar.extractall(path=output_directory)
+                        logger.warning(
+                            "Extracted results are available in directory: %s",
+                            output_directory,
+                        )
+                        os.remove(downloaded_blob_name)
+                except tarfile.TarError as e:
+                    error_message = f"Failed to extract blob. Error: {str(e)}"
+                    logger.error(error_message)
+                    raise AzureInternalError(error_message) from e
         else:
             result = parent_cmd.deserialize_output(
                 parent_cmd.ctx.vars.instance, client_flatten=True

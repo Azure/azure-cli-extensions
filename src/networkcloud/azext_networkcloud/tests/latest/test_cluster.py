@@ -9,7 +9,6 @@
 Cluster tests scenarios
 """
 
-
 import os
 
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
@@ -343,7 +342,7 @@ def step_update_aggregatorOrSingleRackDefinition(test, checks=None):
         " storage-appliance-configuration-data={storageApplianceConfigurationData}"
         " bare-metal-machine-configuration-data={bareMetalMachineConfigurationData} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
-        "--tags {tags} --no-wait"
+        "--tags {tags} "
     )
 
 
@@ -355,7 +354,7 @@ def step_update_aggregatorOrSingleRackDefinition_json(test, checks=None):
         "az networkcloud cluster update --name {name} --resource-group {rg} "
         "--aggregator-or-single-rack-definition {aggregatorOrSingleRackDefinitionDirectory} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
-        "--tags {tags} --no-wait"
+        "--tags {tags} "
     )
 
 
@@ -393,7 +392,6 @@ def step_update_uai(test, checks=None):
     test.cmd(
         "az networkcloud cluster update --name {name} --resource-group {rg} "
         "--mi-user-assigned={miUserAssigned} "
-        "--tags {tagsUpdate} "
     )
 
 

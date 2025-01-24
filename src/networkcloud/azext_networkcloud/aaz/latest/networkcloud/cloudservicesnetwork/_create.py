@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cloud services network or update the properties of the existing cloud services network.
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2024-07-01"],
         ]
     }
 
@@ -125,6 +124,9 @@ class Create(AAZCommand):
             options=["endpoints"],
             help="The list of endpoint dependencies.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         endpoints = cls._args_schema.additional_egress_endpoints.Element.endpoints
@@ -227,7 +229,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }

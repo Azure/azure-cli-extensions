@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2024-09-01-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Update(AAZCommand):
             help="The name of the RedisEnterprise cluster.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -99,7 +102,7 @@ class Update(AAZCommand):
         _args_schema.user_assigned_identity_resource_id = AAZStrArg(
             options=["--identity-resource-id", "--user-assigned-identity-resource-id"],
             arg_group="KeyEncryptionKeyIdentity",
-            help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.",
+            help="User assigned identity to use for accessing key encryption key Url. Ex: `/subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId`.",
             nullable=True,
         )
 
@@ -132,6 +135,14 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.high_availability = AAZStrArg(
+            options=["--high-availability"],
+            arg_group="Properties",
+            help="Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.",
+            is_preview=True,
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
         _args_schema.minimum_tls_version = AAZStrArg(
             options=["--minimum-tls-version"],
             arg_group="Properties",
@@ -146,14 +157,14 @@ class Update(AAZCommand):
         _args_schema.capacity = AAZIntArg(
             options=["--capacity"],
             arg_group="Sku",
-            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.",
+            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 or not applicable depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise_* SKUs and (3, 9, 15, ...) for EnterpriseFlash_* SKUs. For other SKUs capacity argument is not supported.",
             nullable=True,
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Sku",
             help="The type of RedisEnterprise cluster to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)",
-            enum={"EnterpriseFlash_F1500": "EnterpriseFlash_F1500", "EnterpriseFlash_F300": "EnterpriseFlash_F300", "EnterpriseFlash_F700": "EnterpriseFlash_F700", "Enterprise_E1": "Enterprise_E1", "Enterprise_E10": "Enterprise_E10", "Enterprise_E100": "Enterprise_E100", "Enterprise_E20": "Enterprise_E20", "Enterprise_E200": "Enterprise_E200", "Enterprise_E400": "Enterprise_E400", "Enterprise_E5": "Enterprise_E5", "Enterprise_E50": "Enterprise_E50"},
+            enum={"Balanced_B0": "Balanced_B0", "Balanced_B1": "Balanced_B1", "Balanced_B10": "Balanced_B10", "Balanced_B100": "Balanced_B100", "Balanced_B1000": "Balanced_B1000", "Balanced_B150": "Balanced_B150", "Balanced_B20": "Balanced_B20", "Balanced_B250": "Balanced_B250", "Balanced_B3": "Balanced_B3", "Balanced_B350": "Balanced_B350", "Balanced_B5": "Balanced_B5", "Balanced_B50": "Balanced_B50", "Balanced_B500": "Balanced_B500", "Balanced_B700": "Balanced_B700", "ComputeOptimized_X10": "ComputeOptimized_X10", "ComputeOptimized_X100": "ComputeOptimized_X100", "ComputeOptimized_X150": "ComputeOptimized_X150", "ComputeOptimized_X20": "ComputeOptimized_X20", "ComputeOptimized_X250": "ComputeOptimized_X250", "ComputeOptimized_X3": "ComputeOptimized_X3", "ComputeOptimized_X350": "ComputeOptimized_X350", "ComputeOptimized_X5": "ComputeOptimized_X5", "ComputeOptimized_X50": "ComputeOptimized_X50", "ComputeOptimized_X500": "ComputeOptimized_X500", "ComputeOptimized_X700": "ComputeOptimized_X700", "EnterpriseFlash_F1500": "EnterpriseFlash_F1500", "EnterpriseFlash_F300": "EnterpriseFlash_F300", "EnterpriseFlash_F700": "EnterpriseFlash_F700", "Enterprise_E1": "Enterprise_E1", "Enterprise_E10": "Enterprise_E10", "Enterprise_E100": "Enterprise_E100", "Enterprise_E20": "Enterprise_E20", "Enterprise_E200": "Enterprise_E200", "Enterprise_E400": "Enterprise_E400", "Enterprise_E5": "Enterprise_E5", "Enterprise_E50": "Enterprise_E50", "FlashOptimized_A1000": "FlashOptimized_A1000", "FlashOptimized_A1500": "FlashOptimized_A1500", "FlashOptimized_A2000": "FlashOptimized_A2000", "FlashOptimized_A250": "FlashOptimized_A250", "FlashOptimized_A4500": "FlashOptimized_A4500", "FlashOptimized_A500": "FlashOptimized_A500", "FlashOptimized_A700": "FlashOptimized_A700", "MemoryOptimized_M10": "MemoryOptimized_M10", "MemoryOptimized_M100": "MemoryOptimized_M100", "MemoryOptimized_M1000": "MemoryOptimized_M1000", "MemoryOptimized_M150": "MemoryOptimized_M150", "MemoryOptimized_M1500": "MemoryOptimized_M1500", "MemoryOptimized_M20": "MemoryOptimized_M20", "MemoryOptimized_M2000": "MemoryOptimized_M2000", "MemoryOptimized_M250": "MemoryOptimized_M250", "MemoryOptimized_M350": "MemoryOptimized_M350", "MemoryOptimized_M50": "MemoryOptimized_M50", "MemoryOptimized_M500": "MemoryOptimized_M500", "MemoryOptimized_M700": "MemoryOptimized_M700"},
         )
         return cls._args_schema
 
@@ -235,7 +246,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-09-01-preview",
                     required=True,
                 ),
             }
@@ -334,7 +345,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-09-01-preview",
                     required=True,
                 ),
             }
@@ -410,6 +421,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZObjectType)
+                properties.set_prop("highAvailability", AAZStrType, ".high_availability")
                 properties.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
 
             encryption = _builder.get(".properties.encryption")
@@ -464,7 +476,6 @@ class _UpdateHelper:
             _schema.name = cls._schema_cluster_read.name
             _schema.properties = cls._schema_cluster_read.properties
             _schema.sku = cls._schema_cluster_read.sku
-            _schema.system_data = cls._schema_cluster_read.system_data
             _schema.tags = cls._schema_cluster_read.tags
             _schema.type = cls._schema_cluster_read.type
             _schema.zones = cls._schema_cluster_read.zones
@@ -489,11 +500,6 @@ class _UpdateHelper:
         cluster_read.sku = AAZObjectType(
             flags={"required": True},
         )
-        cluster_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(cluster_read.system_data)
         cluster_read.tags = AAZDictType()
         cluster_read.type = AAZStrType(
             flags={"read_only": True},
@@ -531,6 +537,9 @@ class _UpdateHelper:
 
         properties = _schema_cluster_read.properties
         properties.encryption = AAZObjectType()
+        properties.high_availability = AAZStrType(
+            serialized_name="highAvailability",
+        )
         properties.host_name = AAZStrType(
             serialized_name="hostName",
             flags={"read_only": True},
@@ -548,6 +557,10 @@ class _UpdateHelper:
         )
         properties.redis_version = AAZStrType(
             serialized_name="redisVersion",
+            flags={"read_only": True},
+        )
+        properties.redundancy_mode = AAZStrType(
+            serialized_name="redundancyMode",
             flags={"read_only": True},
         )
         properties.resource_state = AAZStrType(
@@ -589,11 +602,6 @@ class _UpdateHelper:
         _element.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        _element.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(_element.system_data)
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -641,54 +649,9 @@ class _UpdateHelper:
         _schema.name = cls._schema_cluster_read.name
         _schema.properties = cls._schema_cluster_read.properties
         _schema.sku = cls._schema_cluster_read.sku
-        _schema.system_data = cls._schema_cluster_read.system_data
         _schema.tags = cls._schema_cluster_read.tags
         _schema.type = cls._schema_cluster_read.type
         _schema.zones = cls._schema_cluster_read.zones
-
-    _schema_system_data_read = None
-
-    @classmethod
-    def _build_schema_system_data_read(cls, _schema):
-        if cls._schema_system_data_read is not None:
-            _schema.created_at = cls._schema_system_data_read.created_at
-            _schema.created_by = cls._schema_system_data_read.created_by
-            _schema.created_by_type = cls._schema_system_data_read.created_by_type
-            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
-            return
-
-        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
-            flags={"read_only": True}
-        )
-
-        system_data_read = _schema_system_data_read
-        system_data_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data_read.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data_read.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data_read.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data_read.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data_read.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.created_at = cls._schema_system_data_read.created_at
-        _schema.created_by = cls._schema_system_data_read.created_by
-        _schema.created_by_type = cls._schema_system_data_read.created_by_type
-        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Update"]

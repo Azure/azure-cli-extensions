@@ -25,7 +25,7 @@ import urllib3
 import websocket
 from websocket import create_connection, WebSocket
 
-from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import HttpResponseError
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import should_disable_connection_verify
 
@@ -106,10 +106,8 @@ class TunnelServer:
 
         if response.status_code not in [200]:
             if response_json is not None and response_json["message"] is not None:
-                exp = CloudError(response, error=response_json["message"])
-            else:
-                exp = CloudError(response)
-                raise exp
+                raise HttpResponseError(response=response, message=response_json["message"])
+            raise HttpResponseError(response=response)
 
         self.last_token = response_json["authToken"]
         self.node_id = response_json["nodeId"]
@@ -224,8 +222,7 @@ class TunnelServer:
             if response.status_code == 404:
                 logger.info('Session already deleted')
             elif response.status_code not in [200, 204]:
-                exp = CloudError(response)
-                raise exp
+                raise HttpResponseError(response=response)
 
             self.last_token = None
             self.node_id = None

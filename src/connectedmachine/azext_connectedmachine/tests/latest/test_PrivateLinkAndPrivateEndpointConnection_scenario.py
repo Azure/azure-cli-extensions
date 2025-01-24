@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_private_link_resource_list
 from .example_steps import step_private_link_scope_create
 from .example_steps import step_private_link_scope_update
@@ -34,13 +35,13 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli_test_privatelink')
     def test_private_link(self):
-        rand_string = 'test'
+        rand_string = 'test4'
         self.kwargs.update({
             'machine': 'testmachine',
-            'rg': 'ytongtest2',
+            'rg': 'ytongtest',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
@@ -83,15 +84,6 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
                 '--resource-group "{rg}"',
                 checks=[])
 
-        # Private link scope update tag
-        self.cmd('az connectedmachine private-link-scope update-tag '
-                '--tags Tag1="Value1" Tag2="Value2" '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('length(tags)', 2)
-                ])
-
         # Private link scope show
         private_link_scope = self.cmd('az connectedmachine private-link-scope show --scope-name {scope} -g {rg}').get_output_in_json()
         self.kwargs['scope_id'] = private_link_scope['id']
@@ -104,8 +96,9 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         # Test private link resource list
         self.cmd('az connectedmachine private-link-resource list --scope-name {scope} -g {rg}', checks=[])
         
+        # DO NOT remove --location, otherwise it will print out an error saying vnet-test not found
         result = self.cmd('az network private-endpoint create -g {rg} -n {private_endpoint} --vnet-name {vnet} --subnet {subnet} --private-connection-resource-id {scope_id} '
-        '--connection-name {private_endpoint_connection} --group-id hybridcompute').get_output_in_json()
+        '--connection-name {private_endpoint_connection} --group-id hybridcompute --location {location}').get_output_in_json()
         self.assertTrue(self.kwargs['private_endpoint'].lower() in result['name'].lower())
 
         connection_list = self.cmd('az connectedmachine private-endpoint-connection list '
