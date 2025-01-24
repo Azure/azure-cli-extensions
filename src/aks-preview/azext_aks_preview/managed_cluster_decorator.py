@@ -433,7 +433,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         ):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()
-            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and self.get_vnet_subnet_id() in ["", None]:
                 # outbound_type of Automatic SKU should be ManagedNATGateway if not provided.
                 outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
