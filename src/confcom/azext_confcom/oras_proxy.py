@@ -16,6 +16,38 @@ from azext_confcom.os_util import delete_silently
 host_os = platform.system()
 machine = platform.machine()
 
+from knack.log import get_logger
+
+logger = get_logger(__name__)
+
+
+def prepend_docker_registry(image_name: str) -> str:
+    """
+    Normalize a Docker image reference by adding `docker.io/library` if necessary.
+
+    Args:
+        image (str): The Docker image reference (e.g., `nginx:latest` or `myrepo/myimage`).
+
+    Returns:
+        str: The normalized Docker image reference.
+    """
+    # Split the image into name and tag
+    if ":" in image_name:
+        name, _ = image_name.rsplit(":", 1)
+    else:
+        name, _ = image_name, "latest"
+
+    registry = ""
+    # Check if the image name contains a registry (e.g., docker.io, custom registry)
+    if "/" not in name or "." not in name.split("/")[0]:
+        # If no registry is specified, assume docker.io/library
+        if "/" not in name:
+            # Add the `library` namespace for official images
+            registry = f"library/"
+        # Add the default `docker.io` registry
+        registry = f"docker.io/" + registry
+
+    return f"{registry}{image_name}"
 
 def call_oras_cli(args, check=False):
     return subprocess.run(args, check=check, capture_output=True, timeout=120)
@@ -26,10 +58,14 @@ def call_oras_cli(args, check=False):
 def discover(
     image: str,
 ) -> List[str]:
+    # normalize the name in case the docker registry is implied
+    image = prepend_docker_registry(image)
+
     arg_list = ["oras", "discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
     item = call_oras_cli(arg_list, check=False)
     hashes = []
 
+    logger.info(f"Discovering fragments for {image}: {item.stdout.decode('utf-8')}")
     if item.returncode == 0:
         json_output = json.loads(item.stdout.decode("utf-8"))
         manifests = json_output.get("manifests", [])

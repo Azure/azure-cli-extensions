@@ -509,6 +509,8 @@ def process_env_vars_from_config(container) -> List[Dict[str, str]]:
 
 def process_fragment_imports(rego_imports) -> None:
     for rego_import in rego_imports:
+        if not rego_import:
+            continue
         feed = case_insensitive_dict_get(
             rego_import, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED
         )
@@ -549,6 +551,8 @@ def process_fragment_imports(rego_imports) -> None:
                 + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES}"] '
                 + "can only be a list value."
             )
+
+    return rego_imports
 
 
 def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str, str]]:
