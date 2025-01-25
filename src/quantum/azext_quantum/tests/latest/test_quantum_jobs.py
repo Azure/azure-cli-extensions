@@ -300,9 +300,9 @@ class QuantumJobsScenarioTest(ScenarioTest):
         assert query == "TargetId eq 'AwesomeQuantumSuperComputer'"
         target_id = None
 
-        job_status = "Failed"        
+        job_status = "Succeeded"        
         query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-        assert query == "State eq 'Failed'"
+        assert query == "State eq 'Succeeded'"
         job_status = None        
 
         # TODO: add date and name params
@@ -318,7 +318,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Validate orderby expression formatting
         #  
-        # Should return None if params a set to None
+        # Should return None if params are set to None
         orderby = None
         order = None
         orderby_expression = _construct_orderby_expression(orderby, order)
