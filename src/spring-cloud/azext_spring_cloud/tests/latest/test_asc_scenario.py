@@ -219,7 +219,7 @@ class CustomImageTest(ScenarioTest):
             self.check('name', 'green'),
         ])
 
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegex(CLIError, "Failed to wait for deployment instances to be ready"):
             self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --artifact-path {file}')
 
         self.cmd('spring-cloud app deployment show -g {resourceGroup} -s {serviceName} -n default --app {app} ', checks=[

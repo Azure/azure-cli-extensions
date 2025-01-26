@@ -3,6 +3,16 @@
 Release History
 ===============
 
+1.6.3
+++++++++++++++++++
+* Do not attempt to register Microsoft.Monitor and Microsoft.Dashboard resource providers if they are already registered.
+
+1.6.2
+++++++++++++++++++
+* microsoft.workloadiam: Enhanced security by utilizing protected configuration settings for the join token instead of regular configuration settings.
+* microsoft.azuremonitor.containers.metrics: Expanded support to all clouds, excluding air-gapped environments, for microsoft.azuremonitor.containers.metrics in ARC clusters.
+* Removed dependency on the msrestazure library.
+
 1.6.1
 ++++++++++++++++++
 * minor fixes to dataprotection aks ext CLI

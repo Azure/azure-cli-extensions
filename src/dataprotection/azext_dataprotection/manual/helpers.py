@@ -12,7 +12,7 @@ import uuid
 import re
 import json
 from importlib import import_module
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -104,6 +104,7 @@ secondary_region_map = {
     "southafricawest": "southafricanorth",
     "southcentralus": "northcentralus",
     "southeastasia": "eastasia",
+    "southeastus": "westus3",
     "southindia": "centralindia",
     "swedencentral": "swedensouth",
     "swedensouth": "swedencentral",

@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update operation to update a license.
 
     :example: Sample command for license update
-        az connectedmachine license update --name licenseName --resource-group myResourceGroup --location 'eastus2euap' --license-type 'ESU' --state 'Deactivated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription mySubscription
+        az connectedmachine license update --name licenseName --resource-group myResourceGroup --license-type 'ESU' --state 'Deactivated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription mySubscription
     """
 
     _aaz_info = {
-        "version": "2024-05-20-preview",
+        "version": "2024-07-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-05-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-07-31-preview"],
         ]
     }
 
@@ -233,7 +233,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-20-preview",
+                    "api-version", "2024-07-31-preview",
                     required=True,
                 ),
             }
@@ -332,7 +332,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-20-preview",
+                    "api-version", "2024-07-31-preview",
                     required=True,
                 ),
             }

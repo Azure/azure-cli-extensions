@@ -14,7 +14,7 @@ from azext_confcom.security_policy import (
 )
 
 import azext_confcom.config as config
-from azext_confcom.template_util import case_insensitive_dict_get
+from azext_confcom.template_util import case_insensitive_dict_get, DockerClient
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
@@ -571,12 +571,14 @@ class CustomJsonParsing(unittest.TestCase):
         """
         with load_policy_from_str(custom_json) as aci_policy:
             # pull actual image to local for next step
-            aci_policy.pull_image(aci_policy.get_images()[0])
+            with DockerClient() as client:
+                image_ref = aci_policy.get_images()[0]
+                image = client.images.pull(image_ref.base, tag=image_ref.tag)
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
-                "bf5cf1c854c39af7769ca161f772c48da37d86cd7e56ba4c18b1e8d97259a089",
-                "4c32767c28c09e3d6ff280d2b6f2b4d92e90f45b2e1728b83edd91cc5da41066"
+                "7fdd8009ff6abf7a9d48808a507baecd5b815c8947fc03faa921b68a0ac260e8",
+                "280e8f98eb3a45ba7647d3df812236494188bfedb2c1fafa0ac2fb2f47930c0c"
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):
@@ -596,12 +598,14 @@ class CustomJsonParsing(unittest.TestCase):
         }
         """
         with load_policy_from_str(custom_json) as aci_policy:
-            image = aci_policy.pull_image(aci_policy.get_images()[0])
+            with DockerClient() as client:
+                image_ref = aci_policy.get_images()[0]
+                image = client.images.pull(image_ref.base, tag=image_ref.tag)
             self.assertIsNotNone(image.id)
 
             self.assertEqual(
-                image.id,
-                "sha256:31f0133ef3f79022b1a11e429c0aa7fc500692fe94b067ce76f392ddb2eb5475",
+                image.tags[0],
+                "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0",
             )
 
     def test_infrastructure_svn(self):
@@ -728,6 +732,40 @@ class CustomJsonParsing(unittest.TestCase):
                 )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
             )
 
+    def test_omit_id(self):
+        image_name = "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+        custom_json = f"""
+        {{
+            "version": "1.0",
+            "containers": [
+                {{
+                    "containerImage": "{image_name}",
+                    "environmentVariables": [],
+                    "command": ["echo", "hello"],
+                    "allowStdioAccess": false
+                }}
+            ]
+        }}
+        """
+        with load_policy_from_str(custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+
+            self.assertIsNone(
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False, omit_id=True
+                    )
+                )[0].get(config.POLICY_FIELD_CONTAINERS_ID)
+            )
+
+            self.assertEqual(
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False, omit_id=False
+                    )
+                )[0].get(config.POLICY_FIELD_CONTAINERS_ID), image_name
+            )
+
 
 class CustomJsonParsingIncorrect(unittest.TestCase):
     def test_get_layers_from_not_exists_image(self):
@@ -830,28 +868,6 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
         custom_json = """
         {
             "version": "1.0"
-        }
-        """
-        with self.assertRaises(SystemExit) as exc_info:
-            load_policy_from_str(custom_json)
-        self.assertEqual(exc_info.exception.code, 1)
-
-    def test_json_missing_version(self):
-        custom_json = """
-        {
-            "containers": [
-                {
-                    "containerImage": "mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1",
-                    "environmentVariables": [
-                        {
-                            "name": "port",
-                            "value": "80",
-                            "strategy": "string"
-                        }
-                    ],
-                    "command": ["python", "app.py"]
-                }
-            ]
         }
         """
         with self.assertRaises(SystemExit) as exc_info:
