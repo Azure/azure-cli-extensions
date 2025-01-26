@@ -48,7 +48,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["--scheduler-name"],
+            options=["-s", "--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
@@ -56,8 +56,8 @@ class Update(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
-        _args_schema.task_hub_name = AAZStrArg(
-            options=["-n", "--name", "--task-hub-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the TaskHub",
             required=True,
             id_part="child_name_1",
@@ -139,7 +139,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.task_hub_name,
+                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -242,7 +242,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.task_hub_name,
+                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }

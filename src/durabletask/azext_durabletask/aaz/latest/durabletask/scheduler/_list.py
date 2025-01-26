@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List Schedulers by subscription
 
     :example: List all schedulers in a resource group
-        az durable-task scheduler list -g testrg
+        az durabletask scheduler list -g testrg
     """
 
     _aaz_info = {

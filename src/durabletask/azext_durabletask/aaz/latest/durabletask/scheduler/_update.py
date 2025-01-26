@@ -47,8 +47,8 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.scheduler_name = AAZStrArg(
-            options=["-n", "--name", "--scheduler-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
@@ -166,7 +166,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schedulerName", self.ctx.args.scheduler_name,
+                    "schedulerName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -265,7 +265,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schedulerName", self.ctx.args.scheduler_name,
+                    "schedulerName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
