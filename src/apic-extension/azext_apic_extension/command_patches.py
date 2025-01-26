@@ -606,7 +606,7 @@ class ImportAzureApiManagementSource(DefaultWorkspaceParameter, Import):
         }
 
         # Set api_source_type
-        args.api_source_type = "AzureApiManagement"      
+        args.api_source_type = "AzureApiManagement"
 
 
 # `az apic api-analysis` commands
