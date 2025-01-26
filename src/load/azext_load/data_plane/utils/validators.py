@@ -10,11 +10,18 @@ from datetime import datetime
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
+from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 from . import utils
-from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
+from .models import (
+    AllowedFileTypes,
+    AllowedIntervals,
+    AllowedMetricNamespaces,
+    AllowedTestTypes,
+    AllowedTestPlanFileExtensions,
+)
 
 logger = get_logger(__name__)
 
@@ -227,13 +234,30 @@ def validate_test_plan_path(namespace):
     namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
 
     _, file_extension = os.path.splitext(namespace.test_plan)
-    if file_extension.casefold() != ".jmx":
+    if file_extension.casefold() not in utils.get_enum_values(AllowedTestPlanFileExtensions):
         raise InvalidArgumentValueError(
-            f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
+            f"Invalid test plan file extension: {file_extension}. "
+            f"Allowed values: {', '.join(AllowedTestPlanFileExtensions)} "
+            f"for {', '.join(utils.get_enum_values(AllowedTestTypes))} test types respectively"
+        )
+
+
+def validate_test_type(namespace):
+    if namespace.test_type is None:
+        return
+    if not isinstance(namespace.test_type, str):
+        raise InvalidArgumentValueError(
+            f"Invalid test-type type: {type(namespace.test_type)}"
+        )
+    allowed_test_types = utils.get_enum_values(AllowedTestTypes)
+    if namespace.test_type not in allowed_test_types:
+        raise InvalidArgumentValueError(
+            f"Invalid test-type value: {namespace.test_type}. Allowed values: {', '.join(allowed_test_types)}"
         )
 
 
 def _validate_path(path, is_dir=False):
+    logger.info("path: %s", path)
     if not isinstance(path, str):
         raise InvalidArgumentValueError(f"Invalid path type: {type(path)}")
 
@@ -256,6 +280,12 @@ def _validate_path(path, is_dir=False):
         if not os.access(path, os.R_OK):
             raise FileOperationError(f"Provided path '{path}' is not readable")
     return path
+
+
+def _validate_file_stats(path, file_type=None):
+    if file_type == AllowedFileTypes.ZIPPED_ARTIFACTS and os.stat(path).st_size > 52428800:
+        logger.info("zip artifact size %s", os.stat(path).st_size)
+        raise FileOperationError(f"Provided ZIP artifact '{path}' exceeds size limit of 50 MB")
 
 
 def validate_file_type(namespace):
@@ -375,3 +405,120 @@ def validate_split_csv(namespace):
         namespace.split_csv = True
     else:
         namespace.split_csv = False
+
+
+def validate_disable_public_ip(namespace):
+    if namespace.disable_public_ip is None:
+        return
+    if not isinstance(namespace.disable_public_ip, str):
+        raise InvalidArgumentValueError(
+            f"Invalid disable-public-ip type: {type(namespace.disable_public_ip)}"
+        )
+    if namespace.disable_public_ip.casefold() not in [
+        "true",
+        "false",
+    ]:
+        raise InvalidArgumentValueError(
+            f"Invalid disable-public-ip value: {namespace.disable_public_ip}. Allowed values: true, false"
+        )
+    if namespace.disable_public_ip.casefold() in ["true"]:
+        namespace.disable_public_ip = True
+    else:
+        namespace.disable_public_ip = False
+
+
+def validate_autostop_enable_disable(namespace):
+    if namespace.autostop is None:
+        return
+    if not isinstance(namespace.autostop, str) or namespace.autostop.casefold() not in ["enable", "disable"]:
+        raise InvalidArgumentValueError(
+            f"Invalid autostop type: {type(namespace.autostop)}. Allowed values: enable, disable"
+        )
+    if namespace.autostop.casefold() not in ["disable"]:
+        namespace.autostop = True
+    else:
+        namespace.autostop = False
+
+
+def validate_autostop_error_rate_time_window(namespace):
+    if namespace.autostop_error_rate_time_window is None:
+        return
+    if not isinstance(namespace.autostop_error_rate_time_window, int):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-time-window type: {type(namespace.autostop_error_rate_time_window)}"
+        )
+    if namespace.autostop_error_rate_time_window < 0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate time window should be greater than or equal to 0"
+        )
+
+
+def validate_autostop_error_rate(namespace):
+    if namespace.autostop_error_rate is None:
+        return
+    if not isinstance(namespace.autostop_error_rate, float):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-error-rate type: {type(namespace.autostop_error_rate)}"
+        )
+    if namespace.autostop_error_rate < 0.0 or namespace.autostop_error_rate > 100.0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate should be in range of [0.0,100.0]"
+        )
+
+
+def _validate_autostop_disable_configfile(autostop):
+    if autostop.casefold() not in ["disable"]:
+        raise InvalidArgumentValueError(
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow"
+        )
+
+
+def _validate_autostop_criteria_configfile(error_rate, time_window):
+    if error_rate is not None:
+        if isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+        if isinstance(error_rate, int) and (error_rate < 0 or error_rate > 100):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+    if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
+        raise InvalidArgumentValueError(
+            "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
+        )
+
+
+def validate_regionwise_engines(cmd, namespace):
+    if namespace.regionwise_engines is None:
+        return
+    if not isinstance(namespace.regionwise_engines, list):
+        raise InvalidArgumentValueError(
+            f"Invalid regionwise-engines type: {type(namespace.regionwise_engines)}. \
+                Expected list in the format of region1=engineCount1 region2=engineCount2"
+        )
+    regionwise_engines = []
+    subscription_locations = get_subscription_locations(cmd.cli_ctx)
+    location_names = [location.name for location in subscription_locations]
+    for item in namespace.regionwise_engines:
+        if not isinstance(item, str) or "=" not in item:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item type: {type(item)}. Expected region=engineCount"
+            )
+        key, value = item.split("=", 1)
+        if not key or not value:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item: {item}. Region or engine count cannot be empty"
+            )
+        if key.strip().lower() not in location_names:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item key: {key}. Expected Azure region"
+            )
+        try:
+            value = int(value.strip())
+        except ValueError:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item value: {value}. Expected integer"
+            )
+        regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
+    namespace.regionwise_engines = regionwise_engines

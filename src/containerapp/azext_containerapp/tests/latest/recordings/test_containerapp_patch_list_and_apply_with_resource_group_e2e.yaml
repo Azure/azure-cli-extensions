@@ -1432,7 +1432,7 @@ interactions:
 - request:
     body: '{"location": "centraluseuap", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "f1785f51-938e-4934-a992-c8d97e2e70c8",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
       "sharedKey":"",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
@@ -2883,7 +2883,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000004/listCredentials?api-version=2022-02-01-preview
   response:
     body:
-      string: '{"username":"containerapp000004","passwords":[{"name":"password","value":"0As22qvbYIpbxN6ZmCLIlIRXW/d0jIZkEk6si/wjE4+ACRCKYoEu"},{"name":"password2","value":"Vf6zzrqwnr73YTE4g8w9/uKWVBaKIVXlokUoyWISVI+ACRB8Reo+"}]}'
+      string: '{"username":"containerapp000004","passwords":[{"name":"password","value":"abc123"},{"name":"password2","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2022-02-01-preview
@@ -5802,7 +5802,7 @@ interactions:
     body: '{"location": "Central US EUAP", "identity": {"type": "None", "userAssignedIdentities":
       null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000003",
       "configuration": {"secrets": [{"name": "containerapp000004azurecrio-containerapp000004",
-      "value": "0As22qvbYIpbxN6ZmCLIlIRXW/d0jIZkEk6si/wjE4+ACRCKYoEu"}], "activeRevisionsMode":
+      "value": "***"}], "activeRevisionsMode":
       "single", "ingress": {"fqdn": null, "external": true, "targetPort": 8080, "transport":
       "auto", "exposedPort": null, "allowInsecure": false, "traffic": null, "customDomains":
       null, "ipSecurityRestrictions": null, "stickySessions": null}, "dapr": null,

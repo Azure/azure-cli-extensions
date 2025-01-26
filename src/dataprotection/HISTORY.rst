@@ -2,6 +2,16 @@
 
 Release History
 ===============
+
+1.5.5
++++++
+* `az dataprotection backup-vault initialize-restoreconfig:` Fixed a bug when initializing a restore object for Vaulted AKS Backups.
+* Added CRR support for southeastus, westus3 region.
+
+1.5.4
++++++
+* Removed dependency on `msrestazure.tools`
+
 1.5.3
 +++++
 * `az dataprotection backup-instance initialize-for-data-recovery`: Fixed a bug when trying to initialize AKS restore.

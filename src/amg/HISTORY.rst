@@ -79,11 +79,11 @@ Release History
 2.0.0
 ++++++
 * Move existing Grafana CRUD command implementations to AAZ CodeGen
-* `az grafana create`: Migrate to AAZDev Tool & implicitly support role assignment principal types
-* `az grafana update`: Migrate to AAZDev Tool
-* `az grafana list`: Migrate to AAZDev Tool
-* `az grafana show`: Migrate to AAZDev Tool
-* `az grafana delete`: Migrate to AAZDev Tool
+* `az grafana create`: move implementation to AAZDev Tool & implicitly support role assignment principal types
+* `az grafana update`: move implementation to AAZDev Tool
+* `az grafana list`: move implementation to AAZDev Tool
+* `az grafana show`: move implementation to AAZDev Tool
+* `az grafana delete`: move implementation to AAZDev Tool
 
 2.1.0
 ++++++
@@ -106,3 +106,28 @@ Release History
 ++++++
 * `az grafana sync`: fix issues with syncing empty dashboards from Grafana 9 and syncing dashboards with collapsed rows
 * `az grafana backup`: support skipping Grafana folder permissions argument
+
+2.5.0
+++++++
+* `az grafana integrations monitor`: support Azure Monitor workspace integration
+
+2.5.1
+++++++
+* `az grafana dashboard import`: validate JSON file content prior to import
+
+2.5.2
+++++++
+* `az grafana create`: fix issue with principal type implicit selection during role assignment step
+
+2.5.3
+++++++
+* `az grafana service-account token create`: set token default expiration time to 1 day as stated in the documentation
+
+2.5.4
+++++++
+* `az grafana dashboard import`: fix issue with JSON file validation
+* `az grafana folder update`: fix issue with overwrite setting
+
+2.5.5
+++++++
+* `az grafana notification-channel test`: fix issue with test output parsing

@@ -17,7 +17,7 @@ class NginxScenarioTest(ScenarioTest):
             'deployment_name': 'azcli-deployment',
             'location': 'eastus2',
             'rg': resource_group,
-            'sku': 'standardv2-test_Monthly_gmz7xq9ge3py',
+            'sku': 'standardv2_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
             'vnet_name': 'azclitest-vnet',
             'subnet_name': 'azclitest-subnet',
@@ -29,6 +29,7 @@ class NginxScenarioTest(ScenarioTest):
             'web_application_firewall_settings': '{activation-state:Enabled}',
             'create_config_file': "[{content:aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9,virtual-path:/etc/nginx/nginx.conf}]",
             'config_files': '[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtual-path":"/etc/nginx/nginx.conf"}]',
+            'protected_files': "[{'content':'aHR0cCB7DQogICAgc2VydmVyIHsNCiAgICAgICAgbGlzdGVuIDgwOw0KICAgICAgICByZXR1cm4gMjAwICdIZWxsbyBmcm9tIFByb3RlY3RlZCBGaWxlJzsNCiAgICB9DQp9','virtual-path':'/etc/nginx/protected.conf'}]",
             'compressed_file': '{data:H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA}'
         })
 
@@ -53,7 +54,7 @@ class NginxScenarioTest(ScenarioTest):
 
         deployment_list = self.cmd('nginx deployment list --resource-group {rg}',).get_output_in_json()
         assert len(deployment_list) > 0
-        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics false --scaling-properties profiles={autoscale_settings}  --nginx-app-protect  web-application-firewall-settings={web_application_firewall_settings}', checks=[
+        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --tags {tags} --enable-diagnostics false --scaling-properties profiles={autoscale_settings}  --nginx-app-protect  web-application-firewall-settings={web_application_firewall_settings}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
@@ -62,6 +63,11 @@ class NginxScenarioTest(ScenarioTest):
         assert updated_deployment['tags'] is not None
         assert updated_deployment['properties']['enableDiagnosticsSupport'] is False
 
+
+        # Nginx for Azure API key
+        create_api_key = 'nginx deployment api-key create -n "test-key" --deployment-name {deployment_name} --resource-group {rg} --end-date-time "2025-05-20T17:59:39.123Z" --secret-text "s5V/9~o^4TYCVwmNc2Y>Y1^64&T`0sXg-j9!Xy|8"'
+        res = self.cmd(create_api_key).get_output_in_json()
+        print("resing: ", res)
         # Nginx for Azure certificates
         create_keyvault = 'keyvault create --name {kv_name} --resource-group {rg} --location {location}'
         kv = self.cmd(create_keyvault, checks=[
@@ -111,13 +117,17 @@ class NginxScenarioTest(ScenarioTest):
         assert len(cert_list) == 0
 
         # Nginx for Azure configuration
-        self.cmd("nginx deployment configuration create --name default --deployment-name {deployment_name} --location {location} --resource-group {rg}  --root-file /etc/nginx/nginx.conf --files {create_config_file}", checks=[
+        self.cmd("nginx deployment configuration create --name default --deployment-name {deployment_name} --resource-group {rg}  --root-file /etc/nginx/nginx.conf --files {create_config_file}", checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', 'default'),
         ])
         config_list = self.cmd('nginx deployment configuration list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(config_list) > 0
-        update_config = 'nginx deployment configuration update --name default --deployment-name {deployment_name} --location {location} --resource-group {rg}  --root-file nginx.conf --package data=H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA'
+        update_config = 'nginx deployment configuration update --name default --deployment-name {deployment_name} --resource-group {rg}  --root-file nginx.conf --package data=H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA'
+        self.cmd(update_config, checks=[
+            self.check('name', 'default'),
+        ])
+        update_config = 'nginx deployment configuration update --name default --deployment-name {deployment_name} --resource-group {rg}  --root-file /etc/nginx/nginx.conf --files {create_config_file} --protected-files {protected_files}'
         self.cmd(update_config, checks=[
             self.check('name', 'default'),
         ])

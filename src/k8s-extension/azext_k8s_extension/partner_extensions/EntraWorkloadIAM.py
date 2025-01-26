@@ -28,6 +28,27 @@ CONFIG_SETTINGS_HELM_TENANT_ID = 'global.workload-iam.tenantID'
 CONFIG_SETTINGS_HELM_JOIN_TOKEN = 'workload-iam-local-authority.localAuthorityArgs.joinToken'
 
 
+def settings_dict_to_lowercase(settings):
+    """
+    Create new dictionary where the keys of the known user settings are all lowercase (but leave the
+    others as they were in case they are specific settings that have to be passed to the Helm chart).
+    """
+    all_user_settings = [CONFIG_SETTINGS_USER_TRUST_DOMAIN, CONFIG_SETTINGS_USER_TENANT_ID,
+                         CONFIG_SETTINGS_USER_LOCAL_AUTHORITY, CONFIG_SETTINGS_USER_JOIN_TOKEN]
+
+    if settings is None:
+        return dict()
+
+    validated_settings = dict()
+    for key, value in settings.items():
+        if key.lower() in all_user_settings:
+            validated_settings[key.lower()] = value
+        else:
+            validated_settings[key] = value
+
+    return validated_settings
+
+
 class EntraWorkloadIAM(DefaultExtension):
 
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
@@ -65,24 +86,25 @@ class EntraWorkloadIAM(DefaultExtension):
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
 
-        # Create new dictionary where the keys of the user settings are all lowercase (but leave the
-        # others alone in case they are specific settings that have to be passed to the Helm chart).
-        validated_settings = dict()
-        all_user_settings = [CONFIG_SETTINGS_USER_TRUST_DOMAIN, CONFIG_SETTINGS_USER_TENANT_ID,
-                             CONFIG_SETTINGS_USER_LOCAL_AUTHORITY, CONFIG_SETTINGS_USER_JOIN_TOKEN]
-        for key, value in configuration_settings.items():
-            if key.lower() in all_user_settings:
-                validated_settings[key.lower()] = value
-            else:
-                validated_settings[key] = value
-        config_settings = validated_settings
+        # Turn configuration setting keys into lowercase to make them case-insensitive
+        config_settings = settings_dict_to_lowercase(configuration_settings)
+        config_protected_settings = settings_dict_to_lowercase(configuration_protected_settings)
 
         # Get user configuration values and remove them from the dictionary so that they aren't
         # passed to the Helm chart
         trust_domain = config_settings.pop(CONFIG_SETTINGS_USER_TRUST_DOMAIN, None)
         tenant_id = config_settings.pop(CONFIG_SETTINGS_USER_TENANT_ID, None)
         local_authority = config_settings.pop(CONFIG_SETTINGS_USER_LOCAL_AUTHORITY, None)
+
+        # The join token can also be provided by the user. However, we must prevent them from
+        # passing it as a regular configuration setting, it must be passed as a protected setting.
         join_token = config_settings.pop(CONFIG_SETTINGS_USER_JOIN_TOKEN, None)
+        if join_token is not None:
+            raise InvalidArgumentValueError(
+                "'joinToken' must be provided with --config-protected-settings, not "
+                "--configuration-settings.")
+
+        join_token = config_protected_settings.pop(CONFIG_SETTINGS_USER_JOIN_TOKEN, None)
 
         # A trust domain name is always required
         if trust_domain is None:
@@ -97,7 +119,7 @@ class EntraWorkloadIAM(DefaultExtension):
         if join_token is None:
             if local_authority is None:
                 raise InvalidArgumentValueError(
-                    "Invalid configuration settings. Either a join token or a local authority name "
+                    "Invalid configuration settings. One of 'joinToken' or 'localAuthority' "
                     "must be provided.")
             join_token = self.get_join_token(trust_domain, local_authority)
         else:
@@ -106,9 +128,14 @@ class EntraWorkloadIAM(DefaultExtension):
         # Save configuration setting values to overwrite values in the Helm chart
         configuration_settings[CONFIG_SETTINGS_HELM_TRUST_DOMAIN] = trust_domain
         configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] = tenant_id
-        configuration_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] = join_token
 
-        logger.debug("Configuration settings value for Helm: %s" % str(configuration_settings))
+        if configuration_protected_settings is None:
+            configuration_protected_settings = dict()
+        configuration_protected_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] = join_token
+
+        logger.debug("Configuration settings: %s" % str(configuration_settings))
+        logger.debug("Configuration protected settings keys: %s" %
+                     str(configuration_protected_settings.keys()))
 
         create_identity = True
         extension = Extension(

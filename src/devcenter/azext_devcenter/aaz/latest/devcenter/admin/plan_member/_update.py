@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}/members/{}", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}/members/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -104,6 +104,12 @@ class Update(AAZCommand):
             help="The type of the member (user, group)",
             nullable=True,
             enum={"Group": "Group", "User": "User"},
+        )
+        _args_schema.tier = AAZStrArg(
+            options=["--tier"],
+            arg_group="Properties",
+            help="The tier of the member.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -189,7 +195,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -292,7 +298,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -357,6 +363,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("memberId", AAZStrType, ".member_id")
                 properties.set_prop("memberType", AAZStrType, ".member_type")
+                properties.set_prop("tier", AAZStrType, ".tier")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -417,6 +424,28 @@ class _UpdateHelper:
         properties.member_type = AAZStrType(
             serialized_name="memberType",
         )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sync_status = AAZObjectType(
+            serialized_name="syncStatus",
+        )
+        properties.tier = AAZStrType()
+
+        sync_status = _schema_dev_center_plan_member_read.properties.sync_status
+        sync_status.last_sync_error = AAZObjectType(
+            serialized_name="lastSyncError",
+        )
+        cls._build_schema_error_detail_read(sync_status.last_sync_error)
+        sync_status.last_sync_time = AAZStrType(
+            serialized_name="lastSyncTime",
+            flags={"read_only": True},
+        )
+        sync_status.sync_state = AAZStrType(
+            serialized_name="syncState",
+            flags={"read_only": True},
+        )
 
         system_data = _schema_dev_center_plan_member_read.system_data
         system_data.created_at = AAZStrType(
@@ -447,6 +476,56 @@ class _UpdateHelper:
         _schema.system_data = cls._schema_dev_center_plan_member_read.system_data
         _schema.tags = cls._schema_dev_center_plan_member_read.tags
         _schema.type = cls._schema_dev_center_plan_member_read.type
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
 
 __all__ = ["Update"]

@@ -1,0 +1,25 @@
+{
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "<your-image>",
+                "environmentVariables": [
+                    {
+                        "name": "PATH",
+                        "value": "/customized/path/value"
+                    },
+                    {
+                        "name": "TEST_REGEXP_ENV",
+                        "value": "test_regexp_env(.*)",
+                        "regex": true
+                    }
+                ],
+                "command": [
+                    "python3",
+                    "main.py"
+                ]
+            }
+        }
+    ]
+}

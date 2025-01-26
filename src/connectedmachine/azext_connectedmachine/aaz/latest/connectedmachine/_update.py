@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-20-preview",
+        "version": "2024-07-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-05-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-07-31-preview"],
         ]
     }
 
@@ -558,7 +558,7 @@ class Update(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-05-20-preview",
+                    "api-version", "2024-07-31-preview",
                     required=True,
                 ),
             }
@@ -644,7 +644,7 @@ class Update(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-05-20-preview",
+                    "api-version", "2024-07-31-preview",
                     required=True,
                 ),
             }
@@ -1065,6 +1065,14 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         properties.extensions = AAZListType()
+        properties.firmware_profile = AAZObjectType(
+            serialized_name="firmwareProfile",
+            flags={"read_only": True},
+        )
+        properties.hardware_profile = AAZObjectType(
+            serialized_name="hardwareProfile",
+            flags={"read_only": True},
+        )
         properties.last_status_change = AAZStrType(
             serialized_name="lastStatusChange",
             flags={"read_only": True},
@@ -1122,6 +1130,10 @@ class _UpdateHelper:
             serialized_name="serviceStatuses",
         )
         properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.storage_profile = AAZObjectType(
+            serialized_name="storageProfile",
             flags={"read_only": True},
         )
         properties.vm_id = AAZStrType(
@@ -1224,6 +1236,42 @@ class _UpdateHelper:
         extensions = _schema_machine_read.properties.extensions
         extensions.Element = AAZObjectType()
         cls._build_schema_machine_extension_instance_view_read(extensions.Element)
+
+        firmware_profile = _schema_machine_read.properties.firmware_profile
+        firmware_profile.serial_number = AAZStrType(
+            serialized_name="serialNumber",
+            flags={"read_only": True},
+        )
+        firmware_profile.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        hardware_profile = _schema_machine_read.properties.hardware_profile
+        hardware_profile.number_of_cpu_sockets = AAZIntType(
+            serialized_name="numberOfCpuSockets",
+            flags={"read_only": True},
+        )
+        hardware_profile.processors = AAZListType(
+            flags={"read_only": True},
+        )
+        hardware_profile.total_physical_memory_in_bytes = AAZIntType(
+            serialized_name="totalPhysicalMemoryInBytes",
+            flags={"read_only": True},
+        )
+
+        processors = _schema_machine_read.properties.hardware_profile.processors
+        processors.Element = AAZObjectType(
+            flags={"read_only": True},
+        )
+
+        _element = _schema_machine_read.properties.hardware_profile.processors.Element
+        _element.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.number_of_cores = AAZIntType(
+            serialized_name="numberOfCores",
+            flags={"read_only": True},
+        )
 
         license_profile = _schema_machine_read.properties.license_profile
         license_profile.esu_profile = AAZObjectType(
@@ -1439,9 +1487,14 @@ class _UpdateHelper:
         )
 
         _element = _schema_machine_read.properties.network_profile.network_interfaces.Element
+        _element.id = AAZStrType()
         _element.ip_addresses = AAZListType(
             serialized_name="ipAddresses",
         )
+        _element.mac_address = AAZStrType(
+            serialized_name="macAddress",
+        )
+        _element.name = AAZStrType()
 
         ip_addresses = _schema_machine_read.properties.network_profile.network_interfaces.Element.ip_addresses
         ip_addresses.Element = AAZObjectType(
@@ -1497,6 +1550,31 @@ class _UpdateHelper:
             serialized_name="guestConfigurationService",
         )
         cls._build_schema_service_status_read(service_statuses.guest_configuration_service)
+
+        storage_profile = _schema_machine_read.properties.storage_profile
+        storage_profile.disks = AAZListType()
+
+        disks = _schema_machine_read.properties.storage_profile.disks
+        disks.Element = AAZObjectType(
+            flags={"read_only": True},
+        )
+
+        _element = _schema_machine_read.properties.storage_profile.disks.Element
+        _element.disk_type = AAZStrType(
+            serialized_name="diskType",
+        )
+        _element.generated_id = AAZStrType(
+            serialized_name="generatedId",
+        )
+        _element.id = AAZStrType()
+        _element.max_size_in_bytes = AAZIntType(
+            serialized_name="maxSizeInBytes",
+        )
+        _element.name = AAZStrType()
+        _element.path = AAZStrType()
+        _element.used_space_in_bytes = AAZIntType(
+            serialized_name="usedSpaceInBytes",
+        )
 
         resources = _schema_machine_read.resources
         resources.Element = AAZObjectType()

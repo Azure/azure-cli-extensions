@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List PublicCloudConnector resources within the current subscription, and limit to the specified resource group if one is provided.
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: PublicCloudConnectors_ListBySubscription
-        az arc-multicloud public-cloud-connector list --resource-group rgpublicCloud
+        az arc-multicloud public-cloud-connector list --resource-group multiCloudRG
     """
 
     _aaz_info = {

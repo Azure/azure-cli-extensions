@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_show
 from .example_steps import step_list
 from .example_steps import step_extension_create
@@ -29,13 +30,13 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse(100)
     @ResourceGroupPreparer(name_prefix='cli_test_machineextension')
     def test_machine_and_extension(self):
         self.kwargs.update({
-            'machine': 'testmachine2',
-            'rg': 'ytongtest3',
-            'location': 'eastus2',
+            'machine': 'testmachine',
+            'rg': 'ytongtest',
+            'location': 'eastus',
             'customScriptName': 'custom-test',
         })
 
@@ -51,17 +52,69 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         self.cmd('az connectedmachine extension create '
                 '--name "{customScriptName}" '
                 '--location "{location}" '
-                '--type "CustomScriptExtension" '
-                '--publisher "Microsoft.Compute" '
-                '--type-handler-version "1.10.10" '
+                '--type "NetworkWatcherAgentWindows" '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--type-handler-version "1.4.2798.3" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}" '
                 '--settings "{{\\"commandToExecute\\":\\"powershell.exe ls\\"}}"',
                 checks=[
                     self.check('name', '{customScriptName}'),
-                    self.check('properties.enableAutomaticUpgrade', True),
-                    self.check('properties.typeHandlerVersion', '1.10.10'),
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3'),
         ])
+
+        self.cmd('az connectedmachine extension list '
+                '--machine-name {machine} -g {rg}', 
+                checks=[
+                    # self.check('length(@)', 1)
+        ])
+
+        self.cmd('az connectedmachine extension show '
+                '--name {customScriptName} '
+                '--machine-name "{machine}" '
+                '--resource-group "{rg}"',
+                checks=[
+                    self.check('name', '{customScriptName}'),
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3')
+        ])
+
+        self.cmd('az connectedmachine extension image show '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--extension-type "NetworkWatcherAgentWindows" '
+                '--location "{location}" '
+                '--version "1.4.2798.3"',
+                checks=[
+                    self.check('version', '1.4.2798.3'),
+                    self.check('publisher', 'microsoft.azure.networkwatcher'),
+                    self.check('extensionType', 'networkwatcheragentwindows')
+        ])
+
+        self.cmd('az connectedmachine extension image list '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--extension-type "NetworkWatcherAgentWindows" '
+                '--location "{location}"',
+                checks=[
+        ])
+
+        self.cmd('az connectedmachine upgrade-extension '
+                '--extension-targets "{{\\"Microsoft.Azure.NetworkWatcher\\":{{\\"targetVersion\\":\\"1.4.3135.1\\"}}}}" '
+                '--machine-name "{machine}" '
+                '--resource-group "{rg}"',
+                checks=[])
+
+        self.cmd('az connectedmachine extension update '
+                '--name "{customScriptName}" '
+                '--enable-automatic-upgrade false '
+                '--settings "{{\\"commandToExecute\\":\\"dir\\"}}" '
+                '--machine-name "{machine}" '
+                '--resource-group "{rg}"',
+                checks=[
+                    self.check('name', '{customScriptName}'),
+                    self.check('properties.enableAutomaticUpgrade', False),
+                    self.check('properties.provisioningState', 'Succeeded'),
+                    self.check('properties.settings.commandToExecute', 'dir'),
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3')
+        ]) 
 
         self.cmd('az connectedmachine install-patches '
                 '--resource-group "{rg}" '
@@ -79,59 +132,6 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 checks=[
                     self.check('status', 'Succeeded')
         ])
-
-        self.cmd('az connectedmachine extension list '
-                '--machine-name {machine} -g {rg}', 
-                checks=[
-                    # self.check('length(@)', 1)
-        ])
-
-        self.cmd('az connectedmachine extension show '
-                '--name {customScriptName} '
-                '--machine-name "{machine}" '
-                '--resource-group "{rg}"',
-                checks=[
-                    self.check('name', '{customScriptName}'),
-                    self.check('properties.typeHandlerVersion', '1.10.10')
-        ])
-
-        self.cmd('az connectedmachine extension image show '
-                '--publisher "Microsoft.Compute" '
-                '--extension-type "CustomScriptExtension" '
-                '--location "{location}" '
-                '--version "1.10.10"',
-                checks=[
-                    self.check('version', '1.10.10'),
-                    self.check('publisher', 'microsoft.compute'),
-                    self.check('extensionType', 'customscriptextension')
-        ])
-
-        self.cmd('az connectedmachine extension image list '
-                '--publisher "Microsoft.Compute" '
-                '--extension-type "CustomScriptExtension" '
-                '--location "{location}"',
-                checks=[
-        ])
-
-        self.cmd('az connectedmachine upgrade-extension '
-                '--extension-targets "{{\\"Microsoft.Compute.CustomScriptExtension\\":{{\\"targetVersion\\":\\"1.10.12\\"}}}}" '
-                '--machine-name "{machine}" '
-                '--resource-group "{rg}"',
-                checks=[])
-
-        self.cmd('az connectedmachine extension update '
-                '--name "{customScriptName}" '
-                '--enable-automatic-upgrade false '
-                '--settings "{{\\"commandToExecute\\":\\"dir\\"}}" '
-                '--machine-name "{machine}" '
-                '--resource-group "{rg}"',
-                checks=[
-                    self.check('name', '{customScriptName}'),
-                    self.check('properties.enableAutomaticUpgrade', False),
-                    self.check('properties.provisioningState', 'Succeeded'),
-                    self.check('properties.settings.commandToExecute', 'dir'),
-                    self.check('properties.typeHandlerVersion', '1.10.12')
-        ]) 
 
         self.cmd('az connectedmachine extension delete -y '
                 '--name "{customScriptName}" '

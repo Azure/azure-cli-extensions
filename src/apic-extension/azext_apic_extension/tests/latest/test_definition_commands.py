@@ -204,7 +204,7 @@ class DefinitionCommandsTests(ScenarioTest):
             with open(self.kwargs['file_name'], 'w') as file:
                 file.write('a' * 4 * 1024 * 1024) # generate a 4MB file
 
-            with self.assertRaisesRegexp(CLIError, 'The size of "value" is greater than 3 MB. Please use --format "link" to import the specification from a URL for size greater than 3 mb.') as cm:
+            with self.assertRaisesRegex(CLIError, 'The size of "value" is greater than 3 MB. Please use --format "link" to import the specification from a URL for size greater than 3 mb.') as cm:
                 self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{file_name}"')
         finally:
             os.remove(self.kwargs['file_name'])
