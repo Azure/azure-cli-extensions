@@ -69,6 +69,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     print(pagination_params)
     print()
 
+    # return client.list(**pagination_params)   <--- Gets error, "TypeError: list() missing 1 required positional argument: 'region'"
     return client.list(info.location, **pagination_params)
 
     # # FOR DEV TESTING (Comment-out the "return" above)
