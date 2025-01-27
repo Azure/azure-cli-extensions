@@ -92,3 +92,19 @@ class ApiAnalysisCommandTests(ScenarioTest):
             # Remove the 'ruleset_path_tmp' folder
             if os.path.exists(self.kwargs['ruleset_path_tmp']):
                 shutil.rmtree(self.kwargs['ruleset_path_tmp'])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApiAnalysisPreparer()
+    def test_api_analysis_update(self):
+        self.cmd('az apic api-analysis create -g {rg} -n {s} -c {config_name}', checks=[
+            self.check('name', '{config_name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('type', 'Microsoft.ApiCenter/services/workspaces/analyzerConfigs')
+        ])
+
+        self.cmd('az apic api-analysis update -g {rg} -n {s} -c {config_name} --analyzer-type spectral', checks=[
+            self.check('name', '{config_name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('analyzerType', 'Spectral')
+        ])
