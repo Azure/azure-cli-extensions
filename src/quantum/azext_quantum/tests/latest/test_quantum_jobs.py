@@ -295,9 +295,9 @@ class QuantumJobsScenarioTest(ScenarioTest):
         assert query == "ProviderId eq 'Microsoft'"
         provider_id = None
 
-        target_id = "AwesomeQuantumSuperComputer"
+        target_id = "Awesome.Quantum.SuperComputer"
         query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-        assert query == "TargetId eq 'AwesomeQuantumSuperComputer'"
+        assert query == "TargetId eq 'Awesome.Quantum.SuperComputer'"
         target_id = None
 
         job_status = "Succeeded"        
@@ -305,13 +305,21 @@ class QuantumJobsScenarioTest(ScenarioTest):
         assert query == "State eq 'Succeeded'"
         job_status = None        
 
-        # TODO: add date and name params
-        # query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
-        # query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
-        # query = _parse_pagination_param_values("Name", query, job_name, "startswith")
-        # --created-after     : Jobs created after this date/time to be listed.
-        # --created-before    : Jobs created before this date/time to be listed.
-        # --job-name          : A friendly name to give to this run of the program.
+        created_after = "2025-01-27"
+        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime ge '2025-01-27'"
+        created_after = None
+
+        created_before = None"2025-01-27"
+        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime le '2025-01-27'"
+        created_before = None
+
+        job_name = "TestJob"
+        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "startswith(Name, 'TestJob')"
+        job_name = None
+
 
         # TODO: add combinations of params
         # TODO: param[s] with comma-separated list of values
