@@ -3,6 +3,21 @@
 Release History
 ===============
 
+3.0.0b1
+++++++++
+* This beta version supports NetworkCloud 2024-10-01-preview APIs.
+* This version requires a minimum of 2.67 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md
+* This version upgrades the internal generation tool aaz-dev-tools to 3.2.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v3.2.0.
+* A bug fix for delete commands returning 204 without content is included in this release.
+* New `identity` command group is added to Cluster Manager for handling system-assigned and user-assigned identity updates.
+* Breaking change: Cluster create and update commands support new parameter `--analytics-output-settings` for configuring Log Analytics Workspace, which replaces the deprecated `--analytics-workspace-id`.
+* Breaking change: Cluster create and update commands support new parameter `--secret-archive-settings` to hold credentials for the cluster, which replaces the deprecated `--secret-archive`.
+* Cluster includes `--vulnerability-scanning-settings`, featuring a single field called containerScan, which determines how security vulnerability scanning is applied to the cluster.
+* VirtualMachine is updated to display the extended location to use for creation of a VirtualMachine console resource.
+* VirtualMachine is updated to support persistent storage for OS disk.
+* VirtualMachine's property `--vm-device-model` gets a new option 'T3'. When 'T3' is selected, SecureBoot and vTPM are automatically enabled. This is to support Windows users.
+* Eliminated password fields from Infrastructure resources (Cluster, BMM, Storage Appliance)
+
 2.0.0
 ++++++++
 * This is the stable version of the CLI extension that supports NetworkCloud 2024-07-01 APIs.

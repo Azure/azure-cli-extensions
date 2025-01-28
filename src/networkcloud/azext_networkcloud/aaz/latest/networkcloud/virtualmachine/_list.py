@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List virtual machines in the provided resource group or subscription.
@@ -25,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/virtualmachines", "2024-07-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/virtualmachines", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines", "2024-10-01-preview"],
         ]
     }
 
@@ -115,7 +116,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -161,6 +162,7 @@ class List(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
+            _ListHelper._build_schema_extended_location_read(_element.extended_location)
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -180,14 +182,6 @@ class List(AAZCommand):
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            extended_location = cls._schema_on_200.value.Element.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
@@ -214,6 +208,10 @@ class List(AAZCommand):
                 serialized_name="clusterId",
                 flags={"read_only": True},
             )
+            properties.console_extended_location = AAZObjectType(
+                serialized_name="consoleExtendedLocation",
+            )
+            _ListHelper._build_schema_extended_location_read(properties.console_extended_location)
             properties.cpu_cores = AAZIntType(
                 serialized_name="cpuCores",
                 flags={"required": True},
@@ -469,7 +467,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -515,6 +513,7 @@ class List(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
+            _ListHelper._build_schema_extended_location_read(_element.extended_location)
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -534,14 +533,6 @@ class List(AAZCommand):
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            extended_location = cls._schema_on_200.value.Element.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
@@ -568,6 +559,10 @@ class List(AAZCommand):
                 serialized_name="clusterId",
                 flags={"read_only": True},
             )
+            properties.console_extended_location = AAZObjectType(
+                serialized_name="consoleExtendedLocation",
+            )
+            _ListHelper._build_schema_extended_location_read(properties.console_extended_location)
             properties.cpu_cores = AAZIntType(
                 serialized_name="cpuCores",
                 flags={"required": True},
@@ -782,6 +777,28 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_extended_location_read = None
+
+    @classmethod
+    def _build_schema_extended_location_read(cls, _schema):
+        if cls._schema_extended_location_read is not None:
+            _schema.name = cls._schema_extended_location_read.name
+            _schema.type = cls._schema_extended_location_read.type
+            return
+
+        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
+
+        extended_location_read = _schema_extended_location_read
+        extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_extended_location_read.name
+        _schema.type = cls._schema_extended_location_read.type
 
 
 __all__ = ["List"]
