@@ -20,6 +20,9 @@ steps:
   - id: setup-data-dir
     cmd: bash mkdir ./data
   - id: generate-trivy-report
+    retries: 3
+    retryDelay: 3
+    timeout: 1800
     cmd: |
       cssc trivy image \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
@@ -53,15 +56,22 @@ steps:
   
   # Step 4: Patch the image with Copacetic
   - id: patch-image
+    retries: 3
+    retryDelay: 3
+    timeout: 1800
     cmd: |
       cssc copa patch \
       -i "{{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}" \
       -r ./data/$ScanReport \
       -t "{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}" \
+      --timeout 30m \
       --addr tcp://127.0.0.1:8888
     network: host
 
   - id: push-image
+    retries: 3
+    retryDelay: 3
+    timeout: 1800
     cmd: docker push {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}
 
   - cmd: bash echo "Patched image pushed to {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"
