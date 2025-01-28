@@ -31,6 +31,7 @@ class WorkflowTaskState(Enum):
     FAILED = "Failed"
     QUEUED = "Queued"
     SKIPPED = "Skipped"
+    CANCELED = "Canceled"
     UNKNOWN = "Unknown"
 
 
@@ -79,7 +80,10 @@ class WorkflowTaskStatus:
         if status == TaskRunStatus.Queued.value.lower():
             return WorkflowTaskState.QUEUED.value
 
-        if status == TaskRunStatus.Failed.value.lower() or status == TaskRunStatus.Canceled.value.lower() or status == TaskRunStatus.Error.value.lower() or status == TaskRunStatus.Timeout.value.lower():
+        if status == TaskRunStatus.Canceled.value.lower():
+            return WorkflowTaskState.CANCELED.value
+
+        if status == TaskRunStatus.Failed.value.lower() or status == TaskRunStatus.Error.value.lower() or status == TaskRunStatus.Timeout.value.lower():
             return WorkflowTaskState.FAILED.value
 
         return WorkflowTaskState.UNKNOWN.value
@@ -92,8 +96,10 @@ class WorkflowTaskStatus:
             return [TaskRunStatus.Running.value, TaskRunStatus.Started.value]
         if status == WorkflowTaskState.QUEUED.value:
             return [TaskRunStatus.Queued.value]
+        if status == WorkflowTaskState.CANCELED.value:
+            return [TaskRunStatus.Canceled.value]
         if status == WorkflowTaskState.FAILED.value:
-            return [TaskRunStatus.Failed.value, TaskRunStatus.Canceled.value, TaskRunStatus.Error.value, TaskRunStatus.Timeout.value]
+            return [TaskRunStatus.Failed.value, TaskRunStatus.Error.value, TaskRunStatus.Timeout.value]
         return None
 
     def scan_status(self):
