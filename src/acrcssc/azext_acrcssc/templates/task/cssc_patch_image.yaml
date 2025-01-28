@@ -64,7 +64,7 @@ steps:
       -i "{{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}" \
       -r ./data/$ScanReport \
       -t "{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}" \
-      --timeout 30m
+      --timeout 30m \
       --addr tcp://127.0.0.1:8888
     network: host
 
