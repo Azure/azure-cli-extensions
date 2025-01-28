@@ -11,7 +11,7 @@ import time
 
 class NginxScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='AZCLIDepTestRG_', random_name_length=34, location='eastus2')
+    @ResourceGroupPreparer(name_prefix='AZCLITestRG_', random_name_length=34, location='eastus2')
     def test_nginx(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azcli-deployment',
@@ -21,6 +21,7 @@ class NginxScenarioTest(ScenarioTest):
             'public_ip_name': 'azclitest-public-ip',
             'vnet_name': 'azclitest-vnet',
             'subnet_name': 'azclitest-subnet',
+            'subnet_name2_migrated': 'azclitest-subnet2',
             'tags': 'tag1="value1" tag2="value2"',
             'kv_name': self.create_random_name(prefix='cli', length=20),
             'cert_name': 'azclitestcert',
@@ -35,11 +36,20 @@ class NginxScenarioTest(ScenarioTest):
 
         # Nginx for Azure Deployment
         public_ip = self.cmd('network public-ip create --resource-group {rg} --location {location} --name {public_ip_name} --version IPv4 --sku Standard --zone 2').get_output_in_json()
-        vnet = self.cmd('network vnet create --resource-group {rg} --location {location} --name {vnet_name} --address-prefixes 10.0.0.0/16 --subnet-name {subnet_name}').get_output_in_json()
+        # creating first vnet and first subnet
+        self.cmd('network vnet create --resource-group {rg} --location {location} --name {vnet_name} --address-prefixes 10.0.0.0/16 --subnet-name {subnet_name}').get_output_in_json()
         self.cmd('network vnet subnet update --resource-group {rg} --name {subnet_name} --vnet-name {vnet_name} --delegations NGINX.NGINXPLUS/nginxDeployments')
 
+        # creating second subnet
+        self.cmd('network vnet subnet create --resource-group {rg} --name {subnet_name2_migrated} --vnet-name {vnet_name} --address-prefixes 10.0.1.0/24').get_output_in_json()
+        self.cmd('network vnet subnet update --resource-group {rg} --name {subnet_name2_migrated} --vnet-name {vnet_name} --delegations NGINX.NGINXPLUS/nginxDeployments')
+
         self.kwargs['public_ip_addresses'] = "{public-ip-addresses:[{id:" + public_ip['publicIp']['id'] + "}]}"
-        self.kwargs['subnet_id'] = "{subnet-id:" + vnet['newVNet']['subnets'][0]['id'] + "}"
+
+        subnet1 = self.cmd('network vnet subnet show --name {subnet_name} --vnet-name {vnet_name} --resource-group {rg}').get_output_in_json()
+        subnet2 = self.cmd('network vnet subnet show --name {subnet_name2_migrated} --vnet-name {vnet_name} --resource-group {rg}').get_output_in_json()
+        self.kwargs['subnet_id'] = "{subnet-id:" + subnet1['id'] + "}"
+        self.kwargs['subnet_id_migrated'] = "{subnet-id:" + subnet2['id'] + "}"
 
         managed_identity = self.cmd('identity create --name {managed_identity} --resource-group {rg}').get_output_in_json()
         identity_object_id = managed_identity['principalId']
@@ -63,13 +73,20 @@ class NginxScenarioTest(ScenarioTest):
         assert updated_deployment['tags'] is not None
         assert updated_deployment['properties']['enableDiagnosticsSupport'] is False
 
+        # migrating to subnet 2
+        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id_migrated}"', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['deployment_name'])
+        ])
+        self.cmd('nginx deployment wait --updated --name {deployment_name} --resource-group {rg}')
+        updated_deployment = self.cmd('nginx deployment show --name {deployment_name} --resource-group {rg}').get_output_in_json()
+        assert updated_deployment['properties']['networkProfile']['networkInterfaceConfiguration']['subnetId'] == subnet2['id']
 
         # Nginx for Azure API key
         create_api_key = 'nginx deployment api-key create -n "test-key" --deployment-name {deployment_name} --resource-group {rg} --end-date-time "2025-05-20T17:59:39.123Z" --secret-text "s5V/9~o^4TYCVwmNc2Y>Y1^64&T`0sXg-j9!Xy|8"'
-        res = self.cmd(create_api_key).get_output_in_json()
-        print("resing: ", res)
+        self.cmd(create_api_key)
         # Nginx for Azure certificates
-        create_keyvault = 'keyvault create --name {kv_name} --resource-group {rg} --location {location}'
+        create_keyvault = 'keyvault create --name {kv_name} --resource-group {rg}'
         kv = self.cmd(create_keyvault, checks=[
         self.check('properties.provisioningState', 'Succeeded')
         ]).get_output_in_json()
@@ -93,14 +110,14 @@ class NginxScenarioTest(ScenarioTest):
             print('=-=-=-=-=-=-=-=-= into the is live')
         print('-=-=-=-=-=-=-=-= Sleeping for 30 seconds to wait for the role assignment to propagate')
         time.sleep(30) # wait for the role assignment to propagate
-        self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --location {location} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
+        self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
             self.check('properties.keyVaultSecretId', self.kwargs['kv_secret_id'])
         ])
         cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(cert_list) > 0
-        self.cmd('nginx deployment certificate update --certificate-name {cert_name} --deployment-name {deployment_name} --location {location} --resource-group {rg} --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key', checks=[
+        self.cmd('nginx deployment certificate update --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
             self.check('properties.keyVaultSecretId', self.kwargs['kv_secret_id'])
