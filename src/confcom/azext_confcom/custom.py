@@ -159,6 +159,7 @@ def acipolicygen_confcom(
     # and associate them with each container group
 
     if include_fragments:
+        logger.info("Including fragments in the policy")
         fragment_policy_list = []
         container_names = []
         fragment_imports = []

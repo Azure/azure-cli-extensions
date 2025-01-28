@@ -13,11 +13,14 @@ from hashlib import sha256
 import deepdiff
 import yaml
 import docker
+from knack.log import get_logger
 from azext_confcom.errors import (
     eprint,
 )
 from azext_confcom import os_util
 from azext_confcom import config
+
+logger = get_logger(__name__)
 
 # TODO: these can be optimized to not have so many groups in the single match
 # make this global so it can be used in multiple functions
@@ -228,6 +231,7 @@ def process_env_vars_from_template(params: dict,
                     response = approve_wildcards or input(
                         f'Create a wildcard policy for the environment variable {name} (y/n): ')
                     if approve_wildcards or response.lower() == 'y':
+                        logger.info(f'Creating a wildcard policy for the environment variable {name}')
                         env_vars.append({
                             config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
                             config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",

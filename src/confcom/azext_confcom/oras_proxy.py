@@ -91,6 +91,7 @@ def pull(
     if "@sha256:" in image:
         image = image.split("@")[0]
     arg_list = ["oras", "pull", f"{image}@{image_hash}"]
+    logger.info(f"Pulling fragment: {image}@{image_hash}")
     item = call_oras_cli(arg_list, check=False)
 
     # get the exit code from the subprocess

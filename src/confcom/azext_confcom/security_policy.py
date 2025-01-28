@@ -433,7 +433,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             # populate regular container images(s)
             for image in container_images:
                 image_name = f"{image.base}:{image.tag}"
-
+                logger.info("Processing image: %s", image_name)
                 image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
                 # verify and populate the working directory property
