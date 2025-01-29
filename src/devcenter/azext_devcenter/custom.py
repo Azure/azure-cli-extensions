@@ -1299,7 +1299,9 @@ def devcenter_dev_box_delay_action(
         "action_name": action_name
     })
 
-    upcoming_action_time = upcoming_action["next"]["scheduledTime"]
+    upcoming_action_time = upcoming_action.get("next", {}).get("scheduledTime")
+    if not upcoming_action_time:
+        raise ResourceNotFoundError("There are no upcoming scheduled times for this action.")
     action_time = datetime.strptime(upcoming_action_time, "%Y-%m-%dT%H:%M:%S.%fZ")
     delayed_time = get_delayed_time(delay_time, action_time)
 
@@ -1673,7 +1675,9 @@ def devcenter_environment_delay_action(
         "action_name": action_name
     })
 
-    upcoming_action_time = upcoming_action["next"]["scheduledTime"]
+    upcoming_action_time = upcoming_action.get("next", {}).get("scheduledTime")
+    if not upcoming_action_time:
+        raise ResourceNotFoundError("There are no upcoming scheduled times for this action.")
     action_time = datetime.strptime(upcoming_action_time, "%Y-%m-%dT%H:%M:%S.%fZ")
     delayed_time = get_delayed_time(delay_time, action_time)
 
