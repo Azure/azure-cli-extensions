@@ -3,9 +3,9 @@
 Release History
 ===============
 
-0.1.4
+1.0.0
 ++++++
-* Update az webapp auth openid-connect add "scopes" parameter description to include how to add multiple scopes.
+* Update az webapp auth openid-connect add "scopes" parameter description to include how to add multiple scopes. Bump major version as requested.
 
 0.1.3
 ++++++
