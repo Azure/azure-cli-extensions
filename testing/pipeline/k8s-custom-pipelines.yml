@@ -179,7 +179,7 @@ stages:
           testResultsFormat: 'JUnit'
           testResultsFiles: '**/test-results.xml'
           failTaskOnFailedTests: true
-    condition: succeededOrFaile
+    condition: succeededOrFailed
   - job: SourceTests
     displayName: "Integration Tests, Build Tests"
     pool:
