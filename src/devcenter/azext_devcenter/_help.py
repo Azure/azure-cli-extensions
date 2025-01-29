@@ -561,7 +561,6 @@ helps[
         text: |-
               az devcenter dev environment show --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -814,7 +813,6 @@ helps[
         text: |-
               az devcenter dev environment list-operation --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: List using endpoint
         text: |-
               az devcenter dev environment list-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -832,7 +830,6 @@ helps[
               az devcenter dev environment show-operation --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id \
 "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -850,7 +847,6 @@ helps[
               az devcenter dev environment show-logs-by-operation --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id \
 "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-logs-by-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -868,7 +864,6 @@ helps[
               az devcenter dev environment show-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
 "myEnv-Delete"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -885,7 +880,6 @@ helps[
         text: |-
               az devcenter dev environment list-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: List using endpoint
         text: |-
               az devcenter dev environment list-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -903,7 +897,6 @@ helps[
               az devcenter dev environment delay-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
 "myEnv-Delete" --delay-time "04:30"
-    examples:
       - name: Delay using endpoint
         text: |-
               az devcenter dev environment delay-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -921,7 +914,6 @@ helps[
               az devcenter dev environment skip-action --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
 "myEnv-Delete"
-    examples:
       - name: Skip using endpoint
         text: |-
               az devcenter dev environment skip-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -938,7 +930,6 @@ helps[
         text: |-
               az devcenter dev environment show-outputs --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment show-outputs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -955,7 +946,6 @@ helps[
         text: |-
               az devcenter dev environment update-expiration-date --dev-center-name "ContosoDevCenter" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2026-11-30T22:35:00+00:00"
-    examples:
       - name: Get using endpoint
         text: |-
               az devcenter dev environment update-expiration-date --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
