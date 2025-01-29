@@ -160,7 +160,7 @@ def load_arguments(self, _):
         c.argument('openid_configuration', options_list=['--openid-configuration'],
                    help='The endpoint that contains all the configuration endpoints for the provider.')
         c.argument('scopes', options_list=['--scopes'],
-                   help='A list of the scopes that should be requested while authenticating.')
+                   help='A space separated list of the scopes that should be requested while authenticating.')
         c.argument('client_secret', options_list=['--client-secret'],
                    help='The application secret of the app used for login.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
