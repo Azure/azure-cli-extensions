@@ -234,6 +234,12 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('retrieve-partition-throughput', 'cli_begin_retrieve_sql_container_partition_throughput', is_preview=True)
 
+    # Get and update offer throughput for Sql containers
+    with self.command_group('cosmosdb sql container throughput', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.show_command('show', 'get_sql_container_throughput')
+        g.custom_command('update', 'cli_cosmosdb_sql_container_throughput_update')
+        g.custom_command('migrate', 'cli_cosmosdb_sql_container_throughput_migrate')
+
     # Merge partitions for Sql databases
     with self.command_group('cosmosdb sql database', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('merge', 'cli_begin_sql_database_partition_merge', is_preview=True)

@@ -1,5 +1,3 @@
-.. :changelog:
-
 Release History
 ===============
 6.2.2
