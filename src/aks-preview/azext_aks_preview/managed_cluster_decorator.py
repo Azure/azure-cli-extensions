@@ -1426,6 +1426,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     enable_apiserver_vnet_integration is None or
                     enable_apiserver_vnet_integration is False
                 )
+                and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC
             ):
                 raise RequiredArgumentMissingError(
                     '"--apiserver-subnet-id" requires "--enable-apiserver-vnet-integration".')
@@ -2924,6 +2925,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
+            if mc.api_server_access_profile is None:
+                # pylint: disable=no-member
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
         return mc
