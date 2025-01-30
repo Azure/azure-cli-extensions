@@ -1602,18 +1602,6 @@ def az_cli(args_str: str) -> Any:
     return True
 
 
-# def is_cli_using_msal_auth():
-#     response_cli_version = az_cli("version --output json")
-#     try:
-#         cli_version = response_cli_version['azure-cli']
-#     except Exception as ex:
-#         raise CLIInternalError(f"Unable to decode the az cli version installed: {ex}")
-#     if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
-#         return True
-#     else:
-#         return False
-
-
 def is_cli_using_msal_auth() -> bool:
     response_cli_version = az_cli("version --output json")
     try:

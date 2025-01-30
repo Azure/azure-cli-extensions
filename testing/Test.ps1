@@ -17,6 +17,10 @@ az config set core.only_show_errors=true
 
 $ENVCONFIG = Get-Content -Path $PSScriptRoot/settings.json | ConvertFrom-Json
 
+# Install the powershell-yaml module
+# Needed to parse the kubeconfig file
+Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+
 az account set --subscription $ENVCONFIG.subscriptionId
 
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
