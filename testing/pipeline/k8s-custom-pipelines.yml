@@ -168,9 +168,10 @@ stages:
           azdev --version
 
           azdev setup -c ../azure-cli -r ./ -e connectedk8s
-          pwd
+          current_dir=$(pwd)
+          echo "Current directory: $current_dir"
           pip install pytest
-          cd tests/unittests
+          cd /home/vsts/work/1/s/src/connectedk8s/azext_connectedk8s/tests/unittests
           pytest --junitxml=test-results.xml
           
         displayName: 'Run UnitTests test'
