@@ -3822,8 +3822,7 @@ def check_cl_registration_and_get_oid(
     cmd: CLICommmand, cl_oid: str | None, subscription_id: str | None
 ) -> tuple[bool, str]:
     print(
-        f"Step: {utils.get_utctimestring()}: Checking Microsoft.ExtendedLocation RP Registration state for this Subscription, and get OID, "
-        "if registered "
+        f"Step: {utils.get_utctimestring()}: Checking Custom Location(Microsoft.ExtendedLocation) RP Registration state for this Subscription, and attempt to get the Custom Location Object ID (OID),if registered"
     )
     enable_custom_locations = True
     custom_locations_oid = ""
@@ -3900,7 +3899,8 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         return cl_oid
     except Exception as e:
         # Encountered exeption while fetching OID, log error
-        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
+        log_string = "Unable to fetch the Custom Location OID  with permissions set on this account. The account does not have sufficient permissions to fetch or validate the OID."
+        log_string += "If the OID is invalid, custom location may not be properly enabled."
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
@@ -3908,7 +3908,7 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         )
         # If Cl OID was input, use that
         if cl_oid:
-            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
+            log_string += "Proceeding with using the OID manually provided to enable the 'custom-locations' feature without validation."
             logger.warning(log_string)
             return cl_oid
         # If no Cl OID was input, log a Warning and return empty for OID
