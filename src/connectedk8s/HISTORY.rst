@@ -2,9 +2,6 @@
 
 Release History
 ===============
-1.10.5
-++++++
-* Added telemetry for Helm install errors.
 
 1.10.4
 ++++++
