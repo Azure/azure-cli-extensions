@@ -103,6 +103,10 @@
                                 "name": "[parameters('storageAccountSku')]"
                             },
                             "kind": "[parameters('storageAccountKind')]",
+                            "properties": {
+                                "allowBlobPublicAccess": false,
+                                "minimumTlsVersion": "TLS1_2",
+                            },
                             "resources": [
                                 {
                                     "name": "default",
