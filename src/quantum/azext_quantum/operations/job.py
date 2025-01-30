@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements,too-many-locals,too-many-branches,too-many-statements
 
+# import ast
 import gzip
 import io
 import json
@@ -63,22 +64,130 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
                          'top': top,
                          'orderby': orderby_expression}
 
-    # FOR DEV TESTING
-    print()
-    print("pagination_params =")
-    print(pagination_params)
-    print()
+    # # FOR DEV TESTING
+    # print()
+    # print("pagination_params =")
+    # print(pagination_params)
+    # print()
 
     # return client.list(**pagination_params)   <--- Gets error, "TypeError: list() missing 1 required positional argument: 'region'"
-    return client.list(info.location, **pagination_params)
+    # return client.list(info.location, **pagination_params)
+    # response = client.list(info.location, **pagination_params)
+
+    # SDK-compatible version:
+    # return client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
+    response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
+
+    # job_list = {}
+    # for job_details in response:
+    #     break
+
+    # return job_list
+
+    # print()
+    # # print("response:")
+    # # print(response)
+    # print("response type:")
+    # print(type(response))
+    # print()
+    # return
 
     # # FOR DEV TESTING (Comment-out the "return" above)
     # response = client.list(info.location, **pagination_params)
+    # response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
     # print()
     # for job_details in response:
     #     print(job_details)
     #     print()
     # return response
+
+    # job_array = []
+    # job_index = 0
+    # job_list_string = ""
+
+    job_list_string = "["
+    for job_details in response:
+
+
+        details_string = str(job_details)
+
+        # >>>>>>> We might go back to this >>>>>
+        # details_string = details_string.replace("\'", "\"")
+        #<<<<<<<<<<
+
+        # print(details_string)
+        # break
+
+        # >>>>>>> We might go back to this >>>>>
+        # details_string = details_string.replace("None", "null")
+        # details_string = details_string.replace("False", "false")
+        # details_string = details_string.replace("True", "true")
+
+
+        # details_dict = json.loads(details_string)
+        # print(details_dict)
+        # break
+
+        # details_json = json.dumps(details_dict, sort_keys=True, indent=4)
+        # print(details_json)
+
+
+        # job_array.insert(job_index, job_details)
+        # job_index = job_index + 1
+
+        # job_array.insert(job_index, details_string)
+        # job_index = job_index + 1
+
+        # job_list_string += details_string
+        # job_list_string += details_string + ","
+        job_list_string += details_string + ", "
+        # job_list_string += '{"count": 1}'
+
+        # print("response type:")
+        # print(type(job_details))
+        # break
+
+    # job_list_string = job_list_string[:-1]
+    job_list_string = job_list_string[:-2]
+    # print(job_list_string)
+    # return
+
+    job_list_string += "]"
+
+    # >>>>>
+    # >>>>>
+    # >>>>> I chokes on embedded quotes like this:
+    #   "message": "\"inputParams.shots\" must be a positive number",
+
+    # job_list_string = job_list_string.replace("\"\"", "\"")   <---<<< This removes the first one, but it doesn't take care of the second one
+    # <<<<<
+    # <<<<<
+    # <<<<<
+    
+    # print(job_list_string)
+    # print()
+    # print()
+    # return
+
+    # >>>>>>>>>>
+    # Ideas from https://stackoverflow.com/questions/39491420/python-jsonexpecting-property-name-enclosed-in-double-quotes
+    # job_list_string = ast.literal_eval(json.dumps(job_list_string))
+    return eval(job_list_string)
+    # <<<<<<<<<<
+
+    # job_dict = json.loads(job_array)
+    job_dict = json.loads(job_list_string)
+    return job_dict
+
+    # job_json = json.dumps(job_dict,indent=2,sort_keys=True)
+
+    # # job_json = job_json.replace("\n", "\r\n")
+
+    # print(job_json)
+    # # return job_json
+
+    # # print(job_array)
+    # # return job_array
 
 
 def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
