@@ -1340,7 +1340,7 @@ def process_helm_error_detail(helm_error_detail):
     helm_error_detail = remove_rsa_private_key(helm_error_detail)
     helm_error_detail = scrub_proxy_url(helm_error_detail)
     helm_error_detail = redact_base64_strings(helm_error_detail)
-    helm_error_detail = redact_sensitive_fields_from_string(input_text)
+    helm_error_detail = redact_sensitive_fields_from_string(helm_error_detail)
 
     return helm_error_detail
 
