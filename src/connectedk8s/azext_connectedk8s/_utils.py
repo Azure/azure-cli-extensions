@@ -1308,12 +1308,13 @@ def helm_install_release(
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
         helm_install_error_message = error_helm_install.decode("ascii")
+        helm_install_error_message = process_helm_error_detail(helm_install_error_message)
         helm_error_detail = {
             "Context.Default.AzureCLI.onboardingErrorType": consts.Install_HelmRelease_Fault_Type,
             "Context.Default.AzureCLI.onboardingErrorMessage": helm_install_error_message
         }
         # Replace the existing calls with the new function
-        helm_error_detail = process_helm_error_detail(helm_error_detail)
+
         telemetry.add_extension_event("connectedk8s", helm_error_detail)
         if any(
             message in helm_install_error_message
@@ -1336,7 +1337,7 @@ def helm_install_release(
         )
 
 
-def process_helm_error_detail(helm_error_detail):
+def process_helm_error_detail(helm_error_detail: str) -> str:
     helm_error_detail = remove_rsa_private_key(helm_error_detail)
     helm_error_detail = scrub_proxy_url(helm_error_detail)
     helm_error_detail = redact_base64_strings(helm_error_detail)
@@ -1345,7 +1346,7 @@ def process_helm_error_detail(helm_error_detail):
     return helm_error_detail
 
 
-def remove_rsa_private_key(input_text):
+def remove_rsa_private_key(input_text: str) -> str:
     # Regex to identify RSA private key
     rsa_key_pattern = re.compile(
         r"-----BEGIN RSA PRIVATE KEY-----.*?-----END RSA PRIVATE KEY-----",
@@ -1359,19 +1360,19 @@ def remove_rsa_private_key(input_text):
         return input_text
 
 
-def scrub_proxy_url(proxy_url_str):
+def scrub_proxy_url(proxy_url_str: str) -> str:
     regex = re.compile(r"://.*?:.*?@")
     # Replace matches with "://[REDACTED]:[REDACTED]@"
     proxy_url_str = regex.sub("://[REDACTED]:[REDACTED]@", proxy_url_str)
     return proxy_url_str
 
 
-def redact_base64_strings(content):
+def redact_base64_strings(content: str) -> str:
     base64_pattern = r"\b[A-Za-z0-9+/=]{40,}\b"
     return re.sub(base64_pattern, "[REDACTED]", content)
 
 
-def redact_sensitive_fields_from_string(input_text):
+def redact_sensitive_fields_from_string(input_text: str) -> str:
     # Define regex patterns for keys
     patterns = {
         r"(username:\s*).*": r"\1[REDACTED]",

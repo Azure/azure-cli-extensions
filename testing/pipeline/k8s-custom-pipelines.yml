@@ -218,7 +218,7 @@ stages:
           azdev --version
 
           azdev setup -c ../azure-cli -r ./ -e connectedk8s
-          azdev test connectedk8s --live
+          azdev test connectedk8s
         displayName: 'Run integration test and build test'
 
   - job: AzdevLinterModifiedExtensions

@@ -2,17 +2,19 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import sys
 import os
+import sys
+
+import pytest
+
+from azext_connectedk8s._utils import (
+    process_helm_error_detail,
+    remove_rsa_private_key,
+    scrub_proxy_url,
+)
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-import pytest
-from azext_connectedk8s._utils import (
-    remove_rsa_private_key, 
-    scrub_proxy_url, 
-    process_helm_error_detail
-)
 
 def test_remove_rsa_private_key():
     input_text = "Error: -----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA7\n-----END RSA PRIVATE KEY-----"
