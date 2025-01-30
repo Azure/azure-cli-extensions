@@ -35,7 +35,7 @@ from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc._validators import check_continuous_task_exists, check_continuous_task_config_exists
 from datetime import datetime, timezone, timedelta
-from ._utility import convert_timespan_to_cron, transform_cron_to_schedule, create_temporary_dry_run_file, delete_temporary_dry_run_file
+from ._utility import convert_timespan_to_cron, convert_cron_to_schedule, create_temporary_dry_run_file, delete_temporary_dry_run_file
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, get_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from ._workflow_status import WorkflowTaskStatus
 from azure.cli.core.commands.progress import IndeterminateProgressBar
@@ -401,7 +401,7 @@ def _transform_task_list(tasks):
         trigger = task.trigger
         if trigger and trigger.timer_triggers:
             # convert the cron expression to a 'days' format to keep consistent with the command's options
-            transformed_obj["schedule"] = transform_cron_to_schedule(trigger.timer_triggers[0].schedule)
+            transformed_obj["schedule"] = convert_cron_to_schedule(trigger.timer_triggers[0].schedule)
 
             # add a 'nextOccurrence' field to the task, only for the scheduling task
             transformed_obj["nextOccurrence"] = get_next_date(task.trigger.timer_triggers[0].schedule)

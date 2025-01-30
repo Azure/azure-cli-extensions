@@ -26,7 +26,7 @@ from ._constants import (
     SUBSCRIPTION
 )
 from ._utility import (
-    transform_cron_to_schedule,
+    convert_cron_to_schedule,
     get_task
 )
 
@@ -210,7 +210,7 @@ class ContinuousPatchConfig:
         if trigger_task:
             trigger = trigger_task.trigger
             if trigger and trigger.timer_triggers:
-                config.schedule = transform_cron_to_schedule(trigger.timer_triggers[0].schedule, just_days=True)
+                config.schedule = convert_cron_to_schedule(trigger.timer_triggers[0].schedule, just_days=True)
 
         return config
 

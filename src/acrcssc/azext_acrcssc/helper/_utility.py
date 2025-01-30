@@ -20,6 +20,9 @@ logger = get_logger(__name__)
 def convert_timespan_to_cron(schedule, date_time=None):
     # Regex to look for pattern 1d, 2d, 3d, etc.
     match = re.match(r'(\d+)([d])', schedule)
+    if match is None:
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
+
     value = int(match.group(1))
     unit = match.group(2)
 
@@ -37,18 +40,22 @@ def convert_timespan_to_cron(schedule, date_time=None):
     return cron_expression
 
 
-def transform_cron_to_schedule(cron_expression, just_days=False):
-    parts = cron_expression.split()
-    # The third part of the cron expression
-    third_part = parts[2]
+def convert_cron_to_schedule(cron_expression, just_days=False):
+    try:
+        parts = cron_expression.split()
+        # The third part of the cron expression for 'day of the month'
+        third_part = parts[2]
 
-    match = re.search(r'\*/(\d+)', third_part)
+        match = re.search(r'^\*/(\d+)$', third_part)
 
-    if match:
-        if just_days:
-            return match.group(1)
-        return match.group(1) + 'd'
-    return None
+        if match:
+            if just_days:
+                return match.group(1)
+            return match.group(1) + 'd'
+
+        return None
+    except:
+        return None
 
 
 def create_temporary_dry_run_file(file_location, tmp_folder):
