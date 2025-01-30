@@ -1308,10 +1308,12 @@ def helm_install_release(
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
         helm_install_error_message = error_helm_install.decode("ascii")
-        helm_install_error_message = process_helm_error_detail(helm_install_error_message)
+        helm_install_error_message = process_helm_error_detail(
+            helm_install_error_message
+        )
         helm_error_detail = {
             "Context.Default.AzureCLI.onboardingErrorType": consts.Install_HelmRelease_Fault_Type,
-            "Context.Default.AzureCLI.onboardingErrorMessage": helm_install_error_message
+            "Context.Default.AzureCLI.onboardingErrorMessage": helm_install_error_message,
         }
         # Replace the existing calls with the new function
 
@@ -1349,15 +1351,13 @@ def process_helm_error_detail(helm_error_detail: str) -> str:
 def remove_rsa_private_key(input_text: str) -> str:
     # Regex to identify RSA private key
     rsa_key_pattern = re.compile(
-        r"-----BEGIN RSA PRIVATE KEY-----.*?-----END RSA PRIVATE KEY-----",
-        re.DOTALL
+        r"-----BEGIN RSA PRIVATE KEY-----.*?-----END RSA PRIVATE KEY-----", re.DOTALL
     )
     # Search for the key in the input text
     if rsa_key_pattern.search(input_text):
         # Remove the RSA private key
         return rsa_key_pattern.sub("[RSA PRIVATE KEY REMOVED]", input_text)
-    else:
-        return input_text
+    return input_text
 
 
 def scrub_proxy_url(proxy_url_str: str) -> str:
@@ -1377,7 +1377,7 @@ def redact_sensitive_fields_from_string(input_text: str) -> str:
     patterns = {
         r"(username:\s*).*": r"\1[REDACTED]",
         r"(password:\s*).*": r"\1[REDACTED]",
-        r"(token:\s*).*": r"\1[REDACTED]"
+        r"(token:\s*).*": r"\1[REDACTED]",
     }
 
     # Apply regex to redact sensitive fields

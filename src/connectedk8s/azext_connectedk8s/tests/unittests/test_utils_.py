@@ -7,13 +7,12 @@ import sys
 
 import pytest
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 from azext_connectedk8s._utils import (
     process_helm_error_detail,
     remove_rsa_private_key,
     scrub_proxy_url,
 )
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 
 def test_remove_rsa_private_key():
@@ -27,7 +26,9 @@ def test_remove_rsa_private_key():
 
 def test_scrub_proxy_url_with_url():
     input_text = "text with proxy URL http://proxy:pass@example.com:8080 in it"
-    expected_output = "text with proxy URL http://[REDACTED]:[REDACTED]@example.com:8080 in it"
+    expected_output = (
+        "text with proxy URL http://[REDACTED]:[REDACTED]@example.com:8080 in it"
+    )
     assert scrub_proxy_url(input_text) == expected_output
 
 
