@@ -178,8 +178,10 @@ def create_connectedk8s(
         else get_subscription_id(cmd.cli_ctx)
     )
 
-    resource_id = f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
+    resource_id = (
+        f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
         Kubernetes/connectedClusters/{cluster_name}/location/{location}"
+    )
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.resourceid": resource_id}
     )
