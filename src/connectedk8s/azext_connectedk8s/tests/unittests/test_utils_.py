@@ -54,17 +54,27 @@ def test_process_helm_error_detail_no_changes():
     input_text = "Some text without RSA key or proxy URL"
     assert process_helm_error_detail(input_text) == input_text
 
+
 def test_redact_sensitive_fields_from_string():
     input_text = "username: admin\npassword: secret\ntoken: abc123"
     expected_output = "username: [REDACTED]\npassword: [REDACTED]\ntoken: [REDACTED]"
     assert redact_sensitive_fields_from_string(input_text) == expected_output
 
     input_text_no_sensitive = "No sensitive data here"
-    assert redact_sensitive_fields_from_string(input_text_no_sensitive) == input_text_no_sensitive
+    assert (
+        redact_sensitive_fields_from_string(input_text_no_sensitive)
+        == input_text_no_sensitive
+    )
 
     input_text_partial = "username: user1\nhello_data: safe\npassword: mypass"
-    expected_output_partial = "username: [REDACTED]\nhello_data: safe\npassword: [REDACTED]"
-    assert redact_sensitive_fields_from_string(input_text_partial) == expected_output_partial
+    expected_output_partial = (
+        "username: [REDACTED]\nhello_data: safe\npassword: [REDACTED]"
+    )
+    assert (
+        redact_sensitive_fields_from_string(input_text_partial)
+        == expected_output_partial
+    )
+
 
 if __name__ == "__main__":
     pytest.main()
