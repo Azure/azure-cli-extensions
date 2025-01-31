@@ -93,7 +93,7 @@ class TestCommandOutputSettings(unittest.TestCase):
         args.command_output_settings.identity_type = "UserAssignedIdentity"
         args.command_output_settings.identity_resource_id = None
         args.command_output_settings.container_url = (
-            "https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+            "the url to container"
         )
 
         with self.assertRaises(InvalidArgumentValueError):
@@ -108,6 +108,7 @@ class TestCommandOutputSettings(unittest.TestCase):
             False,  # ContainerURL is not passed
         )
         args = Mock()
+        args.command_output_settings.container_url = None
 
         with self.assertRaises(RequiredArgumentMissingError):
             self.command_output_settings.pre_operations_update(args)
