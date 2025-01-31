@@ -968,8 +968,8 @@ def create_connectedk8s(
         raise CLIInternalError(
             "Timed out waiting for Agent State to reach terminal state."
         )
-    if(cl_oid and enable_custom_locations and  cl_oid!=custom_locations_oid):
-        print (consts.Manual_Upgrade_Called_In_Auto_Update_Enabled)
+    if cl_oid and enable_custom_locations and cl_oid != custom_locations_oid:
+        print(consts.Manual_Upgrade_Called_In_Auto_Update_Enabled)
     return put_cc_response
 
 
@@ -3901,7 +3901,7 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
     except Exception as e:
         # Encountered exeption while fetching OID, log error
         log_string = "Unable to fetch the Custom Location OID  with permissions set on this account. The account does not have sufficient permissions to fetch or validate the OID."
-        
+
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
