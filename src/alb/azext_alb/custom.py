@@ -32,13 +32,16 @@ class AssociationCreate(_AssociationCreate):
         )
         return args_schema
 
+
 @register_command("network alb security-policy waf create")
 class WafSecurityPolicyCreate(_SPCreate):
     """Create a Waf SecurityPolicy
 
     :example: Create an Application Gateway for Containers security policy resource with waf policy type
-        az network alb security-policy waf create -g test-rg --alb-name test-tc -n test-sp -l NorthCentralUS --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
+        az network alb security-policy waf create -g test-rg --alb-name test-tc -n test-sp -l NorthCentralUS
+        --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
     """
+
 
 @register_command(
     "network alb security-policy waf delete",
@@ -51,10 +54,12 @@ class WafSecurityPolicyDelete(_SPDelete):
         az network alb security-policy waf delete -g test-rg --alb-name test-tc -n test-sp
     """
 
+
 @register_command("network alb security-policy waf update")
 class WafSecurityPolicyUpdate(_SPUpdate):
     """Update a Waf SecurityPolicy
 
     :example: Update a Waf SecurityPolicy
-        az network alb security-policy waf update -g test-rg --alb-name test-tc -n test-sp --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
+        az network alb security-policy waf update -g test-rg --alb-name test-tc -n test-sp
+        --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
     """

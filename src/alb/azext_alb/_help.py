@@ -9,8 +9,3 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
-
-helps['network alb security-policy waf'] = """
-type: group
-short-summary: Manage Waf SecurityPolicy of an Application Load Balancer.
-"""
