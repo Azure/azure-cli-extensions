@@ -454,6 +454,10 @@ Cluster_Diagnostic_Checks_Job_Log_Save_Failed = (
     "Failed to save cluster diagnostic checks job log"
 )
 
+Manual_Custom_Location_Oid_Warning="""Important! Custom Location feature enablement can’t be validated when using a manually  provided OID. If the custom location feature is not enabled, you may encounter an error when creating the custom location. 
+After creating the custom location, run `az customlocation show` and check that ProvisioningState is Succeeded. If ProvisoningState is Failed, then re-try this command with a  valid custom location OID to enable the feature. 
+For guidance, refer to: https://aka.ms/enable-customlocation"""
+
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
 Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (

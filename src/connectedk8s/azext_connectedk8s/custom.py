@@ -968,7 +968,8 @@ def create_connectedk8s(
         raise CLIInternalError(
             "Timed out waiting for Agent State to reach terminal state."
         )
-
+    if(cl_oid and enable_custom_locations and  cl_oid!=custom_locations_oid):
+        print (consts.Manual_Upgrade_Called_In_Auto_Update_Enabled)
     return put_cc_response
 
 
@@ -3846,8 +3847,8 @@ def check_cl_registration_and_get_oid(
     except Exception as e:
         enable_custom_locations = False
         warn_msg = (
-            "Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable "
-            "'custom-locations' feature. This is fine if not required. Proceeding with helm install."
+            "The custom location feature was not enabled because the custom location OID could not be retrieved. Please refer to: https://aka.ms/enable-customlocation "
+            "Proceeding with helm install..."
         )
         logger.warning(warn_msg)
         telemetry.set_exception(
@@ -3900,7 +3901,7 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
     except Exception as e:
         # Encountered exeption while fetching OID, log error
         log_string = "Unable to fetch the Custom Location OID  with permissions set on this account. The account does not have sufficient permissions to fetch or validate the OID."
-        log_string += "If the OID is invalid, custom location may not be properly enabled."
+        
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
@@ -3908,6 +3909,7 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         )
         # If Cl OID was input, use that
         if cl_oid:
+            log_string += "If the manual OID is invalid, custom location may not be properly enabled."
             log_string += "Proceeding with using the OID manually provided to enable the 'custom-locations' feature without validation."
             logger.warning(log_string)
             return cl_oid
