@@ -10,7 +10,9 @@
 
 from azure.cli.core.aaz import *
 
-
+@register_command(
+    "network alb security-policy show",
+)
 class Show(AAZCommand):
     """Get a SecurityPolicy
 

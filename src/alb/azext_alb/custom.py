@@ -40,7 +40,10 @@ class WafSecurityPolicyCreate(_SPCreate):
         az network alb security-policy waf create -g test-rg --alb-name test-tc -n test-sp -l NorthCentralUS --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
     """
 
-@register_command("network alb security-policy waf delete")
+@register_command(
+    "network alb security-policy waf delete",
+    confirmation="Are you sure you want to perform this operation?",
+)
 class WafSecurityPolicyDelete(_SPDelete):
     """Delete a Waf SecurityPolicy
 

@@ -10,7 +10,9 @@
 
 from azure.cli.core.aaz import *
 
-
+@register_command(
+    "network alb security-policy list",
+)
 class List(AAZCommand):
     """List SecurityPolicy resources by TrafficController
 
