@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a Task Hub
 
     :example: Create a taskhub in a scheduler
-        az durabletask taskhub create --resource-group testrg--scheduler-name testscheduler --task-hub-name testtaskhub
+        az durabletask taskhub create --resource-group testrg --scheduler-name testscheduler --name testtaskhub
     """
 
     _aaz_info = {
@@ -49,15 +49,15 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["--scheduler-name"],
+            options=["-s", "--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
-        _args_schema.task_hub_name = AAZStrArg(
-            options=["-n", "--name", "--task-hub-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the TaskHub",
             required=True,
             fmt=AAZStrArgFormat(
@@ -141,7 +141,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.task_hub_name,
+                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }

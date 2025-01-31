@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new virtual machine or update the properties of the existing virtual machine.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -88,6 +89,12 @@ class Create(AAZCommand):
             help="The cloud service network that provides platform-level services for the virtual machine.",
             required=True,
         )
+        _args_schema.console_extended_location = AAZObjectArg(
+            options=["--ce-location", "--console-extended-location"],
+            arg_group="Properties",
+            help="The extended location to use for creation of a VM console resource.",
+        )
+        cls._build_args_extended_location_create(_args_schema.console_extended_location)
         _args_schema.cpu_cores = AAZIntArg(
             options=["--cpu-cores"],
             arg_group="Properties",
@@ -142,7 +149,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The type of the device model to use.",
             default="T2",
-            enum={"T1": "T1", "T2": "T2"},
+            enum={"T1": "T1", "T2": "T2", "T3": "T3"},
         )
         _args_schema.vm_image = AAZStrArg(
             options=["--vm-image"],
@@ -271,7 +278,7 @@ class Create(AAZCommand):
             options=["create-option"],
             help="The strategy for creating the OS disk.",
             default="Ephemeral",
-            enum={"Ephemeral": "Ephemeral"},
+            enum={"Ephemeral": "Ephemeral", "Persistent": "Persistent"},
         )
         storage_profile.delete_option = AAZStrArg(
             options=["delete-option"],
@@ -354,6 +361,32 @@ class Create(AAZCommand):
         tags.Element = AAZStrArg()
         return cls._args_schema
 
+    _args_extended_location_create = None
+
+    @classmethod
+    def _build_args_extended_location_create(cls, _schema):
+        if cls._args_extended_location_create is not None:
+            _schema.name = cls._args_extended_location_create.name
+            _schema.type = cls._args_extended_location_create.type
+            return
+
+        cls._args_extended_location_create = AAZObjectArg()
+
+        extended_location_create = cls._args_extended_location_create
+        extended_location_create.name = AAZStrArg(
+            options=["name"],
+            help="The resource ID of the extended location on which the resource will be created.",
+            required=True,
+        )
+        extended_location_create.type = AAZStrArg(
+            options=["type"],
+            help="The extended location type, for example, CustomLocation.",
+            required=True,
+        )
+
+        _schema.name = cls._args_extended_location_create.name
+        _schema.type = cls._args_extended_location_create.type
+
     def _execute_operations(self):
         self.pre_operations()
         yield self.VirtualMachinesCreateOrUpdate(ctx=self.ctx)()
@@ -435,7 +468,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -475,6 +508,7 @@ class Create(AAZCommand):
                 properties.set_prop("adminUsername", AAZStrType, ".admin_username", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("bootMethod", AAZStrType, ".boot_method")
                 properties.set_prop("cloudServicesNetworkAttachment", AAZObjectType, ".cloud_services_network_attachment", typ_kwargs={"flags": {"required": True}})
+                _CreateHelper._build_schema_extended_location_create(properties.set_prop("consoleExtendedLocation", AAZObjectType, ".console_extended_location"))
                 properties.set_prop("cpuCores", AAZIntType, ".cpu_cores", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("memorySizeGB", AAZIntType, ".memory_size_gib", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkAttachments", AAZListType, ".network_attachments")
@@ -577,6 +611,7 @@ class Create(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
+            _CreateHelper._build_schema_extended_location_read(_schema_on_200_201.extended_location)
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -596,14 +631,6 @@ class Create(AAZCommand):
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            extended_location = cls._schema_on_200_201.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
             )
 
             properties = cls._schema_on_200_201.properties
@@ -630,6 +657,10 @@ class Create(AAZCommand):
                 serialized_name="clusterId",
                 flags={"read_only": True},
             )
+            properties.console_extended_location = AAZObjectType(
+                serialized_name="consoleExtendedLocation",
+            )
+            _CreateHelper._build_schema_extended_location_read(properties.console_extended_location)
             properties.cpu_cores = AAZIntType(
                 serialized_name="cpuCores",
                 flags={"required": True},
@@ -844,6 +875,35 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    @classmethod
+    def _build_schema_extended_location_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+    _schema_extended_location_read = None
+
+    @classmethod
+    def _build_schema_extended_location_read(cls, _schema):
+        if cls._schema_extended_location_read is not None:
+            _schema.name = cls._schema_extended_location_read.name
+            _schema.type = cls._schema_extended_location_read.type
+            return
+
+        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
+
+        extended_location_read = _schema_extended_location_read
+        extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_extended_location_read.name
+        _schema.type = cls._schema_extended_location_read.type
 
 
 __all__ = ["Create"]
