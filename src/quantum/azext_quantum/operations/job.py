@@ -31,6 +31,7 @@ DEFAULT_SHOTS = 500
 QIO_DEFAULT_TIMEOUT = 100
 
 ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
+ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
 ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
@@ -59,12 +60,16 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
     orderby_expression = _construct_orderby_expression(orderby, order)
 
+    # return client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
     response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
 
     job_list_string = "["
     for job_details in response:
         details_string = str(job_details)
         job_list_string += details_string + ", "
+
+    if len(job_list_string) == 1: return    # Got an empty response
+    
     job_list_string = job_list_string[:-2]
     job_list_string += "]"
     return eval(job_list_string)
@@ -135,6 +140,9 @@ def _construct_orderby_expression(orderby, order):
     """
     Construct a job-list orderby expression
     """
+    if (orderby == "" or orderby is None) and not (order == "" or order is None):
+        raise InvalidArgumentValueError(ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
+
     orderby_expression = orderby
     if orderby_expression is not None and order is not None:
         # Validate order, otherwise the error message will be vague

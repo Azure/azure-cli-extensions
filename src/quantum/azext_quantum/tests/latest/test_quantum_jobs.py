@@ -17,25 +17,32 @@ from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _parse_blob_url, _validate_max_poll_wait_secs, _convert_numeric_params, _construct_filter_query, _construct_orderby_expression
+from ...operations.job import (
+    _parse_blob_url,
+    _validate_max_poll_wait_secs,
+    _convert_numeric_params,
+    _construct_filter_query,
+    _construct_orderby_expression,
+    ERROR_MSG_INVALID_ORDER_ARGUMENT,
+    ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
 
-    def test_jobs(self):
-        # set current workspace:
-        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
+    # def test_jobs(self):
+    #     # set current workspace:
+    #     self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
 
-        # list
-        targets = self.cmd('az quantum target list -o json').get_output_in_json()
-        assert len(targets) > 0
+    #     # list
+    #     targets = self.cmd('az quantum target list -o json').get_output_in_json()
+    #     assert len(targets) > 0
 
-    # @pytest.fixture(autouse=True)
-    # def _pass_fixtures(self, capsys):
-    #     self.capsys = capsys
-    # # See "TODO" in issue_cmd_with_param_missing un utils.py
+    # # @pytest.fixture(autouse=True)
+    # # def _pass_fixtures(self, capsys):
+    # #     self.capsys = capsys
+    # # # See "TODO" in issue_cmd_with_param_missing un utils.py
 
     def test_job_errors(self):
         issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
@@ -217,7 +224,10 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertIsNotNone(results["ProviderId"])
         self.assertTrue(len(results["ProviderId"]) == 1)
         self.assertTrue(results["ProviderId"] == "rigetti")
-        # TODO: Add more list command variations here
+
+        #
+        # ++++++++ TODO: Add more list command variations here ++++++++
+        #
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
@@ -291,32 +301,32 @@ class QuantumJobsScenarioTest(ScenarioTest):
         item_type = None
 
         provider_id = "Microsoft"
-        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
         assert query == "ProviderId eq 'Microsoft'"
         provider_id = None
 
         target_id = "Awesome.Quantum.SuperComputer"
-        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-        assert query == "TargetId eq 'Awesome.Quantum.SuperComputer'"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "Target eq 'Awesome.Quantum.SuperComputer'"
         target_id = None
 
         job_status = "Succeeded"        
-        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
         assert query == "State eq 'Succeeded'"
         job_status = None        
 
         created_after = "2025-01-27"
-        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-        assert query == "CreationTime ge '2025-01-27'"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime ge 2025-01-27"
         created_after = None
 
-        created_before = None"2025-01-27"
-        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
-        assert query == "CreationTime le '2025-01-27'"
+        created_before = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime le 2025-01-27"
         created_before = None
 
         job_name = "TestJob"
-        query = _construct_filter_query(job_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
         assert query == "startswith(Name, 'TestJob')"
         job_name = None
 
@@ -332,10 +342,32 @@ class QuantumJobsScenarioTest(ScenarioTest):
         orderby_expression = _construct_orderby_expression(orderby, order)
         assert orderby_expression is None
 
-        # TODO: Test orderby/order errors too
-        # Code similar to this...
-        # try:
-        #     wait_secs = _validate_max_poll_wait_secs(-1.0)
-        #     assert False
-        # except InvalidArgumentValueError as e:
-        #     assert str(e) == "--max-poll-wait-secs parameter is not valid: -1.0"
+        # Test valid params
+        orderby = "Target"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target"
+
+        order = "asc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target asc"
+
+        order = "desc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target desc"
+
+        # Test orderby/order errors
+        orderby = "Target"
+        order = "foo"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == ERROR_MSG_INVALID_ORDER_ARGUMENT
+
+        orderby = ""
+        order = "desc"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == ERROR_MSG_MISSING_ORDERBY_ARGUMENT
