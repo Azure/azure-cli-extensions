@@ -19,13 +19,13 @@ interactions:
       ParameterSetName:
       - --name --description --scope-accesses --network-manager-scopes -l --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Routing"],"resourceGuid":"55821af3-d6fa-474b-9041-48ac9314d4f9"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:13.6148588Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:13.6148588Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Routing"],"resourceGuid":"66f593a4-ff3d-48fd-9267-8ef0dac0f3e5"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:50:58.8529964Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:50:58.8529964Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -34,7 +34,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:15 GMT
+      - Tue, 10 Dec 2024 23:50:59 GMT
       expires:
       - '-1'
       pragma:
@@ -45,10 +45,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: B1581C155E3F4231933104B402D7CC02 Ref B: MAA201060513023 Ref C: 2024-06-04T06:06:10Z'
+      - 'Ref A: BC1C2412EA2443E397C7A353E85896BD Ref B: CO6AA3150217021 Ref C: 2024-12-10T23:50:58Z'
     status:
       code: 200
       message: OK
@@ -70,12 +72,12 @@ interactions:
       ParameterSetName:
       - --name --network-manager-name -g
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup?api-version=2022-01-01
   response:
     body:
-      string: '{"name":"TestNetworkManagerGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"description":"","provisioningState":"Succeeded","memberType":"VirtualNetwork","resourceGuid":"f6df546a-c0d2-4ff4-b011-98e781c87c8c"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:17.4378981Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:17.4378981Z"}}'
+      string: '{"name":"TestNetworkManagerGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"description":"","provisioningState":"Succeeded","memberType":"VirtualNetwork","resourceGuid":"510e9d7d-7abe-486b-a6fd-88620f2b97da"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:01.0054631Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:01.0054631Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -84,7 +86,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:17 GMT
+      - Tue, 10 Dec 2024 23:51:00 GMT
       expires:
       - '-1'
       pragma:
@@ -95,10 +97,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 1F75EBBC615C4D729DF1A1B84CF174ED Ref B: MAA201060514033 Ref C: 2024-06-04T06:06:16Z'
+      - 'Ref A: 776483BF4ECE40AC8C86E8BB5B121E1C Ref B: CO6AA3150218027 Ref C: 2024-12-10T23:51:00Z'
     status:
       code: 200
       message: OK
@@ -120,12 +124,12 @@ interactions:
       ParameterSetName:
       - --name --manager-name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"b09b0ffa-d512-4103-a0b2-4a419a657571"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:20.3188728Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:20.3188728Z"}}'
+      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"75365a9e-1670-43b7-914e-c68a6bce6312"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:02.4007464Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:02.4007464Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -134,7 +138,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:21 GMT
+      - Tue, 10 Dec 2024 23:51:02 GMT
       expires:
       - '-1'
       pragma:
@@ -145,10 +149,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: F508260EC635439D9F48CF4B507E5B2D Ref B: MAA201060515047 Ref C: 2024-06-04T06:06:19Z'
+      - 'Ref A: B2EE73C657C94272A8D9124C2BF360B3 Ref B: CO6AA3150219027 Ref C: 2024-12-10T23:51:01Z'
     status:
       code: 200
       message: OK
@@ -166,12 +172,12 @@ interactions:
       ParameterSetName:
       - --manager-name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations?api-version=2024-05-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"\"e20188a4-0000-0200-0000-665eaee00000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"b09b0ffa-d512-4103-a0b2-4a419a657571"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:20.3188728Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:20.3188728Z"}}]}'
+      string: '{"nextLink":"","value":[{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"\"be003371-0000-0200-0000-6758d3e60000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"75365a9e-1670-43b7-914e-c68a6bce6312"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:02.4007464Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:02.4007464Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -180,7 +186,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:24 GMT
+      - Tue, 10 Dec 2024 23:51:03 GMT
       expires:
       - '-1'
       pragma:
@@ -191,8 +197,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: F9681F1558214E0795F4F3F30BB1A3B1 Ref B: MAA201060516009 Ref C: 2024-06-04T06:06:23Z'
+      - 'Ref A: DD6A2A4A31FA4FD2B4F0B99D8577F72D Ref B: CO6AA3150219045 Ref C: 2024-12-10T23:51:03Z'
     status:
       code: 200
       message: OK
@@ -210,12 +218,12 @@ interactions:
       ParameterSetName:
       - --name --manager-name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"\"e20188a4-0000-0200-0000-665eaee00000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"b09b0ffa-d512-4103-a0b2-4a419a657571"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:20.3188728Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:20.3188728Z"}}'
+      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"\"be003e71-0000-0200-0000-6758d3e80000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"75365a9e-1670-43b7-914e-c68a6bce6312"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:02.4007464Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:02.4007464Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -224,7 +232,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:28 GMT
+      - Tue, 10 Dec 2024 23:51:04 GMT
       expires:
       - '-1'
       pragma:
@@ -235,8 +243,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 58B20892BD1747F2B07B28857436A05C Ref B: MAA201060515051 Ref C: 2024-06-04T06:06:25Z'
+      - 'Ref A: 5ADD7A2FF89B41AC808D6533AA16BDBB Ref B: CO6AA3150219053 Ref C: 2024-12-10T23:51:04Z'
     status:
       code: 200
       message: OK
@@ -254,12 +264,12 @@ interactions:
       ParameterSetName:
       - --name --manager-name --resource-group --description
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"\"e20188a4-0000-0200-0000-665eaee00000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"b09b0ffa-d512-4103-a0b2-4a419a657571"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:20.3188728Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:20.3188728Z"}}'
+      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"\"be003f71-0000-0200-0000-6758d3e90000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"75365a9e-1670-43b7-914e-c68a6bce6312"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:02.4007464Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:02.4007464Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -268,7 +278,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:31 GMT
+      - Tue, 10 Dec 2024 23:51:05 GMT
       expires:
       - '-1'
       pragma:
@@ -279,8 +289,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: BD74106E48E648FD82281DA141DA6B38 Ref B: MAA201060514035 Ref C: 2024-06-04T06:06:29Z'
+      - 'Ref A: 088C8896D700481DB647CCC5B33864F8 Ref B: CO6AA3150217019 Ref C: 2024-12-10T23:51:05Z'
     status:
       code: 200
       message: OK
@@ -302,12 +314,12 @@ interactions:
       ParameterSetName:
       - --name --manager-name --resource-group --description
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"","properties":{"description":"test","provisioningState":"Succeeded","resourceGuid":"b09b0ffa-d512-4103-a0b2-4a419a657571"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:20.3188728Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:33.0494936Z"}}'
+      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"","properties":{"description":"test","provisioningState":"Succeeded","resourceGuid":"75365a9e-1670-43b7-914e-c68a6bce6312"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:02.4007464Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:06.6932519Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -316,7 +328,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:35 GMT
+      - Tue, 10 Dec 2024 23:51:06 GMT
       expires:
       - '-1'
       pragma:
@@ -327,16 +339,18 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 342B2F4F01754B9393258B961716A0CC Ref B: MAA201060514035 Ref C: 2024-06-04T06:06:32Z'
+      - 'Ref A: 170789E922924862949B026552E770D6 Ref B: CO6AA3150217019 Ref C: 2024-12-10T23:51:06Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"appliesTo": [{"networkGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],
-      "disableBgpRoutePropagation": "true", "localRouteSetting": "NotSpecified"}}'
+      "disableBgpRoutePropagation": "True"}}'
     headers:
       Accept:
       - application/json
@@ -347,19 +361,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '344'
+      - '307'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --config-name --manager-name --name --resource-group --local-route-setting
-        --applies-to --disable-bgp-route
+      - --config-name --manager-name --name --resource-group --applies-to --disable-bgp-route
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"c2f75b6a-b4ee-4262-821d-51a3e77fa3fc","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:37.2218902Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:37.2218902Z"}}'
+      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"73dc5a20-e394-42ee-b712-74442db452a2","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:08.0180995Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:08.0180995Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -368,7 +381,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:38 GMT
+      - Tue, 10 Dec 2024 23:51:08 GMT
       expires:
       - '-1'
       pragma:
@@ -379,10 +392,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 6707BE1323A449F5801F923DC5FF6CF9 Ref B: MAA201060513027 Ref C: 2024-06-04T06:06:35Z'
+      - 'Ref A: 2680F3D19FB341E5AB4B13F2D33B6418 Ref B: CO6AA3150217021 Ref C: 2024-12-10T23:51:07Z'
     status:
       code: 200
       message: OK
@@ -400,12 +415,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections?api-version=2024-05-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"\"e20177a6-0000-0200-0000-665eaeee0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"c2f75b6a-b4ee-4262-821d-51a3e77fa3fc","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:37.2218902Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:37.2218902Z"}}]}'
+      string: '{"nextLink":"","value":[{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"\"be005571-0000-0200-0000-6758d3ec0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"73dc5a20-e394-42ee-b712-74442db452a2","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:08.0180995Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:08.0180995Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -414,7 +429,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:40 GMT
+      - Tue, 10 Dec 2024 23:51:08 GMT
       expires:
       - '-1'
       pragma:
@@ -425,8 +440,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 98929350A1EF472FA3C324DB94838218 Ref B: MAA201060514023 Ref C: 2024-06-04T06:06:39Z'
+      - 'Ref A: 4B2DE2A8B1654D7CB0F5DECCA6BF520B Ref B: CO6AA3150219009 Ref C: 2024-12-10T23:51:09Z'
     status:
       code: 200
       message: OK
@@ -444,12 +461,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"\"e2011da7-0000-0200-0000-665eaef10000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"c2f75b6a-b4ee-4262-821d-51a3e77fa3fc","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:37.2218902Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:37.2218902Z"}}'
+      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"\"be005f71-0000-0200-0000-6758d3ed0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"73dc5a20-e394-42ee-b712-74442db452a2","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:08.0180995Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:08.0180995Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -458,7 +475,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:42 GMT
+      - Tue, 10 Dec 2024 23:51:09 GMT
       expires:
       - '-1'
       pragma:
@@ -469,8 +486,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 9EB9B55370B94772B8DAA484AB59A477 Ref B: MAA201060515053 Ref C: 2024-06-04T06:06:41Z'
+      - 'Ref A: 6E995FED74E94929AC014D4BA1E5F1D6 Ref B: CO6AA3150220051 Ref C: 2024-12-10T23:51:10Z'
     status:
       code: 200
       message: OK
@@ -488,12 +507,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --name --resource-group --description
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"\"e2011da7-0000-0200-0000-665eaef10000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"c2f75b6a-b4ee-4262-821d-51a3e77fa3fc","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:37.2218902Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:37.2218902Z"}}'
+      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"\"be006471-0000-0200-0000-6758d3ee0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"73dc5a20-e394-42ee-b712-74442db452a2","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:08.0180995Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:08.0180995Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -502,7 +521,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:43 GMT
+      - Tue, 10 Dec 2024 23:51:10 GMT
       expires:
       - '-1'
       pragma:
@@ -513,15 +532,16 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: E037D39D678C44D2B8F78E4356966D23 Ref B: MAA201060515025 Ref C: 2024-06-04T06:06:43Z'
+      - 'Ref A: BA1F7FCD0E9844F3A2B33303D7FA4B8B Ref B: CO6AA3150218031 Ref C: 2024-12-10T23:51:10Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"appliesTo": [{"networkGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],
-      "description": "test", "disableBgpRoutePropagation": "True", "localRouteSetting":
-      "NotSpecified"}}'
+      "description": "test", "disableBgpRoutePropagation": "True"}}'
     headers:
       Accept:
       - application/json
@@ -532,18 +552,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '367'
+      - '330'
       Content-Type:
       - application/json
       ParameterSetName:
       - --config-name --manager-name --name --resource-group --description
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"","properties":{"description":"test","provisioningState":"Succeeded","resourceGuid":"c2f75b6a-b4ee-4262-821d-51a3e77fa3fc","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:37.2218902Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:45.3504525Z"}}'
+      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"","properties":{"description":"test","provisioningState":"Succeeded","resourceGuid":"73dc5a20-e394-42ee-b712-74442db452a2","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified"},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:08.0180995Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:12.0382444Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -552,7 +572,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:46 GMT
+      - Tue, 10 Dec 2024 23:51:11 GMT
       expires:
       - '-1'
       pragma:
@@ -563,10 +583,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: D8A0B8FCCF8E4A83A19DC151F62D77A0 Ref B: MAA201060515025 Ref C: 2024-06-04T06:06:44Z'
+      - 'Ref A: F1580DE7CAD44161AD506384873A03F0 Ref B: CO6AA3150218031 Ref C: 2024-12-10T23:51:11Z'
     status:
       code: 200
       message: OK
@@ -590,12 +612,12 @@ interactions:
       - --config-name --manager-name --collection-name --name --resource-group --destination
         --next-hop
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"bc0bf3dc-98d7-4bdc-b49c-3ed8a4f1a150","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:48.9976421Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:48.9976421Z"}}'
+      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"38ee8b0d-3620-46f8-a74f-1a07de733598","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:13.3820796Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:13.3820796Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -604,7 +626,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:50 GMT
+      - Tue, 10 Dec 2024 23:51:13 GMT
       expires:
       - '-1'
       pragma:
@@ -615,10 +637,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 26E9B5ACBCE34B1EBD432B7CE7CC23B2 Ref B: MAA201060513017 Ref C: 2024-06-04T06:06:48Z'
+      - 'Ref A: 28E4524FA0A14C11A34FC5532F78FFAE Ref B: CO6AA3150219035 Ref C: 2024-12-10T23:51:12Z'
     status:
       code: 200
       message: OK
@@ -636,12 +660,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --collection-name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules?api-version=2024-05-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"\"e201a6a8-0000-0200-0000-665eaefc0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"bc0bf3dc-98d7-4bdc-b49c-3ed8a4f1a150","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:48.9976421Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:48.9976421Z"}}]}'
+      string: '{"nextLink":"","value":[{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"\"be007871-0000-0200-0000-6758d3f10000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"38ee8b0d-3620-46f8-a74f-1a07de733598","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:13.3820796Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:13.3820796Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -650,7 +674,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:53 GMT
+      - Tue, 10 Dec 2024 23:51:13 GMT
       expires:
       - '-1'
       pragma:
@@ -661,8 +685,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 4BE9FDEC94BF481E9C9F3063DDD6696A Ref B: MAA201060516023 Ref C: 2024-06-04T06:06:52Z'
+      - 'Ref A: 823D79AED86342CCA8D42682B057ABC0 Ref B: CO6AA3150217047 Ref C: 2024-12-10T23:51:14Z'
     status:
       code: 200
       message: OK
@@ -680,12 +706,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --collection-name --name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"\"e201cfa8-0000-0200-0000-665eaefd0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"bc0bf3dc-98d7-4bdc-b49c-3ed8a4f1a150","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:48.9976421Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:48.9976421Z"}}'
+      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"\"be008671-0000-0200-0000-6758d3f30000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"38ee8b0d-3620-46f8-a74f-1a07de733598","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:13.3820796Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:13.3820796Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -694,7 +720,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:55 GMT
+      - Tue, 10 Dec 2024 23:51:15 GMT
       expires:
       - '-1'
       pragma:
@@ -705,8 +731,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 444686EABF524B28AADA62FABADF0C13 Ref B: MAA201060513009 Ref C: 2024-06-04T06:06:54Z'
+      - 'Ref A: 0F499B62552D43CBB43F834B70534E1E Ref B: CO6AA3150217027 Ref C: 2024-12-10T23:51:15Z'
     status:
       code: 200
       message: OK
@@ -724,12 +752,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --collection-name --name --resource-group --description
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"\"e201cfa8-0000-0200-0000-665eaefd0000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"bc0bf3dc-98d7-4bdc-b49c-3ed8a4f1a150","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:48.9976421Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:48.9976421Z"}}'
+      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"\"be008671-0000-0200-0000-6758d3f30000\"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"38ee8b0d-3620-46f8-a74f-1a07de733598","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:13.3820796Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:13.3820796Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -738,7 +766,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:57 GMT
+      - Tue, 10 Dec 2024 23:51:17 GMT
       expires:
       - '-1'
       pragma:
@@ -749,8 +777,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 175BD9A2B64E449AA12F23ABED466BEF Ref B: MAA201060516053 Ref C: 2024-06-04T06:06:56Z'
+      - 'Ref A: 684E26CF17124F1689B6782A541DA31B Ref B: CO6AA3150219025 Ref C: 2024-12-10T23:51:16Z'
     status:
       code: 200
       message: OK
@@ -774,12 +804,12 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --collection-name --name --resource-group --description
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2024-05-01
   response:
     body:
-      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"","properties":{"description":"test","provisioningState":"Succeeded","resourceGuid":"bc0bf3dc-98d7-4bdc-b49c-3ed8a4f1a150","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-06-04T06:06:48.9976421Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T06:06:58.9115244Z"}}'
+      string: '{"name":"rule-000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules","etag":"","properties":{"description":"test","provisioningState":"Succeeded","resourceGuid":"38ee8b0d-3620-46f8-a74f-1a07de733598","destination":{"type":"AddressPrefix","destinationAddress":"10.0.0.0/16"},"nextHop":{"nextHopType":"VirtualNetworkGateway","nextHopAddress":""},"priority":0},"systemData":{"createdBy":"ssingireddy@microsoft.com","createdByType":"User","createdAt":"2024-12-10T23:51:13.3820796Z","lastModifiedBy":"ssingireddy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-10T23:51:18.1119301Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -788,7 +818,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 06:06:59 GMT
+      - Tue, 10 Dec 2024 23:51:18 GMT
       expires:
       - '-1'
       pragma:
@@ -799,10 +829,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 15AC793AE729405E975DF5EE38888313 Ref B: MAA201060516053 Ref C: 2024-06-04T06:06:58Z'
+      - 'Ref A: 2B902073F6064DD3BF2C10626140DDFA Ref B: CO6AA3150219025 Ref C: 2024-12-10T23:51:17Z'
     status:
       code: 200
       message: OK
@@ -822,9 +854,9 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --collection-name --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2024-05-01
   response:
     body:
       string: ''
@@ -834,7 +866,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Jun 2024 06:07:01 GMT
+      - Tue, 10 Dec 2024 23:51:19 GMT
       expires:
       - '-1'
       pragma:
@@ -846,9 +878,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
       x-msedge-ref:
-      - 'Ref A: 6C28166510A44A938923C1EB935DE628 Ref B: MAA201060515047 Ref C: 2024-06-04T06:07:00Z'
+      - 'Ref A: 387405D09F86418999F1972A6644D6CE Ref B: CO6AA3150219025 Ref C: 2024-12-10T23:51:19Z'
     status:
       code: 200
       message: OK
@@ -868,9 +902,9 @@ interactions:
       ParameterSetName:
       - --config-name --manager-name --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2024-05-01
   response:
     body:
       string: ''
@@ -880,7 +914,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Jun 2024 06:07:04 GMT
+      - Tue, 10 Dec 2024 23:51:21 GMT
       expires:
       - '-1'
       pragma:
@@ -892,9 +926,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
       x-msedge-ref:
-      - 'Ref A: FA1ED0BFE7114D09930B2611802CECCA Ref B: MAA201060516021 Ref C: 2024-06-04T06:07:03Z'
+      - 'Ref A: BCEC5366C4CE4929B3385A1C4A87AEB6 Ref B: CO6AA3150217049 Ref C: 2024-12-10T23:51:20Z'
     status:
       code: 200
       message: OK
@@ -914,9 +950,9 @@ interactions:
       ParameterSetName:
       - --name --manager-name --resource-group -y
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2023-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2024-05-01
   response:
     body:
       string: ''
@@ -926,7 +962,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Jun 2024 06:07:06 GMT
+      - Tue, 10 Dec 2024 23:51:21 GMT
       expires:
       - '-1'
       pragma:
@@ -938,9 +974,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
       x-msedge-ref:
-      - 'Ref A: 1CB1D2875A994882988BFCBD2D9BD32C Ref B: MAA201060516027 Ref C: 2024-06-04T06:07:05Z'
+      - 'Ref A: B1EDC1229B3F423FA33580D9F295C1A4 Ref B: CO6AA3150218027 Ref C: 2024-12-10T23:51:22Z'
     status:
       code: 200
       message: OK
@@ -960,7 +998,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name --force --yes
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2023-09-01
   response:
@@ -972,7 +1010,105 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Jun 2024 06:07:13 GMT
+      - Tue, 10 Dec 2024 23:51:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/operationResults/66f593a4-ff3d-48fd-9267-8ef0dac0f3e5?api-version=2023-09-01&t=638694714847408196&c=MIIHpTCCBo2gAwIBAgITOgM6dTLGpzYZpvPtgQAEAzp1MjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI2MDEzMjIxWhcNMjUwNjIxMDEzMjIxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPPPKY5bDN03KptFFhiyLIyn86BlrXYFIZWYXA-hY7_WbLyWN0IxcLIUBW_I-9u-YsXOHk9WPMlUYHIFPgHW7A3FsSGfl9dd6YGapKoSSw0NkTpNXM58R54BBgLp7AhiWzK15D9T-XELNSU4Wq9sEeA5T24kazcgS2MUkzELH0I9dwu7g0dwJIuIJkoJjEzg1b1Q3Ie5HKHHNbjottJn7Q5LBS-9QtQyruuwaNTgSJpCoi4PBKVIOTBYL_Nv1wecmKmfWcT0mnhQE9zjhJTbcoN9hKSvAMqsDHtxWUFZosiw3JKIY0zb59CrVGSuOhfN3qaarwN9EAlXLqc4ZyKpsTkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRk_38CqdKjPVylWUR4uuqhbFGeHTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFsx7FtYAzSo98T5ydNFa0ukjPZ6XCQc9zo7ldqy235P_zJAUkaNgCU4EGOzbZJDoMa8mAfhyukL_0GfPeApUaY2e44ZOzoYAkeEuDiwcs-9zoQ1fCyXhn0pCumGFXRilX9KjAPaYTzDvQMEllTy_ZViwTahuKaGtFVamZguBPdaeYC_0oybtTVNQCs8hGnffhNZOMASB-5pFs35MNxsDWTVIQksDee419jqpsbWLkh6rnanILO1O_ihwb-WpvRQByQ5NGpG1-z0MQ6nRpr9wWxUi-DsrVsD38NTMIPc2uei4Ivf6qnGRvOOj0fmsciWuTTEXMaD-5a81mGlzhZc09Q&s=5FUllHMEadoIlHi-ES6iN6z3Dv6CkJ_OsOFi0sUUzEDbqcEG7VsJ7By8SIqxWYxQ14dmPaB7wij8Lmqu675JE5cjcUTKgetrrqk7PuaEPek0NgokT45455L8qqrXHpvRbYeOyHWc7bNWSH7HsiPwIqjC5gRULb3qXijQ05wAD9Ng4tU9iFEPjq0ELhvGXS00mymzODipWN6GQ3PFWgL1SQV67rNMIzECrLfyJ-RNFg2B9s1owJvLkKtS6uf7QH4ufnN1lRcry3386WtpBwbi4Ukz3lKa8TWZKQfrlOJY8mLkSqClthPeL5WaAk4_F9t2hBiWUtnnh1XRXIrn0ilMSw&h=AUr8mgKdAVmHSUOb0WPVyD_45aB72HvGduZsWEtxGhk
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: DD2374BF526A46A786E591BE526B00AA Ref B: CO6AA3150219039 Ref C: 2024-12-10T23:51:23Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --force --yes
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/operationResults/66f593a4-ff3d-48fd-9267-8ef0dac0f3e5?api-version=2023-09-01&t=638694714847408196&c=MIIHpTCCBo2gAwIBAgITOgM6dTLGpzYZpvPtgQAEAzp1MjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI2MDEzMjIxWhcNMjUwNjIxMDEzMjIxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPPPKY5bDN03KptFFhiyLIyn86BlrXYFIZWYXA-hY7_WbLyWN0IxcLIUBW_I-9u-YsXOHk9WPMlUYHIFPgHW7A3FsSGfl9dd6YGapKoSSw0NkTpNXM58R54BBgLp7AhiWzK15D9T-XELNSU4Wq9sEeA5T24kazcgS2MUkzELH0I9dwu7g0dwJIuIJkoJjEzg1b1Q3Ie5HKHHNbjottJn7Q5LBS-9QtQyruuwaNTgSJpCoi4PBKVIOTBYL_Nv1wecmKmfWcT0mnhQE9zjhJTbcoN9hKSvAMqsDHtxWUFZosiw3JKIY0zb59CrVGSuOhfN3qaarwN9EAlXLqc4ZyKpsTkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRk_38CqdKjPVylWUR4uuqhbFGeHTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFsx7FtYAzSo98T5ydNFa0ukjPZ6XCQc9zo7ldqy235P_zJAUkaNgCU4EGOzbZJDoMa8mAfhyukL_0GfPeApUaY2e44ZOzoYAkeEuDiwcs-9zoQ1fCyXhn0pCumGFXRilX9KjAPaYTzDvQMEllTy_ZViwTahuKaGtFVamZguBPdaeYC_0oybtTVNQCs8hGnffhNZOMASB-5pFs35MNxsDWTVIQksDee419jqpsbWLkh6rnanILO1O_ihwb-WpvRQByQ5NGpG1-z0MQ6nRpr9wWxUi-DsrVsD38NTMIPc2uei4Ivf6qnGRvOOj0fmsciWuTTEXMaD-5a81mGlzhZc09Q&s=5FUllHMEadoIlHi-ES6iN6z3Dv6CkJ_OsOFi0sUUzEDbqcEG7VsJ7By8SIqxWYxQ14dmPaB7wij8Lmqu675JE5cjcUTKgetrrqk7PuaEPek0NgokT45455L8qqrXHpvRbYeOyHWc7bNWSH7HsiPwIqjC5gRULb3qXijQ05wAD9Ng4tU9iFEPjq0ELhvGXS00mymzODipWN6GQ3PFWgL1SQV67rNMIzECrLfyJ-RNFg2B9s1owJvLkKtS6uf7QH4ufnN1lRcry3386WtpBwbi4Ukz3lKa8TWZKQfrlOJY8mLkSqClthPeL5WaAk4_F9t2hBiWUtnnh1XRXIrn0ilMSw&h=AUr8mgKdAVmHSUOb0WPVyD_45aB72HvGduZsWEtxGhk
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 Dec 2024 23:51:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/operationResults/66f593a4-ff3d-48fd-9267-8ef0dac0f3e5?api-version=2023-09-01&t=638694714853188168&c=MIIHpTCCBo2gAwIBAgITOgM6dTLGpzYZpvPtgQAEAzp1MjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI2MDEzMjIxWhcNMjUwNjIxMDEzMjIxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPPPKY5bDN03KptFFhiyLIyn86BlrXYFIZWYXA-hY7_WbLyWN0IxcLIUBW_I-9u-YsXOHk9WPMlUYHIFPgHW7A3FsSGfl9dd6YGapKoSSw0NkTpNXM58R54BBgLp7AhiWzK15D9T-XELNSU4Wq9sEeA5T24kazcgS2MUkzELH0I9dwu7g0dwJIuIJkoJjEzg1b1Q3Ie5HKHHNbjottJn7Q5LBS-9QtQyruuwaNTgSJpCoi4PBKVIOTBYL_Nv1wecmKmfWcT0mnhQE9zjhJTbcoN9hKSvAMqsDHtxWUFZosiw3JKIY0zb59CrVGSuOhfN3qaarwN9EAlXLqc4ZyKpsTkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRk_38CqdKjPVylWUR4uuqhbFGeHTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFsx7FtYAzSo98T5ydNFa0ukjPZ6XCQc9zo7ldqy235P_zJAUkaNgCU4EGOzbZJDoMa8mAfhyukL_0GfPeApUaY2e44ZOzoYAkeEuDiwcs-9zoQ1fCyXhn0pCumGFXRilX9KjAPaYTzDvQMEllTy_ZViwTahuKaGtFVamZguBPdaeYC_0oybtTVNQCs8hGnffhNZOMASB-5pFs35MNxsDWTVIQksDee419jqpsbWLkh6rnanILO1O_ihwb-WpvRQByQ5NGpG1-z0MQ6nRpr9wWxUi-DsrVsD38NTMIPc2uei4Ivf6qnGRvOOj0fmsciWuTTEXMaD-5a81mGlzhZc09Q&s=OFGceiG5nap9vyql0IK8ry4z2SSbUCivr-t9KOqDJbkgs-3fvDtr8ZGPrzp0PuErupT4bifrWkpu_iwuKO3wCxi3drZ8rw4B7lb83dyER7v1R2W9mpder1Oa9yBzdSRH32rFjLHlDPmK47FIBYFTLDfDIwhWOONn5gGlUJTcspOD41xLKm2SMFIDey1I4YfBQ6nr8_ehMbxmTV9OXWBgaxOHW-bLucG9TNq0-X9klJ3a4igxFf-ZBPS-NKjRAHx42rjSyu2jDLF8UBKr8bQPuXwSoAZw2akCABz7oVrSdjILp_CzFN5sfh_u7voHpErnXIEkUVE5HIM0Ffva64jX8w&h=bWd-1zGfcU49BejaBAJUEoA78qGh1VjGI1P2Tstfv5I
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D9AC4F6EF96D4A959256D1B2BBAA75AC Ref B: CO6AA3150219039 Ref C: 2024-12-10T23:51:24Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --force --yes
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.0 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_config_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/operationResults/66f593a4-ff3d-48fd-9267-8ef0dac0f3e5?api-version=2023-09-01&t=638694714853188168&c=MIIHpTCCBo2gAwIBAgITOgM6dTLGpzYZpvPtgQAEAzp1MjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI2MDEzMjIxWhcNMjUwNjIxMDEzMjIxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPPPKY5bDN03KptFFhiyLIyn86BlrXYFIZWYXA-hY7_WbLyWN0IxcLIUBW_I-9u-YsXOHk9WPMlUYHIFPgHW7A3FsSGfl9dd6YGapKoSSw0NkTpNXM58R54BBgLp7AhiWzK15D9T-XELNSU4Wq9sEeA5T24kazcgS2MUkzELH0I9dwu7g0dwJIuIJkoJjEzg1b1Q3Ie5HKHHNbjottJn7Q5LBS-9QtQyruuwaNTgSJpCoi4PBKVIOTBYL_Nv1wecmKmfWcT0mnhQE9zjhJTbcoN9hKSvAMqsDHtxWUFZosiw3JKIY0zb59CrVGSuOhfN3qaarwN9EAlXLqc4ZyKpsTkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRk_38CqdKjPVylWUR4uuqhbFGeHTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFsx7FtYAzSo98T5ydNFa0ukjPZ6XCQc9zo7ldqy235P_zJAUkaNgCU4EGOzbZJDoMa8mAfhyukL_0GfPeApUaY2e44ZOzoYAkeEuDiwcs-9zoQ1fCyXhn0pCumGFXRilX9KjAPaYTzDvQMEllTy_ZViwTahuKaGtFVamZguBPdaeYC_0oybtTVNQCs8hGnffhNZOMASB-5pFs35MNxsDWTVIQksDee419jqpsbWLkh6rnanILO1O_ihwb-WpvRQByQ5NGpG1-z0MQ6nRpr9wWxUi-DsrVsD38NTMIPc2uei4Ivf6qnGRvOOj0fmsciWuTTEXMaD-5a81mGlzhZc09Q&s=OFGceiG5nap9vyql0IK8ry4z2SSbUCivr-t9KOqDJbkgs-3fvDtr8ZGPrzp0PuErupT4bifrWkpu_iwuKO3wCxi3drZ8rw4B7lb83dyER7v1R2W9mpder1Oa9yBzdSRH32rFjLHlDPmK47FIBYFTLDfDIwhWOONn5gGlUJTcspOD41xLKm2SMFIDey1I4YfBQ6nr8_ehMbxmTV9OXWBgaxOHW-bLucG9TNq0-X9klJ3a4igxFf-ZBPS-NKjRAHx42rjSyu2jDLF8UBKr8bQPuXwSoAZw2akCABz7oVrSdjILp_CzFN5sfh_u7voHpErnXIEkUVE5HIM0Ffva64jX8w&h=bWd-1zGfcU49BejaBAJUEoA78qGh1VjGI1P2Tstfv5I
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.Network/networkManagers/TestNetworkManager''
+        under resource group ''test_network_manager_routing_config_crud000001'' was
+        not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '270'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Dec 2024 23:51:54 GMT
       expires:
       - '-1'
       pragma:
@@ -983,11 +1119,11 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      x-ms-failure-cause:
+      - gateway
       x-msedge-ref:
-      - 'Ref A: 16644234ADE64A9F86E8974242E154FE Ref B: MAA201060515033 Ref C: 2024-06-04T06:07:08Z'
+      - 'Ref A: 3B75C73D3A454F968B9ADC0777A60713 Ref B: CO6AA3150219039 Ref C: 2024-12-10T23:51:55Z'
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
 version: 1

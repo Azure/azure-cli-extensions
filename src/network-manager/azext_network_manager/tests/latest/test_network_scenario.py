@@ -625,7 +625,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager routing-config update --name {routing_config} --manager-name {manager_name} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --local-route-setting NotSpecified --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
                  self.check('name', '{rule_collection}'))
         self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
