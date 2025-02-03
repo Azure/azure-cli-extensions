@@ -63,15 +63,19 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     # return client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
     response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
 
+    # Iterate through the response and build a JSON array
     job_list_string = "["
     for job_details in response:
         details_string = str(job_details)
         job_list_string += details_string + ", "
 
-    if len(job_list_string) == 1: return    # Got an empty response
+    if len(job_list_string) == 1: return []    # Got an empty response
     
     job_list_string = job_list_string[:-2]
     job_list_string += "]"
+
+    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON.
+    # json.loads doesn't like the all the single quotes, but eval handles them OK.
     return eval(job_list_string)
 
 
