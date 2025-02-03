@@ -176,6 +176,20 @@ class WorkflowTaskStatus:
         if match:
             return match.group(1)
 
+    def _get_patch_error_reason_from_tasklog(self):
+        if self.patch_task is None:
+            return None
+        match = re.search(r'(?i)\b(error\b.*)', self.patch_logs)
+        if match:
+            return match.group(1)
+
+    def _get_scan_error_reason_from_tasklog(self):
+        if self.scan_task is None:
+            return None
+        match = re.search(r'(?i)\b(error\b.*)', self.scan_logs)
+        if match:
+            return match.group(1)
+
     def _get_patched_image_name_from_tasklog(self):
         if self.scan_task is None:
             return None
@@ -230,6 +244,7 @@ class WorkflowTaskStatus:
     def from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns, progress_indicator=None):
         WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, scan_taskruns, progress_indicator)
         all_status = {}
+        additional_tasklog_retrieval = []
 
         for scan in scan_taskruns:
             if progress_indicator:
@@ -259,6 +274,15 @@ class WorkflowTaskStatus:
             if patch_task_id is not None:
                 patch_task = next(task for task in patch_taskruns if task.run_id == patch_task_id)
                 all_status[image].patch_task = patch_task
+                if WorkflowTaskStatus._task_status_to_workflow_status(patch_task) == WorkflowTaskState.FAILED.value:
+                    # keep track of the failed patch task, so we can get the logs for it
+                    additional_tasklog_retrieval.append(all_status[image])
+
+        if len(additional_tasklog_retrieval) > 0:
+            taskrunList = [task.patch_task for task in additional_tasklog_retrieval]
+            WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, taskrunList, progress_indicator)
+            for workflow_status in additional_tasklog_retrieval:
+                workflow_status.patch_logs = workflow_status.patch_task.task_log_result
 
         return [status.get_status() for status in all_status.values()]
 
@@ -272,10 +296,18 @@ class WorkflowTaskStatus:
         patched_image = self._get_patched_image_name_from_tasklog()
         workflow_type = CSSCTaskTypes.ContinuousPatchV1.value
         patch_skipped_reason = ""
+        scan_error_reason = ""
+        patch_error_reason = ""
 
         # this situation means that we don't have a patched image
         if self.patch_status() == WorkflowTaskState.SKIPPED.value:
             patch_skipped_reason = self._get_patch_skip_reason_from_tasklog()
+
+        if self.scan_status() == WorkflowTaskState.FAILED.value:
+            scan_error_reason = self._get_scan_error_reason_from_tasklog()
+
+        if self.patch_status() == WorkflowTaskState.FAILED.value:
+            patch_error_reason = self._get_patch_error_reason_from_tasklog()
 
         if patched_image == self.image():
             patched_image = WORKFLOW_STATUS_PATCH_NOT_AVAILABLE
@@ -291,6 +323,12 @@ class WorkflowTaskStatus:
         if patch_skipped_reason != "":
             result["patch_skipped_reason"] = patch_skipped_reason
 
+        if scan_error_reason != "":
+            result["scan_error_reason"] = scan_error_reason
+
+        if patch_error_reason != "":
+            result["patch_error_reason"] = patch_error_reason
+
         result["patch_date"] = patch_date
         result["patch_task_ID"] = patch_task_id
         result["last_patched_image"] = patched_image
@@ -303,8 +341,12 @@ class WorkflowTaskStatus:
         result = f"image: {status.repository}:{status.tag}\n" \
                  f"\tscan status: {status.scan_status}\n" \
                  f"\tscan date: {status.scan_date}\n" \
-                 f"\tscan task ID: {status.scan_task_id}\n" \
-                 f"\tpatch status: {status.patch_status}\n"
+                 f"\tscan task ID: {status.scan_task_id}\n"
+
+        if hasattr(status, "scan_error_reason"):
+            result += f"\tscan error reason: {status.scan_error_reason}\n"
+
+        result += f"\tpatch status: {status.patch_status}\n"
 
         if hasattr(status, "patch_skipped_reason"):
             result += f"\tpatch skipped reason: {status.patch_skipped_reason}\n"
