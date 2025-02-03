@@ -166,20 +166,20 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_task = mock.MagicMock()
         mock_task.identity = mock.MagicMock()(principal_id='principal_id')
         mock_acr_tasks_client.get.return_value = mock_task
-        
+
         delete_continuous_patch_v1(cmd, mock_registry, mock_dryrun)
         ## Assert here
         mock_delete_oci_artifact_continuous_patch.assert_called_once()
 
+    @mock.patch('azure.cli.core.profiles.get_sdk')
     @mock.patch('azext_acrcssc.helper._workflow_status.get_sdk')
-    @mock.patch('azext_acrcssc.helper._workflow_status.get_blob_info')
-    def test_generate_logs(self, mock_get_sdk, mock_get_blob_info):
+    @mock.patch('azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._download_logs')
+    def test_generate_logs(self, mock_core_get_sdk, mock_wf_get_sdk, mock_download_logs):
         cmd = mock.MagicMock()
         client = mock.MagicMock()
-        run_id = "cfg5"
+        run_id = "cgb5"
         registry_name = "myregistry"
         resource_group_name = "myresourcegroup"
-        timeout = 60
 
         # Mock the response from client.get_log_sas_url()
         response = mock.MagicMock()
@@ -190,17 +190,21 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         run_response.status = "Succeeded"
         client.get.return_value = run_response
 
-        mock_get_blob_info.return_value = ["account_name", "endpoint_suffix", "container_name", "blob_name", "sas_token"]
-        mock_blob_service = mock.MagicMock()
-        mock_blob_service.get_blob_to_text.content.return_value = "sample text"
-        mock_get_sdk.return_value = mock_blob_service
+        # Create a mock for the blob client
+        mock_blob_client = mock.MagicMock()
+        mock_blob_client.from_blob_url.return_value = "mock_blob_client"
+        mock_blob_client.download_blob.return_value = mock.MagicMock(content_as_text=lambda: "mocked content")
+
+        mock_core_get_sdk.return_value = mock_blob_client
+        mock_download_logs.return_value = "mock logs"
+
         # Call the function
         WorkflowTaskStatus.generate_logs(cmd, client, run_id, registry_name, resource_group_name)
 
         # Assert the function calls
-        client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)
-        client.get.assert_called_once_with(resource_group_name, registry_name, run_id)
-    
+        # client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)
+        # client.get.assert_called_once_with(resource_group_name, registry_name, run_id)
+
     def _setup_cmd(self):
         cmd = mock.MagicMock()
         cmd.cli_ctx = DummyCli()

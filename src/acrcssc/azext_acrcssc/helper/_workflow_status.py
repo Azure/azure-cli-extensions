@@ -375,7 +375,6 @@ class WorkflowTaskStatus:
 
     @staticmethod
     def generate_logs(cmd, client, run_id, registry_name, resource_group_name, await_task_run=True):
-
         log_file_sas = None
         error_msg = "Could not get logs for ID: {}".format(run_id)
         try:

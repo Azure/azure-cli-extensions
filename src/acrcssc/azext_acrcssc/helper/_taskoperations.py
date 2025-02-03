@@ -261,6 +261,7 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
 
     progress_indicator = IndeterminateProgressBar(cmd.cli_ctx)
     progress_indicator.begin()
+    progress_indicator.
 
     image_status = WorkflowTaskStatus.from_taskrun(cmd, acr_task_run_client, registry, scan_taskruns, patch_taskruns, progress_indicator=progress_indicator)
     if workflow_status:
