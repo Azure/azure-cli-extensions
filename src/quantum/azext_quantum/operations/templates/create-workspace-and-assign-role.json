@@ -95,7 +95,7 @@
                     "contentVersion": "1.0.0.0",
                     "resources": [
                         {
-                            "apiVersion": "2019-06-01",
+                            "apiVersion": "2023-05-01",
                             "name": "[parameters('storageAccountName')]",
                             "location": "[parameters('storageAccountLocation')]",
                             "type": "Microsoft.Storage/storageAccounts",
@@ -103,6 +103,10 @@
                                 "name": "[parameters('storageAccountSku')]"
                             },
                             "kind": "[parameters('storageAccountKind')]",
+                            "properties": {
+                                "allowBlobPublicAccess": false,
+                                "minimumTlsVersion": "TLS1_2"
+                            },
                             "resources": [
                                 {
                                     "name": "default",
