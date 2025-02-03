@@ -3,13 +3,21 @@ alias:
   values:
     ScanImageAndSchedulePatchTask: cssc-scan-image
     cssc : mcr.microsoft.com/acr/cssc:0995fb8
+    maxLimit: 100
 steps:
   - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
     env:
       - ACR_EXPERIMENTAL_CSSC=true
   - cmd: bash -c 'sed -n "/^Validating/,/^Total/ {/^Validating/b;/^Total/b;p}" filterRepos.txt' > filterReposToDisplay.txt
-  - cmd: bash -c 'echo -e "Below images will be scanned and patched (if any os vulnerabilities found) based on --filter-policy.\n$(cat filterReposToDisplay.txt)"'
+  - cmd: |
+      bash -c '
+      echo "Below images will be scanned and patched (if any os vulnerabilities found) based on --filter-policy.\n$(cat filterReposToDisplay.txt)"
+      totalImages=$(sed -n "s/^Matches found://p" filterReposToDisplay.txt | tr -d "[:space:]")
+      if [ $totalImages -gt $maxLimit ]; then
+        echo "Maximum $maxLimit images can be scheduled for continuous patching. Adjust the filter to limit the number of images to be patched. Exiting the workflow.."
+        exit 1
+      fi'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --show-patch-tags --dry-run> filterReposWithPatchTags.txt
     env:
       - ACR_EXPERIMENTAL_CSSC=true
