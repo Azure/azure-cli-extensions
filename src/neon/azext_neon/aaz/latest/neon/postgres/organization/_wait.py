@@ -52,7 +52,7 @@ class Wait(AAZWaitCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Resource Group",
+            help="Name of the resource group",
             required=True,
         )
         return cls._args_schema
