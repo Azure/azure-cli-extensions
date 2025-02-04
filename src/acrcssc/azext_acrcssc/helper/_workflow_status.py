@@ -190,9 +190,8 @@ class WorkflowTaskStatus:
         match = re.findall(r'(?i)\b(error\b.*)', tasklog)
         # TODO: should we filter out any error?
         if match:
-            # retrieve only unique errors
-            # TODO is the order important?
-            return str.join("\n", set(match))
+            # retrieve only unique errors, sort them to make the output deterministic
+            return str.join("\n", sorted(set(match)))
         return None
 
     def _get_patched_image_name_from_tasklog(self):
