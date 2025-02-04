@@ -30,12 +30,13 @@ MINIMUM_MAX_POLL_WAIT_SECS = 1
 DEFAULT_SHOTS = 500
 QIO_DEFAULT_TIMEOUT = 100
 
-ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
-ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
 ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
+ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
+JOB_LIST_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list"
 
 # Job types
 QIO_JOB = 1
@@ -74,8 +75,8 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     job_list_string = job_list_string[:-2]
     job_list_string += "]"
 
-    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON.
-    # json.loads doesn't like the all the single quotes, but eval handles them OK.
+    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON
+    # json.loads doesn't like the all the single quotes, but ast.literal_eval handles them OK
     return ast.literal_eval(job_list_string)
 
 
@@ -145,13 +146,13 @@ def _construct_orderby_expression(orderby, order):
     Construct a job-list orderby expression
     """
     if (orderby == "" or orderby is None) and not (order == "" or order is None):
-        raise InvalidArgumentValueError(ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ORDERBY_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
 
     orderby_expression = orderby
     if orderby_expression is not None and order is not None:
         # Validate order, otherwise the error message will be vague
         if not (order == "asc" or order == "desc"):
-            raise InvalidArgumentValueError(ERROR_MSG_INVALID_ORDER_ARGUMENT)
+            raise InvalidArgumentValueError(ERROR_MSG_INVALID_ORDER_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
         orderby_expression += " " + order
     return orderby_expression
 
