@@ -179,16 +179,21 @@ class WorkflowTaskStatus:
     def _get_patch_error_reason_from_tasklog(self):
         if self.patch_task is None:
             return None
-        match = re.search(r'(?i)\b(error\b.*)', self.patch_logs)
-        if match:
-            return match.group(1)
+        return self._get_errors_from_tasklog(self.patch_logs)
 
     def _get_scan_error_reason_from_tasklog(self):
         if self.scan_task is None:
             return None
-        match = re.search(r'(?i)\b(error\b.*)', self.scan_logs)
+        return self._get_errors_from_tasklog(self.scan_logs)
+
+    def _get_errors_from_tasklog(self, tasklog):
+        match = re.findall(r'(?i)\b(error\b.*)', tasklog)
+        # TODO: should we filter out any error?
         if match:
-            return match.group(1)
+            # retrieve only unique errors
+            # TODO is the order important?
+            return str.join("\n", set(match))
+        return None
 
     def _get_patched_image_name_from_tasklog(self):
         if self.scan_task is None:
@@ -272,7 +277,10 @@ class WorkflowTaskStatus:
             # missing the patch task id means that the scan either failed, or succeeded and patching is not needed
             # this is important, because patching status depends on both the patching task status (if it exists) and the scan task status
             if patch_task_id is not None:
-                patch_task = next(task for task in patch_taskruns if task.run_id == patch_task_id)
+                # it is possible for the patch task to be mentioned in the logs, but the API has not returned the
+                # taskrun for it yet, defaulting to 'None' stops this section from throwing, but it will mean there
+                # is incomplete information
+                patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id), None)
                 all_status[image].patch_task = patch_task
                 if WorkflowTaskStatus._task_status_to_workflow_status(patch_task) == WorkflowTaskState.FAILED.value:
                     # keep track of the failed patch task, so we can get the logs for it
