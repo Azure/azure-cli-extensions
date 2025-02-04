@@ -4296,8 +4296,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
                 "apiserver_subnet_id": apiserver_subnet_id,
                 "vnet_subnet_id": vnet_subnet_id,
-                "sku": "automatic"
-
+                "sku": "automatic",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
