@@ -60,7 +60,6 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
     orderby_expression = _construct_orderby_expression(orderby, order)
 
-    # return client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
     response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
 
     # Iterate through the response and build a JSON array
