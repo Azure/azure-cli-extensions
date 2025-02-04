@@ -62,12 +62,13 @@ def cf_offerings(cli_ctx, *_):
 
 # Data Plane clients
 
-def cf_quantum(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
+# def cf_quantum(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
+def cf_quantum(cli_ctx, subscription_id=None, location=None):
     # from .vendored_sdks.azure_quantum import AzureQuantumWorkspaceServices
     # creds = _get_data_credentials(cli_ctx, subscription_id)
     # client = AzureQuantumWorkspaceServices(subscription_id, resource_group_name, workspace_name, creds, user_agent=get_appid())
     # return client
-    
+
     # # SDK-compatible version:
     from .vendored_sdks.azure_quantum import ServicesClient
     creds = _get_data_credentials(cli_ctx, subscription_id)
@@ -79,8 +80,10 @@ def cf_providers(cli_ctx, subscription_id=None, resource_group_name=None, worksp
     return cf_quantum(cli_ctx, subscription_id, resource_group_name, workspace_name, location).providers
 
 
+# def cf_jobs(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
+#     return cf_quantum(cli_ctx, subscription_id, resource_group_name, workspace_name, location).jobs
 def cf_jobs(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
-    return cf_quantum(cli_ctx, subscription_id, resource_group_name, workspace_name, location).jobs
+    return cf_quantum(cli_ctx, subscription_id, location).jobs
 
 
 def cf_quotas(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):

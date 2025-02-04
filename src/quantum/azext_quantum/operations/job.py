@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements,too-many-locals,too-many-branches,too-many-statements
 
-# import ast
+import ast
 import gzip
 import io
 import json
@@ -68,14 +68,15 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
         details_string = str(job_details)
         job_list_string += details_string + ", "
 
-    if len(job_list_string) == 1: return []    # Got an empty response, return an empty array
-    
+    if len(job_list_string) == 1:
+        return []    # Got an empty response, return an empty array
+
     job_list_string = job_list_string[:-2]
     job_list_string += "]"
 
     # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON.
     # json.loads doesn't like the all the single quotes, but eval handles them OK.
-    return eval(job_list_string)
+    return ast.literal_eval(job_list_string)
 
 
 def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
