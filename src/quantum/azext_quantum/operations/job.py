@@ -69,7 +69,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
         details_string = str(job_details)
         job_list_string += details_string + ", "
 
-    if len(job_list_string) == 1: return []    # Got an empty response
+    if len(job_list_string) == 1: return []    # Got an empty response, return an empty array
     
     job_list_string = job_list_string[:-2]
     job_list_string += "]"
