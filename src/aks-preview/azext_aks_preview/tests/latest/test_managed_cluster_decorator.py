@@ -3985,6 +3985,17 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         expect_outbound_type_3 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
         self.assertEqual(outbound_type_3,expect_outbound_type_3)
 
+        ctx4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx4)
+        outbound_type_4 = ctx4._get_outbound_type(False, False, None)
+        expect_outbound_type_4 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+        self.assertEqual(outbound_type_4,expect_outbound_type_4)
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
