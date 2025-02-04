@@ -11,21 +11,17 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "network alb delete",
-    confirmation="Are you sure you want to perform this operation?",
-)
 class Delete(AAZCommand):
-    """Delete an Application Gateway for Containers resource
+    """Delete a SecurityPolicy
 
-    :example: Delete an Application Gateway for Containers resource
-        az network alb delete -g test-rg -n test-alb
+    :example: Delete SecurityPolicy
+        az network alb security-policy delete -g test-rg --alb-name test-alb -n test-sp
     """
 
     _aaz_info = {
         "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/securitypolicies/{}", "2025-01-01"],
         ]
     }
 
@@ -49,9 +45,18 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Name of the resource",
+        _args_schema.security_policy_name = AAZStrArg(
+            options=["-n", "--name", "--security-policy-name"],
+            help="Name of the SecurityPolicy Resource",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
+            ),
+        )
+        _args_schema.alb_name = AAZStrArg(
+            options=["--alb-name"],
+            help="Name of the Application Gateway for Containers resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -62,7 +67,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TrafficControllerInterfaceDelete(ctx=self.ctx)()
+        yield self.SecurityPoliciesInterfaceDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +78,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class TrafficControllerInterfaceDelete(AAZHttpOperation):
+    class SecurityPoliciesInterfaceDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -112,7 +117,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/securityPolicies/{securityPolicyName}",
                 **self.url_parameters
             )
 
@@ -132,11 +137,15 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "securityPolicyName", self.ctx.args.security_policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "trafficControllerName", self.ctx.args.name,
+                    "trafficControllerName", self.ctx.args.alb_name,
                     required=True,
                 ),
             }

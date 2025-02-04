@@ -11,20 +11,17 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "network alb create",
-)
 class Create(AAZCommand):
-    """Create an Application Gateway for Containers resource
+    """Create a SecurityPolicy
 
-    :example: Create an Application Gateway for Containers resource
-        az network alb create -g test-rg -n test-alb --waf-policy-id /subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/securityPolicies/test-wp
+    :example: Create an Application Gateway for Containers security policy resource
+        az network alb security-policy create -g test-rg --alb-name test-tc -n test-sp -l NorthCentralUS --waf-policy-id "/subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/wafpolicy/test-wp"
     """
 
     _aaz_info = {
         "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/securitypolicies/{}", "2025-01-01"],
         ]
     }
 
@@ -48,9 +45,17 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Name of the resource",
+        _args_schema.security_policy_name = AAZStrArg(
+            options=["-n", "--name", "--security-policy-name"],
+            help="SecurityPolicy",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
+            ),
+        )
+        _args_schema.alb_name = AAZStrArg(
+            options=["--alb-name"],
+            help="Name of the Application Gateway for Containers resource",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
@@ -62,7 +67,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",
-            help="The geo-location for the resource",
+            help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -77,19 +82,19 @@ class Create(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
-        # define Arg Group "SecurityPolicyConfigurations"
+        # define Arg Group "WafPolicy"
 
         _args_schema = cls._args_schema
         _args_schema.waf_policy_id = AAZStrArg(
             options=["--waf-policy-id"],
-            arg_group="SecurityPolicyConfigurations",
-            help="Resource ID of the Waf Security Policy",
+            arg_group="WafPolicy",
+            help="Resource ID of the WAF",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TrafficControllerInterfaceCreateOrUpdate(ctx=self.ctx)()
+        yield self.SecurityPoliciesInterfaceCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -104,7 +109,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TrafficControllerInterfaceCreateOrUpdate(AAZHttpOperation):
+    class SecurityPoliciesInterfaceCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -134,7 +139,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/securityPolicies/{securityPolicyName}",
                 **self.url_parameters
             )
 
@@ -154,11 +159,15 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "securityPolicyName", self.ctx.args.security_policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "trafficControllerName", self.ctx.args.name,
+                    "trafficControllerName", self.ctx.args.alb_name,
                     required=True,
                 ),
             }
@@ -199,15 +208,11 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("securityPolicyConfigurations", AAZObjectType)
+                properties.set_prop("wafPolicy", AAZObjectType)
 
-            security_policy_configurations = _builder.get(".properties.securityPolicyConfigurations")
-            if security_policy_configurations is not None:
-                security_policy_configurations.set_prop("wafSecurityPolicy", AAZObjectType)
-
-            waf_security_policy = _builder.get(".properties.securityPolicyConfigurations.wafSecurityPolicy")
-            if waf_security_policy is not None:
-                waf_security_policy.set_prop("id", AAZStrType, ".waf_policy_id", typ_kwargs={"flags": {"required": True}})
+            waf_policy = _builder.get(".properties.wafPolicy")
+            if waf_policy is not None:
+                waf_policy.set_prop("id", AAZStrType, ".waf_policy_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -255,50 +260,20 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.associations = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.configuration_endpoints = AAZListType(
-                serialized_name="configurationEndpoints",
-                flags={"read_only": True},
-            )
-            properties.frontends = AAZListType(
+            properties.policy_type = AAZStrType(
+                serialized_name="policyType",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.security_policies = AAZListType(
-                serialized_name="securityPolicies",
-                flags={"read_only": True},
-            )
-            properties.security_policy_configurations = AAZObjectType(
-                serialized_name="securityPolicyConfigurations",
+            properties.waf_policy = AAZObjectType(
+                serialized_name="wafPolicy",
             )
 
-            associations = cls._schema_on_200_201.properties.associations
-            associations.Element = AAZObjectType()
-            _CreateHelper._build_schema_resource_id_read(associations.Element)
-
-            configuration_endpoints = cls._schema_on_200_201.properties.configuration_endpoints
-            configuration_endpoints.Element = AAZStrType()
-
-            frontends = cls._schema_on_200_201.properties.frontends
-            frontends.Element = AAZObjectType()
-            _CreateHelper._build_schema_resource_id_read(frontends.Element)
-
-            security_policies = cls._schema_on_200_201.properties.security_policies
-            security_policies.Element = AAZObjectType()
-            _CreateHelper._build_schema_resource_id_read(security_policies.Element)
-
-            security_policy_configurations = cls._schema_on_200_201.properties.security_policy_configurations
-            security_policy_configurations.waf_security_policy = AAZObjectType(
-                serialized_name="wafSecurityPolicy",
-            )
-
-            waf_security_policy = cls._schema_on_200_201.properties.security_policy_configurations.waf_security_policy
-            waf_security_policy.id = AAZStrType(
+            waf_policy = cls._schema_on_200_201.properties.waf_policy
+            waf_policy.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -330,23 +305,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    _schema_resource_id_read = None
-
-    @classmethod
-    def _build_schema_resource_id_read(cls, _schema):
-        if cls._schema_resource_id_read is not None:
-            _schema.id = cls._schema_resource_id_read.id
-            return
-
-        cls._schema_resource_id_read = _schema_resource_id_read = AAZObjectType()
-
-        resource_id_read = _schema_resource_id_read
-        resource_id_read.id = AAZStrType(
-            flags={"required": True},
-        )
-
-        _schema.id = cls._schema_resource_id_read.id
 
 
 __all__ = ["Create"]
