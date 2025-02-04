@@ -7,7 +7,7 @@ steps:
   # Step 1: Print the inputs  
   - id: print-inputs
     cmd: |
-        bash -c 'echo "Scan, Upload scan report and Schedule Patch for {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+        bash -c 'echo "Patching OS vulnerabilities for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
         bash -c 'echo "Patching repo: {{.Values.SOURCE_REPOSITORY}}, Tag:{{.Values.SOURCE_IMAGE_TAG}}, NewPatchTag:{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"'
 
   # Step 2: Check if new patch tag is greater than 999 by extracting the digits after the last hyphen
