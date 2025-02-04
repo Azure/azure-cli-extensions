@@ -14,7 +14,7 @@ steps:
 
   - id: generate-trivy-report
     retries: 3
-    retryDelay: 3
+    retryDelay: 5
     timeout: 1800
     cmd: |
       cssc trivy image \

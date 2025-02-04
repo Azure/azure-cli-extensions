@@ -4,13 +4,11 @@ alias:
     ScanReport : os-vulnerability-report_trivy_{{ regexReplaceAll "[^a-zA-Z0-9]" .Values.SOURCE_REPOSITORY "-" }}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
     cssc : mcr.microsoft.com/acr/cssc:0995fb8
 steps:
-  # Step 1: Print the inputs  
   - id: print-inputs
     cmd: |
         bash -c 'echo "Patching OS vulnerabilities for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
         bash -c 'echo "Patching repo: {{.Values.SOURCE_REPOSITORY}}, Tag:{{.Values.SOURCE_IMAGE_TAG}}, NewPatchTag:{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"'
 
-  # Step 2: Check if new patch tag is greater than 999 by extracting the digits after the last hyphen
   - id: check-patch-tag
     cmd: |
        bash -c 'echo "New Patch tag is {{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"
@@ -19,12 +17,11 @@ steps:
           exit 1
        fi'
 
-  # Step 3: Perform the vulnerability scan
   - id: setup-data-dir
     cmd: bash mkdir ./data
   - id: generate-trivy-report
     retries: 3
-    retryDelay: 3
+    retryDelay: 5
     timeout: 1800
     cmd: |
       cssc trivy image \
@@ -44,10 +41,9 @@ steps:
     privileged: true
     ports: ["127.0.0.1:8888:8888/tcp"]
  
-  # Step 4: Patch the image with Copacetic
   - id: patch-image
     retries: 3
-    retryDelay: 3
+    retryDelay: 5
     timeout: 1800
     cmd: |
       cssc copa patch \
@@ -58,11 +54,9 @@ steps:
       --addr tcp://127.0.0.1:8888
     network: host
 
-  # Step 5: Push the patched image to the registry
   - id: push-image
     retries: 3
-    retryDelay: 3
+    retryDelay: 5
     timeout: 1800
     cmd: docker push {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}
-
   - cmd: bash echo "Patched image pushed to {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"
