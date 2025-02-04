@@ -11,22 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "network alb update",
-)
 class Update(AAZCommand):
-    """Update an Application Gateway for Containers resource
-
-    This command can only be used to update the tags for the resource. Name and resource group are immutable and cannot be updated
-
-    :example: Update the tags of the resource
-        az network alb update -g test-rg -n test-alb --set tags.CostCenter=testBusinessGroup --waf-policy-id /subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/securityPolicies/test-wp
+    """Update a SecurityPolicy
     """
 
     _aaz_info = {
         "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/securitypolicies/{}", "2025-01-01"],
         ]
     }
 
@@ -52,9 +44,18 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Name of the resource",
+        _args_schema.security_policy_name = AAZStrArg(
+            options=["-n", "--name", "--security-policy-name"],
+            help="SecurityPolicy",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
+            ),
+        )
+        _args_schema.alb_name = AAZStrArg(
+            options=["--alb-name"],
+            help="traffic controller name for path",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -77,24 +78,24 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        # define Arg Group "SecurityPolicyConfigurations"
+        # define Arg Group "WafPolicy"
 
         _args_schema = cls._args_schema
         _args_schema.waf_policy_id = AAZStrArg(
             options=["--waf-policy-id"],
-            arg_group="SecurityPolicyConfigurations",
-            help="Resource ID of the Waf Security Policy",
+            arg_group="WafPolicy",
+            help="Resource ID of the WAF",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TrafficControllerInterfaceGet(ctx=self.ctx)()
+        self.SecurityPoliciesInterfaceGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.TrafficControllerInterfaceCreateOrUpdate(ctx=self.ctx)()
+        yield self.SecurityPoliciesInterfaceCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -117,7 +118,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TrafficControllerInterfaceGet(AAZHttpOperation):
+    class SecurityPoliciesInterfaceGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -131,7 +132,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/securityPolicies/{securityPolicyName}",
                 **self.url_parameters
             )
 
@@ -151,11 +152,15 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "securityPolicyName", self.ctx.args.security_policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "trafficControllerName", self.ctx.args.name,
+                    "trafficControllerName", self.ctx.args.alb_name,
                     required=True,
                 ),
             }
@@ -196,11 +201,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_traffic_controller_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_security_policy_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class TrafficControllerInterfaceCreateOrUpdate(AAZHttpOperation):
+    class SecurityPoliciesInterfaceCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -230,7 +235,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/securityPolicies/{securityPolicyName}",
                 **self.url_parameters
             )
 
@@ -250,11 +255,15 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "securityPolicyName", self.ctx.args.security_policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "trafficControllerName", self.ctx.args.name,
+                    "trafficControllerName", self.ctx.args.alb_name,
                     required=True,
                 ),
             }
@@ -307,7 +316,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_traffic_controller_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_security_policy_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -327,15 +336,11 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("securityPolicyConfigurations", AAZObjectType)
+                properties.set_prop("wafPolicy", AAZObjectType)
 
-            security_policy_configurations = _builder.get(".properties.securityPolicyConfigurations")
-            if security_policy_configurations is not None:
-                security_policy_configurations.set_prop("wafSecurityPolicy", AAZObjectType)
-
-            waf_security_policy = _builder.get(".properties.securityPolicyConfigurations.wafSecurityPolicy")
-            if waf_security_policy is not None:
-                waf_security_policy.set_prop("id", AAZStrType, ".waf_policy_id", typ_kwargs={"flags": {"required": True}})
+            waf_policy = _builder.get(".properties.wafPolicy")
+            if waf_policy is not None:
+                waf_policy.set_prop("id", AAZStrType, ".waf_policy_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -355,110 +360,63 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_resource_id_read = None
+    _schema_security_policy_read = None
 
     @classmethod
-    def _build_schema_resource_id_read(cls, _schema):
-        if cls._schema_resource_id_read is not None:
-            _schema.id = cls._schema_resource_id_read.id
+    def _build_schema_security_policy_read(cls, _schema):
+        if cls._schema_security_policy_read is not None:
+            _schema.id = cls._schema_security_policy_read.id
+            _schema.location = cls._schema_security_policy_read.location
+            _schema.name = cls._schema_security_policy_read.name
+            _schema.properties = cls._schema_security_policy_read.properties
+            _schema.system_data = cls._schema_security_policy_read.system_data
+            _schema.tags = cls._schema_security_policy_read.tags
+            _schema.type = cls._schema_security_policy_read.type
             return
 
-        cls._schema_resource_id_read = _schema_resource_id_read = AAZObjectType()
+        cls._schema_security_policy_read = _schema_security_policy_read = AAZObjectType()
 
-        resource_id_read = _schema_resource_id_read
-        resource_id_read.id = AAZStrType(
-            flags={"required": True},
-        )
-
-        _schema.id = cls._schema_resource_id_read.id
-
-    _schema_traffic_controller_read = None
-
-    @classmethod
-    def _build_schema_traffic_controller_read(cls, _schema):
-        if cls._schema_traffic_controller_read is not None:
-            _schema.id = cls._schema_traffic_controller_read.id
-            _schema.location = cls._schema_traffic_controller_read.location
-            _schema.name = cls._schema_traffic_controller_read.name
-            _schema.properties = cls._schema_traffic_controller_read.properties
-            _schema.system_data = cls._schema_traffic_controller_read.system_data
-            _schema.tags = cls._schema_traffic_controller_read.tags
-            _schema.type = cls._schema_traffic_controller_read.type
-            return
-
-        cls._schema_traffic_controller_read = _schema_traffic_controller_read = AAZObjectType()
-
-        traffic_controller_read = _schema_traffic_controller_read
-        traffic_controller_read.id = AAZStrType(
+        security_policy_read = _schema_security_policy_read
+        security_policy_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        traffic_controller_read.location = AAZStrType(
+        security_policy_read.location = AAZStrType(
             flags={"required": True},
         )
-        traffic_controller_read.name = AAZStrType(
+        security_policy_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        traffic_controller_read.properties = AAZObjectType(
+        security_policy_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        traffic_controller_read.system_data = AAZObjectType(
+        security_policy_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        traffic_controller_read.tags = AAZDictType()
-        traffic_controller_read.type = AAZStrType(
+        security_policy_read.tags = AAZDictType()
+        security_policy_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_traffic_controller_read.properties
-        properties.associations = AAZListType(
-            flags={"read_only": True},
-        )
-        properties.configuration_endpoints = AAZListType(
-            serialized_name="configurationEndpoints",
-            flags={"read_only": True},
-        )
-        properties.frontends = AAZListType(
+        properties = _schema_security_policy_read.properties
+        properties.policy_type = AAZStrType(
+            serialized_name="policyType",
             flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.security_policies = AAZListType(
-            serialized_name="securityPolicies",
-            flags={"read_only": True},
-        )
-        properties.security_policy_configurations = AAZObjectType(
-            serialized_name="securityPolicyConfigurations",
+        properties.waf_policy = AAZObjectType(
+            serialized_name="wafPolicy",
         )
 
-        associations = _schema_traffic_controller_read.properties.associations
-        associations.Element = AAZObjectType()
-        cls._build_schema_resource_id_read(associations.Element)
-
-        configuration_endpoints = _schema_traffic_controller_read.properties.configuration_endpoints
-        configuration_endpoints.Element = AAZStrType()
-
-        frontends = _schema_traffic_controller_read.properties.frontends
-        frontends.Element = AAZObjectType()
-        cls._build_schema_resource_id_read(frontends.Element)
-
-        security_policies = _schema_traffic_controller_read.properties.security_policies
-        security_policies.Element = AAZObjectType()
-        cls._build_schema_resource_id_read(security_policies.Element)
-
-        security_policy_configurations = _schema_traffic_controller_read.properties.security_policy_configurations
-        security_policy_configurations.waf_security_policy = AAZObjectType(
-            serialized_name="wafSecurityPolicy",
-        )
-
-        waf_security_policy = _schema_traffic_controller_read.properties.security_policy_configurations.waf_security_policy
-        waf_security_policy.id = AAZStrType(
+        waf_policy = _schema_security_policy_read.properties.waf_policy
+        waf_policy.id = AAZStrType(
             flags={"required": True},
         )
 
-        system_data = _schema_traffic_controller_read.system_data
+        system_data = _schema_security_policy_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -478,16 +436,16 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_traffic_controller_read.tags
+        tags = _schema_security_policy_read.tags
         tags.Element = AAZStrType()
 
-        _schema.id = cls._schema_traffic_controller_read.id
-        _schema.location = cls._schema_traffic_controller_read.location
-        _schema.name = cls._schema_traffic_controller_read.name
-        _schema.properties = cls._schema_traffic_controller_read.properties
-        _schema.system_data = cls._schema_traffic_controller_read.system_data
-        _schema.tags = cls._schema_traffic_controller_read.tags
-        _schema.type = cls._schema_traffic_controller_read.type
+        _schema.id = cls._schema_security_policy_read.id
+        _schema.location = cls._schema_security_policy_read.location
+        _schema.name = cls._schema_security_policy_read.name
+        _schema.properties = cls._schema_security_policy_read.properties
+        _schema.system_data = cls._schema_security_policy_read.system_data
+        _schema.tags = cls._schema_security_policy_read.tags
+        _schema.type = cls._schema_security_policy_read.type
 
 
 __all__ = ["Update"]

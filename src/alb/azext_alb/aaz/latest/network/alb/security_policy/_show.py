@@ -10,29 +10,27 @@
 
 from azure.cli.core.aaz import *
 
-
 @register_command(
-    "network alb association list",
+    "network alb security-policy show",
 )
-class List(AAZCommand):
-    """List all associations for an Application Gateway for Containers resource
+class Show(AAZCommand):
+    """Get a SecurityPolicy
 
-    :example: List all associations for an Application Gateway for Containers resource
-        az network alb association list -g test-rg --alb-name test-alb
+    :example: Get SecurityPolicy
+        az network alb security-policy show -g test-rg --alb-name test-tc -n test-sp
     """
 
     _aaz_info = {
         "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/associations", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/securitypolicies/{}", "2025-01-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -48,10 +46,20 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.security_policy_name = AAZStrArg(
+            options=["-n", "--name", "--security-policy-name"],
+            help="Name of the SecurityPolicy Resource",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
+            ),
+        )
         _args_schema.alb_name = AAZStrArg(
             options=["--alb-name"],
             help="Name of the Application Gateway for Containers resource",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
             ),
@@ -60,7 +68,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AssociationsInterfaceListByTrafficController(ctx=self.ctx)()
+        self.SecurityPoliciesInterfaceGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,11 +80,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class AssociationsInterfaceListByTrafficController(AAZHttpOperation):
+    class SecurityPoliciesInterfaceGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +97,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/associations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/securityPolicies/{securityPolicyName}",
                 **self.url_parameters
             )
 
@@ -107,6 +114,10 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "securityPolicyName", self.ctx.args.security_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -157,55 +168,46 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.association_type = AAZStrType(
-                serialized_name="associationType",
-                flags={"required": True},
+            properties = cls._schema_on_200.properties
+            properties.policy_type = AAZStrType(
+                serialized_name="policyType",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.subnet = AAZObjectType()
+            properties.waf_policy = AAZObjectType(
+                serialized_name="wafPolicy",
+            )
 
-            subnet = cls._schema_on_200.value.Element.properties.subnet
-            subnet.id = AAZStrType(
+            waf_policy = cls._schema_on_200.properties.waf_policy
+            waf_policy.id = AAZStrType(
                 flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -225,14 +227,14 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

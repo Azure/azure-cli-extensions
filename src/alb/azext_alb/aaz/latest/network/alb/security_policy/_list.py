@@ -10,21 +10,20 @@
 
 from azure.cli.core.aaz import *
 
-
 @register_command(
-    "network alb association list",
+    "network alb security-policy list",
 )
 class List(AAZCommand):
-    """List all associations for an Application Gateway for Containers resource
+    """List SecurityPolicy resources by TrafficController
 
-    :example: List all associations for an Application Gateway for Containers resource
-        az network alb association list -g test-rg --alb-name test-alb
+    :example: Get SecurityPolicies
+        az network alb security-policy list -g test-rg --alb-name test-alb
     """
 
     _aaz_info = {
         "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/associations", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/securitypolicies", "2025-01-01"],
         ]
     }
 
@@ -60,7 +59,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AssociationsInterfaceListByTrafficController(ctx=self.ctx)()
+        self.SecurityPoliciesInterfaceListByTrafficController(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class AssociationsInterfaceListByTrafficController(AAZHttpOperation):
+    class SecurityPoliciesInterfaceListByTrafficController(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +89,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/associations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceNetworking/trafficControllers/{trafficControllerName}/securityPolicies",
                 **self.url_parameters
             )
 
@@ -190,18 +189,20 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.association_type = AAZStrType(
-                serialized_name="associationType",
-                flags={"required": True},
+            properties.policy_type = AAZStrType(
+                serialized_name="policyType",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.subnet = AAZObjectType()
+            properties.waf_policy = AAZObjectType(
+                serialized_name="wafPolicy",
+            )
 
-            subnet = cls._schema_on_200.value.Element.properties.subnet
-            subnet.id = AAZStrType(
+            waf_policy = cls._schema_on_200.value.Element.properties.waf_policy
+            waf_policy.id = AAZStrType(
                 flags={"required": True},
             )
 
