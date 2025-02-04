@@ -435,7 +435,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             skuName = self.get_sku_name()
             isVnetSubnetIdEmpty = self.get_vnet_subnet_id() in ["", None]
             if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and isVnetSubnetIdEmpty:
-                # outbound_type of Automatic SKU should be ManagedNATGateway if not provided.
+                # outbound_type of Automatic SKU should be ManagedNATGateway if no subnet id provided.
                 outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
         # validation
