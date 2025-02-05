@@ -237,6 +237,11 @@ arcdata ad-connector update:
     secondary_domain_controllers:
       rule_exclusions:
       - option_length_too_long
+sql instance-failover-group-arc create:
+  parameters:
+    partner_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 sql server-arc availability-group create:
   parameters:
     automated_backup_preference:
