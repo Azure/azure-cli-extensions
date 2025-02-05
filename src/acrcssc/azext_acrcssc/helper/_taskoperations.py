@@ -43,13 +43,27 @@ from azure.cli.core.commands.progress import IndeterminateProgressBar
 logger = get_logger(__name__)
 
 
-def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule, dryrun, run_immediately, is_create_workflow=True):
+def create_update_continuous_patch_v1(cmd,
+                                      registry,
+                                      cssc_config_file,
+                                      schedule,
+                                      dryrun,
+                                      run_immediately,
+                                      is_create_workflow=True,
+                                      force_task_update=False):
+
     logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {run_immediately}")
+
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
     schedule_cron_expression = None
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
+    else:
+        logger.debug("Schedule not provided, will attempt to get the current schedule from the task")
+        schedule_cron_expression = _get_continuous_patch_v1_trigger_schedule(cmd, registry)
+
     logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
+
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
@@ -58,23 +72,31 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule,
     else:
         if not cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Use 'az acr supply-chain workflow create' command to create {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow.")
-        _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+
+        # if the force_task_update flag is set, we will update the task yaml via ARM deployment,
+        # and that will also update the schedule. If only the schedule is updated we can chage
+        # that through client call. The configuration will need to be updated separately
+        if force_task_update:
+            logger.debug("Force task update flag is set, updating the task definition")
+            _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+        elif schedule is not None:
+            _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dryrun)
 
     if cssc_config_file is not None:
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
-
-    # on 'update' schedule is optional
-    if schedule is None:
-        task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
-        trigger = task.trigger
-        if trigger and trigger.timer_triggers:
-            schedule_cron_expression = trigger.timer_triggers[0].schedule
-
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
+
+
+def _get_continuous_patch_v1_trigger_schedule(cmd, registry):
+    task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
+    trigger = task.trigger
+    if trigger and trigger.timer_triggers:
+        return trigger.timer_triggers[0].schedule
+    return None
 
 
 def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
@@ -100,11 +122,6 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
     )
 
     logger.warning(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
-
-
-def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
-    if schedule_cron_expression is not None:
-        _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
 
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):

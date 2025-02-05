@@ -31,6 +31,7 @@ def _perform_continuous_patch_operation(cmd,
                                         schedule,
                                         dryrun=False,
                                         run_immediately=False,
+                                        force_task_update=False,
                                         is_create=True):
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
@@ -38,14 +39,17 @@ def _perform_continuous_patch_operation(cmd,
     validate_inputs(schedule, config)
 
     if not is_create:
-        validate_cssc_optional_inputs(config, schedule)
+        validate_cssc_optional_inputs(config, schedule, force_task_update)
 
     logger.debug('validations completed successfully.')
     if dryrun:
-        dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
+        dryrun_output = acr_cssc_dry_run(cmd,
+                                         registry=registry,
+                                         config_file_path=config,
+                                         is_create=is_create)
         print(dryrun_output)
     else:
-        create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create)
+        create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create, force_task_update)
 
 
 def create_acrcssc(cmd,
@@ -65,6 +69,7 @@ def create_acrcssc(cmd,
                                         schedule,
                                         dryrun,
                                         run_immediately,
+                                        force_task_update=False,
                                         is_create=True)
 
 
@@ -75,9 +80,10 @@ def update_acrcssc(cmd,
                    config,
                    schedule,
                    dryrun=False,
-                   run_immediately=False):
+                   run_immediately=False,
+                   force_task_update=False):
     '''Update a continuous patch task in the registry.'''
-    logger.debug(f'Entering update_acrcssc with parameters: {registry_name} {workflow_type} {config} {schedule} {dryrun} {run_immediately}')
+    logger.debug(f'Entering update_acrcssc with parameters: {registry_name} {workflow_type} {config} {schedule} {dryrun} {run_immediately} {force_task_update}')
     _perform_continuous_patch_operation(cmd,
                                         resource_group_name,
                                         registry_name,
@@ -85,6 +91,7 @@ def update_acrcssc(cmd,
                                         schedule,
                                         dryrun,
                                         run_immediately,
+                                        force_task_update,
                                         is_create=False)
 
 

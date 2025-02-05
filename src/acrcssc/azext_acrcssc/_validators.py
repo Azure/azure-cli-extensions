@@ -146,6 +146,6 @@ def validate_task_type(task_type):
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
 
 
-def validate_cssc_optional_inputs(cssc_config_path, schedule):
-    if cssc_config_path is None and schedule is None:
-        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule or --config")
+def validate_cssc_optional_inputs(cssc_config_path, schedule, force_task_update):
+    if cssc_config_path is None and schedule is None and force_task_update is False:
+        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule, --config, or --force-task-update")
