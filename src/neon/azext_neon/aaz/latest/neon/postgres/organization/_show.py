@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a Neon Resource
+    """Get a Neon organization
 
     :example: Organizations_Get
         az neon postgres organization show --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
@@ -47,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Name of the Neon resource",
+            help="Name of the Neon organization",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,7 +57,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Resource Group",
+            help="Name of the resource group",
             required=True,
         )
         return cls._args_schema

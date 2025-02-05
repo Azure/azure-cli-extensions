@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Neon Resource
+    """Create a Neon organization
 
     :example: Organizations_CreateOrUpdate
         az neon postgres create --resource-group demoResourceGroup --name demoNeonResource --location eastus --subscription 12345678-1234-1234-1234-123456789abc --marketplace-details "{subscription-id:abcd1234-5678-90ab-cdef-12345678abcd,subscription-status:PendingFulfillmentStart,offer-details:{publisher-id:microsoft,offer-id:neon-postgres,plan-id:serverless-plan,plan-name:'Neon Serverless Postgres - Free (Test_Liftr)',term-unit:P1M,term-id:term1234}}" --user-details "{first-name:John,last-name:Doe,email-address:johndoe@example.com,upn:johndoe,phone-number:+1234567890}" --company-details "{company-name:'DemoCompany',country:USA,business-phone:+9876543210,office-address:'123 Azure Ave, Redmond, WA',domain:democompany.com,number-of-employees:1000}" --partner-organization-properties "{organization-id:org-5678,org-name:'PartnerOrg',single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:app-9876,single-sign-on-url:'https://sso.partnerorg.com',aad-domains:['partnerorg.com']}}"
@@ -48,7 +48,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Name of the Neon resource",
+            help="Name of the Neon organization",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
@@ -57,7 +57,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Resource Group",
+            help="Name of the resource group",
             required=True,
         )
 
