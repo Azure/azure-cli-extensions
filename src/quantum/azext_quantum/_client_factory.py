@@ -82,7 +82,7 @@ def cf_providers(cli_ctx, subscription_id=None, resource_group_name=None, worksp
 
 # def cf_jobs(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
 #     return cf_quantum(cli_ctx, subscription_id, resource_group_name, workspace_name, location).jobs
-def cf_jobs(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
+def cf_jobs(cli_ctx, subscription_id=None, location=None):
     return cf_quantum(cli_ctx, subscription_id, location).jobs
 
 

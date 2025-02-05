@@ -56,7 +56,8 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
 
     query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
     orderby_expression = _construct_orderby_expression(orderby, order)
