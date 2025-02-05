@@ -16,6 +16,8 @@ class AllowedFileTypes(str, Enum):
     JMX_FILE = "JMX_FILE"
     USER_PROPERTIES = "USER_PROPERTIES"
     ZIPPED_ARTIFACTS = "ZIPPED_ARTIFACTS"
+    URL_TEST_CONFIG = "URL_TEST_CONFIG"
+    TEST_SCRIPT = 'TEST_SCRIPT'
 
 
 class AllowedIntervals(str, Enum):
@@ -29,3 +31,28 @@ class AllowedIntervals(str, Enum):
 class AllowedMetricNamespaces(str, Enum):
     LoadTestRunMetrics = "LoadTestRunMetrics"
     EngineHealthMetrics = "EngineHealthMetrics"
+
+
+class AllowedTestTypes(str, Enum):
+    JMX = "JMX"
+    URL = "URL"
+
+
+class AllowedTestPlanFileExtensions(str, Enum):
+    JMX = ".jmx"
+    URL = ".json"
+
+
+class AllowedTrendsResponseTimeAggregations(str, Enum):
+    MEAN = "MEAN"
+    MEDIAN = "MEDIAN"
+    MAX = "MAX"
+    MIN = "MIN"
+    P75 = "P75"
+    P90 = "P90"
+    P95 = "P95"
+    P96 = "P96"
+    P98 = "P98"
+    P99 = "P99"
+    P999 = "P999"
+    P9999 = "P9999"
