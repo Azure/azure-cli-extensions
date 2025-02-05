@@ -21,8 +21,13 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deployment_name: str,
-                                 template_file_name: str, parameters: dict, dryrun: Optional[bool] = False):
+def validate_and_deploy_template(cmd_ctx,
+                                 registry,
+                                 resource_group: str,
+                                 deployment_name: str,
+                                 template_file_name: str,
+                                 parameters: dict,
+                                 dryrun: Optional[bool] = False):
     logger.debug(f'Working with resource group {resource_group}, registry {registry} template {template_file_name}')
 
     deployment_path = os.path.dirname(
@@ -110,7 +115,7 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     deployment = Deployment(
         properties=template,
         # tags = { "test": CSSC_TAGS },
-        # we need to know if tagging is something that will help ust,
+        # we need to know if tagging is something that will help us,
         # tasks are proxy resources, so not sure how that would work
     )
 
