@@ -221,7 +221,12 @@ arcdata dc create:
     metrics_ui_public_key_file:
       rule_exclusions:
       - option_length_too_long
+arcdata dc update:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
 arcdata ad-connector create:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
   parameters:
     domain_service_account_secret:
       rule_exclusions:
@@ -238,11 +243,15 @@ arcdata ad-connector update:
       rule_exclusions:
       - option_length_too_long
 sql instance-failover-group-arc create:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
   parameters:
     partner_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
 sql server-arc availability-group create:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
   parameters:
     automated_backup_preference:
       rule_exclusions:
@@ -274,6 +283,8 @@ sql mi-arc update:
       rule_exclusions:
       - option_length_too_long
 sql mi-arc create:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
   parameters:
     sync_secondary_to_commit:
       rule_exclusions:
