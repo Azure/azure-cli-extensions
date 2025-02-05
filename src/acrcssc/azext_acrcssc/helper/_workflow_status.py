@@ -128,7 +128,7 @@ class WorkflowTaskStatus:
             original_tag = match.group(2)
             return f"{repository}:{original_tag}"
 
-        match = re.search(r'Scanning image for vulnerability (\S+) for tag (\S+)', logs)
+        match = re.search(r'Scanning image for vulnerability(?: and patch)? (\S+) for tag (\S+)', logs)        
         if match:
             patched_image = match.group(1)
             original_tag = match.group(2)
