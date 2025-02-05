@@ -248,7 +248,10 @@ class WorkflowTaskStatus:
     def from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns, progress_indicator=None):
         WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, scan_taskruns, progress_indicator)
         all_status = {}
-        additional_tasklog_retrieval = []
+
+        # we only retrieve logs for scan taskruns in the begining, we will need to retrieved the logs for
+        # failed patch taskruns to populate patch_error_reason. It will be faster to retrieve in a batch
+        failed_patch_tasklog_retrieval = []
 
         for scan in scan_taskruns:
             if progress_indicator:
@@ -282,13 +285,12 @@ class WorkflowTaskStatus:
                 patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id), None)
                 all_status[image].patch_task = patch_task
                 if WorkflowTaskStatus._task_status_to_workflow_status(patch_task) == WorkflowTaskState.FAILED.value:
-                    # keep track of the failed patch task, so we can get the logs for it
-                    additional_tasklog_retrieval.append(all_status[image])
+                    failed_patch_tasklog_retrieval.append(all_status[image])
 
-        if len(additional_tasklog_retrieval) > 0:
-            taskrunList = [task.patch_task for task in additional_tasklog_retrieval]
+        if len(failed_patch_tasklog_retrieval) > 0:
+            taskrunList = [task.patch_task for task in failed_patch_tasklog_retrieval]
             WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, taskrunList, progress_indicator)
-            for workflow_status in additional_tasklog_retrieval:
+            for workflow_status in failed_patch_tasklog_retrieval:
                 workflow_status.patch_logs = workflow_status.patch_task.task_log_result
 
         return [status.get_status() for status in all_status.values()]
@@ -354,6 +356,9 @@ class WorkflowTaskStatus:
             result += f"\tscan error reason: {status.scan_error_reason}\n"
 
         result += f"\tpatch status: {status.patch_status}\n"
+
+        if hasattr(status, "patch_error_reason"):
+            result += f"\tpatch error reason: {status.patch_error_reason}\n"
 
         if hasattr(status, "patch_skipped_reason"):
             result += f"\tpatch skipped reason: {status.patch_skipped_reason}\n"
