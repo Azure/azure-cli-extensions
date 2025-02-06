@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/associations/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/associations/{}", "2025-01-01"],
         ]
     }
 
@@ -64,6 +64,28 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
             ),
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.association_type = AAZStrArg(
+            options=["--association-type"],
+            arg_group="Properties",
+            help="Association Type",
+            enum={"subnets": "subnets"},
+        )
+        _args_schema.subnet = AAZObjectArg(
+            options=["--subnet"],
+            arg_group="Properties",
+            help="Association Subnet",
+            nullable=True,
+        )
+
+        subnet = cls._args_schema.subnet
+        subnet.id = AAZStrArg(
+            options=["id"],
+            help="Association ID.",
         )
 
         # define Arg Group "Resource"
@@ -164,7 +186,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -267,7 +289,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -325,7 +347,17 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("associationType", AAZStrType, ".association_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("subnet", AAZObjectType, ".subnet")
+
+            subnet = _builder.get(".properties.subnet")
+            if subnet is not None:
+                subnet.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -390,6 +422,7 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
         )
         properties.subnet = AAZObjectType()
 
