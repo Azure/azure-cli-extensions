@@ -210,7 +210,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
 def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
     logger.debug("Entering cancel_continuous_patch_v1")
     acr_task_run_client = cf_acr_runs(cmd.cli_ctx)
-    running_tasks = _get_taskruns_with_filter(
+    running_tasks = WorkflowTaskStatus.get_taskruns_with_filter(
         acr_task_run_client,
         registry_name=registry_name,
         resource_group_name=resource_group_name,
@@ -243,14 +243,14 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
     previous_date_filter = previous_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     # th API returns an iterator, if we want to be able to modify it, we need to convert it to a list
-    scan_taskruns = _get_taskruns_with_filter(
+    scan_taskruns = WorkflowTaskStatus.get_taskruns_with_filter(
         acr_task_run_client,
         registry.name,
         resource_group_name,
         taskname_filter=[CONTINUOUSPATCH_TASK_SCANIMAGE_NAME],
         date_filter=previous_date_filter)
 
-    patch_taskruns = _get_taskruns_with_filter(
+    patch_taskruns = WorkflowTaskStatus.get_taskruns_with_filter(
         acr_task_run_client,
         registry.name,
         resource_group_name,
@@ -274,28 +274,6 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
     progress_indicator.end()
 
     return image_status
-
-
-def _get_taskruns_with_filter(acr_task_run_client, registry_name, resource_group_name, taskname_filter=None, date_filter=None, status_filter=None, top=1000):
-    # filters based on OData, found in ACR.BuildRP.DataModels - RunFilter.cs
-    filter = ""
-    if taskname_filter:
-        taskname_filter_str = "', '".join(taskname_filter)
-        filter += f"TaskName in ('{taskname_filter_str}')"
-
-    if date_filter:
-        if filter != "":
-            filter += " and "
-        filter += f"createTime ge {date_filter}"
-
-    if status_filter:
-        if filter != "":
-            filter += " and "
-        status_filter_str = "', '".join(status_filter)
-        filter += f"Status in ('{status_filter_str}')"
-
-    taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter, top=top)
-    return list(taskruns)
 
 
 def _trigger_task_run(cmd, registry, resource_group, task_name):

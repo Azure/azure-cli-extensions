@@ -276,13 +276,16 @@ class WorkflowTaskStatus:
             all_status[image].scan_task = task
             all_status[image].scan_logs = logs
             patch_task_id = all_status[image]._get_patch_task_from_scan_tasklog()
-            # missing the patch task id means that the scan either failed, or succeeded and patching is not needed
+            # missing the patch task id means that the scan either failed, or succeeded and patching is not needed.
             # this is important, because patching status depends on both the patching task status (if it exists) and the scan task status
             if patch_task_id is not None:
                 # it is possible for the patch task to be mentioned in the logs, but the API has not returned the
-                # taskrun for it yet, defaulting to 'None' stops this section from throwing, but it will mean there
-                # is incomplete information
-                patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id), None)
+                # taskrun for it yet, attempt to retrieve it from client
+                try:
+                    patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id))
+                except StopIteration:
+                    patch_task = WorkflowTaskStatus._get_missing_taskrun(taskrun_client, registry, patch_task_id)
+
                 all_status[image].patch_task = patch_task
                 if WorkflowTaskStatus._task_status_to_workflow_status(patch_task) == WorkflowTaskState.FAILED.value:
                     failed_patch_tasklog_retrieval.append(all_status[image])
@@ -436,3 +439,44 @@ class WorkflowTaskStatus:
                 output += "\n" + line
 
         return output
+
+    @staticmethod
+    def _get_missing_taskrun(taskrun_client, registry, run_id):
+        try:
+            resourceid = parse_resource_id(registry.id)
+            resource_group = resourceid[RESOURCE_GROUP]
+            runs = WorkflowTaskStatus.get_taskruns_with_filter(taskrun_client,
+                                                               registry_name=registry.name,
+                                                               resource_group_name=resource_group,
+                                                               runId_filter=run_id)
+            return runs[0]
+        except Exception as e:
+            logger.debug(f"Failed to find taskrun {run_id} from registry {registry.name} : {e}")
+            return None
+
+    @staticmethod
+    def get_taskruns_with_filter(acr_task_run_client, registry_name, resource_group_name, taskname_filter=None, runId_filter=None, date_filter=None, status_filter=None, top=1000):
+        # filters based on OData, found in ACR.BuildRP.DataModels - RunFilter.cs
+        filter = ""
+        if taskname_filter:
+            taskname_filter_str = "', '".join(taskname_filter)
+            filter += f"TaskName in ('{taskname_filter_str}')"
+
+        if runId_filter:
+            if filter != "":
+                filter += " and "
+            filter += f"runId eq '{runId_filter}'"
+
+        if date_filter:
+            if filter != "":
+                filter += " and "
+            filter += f"createTime ge {date_filter}"
+
+        if status_filter:
+            if filter != "":
+                filter += " and "
+            status_filter_str = "', '".join(status_filter)
+            filter += f"Status in ('{status_filter_str}')"
+
+        taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter, top=top)
+        return list(taskruns)
