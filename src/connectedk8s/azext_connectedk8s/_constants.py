@@ -163,6 +163,7 @@ Download_Exe_Fault_Type = (
 Create_Directory_Fault_Type = (
     "Error while creating directory for placing the executable"
 )
+Remove_File_Fault_Type = "Error while deleting the specified file"
 Run_Clientproxy_Fault_Type = "Error while starting client proxy process."
 Post_Hybridconn_Fault_Type = (
     "Error while posting hybrid connection details to proxy process"
@@ -460,23 +461,20 @@ Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (
 )
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.022011"
+CLIENT_PROXY_VERSION = "1.3.029301"
+CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46"
 API_CALL_RETRIES = 12
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
-RELEASE_DATE_WINDOWS = "release12-01-23"
-RELEASE_DATE_LINUX = "release12-01-23"
 CSP_REFRESH_TIME = 300
 
 # Default timeout in seconds for Onboarding Helm Install
 DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
 
 # URL constants
-CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
-CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
-CSP_Storage_Url_Fairfax = "https://k8sconnectcsp.azureedge.us"
+CLIENT_PROXY_MCR_TARGET = "mcr.microsoft.com/azureconnectivity/proxy"
 HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
 HELM_VERSION = "v3.12.2"
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"

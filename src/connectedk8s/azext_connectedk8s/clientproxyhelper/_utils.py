@@ -34,6 +34,10 @@ if TYPE_CHECKING:
 
     from knack.commands import CLICommand
 
+    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+        CredentialResults,
+    )
+
 logger = get_logger(__name__)
 
 
@@ -128,7 +132,7 @@ def fetch_and_post_at_to_csp(
     tenant_id: str,
     kid: str,
     clientproxy_process: Popen[bytes],
-) -> requests.Response:
+) -> tuple[requests.Response, int]:
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode("utf-8")).decode(
         "utf-8"
@@ -182,7 +186,7 @@ def fetch_and_post_at_to_csp(
         )
 
     sys.stderr = original_stderr
-    return post_at_response
+    return post_at_response, accessToken.expires_on
 
 
 def insert_token_in_kubeconfig(data: dict[str, Any], token: str) -> str:
@@ -193,6 +197,26 @@ def insert_token_in_kubeconfig(data: dict[str, Any], token: str) -> str:
     kubeconfig = yaml.dump(dict_yaml).encode("utf-8")
     b64kubeconfig = b64encode(kubeconfig).decode("utf-8")
     return b64kubeconfig
+
+
+# Prepare data as needed by client proxy executable
+def prepare_clientproxy_data(response: CredentialResults) -> dict[str, Any]:
+    data: dict[str, Any] = {}
+    data["kubeconfigs"] = []
+    kubeconfig = {}
+    kubeconfig["name"] = "Kubeconfig"
+    kubeconfig["value"] = b64encode(response.kubeconfigs[0].value).decode("utf-8")  # type: ignore[index]
+    data["kubeconfigs"].append(kubeconfig)
+    data["hybridConnectionConfig"] = {}
+    data["hybridConnectionConfig"]["relay"] = response.hybrid_connection_config.relay  # type: ignore[attr-defined]
+    data["hybridConnectionConfig"]["hybridConnectionName"] = (
+        response.hybrid_connection_config.hybrid_connection_name  # type: ignore[attr-defined]
+    )
+    data["hybridConnectionConfig"]["token"] = response.hybrid_connection_config.token  # type: ignore[attr-defined]
+    data["hybridConnectionConfig"]["expirationTime"] = (
+        response.hybrid_connection_config.expiration_time  # type: ignore[attr-defined]
+    )
+    return data
 
 
 def check_process(processName: str) -> bool:
