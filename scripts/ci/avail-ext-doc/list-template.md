@@ -5,7 +5,7 @@ author: haroldrandom
 ms.author: jianzen
 manager: yonzhan,yungezz
 ms.date: {{ date }}
-ms.topic: language-reference
+ms.topic: generated-reference
 ms.service: azure-cli
 ms.custom: devx-track-azurecli
 ---
