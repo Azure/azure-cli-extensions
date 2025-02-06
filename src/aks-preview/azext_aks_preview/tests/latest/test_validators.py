@@ -647,9 +647,9 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
             )
 
     def test_application_security_groups_without_allowed_host_ports(self):
-        asg_ids = [
+        asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
-        ]
+        ])
         namespace = SimpleNamespace(
             **{
                 "asg_ids": asg_ids,
@@ -662,9 +662,9 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
             )
 
     def test_nodepool_application_security_groups_without_allowed_host_ports(self):
-        asg_ids = [
+        asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
-        ]
+        ])
         namespace = SimpleNamespace(
             **{
                 "nodepool_asg_ids": asg_ids,
@@ -698,10 +698,10 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
             namespace
         )
     def test_multiple_application_security_groups(self):
-        asg_ids = [
+        asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
-        ]
+        ])
         namespace = SimpleNamespace(
             **{
                 "asg_ids": asg_ids,
@@ -713,10 +713,10 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         )
 
     def test_multiple_nodepool_application_security_groups(self):
-        asg_ids = [
+        asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
-        ]
+        ])
         namespace = SimpleNamespace(
             **{
                 "nodepool_asg_ids": asg_ids,
