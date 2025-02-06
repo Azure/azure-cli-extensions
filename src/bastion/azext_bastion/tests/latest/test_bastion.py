@@ -29,6 +29,18 @@ class BastionScenario(ScenarioTest):
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet_name} -n {subnet_name} --default-outbound-access false')
 
         self.cmd(
+            "network bastion create -n {bastion_name} -g {rg} --vnet-name {vnet_name} "
+            "--sku Developer --network-acls-ips \"1.1.1.1/16 1.1.1.2/16\"",
+            checks=[
+                self.check("name", "{bastion_name}"),
+                self.check("sku.name", "Developer"),
+                self.check("type", "Microsoft.Network/bastionHosts"),
+            ]
+        )
+
+        self.cmd("network bastion delete -n {bastion_name} -g {rg} -y")
+
+        self.cmd(
             "network bastion create -n {bastion_name} -g {rg} --public-ip-address {ip_name} --vnet-name {vnet_name} "
             "--disable-copy-paste --enable-ip-connect --enable-tunneling --scale-units 2 --tags foo=bar",
             checks=[
