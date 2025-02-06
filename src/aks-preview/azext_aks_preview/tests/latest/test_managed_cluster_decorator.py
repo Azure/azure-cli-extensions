@@ -3958,6 +3958,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
+        self.create_attach_agentpool_context(ctx1)
         outbound_type_1 = ctx1._get_outbound_type(False, False, None)
         expect_outbound_type_1 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
         self.assertEqual(outbound_type_1,expect_outbound_type_1)
@@ -3968,9 +3969,32 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
+        self.create_attach_agentpool_context(ctx2)
         outbound_type_2 = ctx2._get_outbound_type(False, False, None)
         expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
         self.assertEqual(outbound_type_2,expect_outbound_type_2)
+
+        ctx3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic", "vnet_subnet_id": "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx3)
+        outbound_type_3 = ctx3._get_outbound_type(False, False, None)
+        expect_outbound_type_3 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+        self.assertEqual(outbound_type_3,expect_outbound_type_3)
+
+        ctx4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx4)
+        outbound_type_4 = ctx4._get_outbound_type(False, False, None)
+        expect_outbound_type_4 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+        self.assertEqual(outbound_type_4,expect_outbound_type_4)
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -4265,6 +4289,30 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             api_server_access_profile=ground_truth_api_server_access_profile_3,
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "apiserver_subnet_id": apiserver_subnet_id,
+                "vnet_subnet_id": vnet_subnet_id,
+                "sku": "automatic",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.set_up_api_server_access_profile(mc_4)
+        ground_truth_api_server_access_profile_4 = (
+            self.models.ManagedClusterAPIServerAccessProfile(
+                subnet_id=apiserver_subnet_id,
+            )
+        )
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=ground_truth_api_server_access_profile_4,
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
     def test_build_gitops_addon_profile(self):
         # default
