@@ -28,6 +28,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 logger = get_logger(__name__)
@@ -43,8 +44,10 @@ else:
         CONFIG = json.load(f)
     for key in CONFIG:
         if not CONFIG[key]:
-            raise RequiredArgumentMissingError(f"Missing required configuration in {config_path} file. Make sure all \
-properties are populated.")
+            raise RequiredArgumentMissingError(
+                f"Missing required configuration in {config_path} file. Make sure all \
+properties are populated."
+            )
 
 
 def _get_test_data_file(filename):
@@ -68,15 +71,19 @@ def install_helm_client():
 
     # Set helm binary download & install locations
     if operating_system == "windows":
-        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-\
+        download_location_string = (
+            f".azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-\
             {operating_system}-amd64.zip"
+        )
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
         )
         requestUri = f"{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
     elif operating_system == "linux" or operating_system == "darwin":
-        download_location_string = f".azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-\
+        download_location_string = (
+            f".azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-\
             {operating_system}-amd64.tar.gz"
+        )
         install_location_string = (
             f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
         )
@@ -148,8 +155,10 @@ def install_kubectl_client():
         elif operating_system == "linux" or operating_system == "darwin":
             kubectl_path = os.path.join(kubectl_filepath, "kubectl")
         else:
-            logger.warning(f"The {operating_system} platform is not currently supported for installing kubectl \
-client.")
+            logger.warning(
+                f"The {operating_system} platform is not currently supported for installing kubectl \
+client."
+            )
             return
 
         if os.path.isfile(kubectl_path):
@@ -712,8 +721,10 @@ only supported when auto-upgrade is set to false",
             "connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
             {managed_cluster_name}-admin"
         )
-        response = requests.post(f'https://{CONFIG["location"]}.dp.kubernetesconfiguration.azure.com/azure-\
-            arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
+        response = requests.post(
+            f"https://{CONFIG['location']}.dp.kubernetesconfiguration.azure.com/azure-\
+            arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable"
+        )
         jsonData = json.loads(response.text)
         repo_path = jsonData["repositoryPath"]
         index_value = 0
@@ -1003,14 +1014,11 @@ If there are any issues with the test, please verify manually that there are no 
         operating_system = platform.system()
         windows_os = "Windows"
         proxy_process_name = None
-        if operating_system == windows_os:
-            proxy_process_name = (
-                f"arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-            )
-        else:
-            proxy_process_name = (
-                f"arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-            )
+        client_operating_system = proxybinaryutils._get_client_operating_system()
+        client_architecture = proxybinaryutils._get_client_architeture()
+        proxy_process_name = proxybinaryutils._get_proxy_filename(
+            client_operating_system, client_architecture
+        )
 
         # There cannot be more than one connectedk8s proxy running, since they would use the same port.
         script = [
