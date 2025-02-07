@@ -171,6 +171,7 @@ class ProviderHubScenario(ScenarioTest):
                 '--incident-routing-service "Resource Provider Service as a Service" '
                 '--incident-routing-team "RPaaS" '
                 '--provider-version "2.0" '
+                '--provider-type "Hidden, Internal" '
                 '--provider-namespace "{providerNamespace}" '
                 '--metadata {{\\"BypassManifestValidation\\":true}}')
 
@@ -213,7 +214,8 @@ class ProviderHubScenario(ScenarioTest):
                 '--endpoints "[{{api-versions:[2019-01-01],locations:[WestUS]}}]" '
                 '--regionality "Regional" '
                 '--provider-namespace "{providerNamespace}" '
-                '--resource-type "extensionresourcetype"')
+                '--resource-type "extensionresourcetype" '
+                '--routing-type "ProxyOnly, Extension" ')
         
     # EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_ListByProviderRegistration
     @AllowLargeResponse()
