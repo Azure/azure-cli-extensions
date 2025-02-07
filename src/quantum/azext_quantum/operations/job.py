@@ -76,8 +76,8 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     job_list_string = job_list_string[:-2]
     job_list_string += "]"
 
-    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON
-    # json.loads doesn't like the all the single quotes, but ast.literal_eval handles them OK
+    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON.
+    # json.loads doesn't like the all the single quotes in the response, but ast.literal_eval handles them OK.
     return ast.literal_eval(job_list_string)
 
 
