@@ -1,7 +1,7 @@
 import os
 
 from abc import ABC, abstractmethod
-from jinja2 import Template
+from knack.log import get_logger
 from .base_converter import ConverterTemplate
 from .environment_converter import EnvironmentConverter
 from .app_converter import AppConverter
@@ -10,6 +10,13 @@ from .readme_converter import ReadMeConverter
 from .main_converter import MainConverter
 from .param_converter import ParamConverter
 from .gateway_converter import GatewayConverter
+from .eureka_converter import EurekaConverter
+from .service_registry_converter import ServiceRegistryConverter
+from .config_server_converter import ConfigServerConverter
+from .acs_converter import ACSConverter
+from .live_view_converter import LiveViewConverter
+
+logger = get_logger(__name__)
 
 # Context Class
 class ConversionContext:
@@ -40,10 +47,12 @@ class ConversionContext:
             source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
         )
 
+        asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
+
         for app in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps'):
-            appName = app['name'].split('/')[-1]
+            appName = app['name'].split('/')[-1][:-3]
             converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app)
-            
+
         # converted_contents.append(
         #     self.get_converter(RevisionConverter).convert(
         #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
@@ -52,19 +61,10 @@ class ConversionContext:
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(None)
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)
 
-        for gateway in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways'):
-            gateway_name = gateway['name'].split('/')[-1]
-            gateway_key = gateway_name+"_"+self.get_converter(GatewayConverter).get_template_name()
-            routes = []
-            for gateway_route in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
-                routes.append(gateway_route)
-            gateway_source = {
-                "gateway": gateway,
-                "routes": routes,
-            }
-            converted_contents[gateway_key] = self.get_converter(GatewayConverter).convert(gateway_source)
-            print("converted_contents for gateway: \n", converted_contents[gateway_key])
-            break
+        converted_contents = self._convert_gateway(source_wrapper, converted_contents)
+        converted_contents = self._convert_config_server_and_ACS(source_wrapper, converted_contents, asa_service)
+        converted_contents = self._convert_live_view(source_wrapper, converted_contents)
+        converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service)
 
         return converted_contents
 
@@ -77,6 +77,60 @@ class ConversionContext:
             with open(output_filename, 'w', encoding='utf-8') as output_file:
                 print(f"Start to generate the {output_filename} file ...")
                 output_file.write(content)
+
+    def _convert_gateway(self, source_wrapper, converted_contents):
+        for gateway in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways'):
+            gateway_key = self.get_converter(GatewayConverter).get_template_name()
+            routes = []
+            for gateway_route in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
+                routes.append(gateway_route)
+            gateway_source = {
+                "gateway": gateway,
+                "routes": routes,
+            }
+            converted_contents[gateway_key] = self.get_converter(GatewayConverter).convert(gateway_source)
+            logger.info(f"converted_contents for gateway: {converted_contents[gateway_key]}")
+        return converted_contents
+
+    def _convert_config_server_and_ACS(self, source_wrapper, converted_contents, asa_service):
+        enabled_config_server = False
+
+        for config_server in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers'):
+            enabled_config_server = True
+            config_key = self.get_converter(ConfigServerConverter).get_template_name()
+            converted_contents[config_key] = self.get_converter(ConfigServerConverter).convert(config_server)
+            logger.debug(f"converted_contents for config server: {converted_contents[config_key]}")
+
+        if not enabled_config_server:
+            for acs in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/configurationServices'):
+                config_key = self.get_converter(ACSConverter).get_template_name()
+                converted_contents[config_key] = self.get_converter(ACSConverter).convert(acs)
+                logger.debug(f"converted_contents for Application Configuration Service: {converted_contents[config_key]}")
+
+        return converted_contents
+
+    def _convert_live_view(self, source_wrapper, converted_contents):
+        for live_view in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews'):
+            live_view_key = self.get_converter(LiveViewConverter).get_template_name()
+            converted_contents[live_view_key] = self.get_converter(LiveViewConverter).convert(live_view)
+            logger.info(f"converted_contents for Live View: {converted_contents[live_view_key]}")
+        return converted_contents
+
+    def _convert_eureka_and_service_registry(self, source_wrapper, converted_contents, asa_service):
+        is_enterprise_tier = self._is_enterprise_tier(asa_service)
+        for service_registry in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries'):
+            eureka_key = self.get_converter(ServiceRegistryConverter).get_template_name()
+            converted_contents[eureka_key] = self.get_converter(ServiceRegistryConverter).convert(service_registry)
+            logger.info(f"converted_contents for Service Registry: {converted_contents[eureka_key]}")
+            return converted_contents
+
+        if not is_enterprise_tier:
+            eureka_key = self.get_converter(EurekaConverter).get_template_name()
+            converted_contents[eureka_key] = self.get_converter(EurekaConverter).convert()
+            return converted_contents
+
+    def _is_enterprise_tier(self, asa_service):
+        return asa_service['sku']['tier'] == 'Enterprise'
 
 class SourceDataWrapper:
     def __init__(self, source):

@@ -26,6 +26,27 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 module managedGateway 'gateway.bicep' = {
   name: 'gatewayDeployment'
   params: {
-    managedEnvironments_ninpan_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+
+module managedConfig 'config_server.bicep' = {
+  name: 'configServerDeployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+
+module managedEureka 'eureka.bicep' = {
+  name: 'eurekaDeployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+
+module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
+  name: 'springBootAdminDeployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }

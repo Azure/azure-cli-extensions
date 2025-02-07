@@ -10,6 +10,11 @@ from .converter.environment_converter import EnvironmentConverter
 from .converter.app_converter import AppConverter
 from .converter.revision_converter import RevisionConverter
 from .converter.gateway_converter import GatewayConverter
+from .converter.eureka_converter import EurekaConverter
+from .converter.service_registry_converter import ServiceRegistryConverter
+from .converter.config_server_converter import ConfigServerConverter
+from .converter.acs_converter import ACSConverter
+from .converter.live_view_converter import LiveViewConverter
 from .converter.readme_converter import ReadMeConverter
 from .converter.main_converter import MainConverter
 from .converter.param_converter import ParamConverter
@@ -19,7 +24,7 @@ logger = get_logger(__name__)
 
 def migration_aca_start(cmd, client, resource_group, service):
     # API calls
-    print("Start export ARM template for ASA service...")
+    logger.info("Start export ARM template for ASA service...")
     asa_arm = export_asa_arm_template(cmd, resource_group, service)
 
     # Create context and add converters
@@ -29,11 +34,16 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.add_converter(AppConverter())
     context.add_converter(RevisionConverter())
     context.add_converter(GatewayConverter(client, resource_group, service))
+    context.add_converter(EurekaConverter())
+    context.add_converter(ServiceRegistryConverter())
+    context.add_converter(ConfigServerConverter())
+    context.add_converter(ACSConverter())
+    context.add_converter(LiveViewConverter())
     context.add_converter(ReadMeConverter())
     context.add_converter(ParamConverter())
 
     # Define the parameters for the Bicep template and output the Bicep files
-    print("Start to generate ACA bicep files based on parameters...")
+    logger.info("Start to generate ACA bicep files based on parameters...")
 
     # Prepare bicep parameters
     main_bicep_params = get_aca_bicep_params(asa_arm)
@@ -42,12 +52,12 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.set_params_for_converter(EnvironmentConverter, main_bicep_params)
 
     # Run all converters
-    print("Start to run all converters...")
+    logger.info("Start to run all converters...")
     converted_contents = context.run_converters(asa_arm)
 
     # Save each line of converted content to a separate file
     context.save_to_files(converted_contents, os.path.join("output",""))
-    print("Succeed to generate Bicep files")
+    logger.info("Succeed to generate Bicep files")
 
 
 def export_asa_arm_template(cmd, resource_group, service):

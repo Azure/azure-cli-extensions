@@ -1,0 +1,23 @@
+param managedEnvironments_aca_env_name string
+
+resource sbaTest 'Microsoft.App/managedEnvironments/javaComponents@2024-02-02-preview' = {
+    name: '${managedEnvironments_aca_env_name}/{{ data.sbaName }}'
+    dependsOn: [
+        resourceId('Microsoft.App/managedEnvironments', managedEnvironments_aca_env_name)
+    ]
+    properties: {
+        componentType: 'SpringBootAdmin'
+        configurations: [
+            {% for config in data.configurations %}
+            {
+                propertyName: '{{ config.propertyName }}'
+                value: '{{ config.value }}'
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+        scale: {
+            minReplicas: {{ data.replicas }}
+            maxReplicas: {{ data.replicas }}
+        }
+    }
+}
