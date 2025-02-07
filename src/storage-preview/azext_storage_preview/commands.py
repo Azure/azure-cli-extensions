@@ -146,7 +146,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=file_related_exception_handler,
                                        transform=transform_file_show_result)
         g.storage_custom_command('download-batch', 'storage_file_download_batch', client_factory=cf_share_client)
-        g.storage_custom_command_oauth('create-hard-link', 'create_hard_link')
+        g.storage_custom_command_oauth('hard-link create', 'file_hard_link_create')
 
     local_users_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'

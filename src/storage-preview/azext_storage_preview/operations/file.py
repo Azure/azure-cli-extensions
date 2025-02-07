@@ -76,13 +76,17 @@ def list_share_files(cmd, client, directory_name=None, timeout=None, exclude_dir
 
 
 def storage_file_upload(client, local_file_path, content_settings=None,
-                        metadata=None, validate_content=False, progress_callback=None, max_connections=2, timeout=None):
+                        metadata=None, validate_content=False, progress_callback=None, max_connections=2, timeout=None,
+                        file_mode=None, owner=None, group=None):
     upload_args = {
         'content_settings': content_settings,
         'metadata': metadata,
         'validate_content': validate_content,
         'max_concurrency': max_connections,
-        'timeout': timeout
+        'timeout': timeout,
+        'file_mode': file_mode,
+        'owner': owner,
+        'group': group
     }
     if progress_callback:
         upload_args['progress_hook'] = progress_callback
@@ -445,5 +449,5 @@ def file_updates(client, **kwargs):
     return client.set_http_headers(**kwargs)
 
 
-def create_hard_link(client, **kwargs):
+def file_hard_link_create(client, **kwargs):
     return client.create_hard_link(**kwargs)

@@ -106,5 +106,14 @@ class StorageFileSharePreviewScenarios(StorageScenarioMixin, ScenarioTest):
     # @StorageAccountPreparer(location='eastus2euap')
     # def test_storage_file_share_nfs_scenario(self, resource_group, storage_account):
     #     account_info = self.get_account_info(resource_group, storage_account)
-    #     s1 = self.create_share(account_info)
+    #     share_name = self.create_random_name('share', 24)
+    #     self.storage_cmd('storage share create --name {} --protocol nfs', account_info, share_name)
+    #     self.storage_cmd('storage share show --name {}', account_info)\
+    #         .assert_with_checks(JMESPathCheck('protocol', 'NFS1'))
+    #     dir_name = self.create_random_name('dir', 16)
+    #     self.storage_cmd('storage directory create --share-name {} --name {} --file-mode {} --owner {} --group {}',
+    #                      share_name, dir_name, 'rwxr--r--', '1', '2')\
+    #         .assert_with_checks(JMESPathCheck('fileMode', 'rwxr--r--'),
+    #                             JMESPathCheck('owner', '1'),
+    #                             JMESPathCheck('group', '2'))
 
