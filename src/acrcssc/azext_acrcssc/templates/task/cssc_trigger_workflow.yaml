@@ -24,9 +24,15 @@ steps:
   - cmd: bash -c 'sed -n "/^Listing/,/^Matches/ {/^Listing/b;/^Matches/b;/^Repo/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
   - cmd: bash -c 'sed -n "/^Configured Tag Convention:/p" filterReposWithPatchTags.txt' > tagConvention.txt
   - cmd: az login --identity 
-  - cmd: |
-        az -c 'while read line;do \
+  - id: scan-and-schedule-patch
+    timeout: 1800
+    cmd: |
+        az -c '
+        counter=0; \
+        batchSize=10; \
+        sleepDuration=30; \
         RegistryName={{.Run.Registry}}; \
+        while read line;do \
         IFS=',' read -r -a array <<< "${line}"
         RepoName=${array[0]}
         OriginalTag=${array[1]}
@@ -47,5 +53,10 @@ steps:
         fi
         echo "Scheduling $ScanImageAndSchedulePatchTask for $RegistryName/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber"; \
         az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait; \
+        counter=$((counter+1)); \
+        if [ $((counter%batchSize)) -eq 0 ]; then \
+          echo "Waiting for $sleepDuration seconds before scheduling scans for next batch of images"; \
+          sleep $sleepDuration; \
+        fi; \
         done < filteredReposAndTags.txt;'
     entryPoint: /bin/bash
