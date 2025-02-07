@@ -15,7 +15,7 @@ steps:
       echo "Below images will be scanned and patched (if any os vulnerabilities found) based on --filter-policy.\n$(cat filterReposToDisplay.txt)"
       totalImages=$(sed -n "s/^Matches found://p" filterReposToDisplay.txt | tr -d "[:space:]")
       if [ $totalImages -gt $maxLimit ]; then
-        echo "You have exceeded the maximum limit of $maxLimit images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images. Failing the workflow.."
+        echo "You have exceeded the maximum limit of $maxLimit images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images. Failing the workflow."
         exit 1
       fi'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --show-patch-tags --dry-run> filterReposWithPatchTags.txt
