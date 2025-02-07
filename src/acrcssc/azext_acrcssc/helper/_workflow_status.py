@@ -176,6 +176,24 @@ class WorkflowTaskStatus:
         if match:
             return match.group(1)
 
+    def _get_patch_error_reason_from_tasklog(self):
+        if self.patch_task is None:
+            return None
+        return self._get_errors_from_tasklog(self.patch_logs)
+
+    def _get_scan_error_reason_from_tasklog(self):
+        if self.scan_task is None:
+            return None
+        return self._get_errors_from_tasklog(self.scan_logs)
+
+    def _get_errors_from_tasklog(self, tasklog):
+        match = re.findall(r'(?i)\b(error\b.*)', tasklog)
+        # TODO: should we filter out any error?
+        if match:
+            # retrieve only unique errors, sort them to make the output deterministic
+            return str.join("\n", sorted(set(match)))
+        return None
+
     def _get_patched_image_name_from_tasklog(self):
         if self.scan_task is None:
             return None
@@ -231,6 +249,10 @@ class WorkflowTaskStatus:
         WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, scan_taskruns, progress_indicator)
         all_status = {}
 
+        # we only retrieve logs for scan taskruns in the begining, we will need to retrieved the logs for
+        # failed patch taskruns to populate patch_error_reason. It will be faster to retrieve in a batch
+        failed_patch_tasklog_retrieval = []
+
         for scan in scan_taskruns:
             if progress_indicator:
                 progress_indicator.update_progress()
@@ -254,11 +276,25 @@ class WorkflowTaskStatus:
             all_status[image].scan_task = task
             all_status[image].scan_logs = logs
             patch_task_id = all_status[image]._get_patch_task_from_scan_tasklog()
-            # missing the patch task id means that the scan either failed, or succeeded and patching is not needed
+            # missing the patch task id means that the scan either failed, or succeeded and patching is not needed.
             # this is important, because patching status depends on both the patching task status (if it exists) and the scan task status
             if patch_task_id is not None:
-                patch_task = next(task for task in patch_taskruns if task.run_id == patch_task_id)
+                # it is possible for the patch task to be mentioned in the logs, but the API has not returned the
+                # taskrun for it yet, attempt to retrieve it from client
+                try:
+                    patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id))
+                except StopIteration:
+                    patch_task = WorkflowTaskStatus._get_missing_taskrun(taskrun_client, registry, patch_task_id)
+
                 all_status[image].patch_task = patch_task
+                if WorkflowTaskStatus._task_status_to_workflow_status(patch_task) == WorkflowTaskState.FAILED.value:
+                    failed_patch_tasklog_retrieval.append(all_status[image])
+
+        if len(failed_patch_tasklog_retrieval) > 0:
+            taskrunList = [task.patch_task for task in failed_patch_tasklog_retrieval]
+            WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, taskrunList, progress_indicator)
+            for workflow_status in failed_patch_tasklog_retrieval:
+                workflow_status.patch_logs = workflow_status.patch_task.task_log_result
 
         return [status.get_status() for status in all_status.values()]
 
@@ -272,10 +308,18 @@ class WorkflowTaskStatus:
         patched_image = self._get_patched_image_name_from_tasklog()
         workflow_type = CSSCTaskTypes.ContinuousPatchV1.value
         patch_skipped_reason = ""
+        scan_error_reason = ""
+        patch_error_reason = ""
 
         # this situation means that we don't have a patched image
         if self.patch_status() == WorkflowTaskState.SKIPPED.value:
             patch_skipped_reason = self._get_patch_skip_reason_from_tasklog()
+
+        if self.scan_status() == WorkflowTaskState.FAILED.value:
+            scan_error_reason = self._get_scan_error_reason_from_tasklog()
+
+        if self.patch_status() == WorkflowTaskState.FAILED.value:
+            patch_error_reason = self._get_patch_error_reason_from_tasklog()
 
         if patched_image == self.image():
             patched_image = WORKFLOW_STATUS_PATCH_NOT_AVAILABLE
@@ -291,6 +335,12 @@ class WorkflowTaskStatus:
         if patch_skipped_reason != "":
             result["patch_skipped_reason"] = patch_skipped_reason
 
+        if scan_error_reason != "":
+            result["scan_error_reason"] = scan_error_reason
+
+        if patch_error_reason != "":
+            result["patch_error_reason"] = patch_error_reason
+
         result["patch_date"] = patch_date
         result["patch_task_ID"] = patch_task_id
         result["last_patched_image"] = patched_image
@@ -303,8 +353,15 @@ class WorkflowTaskStatus:
         result = f"image: {status.repository}:{status.tag}\n" \
                  f"\tscan status: {status.scan_status}\n" \
                  f"\tscan date: {status.scan_date}\n" \
-                 f"\tscan task ID: {status.scan_task_id}\n" \
-                 f"\tpatch status: {status.patch_status}\n"
+                 f"\tscan task ID: {status.scan_task_id}\n"
+
+        if hasattr(status, "scan_error_reason"):
+            result += f"\tscan error reason: {status.scan_error_reason}\n"
+
+        result += f"\tpatch status: {status.patch_status}\n"
+
+        if hasattr(status, "patch_error_reason"):
+            result += f"\tpatch error reason: {status.patch_error_reason}\n"
 
         if hasattr(status, "patch_skipped_reason"):
             result += f"\tpatch skipped reason: {status.patch_skipped_reason}\n"
@@ -382,3 +439,44 @@ class WorkflowTaskStatus:
                 output += "\n" + line
 
         return output
+
+    @staticmethod
+    def _get_missing_taskrun(taskrun_client, registry, run_id):
+        try:
+            resourceid = parse_resource_id(registry.id)
+            resource_group = resourceid[RESOURCE_GROUP]
+            runs = WorkflowTaskStatus.get_taskruns_with_filter(taskrun_client,
+                                                               registry_name=registry.name,
+                                                               resource_group_name=resource_group,
+                                                               runId_filter=run_id)
+            return runs[0]
+        except Exception as e:
+            logger.debug(f"Failed to find taskrun {run_id} from registry {registry.name} : {e}")
+            return None
+
+    @staticmethod
+    def get_taskruns_with_filter(acr_task_run_client, registry_name, resource_group_name, taskname_filter=None, runId_filter=None, date_filter=None, status_filter=None, top=1000):
+        # filters based on OData, found in ACR.BuildRP.DataModels - RunFilter.cs
+        filter = ""
+        if taskname_filter:
+            taskname_filter_str = "', '".join(taskname_filter)
+            filter += f"TaskName in ('{taskname_filter_str}')"
+
+        if runId_filter:
+            if filter != "":
+                filter += " and "
+            filter += f"runId eq '{runId_filter}'"
+
+        if date_filter:
+            if filter != "":
+                filter += " and "
+            filter += f"createTime ge {date_filter}"
+
+        if status_filter:
+            if filter != "":
+                filter += " and "
+            status_filter_str = "', '".join(status_filter)
+            filter += f"Status in ('{status_filter_str}')"
+
+        taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter, top=top)
+        return list(taskruns)
