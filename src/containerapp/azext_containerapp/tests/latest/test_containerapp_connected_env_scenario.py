@@ -95,6 +95,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             ])
         storage_name = self.create_random_name(prefix='storage', length=24)
         shares_name = self.create_random_name(prefix='share', length=24)
+        print(f'{storage_name} -> {shares_name}')
         storage_account_location = TEST_LOCATION
         if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
@@ -110,6 +111,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             JMESPathCheck('properties.azureFile.accountName', storage_name),
             JMESPathCheck('properties.azureFile.shareName', shares_name),
             JMESPathCheck('properties.azureFile.accessMode', 'ReadOnly'),
+            JMESPathCheck('properties.provisioningState', 'Succeeded'),
+            JMESPathCheck('properties.deploymentError', None),
         ])
 
         self.cmd('containerapp connected-env storage show -g {} -n {} --storage-name {}'.format(resource_group, env_name, storage_name), checks=[
@@ -117,6 +120,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             JMESPathCheck('properties.azureFile.accountName', storage_name),
             JMESPathCheck('properties.azureFile.shareName', shares_name),
             JMESPathCheck('properties.azureFile.accessMode', 'ReadOnly'),
+            JMESPathCheck('properties.provisioningState', 'Succeeded'),
+            JMESPathCheck('properties.deploymentError', None),
         ])
 
         self.cmd('containerapp connected-env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
@@ -128,6 +133,28 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+        self.cmd('containerapp connected-env storage set -g {} -n {} --storage-name {} --azure-file-account-name {} --azure-file-account-key {} --access-mode ReadOnly --azure-file-share-name {} --no-wait'
+                 .format(resource_group, env_name, storage_name, storage_name, storage_keys["value"], shares_name))
+
+        start = time.time()
+        end = time.time() + 300
+
+        while start < end:
+            storage = self.cmd('containerapp connected-env storage show -g {} -n {} --storage-name {}'.format(resource_group, env_name, storage_name)).get_output_in_json()
+            if storage["properties"]["provisioningState"] == 'Succeeded':
+                self.cmd('containerapp connected-env storage remove -g {} -n {} --storage-name {} --yes'.format(
+                    resource_group, env_name, storage_name))
+
+                self.cmd('containerapp connected-env storage list -g {} -n {}'.format(resource_group, env_name),
+                         checks=[
+                             JMESPathCheck('length(@)', 0)])
+                return
+            elif storage["properties"]["provisioningState"] == 'InProgress':
+                time.sleep(5)
+            else:
+                self.fail("ProvisionState should be InProgress")
+        self.fail("Failed to provision the storage successfully")
 
     @serial_test()
     @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
@@ -150,7 +177,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('extendedLocation.name', custom_location_id)
             ])
-        
+
         file_ref, dapr_file = tempfile.mkstemp(suffix=".yml")
 
         dapr_yaml = """
@@ -170,44 +197,85 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         with open(dapr_file, 'w') as outfile:
             yaml.dump(daprloaded, outfile, default_flow_style=False)
 
-        containerapp_env = self.cmd('containerapp connected-env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        containerapp_env = self.cmd(
+            'containerapp connected-env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
-            containerapp_env = self.cmd('containerapp connected-env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+            containerapp_env = self.cmd(
+                'containerapp connected-env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
         self.cmd('containerapp connected-env dapr-component set -n {} -g {} --dapr-component-name {} --yaml {}'
-                 .format(env_name, resource_group, dapr_comp_name, dapr_file.replace( os.sep, os.sep + os.sep)),
+                 .format(env_name, resource_group, dapr_comp_name, dapr_file.replace(os.sep, os.sep + os.sep)),
                  checks=[
                      JMESPathCheck('name', dapr_comp_name),
+                     JMESPathCheck('properties.provisioningState', 'Succeeded'),
+                     JMESPathCheck('properties.deploymentErrors', None),
                  ])
-
-        os.close(file_ref)
 
         self.cmd('containerapp connected-env dapr-component list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', dapr_comp_name),
         ])
 
-        self.cmd('containerapp connected-env dapr-component show -n {} -g {} --dapr-component-name {}'.format(env_name, resource_group, dapr_comp_name), checks=[
-            JMESPathCheck('name', dapr_comp_name),
-            JMESPathCheck('properties.version', 'v1'),
-            JMESPathCheck('properties.secrets[0].name', 'storage-account-name'),
-            JMESPathCheck('properties.metadata[0].name', 'accountName'),
-            JMESPathCheck('properties.metadata[0].secretRef', 'storage-account-name'),
-        ])
+        self.cmd('containerapp connected-env dapr-component show -n {} -g {} --dapr-component-name {}'.format(env_name,
+                                                                                                              resource_group,
+                                                                                                              dapr_comp_name),
+                 checks=[
+                     JMESPathCheck('name', dapr_comp_name),
+                     JMESPathCheck('properties.version', 'v1'),
+                     JMESPathCheck('properties.secrets[0].name', 'storage-account-name'),
+                     JMESPathCheck('properties.metadata[0].name', 'accountName'),
+                     JMESPathCheck('properties.metadata[0].secretRef', 'storage-account-name'),
+                     JMESPathCheck('properties.provisioningState', 'Succeeded'),
+                     JMESPathCheck('properties.deploymentErrors', None),
+                 ])
 
-        self.cmd('containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(env_name, resource_group, dapr_comp_name))
+        self.cmd(
+            'containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(env_name,
+                                                                                                           resource_group,
+                                                                                                           dapr_comp_name))
 
         self.cmd('containerapp connected-env dapr-component list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
+        self.cmd(
+            'containerapp connected-env dapr-component set -n {} -g {} --dapr-component-name {} --yaml {} --no-wait'
+            .format(env_name, resource_group, dapr_comp_name, dapr_file.replace(os.sep, os.sep + os.sep)))
+
+        os.close(file_ref)
+
+        start = time.time()
+        end = time.time() + 300
+
+        while start < end:
+            dapr_component = self.cmd(
+                'containerapp connected-env dapr-component show -n {} -g {} --dapr-component-name {}'.format(env_name,
+                                                                                                             resource_group,
+                                                                                                             dapr_comp_name)).get_output_in_json()
+            if dapr_component["properties"]["provisioningState"] == 'Succeeded':
+                self.cmd(
+                    'containerapp connected-env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(
+                        env_name, resource_group, dapr_comp_name))
+
+                self.cmd('containerapp connected-env dapr-component list -n {} -g {}'.format(env_name, resource_group),
+                         checks=[
+                             JMESPathCheck('length(@)', 0),
+                         ])
+                return
+            elif dapr_component["properties"]["provisioningState"] == 'InProgress':
+                time.sleep(5)
+            else:
+                self.fail("ProvisionState should be InProgress")
+
+        self.fail("Failed to provision the Dapr Component successfully")
+
     @serial_test()
     @live_only()  # generate_randomized_cert_name cause No match for the request (<Request (PUT) /my-connected-env/certificates/my-connected-e-clitest.rg0000-8d2d-6528?
     @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
-    def test_containerapp_preview_connected_env_certificate(self, resource_group, connected_cluster_name):
+    def test_containerapp_preview_connected_env_certificate(self, resource_group, connected_cluster_name ):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
@@ -221,7 +289,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             checks=[
                 JMESPathCheck('name', env_name),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck('extendedLocation.name', custom_location_id)
+                JMESPathCheck('extendedLocation.name', custom_location_id),
+                JMESPathCheck('properties.deploymentErrors', None),
             ])
         self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
@@ -238,6 +307,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             resource_group, env_name, pfx_file, pfx_password), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
+            JMESPathCheck('properties.deploymentErrors', None),
         ]).get_output_in_json()
 
         cert_name = cert["name"]
@@ -279,6 +349,41 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+        cert = self.cmd(
+            'containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}" --password {}'.format(
+                resource_group, env_name, pfx_file, pfx_password), checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
+                JMESPathCheck('properties.deploymentErrors', None),
+            ]).get_output_in_json()
+
+        cert_name = cert["name"]
+        cert_thumbprint = cert["properties"]["thumbprint"]
+
+        start = time.time()
+        end = time.time() + 300
+
+        while start < end:
+            cert = self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+                JMESPathCheck('length(@)', 1),
+            ]).get_output_in_json()
+            if cert[0]["properties"]["provisioningState"] == 'Succeeded':
+                self.cmd(
+                    'containerapp connected-env certificate delete -n {} -g {} --thumbprint {} --certificate {} --yes'.format(
+                        env_name, resource_group, cert_thumbprint, cert_name), expect_failure=False)
+                self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name),
+                         checks=[
+                             JMESPathCheck('length(@)', 0),
+                         ])
+
+                return
+            elif cert[0]["properties"]["provisioningState"] == 'Pending':
+                time.sleep(5)
+            else:
+                self.fail("ProvisionState should be Pending")
+
+        self.fail("Failed to provision the Certificate successfully")
         self.cmd('containerapp connected-env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)
 
     @serial_test()

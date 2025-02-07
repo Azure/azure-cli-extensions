@@ -140,6 +140,46 @@ stages:
         python ./scripts/ci/test_index.py -v
       displayName: "Verify Extensions Index"
 
+  - job: UnitTests
+    displayName: "Unit Tests"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: '3.12'
+      - bash: pip install wheel==0.30.0
+        displayName: 'Install wheel==0.30.0'
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          pip install virtualenv
+          python -m virtualenv venv/
+          source ./venv/bin/activate
+
+          # clone azure-cli
+          git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+          pip install --upgrade pip
+          pip install azdev
+
+          azdev --version
+
+          azdev setup -c ../azure-cli -r ./ -e connectedk8s
+          current_dir=$(pwd)
+          echo "Current directory: $current_dir"
+          pip install pytest
+          cd /home/vsts/work/1/s/src/connectedk8s/azext_connectedk8s/tests/unittests
+          pytest --junitxml=test-results.xml
+          
+        displayName: 'Run UnitTests test'
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '**/test-results.xml'
+          failTaskOnFailedTests: true        
   - job: SourceTests
     displayName: "Integration Tests, Build Tests"
     pool:

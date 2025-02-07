@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.servicenetworking/trafficcontrollers", "2023-11-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.servicenetworking/trafficcontrollers", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers", "2025-01-01"],
         ]
     }
 
@@ -54,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.TrafficControllerInterfaceListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.TrafficControllerInterfaceListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.TrafficControllerInterfaceListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,6 +74,184 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class TrafficControllerInterfaceListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ServiceNetworking/trafficControllers",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-01-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.associations = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.configuration_endpoints = AAZListType(
+                serialized_name="configurationEndpoints",
+                flags={"read_only": True},
+            )
+            properties.frontends = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.security_policies = AAZListType(
+                serialized_name="securityPolicies",
+                flags={"read_only": True},
+            )
+            properties.security_policy_configurations = AAZObjectType(
+                serialized_name="securityPolicyConfigurations",
+            )
+
+            associations = cls._schema_on_200.value.Element.properties.associations
+            associations.Element = AAZObjectType()
+            _ListHelper._build_schema_resource_id_read(associations.Element)
+
+            configuration_endpoints = cls._schema_on_200.value.Element.properties.configuration_endpoints
+            configuration_endpoints.Element = AAZStrType()
+
+            frontends = cls._schema_on_200.value.Element.properties.frontends
+            frontends.Element = AAZObjectType()
+            _ListHelper._build_schema_resource_id_read(frontends.Element)
+
+            security_policies = cls._schema_on_200.value.Element.properties.security_policies
+            security_policies.Element = AAZObjectType()
+            _ListHelper._build_schema_resource_id_read(security_policies.Element)
+
+            security_policy_configurations = cls._schema_on_200.value.Element.properties.security_policy_configurations
+            security_policy_configurations.waf_security_policy = AAZObjectType(
+                serialized_name="wafSecurityPolicy",
+            )
+
+            waf_security_policy = cls._schema_on_200.value.Element.properties.security_policy_configurations.waf_security_policy
+            waf_security_policy.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class TrafficControllerInterfaceListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -119,7 +297,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -197,6 +375,14 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.security_policies = AAZListType(
+                serialized_name="securityPolicies",
+                flags={"read_only": True},
+            )
+            properties.security_policy_configurations = AAZObjectType(
+                serialized_name="securityPolicyConfigurations",
             )
 
             associations = cls._schema_on_200.value.Element.properties.associations
@@ -210,161 +396,19 @@ class List(AAZCommand):
             frontends.Element = AAZObjectType()
             _ListHelper._build_schema_resource_id_read(frontends.Element)
 
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+            security_policies = cls._schema_on_200.value.Element.properties.security_policies
+            security_policies.Element = AAZObjectType()
+            _ListHelper._build_schema_resource_id_read(security_policies.Element)
+
+            security_policy_configurations = cls._schema_on_200.value.Element.properties.security_policy_configurations
+            security_policy_configurations.waf_security_policy = AAZObjectType(
+                serialized_name="wafSecurityPolicy",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class TrafficControllerInterfaceListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ServiceNetworking/trafficControllers",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2023-11-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
+            waf_security_policy = cls._schema_on_200.value.Element.properties.security_policy_configurations.waf_security_policy
+            waf_security_policy.id = AAZStrType(
                 flags={"required": True},
             )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.associations = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.configuration_endpoints = AAZListType(
-                serialized_name="configurationEndpoints",
-                flags={"read_only": True},
-            )
-            properties.frontends = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-            )
-
-            associations = cls._schema_on_200.value.Element.properties.associations
-            associations.Element = AAZObjectType()
-            _ListHelper._build_schema_resource_id_read(associations.Element)
-
-            configuration_endpoints = cls._schema_on_200.value.Element.properties.configuration_endpoints
-            configuration_endpoints.Element = AAZStrType()
-
-            frontends = cls._schema_on_200.value.Element.properties.frontends
-            frontends.Element = AAZObjectType()
-            _ListHelper._build_schema_resource_id_read(frontends.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

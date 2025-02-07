@@ -16,7 +16,7 @@ if [ ! -z "$EDITABLE_LOCATION" ]; then
 fi
 
 # Get extension repo paths and join them with spaces
-EXTENSIONS=$(azdev extension repo list -o tsv | tr '\n' ' ')
+EXTENSIONS=$(azdev extension repo list -o tsv | tr '\n' ' ' | sed 's/ $//')
 
 # Verify if current repo is in extension repo list
 CURRENT_REPO=$(pwd)
@@ -53,28 +53,42 @@ if [ ! -z "$AZURE_CLI_FOLDER" ]; then
     # Check if current branch needs rebasing
     CLI_MERGE_BASE=$(git -C "$AZURE_CLI_FOLDER" merge-base HEAD upstream/dev)
     CLI_UPSTREAM_HEAD=$(git -C "$AZURE_CLI_FOLDER" rev-parse upstream/dev)
+    printf "\033[0;36mInitial CLI_MERGE_BASE: %s\033[0m\n" "$CLI_MERGE_BASE"
+
     if [ "$CLI_MERGE_BASE" != "$CLI_UPSTREAM_HEAD" ]; then
         printf "\n"
-        printf "\033[0;33mYour %s repo code is not up to date with upstream/dev. Please run the following commands to rebase and setup:\033[0m\n" "$AZURE_CLI_FOLDER"
-        printf "\033[0;33m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
-        printf "\033[0;33mgit -C %s rebase upstream/dev\033[0m\n" "$AZURE_CLI_FOLDER"
-        if [ ! -z "$EXTENSIONS" ]; then
-            printf "\033[0;33mazdev setup -c %s -r %s\033[0m\n" "$AZURE_CLI_FOLDER" "$EXTENSIONS"
-        else
-            printf "\033[0;33mazdev setup -c %s\033[0m\n" "$AZURE_CLI_FOLDER"
-        fi
-        printf "\033[0;33m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
-        printf "\n"
-        printf "\033[0;33mYou have 5 seconds to stop the push (Ctrl+C)...\033[0m\n"
+        printf "\033[1;33mYour branch is not up to date with upstream/dev.\033[0m\n"
+        printf "\033[1;33mWould you like to automatically rebase and setup? [Y/n]\033[0m\n"
 
-        # Using a C-style for loop instead of seq
-        i=5
-        while [ $i -ge 1 ]; do
-            printf "\r\033[K\033[1;33mTime remaining: %d seconds...\033[0m" $i
-            sleep 1
-            i=$((i-1))
-        done
-        printf "\rContinuing without rebase...\n"
+        read -r INPUT < /dev/tty
+        if [ "$INPUT" = "Y" ] || [ "$INPUT" = "y" ]; then
+            printf "\033[0;32mRebasing with upstream/dev...\033[0m\n"
+            git -C "$AZURE_CLI_FOLDER" rebase upstream/dev
+            if [ $? -ne 0 ]; then
+                printf "\033[0;31mRebase failed. Please resolve conflicts and try again.\033[0m\n"
+                exit 1
+            fi
+            printf "\033[0;32mRebase completed successfully.\033[0m\n"
+            CLI_MERGE_BASE=$(git -C "$AZURE_CLI_FOLDER" merge-base HEAD upstream/dev)
+            printf "\033[0;36mUpdated CLI_MERGE_BASE: %s\033[0m\n" "$CLI_MERGE_BASE"
+
+            printf "\033[0;32mRunning azdev setup...\033[0m\n"
+            if [ -n "$EXTENSIONS" ]; then
+                azdev setup -c "$AZURE_CLI_FOLDER" -r "$EXTENSIONS"
+            else
+                azdev setup -c "$AZURE_CLI_FOLDER"
+            fi
+            if [ $? -ne 0 ]; then
+                printf "\033[0;31mazdev setup failed. Please check your environment.\033[0m\n"
+                exit 1
+            fi
+            printf "\033[0;32mSetup completed successfully.\033[0m\n"
+        elif [ "$INPUT" = "N" ] || [ "$INPUT" = "n" ]; then
+            printf "\r\033[K\033[1;33mSkipping rebase and setup. Continue push...\033[0m\n"
+        else
+            printf "\033[0;31mInvalid input. Aborting push...\033[0m\n"
+            exit 1
+        fi
     fi
 fi
 
@@ -135,19 +149,4 @@ else
 fi
 
 printf "\033[0;32mPre-push hook passed.\033[0m\n"
-
-if [ ! -z "$AZURE_CLI_FOLDER" ]; then
-    if [ "$CLI_MERGE_BASE" != "$CLI_UPSTREAM_HEAD" ]; then
-        printf "\n"
-        printf "\033[0;33mYour %s repo code is not up to date with upstream/dev. Please run the following commands to rebase and setup:\033[0m\n" "$AZURE_CLI_FOLDER"
-        printf "\033[0;33m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
-        printf "\033[0;33mgit -C %s rebase upstream/dev\033[0m\n" "$AZURE_CLI_FOLDER"
-        if [ ! -z "$EXTENSIONS" ]; then
-            printf "\033[0;33mazdev setup -c %s -r %s\033[0m\n" "$AZURE_CLI_FOLDER" "$EXTENSIONS"
-        else
-            printf "\033[0;33mazdev setup -c %s\033[0m\n" "$AZURE_CLI_FOLDER"
-        fi
-        printf "\033[0;33m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
-    fi
-fi
 exit 0

@@ -174,7 +174,7 @@ def call_scenario7(test):
     )
     step_update(test, checks=[])
     step_update_runtime_protection(test, checks=[])
-    step_update_secret_archive(test, checks=[])
+    step_update_secret_archive_settings(test, checks=[])
     step_update_strategy(test, checks=[])
     step_update_uai(test, checks=[])
     step_delete(test, checks=[])
@@ -198,6 +198,23 @@ def call_scenario8(test):
     cleanup_scenario8(test)
 
 
+def setup_scenario9(test):
+    """Env setup_scenario6"""
+    pass
+
+
+def cleanup_scenario9(test):
+    """Env cleanup_scenario9"""
+    pass
+
+
+def call_scenario9(test):
+    """# Testcase: scenario9 split of cluster update operation for vulnerability scanning setting to work with the already created and deployed simulator"""
+    setup_scenario9(test)
+    step_update_vulnerability_scanning_settings(test, checks=[])
+    cleanup_scenario9(test)
+
+
 def step_create(test, checks=None):
     """cluster create operation"""
     if checks is None:
@@ -205,7 +222,7 @@ def step_create(test, checks=None):
     test.cmd(
         "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
         "name={extendedLocation} type={extendedLocationType} --location {location} "
-        "--analytics-workspace-id {analyticsWorkspaceId} --cluster-location {clusterLocation} "
+        "--cluster-location {clusterLocation} "
         "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
@@ -228,7 +245,7 @@ def step_json_create(test, checks=None):
     test.cmd(
         "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
         "name={extendedLocation} type={extendedLocationType} --location {location} "
-        "--analytics-workspace-id {analyticsWorkspaceId} --cluster-location {clusterLocation} "
+        "--cluster-location {clusterLocation} "
         "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
@@ -238,8 +255,6 @@ def step_json_create(test, checks=None):
     )
 
 
-# The commandOutputSettings is not supported in this version of the software. It must be set to nil or left empty.
-# Therefore, this test will be skipped commandOutputSettings option.
 def step_create_with_uai(test, checks=None):
     """cluster create operation"""
     if checks is None:
@@ -247,7 +262,9 @@ def step_create_with_uai(test, checks=None):
     test.cmd(
         "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
         "name={extendedLocation} type={extendedLocationType} --location {location} "
-        "--analytics-workspace-id {analyticsWorkspaceId} --cluster-location {clusterLocation} "
+        "--analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
+        "--cluster-location {clusterLocation} --command-output-settings container-url={containerUrl} "
+        " identity-resource-id={uaiResourceId} identity-type={identityType} "
         "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
@@ -367,12 +384,12 @@ def step_update_runtime_protection(test, checks=None):
     )
 
 
-def step_update_secret_archive(test, checks=None):
-    """cluster update secret-archive operation"""
+def step_update_secret_archive_settings(test, checks=None):
+    """cluster update secret-archive-settings operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {name} --resource-group {rg} --secret-archive use-key-vault={enabled} key-vault-id={keyVaultId} "
+        "az networkcloud cluster update --name {name} --resource-group {rg} --secret-archive-settings identity-resource-id={miUserAssigned} identity-type={identityType} vault-uri={containerUrl}"
     )
 
 
@@ -386,12 +403,14 @@ def step_update_strategy(test, checks=None):
 
 
 def step_update_uai(test, checks=None):
-    """cluster update user assigned identity and command output settings"""
+    """cluster update user assigned identity with analytics and command output settings"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud cluster update --name {name} --resource-group {rg} "
-        "--mi-user-assigned={miUserAssigned} "
+        "--mi-user-assigned={miUserAssigned} --analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
+        "identity-resource-id={uaiResourceId} identity-type={identityType} "
+        "--command-output-settings container-url={containerUrl} identity-resource-id={uaiResourceId} identity-type={identityType}"
     )
 
 
@@ -401,6 +420,15 @@ def step_scan_runtime(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster scan-runtime --name {nameScanActivity} --resource-group {rgScanActivity} --scan-activity {scanActivity}"
+    )
+
+
+def step_update_vulnerability_scanning_settings(test, checks=None):
+    """cluster update for vulnerability-scanning-settings"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --vulnerability-scanning-settings container-scan="Enabled"  '
     )
 
 
@@ -555,3 +583,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario8(self):
         """test scenario for Cluster continue update version operation"""
         call_scenario8(self)
+
+    def test_cluster_scenario9(self):
+        """test scenario for Cluster vulnerablity setting update operation"""
+        call_scenario9(self)
