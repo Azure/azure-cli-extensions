@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkdevices", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkdevices", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices", "2024-06-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -151,7 +151,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -167,7 +169,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -190,6 +192,10 @@ class List(AAZCommand):
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
             )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
@@ -214,11 +220,20 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rw_device_config = AAZStrType(
+                serialized_name="rwDeviceConfig",
+                flags={"read_only": True},
+            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
                 flags={"required": True},
             )
             properties.version = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -291,7 +306,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -327,7 +342,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -343,7 +360,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -366,6 +383,10 @@ class List(AAZCommand):
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
             )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
@@ -390,11 +411,20 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rw_device_config = AAZStrType(
+                serialized_name="rwDeviceConfig",
+                flags={"read_only": True},
+            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
                 flags={"required": True},
             )
             properties.version = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 

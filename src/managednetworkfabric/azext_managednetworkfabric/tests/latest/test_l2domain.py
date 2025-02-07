@@ -62,7 +62,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l2domain update --resource-group {rg} --resource-name {name} --mtu {updated_mtu}",
+        "az networkfabric l2domain update --resource-group {rg} --resource-name {name} --mtu {updated_mtu} --nni-id {nni_Id}",
         checks=checks,
     )
 
@@ -124,6 +124,7 @@ class GA_L2DomainScenarioTest1(ScenarioTest):
                 "updated_mtu": CONFIG.get("L2_ISOLATION_DOMAIN", "updated_mtu"),
                 "state_Enable": CONFIG.get("L2_ISOLATION_DOMAIN", "state_Enable"),
                 "state_Disable": CONFIG.get("L2_ISOLATION_DOMAIN", "state_Disable"),
+                "nni_Id": CONFIG.get("L2_ISOLATION_DOMAIN", "nni_Id"),
             }
         )
 
