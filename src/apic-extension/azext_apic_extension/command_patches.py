@@ -611,6 +611,14 @@ class ImportAzureApiManagementSource(DefaultWorkspaceParameter, Import):
 
 # `az apic api-analysis` commands
 class CreateApiAnalysisConfig(DefaultWorkspaceParameter, CreateApiAnalysis):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.filter._registered = False
+        return args_schema
+
     def pre_operations(self):
         super().pre_operations()
         args = self.ctx.args
@@ -719,6 +727,14 @@ class ShowAPIAnalysisConfig(DefaultWorkspaceParameter, ShowAPIAnalysis):
 
 
 class UpdateAPIAnalysisConfig(DefaultWorkspaceParameter, UpdateAPIAnalysis):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.filter._registered = False
+        return args_schema
+
     def pre_operations(self):
         super().pre_operations()
         args = self.ctx.args
