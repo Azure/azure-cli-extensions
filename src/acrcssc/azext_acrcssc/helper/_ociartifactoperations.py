@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=logging-fstring-interpolation
 import os
+import dataclasses
 import tempfile
 import shutil
 import subprocess
@@ -14,6 +15,7 @@ from oras.client import OrasClient
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.command_modules.acr.repository import acr_repository_delete
 from azure.mgmt.core.tools import parse_resource_id
+from jsonschema.exceptions import ValidationError
 from knack.log import get_logger
 from ._constants import (
     BEARER_TOKEN_USERNAME,
@@ -195,7 +197,7 @@ class ContinuousPatchConfig:
         try:
             json_config = json.loads(json_str)
             validate(json_config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
-        except Exception as e:
+        except ValidationError as e:
             logger.error("Error validating the continuous patch config file: %s", e)
             return None
 
@@ -224,8 +226,8 @@ class ContinuousPatchConfig:
         return enabled_images
 
 
+@dataclasses.dataclass
 class Repository:
-    def __init__(self, repository, tags, enabled):
-        self.repository = repository
-        self.tags = tags
-        self.enabled = enabled
+    repository: str
+    tags: str
+    enabled: bool

@@ -28,6 +28,7 @@ from ._constants import (
     TaskRunStatus)
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
 from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
@@ -38,7 +39,6 @@ from datetime import datetime, timezone, timedelta
 from ._utility import convert_timespan_to_cron, convert_cron_to_schedule, create_temporary_dry_run_file, delete_temporary_dry_run_file
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, get_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from ._workflow_status import WorkflowTaskStatus
-from azure.cli.core.commands.progress import IndeterminateProgressBar
 
 logger = get_logger(__name__)
 
@@ -261,7 +261,6 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
 
     progress_indicator = IndeterminateProgressBar(cmd.cli_ctx)
     progress_indicator.begin()
-    progress_indicator.
 
     image_status = WorkflowTaskStatus.from_taskrun(cmd, acr_task_run_client, registry, scan_taskruns, patch_taskruns, progress_indicator=progress_indicator)
     if workflow_status:

@@ -41,13 +41,14 @@ class WorkflowTaskStatus:
         # string to represent the repository
         self.repository = repo[0]
 
-        # string to represent the tag, can be '*', which means all tags. in that situation the class should be able to resolve to the individual tags on the registry
+        # string to represent the tag
         self.tag = repo[1]
 
-        # latest taskrun object for the scan task, if none, means no scan task has been run
+        # latest taskrun object for the scan task. If none, means no scan task has been run
         self.scan_task = None
 
-        # not sure if we should be proactive to get the logs for the scan task, but it will also be that we don't know that the scan task has been run until we check for logs
+        # not sure if we should be proactive to get the logs for the scan task, but it will also be that we don't
+        # know that the scan task has been run until we check for logs
         self.scan_logs = ""
 
         # latest taskrun object for the patch task, if none, means no patch task has been run
@@ -56,12 +57,7 @@ class WorkflowTaskStatus:
         # ditto for patch logs, we don't know if the patch task has been run until we check for logs
         self.patch_logs = ""
 
-    def is_wildcard(self):
-        return self.tag == '*'
-
     def image(self):
-        if self.is_wildcard():
-            return self.repository
         return f"{self.repository}:{self.tag}"
 
     # task run status from src\ACR.Build.Contracts\src\Status.cs
@@ -83,7 +79,9 @@ class WorkflowTaskStatus:
         if status == TaskRunStatus.Canceled.value.lower():
             return WorkflowTaskState.CANCELED.value
 
-        if status == TaskRunStatus.Failed.value.lower() or status == TaskRunStatus.Error.value.lower() or status == TaskRunStatus.Timeout.value.lower():
+        if status == TaskRunStatus.Failed.value.lower() or \
+           status == TaskRunStatus.Error.value.lower() or \
+           status == TaskRunStatus.Timeout.value.lower():
             return WorkflowTaskState.FAILED.value
 
         return WorkflowTaskState.UNKNOWN.value
@@ -119,7 +117,8 @@ class WorkflowTaskStatus:
 
         return self.patch_status()
 
-    # this extracts the image from the copacetic task logs, using this when we only have a repository name and a wildcard tag
+    # this extracts the image from the copacetic task logs, using this when we only have a repository
+    # name and a wildcard tag
     @staticmethod
     def _get_image_from_tasklog(logs):
         match = re.search(r'Scanning repo: (\S+), Tag:\S+, OriginalTag:(\S+)', logs)
@@ -128,7 +127,7 @@ class WorkflowTaskStatus:
             original_tag = match.group(2)
             return f"{repository}:{original_tag}"
 
-        match = re.search(r'Scanning image for vulnerability(?: and patch)? (\S+) for tag (\S+)', logs)        
+        match = re.search(r'Scanning image for vulnerability(?: and patch)? (\S+) for tag (\S+)', logs)
         if match:
             patched_image = match.group(1)
             original_tag = match.group(2)
@@ -140,7 +139,7 @@ class WorkflowTaskStatus:
             return match.group(1)
         return None
 
-    def _get_patch_task_from_scan_tasklog(self):
+    def get_patch_task_from_scan_tasklog(self):
         if self.scan_task is None:
             return None
 
@@ -153,8 +152,11 @@ class WorkflowTaskStatus:
         if self.scan_task is None:
             return None
 
-        if self.patch_status() == WorkflowTaskState.SKIPPED.value or self.patch_status() == WorkflowTaskState.SUCCEEDED.value:
-            match = re.search(r'PATCHING task scheduled for image (\S+):(\S+), new patch tag will be (\S+)', self.scan_logs)
+        if self.patch_status() == WorkflowTaskState.SKIPPED.value or \
+           self.patch_status() == WorkflowTaskState.SUCCEEDED.value:
+            match = re.search(
+                r'PATCHING task scheduled for image (\S+):(\S+), new patch tag will be (\S+)',
+                self.scan_logs)
             if match:
                 repository = match.group(1)
                 original_tag = match.group(2)
@@ -225,12 +227,17 @@ class WorkflowTaskStatus:
 
         def process_taskrun(taskrun):
             try:
-                tasklog = WorkflowTaskStatus.generate_logs(cmd, taskrun_client, taskrun.run_id, registry.name, resource_group, await_task_run=False)
+                tasklog = WorkflowTaskStatus.generate_logs(cmd,
+                                                           taskrun_client,
+                                                           taskrun.run_id,
+                                                           registry.name,
+                                                           resource_group,
+                                                           await_task_run=False)
                 if tasklog == "":
-                    logger.debug(f"Taskrun: {taskrun.run_id} has no logs, silent failure")
+                    logger.debug("Taskrun: %s has no logs, silent failure", taskrun.run_id)
                 taskrun.task_log_result = tasklog
             except Exception as e:
-                logger.debug(f"Failed to get logs for taskrun: {taskrun.run_id} with exception: {e}")
+                logger.debug("Failed to get logs for taskrun: %s with exception: %s", taskrun.run_id, e)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = []
@@ -257,7 +264,7 @@ class WorkflowTaskStatus:
             if progress_indicator:
                 progress_indicator.update_progress()
             if not hasattr(scan, 'task_log_result'):
-                logger.debug(f"Scan Taskrun: {scan.run_id} has no logs, silent failure")
+                logger.debug("Scan Taskrun: %s has no logs, silent failure", scan.run_id)
                 continue
 
             image = WorkflowTaskStatus._get_image_from_tasklog(scan.task_log_result)
@@ -265,19 +272,22 @@ class WorkflowTaskStatus:
             if not image:
                 continue
 
-            # need to check if we have the latest scan task, is it better to get latest first or to get all and then get the latest?
+            # need to check if we have the latest scan task
             task = scan
             logs = scan.task_log_result
 
             if image in all_status:
-                task, logs = WorkflowTaskStatus._latest_task(all_status[image].scan_task, all_status[image].scan_logs, scan, scan.task_log_result)
+                task, logs = WorkflowTaskStatus._latest_task(all_status[image].scan_task,
+                                                             all_status[image].scan_logs,
+                                                             scan, scan.task_log_result)
             else:
                 all_status[image] = WorkflowTaskStatus(image)
             all_status[image].scan_task = task
             all_status[image].scan_logs = logs
-            patch_task_id = all_status[image]._get_patch_task_from_scan_tasklog()
+            patch_task_id = all_status[image].get_patch_task_from_scan_tasklog()
             # missing the patch task id means that the scan either failed, or succeeded and patching is not needed.
-            # this is important, because patching status depends on both the patching task status (if it exists) and the scan task status
+            # this is important, because patching status depends on both the patching task status (if it exists)
+            # and the scan task status
             if patch_task_id is not None:
                 # it is possible for the patch task to be mentioned in the logs, but the API has not returned the
                 # taskrun for it yet, attempt to retrieve it from client
@@ -387,7 +397,9 @@ class WorkflowTaskStatus:
             logger.debug("%s Exception: %s", error_msg, e)
             raise AzCLIError(error_msg)
         except ResourceNotFoundError as e:
-            logger.debug(f"log file not found for run_id: {run_id}, registry: {registry_name}, resource_group: {resource_group_name} -- exception: {e}")
+            logger.debug("log file not found for run_id: %s, registry: %s, "
+                         "resource_group: %s -- exception: %s",
+                         run_id, registry_name, resource_group_name, e)
 
         run_status = TaskRunStatus.Running.value
         while await_task_run and WorkflowTaskStatus._evaluate_task_run_nonterminal_state(run_status):
@@ -415,8 +427,7 @@ class WorkflowTaskStatus:
     def _download_logs(blob_service):
         blob = blob_service.download_blob()
         blob_text = blob.readall().decode('utf-8')
-        # return WorkflowTaskStatus._remove_internal_acr_statements(blob_text)
-        # not sure what is the point of this, might only make sense when we are doing dryrun and breaks other cases
+
         return blob_text
 
     @staticmethod
@@ -450,32 +461,39 @@ class WorkflowTaskStatus:
                                                                runId_filter=run_id)
             return runs[0]
         except Exception as e:
-            logger.debug(f"Failed to find taskrun {run_id} from registry {registry.name} : {e}")
+            logger.debug("Failed to find taskrun %s from registry %s: %s", run_id, registry.name, e)
             return None
 
     @staticmethod
-    def get_taskruns_with_filter(acr_task_run_client, registry_name, resource_group_name, taskname_filter=None, runId_filter=None, date_filter=None, status_filter=None, top=1000):
+    def get_taskruns_with_filter(acr_task_run_client,
+                                 registry_name,
+                                 resource_group_name,
+                                 taskname_filter=None,
+                                 runId_filter=None,
+                                 date_filter=None,
+                                 status_filter=None,
+                                 top=1000):
         # filters based on OData, found in ACR.BuildRP.DataModels - RunFilter.cs
-        filter = ""
+        filter_str = ""
         if taskname_filter:
             taskname_filter_str = "', '".join(taskname_filter)
-            filter += f"TaskName in ('{taskname_filter_str}')"
+            filter_str += f"TaskName in ('{taskname_filter_str}')"
 
         if runId_filter:
-            if filter != "":
-                filter += " and "
-            filter += f"runId eq '{runId_filter}'"
+            if filter_str != "":
+                filter_str += " and "
+            filter_str += f"runId eq '{runId_filter}'"
 
         if date_filter:
-            if filter != "":
-                filter += " and "
-            filter += f"createTime ge {date_filter}"
+            if filter_str != "":
+                filter_str += " and "
+            filter_str += f"createTime ge {date_filter}"
 
         if status_filter:
-            if filter != "":
-                filter += " and "
+            if filter_str != "":
+                filter_str += " and "
             status_filter_str = "', '".join(status_filter)
-            filter += f"Status in ('{status_filter_str}')"
+            filter_str += f"Status in ('{status_filter_str}')"
 
-        taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter, top=top)
+        taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter_str, top=top)
         return list(taskruns)

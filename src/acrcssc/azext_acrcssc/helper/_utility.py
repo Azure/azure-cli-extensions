@@ -31,6 +31,7 @@ def convert_timespan_to_cron(schedule, date_time=None):
 
     cron_hour = date_time.hour
     cron_minute = date_time.minute
+    cron_expression = ""
 
     if unit == 'd':  # day of the month
         if value < 1 or value > 30:
