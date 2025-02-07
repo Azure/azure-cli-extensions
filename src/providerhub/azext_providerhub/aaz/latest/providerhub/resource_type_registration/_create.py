@@ -1463,7 +1463,9 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        from azure.cli.core.aaz import AAZArgEnum
+        args = str(self.ctx.args).split(",")
+        return AAZArgEnum(args)
 
     @register_callback
     def post_operations(self):
