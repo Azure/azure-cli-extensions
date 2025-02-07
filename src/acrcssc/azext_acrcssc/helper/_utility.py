@@ -7,9 +7,9 @@ import re
 from knack.log import get_logger
 from datetime import (datetime, timezone)
 import shutil
-from azure.cli.core.azclierror import InvalidArgumentValueError
-from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
+from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
 from ._constants import RESOURCE_GROUP
 from .._client_factory import cf_acr_tasks
 
@@ -55,7 +55,7 @@ def convert_cron_to_schedule(cron_expression, just_days=False):
             return match.group(1) + 'd'
 
         return None
-    except:
+    except IndexError:
         return None
 
 
@@ -90,6 +90,6 @@ def get_task(cmd, registry, task_name, task_client=None):
 
     try:
         return task_client.get(resource_group, registry.name, task_name)
-    except Exception as exception:
+    except ResourceNotFoundError as exception:
         logger.debug("Failed to find task %s from registry %s : %s", task_name, registry.name, exception)
         return None

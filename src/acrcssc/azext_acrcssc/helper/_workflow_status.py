@@ -15,9 +15,8 @@ from ._constants import (
     WORKFLOW_STATUS_NOT_AVAILABLE,
     WORKFLOW_STATUS_PATCH_NOT_AVAILABLE)
 from azure.cli.core.profiles import ResourceType, get_sdk
-from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
-from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from enum import Enum
 from msrestazure.azure_exceptions import CloudError
@@ -62,43 +61,39 @@ class WorkflowTaskStatus:
 
     # task run status from src\ACR.Build.Contracts\src\Status.cs
     @staticmethod
-    def _task_status_to_workflow_status(task):
+    def get_workflow_task_state(task):
         if task is None:
             return WorkflowTaskState.UNKNOWN.value
 
         status = task.status.lower()
-        if status == TaskRunStatus.Succeeded.value.lower():
-            return WorkflowTaskState.SUCCEEDED.value
+        status_mapping = {
+            TaskRunStatus.Succeeded.value.lower(): WorkflowTaskState.SUCCEEDED.value,
+            TaskRunStatus.Running.value.lower(): WorkflowTaskState.RUNNING.value,
+            TaskRunStatus.Started.value.lower(): WorkflowTaskState.RUNNING.value,
+            TaskRunStatus.Queued.value.lower(): WorkflowTaskState.QUEUED.value,
+            TaskRunStatus.Canceled.value.lower(): WorkflowTaskState.CANCELED.value,
+            TaskRunStatus.Failed.value.lower(): WorkflowTaskState.FAILED.value,
+            TaskRunStatus.Error.value.lower(): WorkflowTaskState.FAILED.value,
+            TaskRunStatus.Timeout.value.lower(): WorkflowTaskState.FAILED.value,
+        }
 
-        if status == TaskRunStatus.Running.value.lower() or status == TaskRunStatus.Started.value.lower():
-            return WorkflowTaskState.RUNNING.value
-
-        if status == TaskRunStatus.Queued.value.lower():
-            return WorkflowTaskState.QUEUED.value
-
-        if status == TaskRunStatus.Canceled.value.lower():
-            return WorkflowTaskState.CANCELED.value
-
-        if status == TaskRunStatus.Failed.value.lower() or \
-           status == TaskRunStatus.Error.value.lower() or \
-           status == TaskRunStatus.Timeout.value.lower():
-            return WorkflowTaskState.FAILED.value
-
-        return WorkflowTaskState.UNKNOWN.value
+        return status_mapping.get(status, WorkflowTaskState.UNKNOWN.value)
 
     @staticmethod
     def _workflow_status_to_task_status(status):
-        if status == WorkflowTaskState.SUCCEEDED.value or status == WorkflowTaskState.SKIPPED.value:
-            return [TaskRunStatus.Succeeded.value]
-        if status == WorkflowTaskState.RUNNING.value:
-            return [TaskRunStatus.Running.value, TaskRunStatus.Started.value]
-        if status == WorkflowTaskState.QUEUED.value:
-            return [TaskRunStatus.Queued.value]
-        if status == WorkflowTaskState.CANCELED.value:
-            return [TaskRunStatus.Canceled.value]
-        if status == WorkflowTaskState.FAILED.value:
-            return [TaskRunStatus.Failed.value, TaskRunStatus.Error.value, TaskRunStatus.Timeout.value]
-        return None
+        status_mapping = {
+            WorkflowTaskState.SUCCEEDED.value: [TaskRunStatus.Succeeded.value],
+            WorkflowTaskState.SKIPPED.value: [TaskRunStatus.Succeeded.value],
+            WorkflowTaskState.RUNNING.value: [TaskRunStatus.Running.value,
+                                              TaskRunStatus.Started.value],
+            WorkflowTaskState.QUEUED.value: [TaskRunStatus.Queued.value],
+            WorkflowTaskState.CANCELED.value: [TaskRunStatus.Canceled.value],
+            WorkflowTaskState.FAILED.value: [TaskRunStatus.Failed.value,
+                                             TaskRunStatus.Error.value,
+                                             TaskRunStatus.Timeout.value],
+        }
+
+        return status_mapping.get(status, None)
 
     def scan_status(self):
         return WorkflowTaskStatus._task_status_to_workflow_status(self.scan_task)
@@ -236,7 +231,7 @@ class WorkflowTaskStatus:
                 if tasklog == "":
                     logger.debug("Taskrun: %s has no logs, silent failure", taskrun.run_id)
                 taskrun.task_log_result = tasklog
-            except Exception as e:
+            except ResourceNotFoundError as e:
                 logger.debug("Failed to get logs for taskrun: %s with exception: %s", taskrun.run_id, e)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
@@ -460,7 +455,7 @@ class WorkflowTaskStatus:
                                                                resource_group_name=resource_group,
                                                                runId_filter=run_id)
             return runs[0]
-        except Exception as e:
+        except ResourceNotFoundError as e:
             logger.debug("Failed to find taskrun %s from registry %s: %s", run_id, registry.name, e)
             return None
 

@@ -26,11 +26,10 @@ from ._constants import (
     CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
     DESCRIPTION,
     TaskRunStatus)
-from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
-from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
