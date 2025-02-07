@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.10.5
+++++++
+* Fixed bug impacting long-running operations of the az connectedk8s proxy command.
+* Refactored code to reduce proxy command startup time.
+* Added support for downloading proxy binaries from MCR, including more architecture-specific versions.
+* Enhanced telemetry to capture detailed error information during Helm installation failures.
+
 1.10.4
 ++++++
 * Fixed the issue where the 'connectedk8s proxy' command would fail if the kubeconfig file was empty.
