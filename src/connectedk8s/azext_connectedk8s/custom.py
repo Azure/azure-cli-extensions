@@ -968,8 +968,8 @@ def create_connectedk8s(
         raise CLIInternalError(
             "Timed out waiting for Agent State to reach terminal state."
         )
-    if cl_oid and enable_custom_locations and cl_oid != custom_locations_oid:
-        print(consts.Manual_Upgrade_Called_In_Auto_Update_Enabled)
+    if cl_oid and enable_custom_locations and cl_oid == custom_locations_oid:
+        logger.warn(consts.Manual_Custom_Location_Oid_Warning)    
     return put_cc_response
 
 
@@ -2791,7 +2791,7 @@ def enable_features(
     cl_oid: str | None = None,
 ) -> str:
     logger.warning("This operation might take a while...\n")
-
+    
     # Validate custom token operation
     custom_token_passed, _ = utils.validate_custom_token(
         cmd, resource_group_name, "dummyLocation"
@@ -2840,16 +2840,17 @@ def enable_features(
             if custom_token_passed is True
             else get_subscription_id(cmd.cli_ctx)
         )
-        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
+        final_enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
             cmd, cl_oid, subscription_id
         )
-        if not enable_cluster_connect and enable_cl:
+        if not enable_cluster_connect and  final_enable_cl:
             enable_cluster_connect = True
             logger.warning(
                 "Enabling 'custom-locations' feature will enable 'cluster-connect' feature too."
             )
-        if not enable_cl:
+        if not final_enable_cl:
             features.remove("custom-locations")
+            logger.warn(consts.Custom_Location_Enable_Failed_warning)
             if len(features) == 0:
                 raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
@@ -2973,7 +2974,7 @@ def enable_features(
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"]
         )
-    if enable_cl:
+    if  final_enable_cl:
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.customLocations.enabled=true"]
         )
@@ -3001,7 +3002,8 @@ def enable_features(
         raise CLIInternalError(
             str.format(consts.Error_enabling_Features, helm_upgrade_error_message)
         )
-
+    if cl_oid and  final_enable_cl and cl_oid == custom_locations_oid:
+        logger.warn(consts.Manual_Custom_Location_Oid_Warning)    
     return str.format(
         consts.Successfully_Enabled_Features, features, connected_cluster.name
     )
@@ -3909,12 +3911,12 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         )
         # If Cl OID was input, use that
         if cl_oid:
-            log_string += "If the manual OID is invalid, custom location may not be properly enabled."
-            log_string += "Proceeding with using the OID manually provided to enable the 'custom-locations' feature without validation."
+            log_string += "\nProceeding with using the OID manually provided to enable the 'custom-locations' feature without validation."
+            log_string += "\nIf the manual OID is invalid, custom location may not be properly enabled."
             logger.warning(log_string)
             return cl_oid
         # If no Cl OID was input, log a Warning and return empty for OID
-        log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
+        log_string += "\nException encountered: " + str(e)
         logger.warning(log_string)
         return ""
 
