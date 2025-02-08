@@ -63,15 +63,17 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     orderby_expression = _construct_orderby_expression(orderby, order)
 
     response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
+    first_page = next(iter(response.by_page()), [])
+    # Note: --top produces multi-page responses, but we only process the first page. All the other params put everything on the first page.
 
-    # Iterate through the response and build a JSON array
+    # Iterate through the first page of the response and build a JSON array
     job_list_string = "["
-    for job_details in response:
+    for job_details in first_page:
         details_string = str(job_details)
         job_list_string += details_string + ", "
 
     if len(job_list_string) == 1:
-        return []    # Got an empty response, return an empty array
+        return []   # Got an empty response page, return an empty array
 
     job_list_string = job_list_string[:-2]
     job_list_string += "]"

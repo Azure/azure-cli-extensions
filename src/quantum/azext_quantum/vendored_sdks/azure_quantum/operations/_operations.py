@@ -207,14 +207,7 @@ def build_jobs_list_request(
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    # return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-    http_request =  HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-    print()
-    print("++++++++ DEBUG print lines added by WJ starting at line 210 of vendored_sdks/azure_quantum/operations/_operations.py ++++++++")
-    print()
-    print(http_request)
-    print()
-    return http_request
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_sessions_create_or_replace_request(
