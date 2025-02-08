@@ -1,5 +1,9 @@
 # Release History
 
+## 7.1.1
+
+- Fix parsing errors on response for `az vmware private-cloud rotate-vcenter-password`, `az vmware private-cloud rotate-nsxt-password`, and `az vmware vm restrict-movement`
+
 ## 7.1.0 (2024-09)
 
 - Update `--license-key` to optional for `az vmware srm create` and `az vmware srm update`
