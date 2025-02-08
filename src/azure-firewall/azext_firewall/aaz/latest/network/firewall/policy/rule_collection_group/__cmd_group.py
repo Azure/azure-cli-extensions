@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network firewall policy rule-collection-group",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage and configure Azure firewall policy rule collection group.
+    """Manage and configure Azure firewall policy rule-collection-group.
     """
     pass
 

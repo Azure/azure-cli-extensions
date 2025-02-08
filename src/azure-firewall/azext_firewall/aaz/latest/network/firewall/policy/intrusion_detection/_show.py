@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "network firewall policy intrusion-detection show",
+)
 class Show(AAZCommand):
     """List all intrusion detection configuration
     """
@@ -186,7 +189,7 @@ class _ShowHelper:
             flags={"read_only": True},
         )
         firewall_policy_read.id = AAZStrType()
-        firewall_policy_read.identity = AAZObjectType()
+        firewall_policy_read.identity = AAZIdentityObjectType()
         firewall_policy_read.location = AAZStrType()
         firewall_policy_read.name = AAZStrType(
             flags={"read_only": True},

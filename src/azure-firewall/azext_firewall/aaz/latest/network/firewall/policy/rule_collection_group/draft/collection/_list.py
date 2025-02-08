@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy rule-collection-group draft collection list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all rule collections of an Azure firewall policy rule collection group draft.
@@ -43,8 +42,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.policy_name = AAZStrArg(
-            options=["--policy-name"],
+        _args_schema.firewall_policy_name = AAZStrArg(
+            options=["--firewall-policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
         )
@@ -52,15 +51,15 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.rule_collection_group_name = AAZStrArg(
-            options=["--rcg-name", "--rule-collection-group-name"],
-            help="The name of the Firewall Policy Rule Collection Group.",
+            options=["--rule-collection-group-name"],
+            help="The name of the FirewallPolicyRuleCollectionGroup.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.FirewallPolicyRuleCollectionGroupsGet(ctx=self.ctx)()
+        self.FirewallPolicyRuleCollectionGroupDraftsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +85,7 @@ class List(AAZCommand):
             result.properties.ruleCollections = value
             return
 
-    class FirewallPolicyRuleCollectionGroupsGet(AAZHttpOperation):
+    class FirewallPolicyRuleCollectionGroupDraftsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +115,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallPolicyName", self.ctx.args.policy_name,
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -138,7 +137,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -169,7 +168,7 @@ class List(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ListHelper._build_schema_firewall_policy_rule_collection_group_read(cls._schema_on_200)
+            _ListHelper._build_schema_firewall_policy_rule_collection_group_draft_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -177,47 +176,42 @@ class List(AAZCommand):
 class _ListHelper:
     """Helper class for List"""
 
-    _schema_firewall_policy_rule_collection_group_read = None
+    _schema_firewall_policy_rule_collection_group_draft_read = None
 
     @classmethod
-    def _build_schema_firewall_policy_rule_collection_group_read(cls, _schema):
-        if cls._schema_firewall_policy_rule_collection_group_read is not None:
-            _schema.etag = cls._schema_firewall_policy_rule_collection_group_read.etag
-            _schema.id = cls._schema_firewall_policy_rule_collection_group_read.id
-            _schema.name = cls._schema_firewall_policy_rule_collection_group_read.name
-            _schema.properties = cls._schema_firewall_policy_rule_collection_group_read.properties
-            _schema.type = cls._schema_firewall_policy_rule_collection_group_read.type
+    def _build_schema_firewall_policy_rule_collection_group_draft_read(cls, _schema):
+        if cls._schema_firewall_policy_rule_collection_group_draft_read is not None:
+            _schema.id = cls._schema_firewall_policy_rule_collection_group_draft_read.id
+            _schema.name = cls._schema_firewall_policy_rule_collection_group_draft_read.name
+            _schema.properties = cls._schema_firewall_policy_rule_collection_group_draft_read.properties
+            _schema.type = cls._schema_firewall_policy_rule_collection_group_draft_read.type
             return
 
-        cls._schema_firewall_policy_rule_collection_group_read = _schema_firewall_policy_rule_collection_group_read = AAZObjectType()
+        cls._schema_firewall_policy_rule_collection_group_draft_read = _schema_firewall_policy_rule_collection_group_draft_read = AAZObjectType()
 
-        firewall_policy_rule_collection_group_read = _schema_firewall_policy_rule_collection_group_read
-        firewall_policy_rule_collection_group_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        firewall_policy_rule_collection_group_read.id = AAZStrType()
-        firewall_policy_rule_collection_group_read.name = AAZStrType()
-        firewall_policy_rule_collection_group_read.properties = AAZObjectType(
+        firewall_policy_rule_collection_group_draft_read = _schema_firewall_policy_rule_collection_group_draft_read
+        firewall_policy_rule_collection_group_draft_read.id = AAZStrType()
+        firewall_policy_rule_collection_group_draft_read.name = AAZStrType()
+        firewall_policy_rule_collection_group_draft_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        firewall_policy_rule_collection_group_read.type = AAZStrType(
+        firewall_policy_rule_collection_group_draft_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_firewall_policy_rule_collection_group_read.properties
+        properties = _schema_firewall_policy_rule_collection_group_draft_read.properties
         properties.priority = AAZIntType()
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
         properties.rule_collections = AAZListType(
             serialized_name="ruleCollections",
         )
+        properties.size = AAZStrType(
+            flags={"read_only": True},
+        )
 
-        rule_collections = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections
+        rule_collections = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections
         rule_collections.Element = AAZObjectType()
 
-        _element = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element
+        _element = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element
         _element.name = AAZStrType()
         _element.priority = AAZIntType()
         _element.rule_collection_type = AAZStrType(
@@ -225,33 +219,32 @@ class _ListHelper:
             flags={"required": True},
         )
 
-        disc_firewall_policy_filter_rule_collection = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection")
+        disc_firewall_policy_filter_rule_collection = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection")
         disc_firewall_policy_filter_rule_collection.action = AAZObjectType()
         disc_firewall_policy_filter_rule_collection.rules = AAZListType()
 
-        action = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").action
+        action = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").action
         action.type = AAZStrType()
 
-        rules = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").rules
+        rules = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").rules
         rules.Element = AAZObjectType()
         cls._build_schema_firewall_policy_rule_read(rules.Element)
 
-        disc_firewall_policy_nat_rule_collection = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection")
+        disc_firewall_policy_nat_rule_collection = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection")
         disc_firewall_policy_nat_rule_collection.action = AAZObjectType()
         disc_firewall_policy_nat_rule_collection.rules = AAZListType()
 
-        action = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").action
+        action = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").action
         action.type = AAZStrType()
 
-        rules = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").rules
+        rules = _schema_firewall_policy_rule_collection_group_draft_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").rules
         rules.Element = AAZObjectType()
         cls._build_schema_firewall_policy_rule_read(rules.Element)
 
-        _schema.etag = cls._schema_firewall_policy_rule_collection_group_read.etag
-        _schema.id = cls._schema_firewall_policy_rule_collection_group_read.id
-        _schema.name = cls._schema_firewall_policy_rule_collection_group_read.name
-        _schema.properties = cls._schema_firewall_policy_rule_collection_group_read.properties
-        _schema.type = cls._schema_firewall_policy_rule_collection_group_read.type
+        _schema.id = cls._schema_firewall_policy_rule_collection_group_draft_read.id
+        _schema.name = cls._schema_firewall_policy_rule_collection_group_draft_read.name
+        _schema.properties = cls._schema_firewall_policy_rule_collection_group_draft_read.properties
+        _schema.type = cls._schema_firewall_policy_rule_collection_group_draft_read.type
 
     _schema_firewall_policy_rule_read = None
 
@@ -304,6 +297,9 @@ class _ListHelper:
         disc_application_rule.fqdn_tags = AAZListType(
             serialized_name="fqdnTags",
         )
+        disc_application_rule.http_headers_to_insert = AAZListType(
+            serialized_name="httpHeadersToInsert",
+        )
         disc_application_rule.protocols = AAZListType()
         disc_application_rule.source_addresses = AAZListType(
             serialized_name="sourceAddresses",
@@ -329,6 +325,17 @@ class _ListHelper:
 
         fqdn_tags = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").fqdn_tags
         fqdn_tags.Element = AAZStrType()
+
+        http_headers_to_insert = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert.Element
+        _element.header_name = AAZStrType(
+            serialized_name="headerName",
+        )
+        _element.header_value = AAZStrType(
+            serialized_name="headerValue",
+        )
 
         protocols = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").protocols
         protocols.Element = AAZObjectType()

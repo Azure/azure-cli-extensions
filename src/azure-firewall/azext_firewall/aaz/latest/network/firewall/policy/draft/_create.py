@@ -13,9 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy draft create",
-     is_preview=True,
 )
-
 class Create(AAZCommand):
     """Create a draft Firewall Policy.
     """
@@ -27,11 +25,10 @@ class Create(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,58 +42,101 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.firewall_policy_name = AAZStrArg(
-            options=["--policy-name"],
+            options=["--firewall-policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.base_policy = AAZStrArg(
-            options=["--base-policy"],
-            help="The name or ID of parent firewall policy from which rules are inherited.",
-        )
-        _args_schema.sql = AAZBoolArg(
-            options=["--sql"],
-            help="A flag to indicate if SQL Redirect traffic filtering is enabled.",
-            is_preview=True,
-        )
-        _args_schema.threat_intel_mode = AAZStrArg(
-            options=["--threat-intel-mode"],
-            help="The operation mode for Threat Intelligence.",
-            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Parameters",
+            help="Resource location.",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
+            arg_group="Parameters",
+            help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
-        # define Arg Group "DNS"
-        _args_schema = cls._args_schema
-        _args_schema.enable_dns_proxy = AAZBoolArg(
-            options=["--enable-dns-proxy"],
-            arg_group="DNS",
-            help="Enable DNS Proxy.",
-        )
-        _args_schema.dns_servers = AAZListArg(
-            options=["--dns-servers"],
-            arg_group="DNS",
-            help="Space-separated list of DNS server IP addresses.",
-        )
-        dns_servers = cls._args_schema.dns_servers
-        dns_servers.Element = AAZStrArg()
-
-        # define Arg Group "Explicit Proxy"
+        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.base_policy = AAZObjectArg(
+            options=["--base-policy"],
+            arg_group="Properties",
+            help="The parent firewall policy from which rules are inherited.",
+        )
+        cls._build_args_sub_resource_create(_args_schema.base_policy)
+        _args_schema.dns_settings = AAZObjectArg(
+            options=["--dns-settings"],
+            arg_group="Properties",
+            help="DNS Proxy Settings definition.",
+        )
         _args_schema.explicit_proxy = AAZObjectArg(
             options=["--explicit-proxy"],
-            arg_group="Explicit Proxy",
+            arg_group="Properties",
             help="Explicit Proxy Settings definition.",
         )
+        _args_schema.insights = AAZObjectArg(
+            options=["--insights"],
+            arg_group="Properties",
+            help="Insights on Firewall Policy.",
+        )
+        _args_schema.intrusion_detection = AAZObjectArg(
+            options=["--intrusion-detection"],
+            arg_group="Properties",
+            help="The configuration for Intrusion detection.",
+        )
+        _args_schema.snat = AAZObjectArg(
+            options=["--snat"],
+            arg_group="Properties",
+            help="The private IP addresses/IP ranges to which traffic will not be SNAT.",
+        )
+        _args_schema.sql = AAZObjectArg(
+            options=["--sql"],
+            arg_group="Properties",
+            help="SQL Settings definition.",
+        )
+        _args_schema.threat_intel_mode = AAZStrArg(
+            options=["--threat-intel-mode"],
+            arg_group="Properties",
+            help="The operation mode for Threat Intelligence.",
+            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+        )
+        _args_schema.threat_intel_whitelist = AAZObjectArg(
+            options=["--threat-intel-whitelist"],
+            arg_group="Properties",
+            help="ThreatIntel Whitelist for Firewall Policy.",
+        )
+
+        dns_settings = cls._args_schema.dns_settings
+        dns_settings.enable_proxy = AAZBoolArg(
+            options=["enable-proxy"],
+            help="Enable DNS Proxy on Firewalls attached to the Firewall Policy.",
+        )
+        dns_settings.require_proxy_for_network_rules = AAZBoolArg(
+            options=["require-proxy-for-network-rules"],
+            help="FQDNs in Network Rules are supported when set to true.",
+            nullable=True,
+        )
+        dns_settings.servers = AAZListArg(
+            options=["servers"],
+            help="List of Custom DNS Servers.",
+        )
+
+        servers = cls._args_schema.dns_settings.servers
+        servers.Element = AAZStrArg()
 
         explicit_proxy = cls._args_schema.explicit_proxy
         explicit_proxy.enable_explicit_proxy = AAZBoolArg(
@@ -138,54 +178,179 @@ class Create(AAZCommand):
             ),
         )
 
-        # define Arg Group "Intrustion Detection"
+        insights = cls._args_schema.insights
+        insights.is_enabled = AAZBoolArg(
+            options=["is-enabled"],
+            help="A flag to indicate if the insights are enabled on the policy.",
+        )
+        insights.log_analytics_resources = AAZObjectArg(
+            options=["log-analytics-resources"],
+            help="Workspaces needed to configure the Firewall Policy Insights.",
+        )
+        insights.retention_days = AAZIntArg(
+            options=["retention-days"],
+            help="Number of days the insights should be enabled on the policy.",
+        )
 
-        _args_schema = cls._args_schema
-        _args_schema.idps_mode = AAZStrArg(
-            options=["--idps-mode"],
-            arg_group="Intrustion Detection",
-            help="IDPS mode.",
-            is_preview=True,
+        log_analytics_resources = cls._args_schema.insights.log_analytics_resources
+        log_analytics_resources.default_workspace_id = AAZObjectArg(
+            options=["default-workspace-id"],
+            help="The default workspace Id for Firewall Policy Insights.",
+        )
+        cls._build_args_sub_resource_create(log_analytics_resources.default_workspace_id)
+        log_analytics_resources.workspaces = AAZListArg(
+            options=["workspaces"],
+            help="List of workspaces for Firewall Policy Insights.",
+        )
+
+        workspaces = cls._args_schema.insights.log_analytics_resources.workspaces
+        workspaces.Element = AAZObjectArg()
+
+        _element = cls._args_schema.insights.log_analytics_resources.workspaces.Element
+        _element.region = AAZStrArg(
+            options=["region"],
+            help="Region to configure the Workspace.",
+        )
+        _element.workspace_id = AAZObjectArg(
+            options=["workspace-id"],
+            help="The workspace Id for Firewall Policy Insights.",
+        )
+        cls._build_args_sub_resource_create(_element.workspace_id)
+
+        intrusion_detection = cls._args_schema.intrusion_detection
+        intrusion_detection.configuration = AAZObjectArg(
+            options=["configuration"],
+            help="Intrusion detection configuration properties.",
+        )
+        intrusion_detection.mode = AAZStrArg(
+            options=["mode"],
+            help="Intrusion detection general state. When attached to a parent policy, the firewall's effective IDPS mode is the stricter mode of the two.",
+            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+        )
+        intrusion_detection.profile = AAZStrArg(
+            options=["profile"],
+            help="IDPS profile name. When attached to a parent policy, the firewall's effective profile is the profile name of the parent policy.",
+            enum={"Advanced": "Advanced", "Basic": "Basic", "Extended": "Extended", "Standard": "Standard"},
+        )
+
+        configuration = cls._args_schema.intrusion_detection.configuration
+        configuration.bypass_traffic_settings = AAZListArg(
+            options=["bypass-traffic-settings"],
+            help="List of rules for traffic to bypass.",
+        )
+        configuration.private_ranges = AAZListArg(
+            options=["private-ranges"],
+            help="IDPS Private IP address ranges are used to identify traffic direction (i.e. inbound, outbound, etc.). By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. To modify default ranges, specify your Private IP address ranges with this property",
+        )
+        configuration.signature_overrides = AAZListArg(
+            options=["signature-overrides"],
+            help="List of specific signatures states.",
+        )
+
+        bypass_traffic_settings = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings
+        bypass_traffic_settings.Element = AAZObjectArg()
+
+        _element = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="Description of the bypass traffic rule.",
+        )
+        _element.destination_addresses = AAZListArg(
+            options=["destination-addresses"],
+            help="List of destination IP addresses or ranges for this rule.",
+        )
+        _element.destination_ip_groups = AAZListArg(
+            options=["destination-ip-groups"],
+            help="List of destination IpGroups for this rule.",
+        )
+        _element.destination_ports = AAZListArg(
+            options=["destination-ports"],
+            help="List of destination ports or ranges.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of the bypass traffic rule.",
+        )
+        _element.protocol = AAZStrArg(
+            options=["protocol"],
+            help="The rule bypass protocol.",
+            enum={"ANY": "ANY", "ICMP": "ICMP", "TCP": "TCP", "UDP": "UDP"},
+        )
+        _element.source_addresses = AAZListArg(
+            options=["source-addresses"],
+            help="List of source IP addresses or ranges for this rule.",
+        )
+        _element.source_ip_groups = AAZListArg(
+            options=["source-ip-groups"],
+            help="List of source IpGroups for this rule.",
+        )
+
+        destination_addresses = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_addresses
+        destination_addresses.Element = AAZStrArg()
+
+        destination_ip_groups = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ip_groups
+        destination_ip_groups.Element = AAZStrArg()
+
+        destination_ports = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ports
+        destination_ports.Element = AAZStrArg()
+
+        source_addresses = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.source_addresses
+        source_addresses.Element = AAZStrArg()
+
+        source_ip_groups = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.source_ip_groups
+        source_ip_groups.Element = AAZStrArg()
+
+        private_ranges = cls._args_schema.intrusion_detection.configuration.private_ranges
+        private_ranges.Element = AAZStrArg()
+
+        signature_overrides = cls._args_schema.intrusion_detection.configuration.signature_overrides
+        signature_overrides.Element = AAZObjectArg()
+
+        _element = cls._args_schema.intrusion_detection.configuration.signature_overrides.Element
+        _element.id = AAZStrArg(
+            options=["id"],
+            help="Signature id.",
+        )
+        _element.mode = AAZStrArg(
+            options=["mode"],
+            help="The signature state.",
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
 
-        # define Arg Group "Snat"
-
-        _args_schema = cls._args_schema
-        _args_schema.auto_learn_private_ranges = AAZStrArg(
-            options=["--learn-ranges", "--auto-learn-private-ranges"],
-            arg_group="Snat",
+        snat = cls._args_schema.snat
+        snat.auto_learn_private_ranges = AAZStrArg(
+            options=["auto-learn-private-ranges"],
             help="The operation mode for automatically learning private ranges to not be SNAT",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.private_ranges = AAZListArg(
-            options=["--private-ranges"],
-            arg_group="Snat",
+        snat.private_ranges = AAZListArg(
+            options=["private-ranges"],
             help="List of private IP addresses/IP address ranges to not be SNAT.",
         )
 
-        private_ranges = cls._args_schema.private_ranges
+        private_ranges = cls._args_schema.snat.private_ranges
         private_ranges.Element = AAZStrArg()
 
-
-        # define Arg Group "Threat Intel Allowlist"
-
-        _args_schema = cls._args_schema
-        _args_schema.fqdns = AAZListArg(
-            options=["--fqdns"],
-            arg_group="Threat Intel Allowlist",
-            help="Space-separated list of FQDNs.",
-        )
-        _args_schema.ip_addresses = AAZListArg(
-            options=["--ip-addresses"],
-            arg_group="Threat Intel Allowlist",
-            help="Space-separated list of IPv4 addresses.",
+        sql = cls._args_schema.sql
+        sql.allow_sql_redirect = AAZBoolArg(
+            options=["allow-sql-redirect"],
+            help="A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999.",
         )
 
-        fqdns = cls._args_schema.fqdns
+        threat_intel_whitelist = cls._args_schema.threat_intel_whitelist
+        threat_intel_whitelist.fqdns = AAZListArg(
+            options=["fqdns"],
+            help="List of FQDNs for the ThreatIntel Whitelist.",
+        )
+        threat_intel_whitelist.ip_addresses = AAZListArg(
+            options=["ip-addresses"],
+            help="List of IP addresses for the ThreatIntel Whitelist.",
+        )
+
+        fqdns = cls._args_schema.threat_intel_whitelist.fqdns
         fqdns.Element = AAZStrArg()
 
-        ip_addresses = cls._args_schema.ip_addresses
+        ip_addresses = cls._args_schema.threat_intel_whitelist.ip_addresses
         ip_addresses.Element = AAZStrArg()
         return cls._args_schema
 
@@ -209,7 +374,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.FirewallPolicyDraftsCreateOrUpdate(ctx=self.ctx)()
+        self.FirewallPolicyDraftsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -230,24 +395,8 @@ class Create(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
@@ -313,28 +462,27 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("basePolicy", AAZObjectType)
-                properties.set_prop("dnsSettings", AAZObjectType)
+                _CreateHelper._build_schema_sub_resource_create(properties.set_prop("basePolicy", AAZObjectType, ".base_policy"))
+                properties.set_prop("dnsSettings", AAZObjectType, ".dns_settings")
                 properties.set_prop("explicitProxy", AAZObjectType, ".explicit_proxy")
-                properties.set_prop("intrusionDetection", AAZObjectType)
-                properties.set_prop("snat", AAZObjectType)
-                properties.set_prop("sql", AAZObjectType)
+                properties.set_prop("insights", AAZObjectType, ".insights")
+                properties.set_prop("intrusionDetection", AAZObjectType, ".intrusion_detection")
+                properties.set_prop("snat", AAZObjectType, ".snat")
+                properties.set_prop("sql", AAZObjectType, ".sql")
                 properties.set_prop("threatIntelMode", AAZStrType, ".threat_intel_mode")
-                properties.set_prop("threatIntelWhitelist", AAZObjectType)
-
-            base_policy = _builder.get(".properties.basePolicy")
-            if base_policy is not None:
-                base_policy.set_prop("id", AAZStrType, ".base_policy")
+                properties.set_prop("threatIntelWhitelist", AAZObjectType, ".threat_intel_whitelist")
 
             dns_settings = _builder.get(".properties.dnsSettings")
             if dns_settings is not None:
-                dns_settings.set_prop("enableProxy", AAZBoolType, ".enable_dns_proxy")
-                dns_settings.set_prop("servers", AAZListType, ".dns_servers")
+                dns_settings.set_prop("enableProxy", AAZBoolType, ".enable_proxy")
+                dns_settings.set_prop("requireProxyForNetworkRules", AAZBoolType, ".require_proxy_for_network_rules", typ_kwargs={"nullable": True})
+                dns_settings.set_prop("servers", AAZListType, ".servers")
 
             servers = _builder.get(".properties.dnsSettings.servers")
             if servers is not None:
@@ -349,9 +497,85 @@ class Create(AAZCommand):
                 explicit_proxy.set_prop("pacFile", AAZStrType, ".pac_file")
                 explicit_proxy.set_prop("pacFilePort", AAZIntType, ".pac_file_port")
 
+            insights = _builder.get(".properties.insights")
+            if insights is not None:
+                insights.set_prop("isEnabled", AAZBoolType, ".is_enabled")
+                insights.set_prop("logAnalyticsResources", AAZObjectType, ".log_analytics_resources")
+                insights.set_prop("retentionDays", AAZIntType, ".retention_days")
+
+            log_analytics_resources = _builder.get(".properties.insights.logAnalyticsResources")
+            if log_analytics_resources is not None:
+                _CreateHelper._build_schema_sub_resource_create(log_analytics_resources.set_prop("defaultWorkspaceId", AAZObjectType, ".default_workspace_id"))
+                log_analytics_resources.set_prop("workspaces", AAZListType, ".workspaces")
+
+            workspaces = _builder.get(".properties.insights.logAnalyticsResources.workspaces")
+            if workspaces is not None:
+                workspaces.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.insights.logAnalyticsResources.workspaces[]")
+            if _elements is not None:
+                _elements.set_prop("region", AAZStrType, ".region")
+                _CreateHelper._build_schema_sub_resource_create(_elements.set_prop("workspaceId", AAZObjectType, ".workspace_id"))
+
             intrusion_detection = _builder.get(".properties.intrusionDetection")
             if intrusion_detection is not None:
-                intrusion_detection.set_prop("mode", AAZStrType, ".idps_mode")
+                intrusion_detection.set_prop("configuration", AAZObjectType, ".configuration")
+                intrusion_detection.set_prop("mode", AAZStrType, ".mode")
+                intrusion_detection.set_prop("profile", AAZStrType, ".profile")
+
+            configuration = _builder.get(".properties.intrusionDetection.configuration")
+            if configuration is not None:
+                configuration.set_prop("bypassTrafficSettings", AAZListType, ".bypass_traffic_settings")
+                configuration.set_prop("privateRanges", AAZListType, ".private_ranges")
+                configuration.set_prop("signatureOverrides", AAZListType, ".signature_overrides")
+
+            bypass_traffic_settings = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings")
+            if bypass_traffic_settings is not None:
+                bypass_traffic_settings.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description")
+                _elements.set_prop("destinationAddresses", AAZListType, ".destination_addresses")
+                _elements.set_prop("destinationIpGroups", AAZListType, ".destination_ip_groups")
+                _elements.set_prop("destinationPorts", AAZListType, ".destination_ports")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("protocol", AAZStrType, ".protocol")
+                _elements.set_prop("sourceAddresses", AAZListType, ".source_addresses")
+                _elements.set_prop("sourceIpGroups", AAZListType, ".source_ip_groups")
+
+            destination_addresses = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_ip_groups = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationIpGroups")
+            if destination_ip_groups is not None:
+                destination_ip_groups.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            private_ranges = _builder.get(".properties.intrusionDetection.configuration.privateRanges")
+            if private_ranges is not None:
+                private_ranges.set_elements(AAZStrType, ".")
+
+            signature_overrides = _builder.get(".properties.intrusionDetection.configuration.signatureOverrides")
+            if signature_overrides is not None:
+                signature_overrides.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.intrusionDetection.configuration.signatureOverrides[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id")
+                _elements.set_prop("mode", AAZStrType, ".mode")
 
             snat = _builder.get(".properties.snat")
             if snat is not None:
@@ -364,7 +588,7 @@ class Create(AAZCommand):
 
             sql = _builder.get(".properties.sql")
             if sql is not None:
-                sql.set_prop("allowSqlRedirect", AAZBoolType, ".sql")
+                sql.set_prop("allowSqlRedirect", AAZBoolType, ".allow_sql_redirect")
 
             threat_intel_whitelist = _builder.get(".properties.threatIntelWhitelist")
             if threat_intel_whitelist is not None:
@@ -403,10 +627,8 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType()
+            _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -508,6 +730,7 @@ class Create(AAZCommand):
             intrusion_detection = cls._schema_on_200_201.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
+            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200_201.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(

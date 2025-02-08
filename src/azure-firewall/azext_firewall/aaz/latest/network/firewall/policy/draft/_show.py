@@ -13,9 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy draft show",
-    is_preview=True,
 )
-
 class Show(AAZCommand):
     """Get a draft Firewall Policy.
     """
@@ -43,19 +41,14 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.policy_name = AAZStrArg(
-            options=["--policy-name"],
+        _args_schema.firewall_policy_name = AAZStrArg(
+            options=["--firewall-policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-
-        _args_schema.expand = AAZStrArg(
-            options=["--expand"],
-            help="Expands referenced resources. Default value is None.",
         )
         return cls._args_schema
 
@@ -106,7 +99,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallPolicyName", self.ctx.args.policy_name,
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -123,9 +116,6 @@ class Show(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "$expand", self.ctx.args.expand,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2023-11-01",
                     required=True,
@@ -160,9 +150,6 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200.id = AAZStrType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
@@ -266,6 +253,7 @@ class Show(AAZCommand):
             intrusion_detection = cls._schema_on_200.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
+            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(

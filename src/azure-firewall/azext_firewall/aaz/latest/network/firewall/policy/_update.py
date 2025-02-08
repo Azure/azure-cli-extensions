@@ -305,25 +305,18 @@ class Update(AAZCommand):
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
 
-        # define Arg Group "Intrusion Detection"
+        # define Arg Group "Intrustion Detection"
 
         _args_schema = cls._args_schema
         _args_schema.idps_mode = AAZStrArg(
             options=["--idps-mode"],
-            arg_group="Intrusion Detection",
+            arg_group="Intrustion Detection",
             help="IDPS mode.",
+            is_preview=True,
             nullable=True,
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
 
-        _args_schema.idps_profile = AAZStrArg(
-            options=["--idps-profile"],
-            arg_group="Intrusion Detection",
-            help="IDPS mode.",
-            is_preview=True,
-            nullable=True,
-            enum={"Basic": "Basic", "Standard": "Standard", "Advanced": "Advanced"},
-        )
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
@@ -651,7 +644,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -699,7 +692,6 @@ class Update(AAZCommand):
             if intrusion_detection is not None:
                 intrusion_detection.set_prop("configuration", AAZObjectType, ".configuration")
                 intrusion_detection.set_prop("mode", AAZStrType, ".idps_mode")
-                intrusion_detection.set_prop("profile", AAZStrType, ".idps_profile")
 
             configuration = _builder.get(".properties.intrusionDetection.configuration")
             if configuration is not None:
@@ -840,7 +832,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         firewall_policy_read.id = AAZStrType()
-        firewall_policy_read.identity = AAZObjectType()
+        firewall_policy_read.identity = AAZIdentityObjectType()
         firewall_policy_read.location = AAZStrType()
         firewall_policy_read.name = AAZStrType(
             flags={"read_only": True},
@@ -997,7 +989,6 @@ class _UpdateHelper:
         intrusion_detection = _schema_firewall_policy_read.properties.intrusion_detection
         intrusion_detection.configuration = AAZObjectType()
         intrusion_detection.mode = AAZStrType()
-        intrusion_detection.profile = AAZStrType()
 
         configuration = _schema_firewall_policy_read.properties.intrusion_detection.configuration
         configuration.bypass_traffic_settings = AAZListType(
