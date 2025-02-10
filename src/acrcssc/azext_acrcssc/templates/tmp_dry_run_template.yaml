@@ -13,5 +13,5 @@ steps:
       echo "$(cat filterRepos.txt)"
       totalImages=$(sed -n "s/^Matches found://p" filterRepos.txt | tr -d "[:space:]")
       if [ $totalImages -gt $maxLimit ]; then
-        echo "Maximum $maxLimit images can be scheduled for continuous patching. Adjust the filter to limit the number of images to be patched."
+        echo "You have exceeded the maximum limit of $maxLimit images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images."
       fi'
