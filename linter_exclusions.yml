@@ -223,10 +223,8 @@ arcdata dc create:
       - option_length_too_long
 arcdata dc update:
   rule_exclusions:
-    - require_wait_command_if_no_wait
+  - require_wait_command_if_no_wait
 arcdata ad-connector create:
-  rule_exclusions:
-    - require_wait_command_if_no_wait
   parameters:
     domain_service_account_secret:
       rule_exclusions:
@@ -234,6 +232,9 @@ arcdata ad-connector create:
     secondary_domain_controllers:
       rule_exclusions:
       - option_length_too_long
+    no_wait:
+      rule_exclusions:
+      - require_wait_command_if_no_wait
 arcdata ad-connector update:
   parameters:
     domain_service_account_secret:
@@ -243,15 +244,14 @@ arcdata ad-connector update:
       rule_exclusions:
       - option_length_too_long
 sql instance-failover-group-arc create:
-  rule_exclusions:
-    - require_wait_command_if_no_wait
   parameters:
     partner_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
+    no_wait:
+      rule_exclusions:
+      - require_wait_command_if_no_wait
 sql server-arc availability-group create:
-  rule_exclusions:
-    - require_wait_command_if_no_wait
   parameters:
     automated_backup_preference:
       rule_exclusions:
@@ -268,6 +268,9 @@ sql server-arc availability-group create:
     required_synchronized_secondaries:
       rule_exclusions:
       - option_length_too_long
+    no_wait:
+      rule_exclusions:
+      - require_wait_command_if_no_wait
 sql mi-arc update:
   parameters:
     preferred_primary_replica:
@@ -283,8 +286,6 @@ sql mi-arc update:
       rule_exclusions:
       - option_length_too_long
 sql mi-arc create:
-  rule_exclusions:
-    - require_wait_command_if_no_wait
   parameters:
     sync_secondary_to_commit:
       rule_exclusions:
@@ -301,6 +302,9 @@ sql mi-arc create:
     tde_protector_public_key_file:
       rule_exclusions:
       - option_length_too_long
+    no_wait:
+      rule_exclusions:
+      - require_wait_command_if_no_wait
 attestation policy set:
   parameters:
     new_attestation_policy:
