@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update an NGINX deployment
 
     :example: Update tags and enable diagnostics support for a deployment
-        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics --nginx-app-protect web-application-firewall-settings="{"activation-state":"Enabled"}"
+        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -68,13 +68,6 @@ class Update(AAZCommand):
             arg_group="Body",
             help={"short-summary": "Managed identity to perform operations on Azure key vault or storage account", "long-summary": "The managed identity should have necessary access roles on the Azure resources. For certificate access, the managed identity should have cert read access on Azure key vault. For storage account logging, it should have blob contributor role.\nUsage: --identity '{\"type\":\"UserAssigned\",\"userAssignedIdentities\":{\"/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUserAssigneMI\":{}}}'\nType is an enum that accepts values UserAssigned or SystemAssigned"},
             nullable=True,
-        )
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
         )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
@@ -384,7 +377,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -483,7 +476,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -541,8 +534,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("location", AAZStrType, ".location")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType, ".sku")
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -690,7 +682,7 @@ class _UpdateHelper:
         nginx_deployment_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_deployment_read.identity = AAZObjectType()
+        nginx_deployment_read.identity = AAZIdentityObjectType()
         nginx_deployment_read.location = AAZStrType()
         nginx_deployment_read.name = AAZStrType(
             flags={"read_only": True},
@@ -737,6 +729,10 @@ class _UpdateHelper:
         properties.auto_upgrade_profile = AAZObjectType(
             serialized_name="autoUpgradeProfile",
         )
+        properties.dataplane_api_endpoint = AAZStrType(
+            serialized_name="dataplaneApiEndpoint",
+            flags={"read_only": True},
+        )
         properties.enable_diagnostics_support = AAZBoolType(
             serialized_name="enableDiagnosticsSupport",
         )
@@ -745,9 +741,6 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         properties.logging = AAZObjectType()
-        properties.managed_resource_group = AAZStrType(
-            serialized_name="managedResourceGroup",
-        )
         properties.network_profile = AAZObjectType(
             serialized_name="networkProfile",
         )

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided virtual machine, or update the tags associated with the virtual machine. Properties and tag updates can be done independently.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -184,7 +185,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -252,6 +253,28 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
+    _schema_extended_location_read = None
+
+    @classmethod
+    def _build_schema_extended_location_read(cls, _schema):
+        if cls._schema_extended_location_read is not None:
+            _schema.name = cls._schema_extended_location_read.name
+            _schema.type = cls._schema_extended_location_read.type
+            return
+
+        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
+
+        extended_location_read = _schema_extended_location_read
+        extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_extended_location_read.name
+        _schema.type = cls._schema_extended_location_read.type
+
     _schema_virtual_machine_read = None
 
     @classmethod
@@ -274,6 +297,7 @@ class _UpdateHelper:
             serialized_name="extendedLocation",
             flags={"required": True},
         )
+        cls._build_schema_extended_location_read(virtual_machine_read.extended_location)
         virtual_machine_read.id = AAZStrType(
             flags={"read_only": True},
         )
@@ -293,14 +317,6 @@ class _UpdateHelper:
         virtual_machine_read.tags = AAZDictType()
         virtual_machine_read.type = AAZStrType(
             flags={"read_only": True},
-        )
-
-        extended_location = _schema_virtual_machine_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
         )
 
         properties = _schema_virtual_machine_read.properties
@@ -327,6 +343,10 @@ class _UpdateHelper:
             serialized_name="clusterId",
             flags={"read_only": True},
         )
+        properties.console_extended_location = AAZObjectType(
+            serialized_name="consoleExtendedLocation",
+        )
+        cls._build_schema_extended_location_read(properties.console_extended_location)
         properties.cpu_cores = AAZIntType(
             serialized_name="cpuCores",
             flags={"required": True},

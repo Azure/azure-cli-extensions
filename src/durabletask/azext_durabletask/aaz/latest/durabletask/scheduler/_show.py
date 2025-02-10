@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a Scheduler
 
     :example: Show information on a particular scheduler
-        az durable-task scheduler show --resource-group testrg --scheduler-name testscheduler
+        az durabletask scheduler show --resource-group testrg --name testscheduler
     """
 
     _aaz_info = {
@@ -47,8 +47,8 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.scheduler_name = AAZStrArg(
-            options=["-n", "--name", "--scheduler-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
@@ -109,7 +109,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schedulerName", self.ctx.args.scheduler_name,
+                    "schedulerName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

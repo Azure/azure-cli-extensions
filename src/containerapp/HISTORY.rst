@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.1.0b2
+++++++
 * 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 * 'az containerapp create': New target-label option for Labels revision mode.
@@ -16,6 +19,7 @@ upcoming
 * 'az containerapp env http-route-config': Add commands for the http-route-config feature area.
 * 'az containerapp env java-component': Support more flexible configuration updates with new parameters `--set-configurations`, `--replace-configurations`, `--remove-configurations` and `--remove-all-configurations`.
 * 'az containerapp env java-component gateway-for-spring create/update': Support `--bind` and `--unbind`
+* 'az containerapp arc': Enable setup custom core dns for Aks AzureCore on Arc.
 
 1.1.0b1
 ++++++

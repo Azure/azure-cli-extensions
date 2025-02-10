@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Scheduler
 
-    :example: Create a scheduler in northcentralus
-        az durable-task scheduler create --resource-group testrg --scheduler-name testscheduler --location northcentralus --ip-allowlist "[0.0.0.0/0]" --sku-capacity "1", --sku-name "Dedicated" --tags "{}"
+    :example: Create a scheduler in eastus
+        az durabletask scheduler create --resource-group testrg --name testscheduler --location eastus --ip-allowlist "[0.0.0.0/0]" --sku-capacity 1, --sku-name "Dedicated" --tags "{}"
     """
 
     _aaz_info = {
@@ -48,8 +48,8 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.scheduler_name = AAZStrArg(
-            options=["-n", "--name", "--scheduler-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the Scheduler",
             required=True,
             fmt=AAZStrArgFormat(
@@ -171,7 +171,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schedulerName", self.ctx.args.scheduler_name,
+                    "schedulerName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
