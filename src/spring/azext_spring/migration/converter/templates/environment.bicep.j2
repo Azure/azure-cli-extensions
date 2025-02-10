@@ -1,13 +1,12 @@
 // Params
-param workloadProfileName string
-param workloadProfileType string
-param minNodes int
-param maxNodes int
+param workloadProfileName string = 'Consumption'
+param workloadProfileType string = 'Consumption'
+param minNodes int = 1
+param maxNodes int = 4
 
-param containerAppEnvName string = '{{data.containerAppEnvName}}'
+param managedEnvName string = '{{data.containerAppEnvName}}'
 param containerAppLogAnalyticsName string = '{{data.containerAppLogAnalyticsName}}'
-param daprAIInstrumentationKey string = '{{data.daprAIInstrumentationKey}}'
-param daprAIConnectionString string = '{{data.daprAIConnectionString}}'
+param zoneRedundant = '{{data.zoneRedundant}}'
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: containerAppLogAnalyticsName
@@ -20,11 +19,9 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
 }
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
-  name: containerAppEnvName
+  name: managedEnvName
   location: resourceGroup().location
   properties: {
-    daprAIInstrumentationKey: daprAIInstrumentationKey
-    daprAIConnectionString: daprAIConnectionString
     // vnetConfiguration: {}
     appLogsConfiguration: {
       destination: 'log-analytics'
@@ -33,7 +30,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
         sharedKey: logAnalytics.listKeys().primarySharedKey
       }
     }
-    zoneRedundant: {{data.zoneRedundant}}
+    zoneRedundant: zoneRedundant
     // customDomainConfiguration: {}
     workloadProfiles: [
       {
@@ -43,17 +40,21 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
         maximumCount: maxNodes
       }
     ]
-    // kedaConfiguration: {}
-    // daprConfiguration: {}
-    infrastructureResourceGroup: '{{data.infrastructureResourceGroup}}'
-    peerAuthentication: {
-      mtls: {
-        enabled: {{data.mtlsEnabled}}
-      }
-    }
-    //peerTrafficConfiguration: {}
   }
 }
+
+{% if data.scheduledEntries %}
+resource maintenanceConfig 'Microsoft.App/managedEnvironments/maintenanceConfigurations@2024-10-02-Preview' = {
+  name: '${managedEnvName}/default'
+  dependsOn: [
+      resourceId('Microsoft.App/managedEnvironments', managedEnvName)
+  ]
+  location: resourceGroup().location
+  properties: {
+    scheduledEntries: {{ data.scheduledEntries }}
+  }
+}
+{% endif %}
 
 output containerAppEnvId string = containerAppEnv.id
 output containerAppEnvName string = containerAppEnv.name
