@@ -6,15 +6,24 @@ class EnvironmentConverter(ConverterTemplate):
         self.source = source
 
     def calculate_data(self):
+        name = self.source['name'].split('/')[-1]
         self.data = {
-            "containerAppEnvName": self.source['name'],
-            "containerAppLogAnalyticsName": f"log-{self.source['name']}",
-            "daprAIInstrumentationKey": "",
-            "daprAIConnectionString": "",
-            "zoneRedundant": str(self.source['properties']['zoneRedundant']).lower(),
-            "infrastructureResourceGroup": self.source['properties'].get('infraResourceGroup'),
-            "mtlsEnabled": "true"
+            "containerAppEnvName": name,
+            "containerAppLogAnalyticsName": f"log-{name}",
         }
+
+        asa_zone_redundant = self.source['properties'].get('zoneRedundant')
+        if asa_zone_redundant is not None:
+            self.data["zoneRedundant"] = str(asa_zone_redundant).lower()
+
+        asa_maintenance_window = self.source['properties'].get('maintenanceScheduleConfiguration')
+        if asa_maintenance_window:
+            aca_maintenance_window = [{
+                "weekDay": asa_maintenance_window['day'],
+                "startHourUtc": asa_maintenance_window['hour'],
+                "durationHours": 8,
+            }]
+            self.data["scheduledEntries"] = aca_maintenance_window
 
     def get_template_name(self):
         return "environment.bicep"
