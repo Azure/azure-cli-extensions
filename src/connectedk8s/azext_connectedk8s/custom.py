@@ -969,7 +969,7 @@ def create_connectedk8s(
             "Timed out waiting for Agent State to reach terminal state."
         )
     if cl_oid and enable_custom_locations and cl_oid == custom_locations_oid:
-        logger.warn(consts.Manual_Custom_Location_Oid_Warning)    
+        logger.warn(consts.Manual_Custom_Location_Oid_Warning)
     return put_cc_response
 
 
@@ -2791,7 +2791,7 @@ def enable_features(
     cl_oid: str | None = None,
 ) -> str:
     logger.warning("This operation might take a while...\n")
-    
+
     # Validate custom token operation
     custom_token_passed, _ = utils.validate_custom_token(
         cmd, resource_group_name, "dummyLocation"
@@ -2843,7 +2843,7 @@ def enable_features(
         final_enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
             cmd, cl_oid, subscription_id
         )
-        if not enable_cluster_connect and  final_enable_cl:
+        if not enable_cluster_connect and final_enable_cl:
             enable_cluster_connect = True
             logger.warning(
                 "Enabling 'custom-locations' feature will enable 'cluster-connect' feature too."
@@ -2974,7 +2974,7 @@ def enable_features(
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"]
         )
-    if  final_enable_cl:
+    if final_enable_cl:
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.customLocations.enabled=true"]
         )
@@ -3002,8 +3002,8 @@ def enable_features(
         raise CLIInternalError(
             str.format(consts.Error_enabling_Features, helm_upgrade_error_message)
         )
-    if cl_oid and  final_enable_cl and cl_oid == custom_locations_oid:
-        logger.warn(consts.Manual_Custom_Location_Oid_Warning)    
+    if cl_oid and final_enable_cl and cl_oid == custom_locations_oid:
+        logger.warn(consts.Manual_Custom_Location_Oid_Warning)
     return str.format(
         consts.Successfully_Enabled_Features, features, connected_cluster.name
     )
