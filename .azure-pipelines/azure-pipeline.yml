@@ -1,0 +1,38 @@
+# GitHub Release v1.0.0
+resources:
+  - repo: self
+  
+trigger: none
+  
+pr:
+    branches:
+      include:
+      - '*'
+  
+pool:
+    vmImage: 'ubuntu-latest'
+  
+variables:
+    pythonVersion: '3.12'
+    venvDir: '$(Pipeline.Workspace)/venv'
+  
+jobs:
+  - job: BuildAndDeploy
+    displayName: "Build and Deploy"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      fetchTags: true
+  
+    - task: Docker@2
+      displayName: 'Run build in Python Docker container'
+      inputs:
+        containerRegistry: '$(kraterdevteam)'
+        repository: 'python'
+        command: 'run'
+        arguments: '--rm -v $(Pipeline.Workspace):/workspace -w /workspace python:$(pythonVersion) /bin/bash -c "python -m venv $(venvDir)
+         && source $(venvDir)/bin/activate && python -m pip install --upgrade pip && pip install setuptools==70.0.0 
+         && pip install --force-reinstall wheel==0.30.0 && pip install azdev && azdev setup -c -r azure-cli-extensions 
+         && azdev extension build acrcache"'
