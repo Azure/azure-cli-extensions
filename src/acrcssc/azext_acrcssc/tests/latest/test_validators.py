@@ -7,7 +7,6 @@ import os
 import tempfile
 import unittest
 from unittest import mock
-from datetime import (datetime, timezone)
 from ..._validators import (
     _validate_schedule, check_continuous_task_exists, validate_continuouspatch_config_v1
 )
@@ -21,7 +20,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
     def test_validate_schedule_valid(self):
         test_cases = [
-            ('1d' ),
+            ('1d'),
             ('5d'),
             ('10d')
         ]

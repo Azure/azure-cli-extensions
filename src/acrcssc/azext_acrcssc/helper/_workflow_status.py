@@ -61,7 +61,7 @@ class WorkflowTaskStatus:
 
     # task run status from src\ACR.Build.Contracts\src\Status.cs
     @staticmethod
-    def get_workflow_task_state(task):
+    def _task_status_to_workflow_status(task):
         if task is None:
             return WorkflowTaskState.UNKNOWN.value
 
@@ -129,9 +129,11 @@ class WorkflowTaskStatus:
             repository = patched_image.split(':')[0]
             return f"{repository}:{original_tag}"
 
-        match = re.search(r'Patching OS vulnerabilities for image (\S+)', logs)
+        match = re.search(r'Patching OS vulnerabilities for image (\S+):(\S+)', logs)
         if match:
-            return match.group(1)
+            repository = match.group(1)
+            original_tag = match.group(2)
+            return f"{repository}:{original_tag}"
         return None
 
     def get_patch_task_from_scan_tasklog(self):
