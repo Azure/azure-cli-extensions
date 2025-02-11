@@ -336,8 +336,10 @@ def quotas(cmd, resource_group_name, workspace_name, location):
     List the quotas for the given (or current) Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    # client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    # return client.list()
+    client = cf_quotas(cmd.cli_ctx, info.subscription, info.location)
+    return client.list(info.resource_group, info.name, info.location)
 
 
 def set(cmd, workspace_name, resource_group_name, location):
