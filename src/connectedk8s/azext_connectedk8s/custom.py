@@ -969,7 +969,7 @@ def create_connectedk8s(
             "Timed out waiting for Agent State to reach terminal state."
         )
     if cl_oid and enable_custom_locations and cl_oid == custom_locations_oid:
-        logger.warn(consts.Manual_Custom_Location_Oid_Warning)
+        logger.warning(consts.Manual_Custom_Location_Oid_Warning)
     return put_cc_response
 
 
@@ -2850,7 +2850,7 @@ def enable_features(
             )
         if not final_enable_cl:
             features.remove("custom-locations")
-            logger.warn(consts.Custom_Location_Enable_Failed_warning)
+            logger.warning(consts.Custom_Location_Enable_Failed_warning)
             if len(features) == 0:
                 raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
@@ -3003,7 +3003,7 @@ def enable_features(
             str.format(consts.Error_enabling_Features, helm_upgrade_error_message)
         )
     if cl_oid and final_enable_cl and cl_oid == custom_locations_oid:
-        logger.warn(consts.Manual_Custom_Location_Oid_Warning)
+        logger.warning(consts.Manual_Custom_Location_Oid_Warning)
     return str.format(
         consts.Successfully_Enabled_Features, features, connected_cluster.name
     )
