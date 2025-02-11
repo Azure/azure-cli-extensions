@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema version create",
+    "workload-operations workflow version execution create",
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Schema Version Resource
+    """Create Execution Resource
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/schemas/{}/versions/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/workflows/{}/versions/{}/executions/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -43,39 +43,81 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.execution_name = AAZStrArg(
+            options=["-n", "--name", "--execution-name"],
+            help="The name of the Execution.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                max_length=61,
+                min_length=3,
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.schema_name = AAZStrArg(
-            options=["--schema-name"],
-            help="The name of the Schema",
+        _args_schema.version_name = AAZStrArg(
+            options=["--version-name"],
+            help="The name of the workflowVersion.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                max_length=61,
+                min_length=3,
             ),
         )
-        _args_schema.schema_version_name = AAZStrArg(
-            options=["-n", "--name", "--schema-version-name"],
-            help="The name of the SchemaVersion",
+        _args_schema.workflow_name = AAZStrArg(
+            options=["--workflow-name"],
+            help="Name of the workflow",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                max_length=61,
+                min_length=3,
             ),
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.value = AAZFileArg(
-            options=["--schema-file"],
+        _args_schema.specification = AAZFreeFormDictArg(
+            options=["--specification"],
             arg_group="Properties",
-            help="Value of schema version",
+            help="Execution specification",
+        )
+        _args_schema.status = AAZObjectArg(
+            options=["--status"],
+            arg_group="Properties",
+            help="Status of Execution",
+            blank={},
+        )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.extended_location = AAZObjectArg(
+            options=["--extended-location"],
+            arg_group="Resource",
+            help="The complex type of the extended location.",
+        )
+
+        extended_location = cls._args_schema.extended_location
+        extended_location.name = AAZStrArg(
+            options=["name"],
+            help="The name of the extended location.",
+            required=True,
+        )
+        extended_location.type = AAZStrArg(
+            options=["type"],
+            help="The type of the extended location.",
+            required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SchemaVersionsCreateOrUpdate(ctx=self.ctx)()
+        yield self.ExecutionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +132,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SchemaVersionsCreateOrUpdate(AAZHttpOperation):
+    class ExecutionsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +162,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/schemas/{schemaName}/versions/{schemaVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/workflows/{workflowName}/versions/{versionName}/executions/{executionName}",
                 **self.url_parameters
             )
 
@@ -136,19 +178,23 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "executionName", self.ctx.args.execution_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schemaName", self.ctx.args.schema_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "schemaVersionName", self.ctx.args.schema_version_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "versionName", self.ctx.args.version_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "workflowName", self.ctx.args.workflow_name,
                     required=True,
                 ),
             }
@@ -158,7 +204,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2025-01-01-preview",
                     required=True,
                 ),
             }
@@ -183,11 +229,22 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location")
             _builder.set_prop("properties", AAZObjectType)
+
+            extended_location = _builder.get(".extendedLocation")
+            if extended_location is not None:
+                extended_location.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                extended_location.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("status", AAZObjectType, ".status", typ_kwargs={"flags": {"required": True}})
+
+            specification = _builder.get(".properties.specification")
+            if specification is not None:
+                specification.set_anytype_elements(".")
 
             return self.serialize_content(_content_value)
 
@@ -213,6 +270,9 @@ class Create(AAZCommand):
                 serialized_name="eTag",
                 flags={"read_only": True},
             )
+            _schema_on_200_201.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -228,12 +288,55 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            extended_location = cls._schema_on_200_201.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
             properties = cls._schema_on_200_201.properties
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.value = AAZStrType(
+            properties.specification = AAZFreeFormDictType(
+                flags={"required": True},
+            )
+            properties.status = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.workflow_version_id = AAZStrType(
+                serialized_name="workflowVersionId",
+                flags={"read_only": True},
+            )
+
+            status = cls._schema_on_200_201.properties.status
+            status.last_modified = AAZStrType(
+                serialized_name="lastModified",
+                flags={"required": True},
+            )
+            status.stage_history = AAZListType(
+                serialized_name="stageHistory",
+            )
+            status.status = AAZStrType(
+                flags={"required": True},
+            )
+            status.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"required": True},
+            )
+
+            stage_history = cls._schema_on_200_201.properties.status.stage_history
+            stage_history.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.status.stage_history.Element
+            _element.status = AAZStrType(
+                flags={"required": True},
+            )
+            _element.status_details = AAZStrType(
+                serialized_name="statusDetails",
                 flags={"required": True},
             )
 

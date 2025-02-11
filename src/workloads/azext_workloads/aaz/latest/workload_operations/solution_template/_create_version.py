@@ -9,7 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-import json
+
 
 @register_command(
     "workload-operations solution-template create-version",
@@ -57,12 +57,13 @@ class CreateVersion(AAZCommand):
         )
 
         # define Arg Group "Body"
+
         _args_schema = cls._args_schema
         _args_schema.solution_template_version = AAZObjectArg(
             options=["--solution-template-version"],
             arg_group="Body",
             help="Solution Template Version",
-            required=False,
+            required=True,
         )
         _args_schema.update_type = AAZStrArg(
             options=["--update-type"],
@@ -71,28 +72,25 @@ class CreateVersion(AAZCommand):
             required=True,
             enum={"Major": "Major", "Minor": "Minor", "Patch": "Patch"},
         )
- 
-        _args_schema.configurations = AAZFileArg(
-            options=["--config-template"],
-            help="Link to File containing Config expressions  for this solution version",
+
+        solution_template_version = cls._args_schema.solution_template_version
+        solution_template_version.configurations = AAZStrArg(
+            options=["configurations"],
+            help="Config expressions for this solution version",
         )
-        _args_schema.orchestrator_type = AAZStrArg(
-            options=["--orchestrator-type"],
+        solution_template_version.orchestrator_type = AAZStrArg(
+            options=["orchestrator-type"],
             help="Orchestrator type",
             enum={"TO": "TO"},
         )
-        _args_schema.specification = AAZFreeFormDictArg(
-            options=["--specification"],
-            help="App components spec, use @ to load from file",
+        solution_template_version.specification = AAZFreeFormDictArg(
+            options=["specification"],
+            help="App components spec",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        # file_arg = self.ctx.args.solution_template_version_file
-        # if file_arg:
-        #     with open(str(file_arg.to_serialized_data()), "r", encoding="utf8") as f:
-        #         self.ctx.args.solution_template_version = f.read()
         yield self.SolutionTemplatesCreateVersion(ctx=self.ctx)()
         self.post_operations()
 
@@ -197,28 +195,24 @@ class CreateVersion(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("solutionTemplateVersion", AAZObjectType)
+            _builder.set_prop("solutionTemplateVersion", AAZObjectType, ".solution_template_version", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("updateType", AAZStrType, ".update_type", typ_kwargs={"flags": {"required": True}})
 
             solution_template_version = _builder.get(".solutionTemplateVersion")
-            print("Solution template version:", solution_template_version)
             if solution_template_version is not None:
                 solution_template_version.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".solutionTemplateVersion.properties")
-            print("Properties:", properties)
             if properties is not None:
                 properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
 
             specification = _builder.get(".solutionTemplateVersion.properties.specification")
-            print("Specification:", specification)
             if specification is not None:
                 specification.set_anytype_elements(".")
+
             return self.serialize_content(_content_value)
-
-
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)

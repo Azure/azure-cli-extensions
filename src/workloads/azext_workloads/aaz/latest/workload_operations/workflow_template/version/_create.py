@@ -9,20 +9,20 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-import json
+
 
 @register_command(
-    "workload-operations solution-template create-version",
+    "workload-operations workflow-template version create",
     is_preview=True,
 )
-class CreateVersion(AAZCommand):
-    """Create a Solution Template Version Resource
+class Create(AAZCommand):
+    """Create a Workflow Template Version Resource
     """
 
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/solutiontemplates/{}/createversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/workflowtemplates/{}/versions/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -46,54 +46,67 @@ class CreateVersion(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-template-name"],
-            help="The name of the SolutionTemplate",
+        _args_schema.workflow_template_name = AAZStrArg(
+            options=["--workflow-template-name"],
+            help="The name of the WorkflowTemplate",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-
-        # define Arg Group "Body"
-        _args_schema = cls._args_schema
-        _args_schema.solution_template_version = AAZObjectArg(
-            options=["--solution-template-version"],
-            arg_group="Body",
-            help="Solution Template Version",
-            required=False,
+        _args_schema.workflow_template_version_name = AAZStrArg(
+            options=["-n", "--name", "--workflow-template-version-name"],
+            help="The name of the WorkflowTemplateVersion",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9]+\\.[0-9]+\\.[0-9]+$",
+            ),
         )
         _args_schema.update_type = AAZStrArg(
             options=["--update-type"],
-            arg_group="Body",
-            help="Update type",
+            help="The type of update",
             required=True,
             enum={"Major": "Major", "Minor": "Minor", "Patch": "Patch"},
         )
- 
-        _args_schema.configurations = AAZFileArg(
-            options=["--config-template"],
-            help="Link to File containing Config expressions  for this solution version",
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.configurations = AAZStrArg(
+            options=["--configurations"],
+            arg_group="Properties",
+            help="Config expressions for this workflow version",
         )
-        _args_schema.orchestrator_type = AAZStrArg(
-            options=["--orchestrator-type"],
+        _args_schema.stage_spec_template = AAZListArg(
+            options=["--stage-spec-template"],
+            arg_group="Properties",
+            help="workflow template specification",
+        )
+
+        stage_spec_template = cls._args_schema.stage_spec_template
+        stage_spec_template.Element = AAZObjectArg()
+
+        _element = cls._args_schema.stage_spec_template.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of Stage",
+            required=True,
+        )
+        _element.orchestrator_type = AAZStrArg(
+            options=["orchestrator-type"],
             help="Orchestrator type",
+            required=True,
             enum={"TO": "TO"},
         )
-        _args_schema.specification = AAZFreeFormDictArg(
-            options=["--specification"],
-            help="App components spec, use @ to load from file",
+        _element.specification = AAZFreeFormDictArg(
+            options=["specification"],
+            help="Stage specification",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        # file_arg = self.ctx.args.solution_template_version_file
-        # if file_arg:
-        #     with open(str(file_arg.to_serialized_data()), "r", encoding="utf8") as f:
-        #         self.ctx.args.solution_template_version = f.read()
-        yield self.SolutionTemplatesCreateVersion(ctx=self.ctx)()
+        yield self.WorkflowTemplateVersionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -108,7 +121,7 @@ class CreateVersion(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SolutionTemplatesCreateVersion(AAZHttpOperation):
+    class WorkflowTemplateVersionsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -118,18 +131,18 @@ class CreateVersion(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -138,13 +151,13 @@ class CreateVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/solutionTemplates/{solutionTemplateName}/createVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -158,11 +171,15 @@ class CreateVersion(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionTemplateName", self.ctx.args.solution_template_name,
+                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "workflowTemplateName", self.ctx.args.workflow_template_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "workflowTemplateVersionName", self.ctx.args.workflow_template_version_name,
                     required=True,
                 ),
             }
@@ -171,6 +188,10 @@ class CreateVersion(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "updateType", self.ctx.args.update_type,
+                    required=True,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2025-01-01-preview",
                     required=True,
@@ -197,93 +218,93 @@ class CreateVersion(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("solutionTemplateVersion", AAZObjectType)
-            _builder.set_prop("updateType", AAZStrType, ".update_type", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
-            solution_template_version = _builder.get(".solutionTemplateVersion")
-            print("Solution template version:", solution_template_version)
-            if solution_template_version is not None:
-                solution_template_version.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".solutionTemplateVersion.properties")
-            print("Properties:", properties)
+            properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("stageSpecTemplate", AAZListType, ".stage_spec_template", typ_kwargs={"flags": {"required": True}})
 
-            specification = _builder.get(".solutionTemplateVersion.properties.specification")
-            print("Specification:", specification)
+            stage_spec_template = _builder.get(".properties.stageSpecTemplate")
+            if stage_spec_template is not None:
+                stage_spec_template.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.stageSpecTemplate[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("specification", AAZFreeFormDictType, ".specification")
+
+            specification = _builder.get(".properties.stageSpecTemplate[].specification")
             if specification is not None:
                 specification.set_anytype_elements(".")
+
             return self.serialize_content(_content_value)
 
-
-
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.e_tag = AAZStrType(
                 serialized_name="eTag",
                 flags={"read_only": True},
             )
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.capabilities = AAZListType(
-                flags={"read_only": True},
-            )
+            properties = cls._schema_on_200_201.properties
             properties.configurations = AAZStrType(
-                flags={"required": True},
-            )
-            properties.is_deprecated = AAZBoolType(
-                serialized_name="isDeprecated",
-                flags={"read_only": True},
-            )
-            properties.orchestrator_type = AAZStrType(
-                serialized_name="orchestratorType",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.specification = AAZFreeFormDictType(
+            properties.stage_spec_template = AAZListType(
+                serialized_name="stageSpecTemplate",
                 flags={"required": True},
             )
 
-            capabilities = cls._schema_on_200.properties.capabilities
-            capabilities.Element = AAZStrType()
+            stage_spec_template = cls._schema_on_200_201.properties.stage_spec_template
+            stage_spec_template.Element = AAZObjectType()
 
-            system_data = cls._schema_on_200.system_data
+            _element = cls._schema_on_200_201.properties.stage_spec_template.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.orchestrator_type = AAZStrType(
+                serialized_name="orchestratorType",
+                flags={"required": True},
+            )
+            _element.specification = AAZFreeFormDictType()
+
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -303,11 +324,11 @@ class CreateVersion(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
 
-class _CreateVersionHelper:
-    """Helper class for CreateVersion"""
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-__all__ = ["CreateVersion"]
+__all__ = ["Create"]

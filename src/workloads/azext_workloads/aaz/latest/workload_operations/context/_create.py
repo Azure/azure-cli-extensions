@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema version create",
+    "workload-operations context create",
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Schema Version Resource
+    """Create Context Resource
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/schemas/{}/versions/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/contexts/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -43,39 +43,88 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.context_name = AAZStrArg(
+            options=["-n", "--name", "--context-name"],
+            help="The name of the Context.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                max_length=61,
+                min_length=3,
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.schema_name = AAZStrArg(
-            options=["--schema-name"],
-            help="The name of the Schema",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
-        _args_schema.schema_version_name = AAZStrArg(
-            options=["-n", "--name", "--schema-version-name"],
-            help="The name of the SchemaVersion",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[0-9]+\\.[0-9]+\\.[0-9]+$",
-            ),
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.value = AAZFileArg(
-            options=["--schema-file"],
+        _args_schema.capabilities = AAZListArg(
+            options=["--capabilities"],
             arg_group="Properties",
-            help="Value of schema version",
+            help="List of Capabilities",
         )
+        _args_schema.hierarchies = AAZListArg(
+            options=["--hierarchies"],
+            arg_group="Properties",
+            help="List of Hierarchies",
+        )
+
+        capabilities = cls._args_schema.capabilities
+        capabilities.Element = AAZObjectArg()
+
+        _element = cls._args_schema.capabilities.Element
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="Description of Capability",
+            required=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of Capability",
+            required=True,
+        )
+
+        hierarchies = cls._args_schema.hierarchies
+        hierarchies.Element = AAZObjectArg()
+
+        _element = cls._args_schema.hierarchies.Element
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="Description of Hierarchy",
+            required=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of Hierarchy",
+            required=True,
+        )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SchemaVersionsCreateOrUpdate(ctx=self.ctx)()
+        yield self.ContextsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +139,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SchemaVersionsCreateOrUpdate(AAZHttpOperation):
+    class ContextsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +169,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/schemas/{schemaName}/versions/{schemaVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/contexts/{contextName}",
                 **self.url_parameters
             )
 
@@ -136,15 +185,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "contextName", self.ctx.args.context_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "schemaName", self.ctx.args.schema_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "schemaVersionName", self.ctx.args.schema_version_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -158,7 +203,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2025-01-01-preview",
                     required=True,
                 ),
             }
@@ -183,11 +228,36 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("capabilities", AAZListType, ".capabilities", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("hierarchies", AAZListType, ".hierarchies", typ_kwargs={"flags": {"required": True}})
+
+            capabilities = _builder.get(".properties.capabilities")
+            if capabilities is not None:
+                capabilities.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.capabilities[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            hierarchies = _builder.get(".properties.hierarchies")
+            if hierarchies is not None:
+                hierarchies.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.hierarchies[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -209,12 +279,11 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
+            )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
             )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
@@ -224,16 +293,42 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.capabilities = AAZListType(
+                flags={"required": True},
+            )
+            properties.hierarchies = AAZListType(
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.value = AAZStrType(
+
+            capabilities = cls._schema_on_200_201.properties.capabilities
+            capabilities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.capabilities.Element
+            _element.description = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            hierarchies = cls._schema_on_200_201.properties.hierarchies
+            hierarchies.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.hierarchies.Element
+            _element.description = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
                 flags={"required": True},
             )
 
@@ -256,6 +351,9 @@ class Create(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

@@ -9,20 +9,20 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-import json
+
 
 @register_command(
-    "workload-operations solution-template create-version",
+    "workload-operations config-template create-version",
     is_preview=True,
 )
 class CreateVersion(AAZCommand):
-    """Create a Solution Template Version Resource
+    """Create or update a Config Template Version Resource with the specified UpdateType
     """
 
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/solutiontemplates/{}/createversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/configtemplates/{}/createversion", "2025-01-01-preview"],
         ]
     }
 
@@ -43,26 +43,27 @@ class CreateVersion(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-        _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-template-name"],
-            help="The name of the SolutionTemplate",
+        _args_schema.config_template_name = AAZStrArg(
+            options=["--config-template-name"],
+            help="The name of the ConfigTemplate",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
 
         # define Arg Group "Body"
+
         _args_schema = cls._args_schema
-        _args_schema.solution_template_version = AAZObjectArg(
-            options=["--solution-template-version"],
+        _args_schema.config_template_version = AAZObjectArg(
+            options=["--config-template-version"],
             arg_group="Body",
-            help="Solution Template Version",
-            required=False,
+            help="Config Template Version",
+            required=True,
         )
         _args_schema.update_type = AAZStrArg(
             options=["--update-type"],
@@ -71,29 +72,21 @@ class CreateVersion(AAZCommand):
             required=True,
             enum={"Major": "Major", "Minor": "Minor", "Patch": "Patch"},
         )
- 
-        _args_schema.configurations = AAZFileArg(
-            options=["--config-template"],
-            help="Link to File containing Config expressions  for this solution version",
+
+        config_template_version = cls._args_schema.config_template_version
+        config_template_version.configurations = AAZStrArg(
+            options=["configurations"],
+            help="Configuration values",
         )
-        _args_schema.orchestrator_type = AAZStrArg(
-            options=["--orchestrator-type"],
-            help="Orchestrator type",
-            enum={"TO": "TO"},
-        )
-        _args_schema.specification = AAZFreeFormDictArg(
-            options=["--specification"],
-            help="App components spec, use @ to load from file",
+        config_template_version.schema = AAZStrArg(
+            options=["schema"],
+            help="Schema of configuration",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        # file_arg = self.ctx.args.solution_template_version_file
-        # if file_arg:
-        #     with open(str(file_arg.to_serialized_data()), "r", encoding="utf8") as f:
-        #         self.ctx.args.solution_template_version = f.read()
-        yield self.SolutionTemplatesCreateVersion(ctx=self.ctx)()
+        yield self.ConfigTemplatesCreateVersion(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -108,7 +101,7 @@ class CreateVersion(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SolutionTemplatesCreateVersion(AAZHttpOperation):
+    class ConfigTemplatesCreateVersion(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -138,7 +131,7 @@ class CreateVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/solutionTemplates/{solutionTemplateName}/createVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/configTemplates/{configTemplateName}/createVersion",
                 **self.url_parameters
             )
 
@@ -154,11 +147,11 @@ class CreateVersion(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "configTemplateName", self.ctx.args.config_template_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionTemplateName", self.ctx.args.solution_template_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -197,28 +190,19 @@ class CreateVersion(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("solutionTemplateVersion", AAZObjectType)
+            _builder.set_prop("configTemplateVersion", AAZObjectType, ".config_template_version", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("updateType", AAZStrType, ".update_type", typ_kwargs={"flags": {"required": True}})
 
-            solution_template_version = _builder.get(".solutionTemplateVersion")
-            print("Solution template version:", solution_template_version)
-            if solution_template_version is not None:
-                solution_template_version.set_prop("properties", AAZObjectType)
+            config_template_version = _builder.get(".configTemplateVersion")
+            if config_template_version is not None:
+                config_template_version.set_prop("properties", AAZObjectType)
 
-            properties = _builder.get(".solutionTemplateVersion.properties")
-            print("Properties:", properties)
+            properties = _builder.get(".configTemplateVersion.properties")
             if properties is not None:
                 properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("schema", AAZStrType, ".schema", typ_kwargs={"flags": {"required": True}})
 
-            specification = _builder.get(".solutionTemplateVersion.properties.specification")
-            print("Specification:", specification)
-            if specification is not None:
-                specification.set_anytype_elements(".")
             return self.serialize_content(_content_value)
-
-
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -258,30 +242,16 @@ class CreateVersion(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.capabilities = AAZListType(
-                flags={"read_only": True},
-            )
             properties.configurations = AAZStrType(
-                flags={"required": True},
-            )
-            properties.is_deprecated = AAZBoolType(
-                serialized_name="isDeprecated",
-                flags={"read_only": True},
-            )
-            properties.orchestrator_type = AAZStrType(
-                serialized_name="orchestratorType",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.specification = AAZFreeFormDictType(
+            properties.schema = AAZStrType(
                 flags={"required": True},
             )
-
-            capabilities = cls._schema_on_200.properties.capabilities
-            capabilities.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema version create",
+    "workload-operations schema-reference create",
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Schema Version Resource
+    """Create a Schema Reference Resource
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/schemas/{}/versions/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/private.edge/schemareferences/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -43,39 +43,33 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.resource_uri = AAZStrArg(
+            options=["--resource-uri"],
+            help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
         )
-        _args_schema.schema_name = AAZStrArg(
-            options=["--schema-name"],
-            help="The name of the Schema",
+        _args_schema.schema_reference_name = AAZStrArg(
+            options=["--schema-reference-name"],
+            help="The name of the SchemaReference",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
-        _args_schema.schema_version_name = AAZStrArg(
-            options=["-n", "--name", "--schema-version-name"],
-            help="The name of the SchemaVersion",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[0-9]+\\.[0-9]+\\.[0-9]+$",
             ),
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.value = AAZFileArg(
-            options=["--schema-file"],
+        _args_schema.schema_id = AAZStrArg(
+            options=["--schema-id"],
             arg_group="Properties",
-            help="Value of schema version",
+            help="Schema Id of schema reference",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SchemaVersionsCreateOrUpdate(ctx=self.ctx)()
+        yield self.SchemaReferencesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +84,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SchemaVersionsCreateOrUpdate(AAZHttpOperation):
+    class SchemaReferencesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +114,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/schemas/{schemaName}/versions/{schemaVersionName}",
+                "/{resourceUri}/providers/Private.Edge/schemaReferences/{schemaReferenceName}",
                 **self.url_parameters
             )
 
@@ -136,19 +130,12 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceUri", self.ctx.args.resource_uri,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schemaName", self.ctx.args.schema_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "schemaVersionName", self.ctx.args.schema_version_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "schemaReferenceName", self.ctx.args.schema_reference_name,
                     required=True,
                 ),
             }
@@ -158,7 +145,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2025-01-01-preview",
                     required=True,
                 ),
             }
@@ -187,7 +174,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("schemaId", AAZStrType, ".schema_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -233,7 +220,8 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.value = AAZStrType(
+            properties.schema_id = AAZStrType(
+                serialized_name="schemaId",
                 flags={"required": True},
             )
 
