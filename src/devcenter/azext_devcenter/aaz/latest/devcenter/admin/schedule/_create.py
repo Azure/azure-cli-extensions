@@ -74,7 +74,7 @@ class Create(AAZCommand):
             required=True,
             default="default",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern=r"^[-\w]+$",
                 max_length=100,
                 min_length=1,
             ),
