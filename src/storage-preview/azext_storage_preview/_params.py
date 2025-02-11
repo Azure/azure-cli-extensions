@@ -903,7 +903,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     for cmd in ['list', 'delete', 'delete-batch', 'resize', 'url', 'generate-sas', 'show', 'update',
                 'exists', 'metadata show', 'metadata update', 'copy start', 'copy cancel', 'copy start-batch',
-                'upload', 'upload-batch', 'download', 'download-batch', 'hard-link create']:
+                'upload', 'upload-batch', 'download', 'download-batch']:
         with self.argument_context('storage file ' + cmd) as c:
             c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False,
                     help="If true, the trailing dot will be trimmed from the target URI. Default to False")
@@ -1012,7 +1012,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                                'to be set on the directory. The default value is 0 (root group).')
         t_file_mode_copy_mode_type = self.get_sdk('_generated.models._azure_file_storage_enums#ModeCopyMode',
                                                   resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
-        c.extra('file_mode_copy_mode', is_preview=True, arg_type=get_enum_type(t_file_mode_copy_mode_type),
+        c.extra('mode_copy_mode', options_list='--file-mode-copy-mode', is_preview=True,
+                arg_type=get_enum_type(t_file_mode_copy_mode_type),
                 help='Only applicable to NFS Files. Applicable only when the copy source is a File. '
                      'Determines the copy behavior of the mode bits of the destination file. '
                      'If not populated, the destination file will have the default File Mode.')
@@ -1024,9 +1025,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                      'If not populated, the destination file will have the default Owner and Group.')
 
     with self.argument_context('storage file hard-link create') as c:
-        c.extra('target', is_preview=True,
+        c.extra('share_name', share_name_type, required=True)
+        c.register_path_argument()
+        c.extra('path', options_list='--target', required=True,
                 help='Specifies the path of the target file to which the link will be created, up to 2 KiB in length. '
                      'It should be the full path of the target starting from the root. The target file must be in the '
                      'same share and the same storage account.')
-        c.extra('lease', is_preview=True,
+        c.extra('lease',
                 help='Lease id, required if the file has an active lease.')

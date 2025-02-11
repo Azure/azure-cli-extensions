@@ -83,10 +83,7 @@ def storage_file_upload(client, local_file_path, content_settings=None,
         'metadata': metadata,
         'validate_content': validate_content,
         'max_concurrency': max_connections,
-        'timeout': timeout,
-        'file_mode': file_mode,
-        'owner': owner,
-        'group': group
+        'timeout': timeout
     }
     if progress_callback:
         upload_args['progress_hook'] = progress_callback
@@ -99,6 +96,14 @@ def storage_file_upload(client, local_file_path, content_settings=None,
     if 'content_md5' in response:
         if isinstance(response['content_md5'], bytearray):
             response['content_md5'] = ''.join(hex(x) for x in response['content_md5'])
+
+    if not (file_mode is None and owner is None and group is None):
+        nfs_args = {
+            'file_mode': file_mode,
+            'owner': owner,
+            'group': group
+        }
+        client.set_http_headers(content_settings, **nfs_args)
 
     return response
 
@@ -449,5 +454,5 @@ def file_updates(client, **kwargs):
     return client.set_http_headers(**kwargs)
 
 
-def file_hard_link_create(client, **kwargs):
-    return client.create_hard_link(**kwargs)
+def file_hard_link_create(client, path, **kwargs):
+    return client.create_hard_link(target=path, **kwargs)
