@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Show a Virtual Instance for SAP solutions resource

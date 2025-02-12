@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-application-server-instance start",
-    is_preview=True,
 )
 class Start(AAZCommand):
     """Starts the SAP Application Server Instance.

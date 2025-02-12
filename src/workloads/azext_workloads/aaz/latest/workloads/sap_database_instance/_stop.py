@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-database-instance stop",
-    is_preview=True,
 )
 class Stop(AAZCommand):
     """Stops the database instance of the SAP system.

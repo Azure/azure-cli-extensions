@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all Virtual Instances for SAP solutions resources in a Resource Group.

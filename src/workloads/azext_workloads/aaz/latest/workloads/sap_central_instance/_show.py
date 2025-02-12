@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-central-instance show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the SAP Central Services Instance resource.

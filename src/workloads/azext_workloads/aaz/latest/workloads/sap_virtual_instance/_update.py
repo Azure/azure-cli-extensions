@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource
@@ -77,6 +76,7 @@ class Update(AAZCommand):
             options=["--mrg-network-access-typ", "--managed-resources-network-access-type"],
             arg_group="Properties",
             help="Specifies the network access configuration for the resources that will be deployed in the Managed Resource Group. The options to choose from are Public and Private. If 'Private' is chosen, the Storage Account service tag should be enabled on the subnets in which the SAP VMs exist. This is required for establishing connectivity between VM extensions and the managed resource group storage account. This setting is currently applicable only to Storage Account. Learn more here https://go.microsoft.com/fwlink/?linkid=2247228",
+            default="Public",
             enum={"Private": "Private", "Public": "Public"},
         )
         _args_schema.tags = AAZDictArg(

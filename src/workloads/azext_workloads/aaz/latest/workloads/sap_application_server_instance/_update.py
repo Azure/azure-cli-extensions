@@ -54,7 +54,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.sap_virtual_instance_name = AAZStrArg(
-            options=["--sap-virtual-instance-name"],
+            options=["--vis-name", "--sap-virtual-instance-name"],
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
