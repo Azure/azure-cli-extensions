@@ -14,8 +14,6 @@ class MainConverter(ConverterTemplate):
             moduleName = appName.replace("-", "")
             templateName = f"{appName}_app.bicep"
 
-            print(f"appName: {appName}, moduleName: {moduleName}, templateName: {templateName}")
-
             self.data["apps"].append({
                 "appName": appName,
                 "moduleName": moduleName,

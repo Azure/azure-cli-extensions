@@ -4,7 +4,6 @@ from azure.cli.command_modules.resource._client_factory import (_resource_client
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from jinja2 import Environment, FileSystemLoader
 from .converter.conversion_context import ConversionContext
 from .converter.environment_converter import EnvironmentConverter
 from .converter.app_converter import AppConverter
@@ -22,9 +21,9 @@ from .converter.param_converter import ParamConverter
 logger = get_logger(__name__)
 
 
-def migration_aca_start(cmd, client, resource_group, service):
-    # API calls
-    logger.info("Start export ARM template for ASA service...")
+def migration_aca_start(cmd, client, resource_group, service, output_folder):
+    logger.warning("Getting your Azure Spring Apps service...")
+    logger.debug("Start to export ARM template for Azure Spring Apps service...")
     asa_arm = export_asa_arm_template(cmd, resource_group, service)
 
     # Create context and add converters
@@ -42,9 +41,6 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.add_converter(ReadMeConverter())
     context.add_converter(ParamConverter())
 
-    # Define the parameters for the Bicep template and output the Bicep files
-    logger.info("Start to generate ACA bicep files based on parameters...")
-
     # Prepare bicep parameters
     main_bicep_params = get_aca_bicep_params(asa_arm)
 
@@ -52,12 +48,13 @@ def migration_aca_start(cmd, client, resource_group, service):
     context.set_params_for_converter(EnvironmentConverter, main_bicep_params)
 
     # Run all converters
-    logger.info("Start to run all converters...")
+    logger.warning("Converting resources to Azure Container Apps...")
     converted_contents = context.run_converters(asa_arm)
 
+    logger.debug("Start to save the converted content to files...")
     # Save each line of converted content to a separate file
-    context.save_to_files(converted_contents, os.path.join("output",""))
-    logger.info("Succeed to generate Bicep files")
+    context.save_to_files(converted_contents, output_folder)
+    logger.warning(f"Successfully generated the Bicep files in folder {output_folder}. Please review the files and follow the instructions in the `readme.md` for the next steps.")
 
 
 def export_asa_arm_template(cmd, resource_group, service):

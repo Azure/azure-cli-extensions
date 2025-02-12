@@ -4,51 +4,66 @@ This README provides instructions on how to use the Bicep files generated from y
 
 Before you begin, ensure you have the following:
 
-1. Azure Subscription: An active Azure subscription.
+1. Azure Subscription: An Azure subscription with sufficient permissions to create and manage resources for deploying Azure Container Apps.
 
-2. Azure CLI: Installed and authenticated. You can download it here.
+2. Bicep CLI: Ensure the Bicep CLI is installed.
 
-3. Bicep CLI: Installed and available. Installation steps are available here.
+3. Generated Bicep files: Make sure you have run the following command to generate the Bicep files from your Azure Spring Apps service to Azure Container Apps.
 
-4. Permissions: Sufficient permissions to create and manage resources in your Azure subscription.
+```azurecli
+az spring migration-aca start --service <azure-spring-apps-service-name> --resource-group <resource-group> --subscription <subscription-id>
+```
 
-## Steps to Deploy Azure Container Apps Using Bicep Files
+## Steps to Deploy Azure Container Apps Using the Bicep Files
 
-1. Review and Customize Bicep Files
+1. Review the Bicep Files and Modify Parameters
 
-Open the Bicep files generated in the directory and review the parameters and resource definitions. Modify parameter values as needed to align with your environment (e.g., resource group name, location, application names).
+After running the command to generate the Bicep files, you will have the following files and related resource definitions:
 
-2. [Optional] Create a new Resource Group
+- `main.bicep`: The entry point to deploy and manage Azure Container Apps resources
+- `param.bicepparam`: The parameters which  values required for the deployment.
+- `environment.bicep`: The Bicep file that contains the resource definitions for the Azure Container Apps environment.
+- `<app_name>-app.bicep`: The Bicep file that contains the resource definitions for the Azure Container Apps applications.
+- `<managed_components>.bicep`: The Bicep file that contains the resource definitions for the managed components like config server, spring cloud gateway, spring boot admin and eureka.
 
-If the resource group specified in the Bicep files does not already exist, create one:
+Replace the values in `param.bicepparam` to customize your Azure Container Apps.
 
+2. [Optional] Customize the Bicep Files
+
+Modify values in the Bicep files as needed to align with your environment.
+
+- TODO: Add app containerization links and replace the image.
+- If you are migrating Application Configuration Service or Config Server, you need to provide the credentials to the remote Git repository. Replace the "*" with the correct credentials in the file `config_server.bicep`.
+
+3. [Optional] Create a new Resource Group for Azure Container Apps
+
+If the resource group you want to deploy the Azure Container Apps does not already exist, create one with the following command:
+
+```azurecli
 az group create --name <resource-group-name> --location <location>
-
-Replace the "*" with the correct credentials in config server bicep file
+```
 
 3. Deploy the Bicep Files
 
 Deploy the Bicep files using the Azure CLI:
 
+```azurecli
 az deployment group create \
   --resource-group <resource-group-name> \
   --template-file main.bicep \
   --parameters param.bicepparam
-
-Replace <parameters-file>.json with the path to your parameter file.
+```
 
 5. Validate Deployment
 
-After deployment, validate that all resources, including the Azure Container Apps environment and applications, are correctly provisioned. You can check this in the Azure Portal or using the Azure CLI:
+After deployment, validate that all resources, including the Azure Container Apps environment and applications, are correctly provisioned. You can check this in the Azure Portal:
 
-az containerapp list --resource-group <resource-group-name>
+- Navigate to the Azure Portal and open the resource group you specified.
+- Click `Settings` > `Deployments` to view all the deployment status and any errors.
+- If there is any error, check the error messages and logs to troubleshoot the issue. Retry the deployment after fixing these issues.
 
 ## Post-Deployment Configuration
 
 Some properties and configurations are not included in the Bicep files and must be manually updated. Refer to the official Azure documentation for detailed steps:
 
-### Networking
-
-### Scaling Settings: Configure scaling policies following Configure Scaling.
-
-## Known Limitations
+https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview

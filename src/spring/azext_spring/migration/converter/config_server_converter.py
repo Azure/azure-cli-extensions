@@ -5,7 +5,7 @@ class ConfigServerConverter(ConverterTemplate):
 
     CONFIGURATION_KEY_PREFIX = "spring.cloud.config.server.git"
     KEY_URI = ".uri"
-    KEY_LABEL = ".label"
+    KEY_LABEL = ".default-label"
     KEY_SEARCH_PATHS = ".search-paths"
     KEY_USERNAME = ".username"
     KEY_PASSWORD = ".password"
@@ -21,7 +21,7 @@ class ConfigServerConverter(ConverterTemplate):
         self.source = source
 
     def calculate_data(self):
-        name = self.source['name'].split('/')[-1]
+        name = f"config"
         configurations = self._get_configurations(self.source)
         replicas = 2
 

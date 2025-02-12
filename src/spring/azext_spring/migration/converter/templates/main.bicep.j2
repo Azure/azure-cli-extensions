@@ -1,22 +1,21 @@
 // Params
 param workloadProfileName string
 param workloadProfileType string
-param minNodes int
-param maxNodes int
 
 module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
   params: {
     workloadProfileName: workloadProfileName
     workloadProfileType: workloadProfileType
-    minNodes: minNodes
-    maxNodes: maxNodes
   }
 }
 
 {% for item in data.apps %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
-  name: '{{ item.appName }}'
+  name: '{{ item.appName }}Deployment'
+  dependsOn: [
+    containerAppEnv
+  ]
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
   }
@@ -25,6 +24,9 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 
 module managedGateway 'gateway.bicep' = {
   name: 'gatewayDeployment'
+  dependsOn: [
+    containerAppEnv
+  ]
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -32,6 +34,9 @@ module managedGateway 'gateway.bicep' = {
 
 module managedConfig 'config_server.bicep' = {
   name: 'configServerDeployment'
+  dependsOn: [
+    containerAppEnv
+  ]
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -39,6 +44,9 @@ module managedConfig 'config_server.bicep' = {
 
 module managedEureka 'eureka.bicep' = {
   name: 'eurekaDeployment'
+  dependsOn: [
+    containerAppEnv
+  ]
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -46,6 +54,9 @@ module managedEureka 'eureka.bicep' = {
 
 module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
   name: 'springBootAdminDeployment'
+  dependsOn: [
+    containerAppEnv
+  ]
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }

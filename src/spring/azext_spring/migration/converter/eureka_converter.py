@@ -9,7 +9,7 @@ class EurekaConverter(ConverterTemplate):
         pass
 
     def calculate_data(self):
-        name = self.source['name'].split('/')[-1]
+        name = "eureka"
         configurations = []
         replicas = 1
 

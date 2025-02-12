@@ -15,7 +15,7 @@ class GatewayConverter(ConverterTemplate):
         self.source['secretEnvs'] = secret_envs_dict
 
     def calculate_data(self):
-        gatewayName = self.source['gateway']['name'].split('/')[-1]
+        gatewayName = f"gateway"
         configurations = self._get_configurations(self.source)
         replicas = min(2, self.source['gateway']['sku']['capacity'])
         routes = self._get_routes(self.source['routes'])
@@ -52,7 +52,7 @@ class GatewayConverter(ConverterTemplate):
                     "uri": r.get('uri', aca_uri),
                     "predicates": r.get('predicates'),
                     "filters": r.get('filters'),
-                    "order": r.get('order')
+                    "order": r.get('order') or 0,
                 })
         return aca_routes
 

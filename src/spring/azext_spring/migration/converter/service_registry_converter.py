@@ -9,7 +9,7 @@ class ServiceRegistryConverter(ConverterTemplate):
         self.source = source
 
     def calculate_data(self):
-        name = self.source['name'].split('/')[-1]
+        name = f"eureka"
         configurations = []
         replicas = 1
 
