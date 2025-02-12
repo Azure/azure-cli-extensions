@@ -8,16 +8,5 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "network firewall policy rule-collection-group",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage and configure Azure firewall policy rule-collection-group.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._create import *
