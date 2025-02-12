@@ -27,57 +27,85 @@ class TestWorkflowTaskStatus(unittest.TestCase):
     def test_image(self):
         self.assertEqual(self.workflow_task_status.image(), "repository:tag")
 
-    def test_get_workflow_task_state(self):
-        #test states that map to more than one
-        task = MagicMock()
-        task.status = "Succeeded"
-        self.assertEqual(WorkflowTaskStatus.get_workflow_task_state(task), WorkflowTaskState.SUCCEEDED.value)
-        task.status = "Running"
-        self.assertEqual(WorkflowTaskStatus.get_workflow_task_state(task), WorkflowTaskState.RUNNING.value)
-        task.status = "UnknownStatus"
-        self.assertEqual(WorkflowTaskStatus.get_workflow_task_state(task), WorkflowTaskState.UNKNOWN.value)
-        self.assertEqual(WorkflowTaskStatus.get_workflow_task_state(None), WorkflowTaskState.UNKNOWN.value)
+    def test__task_status_to_workflow_status(self):
+        from azext_acrcssc.helper._constants import TaskRunStatus
+        task = mock.MagicMock()
+        task.status = TaskRunStatus.Succeeded.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.SUCCEEDED.value)
+        task.status = TaskRunStatus.Running.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.RUNNING.value)
+        task.status = TaskRunStatus.Started.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.RUNNING.value)
+        task.status = TaskRunStatus.Queued.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.QUEUED.value)
+        task.status = TaskRunStatus.Canceled.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.CANCELED.value)
+        task.status = TaskRunStatus.Failed.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.FAILED.value)
+        task.status = TaskRunStatus.Error.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.FAILED.value)
+        task.status = TaskRunStatus.Timeout.value
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(task), WorkflowTaskState.FAILED.value)
 
-    def test_status(self):
-        # test a mixed state of patch and scan tasks
-        self.workflow_task_status.scan_task = MagicMock()
-        self.workflow_task_status.scan_task.status = "Succeeded"
-        self.assertEqual(self.workflow_task_status.status(), WorkflowTaskState.SUCCEEDED.value)
-        self.workflow_task_status.patch_task = MagicMock()
-        self.workflow_task_status.patch_task.status = "Succeeded"
-        self.assertEqual(self.workflow_task_status.status(), WorkflowTaskState.SUCCEEDED.value)
+        self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(None), WorkflowTaskState.UNKNOWN.value)
 
-    @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.re')
-    def test_get_image_from_tasklog(self, mock_re):
-        mock_re.search.return_value = MagicMock(group=lambda x: "Scanning image for vulnerability and patch mock-repo:mock-tag for tag mock-tag")
-        self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog("logs"), "mock-repo:mock-tag")
+    def test_workflow_status(self):
+        from azext_acrcssc.helper._constants import TaskRunStatus
+        workflow = WorkflowTaskStatus("mock_repo:mock_tag")
+        workflow.scan_task = mock.MagicMock()
+        workflow.patch_task = mock.MagicMock()
 
-        mock_re.search.return_value = MagicMock(group=lambda x: "Scanning repo: mock-repo, Tag:mock-tag, OriginalTag:mock-tag")
-        self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog("logs"), "mock-repo:mock-tag")
+        workflow.scan_task.status = TaskRunStatus.Succeeded.value
+        workflow.patch_task.status = TaskRunStatus.Succeeded.value
+        self.assertEqual(workflow.status(), WorkflowTaskState.SUCCEEDED.value)
 
-        mock_re.search.return_value = MagicMock(group=lambda x: "Scan, Upload scan report and Schedule Patch for mock-repo:mock-tag")
-        self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog("logs"), "mock-repo:mock-tag")
+        workflow.scan_task.status = TaskRunStatus.Succeeded.value
+        workflow.patch_task.status = TaskRunStatus.Failed.value
+        self.assertEqual(workflow.status(), WorkflowTaskState.FAILED.value)
 
-        # mock_re.search.return_value = MagicMock(group=lambda x: "Patching OS vulnerabilities for image mock-repo:mock-tag")
-        # self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog("logs"), "mock-repo:mock-tag")
+        workflow.scan_task.status = TaskRunStatus.Succeeded.value
+        workflow.patch_task.status = TaskRunStatus.Running.value
+        self.assertEqual(workflow.status(), WorkflowTaskState.RUNNING.value)
 
-    @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.re')
-    def test_get_patch_error_reason_from_tasklog(self, mock_re):
+        workflow.scan_task.status = TaskRunStatus.Canceled.value
+        workflow.patch_task = None
+        self.assertEqual(workflow.status(), WorkflowTaskState.CANCELED.value)
+
+        workflow.scan_task.status = TaskRunStatus.Succeeded.value
+        workflow.patch_task = None
+        self.assertEqual(workflow.status(), WorkflowTaskState.SUCCEEDED.value)
+
+        workflow.scan_task = None
+        workflow.patch_task = None
+        self.assertEqual(workflow.status(), WorkflowTaskState.UNKNOWN.value)
+
+    def test_get_image_from_tasklog(self):
+        logs = "Scanning image for vulnerability and patch mock-repo:mock-tag for tag mock-tag"
+        self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog(logs), "mock-repo:mock-tag")
+
+        logs = "Scanning repo: mock-repo, Tag:mock-tag, OriginalTag:mock-tag"
+        self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog(logs), "mock-repo:mock-tag")
+
+        # logs = "Scan, Upload scan report and Schedule Patch for mock-repo:mock-tag"
+        # self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog(logs), "mock-repo:mock-tag")
+
+        logs = "Patching OS vulnerabilities for image mock-repo:mock-tag"
+        self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog(logs), "mock-repo:mock-tag")
+
+    def test_get_patch_error_reason_from_tasklog(self):
         #test with a more complicated log, and test different regex that we have
-        error_logs = """
-#9 apt update
-#9 0.088 runc run failed: unable to start container process: error during container init: exec: "apt": executable file not found in $PATH
-Error: process "apt update" did not complete successfully: exit code: 1
-2025/02/09 23:47:20 Container failed during run: patch-image. No retries remaining.
+        error_logs = """2025/02/11 23:46:22 Launching container with name: patch-image
+#1 resolve image config for docker-image://graycsscsec.azurecr.io/import:openmpi-4.1.5-1-azl3.0.20240727-amd64
+Error: unsupported osType azurelinux specified
+2025/02/11 23:46:23 Container failed during run: patch-image. No retries remaining.
 failed to run step ID: patch-image: exit status 1
-        """
 
-        assertErrorLog = """Error: failed during run, err: exit status 1
-        Error: process \"apt update\" did not complete successfully: exit code: 1
-        error during container init: exec: \"apt\": executable file not found in $PATH
-        """
-        # mock_re.findall.return_value = ["error"]
-        self.assertEqual(self.workflow_task_status._get_errors_from_tasklog(error_logs), "assertErrorLog")
+Run ID: dt2rw failed after 37s. Error: failed during run, err: exit status 1"""
+
+        assert_error_log = """Error: failed during run, err: exit status 1
+Error: unsupported osType azurelinux specified"""
+        error_output = self.workflow_task_status._get_errors_from_tasklog(error_logs)
+        self.assertEqual(error_output, assert_error_log)
 
     @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.WorkflowTaskStatus.generate_logs')
     @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.parse_resource_id')
