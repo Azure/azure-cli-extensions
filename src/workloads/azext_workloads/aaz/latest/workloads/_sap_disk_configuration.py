@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-disk-configuration",
-    is_preview=True,
 )
 class SapDiskConfiguration(AAZCommand):
     """Show the SAP Disk Configuration Layout prod/non-prod SAP System.
