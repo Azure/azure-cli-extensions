@@ -327,5 +327,5 @@ def spring_private_dns_zone_clean(cmd, client, resource_group, service):
                        resource_group_name=resource_group, service_name=service, resource=updated_resource)
 
 
-def spring_migration_aca_start(cmd, client, resource_group, service):
-    migration_aca_start(cmd, client, resource_group, service)
+def spring_migration_aca_start(cmd, client, resource_group, service, output_folder=None):
+    migration_aca_start(cmd, client, resource_group, service, output_folder)

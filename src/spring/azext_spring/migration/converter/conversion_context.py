@@ -50,7 +50,7 @@ class ConversionContext:
         asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
 
         for app in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps'):
-            appName = app['name'].split('/')[-1][:-3]
+            appName = app['name'].split('/')[-1]
             converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app)
 
         # converted_contents.append(
@@ -62,20 +62,20 @@ class ConversionContext:
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)
 
         converted_contents = self._convert_gateway(source_wrapper, converted_contents)
-        converted_contents = self._convert_config_server_and_ACS(source_wrapper, converted_contents, asa_service)
+        converted_contents = self._convert_config_server_and_ACS(source_wrapper, converted_contents)
         converted_contents = self._convert_live_view(source_wrapper, converted_contents)
         converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service)
 
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):
-        print("Start to save the converted content to files ...")
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        logger.debug(f"Start to save the converted content to files in folder {os.path.abspath(output_path)}...")
+        os.makedirs(os.path.abspath(output_path), exist_ok=True)
 
         for filename, content in converted_contents.items():
             output_filename = os.path.join(output_path, filename)
             with open(output_filename, 'w', encoding='utf-8') as output_file:
-                print(f"Start to generate the {output_filename} file ...")
+                logger.info(f"Generating the file {output_filename}...")
                 output_file.write(content)
 
     def _convert_gateway(self, source_wrapper, converted_contents):
@@ -92,7 +92,7 @@ class ConversionContext:
             logger.info(f"converted_contents for gateway: {converted_contents[gateway_key]}")
         return converted_contents
 
-    def _convert_config_server_and_ACS(self, source_wrapper, converted_contents, asa_service):
+    def _convert_config_server_and_ACS(self, source_wrapper, converted_contents):
         enabled_config_server = False
 
         for config_server in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers'):

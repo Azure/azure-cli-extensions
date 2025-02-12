@@ -9,7 +9,7 @@ class LiveViewConverter(ConverterTemplate):
         self.source = source
 
     def calculate_data(self):
-        name = self.source['name'].split('/')[-1]
+        name = "admin"
         configurations = []
         replicas = 1
 

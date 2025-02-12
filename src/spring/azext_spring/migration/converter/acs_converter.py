@@ -19,11 +19,9 @@ class ACSConverter(ConverterTemplate):
 
     def load_source(self, source):
         self.source = source
-        print(f"source: {self.source}")
 
     def calculate_data(self):
-        name = self.source['name'].split('/')[-1]
-        print(f"ACS source: {self.source}")
+        name = f"config"
         configurations = self._get_configurations(self.source)
         replicas = 2
 

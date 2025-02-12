@@ -1310,3 +1310,4 @@ def load_arguments(self, _):
 
     with self.argument_context('spring migration-aca start') as c:
         c.argument('service', service_name_type)
+        c.argument('output_folder', help='The output folder for the generated Bicep files.')

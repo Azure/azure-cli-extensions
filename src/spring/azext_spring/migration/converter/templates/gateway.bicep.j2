@@ -1,10 +1,7 @@
 param managedEnvironments_aca_env_name string
 
-resource gatewayTest 'Microsoft.App/managedEnvironments/javaComponents@2024-02-02-preview' = {
+resource gatewayTest 'Microsoft.App/managedEnvironments/javaComponents@2024-10-02-preview' = {
     name: '${managedEnvironments_aca_env_name}/{{ data.gatewayName }}'
-    dependsOn: [
-        resourceId('Microsoft.App/managedEnvironments', managedEnvironments_aca_env_name)
-    ]
     properties: {
         componentType: 'SpringCloudGateway'
         configurations: [
@@ -12,7 +9,7 @@ resource gatewayTest 'Microsoft.App/managedEnvironments/javaComponents@2024-02-0
             {
                 propertyName: '{{ config.propertyName }}'
                 value: '{{ config.value }}'
-            }{% if not loop.last %},{% endif %}
+            }{% if not loop.last %}{% endif %}
             {% endfor %}
         ]
         scale: {
@@ -27,15 +24,15 @@ resource gatewayTest 'Microsoft.App/managedEnvironments/javaComponents@2024-02-0
                 order: {{ route.order }}
                 predicates: [
                     {% for predicate in route.predicates %}
-                    '{{ predicate }}'{% if not loop.last %},{% endif %}
+                    '{{ predicate }}'{% if not loop.last %}{% endif %}
                     {% endfor %}
                 ]
                 filters: [
                     {% for filter in route.filters %}
-                    '{{ filter }}'{% if not loop.last %},{% endif %}
+                    '{{ filter }}'{% if not loop.last %}{% endif %}
                     {% endfor %}
                 ]
-            }{% if not loop.last %},{% endif %}
+            }{% if not loop.last %}{% endif %}
             {% endfor %}
         ]
     }

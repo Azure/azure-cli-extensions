@@ -44,6 +44,14 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
           }
         }
       ]
+      serviceBinds: [
+          {% for bind in data.template.serviceBinds %}
+          {
+              name: '{{ bind.name }}'
+              serviceId: {{ bind.serviceId }}
+          }{% if not loop.last %}{% endif %}
+          {% endfor %}
+      ]
       scale: {
         minReplicas: minReplicas
         maxReplicas: maxReplicas
