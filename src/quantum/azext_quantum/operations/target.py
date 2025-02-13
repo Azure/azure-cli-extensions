@@ -72,6 +72,7 @@ def list(cmd, resource_group_name, workspace_name, location):
     # for target in service.targets():
     #     print("-", target.name)
 
+
     from ..vendored_sdks.azure_quantum_python.workspace import Workspace
     from ..vendored_sdks.azure_quantum_python.cirq import AzureQuantumService
   
@@ -82,6 +83,19 @@ def list(cmd, resource_group_name, workspace_name, location):
     )
     service = AzureQuantumService(workspace)
     return service.targets()    # This doesn't work with -o table anymore (See transform_targets in commands.py)
+
+    # from ..vendored_sdks.azure_quantum_python.target.target_factory import TargetFactory
+    # from ..vendored_sdks.azure_quantum_python.target.__init__ import DEFAULT_TARGETS
+    # DEFAULT_TARGETS = {
+    #     "ionq": IonQ,
+    #     "quantinuum": Quantinuum,
+    #     "rigetti": Rigetti,
+    #     "pasqal": Pasqal
+    # }
+    # target_factory = TargetFactory(workspace)
+    # target_factory = TargetFactory(workspace, DEFAULT_TARGETS)
+    # return target_factory.get_targets()
+
 
 
 def clear(cmd):
