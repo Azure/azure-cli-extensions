@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.1.4
+++++++
+* Introduce support for Fabric SQL as a target service
+
 3.1.3
 ++++++
 * Fix argument missing
