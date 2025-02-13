@@ -5,8 +5,9 @@
 
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 from azure.cli.core.mock import DummyCli
+from azext_acrcssc.helper._constants import TaskRunStatus
 from azext_acrcssc.helper._workflow_status import WorkflowTaskStatus, WorkflowTaskState
 
 
@@ -50,7 +51,6 @@ class TestWorkflowTaskStatus(unittest.TestCase):
         self.assertEqual(WorkflowTaskStatus._task_status_to_workflow_status(None), WorkflowTaskState.UNKNOWN.value)
 
     def test_workflow_status(self):
-        from azext_acrcssc.helper._constants import TaskRunStatus
         workflow = WorkflowTaskStatus("mock_repo:mock_tag")
         workflow.scan_task = mock.MagicMock()
         workflow.patch_task = mock.MagicMock()
@@ -107,30 +107,137 @@ Error: unsupported osType azurelinux specified"""
         error_output = self.workflow_task_status._get_errors_from_tasklog(error_logs)
         self.assertEqual(error_output, assert_error_log)
 
-    @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.WorkflowTaskStatus.generate_logs')
-    @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.parse_resource_id')
-    def test_retrieve_all_tasklogs(self, mock_parse_resource_id, mock_generate_logs):
-        #this might be the 'get_logs' in the other test file, check if it can be enriched
-        mock_parse_resource_id.return_value = {"resource_group": "resource_group"}
-        taskrun_client = MagicMock()
-        registry = MagicMock(id="id")
-        taskruns = [MagicMock(run_id="run_id")]
-        WorkflowTaskStatus._retrieve_all_tasklogs("cmd", taskrun_client, registry, taskruns)
-        self.assertTrue(mock_generate_logs.called)
-
-    @patch('src.acrcssc.azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._retrieve_all_tasklogs')
-    def test_from_taskrun(self, mock_retrieve_all_tasklogs):
-        # this one, has to be tested to make sure it loops through the tasks, and retrieves what it needs
+    @mock.patch('azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._get_missing_taskrun')
+    @mock.patch('azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._retrieve_all_tasklogs')
+    def test_from_taskrun(self, mock_retrieve_all_tasklogs, mock_get_missing_taskrun):
+        cmd = mock.MagicMock()
+        cmd.cli_ctx = DummyCli()
         taskrun_client = MagicMock()
         registry = MagicMock()
-        scan_taskruns = [MagicMock()]
-        patch_taskruns = [MagicMock()]
-        result = WorkflowTaskStatus.from_taskrun("cmd", taskrun_client, registry, scan_taskruns, patch_taskruns)
-        self.assertIsInstance(result, list)
+        scan_taskruns = [self._generate_test_taskrun(True, repository="mock1"), self._generate_test_taskrun(True, repository="mock2"), self._generate_test_taskrun(True, repository="mock3")]
+        patch_taskruns = []
 
-    @mock.patch('azure.cli.core.profiles.get_sdk')
-    @mock.patch('azext_acrcssc.helper._workflow_status.get_sdk')
+        mock_retrieve_all_tasklogs.return_value = scan_taskruns
+        mock_get_missing_taskrun.return_value = None
+
+        # Test with 3 simple scan tasks and no patch tasks
+        result = WorkflowTaskStatus.from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), len(scan_taskruns))
+        self.assertTrue(all("patch_status" in workflow for workflow in result))
+        self.assertTrue(all(workflow["patch_status"] == WorkflowTaskState.SKIPPED.value for workflow in result))
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.SUCCEEDED.value for workflow in result))
+        self.assertTrue(all("patch_skipped_reason" in workflow for workflow in result))
+        self.assertTrue(all("scan_error_reason" not in workflow for workflow in result))
+        self.assertTrue(all("patch_error_reason" not in workflow for workflow in result))
+
+        # Test with 1 scan task and 1 failed patch task
+        patch_task = self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value)
+        scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_task.run_id)]
+        patch_taskruns = [patch_task]
+        result = WorkflowTaskStatus.from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 1)
+        self.assertTrue(all("patch_status" in workflow for workflow in result))
+        self.assertTrue(all(workflow["patch_status"] == WorkflowTaskState.FAILED.value for workflow in result))
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.SUCCEEDED.value for workflow in result))
+        self.assertTrue(all("scan_error_reason" not in workflow for workflow in result))
+        self.assertTrue(all("patch_error_reason" in workflow for workflow in result))
+
+        # Test where the patch task is missing, but mentioned in the scan task logs
+        patch_task = self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value)
+        scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_task.run_id)]
+        patch_taskruns = []
+        mock_get_missing_taskrun.return_value = patch_task
+        result = WorkflowTaskStatus.from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), len(scan_taskruns))
+        mock_get_missing_taskrun.assert_called_once()
+        self.assertTrue("patch_status" in result[0])
+        self.assertTrue("patch_task_ID" in result[0])
+        self.assertTrue("last_patched_image" in result[0])
+        self.assertTrue(not result[0]["last_patched_image"].startswith("---"))
+        self.assertTrue(result[0]["patch_status"] == WorkflowTaskState.SUCCEEDED.value)
+        
+
+        # Test with mixed scan and patch tasks status
+        patch_taskruns = [self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag0"),
+                          self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag1"),
+                          self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag2"),
+                          self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag3"),
+                          self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag4")]
+
+        scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[0].run_id, tag="tag0"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[1].run_id, tag="tag1"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[2].run_id, tag="tag2"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[3].run_id, tag="tag3"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[4].run_id, tag="tag4"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag5"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag6"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag7"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag8"),]
+
+        mock_get_missing_taskrun.return_value = patch_task
+        result = WorkflowTaskStatus.from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), len(scan_taskruns))
+        self.assertTrue(all("patch_status" in workflow for workflow in result))
+        self.assertTrue(all("scan_status" in workflow for workflow in result))
+        self.assertTrue(all("image" in workflow for workflow in result))
+        self.assertTrue(all("scan_date" in workflow for workflow in result))
+        self.assertTrue(all("scan_task_ID" in workflow for workflow in result))
+        self.assertTrue(all("patch_date" in workflow for workflow in result))
+        self.assertTrue(all("patch_task_ID" in workflow for workflow in result))
+        self.assertTrue(all("last_patched_image" in workflow for workflow in result))
+        self.assertTrue(all("workflow_type" in workflow for workflow in result))
+        self.assertTrue(all(True if workflow["patch_status"] != TaskRunStatus.Failed.value or "patch_error_reason" in workflow else False for workflow in result))
+        self.assertTrue(all(True if workflow["scan_status"] != TaskRunStatus.Failed.value or "scan_error_reason" in workflow else False for workflow in result))
+        # test that a successful patch has a patched image reference
+        self.assertTrue(all(True if workflow["patch_status"] != TaskRunStatus.Succeeded.value or not workflow["last_patched_image"].startswith("---") else False for workflow in result))
+
+    # generate a random scan or patch taskrun with the desired properties
+    def _generate_test_taskrun(self, scan_task=True, status=TaskRunStatus.Succeeded.value, repository="mock-repo", tag="mock-tag", patch_taskid_in_scan=""):
+        import random
+        import string
+        import datetime
+        taskrun = MagicMock()
+        taskrun.status = status
+        taskrun.create_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+        letters = ''.join(random.choices(string.ascii_lowercase, k=3))
+        number = random.randint(0, 9)
+        taskrun.run_id = f"{letters}{number}"
+        task_log_result = ""
+
+        if scan_task:
+            task_log_result = f"Scanning image for vulnerability and patch {repository}:{tag} for tag {tag}"
+            task_log_result += f"\nScanning repo: {repository}, Tag:{tag}, OriginalTag:{tag}"
+            if taskrun.status == TaskRunStatus.Failed.value or taskrun.status == TaskRunStatus.Error.value:
+                task_log_result += "\nerror: mock error on scan"
+            elif taskrun.status == TaskRunStatus.Succeeded.value:
+                task_log_result += "\nmock patch logs"
+            else:
+                task_log_result += "\ngeneric mock scan logs"
+            if patch_taskid_in_scan != "":
+                task_log_result += f"\nPATCHING task scheduled for image {repository}:{tag}, new patch tag will be {tag}-patched"
+                task_log_result += f"\nWARNING: Queued a run with ID: {patch_taskid_in_scan}"
+
+        else:
+            task_log_result += f"Patching OS vulnerabilities for image {repository}:{tag}"
+            if taskrun.status == TaskRunStatus.Failed.value or taskrun.status == TaskRunStatus.Error.value:
+                task_log_result += "\nerror: mock error on patch"
+            elif taskrun.status == TaskRunStatus.Succeeded.value:
+                task_log_result += f"\nPATCHING task scheduled for image {repository}:{tag}, new patch tag will be {tag}-patched"
+            else:
+                task_log_result += "\nmock patch logs"
+
+        taskrun.task_log_result = task_log_result
+
+        return taskrun
+
     @mock.patch('azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._download_logs')
+    @mock.patch('azext_acrcssc.helper._workflow_status.get_sdk')
+    @mock.patch('azure.cli.core.profiles.get_sdk')
     def test_generate_logs(self, mock_core_get_sdk, mock_wf_get_sdk, mock_download_logs):
         cmd = mock.MagicMock()
         cmd.cli_ctx = DummyCli()
@@ -154,11 +261,12 @@ Error: unsupported osType azurelinux specified"""
         mock_blob_client.download_blob.return_value = mock.MagicMock(content_as_text=lambda: "mocked content")
 
         mock_core_get_sdk.return_value = mock_blob_client
+        mock_wf_get_sdk.return_value = mock_blob_client
         mock_download_logs.return_value = "mock logs"
 
         # Call the function
         WorkflowTaskStatus.generate_logs(cmd, client, run_id, registry_name, resource_group_name)
 
         # Assert the function calls
-        # client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)
+        # TODO:client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)
         # client.get.assert_called_once_with(resource_group_name, registry_name, run_id)
