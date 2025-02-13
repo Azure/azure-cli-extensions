@@ -1193,10 +1193,12 @@ class WindowsNonPremiumOSDiskRepairVM(LiveScenarioTest):
         secure_password = base_password + guid_suffix
         username_length = 8
         secure_username = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(username_length))
+        stnd_os_disk_type = "StandardSSD_LRS"
         self.kwargs.update({
             'vm': 'vm1',
             'admin_password': secure_password,
-            'admin_username': secure_username
+            'admin_username': secure_username,
+            'stnd_os_disk_type': stnd_os_disk_type
         })
 
         # Create test VM
@@ -1206,8 +1208,7 @@ class WindowsNonPremiumOSDiskRepairVM(LiveScenarioTest):
         assert len(vms) == 1
 
         # Create Repair VM
-        standard_os_disk_type = "StandardSSD_LRS"
-        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} --yes --os-disk-type-override {standard_os_disk_type}} -o json').get_output_in_json()
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} --yes --os-disk-type {stnd_os_disk_type} -o json').get_output_in_json()
         assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
         # Check repair VM
         self.kwargs.update({
@@ -1222,7 +1223,7 @@ class WindowsNonPremiumOSDiskRepairVM(LiveScenarioTest):
         repair_vm_id = repair_vm['id']
         # Verify the image sku is the default sku
         os_disk_type = repair_vm['storageProfile']['osDisk']['managedDisk']['storageAccountType']
-        assert os_disk_type == standard_os_disk_type, "Os Disk Storage Account Type is not the expected value."
+        assert os_disk_type == stnd_os_disk_type, "Os Disk Storage Account Type is not the expected value."
           
         repair_vm_id = repair_vm['id']
         self.kwargs.update({

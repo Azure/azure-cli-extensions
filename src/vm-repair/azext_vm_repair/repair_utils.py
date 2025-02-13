@@ -321,7 +321,6 @@ def _fetch_disk_info(resource_group_name, disk_name):
     disk_info = loads(_call_az_command(show_disk_command))
     # Note that disk_info will always have 4 elements if the command succeeded, if it fails it will cause an exception
     sku, location, os_type, hyper_v_version = disk_info[0], disk_info[1], disk_info[2], disk_info[3]
-    logger.debug('DEBUG !!!!! Disk sku is: %s', sku)
     return (sku, location, os_type, hyper_v_version)
 
 
@@ -735,9 +734,7 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encryp
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
 
     # logging parameters of the function individually
-    logger.debug("DEBUG!!!!!! create_repair_vm_command: %s", create_repair_vm_command)
     create_repair_vm_command += ' --storage-sku StandardSSD_LRS '
-    logger.debug("DEBUG!!!!!! NEW create_repair_vm_command: %s", create_repair_vm_command)
     logger.info('Creating repair VM with command: {}'.format(create_repair_vm_command))
     logger.info('copy_disk_id: {}'.format(copy_disk_id))
     logger.info('fix_uuid: {}'.format(fix_uuid))
