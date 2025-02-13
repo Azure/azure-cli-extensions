@@ -200,7 +200,8 @@ def acr_cache_sync(cmd,
                                  cache_rule_resource_id=rule_id)
 
     params = ImportImageParameters(source=import_source,
-                                   mode="NoForce",
+                                   # import tag with force to override existing tags
+                                   mode="Force",
                                    target_tags=[target_repo + ":" + tag])
 
     return client.registries.begin_import_image(resource_group_name=rg,
