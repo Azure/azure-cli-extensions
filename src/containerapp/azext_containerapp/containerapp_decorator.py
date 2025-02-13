@@ -659,6 +659,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
+    def get_argument_kind(self):
+        return self.get_param("kind")
+
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
@@ -906,6 +909,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_repo()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
+        if self.get_argument_kind() is not None:
+                    safe_set(self.containerapp_def, "kind", value=self.get_argument_kind())
         self.set_up_runtime()
 
     # copy from parent
@@ -1404,6 +1409,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def set_argument_registry_identity(self, registry_identity):
         self.set_param("registry_identity", registry_identity)
 
+    def get_argument_kind(self):
+        return self.get_param("kind")
+
     def validate_arguments(self):
         super().validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
@@ -1526,6 +1534,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                     subscription_id = get_subscription_id(self.cmd.cli_ctx)
                     identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
                 self.new_containerapp["properties"]["template"]["scale"]["rules"][0]["custom"]["identity"] = identity
+
+        if self.get_argument_kind() is not None:
+            safe_set(self.new_containerapp, "kind", value=self.get_argument_kind())
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
