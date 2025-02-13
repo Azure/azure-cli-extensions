@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b6
++++++++
+* `az storage share/directory create`: Support for NFS file shares
+* `az storage file upload/update/copy start`: Support `--file-mode`, `--owner`, `-group`, override options for copying
+* `az storage file hard-link create`: Support creating hard-link to an NFS file
+
 1.0.0b5
 +++++++
 * `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021
