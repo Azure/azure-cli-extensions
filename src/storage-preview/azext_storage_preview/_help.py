@@ -245,6 +245,15 @@ examples:
     - name: Copy a file asynchronously from file snapshot to destination storage account with sas token.
       text: |
         az storage file copy start --source-account-name srcaccount --source-account-key 00000000 --source-path <srcpath-to-file> --source-share srcshare --file-snapshot "2020-03-02T13:51:54.0000000Z" --destination-path <destpath-to-file> --destination-share destshare --account-name destaccount --sas-token <destination-sas>
+    - name: Copy a file with the source file-mode, group, owner.
+      text: |
+        az storage file copy start --source-account-name srcaccount --source-path srcpath --source-share srcshare 
+        --destination-path dstpath --destination-share dstshare --owner-copy-mode Source --file-mode-copy-mode Source
+    - name: Copy a file with the overridden file-mode, group, owner.
+      text: |
+        az storage file copy start --source-account-name srcaccount --source-path srcpath --source-share srcshare 
+        --destination-path dstpath --destination-share dstshare --owner-copy-mode Override 
+        --file-mode-copy-mode Override --file-mode rw-rw-rw- --owner 4 --group 5
 """
 
 helps['storage file copy start-batch'] = """
@@ -531,6 +540,12 @@ short-summary: Manage file storage directories.
 helps['storage directory create'] = """
 type: command
 short-summary: Create a new directory under the specified share or parent directory.
+examples:
+  - name: Create a new directory under the specified NFS share with file-mode, owner, group
+    text: |
+        az storage directory create --account-name mystorageaccount --name dir --share-name myshare 
+        --file-mode rwxr--r-- --owner 1 --group 2
+    crafted: true
 """
 
 helps['storage directory delete'] = """
@@ -688,6 +703,15 @@ helps['storage account local-user regenerate-password'] = """
               -n {username}
 """
 
+helps['storage share create'] = """
+type: command
+short-summary: Creates a new share under the specified account.
+examples:
+  - name: Creates a new share under the specified account for NFS.
+    text: |
+        az storage share create --account-name MyAccount --name MyFileShare --protocol nfs
+"""
+
 helps['storage file hard-link'] = """
     type: group
     short-summary: Manage storage file hard-link.
@@ -699,5 +723,6 @@ helps['storage file hard-link create'] = """
     examples:
       - name: Create a hard link to an NFS file specified by path. 
         text: |
-            az storage file hard-link create --account-key 00000000 --account-name MyAccount --source /path/to/file
+            az storage file hard-link create --account-name MyAccount --share-name share 
+            --path link_path --target original_path
 """
