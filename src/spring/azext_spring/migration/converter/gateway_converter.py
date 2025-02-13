@@ -29,16 +29,18 @@ class GatewayConverter(ConverterTemplate):
 
     def _get_configurations(self, source):
         configurations = []
-        for key, value in source['gateway']['properties']['environmentVariables']['properties'].items():
-            configurations.append({
-                "propertyName": key,
-                "value": value,
-            })
-        for key, value in source['secretEnvs'].items():
-            configurations.append({
-                "propertyName": key,
-                "value": value,
-            })
+        if source.get('gateway', {}).get('properties', {}).get('environmentVariables', {}).get('properties') is not None:
+            for key, value in source['gateway']['properties']['environmentVariables']['properties'].items():
+                configurations.append({
+                    "propertyName": key,
+                    "value": value,
+                })
+        if source.get('secretEnvs') is not None:
+            for key, value in source['secretEnvs'].items():
+                configurations.append({
+                    "propertyName": key,
+                    "value": value,
+                })
         return configurations
 
     def _get_routes(self, routes):
@@ -46,18 +48,19 @@ class GatewayConverter(ConverterTemplate):
         for route in routes:
             aca_id = route['name'].split('/')[-1]
             aca_uri = self._get_uri_from_route(route)
-            for r in route['properties']['routes']:
-                aca_routes.append({
-                    "id": aca_id,
-                    "uri": r.get('uri', aca_uri),
-                    "predicates": r.get('predicates'),
-                    "filters": r.get('filters'),
-                    "order": r.get('order') or 0,
-                })
+            if route.get('properties', {}).get('routes') is not None:
+                for r in route['properties']['routes']:
+                    aca_routes.append({
+                        "id": aca_id,
+                        "uri": r.get('uri', aca_uri),
+                        "predicates": r.get('predicates'),
+                        "filters": r.get('filters'),
+                        "order": r.get('order') or 0,
+                    })
         return aca_routes
 
     def _get_uri_from_route(self, route):
-        app_resource_id = route['properties']['appResourceId']
+        app_resource_id = route.get('properties', {}).get('appResourceId')
         if app_resource_id:
             app_name = self._get_app_name_from_app_resource_id(app_resource_id)
             return f"http://{app_name}"

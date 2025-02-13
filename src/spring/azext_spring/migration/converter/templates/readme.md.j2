@@ -48,10 +48,7 @@ az group create --name <resource-group-name> --location <location>
 Deploy the Bicep files using the Azure CLI:
 
 ```azurecli
-az deployment group create \
-  --resource-group <resource-group-name> \
-  --template-file main.bicep \
-  --parameters param.bicepparam
+az deployment group create --resource-group <resource-group-name> --template-file main.bicep --parameters param.bicepparam
 ```
 
 5. Validate Deployment

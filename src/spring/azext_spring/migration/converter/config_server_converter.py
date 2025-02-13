@@ -37,29 +37,29 @@ class ConfigServerConverter(ConverterTemplate):
     def _get_configurations(self, source):
         configurations = []
         
-        git_property = source['properties']['configServer']['gitProperty']
-        git_repos = git_property['repositories']
+        git_property = source.get('properties', {}).get('configServer', {}).get('gitProperty')
+        if git_property is not None:
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, git_property.get('uri'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_LABEL, git_property.get('label'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_SEARCH_PATHS, git_property.get('searchPaths'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_USERNAME, git_property.get('username'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_PASSWORD, git_property.get('password'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_PRIVATE_KEY, git_property.get('privateKey'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY, git_property.get('hostKey'))
+            self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY_ALGORITHM, git_property.get('hostKeyAlgorithm'))
 
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, git_property.get('uri'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_LABEL, git_property.get('label'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_SEARCH_PATHS, git_property.get('searchPaths'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_USERNAME, git_property.get('username'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_PASSWORD, git_property.get('password'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_PRIVATE_KEY, git_property.get('privateKey'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY, git_property.get('hostKey'))
-        self._add_property_if_existss(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY_ALGORITHM, git_property.get('hostKeyAlgorithm'))
-
-        for repo in git_repos:
-            configuration_key_repo_prefix = self.CONFIGURATION_KEY_PREFIX + ".repos." + repo['name']
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_URI, repo.get('uri'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_LABEL, repo.get('label'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_SEARCH_PATHS, repo.get('searchPaths'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_USERNAME, repo.get('username'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_PASSWORD, repo.get('password'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_PRIVATE_KEY, repo.get('privateKey'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_HOST_KEY, repo.get('hostKey'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_HOST_KEY_ALGORITHM, repo.get('hostKeyAlgorithm'))
-            self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_PATTERN, repo.get('pattern'))
+            git_repos = git_property.get('repositories', [])
+            for repo in git_repos:
+                configuration_key_repo_prefix = self.CONFIGURATION_KEY_PREFIX + ".repos." + repo['name']
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_URI, repo.get('uri'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_LABEL, repo.get('label'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_SEARCH_PATHS, repo.get('searchPaths'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_USERNAME, repo.get('username'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_PASSWORD, repo.get('password'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_PRIVATE_KEY, repo.get('privateKey'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_HOST_KEY, repo.get('hostKey'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_HOST_KEY_ALGORITHM, repo.get('hostKeyAlgorithm'))
+                self._add_property_if_existss(configurations, configuration_key_repo_prefix + self.KEY_PATTERN, repo.get('pattern'))
 
         return configurations
 
