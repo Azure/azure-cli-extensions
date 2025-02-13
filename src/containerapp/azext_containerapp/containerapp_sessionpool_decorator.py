@@ -487,6 +487,9 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         return container_def
 
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
+        if self.get_argument_registry_server() is not None or self.get_argument_registry_user() is not None or self.get_argument_registry_pass() is not None:
+            if safe_get(customer_container_template, "registryCredentials") is None:
+                safe_set(customer_container_template, "registryCredentials", value={})
         if self.get_argument_registry_server() is not None:
             safe_set(customer_container_template, "registryCredentials", "server", value=self.get_argument_registry_server())
         if self.get_argument_registry_user() is not None:
