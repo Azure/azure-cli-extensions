@@ -2,8 +2,8 @@ import struct
 import sys
 import re
 
-from .._utils import is_packaged_installed
-from .target_handler import AUTHTYPES, TargetHandler
+from azure.cli.command_modules.serviceconnector._utils import is_packaged_installed
+from .target_handler import AUTHTYPES, TargetHandler, run_cli_cmd
 from knack.log import get_logger
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
