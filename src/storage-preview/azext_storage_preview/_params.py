@@ -1027,7 +1027,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage file hard-link create') as c:
         c.extra('share_name', share_name_type, required=True)
         c.register_path_argument()
-        c.extra('path', options_list='--target', required=True,
+        c.extra('target', required=True,
                 help='Specifies the path of the target file to which the link will be created, up to 2 KiB in length. '
                      'It should be the full path of the target starting from the root. The target file must be in the '
                      'same share and the same storage account.')

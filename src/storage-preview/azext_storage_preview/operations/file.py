@@ -454,5 +454,5 @@ def file_updates(client, **kwargs):
     return client.set_http_headers(**kwargs)
 
 
-def file_hard_link_create(client, path, **kwargs):
-    return client.create_hard_link(target=path, **kwargs)
+def file_hard_link_create(client, target, **kwargs):
+    return client.create_hard_link(target=target, **kwargs)

@@ -157,9 +157,10 @@ class StorageFileSharePreviewScenarios(StorageScenarioMixin, ScenarioTest):
                                 JMESPathCheck('group', '5'))
 
         # hard link
-        # self.storage_cmd('storage file hard-link create --share-name {} --target {}', account_info, share_name,
-        #                  file_path).\
-        #     assert_with_checks(JMESPathCheck('fileMode', '0664'),
-        #                        JMESPathCheck('owner', '3'),
-        #                        JMESPathCheck('group', '4'))
+        link_path = dir_name + '/' + 'linked_file.txt'
+        self.storage_cmd('storage file hard-link create --share-name {} --path {} --target {}', account_info,
+                         share_name, link_path, file_path).\
+            assert_with_checks(JMESPathCheck('mode', '0664'),
+                               JMESPathCheck('owner', '3'),
+                               JMESPathCheck('group', '4'))
 
