@@ -16,12 +16,12 @@ import shutil
 import stat
 import tempfile
 import time
-import urllib.request
 from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
 
+import oras.client  # type: ignore[import-untyped]
 import yaml
 from azure.cli.command_modules.role import graph_client_factory
 from azure.cli.core import get_default_cli, telemetry
@@ -1170,20 +1170,23 @@ def install_helm_client() -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.MachineType": machine_type}
     )
-
     # Set helm binary download & install locations
     if operating_system == "windows":
-        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helmsigned/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
-        download_location_string = f".azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        download_location_string = f".azure/helm/{consts.HELM_VERSION}"
+        download_file_name = (
+            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        )
         install_location_string = (
             f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         telemetry.set_exception(
             exception="Unsupported OS for installing helm client",
@@ -1216,11 +1219,15 @@ def install_helm_client() -> str:
         logger.warning(
             "Downloading helm client for first time. This can take few minutes..."
         )
+        client = oras.client.OrasClient()
         retry_count = 3
         retry_delay = 5
         for i in range(retry_count):
             try:
-                response = urllib.request.urlopen(requestUri)
+                client.pull(
+                    target=f"{consts.HELM_MCR_URL}:{artifactTag}",
+                    outdir=download_location,
+                )
                 break
             except Exception as e:
                 if i == retry_count - 1:
@@ -1237,26 +1244,13 @@ def install_helm_client() -> str:
                     )
                 time.sleep(retry_delay)
 
-        responseContent = response.read()
-        response.close()
-
-        # Creating the compressed helm binaries
-        try:
-            with open(download_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Create_HelmExe_Fault_Type,
-                summary="Unable to create helm executable",
-            )
-            reco_str = f"Please ensure that you delete the directory '{download_dir}' before trying again."
-            raise ClientRequestError(
-                "Failed to create helm executable." + str(e), recommendation=reco_str
-            )
         # Extract the archive.
         try:
-            shutil.unpack_archive(download_location, download_dir)
+            extract_dir = download_location
+            download_location = os.path.expanduser(
+                os.path.join(download_location, download_file_name)
+            )
+            shutil.unpack_archive(download_location, extract_dir)
             os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         except Exception as e:
             telemetry.set_exception(
@@ -1264,7 +1258,7 @@ def install_helm_client() -> str:
                 fault_type=consts.Extract_HelmExe_Fault_Type,
                 summary="Unable to extract helm executable",
             )
-            reco_str = f"Please ensure that you delete the directory '{download_dir}' before trying again."
+            reco_str = f"Please ensure that you delete the directory '{extract_dir}' before trying again."
             raise ClientRequestError(
                 "Failed to extract helm executable." + str(e), recommendation=reco_str
             )
