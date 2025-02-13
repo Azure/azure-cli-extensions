@@ -43,7 +43,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
 
 {% if data.scheduledEntries %}
 resource maintenanceConfig 'Microsoft.App/managedEnvironments/maintenanceConfigurations@2024-10-02-Preview' = {
-  name: '${managedEnvName}/default'
+  name: 'default'
   parent: containerAppEnv
   location: resourceGroup().location
   properties: {

@@ -6,16 +6,14 @@ from .base_converter import ConverterTemplate
 class AppConverter(ConverterTemplate):
     def load_source(self, source):
         self.source = source
-        self.source['enabled_sba'] = False
         # print(f"App source: {self.source}")
 
     def calculate_data(self):
-        enable_sba = False
         appName = self.source['name'].split('/')[-1]
         envName = self.source['name'].split('/')[0]
         moduleName = appName.replace("-", "")
         containers = []
-        serviceBinds, dependsOn = self._get_service_bind(self.source, envName)
+        serviceBinds = self._get_service_bind(self.source, envName)
 
         self.data = {
             "containerAppName": appName,
@@ -25,7 +23,6 @@ class AppConverter(ConverterTemplate):
             "cpuCore": "0.5",
             "memorySize": "1",
             "minReplicas": 1,
-            "dependsOn": dependsOn,
             "template": {
                 "containers": containers,
                 "serviceBinds": serviceBinds,
@@ -40,10 +37,7 @@ class AppConverter(ConverterTemplate):
         return input_string.split('/')[-1]
 
     def _get_service_bind(self, source, envName):
-        enable_config = False
-        enable_eureka = False
         enable_sba = source['enabled_sba']
-        dependsOn = []
         service_bind = []
         addon = source['properties'].get('addonConfigs')
 
@@ -56,20 +50,16 @@ class AppConverter(ConverterTemplate):
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
             })
-            enable_config = True
         if addon.get('serviceRegistry') is not None and addon['serviceRegistry'].get('resourceId') is not None:
             service_bind.append({
                 "name": "bind-eureka",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"
             })
-            enable_eureka = True
         if enable_sba:
             service_bind.append({
                 "name": "bind-sba",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'admin')"
             })
-        if enable_config:
-            dependsOn.append("managedConfig")
         # print(f"Service bind: {service_bind}")
-        return service_bind, dependsOn
+        return service_bind
 

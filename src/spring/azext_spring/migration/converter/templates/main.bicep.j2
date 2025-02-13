@@ -22,6 +22,7 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 }
 {% endfor %}
 
+{% if data.gateway == true %}
 module managedGateway 'gateway.bicep' = {
   name: 'gatewayDeployment'
   dependsOn: [
@@ -31,7 +32,9 @@ module managedGateway 'gateway.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
+{% endif %}
 
+{% if data.config == true %}
 module managedConfig 'config_server.bicep' = {
   name: 'configServerDeployment'
   dependsOn: [
@@ -41,7 +44,9 @@ module managedConfig 'config_server.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
+{% endif %}
 
+{% if data.eureka == true %}
 module managedEureka 'eureka.bicep' = {
   name: 'eurekaDeployment'
   dependsOn: [
@@ -51,7 +56,9 @@ module managedEureka 'eureka.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
+{% endif %}
 
+{% if data.sba == true %}
 module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
   name: 'springBootAdminDeployment'
   dependsOn: [
@@ -61,3 +68,4 @@ module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
+{% endif %}
