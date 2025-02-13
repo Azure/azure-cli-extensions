@@ -60,22 +60,10 @@ def list(cmd, resource_group_name, workspace_name, location):
     # client = cf_providers(cmd.cli_ctx, info.subscription, info.location)
     # return client.list(info.resource_group, info.name, info.location)     # PROBLEM: Gets an InsufficientPermissions error
 
-    # >>>>>>>>>> SDK Experiments...
-    # Notebook code:
-    # from azure.quantum import Workspace
-    # from azure.quantum.cirq import AzureQuantumService
-    # workspace = Workspace(
-    #     resource_id = "/subscriptions/677fc922-91d0-4bf6-9b06-4274d319a0fa/resourceGroups/v-warrjones/providers/Microsoft.Quantum/Workspaces/v-warrjones-workspace1",
-    #     location = "westus2",
-    # )
-    # print("This workspace's targets:")
-    # for target in service.targets():
-    #     print("-", target.name)
-
-
+    # ========= SDK experiment, based on Notebook sample code:
     from ..vendored_sdks.azure_quantum_python.workspace import Workspace
     from ..vendored_sdks.azure_quantum_python.cirq import AzureQuantumService
-  
+    
     resource_id = f"/subscriptions/{info.subscription}/resourceGroups/{resource_group_name}/providers/Microsoft.Quantum/Workspaces/{workspace_name}"
     workspace = Workspace(
         resource_id = resource_id,
