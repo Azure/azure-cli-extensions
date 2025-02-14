@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=line-too-long, unsupported-assignment-operation, protected-access
+# pylint: disable=line-too-long, protected-access
 
 import json
 
-from azure.cli.core.aaz import AAZFileArg, has_value
+from azure.cli.core.aaz import AAZFileArg, has_value, register_command
 from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
 
@@ -91,12 +91,15 @@ class Update(_Update):
         _parse_properties(self)
 
 
+@register_command(
+    "portal dashboard import",
+)
 class Import(_Create):
+    """Import a Dashboard from a JSON file.
 
-    def __init__(self, loader=None, cli_ctx=None, callbacks=None, **kwargs):
-        super().__init__(loader, cli_ctx, callbacks, **kwargs)
-        self.help['short-summary'] = 'Import a dashboard from a JSON file.'
-        self.help['examples'] = ''
+    :example: Import a Dashboard
+        az portal dashboard import -n myDashboard -g myResourceGroup --input-path /src/json/dashboard.json
+    """
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -109,6 +112,8 @@ class Import(_Create):
         args_schema.lenses._registered = False
         args_schema.metadata._registered = False
         args_schema.location._registered = False
+        args_schema.tags._registered = False
+        args_schema.input_path._required = True
 
         return args_schema
 
