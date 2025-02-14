@@ -27,7 +27,8 @@ def validate_and_deploy_template(cmd_ctx,
                                  deployment_name: str,
                                  template_file_name: str,
                                  parameters: dict,
-                                 dryrun: Optional[bool] = False):
+                                 dryrun: Optional[bool] = False,
+                                 silent_execution: Optional[bool] = False):
     logger.debug(f'Working with resource group {resource_group}, registry {registry} template {template_file_name}')
 
     deployment_path = os.path.dirname(
@@ -43,18 +44,18 @@ def validate_and_deploy_template(cmd_ctx,
         parameters=parameters,
         mode=DeploymentMode.incremental)
     try:
-        validate_template(cmd_ctx, resource_group, deployment_name, template)
+        validate_template(cmd_ctx, resource_group, deployment_name, template, silent_execution)
         if (dryrun):
             logger.debug("Dry run, skipping deployment")
             return None
 
-        return deploy_template(cmd_ctx, resource_group, deployment_name, template)
+        return deploy_template(cmd_ctx, resource_group, deployment_name, template, silent_execution)
     except Exception as exception:
         logger.debug(f'Failed to validate and deploy template: {exception}')
         raise AzCLIError(f'Failed to validate and deploy template: {exception}')
 
 
-def validate_template(cmd_ctx, resource_group, deployment_name, template):
+def validate_template(cmd_ctx, resource_group, deployment_name, template, silent_execution):
     # Validation is automatically re-attempted in live runs, but not in test
     # playback, causing them to fail. This explicitly re-attempts validation to
     # ensure the tests pass
@@ -77,7 +78,8 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
                 )
             )
             validation_res = LongRunningOperation(
-                cmd_ctx, "Validating ARM template..."
+                cmd_ctx, "Validating ARM template...",
+                progress_bar=None if silent_execution else "Running validation"
             )(validation)
             break
         except Exception:  # pylint: disable=broad-except
@@ -109,7 +111,7 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
     logger.debug("Successfully validated resources for {resource_group}")
 
 
-def deploy_template(cmd_ctx, resource_group, deployment_name, template):
+def deploy_template(cmd_ctx, resource_group, deployment_name, template, silent_execution):
     api_client = cf_resources(cmd_ctx)
 
     deployment = Deployment(
@@ -128,7 +130,7 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     # Wait for the deployment to complete and get the outputs
     deployment: DeploymentExtended = LongRunningOperation(
         cmd_ctx,
-        "Deploying ARM template"
+        progress_bar=None if silent_execution else "Deploying ARM template"
     )(poller)
     logger.debug("Finished deploying")
 

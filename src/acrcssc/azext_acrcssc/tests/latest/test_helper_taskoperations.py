@@ -134,7 +134,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
 
         # Call the function
         create_update_continuous_patch_v1(cmd, registry, None, "2d", False, True, False)
-        
+
         # Assert that the dependencies were called with the correct arguments
         mock_convert_timespan_to_cron.assert_called_once_with("2d")
         mock_create_oci_artifact_continuous_patch.assert_not_called()
