@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.4.0
+++++++
+* Add support for bastion developer create.
+
 1.3.1
 ++++++
 * Remove dependency on msazurerest.

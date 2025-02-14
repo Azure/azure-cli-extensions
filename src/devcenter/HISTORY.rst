@@ -2,6 +2,10 @@
 
 Release History
 ===============
+6.2.3
+++++++
+* Fix syntax errors in schedule dataplane commands
+
 6.2.2
 ++++++
 * Fix delay all and delay dev box/environment action if no next scheduled time
