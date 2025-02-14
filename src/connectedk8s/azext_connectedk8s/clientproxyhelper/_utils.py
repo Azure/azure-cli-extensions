@@ -38,6 +38,10 @@ if TYPE_CHECKING:
         CredentialResults,
     )
 
+    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+        CredentialResults,
+    )
+
 logger = get_logger(__name__)
 
 
