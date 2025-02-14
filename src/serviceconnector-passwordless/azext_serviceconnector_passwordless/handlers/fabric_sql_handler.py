@@ -2,19 +2,15 @@ import struct
 import sys
 import re
 
+from .._credential_free import SqlHandler
 from azure.cli.command_modules.serviceconnector._utils import is_packaged_installed
-from .target_handler import AUTHTYPES, TargetHandler, run_cli_cmd
+from .target_handler import AUTHTYPES, run_cli_cmd
 from knack.log import get_logger
-from azure.cli.core import telemetry
-from azure.cli.core.azclierror import (
-    AzureConnectionError,
-    CLIInternalError
-)
-from azure.cli.core.extension.operations import _run_pip
+from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.command_modules.serviceconnector._resource_config import AUTH_TYPE
 logger = get_logger(__name__)
 
-class FabricSqlHandler(TargetHandler):
+class FabricSqlHandler(SqlHandler):
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, connstr_props, skip_prompt, new_user):
         super().__init__(cmd, target_id, target_type,
                          auth_info, connection_name, skip_prompt, new_user)
@@ -51,44 +47,6 @@ class FabricSqlHandler(TargetHandler):
 
         logger.warning("Connecting to database...")
         self.create_aad_user_in_sql(connection_args, query_list)
-
-    def create_aad_user_in_sql(self, connection_args, query_list):
-        if not self.new_user:
-            query_list = query_list[1:]
-        if not is_packaged_installed('pyodbc'):
-            _run_pip(["install", "pyodbc"])
-
-        # pylint: disable=import-error, c-extension-no-member
-        try:
-            import pyodbc
-        except ModuleNotFoundError as e:
-            raise ModuleNotFoundError(
-                "Dependency pyodbc can't be installed, please install it manually with `" + sys.executable + " -m pip install pyodbc`.") from e
-        drivers = [x for x in pyodbc.drivers() if x in [
-            'ODBC Driver 17 for SQL Server', 'ODBC Driver 18 for SQL Server']]
-        if not drivers:
-            ex = CLIInternalError(
-                "Please manually install odbc 17/18 for SQL server, reference: https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server/")
-            telemetry.set_exception(ex, "No-ODBC-Driver")
-            raise ex
-        try:
-            with pyodbc.connect(connection_args.get("connection_string").format(driver=drivers[0]), attrs_before=connection_args.get("attrs_before")) as conn:
-                with conn.cursor() as cursor:
-                    logger.warning(
-                        "Adding new Microsoft Entra user %s to database...", self.aad_username)
-                    for execution_query in query_list:
-                        try:
-                            logger.warning("Running query: %s", execution_query)
-                            cursor.execute(execution_query)
-                        except pyodbc.ProgrammingError as e:
-                            logger.warning("Query execution failed: %s", str(e))
-                        conn.commit()
-        except pyodbc.Error as e:
-            search_ip = re.search(
-                "Client with IP address '(.*?)' is not allowed to access the server", str(e))
-            if search_ip is not None:
-                self.ip = search_ip.group(1)
-            raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self, dbname=""):
         token_bytes = run_cli_cmd(
