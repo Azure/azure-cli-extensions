@@ -69,7 +69,7 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
         c.argument(
             "cluster_name",
             options_list=["--name", "-n"],
-            help="The name of the connected cluster.",
+            help="The name of the connected clusters.",
         )
         c.argument(
             "kube_config",
