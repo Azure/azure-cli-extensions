@@ -6,7 +6,7 @@ Release History
 1.10.6
 ++++++
 * Added support for downloading helm binaries from MCR.
-* Update Messages for custom location oid discovery.
+* Added warnings for custom location feature based on Service Principal Name permissions and OID validation.
 
 1.10.5
 ++++++
