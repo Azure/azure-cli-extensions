@@ -338,7 +338,7 @@ def _generate_container_name(fqdn: str, private_fqdn: str) -> str:
     """
     Generates a container name unique to the specified managed cluster, that
     conforms to the Azure naming restrictions defined here:
-    https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names
+    https://learn.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names
 
     This is done based on fqdn (falling back to private_fqdn), and shortened
     to strip everything including and after ".hcp.".
@@ -370,7 +370,7 @@ def _get_cluster_features(cli_ctx, resource_group_name, cluster_name):
 
 
 def _is_windows_hpc_supported(agent_pools):
-    # https://docs.microsoft.com/en-us/rest/api/aks/agent-pools/list?tabs=HTTP#agentpool
+    # https://learn.microsoft.com/en-us/rest/api/aks/agent-pools/list?tabs=HTTP#agentpool
     # The full (major.minor.patch) version *may* be stored in currentOrchestratorVersion.
     # If not, it'll be in orchestratorVersion.
     windows_k8s_versions = [p.current_orchestrator_version or p.orchestrator_version for p in agent_pools if p.os_type.casefold() == "Windows".casefold()]

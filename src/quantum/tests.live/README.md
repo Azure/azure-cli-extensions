@@ -11,6 +11,6 @@ Additionally, `Run.ps1` will obfuscate any Storage Account SAS-tokens recorded a
 
 2. Login to Azure using either:
     * the [Azure Account extension in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account)
-    * `az login` from the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
+    * `az login` from the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/)
 
 3. Use [`.\Run.ps1 -SkipInstall`](.\Run.ps1) to run all the tests.
