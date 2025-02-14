@@ -230,6 +230,15 @@ examples:
       az managed-cassandra cluster backup show --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
 """
 
+helps['managed-cassandra cluster backup restore'] = """
+type: command
+short-summary: Trigger an in-place restore using a backup.
+examples:
+  - name: Triggers an in-place restore .
+    text: |
+      az managed-cassandra cluster backup restore --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
+"""
+
 helps['managed-cassandra cluster backup'] = """
 type: group
 short-summary: Azure Managed Cassandra cluster Backup.
