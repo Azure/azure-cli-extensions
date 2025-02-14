@@ -6,11 +6,5 @@
 # pylint: disable=line-too-long
 
 
-def load_command_table(self, _):
-
-    with self.command_group('portal dashboard'):
-
-        from .custom import Create, Update, Import
-        self.command_table['portal dashboard create'] = Create(loader=self)
-        self.command_table['portal dashboard update'] = Update(loader=self)
-        self.command_table['portal dashboard import'] = Import(loader=self)
+def load_arguments(self, _):  # pylint: disable=unused-argument
+    pass
