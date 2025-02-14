@@ -93,7 +93,6 @@ class TestWorkflowTaskStatus(unittest.TestCase):
         self.assertEqual(WorkflowTaskStatus._get_image_from_tasklog(logs), "mock-repo:mock-tag")
 
     def test_get_patch_error_reason_from_tasklog(self):
-        #test with a more complicated log, and test different regex that we have
         error_logs = """2025/02/11 23:46:22 Launching container with name: patch-image
 #1 resolve image config for docker-image://graycsscsec.azurecr.io/import:openmpi-4.1.5-1-azl3.0.20240727-amd64
 Error: unsupported osType azurelinux specified
@@ -158,7 +157,6 @@ Error: unsupported osType azurelinux specified"""
         self.assertTrue("last_patched_image" in result[0])
         self.assertTrue(not result[0]["last_patched_image"].startswith("---"))
         self.assertTrue(result[0]["patch_status"] == WorkflowTaskState.SUCCEEDED.value)
-        
 
         # Test with mixed scan and patch tasks status
         patch_taskruns = [self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag0"),
@@ -257,16 +255,18 @@ Error: unsupported osType azurelinux specified"""
 
         # Create a mock for the blob client
         mock_blob_client = mock.MagicMock()
+        #mock_blob_client.from_blob_url = mock.MagicMock()
         mock_blob_client.from_blob_url.return_value = "mock_blob_client"
-        mock_blob_client.download_blob.return_value = mock.MagicMock(content_as_text=lambda: "mocked content")
 
         mock_core_get_sdk.return_value = mock_blob_client
         mock_wf_get_sdk.return_value = mock_blob_client
         mock_download_logs.return_value = "mock logs"
 
         # Call the function
-        WorkflowTaskStatus.generate_logs(cmd, client, run_id, registry_name, resource_group_name)
+        result = WorkflowTaskStatus.generate_logs(cmd, client, run_id, registry_name, resource_group_name)
 
         # Assert the function calls
-        # TODO:client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)
-        # client.get.assert_called_once_with(resource_group_name, registry_name, run_id)
+        mock_download_logs.assert_called()
+        mock_blob_client.from_blob_url.assert_called()
+        client.get_log_sas_url.assert_called()
+        self.assertEqual(result, "mock logs")
