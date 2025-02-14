@@ -3,6 +3,7 @@
 Release History
 ===============
 upcoming
+* 'az containerapp create/update': support --kind {functionapp}
 ++++++
 
 1.1.0b2
