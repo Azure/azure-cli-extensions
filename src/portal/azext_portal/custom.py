@@ -4,10 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=line-too-long, unsupported-assignment-operation, protected-access
 
 import json
 
-from azure.cli.core.aaz import AAZFileArg, AAZObjectArg, AAZStrArg, has_value
+from azure.cli.core.aaz import AAZFileArg, has_value
 from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
 
