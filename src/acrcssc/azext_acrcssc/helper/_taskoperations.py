@@ -99,12 +99,11 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         CONTINUOUSPATCH_DEPLOYMENT_NAME,
         CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
         parameters,
-        dry_run,
-        silent_execution=silent_execution
+        dry_run
     )
 
     if not silent_execution:
-        logger.info(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
+        print(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
 
 
 def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, task_list):
@@ -131,6 +130,8 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 
             # the deployment will also update the schedule if it was set, we no longer need to manually set it
             return
+        
+    logger.debug("No difference found between the existing tasks and the extension tasks")
 
     if schedule_cron_expression is not None:
         _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
