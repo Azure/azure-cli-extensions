@@ -5,7 +5,7 @@
 
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock
 from azure.cli.core.mock import DummyCli
 from azext_acrcssc.helper._constants import TaskRunStatus
 from azext_acrcssc.helper._workflow_status import WorkflowTaskStatus, WorkflowTaskState
