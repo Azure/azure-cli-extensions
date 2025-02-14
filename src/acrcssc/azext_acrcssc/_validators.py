@@ -77,11 +77,20 @@ def _validate_continuouspatch_config(config):
         raise InvalidArgumentValueError(f"Configuration error: Version {config.get('version', '')} is not supported. Supported versions are {CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS}")
 
 
-def check_continuous_task_exists(cmd, registry):
-    exists = False
-    for task_name in CONTINUOUSPATCH_ALL_TASK_NAMES:
-        exists = exists or _check_task_exists(cmd, registry, task_name)
-    return exists
+# to save on API calls, we offer the option to return the list of tasks
+def check_continuous_task_exists(cmd, registry, task_list=None):
+    exists = True
+    try:
+        acrtask_client = cf_acr_tasks(cmd.cli_ctx)
+        for task_name in CONTINUOUSPATCH_ALL_TASK_NAMES:
+            task = get_task(cmd, registry, task_name, acrtask_client)
+            exists = exists and task is not None
+            if task_list is not None and task is not None:
+                task_list.append(task)
+        return exists
+    except Exception as exception:
+        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
+        return False
 
 
 def check_continuous_task_config_exists(cmd, registry):
@@ -103,20 +112,6 @@ def check_continuous_task_config_exists(cmd, registry):
         logger.debug(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
         raise
     return True
-
-
-def _check_task_exists(cmd, registry, task_name=""):
-    acrtask_client = cf_acr_tasks(cmd.cli_ctx)
-
-    try:
-        task = get_task(cmd, registry, task_name, acrtask_client)
-    except Exception as exception:
-        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
-        return False
-
-    if task is not None:
-        return True
-    return False
 
 
 def _validate_schedule(schedule):
@@ -145,6 +140,6 @@ def validate_task_type(task_type):
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
 
 
-def validate_cssc_optional_inputs(cssc_config_path, schedule, force_task_update):
-    if cssc_config_path is None and schedule is None and force_task_update is False:
-        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule, --config, or --force-task-update")
+def validate_cssc_optional_inputs(cssc_config_path, schedule):
+    if cssc_config_path is None and schedule is None:
+        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule, --config")

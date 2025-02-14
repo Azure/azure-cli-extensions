@@ -48,8 +48,7 @@ def create_update_continuous_patch_v1(cmd,
                                       schedule,
                                       dryrun,
                                       run_immediately,
-                                      is_create_workflow=True,
-                                      force_task_update=False):
+                                      is_create_workflow=True):
 
     logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {run_immediately}")
 
@@ -57,13 +56,11 @@ def create_update_continuous_patch_v1(cmd,
     schedule_cron_expression = None
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
-    else:
-        logger.debug("Schedule not provided, will attempt to get the current schedule from the task")
-        schedule_cron_expression = _get_continuous_patch_v1_trigger_schedule(cmd, registry)
 
     logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
-    cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
+    task_list = []
+    cssc_tasks_exists = check_continuous_task_exists(cmd, registry, task_list=task_list)
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -72,14 +69,7 @@ def create_update_continuous_patch_v1(cmd,
         if not cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Use 'az acr supply-chain workflow create' command to create {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow.")
 
-        # if the force_task_update flag is set, we will update the task yaml via ARM deployment,
-        # and that will also update the schedule. If only the schedule is updated we can chage
-        # that through client call. The configuration will need to be updated separately
-        if force_task_update:
-            logger.debug("Force task update flag is set, updating the task definition")
-            _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
-        elif schedule is not None:
-            _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+        _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun, task_list)
 
     if cssc_config_file is not None:
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
@@ -90,15 +80,7 @@ def create_update_continuous_patch_v1(cmd,
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
 
 
-def _get_continuous_patch_v1_trigger_schedule(cmd, registry):
-    task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
-    trigger = task.trigger
-    if trigger and trigger.timer_triggers:
-        return trigger.timer_triggers[0].schedule
-    return None
-
-
-def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
+def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, silent_execution=False):
     parameters = {
         "AcrName": {"value": registry.name},
         "AcrLocation": {"value": registry.location},
@@ -117,10 +99,41 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         CONTINUOUSPATCH_DEPLOYMENT_NAME,
         CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
         parameters,
-        dry_run
+        dry_run,
+        silent_execution=silent_execution
     )
 
-    logger.warning(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
+    if not silent_execution:
+        logger.info(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
+
+
+def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, task_list):
+    # compare the task definition to the existing tasks, if there is a difference, we need to update the tasks
+    # if we need to update the tasks, we will update the cron expression from it
+    # if not we just update the cron expression from the given parameter
+    for task in task_list:
+        if task.name not in CONTINUOUSPATCH_ALL_TASK_NAMES:
+            logger.debug(f"Task {task.name} is not part of the continuous patching workflow, skipping update")
+            continue
+        deployed_task = task.step.encoded_task_content
+        extension_task = _create_encoded_task(CONTINUOUSPATCH_TASK_DEFINITION[task.name]["template_file"])
+        if deployed_task != extension_task:
+            logger.debug(f"Task {task.name} is different from the extension task, updating the task")
+
+            # TODO this is wrong, we don't know if the current taks is the trigger with the schedule
+            if schedule_cron_expression is None:
+                trigger_task = next((t for t in task_list if t.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME), None)
+                if trigger_task is None:
+                    raise AzCLIError(f"Task {CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME} not found in the registry")
+                schedule_cron_expression = trigger_task.trigger.timer_triggers[0].schedule
+
+            _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, silent_execution=True)
+
+            # the deployment will also update the schedule if it was set, we no longer need to manually set it
+            return
+
+    if schedule_cron_expression is not None:
+        _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
 
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
@@ -500,15 +513,3 @@ def get_next_date(cron_expression):
     cron = croniter(cron_expression, now, expand_from_start_time=False)
     next_date = cron.get_next(datetime)
     return str(next_date)
-
-
-def get_task(cmd, registry, task_name=""):
-    acrtask_client = cf_acr_tasks(cmd.cli_ctx)
-    resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid[RESOURCE_GROUP]
-
-    try:
-        return acrtask_client.get(resource_group, registry.name, task_name)
-    except Exception as exception:
-        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
-        return None
