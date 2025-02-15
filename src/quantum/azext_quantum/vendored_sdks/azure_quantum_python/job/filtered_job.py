@@ -8,7 +8,8 @@ import abc
 from typing import Optional
 from datetime import date, datetime, timezone
 
-from azure.quantum._client.models import JobStatus
+# from azure.quantum._client.models import JobStatus
+from .._client.models import JobStatus
 
 
 class FilteredJob(abc.ABC):

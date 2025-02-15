@@ -5,12 +5,18 @@
 
 from typing import TYPE_CHECKING, Union
 
-from azure.quantum._client.models import SessionDetails, JobDetails
-from azure.quantum.job.job import Job
-from azure.quantum.job.session import Session
+# from azure.quantum._client.models import SessionDetails, JobDetails
+# from azure.quantum.job.job import Job
+# from azure.quantum.job.session import Session
+
+# if TYPE_CHECKING:
+#     from azure.quantum.workspace import Workspace
+from .._client.models import SessionDetails, JobDetails
+from ..job.job import Job
+from ..job.session import Session
 
 if TYPE_CHECKING:
-    from azure.quantum.workspace import Workspace
+    from ..workspace import Workspace
 
 __all__ = ["WorkspaceItemFactory"]
 

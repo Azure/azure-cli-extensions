@@ -10,11 +10,15 @@ from enum import Enum
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlparse, parse_qs
 from typing import Any, Dict, Optional, TYPE_CHECKING
-from azure.storage.blob import BlobClient
+# from azure.storage.blob import BlobClient
+from ...azure_storage_blob import BlobClient
 
-from azure.quantum.storage import upload_blob, download_blob, download_blob_properties, ContainerClient
-from azure.quantum._client.models import JobDetails
-from azure.quantum.job.workspace_item import WorkspaceItem
+# from azure.quantum.storage import upload_blob, download_blob, download_blob_properties, ContainerClient
+# from azure.quantum._client.models import JobDetails
+# from azure.quantum.job.workspace_item import WorkspaceItem
+from ..storage import upload_blob, download_blob, download_blob_properties, ContainerClient
+from .._client.models import JobDetails
+from ..job.workspace_item import WorkspaceItem
 
 
 if TYPE_CHECKING:

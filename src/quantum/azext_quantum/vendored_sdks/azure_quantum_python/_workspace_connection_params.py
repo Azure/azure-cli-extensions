@@ -14,8 +14,10 @@ from typing import (
 )
 from azure.core.credentials import AzureKeyCredential
 from azure.core.pipeline.policies import AzureKeyCredentialPolicy
-from azure.quantum._authentication import _DefaultAzureCredential
-from azure.quantum._constants import (
+# from azure.quantum._authentication import _DefaultAzureCredential
+# from azure.quantum._constants import (
+from ._authentication import _DefaultAzureCredential
+from ._constants import (
     EnvironmentKind,
     EnvironmentVariables,
     ConnectionConstants,

@@ -6,15 +6,20 @@
 from typing import TYPE_CHECKING, Optional, Union, Protocol, List
 from abc import abstractmethod
 
-from azure.quantum._client.models import SessionDetails, SessionStatus, SessionJobFailurePolicy
-from azure.quantum.job.workspace_item import WorkspaceItem
-from azure.quantum.job import Job
+# from azure.quantum._client.models import SessionDetails, SessionStatus, SessionJobFailurePolicy
+# from azure.quantum.job.workspace_item import WorkspaceItem
+# from azure.quantum.job import Job
+from .._client.models import SessionDetails, SessionStatus, SessionJobFailurePolicy
+from ..job.workspace_item import WorkspaceItem
+from ..job.job import Job
 
 __all__ = ["Session", "SessionHost", "SessionDetails", "SessionStatus", "SessionJobFailurePolicy"]
 
 if TYPE_CHECKING:
-    from azure.quantum.workspace import Workspace
-    from azure.quantum.workspace import Target
+    # from azure.quantum.workspace import Workspace
+    # from azure.quantum.workspace import Target
+    from ..workspace import Workspace
+    from ..workspace import Target
 
 
 class Session(WorkspaceItem):

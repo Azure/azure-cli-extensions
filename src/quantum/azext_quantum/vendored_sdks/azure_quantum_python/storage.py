@@ -5,7 +5,8 @@
 import logging
 from typing import Any, Dict
 from azure.core import exceptions
-from azure.storage.blob import (
+# from azure.storage.blob import (
+from ..azure_storage_blob import (
     BlobServiceClient,
     ContainerClient,
     BlobClient,

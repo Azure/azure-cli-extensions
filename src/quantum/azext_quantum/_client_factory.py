@@ -28,8 +28,8 @@ def base_url(location):
 def _get_data_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
-    # creds, _, _ = profile.get_login_credentials(subscription_id=subscription_id, resource="https://quantum.microsoft.com")
-    creds = profile.get_login_credentials(subscription_id=subscription_id, resource="https://quantum.microsoft.com")
+    creds, _, _ = profile.get_login_credentials(subscription_id=subscription_id, resource="https://quantum.microsoft.com")
+    # creds = profile.get_login_credentials(subscription_id=subscription_id, resource="https://quantum.microsoft.com")
 
     # +++++ Temporary DEBUG Code +++++
     # print()
@@ -80,18 +80,21 @@ def cf_quantum(cli_ctx, subscription_id=None, location=None):
     # # SDK-compatible version:
     from .vendored_sdks.azure_quantum import ServicesClient
     creds = _get_data_credentials(cli_ctx, subscription_id)
-    # client = ServicesClient(location, creds)
+    return ServicesClient(location, creds)
+    # creds, _ , _ = _get_data_credentials(cli_ctx, subscription_id)
+    # return ServicesClient(location, creds)
 
-    token, azure_key, _ = creds
-    client = ServicesClient(location, token)            # This works
-    # client = ServicesClient(location, azure_key)      # This causes "Unsupported credential" errors
+    # token, azure_key, other_cred = creds
+    # client = ServicesClient(location, token)            # This works
+    # # client = ServicesClient(location, azure_key)      # This causes "Unsupported credential" errors
+    # # client = ServicesClient(location, other_cred)     # This causes "Unsupported credential" errors
 
     # >>>>>>>>>> This didn't help
     # Add user agent on the management client to include extension information
     # client._config.user_agent_policy.add_user_agent(get_appid())
     # <<<<<<<<<<
 
-    return client
+    # return client
 
 
 # def cf_providers(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
