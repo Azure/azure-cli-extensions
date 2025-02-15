@@ -17,7 +17,8 @@ from .helper._taskoperations import (
 from ._validators import (
     validate_inputs,
     validate_task_type,
-    validate_cssc_optional_inputs
+    validate_cssc_optional_inputs,
+    validate_continuous_patch_v1_image_limit
 )
 from azext_acrcssc._client_factory import cf_acr_registries
 
@@ -41,8 +42,12 @@ def _perform_continuous_patch_operation(cmd,
         validate_cssc_optional_inputs(config, schedule)
 
     logger.debug('validations completed successfully.')
+
+    # check for the image limit using the dryrun task
+    # TODO, the call to prepare_source_location() will output warnings to the console, which I'm not sure how to remove
+    dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
+    validate_continuous_patch_v1_image_limit(dryrun_output)
     if dryrun:
-        dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
         print(dryrun_output)
     else:
         create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create)

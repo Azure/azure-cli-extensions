@@ -13,6 +13,7 @@ from azure.cli.command_modules.acr.repository import acr_repository_show
 from .helper._constants import (
     BEARER_TOKEN_USERNAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
+    CONTINUOUSPATCH_IMAGE_LIMIT,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
@@ -149,4 +150,19 @@ def validate_task_type(task_type):
 
 def validate_cssc_optional_inputs(cssc_config_path, schedule):
     if cssc_config_path is None and schedule is None:
-        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule, --config")
+        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule or --config")
+
+
+def validate_continuous_patch_v1_image_limit(dryrun_log):
+    match = re.search(r"Matches found: (\d+)", dryrun_log)
+    if match is None:
+        logger.error("Error parsing for image limit.")
+
+    image_limit = int(match.group(1))
+
+    if image_limit > CONTINUOUSPATCH_IMAGE_LIMIT:
+        # get only the part of the log that shows the repositories and tags
+        pattern = "Listing repositories and tags matching the filter"
+        result = re.sub(r'^(.*\n)*?' + re.escape(pattern), pattern, dryrun_log, flags=re.MULTILINE)
+
+        raise InvalidArgumentValueError(error_msg=f"This configuration exceeds the {CONTINUOUSPATCH_IMAGE_LIMIT}-image limit. The total includes repositories and tags, including wildcard tags. Please reduce the number of images in the configuration.\n{result}")

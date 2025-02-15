@@ -235,7 +235,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
             registry_name=registry.name,
             run_request=request))
         run_id = queued.run_id
-        logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
+        logger.info("Performing dry-run check for filter policy using acr task run id: %s", run_id)
         return WorkflowTaskStatus.remove_internal_acr_statements(WorkflowTaskStatus.generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name))
     finally:
         delete_temporary_dry_run_file(tmp_folder)
