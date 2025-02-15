@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements,too-many-locals,too-many-branches,too-many-statements
 
+import ast
 import gzip
 import io
 import json
@@ -33,6 +34,9 @@ ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-inpu
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
+ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
+JOB_LIST_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list"
 
 # Job types
 QIO_JOB = 1
@@ -45,13 +49,115 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
-def list(cmd, resource_group_name, workspace_name, location):
+def list(cmd, resource_group_name, workspace_name, location, job_type=None, item_type=None, provider_id=None,
+         target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
+         skip=None, top=None, orderby=None, order=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+
+    query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+    orderby_expression = _construct_orderby_expression(orderby, order)
+
+    response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
+    first_page = next(iter(response.by_page()), [])
+    # Note: --top produces multi-page responses, but we only process the first page. All the other params put everything on the first page.
+
+    # Iterate through the first page of the response and build a JSON array
+    job_list_string = "["
+    for job_details in first_page:
+        details_string = str(job_details)
+        job_list_string += details_string + ", "
+
+    if len(job_list_string) == 1:
+        return []   # Got an empty response page, return an empty array
+
+    job_list_string = job_list_string[:-2]
+    job_list_string += "]"
+
+    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON.
+    # json.loads doesn't like the all the single quotes in the response, but ast.literal_eval handles them OK.
+    return ast.literal_eval(job_list_string)
+
+
+def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
+    """
+    Construct a job-list filter query expression
+    """
+    query = ""
+
+    query = _parse_pagination_param_values("JobType", query, job_type)
+    query = _parse_pagination_param_values("ItemType", query, item_type)
+    query = _parse_pagination_param_values("ProviderId", query, provider_id)
+    query = _parse_pagination_param_values("Target", query, target_id)
+    query = _parse_pagination_param_values("State", query, job_status)
+
+    query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
+    query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
+    query = _parse_pagination_param_values("Name", query, job_name, "startswith")
+
+    if query == "":
+        query = None
+    return query
+
+
+def _parse_pagination_param_values(param_name, query, raw_values, logic_operator=None):
+    """
+    Parse the pagination parameter values for a job-list filter query expression
+    """
+    if raw_values is not None:
+        if len(query) > 0:
+            query += " and "
+
+        # Special handling of --job-name
+        if param_name == "Name":
+            query += logic_operator + "(Name, '" + raw_values + "')"
+            return query
+
+        # Special handling of --created-before and --created-after (No quotes around the date)
+        if param_name == "CreationTime":
+            query += "CreationTime " + logic_operator + " " + raw_values
+            return query
+
+        if logic_operator is None:
+            logic_operator = "eq"
+        padded_logic_operator = " " + logic_operator + " '"
+
+        first_value = True
+        values_list = raw_values.split(",")
+
+        if len(values_list) <= 1:
+            query += param_name + padded_logic_operator + values_list[0] + "'"
+        else:
+            for value in values_list:
+                value = value.strip()
+
+                if first_value:
+                    query += "(" + param_name + padded_logic_operator + value + "'"
+                    first_value = False
+                else:
+                    query += " or " + param_name + padded_logic_operator + value + "'"
+            query += ")"
+    return query
+
+
+def _construct_orderby_expression(orderby, order):
+    """
+    Construct a job-list orderby expression
+    """
+    if (orderby == "" or orderby is None) and not (order == "" or order is None):
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ORDERBY_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
+
+    orderby_expression = orderby
+    if orderby_expression is not None and order is not None:
+        # Validate order, otherwise the error message will be vague
+        if not (order == "asc" or order == "desc"):
+            raise InvalidArgumentValueError(ERROR_MSG_INVALID_ORDER_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
+        orderby_expression += " " + order
+    return orderby_expression
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
@@ -407,7 +513,7 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    job = client.get(info.location, job_id)
     return job
 
 
