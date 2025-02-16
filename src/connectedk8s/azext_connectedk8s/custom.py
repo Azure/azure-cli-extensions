@@ -14,12 +14,11 @@ import platform
 import re
 import shutil
 import stat
-import sys
 import tempfile
 import time
 import urllib.request
 from base64 import b64decode, b64encode
-from glob import glob
+from concurrent.futures import ThreadPoolExecutor
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
 
@@ -36,7 +35,6 @@ from azure.cli.core.azclierror import (
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
-    UnclassifiedUserFault,
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
@@ -53,16 +51,19 @@ from kubernetes import config
 from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
-import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
+import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
+import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 from azext_connectedk8s._client_factory import (
     cf_connectedmachine,
     cf_resource_groups,
     resource_providers_client,
 )
+from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
 
 from .vendored_sdks.preview_2024_07_01.models import (
     ArcAgentProfile,
@@ -71,7 +72,6 @@ from .vendored_sdks.preview_2024_07_01.models import (
     ConnectedClusterIdentity,
     ConnectedClusterPatch,
     Gateway,
-    ListClusterUserCredentialProperties,
     OidcIssuerProfile,
     SecurityProfile,
     SecurityProfileWorkloadIdentity,
@@ -84,10 +84,8 @@ if TYPE_CHECKING:
     from knack.commands import CLICommmand
     from kubernetes.client import V1NodeList
     from kubernetes.config.kube_config import ConfigNode
+    from requests.models import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
-        CredentialResults,
-    )
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
         ConnectedClusterOperations,
     )
@@ -178,8 +176,10 @@ def create_connectedk8s(
         else get_subscription_id(cmd.cli_ctx)
     )
 
-    resource_id = f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
+    resource_id = (
+        f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
         Kubernetes/connectedClusters/{cluster_name}/location/{location}"
+    )
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.resourceid": resource_id}
     )
@@ -3474,8 +3474,8 @@ def client_side_proxy_wrapper(
         )
 
     args = []
-    operating_system = platform.system()
-    proc_name = f"arcProxy{operating_system}"
+    operating_system = proxybinaryutils._get_client_operating_system()
+    proc_name = f"arcProxy_{operating_system.lower()}"
 
     telemetry.set_debug_info("CSP Version is ", consts.CLIENT_PROXY_VERSION)
     telemetry.set_debug_info("OS is ", operating_system)
@@ -3508,102 +3508,13 @@ def client_side_proxy_wrapper(
     if port_error_string != "":
         raise ClientRequestError(port_error_string)
 
-    # Set csp url based on cloud
-    CSP_Url = consts.CSP_Storage_Url
-    if cloud == consts.Azure_ChinaCloudName:
-        CSP_Url = consts.CSP_Storage_Url_Mooncake
-    elif cloud == consts.Azure_USGovCloudName:
-        CSP_Url = consts.CSP_Storage_Url_Fairfax
+    debug_mode = False
+    if "--debug" in cmd.cli_ctx.data["safe_params"]:
+        debug_mode = True
 
-    # Creating installation location, request uri and older version exe location depending on OS
-    if operating_system == "Windows":
-        install_location_string = (
-            f".clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-        )
-        requestUri = f"{CSP_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
-        older_version_string = f".clientproxy\\arcProxy{operating_system}*.exe"
-        creds_string = r".azure\accessTokens.json"
-
-    elif operating_system == "Linux" or operating_system == "Darwin":
-        install_location_string = (
-            f".clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-        )
-        requestUri = f"{CSP_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
-        older_version_string = f".clientproxy/arcProxy{operating_system}*"
-        creds_string = r".azure/accessTokens.json"
-
-    else:
-        telemetry.set_exception(
-            exception="Unsupported OS",
-            fault_type=consts.Unsupported_Fault_Type,
-            summary=f"{operating_system} is not supported yet",
-        )
-        raise ClientRequestError(
-            f"The {operating_system} platform is not currently supported."
-        )
-
-    install_location = os.path.expanduser(os.path.join("~", install_location_string))
+    install_location = proxybinaryutils.install_client_side_proxy(None, debug_mode)
     args.append(install_location)
     install_dir = os.path.dirname(install_location)
-
-    # If version specified by install location doesnt exist, then download the executable
-    if not os.path.isfile(install_location):
-        print("Setting up environment for first time use. This can take few minutes...")
-        # Downloading the executable
-        try:
-            response = urllib.request.urlopen(requestUri)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Download_Exe_Fault_Type,
-                summary="Unable to download clientproxy executable.",
-            )
-            raise CLIInternalError(
-                f"Failed to download executable with client: {e}",
-                recommendation="Please check your internet connection.",
-            )
-
-        responseContent = response.read()
-        response.close()
-
-        # Creating the .clientproxy folder if it doesnt exist
-        if not os.path.exists(install_dir):
-            try:
-                os.makedirs(install_dir)
-            except Exception as e:
-                telemetry.set_exception(
-                    exception=e,
-                    fault_type=consts.Create_Directory_Fault_Type,
-                    summary="Unable to create installation directory",
-                )
-                raise ClientRequestError(
-                    "Failed to create installation directory." + str(e)
-                )
-        else:
-            older_version_string = os.path.expanduser(
-                os.path.join("~", older_version_string)
-            )
-            older_version_files = glob(older_version_string)
-
-            # Removing older executables from the directory
-            for file_ in older_version_files:
-                try:
-                    os.remove(file_)
-                except OSError:
-                    logger.warning("failed to delete older version files")
-
-        try:
-            with open(install_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Create_CSPExe_Fault_Type,
-                summary="Unable to create proxy executable",
-            )
-            raise ClientRequestError("Failed to create proxy executable." + str(e))
-
-        os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
 
     # Creating config file to pass config to clientproxy
     config_file_location = os.path.join(install_dir, "config.yml")
@@ -3621,7 +3532,6 @@ def client_side_proxy_wrapper(
 
     # initializations
     user_type = "sat"
-    creds = ""
     dict_file: dict[str, Any] = {
         "server": {
             "httpPort": int(client_proxy_port),
@@ -3641,47 +3551,6 @@ def client_side_proxy_wrapper(
             dict_file["identity"]["clientID"] = consts.CLIENTPROXY_CLIENT_ID
         else:
             dict_file["identity"]["clientID"] = account["user"]["name"]
-
-        if not utils.is_cli_using_msal_auth():
-            # Fetching creds
-            creds_location = os.path.expanduser(os.path.join("~", creds_string))
-            try:
-                with open(creds_location) as f:
-                    creds_list = json.load(f)
-            except Exception as e:
-                telemetry.set_exception(
-                    exception=e,
-                    fault_type=consts.Load_Creds_Fault_Type,
-                    summary="Unable to load accessToken.json",
-                )
-                raise FileOperationError("Failed to load credentials." + str(e))
-
-            user_name = account["user"]["name"]
-
-            if user_type == "user":
-                key = "userId"
-                key2 = "refreshToken"
-            else:
-                key = "servicePrincipalId"
-                key2 = "accessToken"
-
-            for i in range(len(creds_list)):
-                creds_obj = creds_list[i]
-
-                if key in creds_obj and creds_obj[key] == user_name:
-                    creds = creds_obj[key2]
-                    break
-
-            if creds == "":
-                telemetry.set_exception(
-                    exception="Credentials of user not found.",
-                    fault_type=consts.Creds_NotFound_Fault_Type,
-                    summary="Unable to find creds of user",
-                )
-                raise UnclassifiedUserFault("Credentials of user not found.")
-
-            if user_type != "user":
-                dict_file["identity"]["clientSecret"] = creds
 
     if cloud == "DOGFOOD":
         dict_file["cloud"] = "AzureDogFood"
@@ -3726,10 +3595,8 @@ def client_side_proxy_wrapper(
     args.append("-c")
     args.append(config_file_location)
 
-    debug_mode = False
-    if "--debug" in cmd.cli_ctx.data["safe_params"]:
+    if debug_mode:
         args.append("-d")
-        debug_mode = True
 
     client_side_proxy_main(
         cmd,
@@ -3737,38 +3604,14 @@ def client_side_proxy_wrapper(
         client,
         resource_group_name,
         cluster_name,
-        0,
         args,
         client_proxy_port,
         api_server_port,
-        operating_system,
-        creds,
-        user_type,
         debug_mode,
         token=token,
         path=path,
         context_name=context_name,
     )
-
-
-# Prepare data as needed by client proxy executable
-def prepare_clientproxy_data(response: CredentialResults) -> dict[str, Any]:
-    data: dict[str, Any] = {}
-    data["kubeconfigs"] = []
-    kubeconfig = {}
-    kubeconfig["name"] = "Kubeconfig"
-    kubeconfig["value"] = b64encode(response.kubeconfigs[0].value).decode("utf-8")  # type: ignore[index]
-    data["kubeconfigs"].append(kubeconfig)
-    data["hybridConnectionConfig"] = {}
-    data["hybridConnectionConfig"]["relay"] = response.hybrid_connection_config.relay  # type: ignore[attr-defined]
-    data["hybridConnectionConfig"]["hybridConnectionName"] = (
-        response.hybrid_connection_config.hybrid_connection_name  # type: ignore[attr-defined]
-    )
-    data["hybridConnectionConfig"]["token"] = response.hybrid_connection_config.token  # type: ignore[attr-defined]
-    data["hybridConnectionConfig"]["expirationTime"] = (
-        response.hybrid_connection_config.expiration_time  # type: ignore[attr-defined]
-    )
-    return data
 
 
 def client_side_proxy_main(
@@ -3777,63 +3620,62 @@ def client_side_proxy_main(
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
-    flag: int,
     args: list[str],
     client_proxy_port: int,
     api_server_port: int,
-    operating_system: str,
-    creds: str,
-    user_type: str,
     debug_mode: bool,
     token: str | None = None,
     path: str = os.path.join(os.path.expanduser("~"), ".kube", "config"),
     context_name: str | None = None,
 ) -> None:
-    expiry, clientproxy_process = client_side_proxy(
+    hc_expiry, at_expiry, clientproxy_process = client_side_proxy(
         cmd,
         tenant_id,
         client,
         resource_group_name,
         cluster_name,
-        0,
+        ProxyStatus.FirstRun,
         args,
         client_proxy_port,
         api_server_port,
-        operating_system,
-        creds,
-        user_type,
         debug_mode,
         token=token,
         path=path,
         context_name=context_name,
         clientproxy_process=None,
     )
-    next_refresh_time = expiry - consts.CSP_REFRESH_TIME
 
     while True:
         time.sleep(60)
         if clientproxyutils.check_if_csp_is_running(clientproxy_process):
-            if time.time() >= next_refresh_time:
-                expiry, clientproxy_process = client_side_proxy(
+            flag = None
+            if time.time() >= (hc_expiry - consts.CSP_REFRESH_TIME):
+                flag = ProxyStatus.HCTokenRefresh
+            elif time.time() >= (at_expiry - consts.CSP_REFRESH_TIME):
+                flag = ProxyStatus.AccessTokenRefresh
+
+            if flag is not None:
+                new_hc_expiry, new_at_expiry, clientproxy_process = client_side_proxy(
                     cmd,
                     tenant_id,
                     client,
                     resource_group_name,
                     cluster_name,
-                    1,
+                    flag,
                     args,
                     client_proxy_port,
                     api_server_port,
-                    operating_system,
-                    creds,
-                    user_type,
                     debug_mode,
                     token=token,
                     path=path,
                     context_name=context_name,
                     clientproxy_process=clientproxy_process,
                 )
-                next_refresh_time = expiry - consts.CSP_REFRESH_TIME
+                if flag == ProxyStatus.HCTokenRefresh:
+                    hc_expiry = new_hc_expiry
+                elif flag == ProxyStatus.AccessTokenRefresh:
+                    at_expiry = new_at_expiry
+
         else:
             telemetry.set_exception(
                 exception="Process closed externally.",
@@ -3849,43 +3691,36 @@ def client_side_proxy(
     client: ConnectedClusterOperations,
     resource_group_name: str,
     cluster_name: str,
-    flag: int,
+    flag: ProxyStatus,
     args: list[str],
     client_proxy_port: int,
     api_server_port: int,
-    operating_system: str,
-    creds: str,
-    user_type: str,
     debug_mode: bool,
     token: str | None = None,
     path: str = os.path.join(os.path.expanduser("~"), ".kube", "config"),
     context_name: str | None = None,
     clientproxy_process: Popen[bytes] | None = None,
-) -> tuple[int, Popen[bytes]]:
+) -> tuple[int, int, Popen[bytes]]:
     subscription_id = get_subscription_id(cmd.cli_ctx)
     auth_method = "Token" if token is not None else "AAD"
 
+    hc_expiry, at_expiry = 0, 0
+
     # Fetching hybrid connection details from Userrp
-    try:
-        list_prop = ListClusterUserCredentialProperties(
-            authentication_method=auth_method, client_proxy=True
-        )
-        cluster_user_credentials = client.list_cluster_user_credential(
-            resource_group_name, cluster_name, list_prop
-        )
-    except Exception as e:
-        if flag == 1:
-            assert clientproxy_process is not None
-            clientproxy_process.terminate()
-        utils.arm_exception_handler(
-            e,
-            consts.Get_Credentials_Failed_Fault_Type,
-            "Unable to list cluster user credentials",
-        )
-        raise CLIInternalError(f"Failed to get credentials: {e}")
+    # We do this in a separate process to avoid blocking the main thread
+    # Since we still need to bring up the proxy and make API calls to it.
+    if ProxyStatus.should_hc_token_refresh(flag):
+        with ThreadPoolExecutor() as executor:
+            future_get_cluster_user_credentials = executor.submit(
+                proxylogic.get_cluster_user_credentials,
+                client,
+                resource_group_name,
+                cluster_name,
+                auth_method,
+            )
 
     # Starting the client proxy process, if this is the first time that this function is invoked
-    if flag == 0:
+    if flag == ProxyStatus.FirstRun:
         try:
             if debug_mode:
                 clientproxy_process = Popen(args)
@@ -3901,96 +3736,43 @@ def client_side_proxy(
             )
             raise CLIInternalError(f"Failed to start proxy process: {e}")
 
-        # refresh token approach if cli is using ADAL auth (for cli < 2.30.0)
-        if (not utils.is_cli_using_msal_auth()) and user_type == "user":
-            identity_data = {}
-            identity_data["refreshToken"] = creds
-            identity_uri = f"https://localhost:{api_server_port}/identity/rt"
-
-            # Needed to prevent skip tls warning from printing to the console
-            original_stderr = sys.stderr
-            with open(os.devnull, "w") as f:
-                sys.stderr = f
-
-                clientproxyutils.make_api_call_with_retries(
-                    identity_uri,
-                    identity_data,
-                    "post",
-                    False,
-                    consts.Post_RefreshToken_Fault_Type,
-                    "Unable to post refresh token details to clientproxy",
-                    "Failed to pass refresh token details to proxy.",
-                    clientproxy_process,
-                )
-            sys.stderr = original_stderr
-
     assert clientproxy_process is not None
-    if token is None and (
-        utils.is_cli_using_msal_auth()
-    ):  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
-        kid = clientproxyutils.fetch_pop_publickey_kid(
-            api_server_port, clientproxy_process
-        )
-        post_at_response = clientproxyutils.fetch_and_post_at_to_csp(
-            cmd, api_server_port, tenant_id, kid, clientproxy_process
+
+    if token is None and ProxyStatus.should_access_token_refresh(flag):
+        # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
+        at_expiry = proxylogic.handle_post_at_to_csp(
+            cmd, api_server_port, tenant_id, clientproxy_process
         )
 
-        if post_at_response.status_code != 200:
-            if (
-                post_at_response.status_code == 500
-                and "public key expired" in post_at_response.text
-            ):
-                # pop public key must have been rotated
-                telemetry.set_exception(
-                    exception=post_at_response.text,
-                    fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
-                    summary="PoP public key has expired",
-                )
-                kid = clientproxyutils.fetch_pop_publickey_kid(
-                    api_server_port, clientproxy_process
-                )  # fetch the rotated PoP public key
-                # fetch and post the at corresponding to the new public key
-                clientproxyutils.fetch_and_post_at_to_csp(
-                    cmd, api_server_port, tenant_id, kid, clientproxy_process
-                )
-            else:
-                telemetry.set_exception(
-                    exception=post_at_response.text,
-                    fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
-                    summary="Failed to post access token to client proxy",
-                )
-                clientproxyutils.close_subprocess_and_raise_cli_error(
-                    clientproxy_process,
-                    "Failed to post access token to client proxy"
-                    + post_at_response.text,
-                )
+    # Check hybrid connection details from Userrp
+    response: Response
 
-    data = prepare_clientproxy_data(cluster_user_credentials)
-    expiry = data["hybridConnectionConfig"]["expirationTime"]
+    if ProxyStatus.should_hc_token_refresh(flag):
+        try:
+            response_data = future_get_cluster_user_credentials.result()
+        except Exception as e:
+            clientproxy_process.terminate()
+            utils.arm_exception_handler(
+                e,
+                consts.Get_Credentials_Failed_Fault_Type,
+                "Unable to list cluster user credentials",
+            )
+            raise CLIInternalError(f"Failed to get credentials: {e}")
 
-    if token is not None:
-        data["kubeconfigs"][0]["value"] = clientproxyutils.insert_token_in_kubeconfig(
-            data, token
+        data = clientproxyutils.prepare_clientproxy_data(response_data)
+        hc_expiry = data["hybridConnectionConfig"]["expirationTime"]
+
+        response = proxylogic.post_register_to_proxy(
+            data,
+            token,
+            client_proxy_port,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            clientproxy_process,
         )
 
-    uri = (
-        f"http://localhost:{client_proxy_port}/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}"
-        f"/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/register?api-version=2020-10-01"
-    )
-
-    # Posting hybrid connection details to proxy in order to get kubeconfig
-    response = clientproxyutils.make_api_call_with_retries(
-        uri,
-        data,
-        "post",
-        False,
-        consts.Post_Hybridconn_Fault_Type,
-        "Unable to post hybrid connection details to clientproxy",
-        "Failed to pass hybrid connection details to proxy.",
-        clientproxy_process,
-    )
-
-    if flag == 0:
+    if flag == ProxyStatus.FirstRun:
         # Decoding kubeconfig into a string
         try:
             kubeconfig = json.loads(response.text)
@@ -4033,7 +3815,7 @@ def client_side_proxy(
                 clientproxy_process, "Failed to merge kubeconfig." + str(e)
             )
 
-    return expiry, clientproxy_process
+    return hc_expiry, at_expiry, clientproxy_process
 
 
 def check_cl_registration_and_get_oid(

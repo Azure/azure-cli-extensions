@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.0.3
+++++++
+Added new long parameter functionality in `vm repair run` cmd `parameters` parameter. When using the prefix `++`, the entire key=value string will be sent to the running script, not just the value.
+
 2.0.2
 ++++++
 Updated parameter descriptions and examples for `az vm repair create`.
