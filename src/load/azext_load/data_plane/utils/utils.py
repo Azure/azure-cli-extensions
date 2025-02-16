@@ -746,6 +746,7 @@ def upload_zipped_artifacts_helper(
                 wait=wait
             )
             if wait and file_response.get("validationStatus") not in ("VALIDATION_SUCCESS", "NOT_VALIDATED"):
+                # pylint: disable=line-too-long
                 raise FileOperationError(
                     f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again. Current file status is {file_response.get("validationStatus")}"
                 )
