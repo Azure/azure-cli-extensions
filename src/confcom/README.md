@@ -28,7 +28,7 @@
     sudo apt install docker.io
     ```
 
-  - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
+  - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
 
 ## Installation Instructions (End User)
 
@@ -41,7 +41,7 @@
 
       - **Notes for Windows user ONLY**:  even you have 64-bit python3 installed already, windows version **Azure CLI** installation package comes with a 32-bit python, which is not supported for now. So please use the `PyPI/pip` solution to install `azure-cli`.
 
-   2. Option 2:(Linux Only) [Install through Linux Package Tools](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt).
+   2. Option 2:(Linux Only) [Install through Linux Package Tools](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt).
 
 2. Install the `confcom` extension:
 
