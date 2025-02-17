@@ -22,7 +22,7 @@ class CreateVersion(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/configtemplates/{}/createversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/configtemplates/{}/createversion", "2025-01-01-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class CreateVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/configTemplates/{configTemplateName}/createVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}/createVersion",
                 **self.url_parameters
             )
 

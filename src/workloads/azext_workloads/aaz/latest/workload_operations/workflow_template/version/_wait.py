@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/workflowtemplates/{}/versions/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/workflowtemplates/{}/versions/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -94,7 +94,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
                 **self.url_parameters
             )
 

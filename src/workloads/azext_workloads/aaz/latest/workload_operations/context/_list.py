@@ -22,7 +22,7 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/private.edge/contexts", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.edge/contexts", "2025-01-01-preview"],
         ]
     }
 
@@ -75,7 +75,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Private.Edge/contexts",
+                "/subscriptions/{subscriptionId}/providers/microsoft.edge/contexts",
                 **self.url_parameters
             )
 

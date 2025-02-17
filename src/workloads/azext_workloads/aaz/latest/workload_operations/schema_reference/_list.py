@@ -22,7 +22,7 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/private.edge/schemareferences", "2025-01-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.edge/schemareferences", "2025-01-01-preview"],
         ]
     }
 
@@ -82,7 +82,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Private.Edge/schemaReferences",
+                "/{resourceUri}/providers/microsoft.edge/schemaReferences",
                 **self.url_parameters
             )
 
