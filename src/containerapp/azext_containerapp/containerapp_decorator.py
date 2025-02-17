@@ -910,7 +910,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
         if self.get_argument_kind() is not None:
-                    safe_set(self.containerapp_def, "kind", value=self.get_argument_kind())
+            safe_set(self.containerapp_def, "kind", value=self.get_argument_kind())
         self.set_up_runtime()
 
     # copy from parent
