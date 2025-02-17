@@ -24,7 +24,7 @@ class FabricSqlHandler(SqlHandler):
         Database = connstr_props.get('Database') or connstr_props.get('Initial Catalog')
         if not Server or not Database:
             raise CLIInternalError("Missing 'Server' or 'Database' in additonal connection string properties keys."
-                                   "Use --connection-string-props 'Server=xxx' 'Database=xxx' to provide the values.")
+                                   "Use --connstr_props 'Server=xxx' 'Database=xxx' to provide the values.")
 
         # Construct the ODBC connection string
         self.ODBCConnectionString = self.construct_odbc_connection_string(Server, Database)
