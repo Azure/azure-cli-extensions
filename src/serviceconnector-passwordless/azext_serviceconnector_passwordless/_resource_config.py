@@ -138,7 +138,7 @@ TARGET_RESOURCES_PARAMS = {
             'help': 'Connection string properties of the Fabric SQL server. Format like: --connstr-props "Server=<Server_Host>,<Port>" "Database=<Database_Name>".',
             'placeholder': 'Server=MyServer,1433 Database=MyDB'
         }
-     }
+    }
 }
 
 AUTH_TYPE_PARAMS = {

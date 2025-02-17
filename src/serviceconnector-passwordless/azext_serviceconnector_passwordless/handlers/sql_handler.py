@@ -23,6 +23,7 @@ from azure.cli.command_modules.serviceconnector._resource_config import AUTH_TYP
 from .._utils import run_cli_cmd, confirm_admin_set
 logger = get_logger(__name__)
 
+
 class SqlHandler(TargetHandler):
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt, new_user):
         super().__init__(cmd, target_id, target_type,
@@ -210,4 +211,3 @@ class SqlHandler(TargetHandler):
             self.dbname, self.aad_username)
 
         return [delete_q, role_q, grant_q]
-        

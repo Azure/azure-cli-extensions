@@ -9,6 +9,7 @@ from azure.cli.command_modules.serviceconnector._resource_config import AUTH_TYP
 
 logger = get_logger(__name__)
 
+
 class FabricSqlHandler(SqlHandler):
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, connstr_props, skip_prompt, new_user):
         super().__init__(cmd, target_id, target_type,
@@ -38,11 +39,11 @@ class FabricSqlHandler(SqlHandler):
             response_json = response.json()
             if response_json["id"]:
                 return
-        
+
         e = ResourceNotFoundError("No database found with name {}".format(self.dbname))
         telemetry.set_exception(e, "No-Db")
         raise e
-        
+
     def construct_odbc_connection_string(self, server, database):
         # Map fields to ODBC fields
         odbc_dict = {
@@ -66,7 +67,7 @@ class FabricSqlHandler(SqlHandler):
 
     def set_user_admin(self, user_object_id, **kwargs):
         return
-    
+
     def get_connection_string(self, dbname=""):
         token_bytes = self.get_fabric_access_token().encode('utf-16-le')
 

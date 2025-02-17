@@ -11,9 +11,6 @@ from .handlers.target_handler import (
     TargetHandler
 )
 from azure.mgmt.core.tools import parse_resource_id
-from .handlers.sql_handler import SqlHandler
-from .handlers.fabric_sql_handler import FabricSqlHandler
-from knack.log import get_logger
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
     AzureConnectionError,
@@ -22,7 +19,6 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError
 )
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
-from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
     generate_random_string,
     is_packaged_installed,
@@ -36,14 +32,18 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth
+from .handlers.sql_handler import SqlHandler
+from .handlers.fabric_sql_handler import FabricSqlHandler
+from knack.log import get_logger
+from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_enable_entra_auth
 logger = get_logger(__name__)
+
 
 # pylint: disable=line-too-long, consider-using-f-string, too-many-statements, unused-argument
 # For db(mysqlFlex/psql/psqlFlex/sql) linker with auth type=systemAssignedIdentity, enable Microsoft Entra auth and create db user on data plane
 # For other linker, ignore the steps
 def get_enable_mi_for_db_linker_func(yes=False, new=False):
-    def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name, connstr_props=None, *args, **kwargs):
+    def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name, *args, connstr_props=None, **kwargs):
         # return if connection is not for db mi
         if auth_info['auth_type'] not in [AUTHTYPES[AUTH_TYPE.SystemIdentity],
                                           AUTHTYPES[AUTH_TYPE.UserIdentity],

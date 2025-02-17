@@ -12,6 +12,7 @@ AUTHTYPES = {
     AUTH_TYPE.UserAccount: 'userAccount',
 }
 
+
 class TargetHandler:
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt, new_user):
         self.cmd = cmd
