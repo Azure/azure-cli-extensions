@@ -1,13 +1,12 @@
 import struct
-import sys
-import re
-
-from .._credential_free import SqlHandler
-from azure.cli.command_modules.serviceconnector._utils import is_packaged_installed
+import requests
 from .target_handler import AUTHTYPES, run_cli_cmd
+from .sql_handler import ResourceNotFoundError, SqlHandler
+from azure.cli.core import telemetry
 from knack.log import get_logger
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.command_modules.serviceconnector._resource_config import AUTH_TYPE
+
 logger = get_logger(__name__)
 
 class FabricSqlHandler(SqlHandler):
@@ -30,6 +29,20 @@ class FabricSqlHandler(SqlHandler):
         self.ODBCConnectionString = self.construct_odbc_connection_string(Server, Database)
         logger.warning("ODBC connection string: %s", self.ODBCConnectionString)
 
+    def check_db_existence(self):
+        fabric_token = self.get_fabric_access_token()
+        headers = {"Authorization": "Bearer {}".format(fabric_token)}
+        response = requests.get(self.target_id, headers=headers)
+
+        if response:
+            response_json = response.json()
+            if response_json["id"]:
+                return
+        
+        e = ResourceNotFoundError("No database found with name {}".format(self.dbname))
+        telemetry.set_exception(e, "No-Db")
+        raise e
+        
     def construct_odbc_connection_string(self, server, database):
         # Map fields to ODBC fields
         odbc_dict = {
@@ -48,9 +61,14 @@ class FabricSqlHandler(SqlHandler):
         logger.warning("Connecting to database...")
         self.create_aad_user_in_sql(connection_args, query_list)
 
+    def get_fabric_access_token(self):
+        return run_cli_cmd('az account get-access-token --output json --resource https://api.fabric.microsoft.com/').get('accessToken')
+
+    def set_user_admin(self, user_object_id, **kwargs):
+        return
+    
     def get_connection_string(self, dbname=""):
-        token_bytes = run_cli_cmd(
-            'az account get-access-token --output json --resource https://api.fabric.microsoft.com/').get('accessToken').encode('utf-16-le')
+        token_bytes = self.get_fabric_access_token().encode('utf-16-le')
 
         token_struct = struct.pack(
             f'<I{len(token_bytes)}s', len(token_bytes), token_bytes)
