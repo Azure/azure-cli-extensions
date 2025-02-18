@@ -77,7 +77,7 @@ def cf_quantum(cli_ctx, subscription_id=None, location=None):
     # client = AzureQuantumWorkspaceServices(subscription_id, resource_group_name, workspace_name, creds, user_agent=get_appid())
     # return client
 
-    # # SDK-compatible version:
+    # SDK-client compatible version:
     from .vendored_sdks.azure_quantum import ServicesClient
     creds = _get_data_credentials(cli_ctx, subscription_id)
     return ServicesClient(location, creds)
@@ -88,12 +88,6 @@ def cf_quantum(cli_ctx, subscription_id=None, location=None):
     # client = ServicesClient(location, token)            # This works
     # # client = ServicesClient(location, azure_key)      # This causes "Unsupported credential" errors
     # # client = ServicesClient(location, other_cred)     # This causes "Unsupported credential" errors
-
-    # >>>>>>>>>> This didn't help
-    # Add user agent on the management client to include extension information
-    # client._config.user_agent_policy.add_user_agent(get_appid())
-    # <<<<<<<<<<
-
     # return client
 
 

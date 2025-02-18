@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long,redefined-builtin
 
 from .._client_factory import cf_providers
+from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
 
 
@@ -52,45 +53,10 @@ def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
     """
-    # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    # return client.list(info.location)
-
-    # # New way...
-    # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_providers(cmd.cli_ctx, info.subscription, info.location)
-    # return client.list(info.resource_group, info.name, info.location)     # PROBLEM: We get an InsufficientPermissions error
-
-
-    # # ========= SDK service.targets experiment, based on Notebook sample code:
-    # # Problem: Only lists IonQ and Quantinuum targets
-    # from ..vendored_sdks.azure_quantum_python.workspace import Workspace
-    # from ..vendored_sdks.azure_quantum_python.cirq import AzureQuantumService
-    
-    # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # resource_id = f"/subscriptions/{info.subscription}/resourceGroups/{resource_group_name}/providers/Microsoft.Quantum/Workspaces/{workspace_name}"
-    # workspace = Workspace(
-    #     resource_id = resource_id,
-    #     location = location,
-    # )
-    # service = AzureQuantumService(workspace)
-    # return service.targets()    # Displays targets in JSON, but it doesn't work with -o table (See transform_targets in commands.py)
-
-    # ========= SDK target_factory.get_targets experiment:
-    # Shows all providers except elements (even shows microsoft-qc)
-    from ..vendored_sdks.azure_quantum_python.target.target_factory import TargetFactory
-    from ..vendored_sdks.azure_quantum_python.target import Target
-    from ..vendored_sdks.azure_quantum_python.target.__init__ import DEFAULT_TARGETS
-    from ..vendored_sdks.azure_quantum_python.workspace import Workspace
-
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    resource_id = f"/subscriptions/{info.subscription}/resourceGroups/{resource_group_name}/providers/Microsoft.Quantum/Workspaces/{workspace_name}"
-    workspace = Workspace(
-        resource_id = resource_id,
-        location = location,
-    )
-    target_factory = TargetFactory(Target, workspace, DEFAULT_TARGETS)
-    return target_factory.get_targets()
+    client = cf_providers(cmd.cli_ctx, info.subscription, info.location)
+    response = client.list(info.subscription, info.resource_group, info.name)
+    return repack_response_json(response)
 
 
 def clear(cmd):
