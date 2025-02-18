@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -52,13 +52,30 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="Name of the IP Extended Community.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="Location of Azure region",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -66,7 +83,7 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.ip_extended_community_rules = AAZListArg(
             options=["--ip-extended-community-rules"],
@@ -81,7 +98,7 @@ class Create(AAZCommand):
         _element = cls._args_schema.ip_extended_community_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
-            help="Action to be taken on the configuration. Example: Permit | Deny.",
+            help="Action to be taken on the configuration. Example: Permit.",
             required=True,
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
@@ -104,27 +121,11 @@ class Create(AAZCommand):
         )
 
         route_targets = cls._args_schema.ip_extended_community_rules.Element.route_targets
-        route_targets.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
+        route_targets.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
             ),
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -208,7 +209,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -234,7 +235,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -290,7 +291,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -315,14 +316,6 @@ class Create(AAZCommand):
                 serialized_name="ipExtendedCommunityRules",
                 flags={"required": True},
             )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
-            properties.network_fabric_id = AAZStrType(
-                serialized_name="networkFabricId",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -346,11 +339,6 @@ class Create(AAZCommand):
 
             route_targets = cls._schema_on_200_201.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
-
-            last_operation = cls._schema_on_200_201.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
-            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

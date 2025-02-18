@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2024-06-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2024-02-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -151,9 +151,7 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -169,7 +167,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -181,9 +179,6 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.acl_type = AAZStrType(
-                serialized_name="aclType",
-            )
             properties.acls_url = AAZStrType(
                 serialized_name="aclsUrl",
             )
@@ -203,18 +198,8 @@ class List(AAZCommand):
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
-            properties.device_role = AAZStrType(
-                serialized_name="deviceRole",
-            )
             properties.dynamic_match_configurations = AAZListType(
                 serialized_name="dynamicMatchConfigurations",
-            )
-            properties.global_access_control_list_actions = AAZObjectType(
-                serialized_name="globalAccessControlListActions",
-            )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
             )
             properties.last_synced_time = AAZStrType(
                 serialized_name="lastSyncedTime",
@@ -277,16 +262,6 @@ class List(AAZCommand):
             vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
             vlans.Element = AAZStrType()
 
-            global_access_control_list_actions = cls._schema_on_200.value.Element.properties.global_access_control_list_actions
-            global_access_control_list_actions.enable_count = AAZStrType(
-                serialized_name="enableCount",
-            )
-
-            last_operation = cls._schema_on_200.value.Element.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
-            )
-
             match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
             match_configurations.Element = AAZObjectType()
 
@@ -312,29 +287,7 @@ class List(AAZCommand):
             _element.counter_name = AAZStrType(
                 serialized_name="counterName",
             )
-            _element.police_rate_configuration = AAZObjectType(
-                serialized_name="policeRateConfiguration",
-            )
-            _element.remark_comment = AAZStrType(
-                serialized_name="remarkComment",
-            )
             _element.type = AAZStrType()
-
-            police_rate_configuration = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration
-            police_rate_configuration.bit_rate = AAZObjectType(
-                serialized_name="bitRate",
-            )
-            police_rate_configuration.burst_size = AAZObjectType(
-                serialized_name="burstSize",
-            )
-
-            bit_rate = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.bit_rate
-            bit_rate.rate = AAZIntType()
-            bit_rate.unit = AAZStrType()
-
-            burst_size = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.burst_size
-            burst_size.size = AAZIntType()
-            burst_size.unit = AAZStrType()
 
             match_conditions = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions
             match_conditions.Element = AAZObjectType()
@@ -347,9 +300,6 @@ class List(AAZCommand):
                 serialized_name="etherTypes",
             )
             _element.fragments = AAZListType()
-            _element.icmp_configuration = AAZObjectType(
-                serialized_name="icmpConfiguration",
-            )
             _element.ip_condition = AAZObjectType(
                 serialized_name="ipCondition",
             )
@@ -358,9 +308,6 @@ class List(AAZCommand):
             )
             _element.port_condition = AAZObjectType(
                 serialized_name="portCondition",
-            )
-            _element.protocol_neighbors = AAZListType(
-                serialized_name="protocolNeighbors",
             )
             _element.protocol_types = AAZListType(
                 serialized_name="protocolTypes",
@@ -380,14 +327,6 @@ class List(AAZCommand):
 
             fragments = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.fragments
             fragments.Element = AAZStrType()
-
-            icmp_configuration = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.icmp_configuration
-            icmp_configuration.icmp_types = AAZListType(
-                serialized_name="icmpTypes",
-            )
-
-            icmp_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.icmp_configuration.icmp_types
-            icmp_types.Element = AAZStrType()
 
             ip_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition
             ip_condition.ip_group_names = AAZListType(
@@ -432,9 +371,6 @@ class List(AAZCommand):
 
             ports = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.ports
             ports.Element = AAZStrType()
-
-            protocol_neighbors = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_neighbors
-            protocol_neighbors.Element = AAZStrType()
 
             protocol_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_types
             protocol_types.Element = AAZStrType()
@@ -529,7 +465,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -565,9 +501,7 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -583,7 +517,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -595,9 +529,6 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.acl_type = AAZStrType(
-                serialized_name="aclType",
-            )
             properties.acls_url = AAZStrType(
                 serialized_name="aclsUrl",
             )
@@ -617,18 +548,8 @@ class List(AAZCommand):
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
-            properties.device_role = AAZStrType(
-                serialized_name="deviceRole",
-            )
             properties.dynamic_match_configurations = AAZListType(
                 serialized_name="dynamicMatchConfigurations",
-            )
-            properties.global_access_control_list_actions = AAZObjectType(
-                serialized_name="globalAccessControlListActions",
-            )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
             )
             properties.last_synced_time = AAZStrType(
                 serialized_name="lastSyncedTime",
@@ -691,16 +612,6 @@ class List(AAZCommand):
             vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
             vlans.Element = AAZStrType()
 
-            global_access_control_list_actions = cls._schema_on_200.value.Element.properties.global_access_control_list_actions
-            global_access_control_list_actions.enable_count = AAZStrType(
-                serialized_name="enableCount",
-            )
-
-            last_operation = cls._schema_on_200.value.Element.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
-            )
-
             match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
             match_configurations.Element = AAZObjectType()
 
@@ -726,29 +637,7 @@ class List(AAZCommand):
             _element.counter_name = AAZStrType(
                 serialized_name="counterName",
             )
-            _element.police_rate_configuration = AAZObjectType(
-                serialized_name="policeRateConfiguration",
-            )
-            _element.remark_comment = AAZStrType(
-                serialized_name="remarkComment",
-            )
             _element.type = AAZStrType()
-
-            police_rate_configuration = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration
-            police_rate_configuration.bit_rate = AAZObjectType(
-                serialized_name="bitRate",
-            )
-            police_rate_configuration.burst_size = AAZObjectType(
-                serialized_name="burstSize",
-            )
-
-            bit_rate = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.bit_rate
-            bit_rate.rate = AAZIntType()
-            bit_rate.unit = AAZStrType()
-
-            burst_size = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.burst_size
-            burst_size.size = AAZIntType()
-            burst_size.unit = AAZStrType()
 
             match_conditions = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions
             match_conditions.Element = AAZObjectType()
@@ -761,9 +650,6 @@ class List(AAZCommand):
                 serialized_name="etherTypes",
             )
             _element.fragments = AAZListType()
-            _element.icmp_configuration = AAZObjectType(
-                serialized_name="icmpConfiguration",
-            )
             _element.ip_condition = AAZObjectType(
                 serialized_name="ipCondition",
             )
@@ -772,9 +658,6 @@ class List(AAZCommand):
             )
             _element.port_condition = AAZObjectType(
                 serialized_name="portCondition",
-            )
-            _element.protocol_neighbors = AAZListType(
-                serialized_name="protocolNeighbors",
             )
             _element.protocol_types = AAZListType(
                 serialized_name="protocolTypes",
@@ -794,14 +677,6 @@ class List(AAZCommand):
 
             fragments = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.fragments
             fragments.Element = AAZStrType()
-
-            icmp_configuration = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.icmp_configuration
-            icmp_configuration.icmp_types = AAZListType(
-                serialized_name="icmpTypes",
-            )
-
-            icmp_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.icmp_configuration.icmp_types
-            icmp_types.Element = AAZStrType()
 
             ip_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition
             ip_condition.ip_group_names = AAZListType(
@@ -846,9 +721,6 @@ class List(AAZCommand):
 
             ports = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.ports
             ports.Element = AAZStrType()
-
-            protocol_neighbors = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_neighbors
-            protocol_neighbors.Element = AAZStrType()
 
             protocol_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_types
             protocol_types.Element = AAZStrType()

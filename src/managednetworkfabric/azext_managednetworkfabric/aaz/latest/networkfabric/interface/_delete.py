@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric acl delete",
+    "networkfabric interface delete",
 )
 class Delete(AAZCommand):
-    """Delete the Access Control List resource
+    """Delete the Network Interface resource
 
-    :example: Delete the Access Control List
-        az networkfabric acl delete --resource-group "example-rg" --resource-name "example-acl"
+    :example: Delete the Network Interface
+        az networkfabric interface delete -g "example-rg" --network-device-name "example-device" --resource-name "example-interface"
     """
 
     _aaz_info = {
         "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -45,11 +45,17 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
-            help="Name of the Access Control List",
+        _args_schema.network_device_name = AAZStrArg(
+            options=["--device", "--network-device-name"],
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
+        )
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
+            help="Name of the Network Interface.",
+            required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,7 +64,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AccessControlListsDelete(ctx=self.ctx)()
+        yield self.NetworkInterfacesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +75,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class AccessControlListsDelete(AAZHttpOperation):
+    class NetworkInterfacesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -81,7 +87,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -90,7 +96,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -99,7 +105,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -108,7 +114,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/accessControlLists/{accessControlListName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/networkInterfaces/{networkInterfaceName}",
                 **self.url_parameters
             )
 
@@ -124,7 +130,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "accessControlListName", self.ctx.args.resource_name,
+                    "networkDeviceName", self.ctx.args.network_device_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkInterfaceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

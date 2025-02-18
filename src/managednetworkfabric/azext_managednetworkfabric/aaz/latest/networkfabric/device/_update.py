@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -50,13 +50,22 @@ class Update(AAZCommand):
             help="Name of the Network Device.",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -64,12 +73,12 @@ class Update(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.host_name = AAZStrArg(
             options=["--host-name"],
             arg_group="Properties",
-            help="The host name of the device.",
+            help="The Host Name of the device. All Network Device names should follow the format <Fabric Name>-<Rack Type>-<Device Type>. Example: AustinNF-AR-CE1.",
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -77,19 +86,11 @@ class Update(AAZCommand):
         _args_schema.serial_number = AAZStrArg(
             options=["--serial-number"],
             arg_group="Properties",
-            help="Serial number of the device. Format of serial Number - Make;Model;HardwareRevisionId;SerialNumber.",
+            help="Serial number of the device. Format of serial Number - Make;Model;HardwareRevisionId;SerialNumber. Example: Arista;DCS-7280DR3-24;12.05;JPE21116969",
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -173,7 +174,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -198,7 +199,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -241,7 +242,7 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -264,10 +265,6 @@ class Update(AAZCommand):
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
-            )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
             )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
@@ -292,20 +289,11 @@ class Update(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.rw_device_config = AAZStrType(
-                serialized_name="rwDeviceConfig",
-                flags={"read_only": True},
-            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
                 flags={"required": True},
             )
             properties.version = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            last_operation = cls._schema_on_200.properties.last_operation
-            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 

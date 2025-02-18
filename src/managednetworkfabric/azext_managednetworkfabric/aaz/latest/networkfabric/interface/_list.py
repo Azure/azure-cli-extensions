@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces", "2024-02-15-preview"],
         ]
     }
 
@@ -49,9 +49,6 @@ class List(AAZCommand):
             options=["--device", "--network-device-name"],
             help="Name of the Network Device.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -124,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -160,9 +157,7 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -175,7 +170,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -186,9 +181,6 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.additional_description = AAZStrType(
-                serialized_name="additionalDescription",
-            )
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
                 flags={"read_only": True},
@@ -198,7 +190,6 @@ class List(AAZCommand):
                 serialized_name="connectedTo",
                 flags={"read_only": True},
             )
-            properties.description = AAZStrType()
             properties.interface_type = AAZStrType(
                 serialized_name="interfaceType",
                 flags={"read_only": True},
@@ -211,21 +202,12 @@ class List(AAZCommand):
                 serialized_name="ipv6Address",
                 flags={"read_only": True},
             )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
             properties.physical_identifier = AAZStrType(
                 serialized_name="physicalIdentifier",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            last_operation = cls._schema_on_200.value.Element.properties.last_operation
-            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 

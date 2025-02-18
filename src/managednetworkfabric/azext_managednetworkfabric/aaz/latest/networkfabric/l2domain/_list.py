@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/l2isolationdomains", "2024-06-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/l2isolationdomains", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains", "2024-02-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -151,9 +151,7 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -169,7 +167,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -190,20 +188,10 @@ class List(AAZCommand):
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
-            properties.extended_vlan = AAZStrType(
-                serialized_name="extendedVlan",
-            )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
             properties.mtu = AAZIntType()
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
-            )
-            properties.network_to_network_interconnect_id = AAZStrType(
-                serialized_name="networkToNetworkInterconnectId",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -212,11 +200,6 @@ class List(AAZCommand):
             properties.vlan_id = AAZIntType(
                 serialized_name="vlanId",
                 flags={"required": True},
-            )
-
-            last_operation = cls._schema_on_200.value.Element.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -288,7 +271,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -324,9 +307,7 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -342,7 +323,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -363,20 +344,10 @@ class List(AAZCommand):
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
-            properties.extended_vlan = AAZStrType(
-                serialized_name="extendedVlan",
-            )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
             properties.mtu = AAZIntType()
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
-            )
-            properties.network_to_network_interconnect_id = AAZStrType(
-                serialized_name="networkToNetworkInterconnectId",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -385,11 +356,6 @@ class List(AAZCommand):
             properties.vlan_id = AAZIntType(
                 serialized_name="vlanId",
                 flags={"required": True},
-            )
-
-            last_operation = cls._schema_on_200.value.Element.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

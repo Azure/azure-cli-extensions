@@ -39,7 +39,7 @@ def step_create_s1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {optionAProperties}",
+        "az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {optionAProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}",
         checks=checks,
     )
 

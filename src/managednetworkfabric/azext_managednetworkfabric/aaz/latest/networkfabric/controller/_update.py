@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -53,43 +53,44 @@ class Update(AAZCommand):
             help="Name of the Network Fabric Controller.",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.infrastructure_express_route_connections = AAZListArg(
-            options=["--infra-er-connections", "--infrastructure-express-route-connections"],
-            arg_group="Properties",
-            help="As part of an update, the Infrastructure ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Infrastructure services. (This is a Mandatory attribute)",
-        )
-        _args_schema.workload_express_route_connections = AAZListArg(
-            options=["--workload-er-connections", "--workload-express-route-connections"],
-            arg_group="Properties",
-            help="As part of an update, the workload ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Workload services. (This is a Mandatory attribute).",
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
+            arg_group="Body",
+            help="Resource tags",
         )
-
-        infrastructure_express_route_connections = cls._args_schema.infrastructure_express_route_connections
-        infrastructure_express_route_connections.Element = AAZObjectArg()
-        cls._build_args_express_route_connection_information_update(infrastructure_express_route_connections.Element)
-
-        workload_express_route_connections = cls._args_schema.workload_express_route_connections
-        workload_express_route_connections.Element = AAZObjectArg()
-        cls._build_args_express_route_connection_information_update(workload_express_route_connections.Element)
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.infra_er_connections = AAZListArg(
+            options=["--infra-er-connections"],
+            arg_group="Properties",
+            help="Infra ER connections to manage infra resources.",
+        )
+        _args_schema.workload_er_connections = AAZListArg(
+            options=["--workload-er-connections"],
+            arg_group="Properties",
+            help="As part of an update, the workload ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Workload services. (This is a Mandatory attribute).",
+        )
+
+        infra_er_connections = cls._args_schema.infra_er_connections
+        infra_er_connections.Element = AAZObjectArg()
+        cls._build_args_express_route_connection_information_update(infra_er_connections.Element)
+
+        workload_er_connections = cls._args_schema.workload_er_connections
+        workload_er_connections.Element = AAZObjectArg()
+        cls._build_args_express_route_connection_information_update(workload_er_connections.Element)
         return cls._args_schema
 
     _args_express_route_connection_information_update = None
@@ -104,12 +105,12 @@ class Update(AAZCommand):
         cls._args_express_route_connection_information_update = AAZObjectArg()
 
         express_route_connection_information_update = cls._args_express_route_connection_information_update
-        express_route_connection_information_update.express_route_authorization_key = AAZPasswordArg(
+        express_route_connection_information_update.express_route_authorization_key = AAZStrArg(
             options=["express-route-authorization-key"],
             help="Authorization key for the circuit, must be of type Microsoft.Network/expressRouteCircuits/authorizations. The Auth Key is a mandatory attribute.",
             required=True,
         )
-        express_route_connection_information_update.express_route_circuit_id = AAZResourceIdArg(
+        express_route_connection_information_update.express_route_circuit_id = AAZStrArg(
             options=["express-route-circuit-id"],
             help="The express route circuit Azure resource ID, must be of type Microsoft.Network/expressRouteCircuits/circuitName. The ExpressRoute Circuit is a mandatory attribute.",
             required=True,
@@ -199,7 +200,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -224,13 +225,13 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("infrastructureExpressRouteConnections", AAZListType, ".infrastructure_express_route_connections")
-                properties.set_prop("workloadExpressRouteConnections", AAZListType, ".workload_express_route_connections")
+                properties.set_prop("infrastructureExpressRouteConnections", AAZListType, ".infra_er_connections")
+                properties.set_prop("workloadExpressRouteConnections", AAZListType, ".workload_er_connections")
 
             infrastructure_express_route_connections = _builder.get(".properties.infrastructureExpressRouteConnections")
             if infrastructure_express_route_connections is not None:
@@ -274,7 +275,7 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -304,10 +305,6 @@ class Update(AAZCommand):
             properties.is_workload_management_network_enabled = AAZStrType(
                 serialized_name="isWorkloadManagementNetworkEnabled",
             )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -329,6 +326,10 @@ class Update(AAZCommand):
             properties.workload_express_route_connections = AAZListType(
                 serialized_name="workloadExpressRouteConnections",
             )
+            properties.workload_management_network = AAZBoolType(
+                serialized_name="workloadManagementNetwork",
+                flags={"read_only": True},
+            )
             properties.workload_services = AAZObjectType(
                 serialized_name="workloadServices",
                 flags={"read_only": True},
@@ -338,11 +339,6 @@ class Update(AAZCommand):
             infrastructure_express_route_connections = cls._schema_on_200.properties.infrastructure_express_route_connections
             infrastructure_express_route_connections.Element = AAZObjectType()
             _UpdateHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
-
-            last_operation = cls._schema_on_200.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
-            )
 
             managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()

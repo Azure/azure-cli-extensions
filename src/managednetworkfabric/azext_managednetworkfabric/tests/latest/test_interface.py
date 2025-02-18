@@ -31,7 +31,6 @@ def call_scenario1(test):
     step_list_resource_group(test, checks=[])
     step_update_admin_state_Disable(test, checks=[])
     step_update_admin_state_Enable(test, checks=[])
-    step_update_description(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -71,15 +70,6 @@ def step_update_admin_state_Disable(test, checks=None):
     )
 
 
-def step_update_description(test, checks=None):
-    """Interface Update admin state Enable operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric interface update --resource-group {rg} --device {device_name} --resource-name {name} --description {description}"
-    )
-
-
 class GA_InterfaceScenarioTest1(ScenarioTest):
     """InterfaceScenario test"""
 
@@ -92,7 +82,6 @@ class GA_InterfaceScenarioTest1(ScenarioTest):
                 "device_name": CONFIG.get("NETWORK_INTERFACE", "device_name"),
                 "state_Enable": CONFIG.get("NETWORK_INTERFACE", "state_Enable"),
                 "state_Disable": CONFIG.get("NETWORK_INTERFACE", "state_Disable"),
-                "description": CONFIG.get("NETWORK_INTERFACE", "description"),
             }
         )
 

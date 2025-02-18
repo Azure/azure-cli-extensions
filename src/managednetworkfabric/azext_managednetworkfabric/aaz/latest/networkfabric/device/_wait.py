@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -45,9 +45,6 @@ class Wait(AAZWaitCommand):
             help="Name of the Network Device.",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -119,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -162,7 +159,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -185,10 +182,6 @@ class Wait(AAZWaitCommand):
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
-            )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
             )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
@@ -213,20 +206,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.rw_device_config = AAZStrType(
-                serialized_name="rwDeviceConfig",
-                flags={"read_only": True},
-            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
                 flags={"required": True},
             )
             properties.version = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            last_operation = cls._schema_on_200.properties.last_operation
-            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 

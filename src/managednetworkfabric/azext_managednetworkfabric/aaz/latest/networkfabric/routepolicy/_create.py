@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -60,10 +60,27 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="Name of the Route Policy.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+        )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="Location of Azure region",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
             ),
         )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -71,24 +88,25 @@ class Create(AAZCommand):
         _args_schema.address_family_type = AAZStrArg(
             options=["--address-family-type"],
             arg_group="Properties",
-            help="AddressFamilyType. This parameter decides whether the given ipv4 or ipv6 route policy.",
-            default="IPv4",
+            help="AddressFamilyType. This parameter decides whether the given ipv4 or ipv6 route policy. Default value is IPv4.",
             enum={"IPv4": "IPv4", "IPv6": "IPv6"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.default_action = AAZStrArg(
             options=["--default-action"],
             arg_group="Properties",
-            help="Default action that needs to be applied when no condition is matched. Example: Permit | Deny.",
-            default="Deny",
+            help="Default action that needs to be applied when no condition is matched. Example: Permit.",
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
-        _args_schema.network_fabric_id = AAZResourceIdArg(
-            options=["--nf-id", "--network-fabric-id"],
+        _args_schema.nf_id = AAZResourceIdArg(
+            options=["--nf-id"],
             arg_group="Properties",
             help="ARM Resource ID of the Network Fabric.",
             required=True,
@@ -111,7 +129,7 @@ class Create(AAZCommand):
         )
         _element.annotation = AAZStrArg(
             options=["annotation"],
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _element.condition = AAZObjectArg(
             options=["condition"],
@@ -131,9 +149,12 @@ class Create(AAZCommand):
         action = cls._args_schema.statements.Element.action
         action.action_type = AAZStrArg(
             options=["action-type"],
-            help="Action type. Example: Permit | Deny | Continue.",
+            help="Action type. Example: Permit.",
             required=True,
             enum={"Continue": "Continue", "Deny": "Deny", "Permit": "Permit"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         action.ip_community_properties = AAZObjectArg(
             options=["ip-community-properties"],
@@ -201,9 +222,11 @@ class Create(AAZCommand):
         )
         condition.type = AAZStrArg(
             options=["type"],
-            help="Type of the condition used.",
-            default="Or",
+            help="Type of the condition used. Default value is Or.",
             enum={"And": "And", "Or": "Or"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
 
         ip_community_ids = cls._args_schema.statements.Element.condition.ip_community_ids
@@ -211,26 +234,6 @@ class Create(AAZCommand):
 
         ip_extended_community_ids = cls._args_schema.statements.Element.condition.ip_extended_community_ids
         ip_extended_community_ids.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_ip_community_id_list_create = None
@@ -356,7 +359,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -382,7 +385,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -390,7 +393,7 @@ class Create(AAZCommand):
                 properties.set_prop("addressFamilyType", AAZStrType, ".address_family_type")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("defaultAction", AAZStrType, ".default_action")
-                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("networkFabricId", AAZStrType, ".nf_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("statements", AAZListType, ".statements", typ_kwargs={"flags": {"required": True}})
 
             statements = _builder.get(".properties.statements")
@@ -472,7 +475,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -499,10 +502,6 @@ class Create(AAZCommand):
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
-            properties.last_operation = AAZObjectType(
-                serialized_name="lastOperation",
-                flags={"read_only": True},
-            )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
@@ -513,11 +512,6 @@ class Create(AAZCommand):
             )
             properties.statements = AAZListType(
                 flags={"required": True},
-            )
-
-            last_operation = cls._schema_on_200_201.properties.last_operation
-            last_operation.details = AAZStrType(
-                flags={"read_only": True},
             )
 
             statements = cls._schema_on_200_201.properties.statements
