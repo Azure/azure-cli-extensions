@@ -30,7 +30,10 @@ def generate_nexus_identity_keys() -> None:
     # Generate SSH key
     if sys.platform.startswith("win") or sys.platform.startswith("linux"):
 
-        dir_path = os.path.expanduser("~\\.ssh")
+        if sys.platform.startswith("win"):
+            dir_path = os.path.expanduser("~\\.ssh")
+        elif sys.platform.startswith("linux"):
+            dir_path = os.path.expanduser("~/.ssh")
 
         # check if the ssh directory exists or not
         if not os.path.exists(dir_path):
