@@ -158,7 +158,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         ready_instances = 2
         cpu = "0.5"
         memory = "1Gi"
-        # create a sessionpool with public image
+        # create a sessionpool with a public image
         self.cmd(
             f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_source} --cpu {cpu} --memory {memory} --target-port 80',
             checks=[
@@ -168,12 +168,11 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_source),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
-                # JMESPathCheck('properties.customContainerTemplate.registryCredentials', None),
-                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
-                # JMESPathCheck('properties.secrets', None),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials', None),
+                JMESPathCheck('properties.secrets', None),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
             ])
-        # update the sessionpool with private image and registry
+        # update the sessionpool with a private image and registry
         self.cmd(
             f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom} --image {image_name} --registry-server {acr}.azurecr.io --registry-username {acr} --registry-password {password}',
             checks=[
@@ -185,7 +184,6 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.customContainerTemplate.registryCredentials.server', f"{acr}.azurecr.io"),
                 JMESPathCheck('properties.customContainerTemplate.registryCredentials.username', acr),
-                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.secrets[0].name', f"{acr}azurecrio-{acr}"),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
             ])
