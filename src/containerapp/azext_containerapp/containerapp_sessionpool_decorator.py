@@ -490,7 +490,9 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         if self.has_registry_change():
             if safe_get(customer_container_template, "registryCredentials") is None:
                 if self.get_argument_registry_server() is None or (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None):
-                    raise ValidationError("The existing registry credentials are empty. Please provide --registry-server, --registry-username, and --registry-password to update the registry credentials.")
+                    raise ValidationError("The existing registry credentials are empty. \n"
+                                          "Please provide --registry-server, --registry-username, and --registry-password to update the registry credentials. \n"
+                                          "If you want to use managed identity for registry, please use `az containerapp sessionpool create --registry-server myregistry.azurecr.io --registry-identity  MyUserIdentityResourceId`.\n")
                 safe_set(customer_container_template, "registryCredentials", value={})
         if self.get_argument_registry_server() is not None:
             safe_set(customer_container_template, "registryCredentials", "server", value=self.get_argument_registry_server())
