@@ -104,12 +104,8 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
 
 
 def get_linker_client(cmd):
-    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    credential, subscription_id, _ = profile.get_login_credentials(
-        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
-    linker_client = ServiceLinkerManagementClient(credential)
-    return linker_client
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cmd.cli_ctx, ServiceLinkerManagementClient)
 
 
 def validate_binding_name(binding_name):
