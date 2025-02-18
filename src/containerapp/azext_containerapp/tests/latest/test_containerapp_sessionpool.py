@@ -132,6 +132,75 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    def test_containerapp_sessionpool_registry_update(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastasia"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+        password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
+
+        # Create CustomContainer SessionPool
+        sessionpool_name_custom = self.create_random_name(prefix='spcc', length=24)
+        ready_instances = 2
+        cpu = "0.5"
+        memory = "1Gi"
+        # create a sessionpool with a public image
+        self.cmd(
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_source} --cpu {cpu} --memory {memory} --target-port 80',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_source),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials', None),
+                JMESPathCheck('properties.secrets', None),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+            ])
+        # update the sessionpool with a private image and registry
+        self.cmd(
+            f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom} --image {image_name} --registry-server {acr}.azurecr.io --registry-username {acr} --registry-password {password}',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_name),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials.server', f"{acr}.azurecr.io"),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials.username', acr),
+                JMESPathCheck('properties.secrets[0].name', f"{acr}azurecrio-{acr}"),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+            ])
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 1)
+
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 0)
+
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer()
     def test_containerapp_sessionpool_registry(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -152,6 +221,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
+        password2 = self.cmd(f'acr credential show -n {acr} --query passwords[1].value').get_output_in_json()
 
         # Create CustomContainer SessionPool
         sessionpool_name_custom = self.create_random_name(prefix='spcc', length=24)
@@ -185,6 +255,20 @@ class ContainerappSessionPoolTests(ScenarioTest):
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 1)
 
+        self.cmd(
+            f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom}  --registry-password {password2}',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_name),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials.server', f"{acr}.azurecr.io"),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials.username', acr),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.secrets[0].name', f"{acr}azurecrio-{acr}"),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+            ])
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
         # List Session Pools
