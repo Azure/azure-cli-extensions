@@ -54,6 +54,8 @@ def create_test(
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
     regionwise_engines=None,
+    engine_reference_identity_type=None,
+    engine_reference_identities=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
@@ -147,6 +149,8 @@ def update_test(
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
     regionwise_engines=None,
+    engine_reference_identity_type=None,
+    engine_reference_identities=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Update test has started for test ID : %s", test_id)

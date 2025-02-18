@@ -10,6 +10,10 @@ class IdentityType(str, Enum):
     SystemAssigned = "SystemAssigned"
     UserAssigned = "UserAssigned"
 
+class EngineIdentityType(str, Enum):
+    SystemAssigned = "SystemAssigned"
+    UserAssigned = "UserAssigned"
+    NoneValue = "None"
 
 class AllowedFileTypes(str, Enum):
     ADDITIONAL_ARTIFACTS = "ADDITIONAL_ARTIFACTS"
