@@ -34,7 +34,8 @@ PASSWORDLESS_TARGET_RESOURCES = [
     # RESOURCE.Postgres,
     RESOURCE.PostgresFlexible,
     RESOURCE.MysqlFlexible,
-    RESOURCE.Sql
+    RESOURCE.Sql,
+    RESOURCE.FabricSql
 ]
 
 # pylint: disable=line-too-long
@@ -58,6 +59,7 @@ for resourceType in PASSWORDLESS_SOURCE_RESOURCES:
             RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
             RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
             RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+            RESOURCE.FabricSql: [AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity],
         }
 
 TARGET_RESOURCES_PARAMS = {
@@ -130,6 +132,13 @@ TARGET_RESOURCES_PARAMS = {
             'placeholder': 'MyDB'
         }
     },
+    RESOURCE.FabricSql: {
+        'connstr_props': {
+            'options': ['--connstr-props'],
+            'help': 'Connection string properties of the Fabric SQL server. Format like: --connstr-props "Server=<Server_Host>,<Port>" "Database=<Database_Name>".',
+            'placeholder': 'Server=MyServer,1433 Database=MyDB'
+        }
+    }
 }
 
 AUTH_TYPE_PARAMS = {
