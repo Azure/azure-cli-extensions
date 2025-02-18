@@ -4,12 +4,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=no-member, too-many-lines, anomalous-backslash-in-string, redefined-outer-name, no-else-raise, attribute-defined-outside-init,too-many-positional-arguments
 
+import struct
 import sys
 import re
-from .handlers.target_handler import (
-    AUTHTYPES,
-    TargetHandler
-)
+from knack.log import get_logger
 from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
@@ -19,6 +17,7 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError
 )
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
+from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
     generate_random_string,
     is_packaged_installed,
@@ -32,11 +31,15 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from .handlers.sql_handler import SqlHandler
-from .handlers.fabric_sql_handler import FabricSqlHandler
-from knack.log import get_logger
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_enable_entra_auth
+from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth
 logger = get_logger(__name__)
+
+AUTHTYPES = {
+    AUTH_TYPE.SystemIdentity: 'systemAssignedIdentity',
+    AUTH_TYPE.UserIdentity: 'userAssignedIdentity',
+    AUTH_TYPE.ServicePrincipalSecret: 'servicePrincipalSecret',
+    AUTH_TYPE.UserAccount: 'userAccount',
+}
 
 
 # pylint: disable=line-too-long, consider-using-f-string, too-many-statements, unused-argument
@@ -158,6 +161,94 @@ def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connec
     if target_type in {RESOURCE.FabricSql}:
         return FabricSqlHandler(cmd, target_id, target_type, auth_info, connection_name, connstr_props, skip_prompt, new_user)
     return None
+
+
+class TargetHandler:
+
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt, new_user):
+        self.cmd = cmd
+        self.target_id = target_id
+        self.target_type = target_type
+        self.tenant_id = Profile(
+            cli_ctx=cmd.cli_ctx).get_subscription().get("tenantId")
+        target_segments = parse_resource_id(target_id)
+        self.subscription = target_segments.get('subscription')
+        self.resource_group = target_segments.get('resource_group')
+        self.auth_type = auth_info['auth_type']
+        self.auth_info = auth_info
+        self.login_username = run_cli_cmd(
+            'az account show').get("user").get("name")
+        self.login_usertype = run_cli_cmd(
+            'az account show').get("user").get("type")  # servicePrincipal, user
+        if (self.login_usertype not in ['servicePrincipal', 'user']):
+            e = CLIInternalError(
+                f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
+            telemetry.set_exception(e, "Unsupported-UserType-" + self.login_usertype)
+            raise e
+        self.aad_username = "aad_" + connection_name
+        self.connection_name = connection_name
+        self.skip_prompt = skip_prompt
+        self.new_user = new_user
+        self.endpoint = ""
+        self.user_object_id = ""
+        self.identity_name = ""
+        self.identity_client_id = ""
+        self.identity_object_id = ""
+
+    def enable_target_aad_auth(self):
+        return
+
+    def set_user_admin(self, user_object_id, **kwargs):
+        return
+
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        return
+
+    def create_aad_user(self):
+        return
+
+    def check_db_existence(self):
+        return
+
+    def get_auth_flag(self):
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+            return '--user-account'
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+            return '--system-identity'
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+            return '--user-identity'
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.ServicePrincipalSecret]:
+            return '--service-principal'
+        return None
+
+    def get_auth_config(self, user_object_id):
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+            return {
+                'auth_type': self.auth_type,
+                'username': self.aad_username,
+                'principal_id': user_object_id
+            }
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+            return {
+                'auth_type': self.auth_type,
+                'username': self.aad_username,
+            }
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+            return {
+                'auth_type': self.auth_type,
+                'username': self.aad_username,
+                'client_id': self.identity_client_id,
+                'subscription_id': self.auth_info['subscription_id'],
+            }
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.ServicePrincipalSecret]:
+            return {
+                'auth_type': self.auth_type,
+                'username': self.aad_username,
+                'principal_id': self.identity_object_id,
+                'client_id': self.identity_client_id,
+                'secret': self.auth_info['secret'],
+            }
+        return None
 
 
 class MysqlFlexibleHandler(TargetHandler):
@@ -354,6 +445,197 @@ class MysqlFlexibleHandler(TargetHandler):
                 self.dbname, self.aad_username),
             "FLUSH privileges;"
         ]
+
+
+class SqlHandler(TargetHandler):
+
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt, new_user):
+        super().__init__(cmd, target_id, target_type,
+                         auth_info, connection_name, skip_prompt, new_user)
+        self.endpoint = cmd.cli_ctx.cloud.suffixes.sql_server_hostname
+        target_segments = parse_resource_id(target_id)
+        self.server = target_segments.get('name')
+        self.dbname = target_segments.get('child_name_1')
+        self.ip = ""
+
+    def check_db_existence(self):
+        try:
+            db_info = run_cli_cmd(
+                'az sql db show --ids "{}"'.format(self.target_id))
+            if db_info is None:
+                e = ResourceNotFoundError(
+                    "No database found with name {}".format(self.dbname))
+                telemetry.set_exception(e, "No-Db")
+                raise e
+        except CLIInternalError as e:
+            telemetry.set_exception(e, "No-Db")
+            raise e
+
+    def set_user_admin(self, user_object_id, **kwargs):
+        # pylint: disable=not-an-iterable
+        admins = run_cli_cmd(
+            'az sql server ad-admin list --ids "{}"'.format(self.target_id))
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No Microsoft Entra admin found. Please set current user as Microsoft Entra admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is Microsoft Entra admin. Please confirm current user as Microsoft Entra admin manually.')
+                return
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if not admin_info:
+            set_admin = True
+            if not self.skip_prompt:
+                set_admin = confirm_admin_set()
+            if set_admin:
+                logger.warning('Setting current user as database server Microsoft Entra admin:'
+                               ' user=%s object id=%s', self.login_username, user_object_id)
+                admin_info = run_cli_cmd('az sql server ad-admin create -g "{}" --server-name "{}" --display-name "{}" --object-id "{}" --subscription "{}"'.format(
+                    self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
+        self.admin_username = admin_info.get('login', self.login_username) if admin_info else self.login_username
+
+    def create_aad_user(self):
+
+        query_list = self.get_create_query()
+        connection_args = self.get_connection_string()
+        ip_name = generate_random_string(prefix='svc_').lower()
+        try:
+            logger.warning("Connecting to database...")
+            self.create_aad_user_in_sql(connection_args, query_list)
+        except AzureConnectionError as e:
+            from azure.cli.core.util import in_cloud_console
+            if in_cloud_console():
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '0.0.0.0')
+            else:
+                if not self.ip:
+                    error_code = ''
+                    error_res = re.search(
+                        r'\((\d{5})\)', str(e))
+                    if error_res:
+                        error_code = error_res.group(1)
+                    telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
+                    raise e
+                logger.warning(e)
+                # allow local access
+                ip_address = self.ip
+                self.set_target_firewall(True, ip_name, ip_address, ip_address)
+            try:
+                # create again
+                self.create_aad_user_in_sql(connection_args, query_list)
+            except AzureConnectionError as e:
+                logger.warning(e)
+                ex = AzureConnectionError(
+                    "Please confirm local environment can connect to database and try again.")
+                error_code = ''
+                error_res = re.search(
+                    r'\((\d{5})\)', str(e))
+                if error_res:
+                    error_code = error_res.group(1)
+                telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
+                raise ex from e
+            finally:
+                self.set_target_firewall(False, ip_name)
+
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
+            target = run_cli_cmd(
+                'az sql server show --ids "{}"'.format(self.target_id))
+            # logger.warning("Update database server firewall rule to connect...")
+            if target.get('publicNetworkAccess') == "Disabled":
+                ex = AzureConnectionError(
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
+                telemetry.set_exception(ex, "Public-Access-Disabled")
+                raise ex
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
+            run_cli_cmd(
+                'az sql server firewall-rule create -g "{0}" -s "{1}" -n "{2}" '
+                '--subscription "{3}" --start-ip-address {4} --end-ip-address {5}'.format(
+                    self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
+            )
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning(
+                "Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az sql server firewall-rule delete -g "{0}" -s "{1}" -n "{2}" --subscription "{3}"'.format(
+                        self.resource_group, self.server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning(
+                    "Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
+
+    def create_aad_user_in_sql(self, connection_args, query_list):
+        if not self.new_user:
+            query_list = query_list[1:]
+        if not is_packaged_installed('pyodbc'):
+            _run_pip(["install", "pyodbc"])
+
+        # pylint: disable=import-error, c-extension-no-member
+        try:
+            import pyodbc
+        except ModuleNotFoundError as e:
+            raise ModuleNotFoundError(
+                "Dependency pyodbc can't be installed, please install it manually with `" + sys.executable + " -m pip install pyodbc`.") from e
+        drivers = [x for x in pyodbc.drivers() if x in [
+            'ODBC Driver 17 for SQL Server', 'ODBC Driver 18 for SQL Server']]
+        if not drivers:
+            ex = CLIInternalError(
+                "Please manually install odbc 17/18 for SQL server, reference: https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server/")
+            telemetry.set_exception(ex, "No-ODBC-Driver")
+            raise ex
+        try:
+            with pyodbc.connect(connection_args.get("connection_string").format(driver=drivers[0]), attrs_before=connection_args.get("attrs_before")) as conn:
+                with conn.cursor() as cursor:
+                    logger.warning(
+                        "Adding new Microsoft Entra user %s to database...", self.aad_username)
+                    for execution_query in query_list:
+                        try:
+                            logger.warning("Running query: %s", execution_query)
+                            cursor.execute(execution_query)
+                        except pyodbc.ProgrammingError as e:
+                            logger.warning("Query execution failed: %s", str(e))
+                        conn.commit()
+        except pyodbc.Error as e:
+            search_ip = re.search(
+                "Client with IP address '(.*?)' is not allowed to access the server", str(e))
+            if search_ip is not None:
+                self.ip = search_ip.group(1)
+            raise AzureConnectionError("Fail to connect sql." + str(e)) from e
+
+    def get_connection_string(self, dbname=""):
+        token_bytes = run_cli_cmd(
+            'az account get-access-token --output json --resource https://database.windows.net/').get('accessToken').encode('utf-16-le')
+
+        token_struct = struct.pack(
+            f'<I{len(token_bytes)}s', len(token_bytes), token_bytes)
+        # This connection option is defined by microsoft in msodbcsql.h
+        SQL_COPT_SS_ACCESS_TOKEN = 1256
+        conn_string = 'DRIVER={{{driver}}};server=' + \
+            self.server + self.endpoint + ';database=' + self.dbname + ';'
+        logger.debug(conn_string)
+        return {'connection_string': conn_string, 'attrs_before': {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}
+
+    def get_create_query(self):
+        if self.auth_type in [AUTHTYPES[AUTH_TYPE.SystemIdentity], AUTHTYPES[AUTH_TYPE.UserIdentity], AUTHTYPES[AUTH_TYPE.ServicePrincipalSecret]]:
+            self.aad_username = self.identity_name
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+            self.aad_username = self.login_username
+        delete_q = "DROP USER IF EXISTS \"{}\";".format(
+            self.aad_username)
+        role_q = "CREATE USER \"{}\" FROM EXTERNAL PROVIDER;".format(
+            self.aad_username)
+        grant_q = "GRANT CONTROL ON DATABASE::\"{}\" TO \"{}\";".format(
+            self.dbname, self.aad_username)
+
+        return [delete_q, role_q, grant_q]
 
 
 class PostgresFlexHandler(TargetHandler):
@@ -679,6 +961,87 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 self.aad_username)
         ]
 
+class FabricSqlHandler(SqlHandler):
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, connstr_props, skip_prompt, new_user):
+        super().__init__(cmd, target_id, target_type,
+                         auth_info, connection_name, skip_prompt, new_user)
+
+        self.target_id = target_id
+
+        if not connstr_props:
+            raise CLIInternalError("Missing additional connection string properties for Fabric SQL target.")
+
+        Server = connstr_props.get('Server') or connstr_props.get('Data Source')
+        Database = connstr_props.get('Database') or connstr_props.get('Initial Catalog')
+        if not Server or not Database:
+            raise CLIInternalError("Missing 'Server' or 'Database' in additonal connection string properties keys."
+                                   "Use --connstr_props 'Server=xxx' 'Database=xxx' to provide the values.")
+
+        # Construct the ODBC connection string
+        self.ODBCConnectionString = self.construct_odbc_connection_string(Server, Database)
+        logger.warning("ODBC connection string: %s", self.ODBCConnectionString)
+
+    def check_db_existence(self):
+        fabric_token = self.get_fabric_access_token()
+        headers = {"Authorization": "Bearer {}".format(fabric_token)}
+        response = requests.get(self.target_id, headers=headers)
+
+        if response:
+            response_json = response.json()
+            if response_json["id"]:
+                return
+
+        e = ResourceNotFoundError("No database found with name {}".format(self.dbname))
+        telemetry.set_exception(e, "No-Db")
+        raise e
+
+    def construct_odbc_connection_string(self, server, database):
+        # Map fields to ODBC fields
+        odbc_dict = {
+            'Driver': '{driver}',
+            'Server': server,
+            'Database': database,
+        }
+
+        odbc_connection_string = ';'.join([f'{key}={value}' for key, value in odbc_dict.items()])
+        return odbc_connection_string
+
+    def create_aad_user(self):
+        query_list = self.get_create_query()
+        connection_args = self.get_connection_string()
+
+        logger.warning("Connecting to database...")
+        self.create_aad_user_in_sql(connection_args, query_list)
+
+    def get_fabric_access_token(self):
+        return run_cli_cmd('az account get-access-token --output json --resource https://api.fabric.microsoft.com/').get('accessToken')
+
+    def set_user_admin(self, user_object_id, **kwargs):
+        return
+
+    def get_connection_string(self, dbname=""):
+        token_bytes = self.get_fabric_access_token().encode('utf-16-le')
+
+        token_struct = struct.pack(
+            f'<I{len(token_bytes)}s', len(token_bytes), token_bytes)
+        # This connection option is defined by microsoft in msodbcsql.h
+        SQL_COPT_SS_ACCESS_TOKEN = 1256
+        conn_string = self.ODBCConnectionString
+        return {'connection_string': conn_string, 'attrs_before': {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}
+
+    def get_create_query(self):
+        if self.auth_type in [AUTHTYPES[AUTH_TYPE.SystemIdentity], AUTHTYPES[AUTH_TYPE.UserIdentity]]:
+            self.aad_username = self.identity_name
+        else:
+            raise CLIInternalError("Unsupported auth type: " + self.auth_type)
+
+        delete_q = "DROP USER IF EXISTS \"{}\";".format(self.aad_username)
+        role_q = "CREATE USER \"{}\" FROM EXTERNAL PROVIDER;".format(self.aad_username)
+        grant_q1 = "ALTER ROLE db_datareader ADD MEMBER \"{}\"".format(self.aad_username)
+        grant_q2 = "ALTER ROLE db_datawriter ADD MEMBER \"{}\"".format(self.aad_username)
+        grant_q3 = "ALTER ROLE db_ddladmin ADD MEMBER \"{}\"".format(self.aad_username)
+
+        return [delete_q, role_q, grant_q1, grant_q2, grant_q3]
 
 def getSourceHandler(source_id, source_type):
     if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
@@ -691,6 +1054,8 @@ def getSourceHandler(source_id, source_type):
         return SpringHandler(source_id, source_type)
     if source_type in {RESOURCE.Local}:
         return LocalHandler(source_id, source_type)
+    if source_type in {RESOURCE.FabricSql}:
+        return FabricSqlHandler()
     return None
 
 
