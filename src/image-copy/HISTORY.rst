@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+*Fix issue related to apiVersion update in azurecli for image-copy-extention
+
 1.0.0
 ++++++
 * Remove direct call to `msrestazure`
