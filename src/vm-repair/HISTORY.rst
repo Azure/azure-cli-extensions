@@ -1,6 +1,9 @@
 
 Release History
 ===============
+2.0.4
+++++++
+Updated `az vm repair repair-button` and `az vm repair repair-and-restore` help descriptions and parameter description in the --button-command argument from repair-button.
 
 2.0.3
 ++++++
