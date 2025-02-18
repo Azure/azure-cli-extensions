@@ -494,7 +494,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         )
         err = (
             "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-            "See https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
         )
 
         with self.assertRaises(CLIError) as cm:
@@ -510,7 +510,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         )
         err = (
             "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-            "See https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
         )
 
         with self.assertRaises(CLIError) as cm:
@@ -524,7 +524,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         )
         err = (
             "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-            "See https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
         )
 
         with self.assertRaises(CLIError) as cm:

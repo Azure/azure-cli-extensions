@@ -205,7 +205,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
     :vartype count: int
     :ivar vm_size: VM size availability varies by region. If a node contains insufficient compute
      resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted
-     VM sizes, see: https://learn.microsoft.com/azure/aks/quotas-skus-regions.
+     VM sizes, see: https://docs.microsoft.com/azure/aks/quotas-skus-regions.
     :vartype vm_size: str
     :ivar os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every machine
      in the master/agent pool. If you specify 0, it will apply the default osDisk size according to
@@ -214,7 +214,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
     :ivar os_disk_type: The default is 'Ephemeral' if the VM supports it and has a cache disk
      larger than the requested OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed
      after creation. For more information see `Ephemeral OS
-     <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
+     <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
      "Managed" and "Ephemeral".
     :vartype os_disk_type: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.OSDiskType
@@ -271,7 +271,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolType
     :ivar mode: A cluster must have at least one 'System' Agent Pool at all times. For additional
      information on agent pool restrictions and best practices, see:
-     https://learn.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
+     https://docs.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
      "Gateway".
     :vartype mode: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolMode
     :ivar orchestrator_version: Both patch version <major.minor.patch> and <major.minor> are
@@ -282,7 +282,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
      pool version must have the same major version as the control plane. The node pool minor version
      must be within two minor versions of the control plane version. The node pool version cannot be
      greater than the control plane version. For more information see `upgrading a node pool
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
     :vartype orchestrator_version: str
     :ivar current_orchestrator_version: If orchestratorVersion was a fully specified version
      <major.minor.patch>, this field will be exactly equal to it. If orchestratorVersion was
@@ -307,7 +307,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
      own dedicated public IP addresses. A common scenario is for gaming workloads, where a console
      needs to make a direct connection to a cloud virtual machine to minimize hops. For more
      information see `assigning a public IP per node
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
      The default is false.
     :vartype enable_node_public_ip: bool
     :ivar enable_custom_ca_trust: When set to true, AKS adds a label to the node indicating that
@@ -328,7 +328,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.ScaleSetEvictionPolicy
     :ivar spot_max_price: Possible values are any decimal value greater than zero or -1 which
      indicates the willingness to pay any on-demand price. For more details on spot pricing, see
-     `spot VMs pricing <https://learn.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
+     `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
     :vartype spot_max_price: float
     :ivar tags: The tags to be persisted on the agent pool virtual machine scale set.
     :vartype tags: dict[str, str]
@@ -352,12 +352,12 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
     :vartype linux_os_config: ~azure.mgmt.containerservice.v2024_09_02_preview.models.LinuxOSConfig
     :ivar enable_encryption_at_host: This is only supported on certain VM sizes and in certain
      Azure regions. For more information, see:
-     https://learn.microsoft.com/azure/aks/enable-host-encryption.
+     https://docs.microsoft.com/azure/aks/enable-host-encryption.
     :vartype enable_encryption_at_host: bool
     :ivar enable_ultra_ssd: Whether to enable UltraSSD.
     :vartype enable_ultra_ssd: bool
     :ivar enable_fips: See `Add a FIPS-enabled node pool
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
      for more details.
     :vartype enable_fips: bool
     :ivar gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance profile
@@ -373,7 +373,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
     :ivar host_group_id: This is of the form:
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}.  # pylint: disable=line-too-long
      For more information see `Azure dedicated hosts
-     <https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
+     <https://docs.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
     :vartype host_group_id: str
     :ivar windows_profile: The Windows agent pool's specific profile.
     :vartype windows_profile:
@@ -543,7 +543,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
         :paramtype count: int
         :keyword vm_size: VM size availability varies by region. If a node contains insufficient
          compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on
-         restricted VM sizes, see: https://learn.microsoft.com/azure/aks/quotas-skus-regions.
+         restricted VM sizes, see: https://docs.microsoft.com/azure/aks/quotas-skus-regions.
         :paramtype vm_size: str
         :keyword os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every
          machine in the master/agent pool. If you specify 0, it will apply the default osDisk size
@@ -552,7 +552,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
         :keyword os_disk_type: The default is 'Ephemeral' if the VM supports it and has a cache disk
          larger than the requested OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed
          after creation. For more information see `Ephemeral OS
-         <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
+         <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
          "Managed" and "Ephemeral".
         :paramtype os_disk_type: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.OSDiskType
@@ -609,7 +609,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolType
         :keyword mode: A cluster must have at least one 'System' Agent Pool at all times. For
          additional information on agent pool restrictions and best practices, see:
-         https://learn.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
+         https://docs.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
          "Gateway".
         :paramtype mode: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolMode
         :keyword orchestrator_version: Both patch version <major.minor.patch> and <major.minor> are
@@ -620,7 +620,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
          pool version must have the same major version as the control plane. The node pool minor version
          must be within two minor versions of the control plane version. The node pool version cannot be
          greater than the control plane version. For more information see `upgrading a node pool
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
         :keyword upgrade_settings: Settings for upgrading the agentpool.
         :paramtype upgrade_settings:
@@ -637,7 +637,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
          their own dedicated public IP addresses. A common scenario is for gaming workloads, where a
          console needs to make a direct connection to a cloud virtual machine to minimize hops. For more
          information see `assigning a public IP per node
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.  # pylint: disable=line-too-long
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.  # pylint: disable=line-too-long
          The default is false.
         :paramtype enable_node_public_ip: bool
         :keyword enable_custom_ca_trust: When set to true, AKS adds a label to the node indicating that
@@ -658,7 +658,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.ScaleSetEvictionPolicy
         :keyword spot_max_price: Possible values are any decimal value greater than zero or -1 which
          indicates the willingness to pay any on-demand price. For more details on spot pricing, see
-         `spot VMs pricing <https://learn.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
+         `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
         :paramtype spot_max_price: float
         :keyword tags: The tags to be persisted on the agent pool virtual machine scale set.
         :paramtype tags: dict[str, str]
@@ -684,12 +684,12 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.LinuxOSConfig
         :keyword enable_encryption_at_host: This is only supported on certain VM sizes and in certain
          Azure regions. For more information, see:
-         https://learn.microsoft.com/azure/aks/enable-host-encryption.
+         https://docs.microsoft.com/azure/aks/enable-host-encryption.
         :paramtype enable_encryption_at_host: bool
         :keyword enable_ultra_ssd: Whether to enable UltraSSD.
         :paramtype enable_ultra_ssd: bool
         :keyword enable_fips: See `Add a FIPS-enabled node pool
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
          for more details.
         :paramtype enable_fips: bool
         :keyword gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance
@@ -706,7 +706,7 @@ class AgentPool(SubResource):  # pylint: disable=too-many-instance-attributes
         :keyword host_group_id: This is of the form:
          /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}.  # pylint: disable=line-too-long
          For more information see `Azure dedicated hosts
-         <https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
+         <https://docs.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
         :paramtype host_group_id: str
         :keyword windows_profile: The Windows agent pool's specific profile.
         :paramtype windows_profile:
@@ -1420,7 +1420,7 @@ class AzureKeyVaultKms(_serialization.Model):
     :ivar enabled: Whether to enable Azure Key Vault key management service. The default is false.
     :vartype enabled: bool
     :ivar key_id: Identifier of Azure Key Vault key. See `key identifier format
-     <https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name>`_  # pylint: disable=line-too-long
+     <https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name>`_  # pylint: disable=line-too-long
      for more details. When Azure Key Vault key management service is enabled, this field is
      required and must be a valid key identifier. When Azure Key Vault key management service is
      disabled, leave the field empty.
@@ -1458,7 +1458,7 @@ class AzureKeyVaultKms(_serialization.Model):
          false.
         :paramtype enabled: bool
         :keyword key_id: Identifier of Azure Key Vault key. See `key identifier format
-         <https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name>`_  # pylint: disable=line-too-long
+         <https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name>`_  # pylint: disable=line-too-long
          for more details. When Azure Key Vault key management service is enabled, this field is
          required and must be a valid key identifier. When Azure Key Vault key management service is
          disabled, leave the field empty.
@@ -1725,12 +1725,12 @@ class ContainerServiceNetworkProfile(_serialization.Model):  # pylint: disable=t
     :vartype dns_service_ip: str
     :ivar outbound_type: This can only be set at cluster creation time and cannot be changed later.
      For more information see `egress outbound type
-     <https://learn.microsoft.com/azure/aks/egress-outboundtype>`_. Known values are: "loadBalancer",
+     <https://docs.microsoft.com/azure/aks/egress-outboundtype>`_. Known values are: "loadBalancer",
      "userDefinedRouting", "managedNATGateway", "userAssignedNATGateway", and "none".
     :vartype outbound_type: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.OutboundType
     :ivar load_balancer_sku: The default is 'standard'. See `Azure Load Balancer SKUs
-     <https://learn.microsoft.com/azure/load-balancer/skus>`_ for more information about the
+     <https://docs.microsoft.com/azure/load-balancer/skus>`_ for more information about the
      differences between load balancer SKUs. Known values are: "standard" and "basic".
     :vartype load_balancer_sku: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.LoadBalancerSku
@@ -1862,12 +1862,12 @@ class ContainerServiceNetworkProfile(_serialization.Model):  # pylint: disable=t
         :paramtype dns_service_ip: str
         :keyword outbound_type: This can only be set at cluster creation time and cannot be changed
          later. For more information see `egress outbound type
-         <https://learn.microsoft.com/azure/aks/egress-outboundtype>`_. Known values are: "loadBalancer",
+         <https://docs.microsoft.com/azure/aks/egress-outboundtype>`_. Known values are: "loadBalancer",
          "userDefinedRouting", "managedNATGateway", "userAssignedNATGateway", and "none".
         :paramtype outbound_type: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.OutboundType
         :keyword load_balancer_sku: The default is 'standard'. See `Azure Load Balancer SKUs
-         <https://learn.microsoft.com/azure/load-balancer/skus>`_ for more information about the
+         <https://docs.microsoft.com/azure/load-balancer/skus>`_ for more information about the
          differences between load balancer SKUs. Known values are: "standard" and "basic".
         :paramtype load_balancer_sku: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.LoadBalancerSku
@@ -2896,7 +2896,7 @@ class IstioServiceMesh(_serialization.Model):
 
 class KubeletConfig(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """See `AKS custom node configuration
-    <https://learn.microsoft.com/azure/aks/custom-node-configuration>`_ for more details.
+    <https://docs.microsoft.com/azure/aks/custom-node-configuration>`_ for more details.
 
     :ivar cpu_manager_policy: The default is 'none'. See `Kubernetes CPU management policies
      <https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#cpu-management-policies>`_
@@ -3242,7 +3242,7 @@ class LabelSelectorRequirement(_serialization.Model):
 
 class LinuxOSConfig(_serialization.Model):
     """See `AKS custom node configuration
-    <https://learn.microsoft.com/azure/aks/custom-node-configuration>`_ for more details.
+    <https://docs.microsoft.com/azure/aks/custom-node-configuration>`_ for more details.
 
     :ivar sysctls: Sysctl settings for Linux agent nodes.
     :vartype sysctls: ~azure.mgmt.containerservice.v2024_09_02_preview.models.SysctlConfig
@@ -3616,7 +3616,7 @@ class MachineProperties(_serialization.Model):
 
 
 class MaintenanceConfiguration(SubResource):
-    """See `planned maintenance <https://learn.microsoft.com/azure/aks/planned-maintenance>`_ for more
+    """See `planned maintenance <https://docs.microsoft.com/azure/aks/planned-maintenance>`_ for more
     information about planned maintenance.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3909,7 +3909,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
      cannot be skipped. All upgrades must be performed sequentially by major version number. For
      example, upgrades between 1.14.x -> 1.15.x or 1.15.x -> 1.16.x are allowed, however 1.14.x ->
      1.16.x is not allowed. See `upgrading an AKS cluster
-     <https://learn.microsoft.com/azure/aks/upgrade-cluster>`_ for more details.
+     <https://docs.microsoft.com/azure/aks/upgrade-cluster>`_ for more details.
     :vartype kubernetes_version: str
     :ivar current_kubernetes_version: The version of Kubernetes the Managed Cluster is running.
     :vartype current_kubernetes_version: str
@@ -3942,7 +3942,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
     :vartype addon_profiles: dict[str,
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.ManagedClusterAddonProfile]
     :ivar pod_identity_profile: See `use AAD pod identity
-     <https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_ for more details on AAD pod
+     <https://docs.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_ for more details on AAD pod
      identity integration.
     :vartype pod_identity_profile:
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.ManagedClusterPodIdentityProfile
@@ -4001,7 +4001,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
     :ivar disable_local_accounts: If set to true, getting static credentials will be disabled for
      this cluster. This must only be used on Managed Clusters that are AAD enabled. For more details
      see `disable local accounts
-     <https://learn.microsoft.com/azure/aks/managed-aad#disable-local-accounts-preview>`_.
+     <https://docs.microsoft.com/azure/aks/managed-aad#disable-local-accounts-preview>`_.
     :vartype disable_local_accounts: bool
     :ivar http_proxy_config: Configurations for provisioning the cluster with HTTP proxy servers.
     :vartype http_proxy_config:
@@ -4224,7 +4224,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
          versions cannot be skipped. All upgrades must be performed sequentially by major version
          number. For example, upgrades between 1.14.x -> 1.15.x or 1.15.x -> 1.16.x are allowed, however
          1.14.x -> 1.16.x is not allowed. See `upgrading an AKS cluster
-         <https://learn.microsoft.com/azure/aks/upgrade-cluster>`_ for more details.
+         <https://docs.microsoft.com/azure/aks/upgrade-cluster>`_ for more details.
         :paramtype kubernetes_version: str
         :keyword dns_prefix: This cannot be updated once the Managed Cluster has been created.
         :paramtype dns_prefix: str
@@ -4247,7 +4247,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
         :paramtype addon_profiles: dict[str,
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.ManagedClusterAddonProfile]
         :keyword pod_identity_profile: See `use AAD pod identity
-         <https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_ for more details on AAD pod
+         <https://docs.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_ for more details on AAD pod
          identity integration.
         :paramtype pod_identity_profile:
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.ManagedClusterPodIdentityProfile
@@ -4306,7 +4306,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
         :keyword disable_local_accounts: If set to true, getting static credentials will be disabled
          for this cluster. This must only be used on Managed Clusters that are AAD enabled. For more
          details see `disable local accounts
-         <https://learn.microsoft.com/azure/aks/managed-aad#disable-local-accounts-preview>`_.
+         <https://docs.microsoft.com/azure/aks/managed-aad#disable-local-accounts-preview>`_.
         :paramtype disable_local_accounts: bool
         :keyword http_proxy_config: Configurations for provisioning the cluster with HTTP proxy
          servers.
@@ -4409,7 +4409,7 @@ class ManagedCluster(TrackedResource):  # pylint: disable=too-many-instance-attr
 
 
 class ManagedClusterAADProfile(_serialization.Model):
-    """For more details see `managed AAD on AKS <https://learn.microsoft.com/azure/aks/managed-aad>`_.
+    """For more details see `managed AAD on AKS <https://docs.microsoft.com/azure/aks/managed-aad>`_.
 
     :ivar managed: Whether to enable managed AAD.
     :vartype managed: bool
@@ -4656,7 +4656,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
     :vartype count: int
     :ivar vm_size: VM size availability varies by region. If a node contains insufficient compute
      resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted
-     VM sizes, see: https://learn.microsoft.com/azure/aks/quotas-skus-regions.
+     VM sizes, see: https://docs.microsoft.com/azure/aks/quotas-skus-regions.
     :vartype vm_size: str
     :ivar os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every machine
      in the master/agent pool. If you specify 0, it will apply the default osDisk size according to
@@ -4665,7 +4665,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
     :ivar os_disk_type: The default is 'Ephemeral' if the VM supports it and has a cache disk
      larger than the requested OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed
      after creation. For more information see `Ephemeral OS
-     <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
+     <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
      "Managed" and "Ephemeral".
     :vartype os_disk_type: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.OSDiskType
@@ -4721,7 +4721,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
     :vartype type: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolType
     :ivar mode: A cluster must have at least one 'System' Agent Pool at all times. For additional
      information on agent pool restrictions and best practices, see:
-     https://learn.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
+     https://docs.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
      "Gateway".
     :vartype mode: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolMode
     :ivar orchestrator_version: Both patch version <major.minor.patch> and <major.minor> are
@@ -4732,7 +4732,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
      pool version must have the same major version as the control plane. The node pool minor version
      must be within two minor versions of the control plane version. The node pool version cannot be
      greater than the control plane version. For more information see `upgrading a node pool
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
     :vartype orchestrator_version: str
     :ivar current_orchestrator_version: If orchestratorVersion was a fully specified version
      <major.minor.patch>, this field will be exactly equal to it. If orchestratorVersion was
@@ -4757,7 +4757,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
      own dedicated public IP addresses. A common scenario is for gaming workloads, where a console
      needs to make a direct connection to a cloud virtual machine to minimize hops. For more
      information see `assigning a public IP per node
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
      The default is false.
     :vartype enable_node_public_ip: bool
     :ivar enable_custom_ca_trust: When set to true, AKS adds a label to the node indicating that
@@ -4778,7 +4778,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.ScaleSetEvictionPolicy
     :ivar spot_max_price: Possible values are any decimal value greater than zero or -1 which
      indicates the willingness to pay any on-demand price. For more details on spot pricing, see
-     `spot VMs pricing <https://learn.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
+     `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
     :vartype spot_max_price: float
     :ivar tags: The tags to be persisted on the agent pool virtual machine scale set.
     :vartype tags: dict[str, str]
@@ -4802,12 +4802,12 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
     :vartype linux_os_config: ~azure.mgmt.containerservice.v2024_09_02_preview.models.LinuxOSConfig
     :ivar enable_encryption_at_host: This is only supported on certain VM sizes and in certain
      Azure regions. For more information, see:
-     https://learn.microsoft.com/azure/aks/enable-host-encryption.
+     https://docs.microsoft.com/azure/aks/enable-host-encryption.
     :vartype enable_encryption_at_host: bool
     :ivar enable_ultra_ssd: Whether to enable UltraSSD.
     :vartype enable_ultra_ssd: bool
     :ivar enable_fips: See `Add a FIPS-enabled node pool
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
      for more details.
     :vartype enable_fips: bool
     :ivar gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance profile
@@ -4823,7 +4823,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
     :ivar host_group_id: This is of the form:
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}.  # pylint: disable=line-too-long
      For more information see `Azure dedicated hosts
-     <https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
+     <https://docs.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
     :vartype host_group_id: str
     :ivar windows_profile: The Windows agent pool's specific profile.
     :vartype windows_profile:
@@ -4981,7 +4981,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
         :paramtype count: int
         :keyword vm_size: VM size availability varies by region. If a node contains insufficient
          compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on
-         restricted VM sizes, see: https://learn.microsoft.com/azure/aks/quotas-skus-regions.
+         restricted VM sizes, see: https://docs.microsoft.com/azure/aks/quotas-skus-regions.
         :paramtype vm_size: str
         :keyword os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every
          machine in the master/agent pool. If you specify 0, it will apply the default osDisk size
@@ -4990,7 +4990,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
         :keyword os_disk_type: The default is 'Ephemeral' if the VM supports it and has a cache disk
          larger than the requested OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed
          after creation. For more information see `Ephemeral OS
-         <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
+         <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
          "Managed" and "Ephemeral".
         :paramtype os_disk_type: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.OSDiskType
@@ -5046,7 +5046,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
         :paramtype type: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolType
         :keyword mode: A cluster must have at least one 'System' Agent Pool at all times. For
          additional information on agent pool restrictions and best practices, see:
-         https://learn.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
+         https://docs.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
          "Gateway".
         :paramtype mode: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolMode
         :keyword orchestrator_version: Both patch version <major.minor.patch> and <major.minor> are
@@ -5057,7 +5057,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
          pool version must have the same major version as the control plane. The node pool minor version
          must be within two minor versions of the control plane version. The node pool version cannot be
          greater than the control plane version. For more information see `upgrading a node pool
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
         :keyword upgrade_settings: Settings for upgrading the agentpool.
         :paramtype upgrade_settings:
@@ -5074,7 +5074,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
          their own dedicated public IP addresses. A common scenario is for gaming workloads, where a
          console needs to make a direct connection to a cloud virtual machine to minimize hops. For more
          information see `assigning a public IP per node
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.  # pylint: disable=line-too-long
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.  # pylint: disable=line-too-long
          The default is false.
         :paramtype enable_node_public_ip: bool
         :keyword enable_custom_ca_trust: When set to true, AKS adds a label to the node indicating that
@@ -5095,7 +5095,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.ScaleSetEvictionPolicy
         :keyword spot_max_price: Possible values are any decimal value greater than zero or -1 which
          indicates the willingness to pay any on-demand price. For more details on spot pricing, see
-         `spot VMs pricing <https://learn.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
+         `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
         :paramtype spot_max_price: float
         :keyword tags: The tags to be persisted on the agent pool virtual machine scale set.
         :paramtype tags: dict[str, str]
@@ -5121,12 +5121,12 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.LinuxOSConfig
         :keyword enable_encryption_at_host: This is only supported on certain VM sizes and in certain
          Azure regions. For more information, see:
-         https://learn.microsoft.com/azure/aks/enable-host-encryption.
+         https://docs.microsoft.com/azure/aks/enable-host-encryption.
         :paramtype enable_encryption_at_host: bool
         :keyword enable_ultra_ssd: Whether to enable UltraSSD.
         :paramtype enable_ultra_ssd: bool
         :keyword enable_fips: See `Add a FIPS-enabled node pool
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
          for more details.
         :paramtype enable_fips: bool
         :keyword gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance
@@ -5143,7 +5143,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):  # pylint:
         :keyword host_group_id: This is of the form:
          /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}.  # pylint: disable=line-too-long
          For more information see `Azure dedicated hosts
-         <https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
+         <https://docs.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
         :paramtype host_group_id: str
         :keyword windows_profile: The Windows agent pool's specific profile.
         :paramtype windows_profile:
@@ -5249,7 +5249,7 @@ class ManagedClusterAgentPoolProfile(
     :vartype count: int
     :ivar vm_size: VM size availability varies by region. If a node contains insufficient compute
      resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted
-     VM sizes, see: https://learn.microsoft.com/azure/aks/quotas-skus-regions.
+     VM sizes, see: https://docs.microsoft.com/azure/aks/quotas-skus-regions.
     :vartype vm_size: str
     :ivar os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every machine
      in the master/agent pool. If you specify 0, it will apply the default osDisk size according to
@@ -5258,7 +5258,7 @@ class ManagedClusterAgentPoolProfile(
     :ivar os_disk_type: The default is 'Ephemeral' if the VM supports it and has a cache disk
      larger than the requested OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed
      after creation. For more information see `Ephemeral OS
-     <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
+     <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
      "Managed" and "Ephemeral".
     :vartype os_disk_type: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.OSDiskType
@@ -5314,7 +5314,7 @@ class ManagedClusterAgentPoolProfile(
     :vartype type: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolType
     :ivar mode: A cluster must have at least one 'System' Agent Pool at all times. For additional
      information on agent pool restrictions and best practices, see:
-     https://learn.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
+     https://docs.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
      "Gateway".
     :vartype mode: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolMode
     :ivar orchestrator_version: Both patch version <major.minor.patch> and <major.minor> are
@@ -5325,7 +5325,7 @@ class ManagedClusterAgentPoolProfile(
      pool version must have the same major version as the control plane. The node pool minor version
      must be within two minor versions of the control plane version. The node pool version cannot be
      greater than the control plane version. For more information see `upgrading a node pool
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
     :vartype orchestrator_version: str
     :ivar current_orchestrator_version: If orchestratorVersion was a fully specified version
      <major.minor.patch>, this field will be exactly equal to it. If orchestratorVersion was
@@ -5350,7 +5350,7 @@ class ManagedClusterAgentPoolProfile(
      own dedicated public IP addresses. A common scenario is for gaming workloads, where a console
      needs to make a direct connection to a cloud virtual machine to minimize hops. For more
      information see `assigning a public IP per node
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
      The default is false.
     :vartype enable_node_public_ip: bool
     :ivar enable_custom_ca_trust: When set to true, AKS adds a label to the node indicating that
@@ -5371,7 +5371,7 @@ class ManagedClusterAgentPoolProfile(
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.ScaleSetEvictionPolicy
     :ivar spot_max_price: Possible values are any decimal value greater than zero or -1 which
      indicates the willingness to pay any on-demand price. For more details on spot pricing, see
-     `spot VMs pricing <https://learn.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
+     `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
     :vartype spot_max_price: float
     :ivar tags: The tags to be persisted on the agent pool virtual machine scale set.
     :vartype tags: dict[str, str]
@@ -5395,12 +5395,12 @@ class ManagedClusterAgentPoolProfile(
     :vartype linux_os_config: ~azure.mgmt.containerservice.v2024_09_02_preview.models.LinuxOSConfig
     :ivar enable_encryption_at_host: This is only supported on certain VM sizes and in certain
      Azure regions. For more information, see:
-     https://learn.microsoft.com/azure/aks/enable-host-encryption.
+     https://docs.microsoft.com/azure/aks/enable-host-encryption.
     :vartype enable_encryption_at_host: bool
     :ivar enable_ultra_ssd: Whether to enable UltraSSD.
     :vartype enable_ultra_ssd: bool
     :ivar enable_fips: See `Add a FIPS-enabled node pool
-     <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
+     <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
      for more details.
     :vartype enable_fips: bool
     :ivar gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance profile
@@ -5416,7 +5416,7 @@ class ManagedClusterAgentPoolProfile(
     :ivar host_group_id: This is of the form:
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}.  # pylint: disable=line-too-long
      For more information see `Azure dedicated hosts
-     <https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
+     <https://docs.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
     :vartype host_group_id: str
     :ivar windows_profile: The Windows agent pool's specific profile.
     :vartype windows_profile:
@@ -5579,7 +5579,7 @@ class ManagedClusterAgentPoolProfile(
         :paramtype count: int
         :keyword vm_size: VM size availability varies by region. If a node contains insufficient
          compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on
-         restricted VM sizes, see: https://learn.microsoft.com/azure/aks/quotas-skus-regions.
+         restricted VM sizes, see: https://docs.microsoft.com/azure/aks/quotas-skus-regions.
         :paramtype vm_size: str
         :keyword os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every
          machine in the master/agent pool. If you specify 0, it will apply the default osDisk size
@@ -5588,7 +5588,7 @@ class ManagedClusterAgentPoolProfile(
         :keyword os_disk_type: The default is 'Ephemeral' if the VM supports it and has a cache disk
          larger than the requested OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed
          after creation. For more information see `Ephemeral OS
-         <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
+         <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Known values are:
          "Managed" and "Ephemeral".
         :paramtype os_disk_type: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.OSDiskType
@@ -5644,7 +5644,7 @@ class ManagedClusterAgentPoolProfile(
         :paramtype type: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolType
         :keyword mode: A cluster must have at least one 'System' Agent Pool at all times. For
          additional information on agent pool restrictions and best practices, see:
-         https://learn.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
+         https://docs.microsoft.com/azure/aks/use-system-pools. Known values are: "System", "User", and
          "Gateway".
         :paramtype mode: str or ~azure.mgmt.containerservice.v2024_09_02_preview.models.AgentPoolMode
         :keyword orchestrator_version: Both patch version <major.minor.patch> and <major.minor> are
@@ -5655,7 +5655,7 @@ class ManagedClusterAgentPoolProfile(
          pool version must have the same major version as the control plane. The node pool minor version
          must be within two minor versions of the control plane version. The node pool version cannot be
          greater than the control plane version. For more information see `upgrading a node pool
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
         :keyword upgrade_settings: Settings for upgrading the agentpool.
         :paramtype upgrade_settings:
@@ -5672,7 +5672,7 @@ class ManagedClusterAgentPoolProfile(
          their own dedicated public IP addresses. A common scenario is for gaming workloads, where a
          console needs to make a direct connection to a cloud virtual machine to minimize hops. For more
          information see `assigning a public IP per node
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.  # pylint: disable=line-too-long
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.  # pylint: disable=line-too-long
          The default is false.
         :paramtype enable_node_public_ip: bool
         :keyword enable_custom_ca_trust: When set to true, AKS adds a label to the node indicating that
@@ -5693,7 +5693,7 @@ class ManagedClusterAgentPoolProfile(
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.ScaleSetEvictionPolicy
         :keyword spot_max_price: Possible values are any decimal value greater than zero or -1 which
          indicates the willingness to pay any on-demand price. For more details on spot pricing, see
-         `spot VMs pricing <https://learn.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
+         `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
         :paramtype spot_max_price: float
         :keyword tags: The tags to be persisted on the agent pool virtual machine scale set.
         :paramtype tags: dict[str, str]
@@ -5719,12 +5719,12 @@ class ManagedClusterAgentPoolProfile(
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.LinuxOSConfig
         :keyword enable_encryption_at_host: This is only supported on certain VM sizes and in certain
          Azure regions. For more information, see:
-         https://learn.microsoft.com/azure/aks/enable-host-encryption.
+         https://docs.microsoft.com/azure/aks/enable-host-encryption.
         :paramtype enable_encryption_at_host: bool
         :keyword enable_ultra_ssd: Whether to enable UltraSSD.
         :paramtype enable_ultra_ssd: bool
         :keyword enable_fips: See `Add a FIPS-enabled node pool
-         <https://learn.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
+         <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview>`_
          for more details.
         :paramtype enable_fips: bool
         :keyword gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance
@@ -5741,7 +5741,7 @@ class ManagedClusterAgentPoolProfile(
         :keyword host_group_id: This is of the form:
          /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}.  # pylint: disable=line-too-long
          For more information see `Azure dedicated hosts
-         <https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
+         <https://docs.microsoft.com/azure/virtual-machines/dedicated-hosts>`_.
         :paramtype host_group_id: str
         :keyword windows_profile: The Windows agent pool's specific profile.
         :paramtype windows_profile:
@@ -5856,13 +5856,13 @@ class ManagedClusterAPIServerAccessProfile(_serialization.Model):
     :ivar authorized_ip_ranges: IP ranges are specified in CIDR format, e.g. 137.117.106.88/29.
      This feature is not compatible with clusters that use Public IP Per Node, or clusters that are
      using a Basic Load Balancer. For more information see `API server authorized IP ranges
-     <https://learn.microsoft.com/azure/aks/api-server-authorized-ip-ranges>`_.
+     <https://docs.microsoft.com/azure/aks/api-server-authorized-ip-ranges>`_.
     :vartype authorized_ip_ranges: list[str]
     :ivar enable_private_cluster: For more details, see `Creating a private AKS cluster
-     <https://learn.microsoft.com/azure/aks/private-clusters>`_.
+     <https://docs.microsoft.com/azure/aks/private-clusters>`_.
     :vartype enable_private_cluster: bool
     :ivar private_dns_zone: The default is System. For more details see `configure private DNS zone
-     <https://learn.microsoft.com/azure/aks/private-clusters#configure-private-dns-zone>`_. Allowed
+     <https://docs.microsoft.com/azure/aks/private-clusters#configure-private-dns-zone>`_. Allowed
      values are 'system' and 'none'.
     :vartype private_dns_zone: str
     :ivar enable_private_cluster_public_fqdn: Whether to create additional public FQDN for private
@@ -5904,13 +5904,13 @@ class ManagedClusterAPIServerAccessProfile(_serialization.Model):
         :keyword authorized_ip_ranges: IP ranges are specified in CIDR format, e.g. 137.117.106.88/29.
          This feature is not compatible with clusters that use Public IP Per Node, or clusters that are
          using a Basic Load Balancer. For more information see `API server authorized IP ranges
-         <https://learn.microsoft.com/azure/aks/api-server-authorized-ip-ranges>`_.
+         <https://docs.microsoft.com/azure/aks/api-server-authorized-ip-ranges>`_.
         :paramtype authorized_ip_ranges: list[str]
         :keyword enable_private_cluster: For more details, see `Creating a private AKS cluster
-         <https://learn.microsoft.com/azure/aks/private-clusters>`_.
+         <https://docs.microsoft.com/azure/aks/private-clusters>`_.
         :paramtype enable_private_cluster: bool
         :keyword private_dns_zone: The default is System. For more details see `configure private DNS
-         zone <https://learn.microsoft.com/azure/aks/private-clusters#configure-private-dns-zone>`_.
+         zone <https://docs.microsoft.com/azure/aks/private-clusters#configure-private-dns-zone>`_.
          Allowed values are 'system' and 'none'.
         :paramtype private_dns_zone: str
         :keyword enable_private_cluster_public_fqdn: Whether to create additional public FQDN for
@@ -5939,7 +5939,7 @@ class ManagedClusterAutoUpgradeProfile(_serialization.Model):
     """Auto upgrade profile for a managed cluster.
 
     :ivar upgrade_channel: For more information see `setting the AKS cluster auto-upgrade channel
-     <https://learn.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_. Known values
+     <https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_. Known values
      are: "rapid", "stable", "patch", "node-image", and "none".
     :vartype upgrade_channel: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.UpgradeChannel
@@ -5963,7 +5963,7 @@ class ManagedClusterAutoUpgradeProfile(_serialization.Model):
     ) -> None:
         """
         :keyword upgrade_channel: For more information see `setting the AKS cluster auto-upgrade
-         channel <https://learn.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_.
+         channel <https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_.
          Known values are: "rapid", "stable", "patch", "node-image", and "none".
         :paramtype upgrade_channel: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.UpgradeChannel
@@ -6480,7 +6480,7 @@ class ManagedClusterIdentity(_serialization.Model):
      components.
     :vartype tenant_id: str
     :ivar type: For more information see `use managed identities in AKS
-     <https://learn.microsoft.com/azure/aks/use-managed-identity>`_. Known values are:
+     <https://docs.microsoft.com/azure/aks/use-managed-identity>`_. Known values are:
      "SystemAssigned", "UserAssigned", and "None".
     :vartype type: str or
      ~azure.mgmt.containerservice.v2024_09_02_preview.models.ResourceIdentityType
@@ -6523,7 +6523,7 @@ class ManagedClusterIdentity(_serialization.Model):
     ) -> None:
         """
         :keyword type: For more information see `use managed identities in AKS
-         <https://learn.microsoft.com/azure/aks/use-managed-identity>`_. Known values are:
+         <https://docs.microsoft.com/azure/aks/use-managed-identity>`_. Known values are:
          "SystemAssigned", "UserAssigned", and "None".
         :paramtype type: str or
          ~azure.mgmt.containerservice.v2024_09_02_preview.models.ResourceIdentityType
@@ -7197,7 +7197,7 @@ class ManagedClusterPodIdentityException(_serialization.Model):
 
 
 class ManagedClusterPodIdentityProfile(_serialization.Model):
-    """See `use AAD pod identity <https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_
+    """See `use AAD pod identity <https://docs.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_
     for more details on pod identity integration.
 
     :ivar enabled: Whether the pod identity addon is enabled.
@@ -7205,7 +7205,7 @@ class ManagedClusterPodIdentityProfile(_serialization.Model):
     :ivar allow_network_plugin_kubenet: Running in Kubenet is disabled by default due to the
      security related nature of AAD Pod Identity and the risks of IP spoofing. See `using Kubenet
      network plugin with AAD Pod Identity
-     <https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity#using-kubenet-network-plugin-with-azure-active-directory-pod-managed-identities>`_  # pylint: disable=line-too-long
+     <https://docs.microsoft.com/azure/aks/use-azure-ad-pod-identity#using-kubenet-network-plugin-with-azure-active-directory-pod-managed-identities>`_  # pylint: disable=line-too-long
      for more information.
     :vartype allow_network_plugin_kubenet: bool
     :ivar user_assigned_identities: The pod identities to use in the cluster.
@@ -7241,7 +7241,7 @@ class ManagedClusterPodIdentityProfile(_serialization.Model):
         :keyword allow_network_plugin_kubenet: Running in Kubenet is disabled by default due to the
          security related nature of AAD Pod Identity and the risks of IP spoofing. See `using Kubenet
          network plugin with AAD Pod Identity
-         <https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity#using-kubenet-network-plugin-with-azure-active-directory-pod-managed-identities>`_  # pylint: disable=line-too-long
+         <https://docs.microsoft.com/azure/aks/use-azure-ad-pod-identity#using-kubenet-network-plugin-with-azure-active-directory-pod-managed-identities>`_  # pylint: disable=line-too-long
          for more information.
         :paramtype allow_network_plugin_kubenet: bool
         :keyword user_assigned_identities: The pod identities to use in the cluster.
