@@ -103,11 +103,6 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
         raise ResourceNotFoundError("Service with the given name does not exist")
 
 
-def get_linker_client(cmd):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    return get_mgmt_service_client(cmd.cli_ctx, ServiceLinkerManagementClient)
-
-
 def validate_binding_name(binding_name):
     pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
     return bool(re.match(pattern, binding_name))
