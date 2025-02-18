@@ -16,9 +16,12 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   }
 }
 
-resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: managedEnvName
   location: resourceGroup().location
+  identity: {
+      type: 'SystemAssigned'
+  }
   properties: {
     // vnetConfiguration: {}
     appLogsConfiguration: {

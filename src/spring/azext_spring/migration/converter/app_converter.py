@@ -11,7 +11,7 @@ class AppConverter(ConverterTemplate):
     def calculate_data(self):
         appName = self.source['name'].split('/')[-1]
         envName = self.source['name'].split('/')[0]
-        moduleName = appName.replace("-", "")
+        moduleName = appName.replace("-", "_")
         containers = []
         serviceBinds = self._get_service_bind(self.source, envName)
 
