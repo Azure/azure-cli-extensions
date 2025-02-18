@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
 
 1.1.0b2
 ++++++
