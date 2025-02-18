@@ -27,6 +27,9 @@ from azure.core.exceptions import (HttpResponseError)
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
+from azext_aks_preview._roleassignments import add_role_assignment
+from azure.cli.command_modules.acs._consts import CONST_NETWORK_CONTRIBUTOR_ROLE_ID
+
 
 
 def _get_test_data_file(filename):
@@ -3334,8 +3337,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # add network contributor role to the user assigned identity that allow access to apiserver subnet
-        role_assignment_cmd = 'role assignment create --role "Network Contributor" --assignee {identity_object_id} --scope {apiserver_subnet_id}'
-        self.cmd(role_assignment_cmd)
+        add_role_assignment(self.cmd, CONST_NETWORK_CONTRIBUTOR_ROLE_ID, identity_object_id, False, scope=apiserver_subnet_id)
+        # role_assignment_cmd = 'role assignment create --role "Network Contributor" --assignee {identity_object_id} --scope {apiserver_subnet_id}'
+        # self.cmd(role_assignment_cmd)
 
         # create an Automatic cluster with BYO Vnet
         create_cmd = (
