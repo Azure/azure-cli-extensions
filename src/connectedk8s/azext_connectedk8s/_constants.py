@@ -500,17 +500,17 @@ Doc_Onboarding_PreRequisites_Url = (
 )
 Doc_Network_Requirements_Url = "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud"
 Doc_Quick_Start_NW_Requirements_Url = (
-    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
+    "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
     "tabs=azure-cli#meet-network-requirements"
 )
 Doc_Quick_Start_Outbound_Proxy_Url = (
-    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
+    "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?"
     "tabs=azure-cli#connect-using-an-outbound-proxy-server"
 )
 Doc_Provisioned_Cluster_Delete_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-delete"
 Doc_Provisioned_Cluster_Update_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update"
 Doc_Provisioned_Cluster_Upgrade_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-upgrade"
-Doc_Agent_Version_Support_Policy_Url = "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy"
+Doc_Agent_Version_Support_Policy_Url = "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy"
 
 # Acceptable states for required RP registrations to be in
 #

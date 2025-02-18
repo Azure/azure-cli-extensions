@@ -572,7 +572,7 @@ def _select_distro_linux_Arm64(distro):
 
 
 def _select_distro_linux_gen2(distro):
-    # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
+    # base on the document : https://learn.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
     image_lookup = {
         'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
