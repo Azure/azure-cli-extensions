@@ -404,7 +404,8 @@ engine_reference_identity_type = CLIArgumentType(
 
 engine_reference_identities = CLIArgumentType(
     options_list=["--engine-reference-identities"],
-    nargs="*",
+    nargs="+",
+    validator=validators.validate_engine_reference_identities,
     help="Space separated list of fully qualified resource ID of the managed identities to be used in engine.",
 )
 
