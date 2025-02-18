@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements,too-many-locals,too-many-branches,too-many-statements
 
-import ast
 import gzip
 import io
 import json
@@ -22,6 +21,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 from .._storage import create_container, upload_blob
 
 from .._client_factory import cf_jobs
+from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
 
@@ -56,7 +56,6 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
 
     query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
@@ -65,22 +64,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
     first_page = next(iter(response.by_page()), [])
     # Note: --top produces multi-page responses, but we only process the first page. All the other params put everything on the first page.
-
-    # Iterate through the first page of the response and build a JSON array
-    job_list_string = "["
-    for job_details in first_page:
-        details_string = str(job_details)
-        job_list_string += details_string + ", "
-
-    if len(job_list_string) == 1:
-        return []   # Got an empty response page, return an empty array
-
-    job_list_string = job_list_string[:-2]
-    job_list_string += "]"
-
-    # Convert the JSON into an array of job_details objects. The Azure CLI core will convert it back to JSON.
-    # json.loads doesn't like the all the single quotes in the response, but ast.literal_eval handles them OK.
-    return ast.literal_eval(job_list_string)
+    return repack_response_json(first_page)
 
 
 def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
