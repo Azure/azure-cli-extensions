@@ -110,7 +110,7 @@ helps['vm repair reset-nic'] = """
 
 helps['vm repair repair-and-restore'] = """
     type: command
-    short-summary: Repair and restore the VM.
+    short-summary: Non-interactive command. Repair fstab issues using a temporary repair VM and restore the VM by replacing the VM's OS disk with the fixed copy disk.
     examples:
         - name: Repair and restore a VM.
           text: >
@@ -118,7 +118,7 @@ helps['vm repair repair-and-restore'] = """
 """
 helps['vm repair repair-button'] = """
     type: command
-    short-summary: repair button script.
+    short-summary: Non-interactive command used by repair VM buttons. Repair issues using ALAR scripts. Create a temporary repair VM and restore the VM by replacing the VM's OS disk with the fixed copy disk.
     examples:
         - name: repair-button.
           text: >
