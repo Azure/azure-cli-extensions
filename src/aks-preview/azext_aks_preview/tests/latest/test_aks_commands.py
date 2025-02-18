@@ -3337,9 +3337,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # add network contributor role to the user assigned identity that allow access to apiserver subnet
-        add_role_assignment(self.cmd, CONST_NETWORK_CONTRIBUTOR_ROLE_ID, identity_object_id, False, scope=apiserver_subnet_id)
-        # role_assignment_cmd = 'role assignment create --role "Network Contributor" --assignee {identity_object_id} --scope {apiserver_subnet_id}'
-        # self.cmd(role_assignment_cmd)
+        role_assignment_cmd = 'role assignment create --role "Network Contributor" --assignee {identity_object_id} --scope {apiserver_subnet_id}'
+        self.cmd(role_assignment_cmd)
 
         # create an Automatic cluster with BYO Vnet
         create_cmd = (
