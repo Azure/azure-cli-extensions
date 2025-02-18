@@ -11,38 +11,81 @@ interactions:
       host:
       - graph.microsoft.com
       user-agent:
-      - python-httpx/0.27.0
+      - python-httpx/0.28.1
     method: GET
-    uri: https://graph.microsoft.com/v1.0/users/me-token-to-replace/extensions
+    uri: https://graph.microsoft.com/v1.0/users/me-token-to-replace
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''40523ce8-82a4-4362-b93a-7dfd212edd4c'')/extensions","value":[{"@odata.type":"#microsoft.graph.openTypeExtension","extension_name":"com.nexusidentity.keys","publicKey":"sk-ssh-ed25519@openssh.com
-        AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJet7nknqBQpavVf6gjjjlcHUfckuGI4eZDJxG4tlSSHAAAABHNzaDo=
-        fareast\\jtamma@DESKTOP-QDMRQ39\n","id":"com.nexusidentity.keys"}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"abc
+        def","givenName":"abc","jobTitle":"dummy","mail":"abc@myorg.com","mobilePhone":null,"officeLocation":"xyz","preferredLanguage":null,"surname":"def","userPrincipalName":"abc@myorg.com","id":"c9f6a120-d924-4a34-88f2-eb16bf64dac4"}'
     headers:
+      cache-control:
+      - no-cache
       content-length:
-      - '431'
+      - '422'
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Mon, 03 Jun 2024 20:35:36 GMT
+      - Tue, 17 Dec 2024 06:52:26 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 10fe3408-7303-4b72-baa2-428ee6dce930
+      - 6e69a757-6207-4cb1-aae9-118b38a318de
       strict-transport-security:
       - max-age=31536000
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Central India","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"PN3PEPF000002CB"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"SI1PEPF0001F1FF"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - graph.microsoft.com
+      user-agent:
+      - python-httpx/0.28.1
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/users/me-token-to-replace/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''c9f6a120-d924-4a34-88f2-eb16bf64dac4'')/extensions","value":[{"@odata.type":"#microsoft.graph.openTypeExtension","theme":"light","color":"yellow","lang":"Swahili","id":"com.contoso.roamingSettings"},{"@odata.type":"#microsoft.graph.openTypeExtension","extension_name":"com.nexusidentity.keys","publicKey":"sk-ssh-ed25519@openssh.com
+        AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIDvs8cpIgKdNO3UX/+psenOd3pGAHrDzZkUsogh588zEAAAABHNzaDo=
+        redmond\\abc@xyz\n","id":"com.nexusidentity.keys"}]}'
+    headers:
+      content-length:
+      - '575'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 06:52:34 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 2476cd62-f505-4383-b413-6a3dd06f38d9
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"SI1PEPF00001A45"}}'
     status:
       code: 200
       message: OK
 - request:
     body: '{"@odata.type": "microsoft.graph.openTypeExtension", "extension_name":
-      "com.nexusidentity.keys", "publicKey": "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJet7nknqBQpavVf6gjjjlcHUfckuGI4eZDJxG4tlSSHAAAABHNzaDo=
-      fareast\\jtamma@DESKTOP-QDMRQ39\n"}'
+      "com.nexusidentity.keys", "publicKey": "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIDvs8cpIgKdNO3UX/+psenOd3pGAHrDzZkUsogh588zEAAAABHNzaDo=
+      redmond\\abc@xyz\n"}'
     headers:
       accept:
       - application/json
@@ -51,13 +94,13 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '274'
+      - '280'
       content-type:
       - application/json
       host:
       - graph.microsoft.com
       user-agent:
-      - python-httpx/0.27.0
+      - python-httpx/0.28.1
     method: PATCH
     uri: https://graph.microsoft.com/v1.0/users/me-token-to-replace/extensions/com.nexusidentity.keys
   response:
@@ -65,13 +108,13 @@ interactions:
       string: ''
     headers:
       date:
-      - Mon, 03 Jun 2024 20:35:57 GMT
+      - Tue, 17 Dec 2024 06:52:40 GMT
       request-id:
-      - e5612a3d-5086-4e68-873d-7c8f4f5a573e
+      - 93d22426-169e-4180-9116-99188530f8c9
       strict-transport-security:
       - max-age=31536000
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Central India","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"PN3PEPF000002BF"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"SI1PEPF00001A45"}}'
     status:
       code: 204
       message: No Content

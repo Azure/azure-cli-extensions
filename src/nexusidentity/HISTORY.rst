@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b4
+++++++
+* Adding support of Linux OS
+
 1.0.0b3
 ++++++
 * Adding print statements to o/p creation & update of extensions.
