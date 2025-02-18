@@ -1,4 +1,4 @@
-#--------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 #
@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy draft update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a draft Firewall Policy.
@@ -26,13 +25,12 @@ class Update(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,8 +43,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.policy_name = AAZStrArg(
-            options=["--policy-name"],
+        _args_schema.firewall_policy_name = AAZStrArg(
+            options=["--firewall-policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
             id_part="name",
@@ -54,21 +52,19 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.sql = AAZBoolArg(
-            options=["--sql"],
-            help="A flag to indicate if SQL Redirect traffic filtering is enabled.",
-            is_preview=True,
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Parameters",
+            help="Resource location.",
             nullable=True,
-        )
-        _args_schema.threat_intel_mode = AAZStrArg(
-            options=["--threat-intel-mode"],
-            help="The operation mode for Threat Intelligence.",
-            nullable=True,
-            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
+            arg_group="Parameters",
+            help="Resource tags.",
             nullable=True,
         )
 
@@ -77,34 +73,85 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        # define Arg Group "DNS"
+        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.enable_dns_proxy = AAZBoolArg(
-            options=["--enable-dns-proxy"],
-            arg_group="DNS",
-            help="Enable DNS Proxy.",
+        _args_schema.base_policy = AAZObjectArg(
+            options=["--base-policy"],
+            arg_group="Properties",
+            help="The parent firewall policy from which rules are inherited.",
             nullable=True,
         )
-        _args_schema.dns_servers = AAZListArg(
-            options=["--dns-servers"],
-            arg_group="DNS",
-            help="Space-separated list of DNS server IP addresses.",
+        cls._build_args_sub_resource_update(_args_schema.base_policy)
+        _args_schema.dns_settings = AAZObjectArg(
+            options=["--dns-settings"],
+            arg_group="Properties",
+            help="DNS Proxy Settings definition.",
             nullable=True,
         )
-
-        dns_servers = cls._args_schema.dns_servers
-        dns_servers.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Explicit Proxy"
-
-        _args_schema = cls._args_schema
         _args_schema.explicit_proxy = AAZObjectArg(
             options=["--explicit-proxy"],
-            arg_group="Explicit Proxy",
+            arg_group="Properties",
             help="Explicit Proxy Settings definition.",
+            nullable=True,
+        )
+        _args_schema.insights = AAZObjectArg(
+            options=["--insights"],
+            arg_group="Properties",
+            help="Insights on Firewall Policy.",
+            nullable=True,
+        )
+        _args_schema.intrusion_detection = AAZObjectArg(
+            options=["--intrusion-detection"],
+            arg_group="Properties",
+            help="The configuration for Intrusion detection.",
+            nullable=True,
+        )
+        _args_schema.snat = AAZObjectArg(
+            options=["--snat"],
+            arg_group="Properties",
+            help="The private IP addresses/IP ranges to which traffic will not be SNAT.",
+            nullable=True,
+        )
+        _args_schema.sql = AAZObjectArg(
+            options=["--sql"],
+            arg_group="Properties",
+            help="SQL Settings definition.",
+            nullable=True,
+        )
+        _args_schema.threat_intel_mode = AAZStrArg(
+            options=["--threat-intel-mode"],
+            arg_group="Properties",
+            help="The operation mode for Threat Intelligence.",
+            nullable=True,
+            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+        )
+        _args_schema.threat_intel_whitelist = AAZObjectArg(
+            options=["--threat-intel-whitelist"],
+            arg_group="Properties",
+            help="ThreatIntel Whitelist for Firewall Policy.",
+            nullable=True,
+        )
+
+        dns_settings = cls._args_schema.dns_settings
+        dns_settings.enable_proxy = AAZBoolArg(
+            options=["enable-proxy"],
+            help="Enable DNS Proxy on Firewalls attached to the Firewall Policy.",
+            nullable=True,
+        )
+        dns_settings.require_proxy_for_network_rules = AAZBoolArg(
+            options=["require-proxy-for-network-rules"],
+            help="FQDNs in Network Rules are supported when set to true.",
+            nullable=True,
+        )
+        dns_settings.servers = AAZListArg(
+            options=["servers"],
+            help="List of Custom DNS Servers.",
+            nullable=True,
+        )
+
+        servers = cls._args_schema.dns_settings.servers
+        servers.Element = AAZStrArg(
             nullable=True,
         )
 
@@ -152,17 +199,74 @@ class Update(AAZCommand):
             ),
         )
 
-        # define Arg Group "IntrusionDetection"
-
-        _args_schema = cls._args_schema
-        _args_schema.configuration = AAZObjectArg(
-            options=["--configuration"],
-            arg_group="IntrusionDetection",
-            help="Intrusion detection configuration properties.",
+        insights = cls._args_schema.insights
+        insights.is_enabled = AAZBoolArg(
+            options=["is-enabled"],
+            help="A flag to indicate if the insights are enabled on the policy.",
+            nullable=True,
+        )
+        insights.log_analytics_resources = AAZObjectArg(
+            options=["log-analytics-resources"],
+            help="Workspaces needed to configure the Firewall Policy Insights.",
+            nullable=True,
+        )
+        insights.retention_days = AAZIntArg(
+            options=["retention-days"],
+            help="Number of days the insights should be enabled on the policy.",
             nullable=True,
         )
 
-        configuration = cls._args_schema.configuration
+        log_analytics_resources = cls._args_schema.insights.log_analytics_resources
+        log_analytics_resources.default_workspace_id = AAZObjectArg(
+            options=["default-workspace-id"],
+            help="The default workspace Id for Firewall Policy Insights.",
+            nullable=True,
+        )
+        cls._build_args_sub_resource_update(log_analytics_resources.default_workspace_id)
+        log_analytics_resources.workspaces = AAZListArg(
+            options=["workspaces"],
+            help="List of workspaces for Firewall Policy Insights.",
+            nullable=True,
+        )
+
+        workspaces = cls._args_schema.insights.log_analytics_resources.workspaces
+        workspaces.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.insights.log_analytics_resources.workspaces.Element
+        _element.region = AAZStrArg(
+            options=["region"],
+            help="Region to configure the Workspace.",
+            nullable=True,
+        )
+        _element.workspace_id = AAZObjectArg(
+            options=["workspace-id"],
+            help="The workspace Id for Firewall Policy Insights.",
+            nullable=True,
+        )
+        cls._build_args_sub_resource_update(_element.workspace_id)
+
+        intrusion_detection = cls._args_schema.intrusion_detection
+        intrusion_detection.configuration = AAZObjectArg(
+            options=["configuration"],
+            help="Intrusion detection configuration properties.",
+            nullable=True,
+        )
+        intrusion_detection.mode = AAZStrArg(
+            options=["mode"],
+            help="Intrusion detection general state. When attached to a parent policy, the firewall's effective IDPS mode is the stricter mode of the two.",
+            nullable=True,
+            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+        )
+        intrusion_detection.profile = AAZStrArg(
+            options=["profile"],
+            help="IDPS profile name. When attached to a parent policy, the firewall's effective profile is the profile name of the parent policy.",
+            nullable=True,
+            enum={"Advanced": "Advanced", "Basic": "Basic", "Extended": "Extended", "Standard": "Standard"},
+        )
+
+        configuration = cls._args_schema.intrusion_detection.configuration
         configuration.bypass_traffic_settings = AAZListArg(
             options=["bypass-traffic-settings"],
             help="List of rules for traffic to bypass.",
@@ -179,12 +283,12 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        bypass_traffic_settings = cls._args_schema.configuration.bypass_traffic_settings
+        bypass_traffic_settings = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings
         bypass_traffic_settings.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.configuration.bypass_traffic_settings.Element
+        _element = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element
         _element.description = AAZStrArg(
             options=["description"],
             help="Description of the bypass traffic rule.",
@@ -227,42 +331,42 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        destination_addresses = cls._args_schema.configuration.bypass_traffic_settings.Element.destination_addresses
+        destination_addresses = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_addresses
         destination_addresses.Element = AAZStrArg(
             nullable=True,
         )
 
-        destination_ip_groups = cls._args_schema.configuration.bypass_traffic_settings.Element.destination_ip_groups
+        destination_ip_groups = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ip_groups
         destination_ip_groups.Element = AAZStrArg(
             nullable=True,
         )
 
-        destination_ports = cls._args_schema.configuration.bypass_traffic_settings.Element.destination_ports
+        destination_ports = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ports
         destination_ports.Element = AAZStrArg(
             nullable=True,
         )
 
-        source_addresses = cls._args_schema.configuration.bypass_traffic_settings.Element.source_addresses
+        source_addresses = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.source_addresses
         source_addresses.Element = AAZStrArg(
             nullable=True,
         )
 
-        source_ip_groups = cls._args_schema.configuration.bypass_traffic_settings.Element.source_ip_groups
+        source_ip_groups = cls._args_schema.intrusion_detection.configuration.bypass_traffic_settings.Element.source_ip_groups
         source_ip_groups.Element = AAZStrArg(
             nullable=True,
         )
 
-        private_ranges = cls._args_schema.configuration.private_ranges
+        private_ranges = cls._args_schema.intrusion_detection.configuration.private_ranges
         private_ranges.Element = AAZStrArg(
             nullable=True,
         )
 
-        signature_overrides = cls._args_schema.configuration.signature_overrides
+        signature_overrides = cls._args_schema.intrusion_detection.configuration.signature_overrides
         signature_overrides.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.configuration.signature_overrides.Element
+        _element = cls._args_schema.intrusion_detection.configuration.signature_overrides.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="Signature id.",
@@ -275,62 +379,49 @@ class Update(AAZCommand):
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
 
-        # define Arg Group "Intrustion Detection"
-
-        _args_schema = cls._args_schema
-        _args_schema.idps_mode = AAZStrArg(
-            options=["--idps-mode"],
-            arg_group="Intrustion Detection",
-            help="IDPS mode.",
-            is_preview=True,
-            nullable=True,
-            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
-        )
-
-        # define Arg Group "Snat"
-
-        _args_schema = cls._args_schema
-        _args_schema.auto_learn_private_ranges = AAZStrArg(
-            options=["--learn-ranges", "--auto-learn-private-ranges"],
-            arg_group="Snat",
+        snat = cls._args_schema.snat
+        snat.auto_learn_private_ranges = AAZStrArg(
+            options=["auto-learn-private-ranges"],
             help="The operation mode for automatically learning private ranges to not be SNAT",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.private_ranges = AAZListArg(
-            options=["--private-ranges"],
-            arg_group="Snat",
+        snat.private_ranges = AAZListArg(
+            options=["private-ranges"],
             help="List of private IP addresses/IP address ranges to not be SNAT.",
             nullable=True,
         )
 
-        private_ranges = cls._args_schema.private_ranges
+        private_ranges = cls._args_schema.snat.private_ranges
         private_ranges.Element = AAZStrArg(
             nullable=True,
         )
 
-        # define Arg Group "Threat Intel Allowlist"
-
-        _args_schema = cls._args_schema
-        _args_schema.fqdns = AAZListArg(
-            options=["--fqdns"],
-            arg_group="Threat Intel Allowlist",
-            help="Space-separated list of FQDNs.",
-            nullable=True,
-        )
-        _args_schema.ip_addresses = AAZListArg(
-            options=["--ip-addresses"],
-            arg_group="Threat Intel Allowlist",
-            help="Space-separated list of IPv4 addresses.",
+        sql = cls._args_schema.sql
+        sql.allow_sql_redirect = AAZBoolArg(
+            options=["allow-sql-redirect"],
+            help="A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999.",
             nullable=True,
         )
 
-        fqdns = cls._args_schema.fqdns
+        threat_intel_whitelist = cls._args_schema.threat_intel_whitelist
+        threat_intel_whitelist.fqdns = AAZListArg(
+            options=["fqdns"],
+            help="List of FQDNs for the ThreatIntel Whitelist.",
+            nullable=True,
+        )
+        threat_intel_whitelist.ip_addresses = AAZListArg(
+            options=["ip-addresses"],
+            help="List of IP addresses for the ThreatIntel Whitelist.",
+            nullable=True,
+        )
+
+        fqdns = cls._args_schema.threat_intel_whitelist.fqdns
         fqdns.Element = AAZStrArg(
             nullable=True,
         )
 
-        ip_addresses = cls._args_schema.ip_addresses
+        ip_addresses = cls._args_schema.threat_intel_whitelist.ip_addresses
         ip_addresses.Element = AAZStrArg(
             nullable=True,
         )
@@ -364,7 +455,7 @@ class Update(AAZCommand):
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.FirewallPolicyDraftsCreateOrUpdate(ctx=self.ctx)()
+        self.FirewallPolicyDraftsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -417,7 +508,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallPolicyName", self.ctx.args.policy_name,
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -476,24 +567,8 @@ class Update(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
@@ -516,7 +591,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallPolicyName", self.ctx.args.policy_name,
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -592,24 +667,27 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("basePolicy", AAZObjectType)
-                properties.set_prop("dnsSettings", AAZObjectType)
+                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("basePolicy", AAZObjectType, ".base_policy"))
+                properties.set_prop("dnsSettings", AAZObjectType, ".dns_settings")
                 properties.set_prop("explicitProxy", AAZObjectType, ".explicit_proxy")
-                properties.set_prop("intrusionDetection", AAZObjectType)
-                properties.set_prop("snat", AAZObjectType)
-                properties.set_prop("sql", AAZObjectType)
+                properties.set_prop("insights", AAZObjectType, ".insights")
+                properties.set_prop("intrusionDetection", AAZObjectType, ".intrusion_detection")
+                properties.set_prop("snat", AAZObjectType, ".snat")
+                properties.set_prop("sql", AAZObjectType, ".sql")
                 properties.set_prop("threatIntelMode", AAZStrType, ".threat_intel_mode")
-                properties.set_prop("threatIntelWhitelist", AAZObjectType)
+                properties.set_prop("threatIntelWhitelist", AAZObjectType, ".threat_intel_whitelist")
 
             dns_settings = _builder.get(".properties.dnsSettings")
             if dns_settings is not None:
-                dns_settings.set_prop("enableProxy", AAZBoolType, ".enable_dns_proxy")
-                dns_settings.set_prop("servers", AAZListType, ".dns_servers")
+                dns_settings.set_prop("enableProxy", AAZBoolType, ".enable_proxy")
+                dns_settings.set_prop("requireProxyForNetworkRules", AAZBoolType, ".require_proxy_for_network_rules", typ_kwargs={"nullable": True})
+                dns_settings.set_prop("servers", AAZListType, ".servers")
 
             servers = _builder.get(".properties.dnsSettings.servers")
             if servers is not None:
@@ -624,10 +702,31 @@ class Update(AAZCommand):
                 explicit_proxy.set_prop("pacFile", AAZStrType, ".pac_file")
                 explicit_proxy.set_prop("pacFilePort", AAZIntType, ".pac_file_port")
 
+            insights = _builder.get(".properties.insights")
+            if insights is not None:
+                insights.set_prop("isEnabled", AAZBoolType, ".is_enabled")
+                insights.set_prop("logAnalyticsResources", AAZObjectType, ".log_analytics_resources")
+                insights.set_prop("retentionDays", AAZIntType, ".retention_days")
+
+            log_analytics_resources = _builder.get(".properties.insights.logAnalyticsResources")
+            if log_analytics_resources is not None:
+                _UpdateHelper._build_schema_sub_resource_update(log_analytics_resources.set_prop("defaultWorkspaceId", AAZObjectType, ".default_workspace_id"))
+                log_analytics_resources.set_prop("workspaces", AAZListType, ".workspaces")
+
+            workspaces = _builder.get(".properties.insights.logAnalyticsResources.workspaces")
+            if workspaces is not None:
+                workspaces.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.insights.logAnalyticsResources.workspaces[]")
+            if _elements is not None:
+                _elements.set_prop("region", AAZStrType, ".region")
+                _UpdateHelper._build_schema_sub_resource_update(_elements.set_prop("workspaceId", AAZObjectType, ".workspace_id"))
+
             intrusion_detection = _builder.get(".properties.intrusionDetection")
             if intrusion_detection is not None:
                 intrusion_detection.set_prop("configuration", AAZObjectType, ".configuration")
-                intrusion_detection.set_prop("mode", AAZStrType, ".idps_mode")
+                intrusion_detection.set_prop("mode", AAZStrType, ".mode")
+                intrusion_detection.set_prop("profile", AAZStrType, ".profile")
 
             configuration = _builder.get(".properties.intrusionDetection.configuration")
             if configuration is not None:
@@ -694,7 +793,7 @@ class Update(AAZCommand):
 
             sql = _builder.get(".properties.sql")
             if sql is not None:
-                sql.set_prop("allowSqlRedirect", AAZBoolType, ".sql")
+                sql.set_prop("allowSqlRedirect", AAZBoolType, ".allow_sql_redirect")
 
             threat_intel_whitelist = _builder.get(".properties.threatIntelWhitelist")
             if threat_intel_whitelist is not None:
@@ -738,33 +837,31 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_firewall_policy_draft_read(cls, _schema):
         if cls._schema_firewall_policy_draft_read is not None:
-            _schema.etag = cls._schema_firewall_policy_draft_read.etag
             _schema.id = cls._schema_firewall_policy_draft_read.id
+            _schema.location = cls._schema_firewall_policy_draft_read.location
             _schema.name = cls._schema_firewall_policy_draft_read.name
             _schema.properties = cls._schema_firewall_policy_draft_read.properties
             _schema.tags = cls._schema_firewall_policy_draft_read.tags
             _schema.type = cls._schema_firewall_policy_draft_read.type
             return
 
-        cls._schema_firewall_policy_draft_read = _schema_firewall_policy_read = AAZObjectType()
+        cls._schema_firewall_policy_draft_read = _schema_firewall_policy_draft_read = AAZObjectType()
 
-        firewall_policy_read = _schema_firewall_policy_read
-        firewall_policy_read.etag = AAZStrType(
+        firewall_policy_draft_read = _schema_firewall_policy_draft_read
+        firewall_policy_draft_read.id = AAZStrType()
+        firewall_policy_draft_read.location = AAZStrType()
+        firewall_policy_draft_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        firewall_policy_read.id = AAZStrType()
-        firewall_policy_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        firewall_policy_read.properties = AAZObjectType(
+        firewall_policy_draft_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        firewall_policy_read.tags = AAZDictType()
-        firewall_policy_read.type = AAZStrType(
+        firewall_policy_draft_read.tags = AAZDictType()
+        firewall_policy_draft_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_firewall_policy_read.properties
+        properties = _schema_firewall_policy_draft_read.properties
         properties.base_policy = AAZObjectType(
             serialized_name="basePolicy",
         )
@@ -788,7 +885,7 @@ class _UpdateHelper:
             serialized_name="threatIntelWhitelist",
         )
 
-        dns_settings = _schema_firewall_policy_read.properties.dns_settings
+        dns_settings = _schema_firewall_policy_draft_read.properties.dns_settings
         dns_settings.enable_proxy = AAZBoolType(
             serialized_name="enableProxy",
         )
@@ -798,10 +895,10 @@ class _UpdateHelper:
         )
         dns_settings.servers = AAZListType()
 
-        servers = _schema_firewall_policy_read.properties.dns_settings.servers
+        servers = _schema_firewall_policy_draft_read.properties.dns_settings.servers
         servers.Element = AAZStrType()
 
-        explicit_proxy = _schema_firewall_policy_read.properties.explicit_proxy
+        explicit_proxy = _schema_firewall_policy_draft_read.properties.explicit_proxy
         explicit_proxy.enable_explicit_proxy = AAZBoolType(
             serialized_name="enableExplicitProxy",
             nullable=True,
@@ -823,7 +920,7 @@ class _UpdateHelper:
             serialized_name="pacFilePort",
         )
 
-        insights = _schema_firewall_policy_read.properties.insights
+        insights = _schema_firewall_policy_draft_read.properties.insights
         insights.is_enabled = AAZBoolType(
             serialized_name="isEnabled",
         )
@@ -834,28 +931,29 @@ class _UpdateHelper:
             serialized_name="retentionDays",
         )
 
-        log_analytics_resources = _schema_firewall_policy_read.properties.insights.log_analytics_resources
+        log_analytics_resources = _schema_firewall_policy_draft_read.properties.insights.log_analytics_resources
         log_analytics_resources.default_workspace_id = AAZObjectType(
             serialized_name="defaultWorkspaceId",
         )
         cls._build_schema_sub_resource_read(log_analytics_resources.default_workspace_id)
         log_analytics_resources.workspaces = AAZListType()
 
-        workspaces = _schema_firewall_policy_read.properties.insights.log_analytics_resources.workspaces
+        workspaces = _schema_firewall_policy_draft_read.properties.insights.log_analytics_resources.workspaces
         workspaces.Element = AAZObjectType()
 
-        _element = _schema_firewall_policy_read.properties.insights.log_analytics_resources.workspaces.Element
+        _element = _schema_firewall_policy_draft_read.properties.insights.log_analytics_resources.workspaces.Element
         _element.region = AAZStrType()
         _element.workspace_id = AAZObjectType(
             serialized_name="workspaceId",
         )
         cls._build_schema_sub_resource_read(_element.workspace_id)
 
-        intrusion_detection = _schema_firewall_policy_read.properties.intrusion_detection
+        intrusion_detection = _schema_firewall_policy_draft_read.properties.intrusion_detection
         intrusion_detection.configuration = AAZObjectType()
         intrusion_detection.mode = AAZStrType()
+        intrusion_detection.profile = AAZStrType()
 
-        configuration = _schema_firewall_policy_read.properties.intrusion_detection.configuration
+        configuration = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration
         configuration.bypass_traffic_settings = AAZListType(
             serialized_name="bypassTrafficSettings",
         )
@@ -866,10 +964,10 @@ class _UpdateHelper:
             serialized_name="signatureOverrides",
         )
 
-        bypass_traffic_settings = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings
+        bypass_traffic_settings = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings
         bypass_traffic_settings.Element = AAZObjectType()
 
-        _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element
+        _element = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element
         _element.description = AAZStrType()
         _element.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",
@@ -889,32 +987,32 @@ class _UpdateHelper:
             serialized_name="sourceIpGroups",
         )
 
-        destination_addresses = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_addresses
+        destination_addresses = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_addresses
         destination_addresses.Element = AAZStrType()
 
-        destination_ip_groups = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ip_groups
+        destination_ip_groups = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ip_groups
         destination_ip_groups.Element = AAZStrType()
 
-        destination_ports = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ports
+        destination_ports = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.destination_ports
         destination_ports.Element = AAZStrType()
 
-        source_addresses = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_addresses
+        source_addresses = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_addresses
         source_addresses.Element = AAZStrType()
 
-        source_ip_groups = _schema_firewall_policy_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_ip_groups
+        source_ip_groups = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.bypass_traffic_settings.Element.source_ip_groups
         source_ip_groups.Element = AAZStrType()
 
-        private_ranges = _schema_firewall_policy_read.properties.intrusion_detection.configuration.private_ranges
+        private_ranges = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.private_ranges
         private_ranges.Element = AAZStrType()
 
-        signature_overrides = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides
+        signature_overrides = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.signature_overrides
         signature_overrides.Element = AAZObjectType()
 
-        _element = _schema_firewall_policy_read.properties.intrusion_detection.configuration.signature_overrides.Element
+        _element = _schema_firewall_policy_draft_read.properties.intrusion_detection.configuration.signature_overrides.Element
         _element.id = AAZStrType()
         _element.mode = AAZStrType()
 
-        snat = _schema_firewall_policy_read.properties.snat
+        snat = _schema_firewall_policy_draft_read.properties.snat
         snat.auto_learn_private_ranges = AAZStrType(
             serialized_name="autoLearnPrivateRanges",
         )
@@ -922,31 +1020,31 @@ class _UpdateHelper:
             serialized_name="privateRanges",
         )
 
-        private_ranges = _schema_firewall_policy_read.properties.snat.private_ranges
+        private_ranges = _schema_firewall_policy_draft_read.properties.snat.private_ranges
         private_ranges.Element = AAZStrType()
 
-        sql = _schema_firewall_policy_read.properties.sql
+        sql = _schema_firewall_policy_draft_read.properties.sql
         sql.allow_sql_redirect = AAZBoolType(
             serialized_name="allowSqlRedirect",
         )
 
-        threat_intel_whitelist = _schema_firewall_policy_read.properties.threat_intel_whitelist
+        threat_intel_whitelist = _schema_firewall_policy_draft_read.properties.threat_intel_whitelist
         threat_intel_whitelist.fqdns = AAZListType()
         threat_intel_whitelist.ip_addresses = AAZListType(
             serialized_name="ipAddresses",
         )
 
-        fqdns = _schema_firewall_policy_read.properties.threat_intel_whitelist.fqdns
+        fqdns = _schema_firewall_policy_draft_read.properties.threat_intel_whitelist.fqdns
         fqdns.Element = AAZStrType()
 
-        ip_addresses = _schema_firewall_policy_read.properties.threat_intel_whitelist.ip_addresses
+        ip_addresses = _schema_firewall_policy_draft_read.properties.threat_intel_whitelist.ip_addresses
         ip_addresses.Element = AAZStrType()
 
-        tags = _schema_firewall_policy_read.tags
+        tags = _schema_firewall_policy_draft_read.tags
         tags.Element = AAZStrType()
 
-        _schema.etag = cls._schema_firewall_policy_draft_read.etag
         _schema.id = cls._schema_firewall_policy_draft_read.id
+        _schema.location = cls._schema_firewall_policy_draft_read.location
         _schema.name = cls._schema_firewall_policy_draft_read.name
         _schema.properties = cls._schema_firewall_policy_draft_read.properties
         _schema.tags = cls._schema_firewall_policy_draft_read.tags

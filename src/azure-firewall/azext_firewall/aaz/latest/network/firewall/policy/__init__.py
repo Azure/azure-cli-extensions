@@ -13,6 +13,8 @@ from ._create import *
 from ._delete import *
 from ._deploy import *
 from ._list import *
+from ._list_idps_filter_option import *
+from ._list_idps_signature import *
 from ._show import *
 from ._update import *
 from ._wait import *
