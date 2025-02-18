@@ -9,23 +9,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"mbhardwaj@microsoft.com","createdByType":"User","createdAt":"2024-12-19T12:32:22.6816032Z","lastModifiedBy":"mbhardwaj@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-19T12:32:22.6816032Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"hbisht@microsoft.com","createdByType":"User","createdAt":"2025-02-16T13:28:34.7625198Z","lastModifiedBy":"hbisht@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-16T13:28:34.7625198Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '653'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:53 GMT
+      - Sun, 16 Feb 2025 13:29:08 GMT
       etag:
-      - '"99371f2b-0000-0200-0000-6764126b0000"'
+      - '"080576ea-0000-0200-0000-67b1e8180000"'
       expires:
       - '-1'
       pragma:
@@ -39,9 +39,9 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      - '16498'
       x-msedge-ref:
-      - 'Ref A: F78A53EDD90F49D2951C7F01AEC33B66 Ref B: CO6AA3150217023 Ref C: 2024-12-19T12:32:54Z'
+      - 'Ref A: 340DE66B4C34430EB9AA870C01548CF6 Ref B: MAA201060516029 Ref C: 2025-02-16T13:29:08Z'
     status:
       code: 200
       message: OK
@@ -55,9 +55,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"error":{"code":"TestNotFound","message":"Test couldn''t find with
@@ -65,21 +65,21 @@ interactions:
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-type:
       - application/json
       date:
-      - Thu, 19 Dec 2024 12:32:54 GMT
+      - Sun, 16 Feb 2025 13:29:09 GMT
       mise-correlation-id:
-      - 669aeb0b-fd1b-4fc4-9995-e5288c9c9750
+      - 0c4dec3d-2a76-4eab-948c-8aee001a3ae9
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 20241219T123254Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001has
+      - 20250216T132909Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w447
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -95,15 +95,15 @@ interactions:
       "publicIPDisabled": false, "environmentVariables": {"rps": 1, "duration_in_sec":
       "1"}, "secrets": {}, "certificate": null, "loadTestConfiguration": {"engineInstances":
       1, "regionalLoadTestConfig": null, "quickStartTest": false, "splitAllCSVs":
-      true}, "passFailCriteria": {"passFailMetrics": {"420799c7-59fb-42d4-ba85-6ecb67439ae9":
+      true}, "passFailCriteria": {"passFailMetrics": {"3f19c6f9-5214-4ced-bef1-5bbe37eb29d5":
       {"aggregate": "avg", "clientMetric": "requests_per_sec", "condition": ">", "value":
-      "78"}, "3a419f79-eb32-4d70-92ad-8b644dc6d6e0": {"aggregate": "percentage", "clientMetric":
-      "error", "condition": ">", "value": "50"}, "0cbef86b-5447-4eee-b204-5e95fecf2960":
+      "78"}, "15bf4a2e-6276-4bd9-b278-5744060764c8": {"aggregate": "percentage", "clientMetric":
+      "error", "condition": ">", "value": "50"}, "8f2c40e3-958f-4126-8577-1acd086b51c2":
       {"aggregate": "p75", "clientMetric": "response_time_ms", "condition": ">", "value":
-      "380"}, "13fe25e1-19ec-4c5c-803e-9ec5c9bd00ab": {"aggregate": "p99", "clientMetric":
-      "response_time_ms", "condition": ">", "value": "520"}, "1e65d4a3-87bd-4bc9-a0d0-a1be9411d133":
+      "380"}, "4a06717f-0c11-4f91-84ad-41f48627ee60": {"aggregate": "p99", "clientMetric":
+      "response_time_ms", "condition": ">", "value": "520"}, "d87ce60f-23ab-41ce-80b3-3361ba7bea15":
       {"aggregate": "p99.9", "clientMetric": "response_time_ms", "condition": ">",
-      "value": "540"}, "179b3821-6617-4477-ba03-6abc5b19d2cd": {"aggregate": "avg",
+      "value": "540"}, "4df0a017-b59d-4e60-a13d-2706f42afc08": {"aggregate": "avg",
       "clientMetric": "latency", "condition": ">", "value": "200", "requestName":
       "GetCustomerDetails"}}}, "autoStopCriteria": {"autoStopDisabled": true}}'
     headers:
@@ -118,33 +118,33 @@ interactions:
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: PATCH
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"passFailCriteria":{"passFailMetrics":{"420799c7-59fb-42d4-ba85-6ecb67439ae9":{"clientMetric":"requests_per_sec","aggregate":"avg","condition":">","value":78.0,"action":"continue"},"3a419f79-eb32-4d70-92ad-8b644dc6d6e0":{"clientMetric":"error","aggregate":"percentage","condition":">","value":50.0,"action":"continue"},"0cbef86b-5447-4eee-b204-5e95fecf2960":{"clientMetric":"response_time_ms","aggregate":"p75","condition":">","value":380.0,"action":"continue"},"13fe25e1-19ec-4c5c-803e-9ec5c9bd00ab":{"clientMetric":"response_time_ms","aggregate":"p99","condition":">","value":520.0,"action":"continue"},"1e65d4a3-87bd-4bc9-a0d0-a1be9411d133":{"clientMetric":"response_time_ms","aggregate":"p99.9","condition":">","value":540.0,"action":"continue"},"179b3821-6617-4477-ba03-6abc5b19d2cd":{"clientMetric":"latency","aggregate":"avg","condition":">","requestName":"GetCustomerDetails","value":200.0,"action":"continue"}}},"autoStopCriteria":{"autoStopDisabled":true,"errorRate":90.0,"errorRateTimeWindowInSeconds":60},"environmentVariables":{"rps":"1","duration_in_sec":"1"},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":true,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"URL","publicIPDisabled":false,"testId":"delete-test-case","description":"Test
-        created from az load test command","displayName":"CLI-Test","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2024-12-19T12:32:55.052Z","createdBy":"mbhardwaj@microsoft.com","lastModifiedDateTime":"2024-12-19T12:32:55.052Z","lastModifiedBy":"mbhardwaj@microsoft.com"}'
+      string: '{"passFailCriteria":{"passFailMetrics":{"3f19c6f9-5214-4ced-bef1-5bbe37eb29d5":{"clientMetric":"requests_per_sec","aggregate":"avg","condition":">","value":78.0,"action":"continue"},"15bf4a2e-6276-4bd9-b278-5744060764c8":{"clientMetric":"error","aggregate":"percentage","condition":">","value":50.0,"action":"continue"},"8f2c40e3-958f-4126-8577-1acd086b51c2":{"clientMetric":"response_time_ms","aggregate":"p75","condition":">","value":380.0,"action":"continue"},"4a06717f-0c11-4f91-84ad-41f48627ee60":{"clientMetric":"response_time_ms","aggregate":"p99","condition":">","value":520.0,"action":"continue"},"d87ce60f-23ab-41ce-80b3-3361ba7bea15":{"clientMetric":"response_time_ms","aggregate":"p99.9","condition":">","value":540.0,"action":"continue"},"4df0a017-b59d-4e60-a13d-2706f42afc08":{"clientMetric":"latency","aggregate":"avg","condition":">","requestName":"GetCustomerDetails","value":200.0,"action":"continue"}},"passFailServerMetrics":{}},"autoStopCriteria":{"autoStopDisabled":true,"errorRate":90.0,"errorRateTimeWindowInSeconds":60},"environmentVariables":{"rps":"1","duration_in_sec":"1"},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":true,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"URL","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"delete-test-case","description":"Test
+        created from az load test command","displayName":"CLI-Test","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-02-16T13:29:10.307Z","createdBy":"hbisht@microsoft.com","lastModifiedDateTime":"2025-02-16T13:29:10.307Z","lastModifiedBy":"hbisht@microsoft.com"}'
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '1578'
+      - '1647'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:55 GMT
+      - Sun, 16 Feb 2025 13:29:10 GMT
       location:
-      - https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-03-01-preview
+      - https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-12-01-preview
       mise-correlation-id:
-      - f37537be-4949-460d-a6dc-0e09d85256de
+      - 766012f2-47b5-4a7a-96a8-2f57e90880c9
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123254Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001hb3
+      - 20250216T132909Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w474
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -162,9 +162,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files?api-version=2024-12-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -173,7 +173,7 @@ interactions:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
@@ -181,13 +181,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:55 GMT
+      - Sun, 16 Feb 2025 13:29:10 GMT
       mise-correlation-id:
-      - aa910231-08c2-4388-a74e-db133ec7320c
+      - bcff72a5-0863-4378-b0f3-be4794cb035c
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123255Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001hbg
+      - 20250216T132910Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w49c
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -199,7 +199,7 @@ interactions:
     body: !!python/object/new:_io.BytesIO
       state: !!python/tuple
       - !!binary |
-        YSxiLGMsZA0KMSwyLDMsNA0K
+        YSxiLGMsZAoxLDIsMyw0Cg==
       - 0
       - null
     headers:
@@ -210,36 +210,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '18'
+      - '16'
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
       content-type:
       - application/octet-stream
     method: PUT
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/additional-data.csv?api-version=2024-05-01-preview&fileType=ADDITIONAL_ARTIFACTS
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/additional-data.csv?api-version=2024-12-01-preview&fileType=ADDITIONAL_ARTIFACTS
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/dd76297e-2825-44c3-9679-38b020093149?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A42%3A55Z&sr=b&sp=r&sig=***","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2024-12-19T12:42:55.5919382Z","validationStatus":"VALIDATION_NOT_REQUIRED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/dd5e33e3-3fe3-42f7-b3da-d8a79256e402?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A11Z&ske=2025-02-16T20%3A29%3A11Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A11Z&sr=b&sp=r&sig=n0Jz3fOEJ6kU5vRmNtFXz5f91H1mrMGUOjEmroEhKOc%3D","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2025-02-16T13:39:11.0787652Z","validationStatus":"VALIDATION_NOT_REQUIRED"}'
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '575'
+      - '571'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:55 GMT
+      - Sun, 16 Feb 2025 13:29:11 GMT
       location:
-      - https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/additional-data.csv?api-version=2024-03-01-preview
+      - https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/additional-data.csv?api-version=2024-12-01-preview
       mise-correlation-id:
-      - 3ae74dee-1514-4ea9-abaf-b3e33c68d923
+      - 89bd1cf5-c930-4543-af34-d2ce0e871f49
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123255Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001hbn
+      - 20250216T132910Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w4au
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -257,32 +257,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/additional-data.csv?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/additional-data.csv?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/dd76297e-2825-44c3-9679-38b020093149?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A42%3A56Z&sr=b&sp=r&sig=***","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2024-12-19T12:42:56.7108884Z","validationStatus":"VALIDATION_NOT_REQUIRED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/dd5e33e3-3fe3-42f7-b3da-d8a79256e402?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A11Z&ske=2025-02-16T20%3A29%3A11Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A11Z&sr=b&sp=r&sig=n0Jz3fOEJ6kU5vRmNtFXz5f91H1mrMGUOjEmroEhKOc%3D","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2025-02-16T13:39:11.9149962Z","validationStatus":"VALIDATION_NOT_REQUIRED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '573'
+      - '571'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:56 GMT
+      - Sun, 16 Feb 2025 13:29:12 GMT
       mise-correlation-id:
-      - 78b37bf0-98da-4e62-b6a6-06a95b279803
+      - 6bdfaadc-754b-48e6-97ee-7bcc95bab38a
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123255Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001hc6
+      - 20250216T132911Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w4cq
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -311,34 +311,34 @@ interactions:
       Content-Length:
       - '236'
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
       content-type:
       - application/octet-stream
     method: PUT
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview&fileType=ZIPPED_ARTIFACTS
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-12-01-preview&fileType=ZIPPED_ARTIFACTS
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A42%3A57Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:42:57.0245263Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/289f683a-8c7e-4e34-af45-1c662ca5facd?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A11Z&ske=2025-02-16T20%3A29%3A11Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A12Z&sr=b&sp=r&sig=%2B%2F2qhh0Fk5IHu0IrRYyZ%2BFD57NTNVXfJN%2BJebYrTDmk%3D","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2025-02-16T13:39:12.28131Z","validationStatus":"NOT_VALIDATED"}'
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '574'
+      - '567'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:57 GMT
+      - Sun, 16 Feb 2025 13:29:12 GMT
       location:
-      - https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-03-01-preview
+      - https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-12-01-preview
       mise-correlation-id:
-      - 874946de-1827-47f0-9f8b-e8d0b91719c3
+      - 2be2e74e-eb0f-4328-b589-a22b60607b28
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123256Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001he6
+      - 20250216T132912Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w4g6
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -356,247 +356,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A57Z&ske=2024-12-19T19%3A32%3A57Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A42%3A57Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:42:57.1561284Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/289f683a-8c7e-4e34-af45-1c662ca5facd?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A11Z&ske=2025-02-16T20%3A29%3A11Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A12Z&sr=b&sp=r&sig=%2B%2F2qhh0Fk5IHu0IrRYyZ%2BFD57NTNVXfJN%2BJebYrTDmk%3D","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2025-02-16T13:39:12.5300387Z","validationStatus":"NOT_VALIDATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '572'
+      - '569'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:32:57 GMT
+      - Sun, 16 Feb 2025 13:29:12 GMT
       mise-correlation-id:
-      - 2a66f996-2c0c-47d7-ad01-ea2ec5a563be
+      - 80ba1297-3fa7-4b98-bcc7-0eab983ba9e2
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123257Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001heq
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A02Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:43:02.2606301Z","validationStatus":"VALIDATION_INITIATED"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '568'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:02 GMT
-      mise-correlation-id:
-      - 1754cc35-864c-4189-a382-3ea3e7429d24
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123302Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001hp4
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A07Z&ske=2024-12-19T19%3A33%3A07Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A07Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:43:07.4055375Z","validationStatus":"VALIDATION_INITIATED"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '568'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:07 GMT
-      mise-correlation-id:
-      - 402fbfe1-55b7-4e0e-bea8-16a1a7a3adff
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123307Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001hvs
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A57Z&ske=2024-12-19T19%3A32%3A57Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A12Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:43:12.5061848Z","validationStatus":"VALIDATION_INITIATED"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '570'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:12 GMT
-      mise-correlation-id:
-      - f93e7d71-4a5d-4f4b-9f77-9dad97f8d812
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123312Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001k22
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A17Z&ske=2024-12-19T19%3A33%3A17Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A17Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:43:17.6413664Z","validationStatus":"VALIDATION_INITIATED"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '568'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:17 GMT
-      mise-correlation-id:
-      - 88444ed7-3055-4dfa-acb0-20b32014327b
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123317Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001k89
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-ZIP-artifact.zip?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A57Z&ske=2024-12-19T19%3A32%3A57Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A22Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T12:43:22.7412028Z","validationStatus":"VALIDATION_SUCCESS"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '570'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:22 GMT
-      mise-correlation-id:
-      - 4466ae59-55d6-4c7d-9b9c-f407fc872df8
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123322Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001kep
+      - 20250216T132912Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w4ke
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -608,92 +393,91 @@ interactions:
     body: !!python/object/new:_io.BytesIO
       state: !!python/tuple
       - !!binary |
-        PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxqbWV0ZXJUZXN0UGxhbiB2
-        ZXJzaW9uPSIxLjIiIHByb3BlcnRpZXM9IjUuMCIgam1ldGVyPSI1LjUiPg0KICA8aGFzaFRyZWU+
-        DQogICAgPFRlc3RQbGFuIGd1aWNsYXNzPSJUZXN0UGxhbkd1aSIgdGVzdGNsYXNzPSJUZXN0UGxh
-        biIgdGVzdG5hbWU9IkF6dXJlIExvYWQgVGVzdGluZyIgZW5hYmxlZD0idHJ1ZSI+DQogICAgICA8
-        c3RyaW5nUHJvcCBuYW1lPSJUZXN0UGxhbi5jb21tZW50cyI+PC9zdHJpbmdQcm9wPg0KICAgICAg
-        PGJvb2xQcm9wIG5hbWU9IlRlc3RQbGFuLmZ1bmN0aW9uYWxfbW9kZSI+ZmFsc2U8L2Jvb2xQcm9w
-        Pg0KICAgICAgPGJvb2xQcm9wIG5hbWU9IlRlc3RQbGFuLnRlYXJEb3duX29uX3NodXRkb3duIj50
-        cnVlPC9ib29sUHJvcD4NCiAgICAgIDxib29sUHJvcCBuYW1lPSJUZXN0UGxhbi5zZXJpYWxpemVf
-        dGhyZWFkZ3JvdXBzIj5mYWxzZTwvYm9vbFByb3A+DQogICAgICA8ZWxlbWVudFByb3AgbmFtZT0i
-        VGVzdFBsYW4udXNlcl9kZWZpbmVkX3ZhcmlhYmxlcyIgZWxlbWVudFR5cGU9IkFyZ3VtZW50cyIg
-        Z3VpY2xhc3M9IkFyZ3VtZW50c1BhbmVsIiB0ZXN0Y2xhc3M9IkFyZ3VtZW50cyIgdGVzdG5hbWU9
-        IlVzZXIgRGVmaW5lZCBWYXJpYWJsZXMiIGVuYWJsZWQ9InRydWUiPg0KICAgICAgICA8Y29sbGVj
-        dGlvblByb3AgbmFtZT0iQXJndW1lbnRzLmFyZ3VtZW50cyIvPg0KICAgICAgPC9lbGVtZW50UHJv
-        cD4NCiAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IlRlc3RQbGFuLnVzZXJfZGVmaW5lX2NsYXNzcGF0
-        aCI+PC9zdHJpbmdQcm9wPg0KICAgIDwvVGVzdFBsYW4+DQogICAgPGhhc2hUcmVlPg0KICAgICAg
-        PEFyZ3VtZW50cyBndWljbGFzcz0iQXJndW1lbnRzUGFuZWwiIHRlc3RjbGFzcz0iQXJndW1lbnRz
-        IiB0ZXN0bmFtZT0iVXNlciBEZWZpbmVkIFZhcmlhYmxlcyIgZW5hYmxlZD0idHJ1ZSI+DQogICAg
-        ICAgIDxjb2xsZWN0aW9uUHJvcCBuYW1lPSJBcmd1bWVudHMuYXJndW1lbnRzIj4NCiAgICAgICAg
-        ICA8ZWxlbWVudFByb3AgbmFtZT0iZHVyYXRpb25faW5fc2VjIiBlbGVtZW50VHlwZT0iQXJndW1l
-        bnQiPg0KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQubmFtZSI+ZHVyYXRp
-        b25faW5fc2VjPC9zdHJpbmdQcm9wPg0KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJn
-        dW1lbnQudmFsdWUiPiR7X19ncm9vdnkoIFN5c3RlbS5nZXRlbnYoJnF1b3Q7ZHVyYXRpb25faW5f
-        c2VjJnF1b3Q7KSA/OiAmcXVvdDsxMCZxdW90OyApfTwvc3RyaW5nUHJvcD4NCiAgICAgICAgICAg
-        IDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3VtZW50Lm1ldGFkYXRhIj49PC9zdHJpbmdQcm9wPg0KICAg
-        ICAgICAgIDwvZWxlbWVudFByb3A+DQogICAgICAgICAgPGVsZW1lbnRQcm9wIG5hbWU9InJwcyIg
-        ZWxlbWVudFR5cGU9IkFyZ3VtZW50Ij4NCiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkFy
-        Z3VtZW50Lm5hbWUiPnJwczwvc3RyaW5nUHJvcD4NCiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5h
-        bWU9IkFyZ3VtZW50LnZhbHVlIj4ke19fZ3Jvb3Z5KCBTeXN0ZW0uZ2V0ZW52KCZxdW90O3JwcyZx
-        dW90OykgPzogJnF1b3Q7MSZxdW90OyApfTwvc3RyaW5nUHJvcD4NCiAgICAgICAgICAgIDxzdHJp
-        bmdQcm9wIG5hbWU9IkFyZ3VtZW50Lm1ldGFkYXRhIj49PC9zdHJpbmdQcm9wPg0KICAgICAgICAg
-        IDwvZWxlbWVudFByb3A+DQogICAgICAgICAgPGVsZW1lbnRQcm9wIG5hbWU9ImRvbWFpbiIgZWxl
-        bWVudFR5cGU9IkFyZ3VtZW50Ij4NCiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3Vt
-        ZW50Lm5hbWUiPmRvbWFpbjwvc3RyaW5nUHJvcD4NCiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5h
-        bWU9IkFyZ3VtZW50LnZhbHVlIj4ke19fZ3Jvb3Z5KCBTeXN0ZW0uZ2V0ZW52KCZxdW90O2RvbWFp
-        biZxdW90OykgPzogJnF1b3Q7ZXhhbXBsZS5jb20mcXVvdDsgKX08L3N0cmluZ1Byb3A+DQogICAg
-        ICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJBcmd1bWVudC5tZXRhZGF0YSI+PTwvc3RyaW5nUHJv
-        cD4NCiAgICAgICAgICA8L2VsZW1lbnRQcm9wPg0KICAgICAgICAgIDxlbGVtZW50UHJvcCBuYW1l
-        PSJwcm90b2NvbCIgZWxlbWVudFR5cGU9IkFyZ3VtZW50Ij4NCiAgICAgICAgICAgIDxzdHJpbmdQ
-        cm9wIG5hbWU9IkFyZ3VtZW50Lm5hbWUiPnByb3RvY29sPC9zdHJpbmdQcm9wPg0KICAgICAgICAg
-        ICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQudmFsdWUiPiR7X19ncm9vdnkoIFN5c3RlbS5n
-        ZXRlbnYoJnF1b3Q7cHJvdG9jb2wmcXVvdDspID86ICZxdW90O2h0dHBzJnF1b3Q7ICl9PC9zdHJp
-        bmdQcm9wPg0KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQubWV0YWRhdGEi
-        Pj08L3N0cmluZ1Byb3A+DQogICAgICAgICAgPC9lbGVtZW50UHJvcD4NCiAgICAgICAgICA8ZWxl
-        bWVudFByb3AgbmFtZT0idXJsX3BhdGgiIGVsZW1lbnRUeXBlPSJBcmd1bWVudCI+DQogICAgICAg
-        ICAgICA8c3RyaW5nUHJvcCBuYW1lPSJBcmd1bWVudC5uYW1lIj51cmxfcGF0aDwvc3RyaW5nUHJv
-        cD4NCiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3VtZW50LnZhbHVlIj4ke19fZ3Jv
-        b3Z5KCBTeXN0ZW0uZ2V0ZW52KCZxdW90O3VybF9wYXRoJnF1b3Q7KSA/OiAmcXVvdDsvJnF1b3Q7
-        ICl9PC9zdHJpbmdQcm9wPg0KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQu
-        bWV0YWRhdGEiPj08L3N0cmluZ1Byb3A+DQogICAgICAgICAgPC9lbGVtZW50UHJvcD4NCiAgICAg
-        ICAgPC9jb2xsZWN0aW9uUHJvcD4NCiAgICAgIDwvQXJndW1lbnRzPg0KICAgICAgPGhhc2hUcmVl
-        Lz4NCiAgICAgIDxPcGVuTW9kZWxUaHJlYWRHcm91cCBndWljbGFzcz0iT3Blbk1vZGVsVGhyZWFk
-        R3JvdXBHdWkiIHRlc3RjbGFzcz0iT3Blbk1vZGVsVGhyZWFkR3JvdXAiIHRlc3RuYW1lPSJPcGVu
-        IE1vZGVsIFRocmVhZCBHcm91cCIgZW5hYmxlZD0idHJ1ZSI+DQogICAgICAgIDxlbGVtZW50UHJv
-        cCBuYW1lPSJUaHJlYWRHcm91cC5tYWluX2NvbnRyb2xsZXIiIGVsZW1lbnRUeXBlPSJPcGVuTW9k
-        ZWxUaHJlYWRHcm91cENvbnRyb2xsZXIiLz4NCiAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iVGhy
-        ZWFkR3JvdXAub25fc2FtcGxlX2Vycm9yIj5jb250aW51ZTwvc3RyaW5nUHJvcD4NCiAgICAgICAg
-        PHN0cmluZ1Byb3AgbmFtZT0iT3Blbk1vZGVsVGhyZWFkR3JvdXAuc2NoZWR1bGUiPnJhdGUoJHty
-        cHN9L3NlYykgcmFuZG9tX2Fycml2YWxzKCR7ZHVyYXRpb25faW5fc2VjfSBzZWMpPC9zdHJpbmdQ
-        cm9wPg0KICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJPcGVuTW9kZWxUaHJlYWRHcm91cC5yYW5k
-        b21fc2VlZCI+PC9zdHJpbmdQcm9wPg0KICAgICAgPC9PcGVuTW9kZWxUaHJlYWRHcm91cD4NCiAg
-        ICAgIDxoYXNoVHJlZT4NCiAgICAgICAgPEhUVFBTYW1wbGVyUHJveHkgZ3VpY2xhc3M9Ikh0dHBU
-        ZXN0U2FtcGxlR3VpIiB0ZXN0Y2xhc3M9IkhUVFBTYW1wbGVyUHJveHkiIHRlc3RuYW1lPSJIVFRQ
-        IFJlcXVlc3QiIGVuYWJsZWQ9InRydWUiPg0KICAgICAgICAgIDxlbGVtZW50UHJvcCBuYW1lPSJI
-        VFRQc2FtcGxlci5Bcmd1bWVudHMiIGVsZW1lbnRUeXBlPSJBcmd1bWVudHMiIGd1aWNsYXNzPSJI
-        VFRQQXJndW1lbnRzUGFuZWwiIHRlc3RjbGFzcz0iQXJndW1lbnRzIiB0ZXN0bmFtZT0iVXNlciBE
-        ZWZpbmVkIFZhcmlhYmxlcyIgZW5hYmxlZD0idHJ1ZSI+DQogICAgICAgICAgICA8Y29sbGVjdGlv
-        blByb3AgbmFtZT0iQXJndW1lbnRzLmFyZ3VtZW50cyIvPg0KICAgICAgICAgIDwvZWxlbWVudFBy
-        b3A+DQogICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iSFRUUFNhbXBsZXIuZG9tYWluIj4ke2Rv
-        bWFpbn08L3N0cmluZ1Byb3A+DQogICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iSFRUUFNhbXBs
-        ZXIucG9ydCI+PC9zdHJpbmdQcm9wPg0KICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkhUVFBT
-        YW1wbGVyLnByb3RvY29sIj4ke3Byb3RvY29sfTwvc3RyaW5nUHJvcD4NCiAgICAgICAgICA8c3Ry
-        aW5nUHJvcCBuYW1lPSJIVFRQU2FtcGxlci5jb250ZW50RW5jb2RpbmciPjwvc3RyaW5nUHJvcD4N
-        CiAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJIVFRQU2FtcGxlci5wYXRoIj4ke3VybF9wYXRo
-        fTwvc3RyaW5nUHJvcD4NCiAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJIVFRQU2FtcGxlci5t
-        ZXRob2QiPkdFVDwvc3RyaW5nUHJvcD4NCiAgICAgICAgICA8Ym9vbFByb3AgbmFtZT0iSFRUUFNh
-        bXBsZXIuZm9sbG93X3JlZGlyZWN0cyI+dHJ1ZTwvYm9vbFByb3A+DQogICAgICAgICAgPGJvb2xQ
-        cm9wIG5hbWU9IkhUVFBTYW1wbGVyLmF1dG9fcmVkaXJlY3RzIj5mYWxzZTwvYm9vbFByb3A+DQog
-        ICAgICAgICAgPGJvb2xQcm9wIG5hbWU9IkhUVFBTYW1wbGVyLnVzZV9rZWVwYWxpdmUiPnRydWU8
-        L2Jvb2xQcm9wPg0KICAgICAgICAgIDxib29sUHJvcCBuYW1lPSJIVFRQU2FtcGxlci5ET19NVUxU
-        SVBBUlRfUE9TVCI+ZmFsc2U8L2Jvb2xQcm9wPg0KICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9
-        IkhUVFBTYW1wbGVyLmVtYmVkZGVkX3VybF9yZSI+PC9zdHJpbmdQcm9wPg0KICAgICAgICAgIDxz
-        dHJpbmdQcm9wIG5hbWU9IkhUVFBTYW1wbGVyLmNvbm5lY3RfdGltZW91dCI+PC9zdHJpbmdQcm9w
-        Pg0KICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkhUVFBTYW1wbGVyLnJlc3BvbnNlX3RpbWVv
-        dXQiPjwvc3RyaW5nUHJvcD4NCiAgICAgICAgPC9IVFRQU2FtcGxlclByb3h5Pg0KICAgICAgICA8
-        aGFzaFRyZWUvPg0KICAgICAgPC9oYXNoVHJlZT4NCiAgICA8L2hhc2hUcmVlPg0KICA8L2hhc2hU
-        cmVlPg0KPC9qbWV0ZXJUZXN0UGxhbj4NCg==
+        PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGptZXRlclRlc3RQbGFuIHZl
+        cnNpb249IjEuMiIgcHJvcGVydGllcz0iNS4wIiBqbWV0ZXI9IjUuNSI+CiAgPGhhc2hUcmVlPgog
+        ICAgPFRlc3RQbGFuIGd1aWNsYXNzPSJUZXN0UGxhbkd1aSIgdGVzdGNsYXNzPSJUZXN0UGxhbiIg
+        dGVzdG5hbWU9IkF6dXJlIExvYWQgVGVzdGluZyIgZW5hYmxlZD0idHJ1ZSI+CiAgICAgIDxzdHJp
+        bmdQcm9wIG5hbWU9IlRlc3RQbGFuLmNvbW1lbnRzIj48L3N0cmluZ1Byb3A+CiAgICAgIDxib29s
+        UHJvcCBuYW1lPSJUZXN0UGxhbi5mdW5jdGlvbmFsX21vZGUiPmZhbHNlPC9ib29sUHJvcD4KICAg
+        ICAgPGJvb2xQcm9wIG5hbWU9IlRlc3RQbGFuLnRlYXJEb3duX29uX3NodXRkb3duIj50cnVlPC9i
+        b29sUHJvcD4KICAgICAgPGJvb2xQcm9wIG5hbWU9IlRlc3RQbGFuLnNlcmlhbGl6ZV90aHJlYWRn
+        cm91cHMiPmZhbHNlPC9ib29sUHJvcD4KICAgICAgPGVsZW1lbnRQcm9wIG5hbWU9IlRlc3RQbGFu
+        LnVzZXJfZGVmaW5lZF92YXJpYWJsZXMiIGVsZW1lbnRUeXBlPSJBcmd1bWVudHMiIGd1aWNsYXNz
+        PSJBcmd1bWVudHNQYW5lbCIgdGVzdGNsYXNzPSJBcmd1bWVudHMiIHRlc3RuYW1lPSJVc2VyIERl
+        ZmluZWQgVmFyaWFibGVzIiBlbmFibGVkPSJ0cnVlIj4KICAgICAgICA8Y29sbGVjdGlvblByb3Ag
+        bmFtZT0iQXJndW1lbnRzLmFyZ3VtZW50cyIvPgogICAgICA8L2VsZW1lbnRQcm9wPgogICAgICA8
+        c3RyaW5nUHJvcCBuYW1lPSJUZXN0UGxhbi51c2VyX2RlZmluZV9jbGFzc3BhdGgiPjwvc3RyaW5n
+        UHJvcD4KICAgIDwvVGVzdFBsYW4+CiAgICA8aGFzaFRyZWU+CiAgICAgIDxBcmd1bWVudHMgZ3Vp
+        Y2xhc3M9IkFyZ3VtZW50c1BhbmVsIiB0ZXN0Y2xhc3M9IkFyZ3VtZW50cyIgdGVzdG5hbWU9IlVz
+        ZXIgRGVmaW5lZCBWYXJpYWJsZXMiIGVuYWJsZWQ9InRydWUiPgogICAgICAgIDxjb2xsZWN0aW9u
+        UHJvcCBuYW1lPSJBcmd1bWVudHMuYXJndW1lbnRzIj4KICAgICAgICAgIDxlbGVtZW50UHJvcCBu
+        YW1lPSJkdXJhdGlvbl9pbl9zZWMiIGVsZW1lbnRUeXBlPSJBcmd1bWVudCI+CiAgICAgICAgICAg
+        IDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3VtZW50Lm5hbWUiPmR1cmF0aW9uX2luX3NlYzwvc3RyaW5n
+        UHJvcD4KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQudmFsdWUiPiR7X19n
+        cm9vdnkoIFN5c3RlbS5nZXRlbnYoJnF1b3Q7ZHVyYXRpb25faW5fc2VjJnF1b3Q7KSA/OiAmcXVv
+        dDsxMCZxdW90OyApfTwvc3RyaW5nUHJvcD4KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0i
+        QXJndW1lbnQubWV0YWRhdGEiPj08L3N0cmluZ1Byb3A+CiAgICAgICAgICA8L2VsZW1lbnRQcm9w
+        PgogICAgICAgICAgPGVsZW1lbnRQcm9wIG5hbWU9InJwcyIgZWxlbWVudFR5cGU9IkFyZ3VtZW50
+        Ij4KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQubmFtZSI+cnBzPC9zdHJp
+        bmdQcm9wPgogICAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJBcmd1bWVudC52YWx1ZSI+JHtf
+        X2dyb292eSggU3lzdGVtLmdldGVudigmcXVvdDtycHMmcXVvdDspID86ICZxdW90OzEmcXVvdDsg
+        KX08L3N0cmluZ1Byb3A+CiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3VtZW50Lm1l
+        dGFkYXRhIj49PC9zdHJpbmdQcm9wPgogICAgICAgICAgPC9lbGVtZW50UHJvcD4KICAgICAgICAg
+        IDxlbGVtZW50UHJvcCBuYW1lPSJkb21haW4iIGVsZW1lbnRUeXBlPSJBcmd1bWVudCI+CiAgICAg
+        ICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3VtZW50Lm5hbWUiPmRvbWFpbjwvc3RyaW5nUHJv
+        cD4KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQudmFsdWUiPiR7X19ncm9v
+        dnkoIFN5c3RlbS5nZXRlbnYoJnF1b3Q7ZG9tYWluJnF1b3Q7KSA/OiAmcXVvdDtleGFtcGxlLmNv
+        bSZxdW90OyApfTwvc3RyaW5nUHJvcD4KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJn
+        dW1lbnQubWV0YWRhdGEiPj08L3N0cmluZ1Byb3A+CiAgICAgICAgICA8L2VsZW1lbnRQcm9wPgog
+        ICAgICAgICAgPGVsZW1lbnRQcm9wIG5hbWU9InByb3RvY29sIiBlbGVtZW50VHlwZT0iQXJndW1l
+        bnQiPgogICAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJBcmd1bWVudC5uYW1lIj5wcm90b2Nv
+        bDwvc3RyaW5nUHJvcD4KICAgICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iQXJndW1lbnQudmFs
+        dWUiPiR7X19ncm9vdnkoIFN5c3RlbS5nZXRlbnYoJnF1b3Q7cHJvdG9jb2wmcXVvdDspID86ICZx
+        dW90O2h0dHBzJnF1b3Q7ICl9PC9zdHJpbmdQcm9wPgogICAgICAgICAgICA8c3RyaW5nUHJvcCBu
+        YW1lPSJBcmd1bWVudC5tZXRhZGF0YSI+PTwvc3RyaW5nUHJvcD4KICAgICAgICAgIDwvZWxlbWVu
+        dFByb3A+CiAgICAgICAgICA8ZWxlbWVudFByb3AgbmFtZT0idXJsX3BhdGgiIGVsZW1lbnRUeXBl
+        PSJBcmd1bWVudCI+CiAgICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkFyZ3VtZW50Lm5hbWUi
+        PnVybF9wYXRoPC9zdHJpbmdQcm9wPgogICAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJBcmd1
+        bWVudC52YWx1ZSI+JHtfX2dyb292eSggU3lzdGVtLmdldGVudigmcXVvdDt1cmxfcGF0aCZxdW90
+        OykgPzogJnF1b3Q7LyZxdW90OyApfTwvc3RyaW5nUHJvcD4KICAgICAgICAgICAgPHN0cmluZ1By
+        b3AgbmFtZT0iQXJndW1lbnQubWV0YWRhdGEiPj08L3N0cmluZ1Byb3A+CiAgICAgICAgICA8L2Vs
+        ZW1lbnRQcm9wPgogICAgICAgIDwvY29sbGVjdGlvblByb3A+CiAgICAgIDwvQXJndW1lbnRzPgog
+        ICAgICA8aGFzaFRyZWUvPgogICAgICA8T3Blbk1vZGVsVGhyZWFkR3JvdXAgZ3VpY2xhc3M9Ik9w
+        ZW5Nb2RlbFRocmVhZEdyb3VwR3VpIiB0ZXN0Y2xhc3M9Ik9wZW5Nb2RlbFRocmVhZEdyb3VwIiB0
+        ZXN0bmFtZT0iT3BlbiBNb2RlbCBUaHJlYWQgR3JvdXAiIGVuYWJsZWQ9InRydWUiPgogICAgICAg
+        IDxlbGVtZW50UHJvcCBuYW1lPSJUaHJlYWRHcm91cC5tYWluX2NvbnRyb2xsZXIiIGVsZW1lbnRU
+        eXBlPSJPcGVuTW9kZWxUaHJlYWRHcm91cENvbnRyb2xsZXIiLz4KICAgICAgICA8c3RyaW5nUHJv
+        cCBuYW1lPSJUaHJlYWRHcm91cC5vbl9zYW1wbGVfZXJyb3IiPmNvbnRpbnVlPC9zdHJpbmdQcm9w
+        PgogICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9Ik9wZW5Nb2RlbFRocmVhZEdyb3VwLnNjaGVkdWxl
+        Ij5yYXRlKCR7cnBzfS9zZWMpIHJhbmRvbV9hcnJpdmFscygke2R1cmF0aW9uX2luX3NlY30gc2Vj
+        KTwvc3RyaW5nUHJvcD4KICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJPcGVuTW9kZWxUaHJlYWRH
+        cm91cC5yYW5kb21fc2VlZCI+PC9zdHJpbmdQcm9wPgogICAgICA8L09wZW5Nb2RlbFRocmVhZEdy
+        b3VwPgogICAgICA8aGFzaFRyZWU+CiAgICAgICAgPEhUVFBTYW1wbGVyUHJveHkgZ3VpY2xhc3M9
+        Ikh0dHBUZXN0U2FtcGxlR3VpIiB0ZXN0Y2xhc3M9IkhUVFBTYW1wbGVyUHJveHkiIHRlc3RuYW1l
+        PSJIVFRQIFJlcXVlc3QiIGVuYWJsZWQ9InRydWUiPgogICAgICAgICAgPGVsZW1lbnRQcm9wIG5h
+        bWU9IkhUVFBzYW1wbGVyLkFyZ3VtZW50cyIgZWxlbWVudFR5cGU9IkFyZ3VtZW50cyIgZ3VpY2xh
+        c3M9IkhUVFBBcmd1bWVudHNQYW5lbCIgdGVzdGNsYXNzPSJBcmd1bWVudHMiIHRlc3RuYW1lPSJV
+        c2VyIERlZmluZWQgVmFyaWFibGVzIiBlbmFibGVkPSJ0cnVlIj4KICAgICAgICAgICAgPGNvbGxl
+        Y3Rpb25Qcm9wIG5hbWU9IkFyZ3VtZW50cy5hcmd1bWVudHMiLz4KICAgICAgICAgIDwvZWxlbWVu
+        dFByb3A+CiAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJIVFRQU2FtcGxlci5kb21haW4iPiR7
+        ZG9tYWlufTwvc3RyaW5nUHJvcD4KICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkhUVFBTYW1w
+        bGVyLnBvcnQiPjwvc3RyaW5nUHJvcD4KICAgICAgICAgIDxzdHJpbmdQcm9wIG5hbWU9IkhUVFBT
+        YW1wbGVyLnByb3RvY29sIj4ke3Byb3RvY29sfTwvc3RyaW5nUHJvcD4KICAgICAgICAgIDxzdHJp
+        bmdQcm9wIG5hbWU9IkhUVFBTYW1wbGVyLmNvbnRlbnRFbmNvZGluZyI+PC9zdHJpbmdQcm9wPgog
+        ICAgICAgICAgPHN0cmluZ1Byb3AgbmFtZT0iSFRUUFNhbXBsZXIucGF0aCI+JHt1cmxfcGF0aH08
+        L3N0cmluZ1Byb3A+CiAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJIVFRQU2FtcGxlci5tZXRo
+        b2QiPkdFVDwvc3RyaW5nUHJvcD4KICAgICAgICAgIDxib29sUHJvcCBuYW1lPSJIVFRQU2FtcGxl
+        ci5mb2xsb3dfcmVkaXJlY3RzIj50cnVlPC9ib29sUHJvcD4KICAgICAgICAgIDxib29sUHJvcCBu
+        YW1lPSJIVFRQU2FtcGxlci5hdXRvX3JlZGlyZWN0cyI+ZmFsc2U8L2Jvb2xQcm9wPgogICAgICAg
+        ICAgPGJvb2xQcm9wIG5hbWU9IkhUVFBTYW1wbGVyLnVzZV9rZWVwYWxpdmUiPnRydWU8L2Jvb2xQ
+        cm9wPgogICAgICAgICAgPGJvb2xQcm9wIG5hbWU9IkhUVFBTYW1wbGVyLkRPX01VTFRJUEFSVF9Q
+        T1NUIj5mYWxzZTwvYm9vbFByb3A+CiAgICAgICAgICA8c3RyaW5nUHJvcCBuYW1lPSJIVFRQU2Ft
+        cGxlci5lbWJlZGRlZF91cmxfcmUiPjwvc3RyaW5nUHJvcD4KICAgICAgICAgIDxzdHJpbmdQcm9w
+        IG5hbWU9IkhUVFBTYW1wbGVyLmNvbm5lY3RfdGltZW91dCI+PC9zdHJpbmdQcm9wPgogICAgICAg
+        ICAgPHN0cmluZ1Byb3AgbmFtZT0iSFRUUFNhbXBsZXIucmVzcG9uc2VfdGltZW91dCI+PC9zdHJp
+        bmdQcm9wPgogICAgICAgIDwvSFRUUFNhbXBsZXJQcm94eT4KICAgICAgICA8aGFzaFRyZWUvPgog
+        ICAgICA8L2hhc2hUcmVlPgogICAgPC9oYXNoVHJlZT4KICA8L2hhc2hUcmVlPgo8L2ptZXRlclRl
+        c3RQbGFuPgo=
       - 0
       - null
     headers:
@@ -704,36 +488,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4870'
+      - '4796'
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
       content-type:
       - application/octet-stream
     method: PUT
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview&fileType=TEST_SCRIPT
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview&fileType=TEST_SCRIPT
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A07Z&ske=2024-12-19T19%3A33%3A07Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A23Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:23.0674079Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A12Z&ske=2025-02-16T20%3A29%3A12Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A13Z&sr=b&sp=r&sig=%2F%2FYk%2Fxk3RF%2FYoVi83yXRFRe%2BdsUxpyAlAOK4fT42KDw%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:13.0245389Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '563'
+      - '569'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:23 GMT
+      - Sun, 16 Feb 2025 13:29:13 GMT
       location:
-      - https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-03-01-preview
+      - https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
       mise-correlation-id:
-      - 65494649-7ed7-4b8f-8a22-7c9a7c38dba3
+      - 06a5f2a2-9dbb-4182-a0e7-8ea36f920b4b
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123322Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001kev
+      - 20250216T132912Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w4mb
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -751,32 +535,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A23Z&ske=2024-12-19T19%3A33%3A23Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A23Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:23.2053077Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A13Z&ske=2025-02-16T20%3A29%3A13Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A13Z&sr=b&sp=r&sig=%2FV08S4C%2Fj2ziwQV41gyCKbpsQmQwTIQCZ%2Bxt46%2BvH0w%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:13.3059727Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '561'
+      - '567'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:23 GMT
+      - Sun, 16 Feb 2025 13:29:13 GMT
       mise-correlation-id:
-      - 4901c611-0f42-4ddb-971f-c78c9c2d588a
+      - cf487706-ef62-455c-a5ff-91664164a128
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123323Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001kf7
+      - 20250216T132913Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w4pd
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -794,32 +578,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A57Z&ske=2024-12-19T19%3A32%3A57Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A28Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:28.3054596Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A11Z&ske=2025-02-16T20%3A29%3A11Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A18Z&sr=b&sp=r&sig=ahwmwvRw2x2SECLUV4UXWsR4vjjIy7APsq%2FYC3%2Bh9c4%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:18.5587554Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '561'
+      - '563'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:28 GMT
+      - Sun, 16 Feb 2025 13:29:18 GMT
       mise-correlation-id:
-      - 2a41695d-80e9-4ee3-a441-64dde9267b03
+      - 4ba203d7-df3c-4752-9928-d15a4d33a37d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123328Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001kp3
+      - 20250216T132918Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w5dt
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -837,32 +621,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A17Z&ske=2024-12-19T19%3A33%3A17Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A33Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:33.4091031Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A12Z&ske=2025-02-16T20%3A29%3A12Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A23Z&sr=b&sp=r&sig=X7l80LCT0VMjbXM76tm4AyA%2FwB3ZVomhTP%2B2HZRWBdY%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:23.8121082Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '561'
+      - '563'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:33 GMT
+      - Sun, 16 Feb 2025 13:29:23 GMT
       mise-correlation-id:
-      - 224dd7f3-4c8f-44b4-b82a-832bde49de10
+      - 5d7a81ed-4def-43c9-b476-d69723c2c2f3
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123333Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001kvk
+      - 20250216T132923Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w653
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -880,32 +664,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A57Z&ske=2024-12-19T19%3A32%3A57Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A38Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:38.5129213Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A11Z&ske=2025-02-16T20%3A29%3A11Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A29Z&sr=b&sp=r&sig=VNjhUcRGli8boyAduIyhFA9gXs1OyLkKWcQk%2B26P9O4%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:29.055491Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '559'
+      - '560'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:38 GMT
+      - Sun, 16 Feb 2025 13:29:29 GMT
       mise-correlation-id:
-      - b78b8078-4adb-4d4b-bb62-a62500dcf712
+      - 3cb54a8c-00c1-45d6-bdf5-69576adb42d6
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123338Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001m1x
+      - 20250216T132928Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w6sm
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -923,104 +707,18 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A43Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:43.6157723Z","validationStatus":"VALIDATION_INITIATED"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A13Z&ske=2025-02-16T20%3A29%3A13Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A34Z&sr=b&sp=r&sig=bbZnqV83DjB45p63c5r3hrug6n0HP7pJGXriQMrBRuA%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:34.3059851Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '559'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:43 GMT
-      mise-correlation-id:
-      - 7b0e98ac-a429-4c54-9491-7fa7aff15b87
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123343Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001mah
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A23Z&ske=2024-12-19T19%3A33%3A23Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A48Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:48.716641Z","validationStatus":"VALIDATION_INITIATED"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '566'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:48 GMT
-      mise-correlation-id:
-      - 01cb1632-9140-42bf-b74f-7e98619c2dc8
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123348Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001mhc
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A17Z&ske=2024-12-19T19%3A33%3A17Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T12%3A43%3A53Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T12:43:53.8294024Z","validationStatus":"VALIDATION_SUCCESS"}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
@@ -1028,13 +726,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:53 GMT
+      - Sun, 16 Feb 2025 13:29:34 GMT
       mise-correlation-id:
-      - 20f1789d-f4bc-40fd-94c5-54e9eac62a2e
+      - d39c6d32-98a1-4cec-83df-f5ecdc071f41
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123353Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001mtd
+      - 20250216T132934Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w799
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1052,33 +750,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"passFailCriteria":{"passFailMetrics":{"420799c7-59fb-42d4-ba85-6ecb67439ae9":{"clientMetric":"requests_per_sec","aggregate":"avg","condition":">","value":78.0,"action":"continue"},"3a419f79-eb32-4d70-92ad-8b644dc6d6e0":{"clientMetric":"error","aggregate":"percentage","condition":">","value":50.0,"action":"continue"},"0cbef86b-5447-4eee-b204-5e95fecf2960":{"clientMetric":"response_time_ms","aggregate":"p75","condition":">","value":380.0,"action":"continue"},"13fe25e1-19ec-4c5c-803e-9ec5c9bd00ab":{"clientMetric":"response_time_ms","aggregate":"p99","condition":">","value":520.0,"action":"continue"},"1e65d4a3-87bd-4bc9-a0d0-a1be9411d133":{"clientMetric":"response_time_ms","aggregate":"p99.9","condition":">","value":540.0,"action":"continue"},"179b3821-6617-4477-ba03-6abc5b19d2cd":{"clientMetric":"latency","aggregate":"avg","condition":">","requestName":"GetCustomerDetails","value":200.0,"action":"continue"}}},"autoStopCriteria":{"autoStopDisabled":true,"errorRate":90.0,"errorRateTimeWindowInSeconds":60},"environmentVariables":{"rps":"1","duration_in_sec":"1"},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":true,"quickStartTest":false},"inputArtifacts":{"testScriptFileInfo":{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A52Z&ske=2024-12-20T02%3A33%3A52Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T13%3A33%3A53Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T13:33:53.9614856Z","validationStatus":"VALIDATION_SUCCESS"},"additionalFileInfo":[{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/dd76297e-2825-44c3-9679-38b020093149?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A52Z&ske=2024-12-20T02%3A33%3A52Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T13%3A33%3A53Z&sr=b&sp=r&sig=***","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2024-12-19T13:33:53.9621304Z","validationStatus":"VALIDATION_NOT_REQUIRED"},{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A33%3A52Z&ske=2024-12-20T02%3A33%3A52Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T13%3A33%3A53Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T13:33:53.9624134Z","validationStatus":"VALIDATION_SUCCESS"}]},"kind":"JMX","publicIPDisabled":false,"testId":"delete-test-case","description":"Test
-        created from az load test command","displayName":"CLI-Test","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2024-12-19T12:32:55.052Z","createdBy":"mbhardwaj@microsoft.com","lastModifiedDateTime":"2024-12-19T12:33:52.583Z","lastModifiedBy":"mbhardwaj@microsoft.com"}'
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A12Z&ske=2025-02-16T20%3A29%3A12Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A39Z&sr=b&sp=r&sig=ax1YKtGSx8wFZqZHWFWzdxAg1%2BAet2wlW6Les3sjbCU%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:39.5579412Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
-      - keep-alive
+      - close
       content-length:
-      - '3299'
+      - '561'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:54 GMT
+      - Sun, 16 Feb 2025 13:29:39 GMT
       mise-correlation-id:
-      - 6e32b30e-6774-4af0-a617-8c93f89be224
+      - 0f3aa451-862d-4884-842c-f9491c5a80ef
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123353Z-159c6bf6594r4mnshC1YVRkqpg0000000wx0000000001mtn
+      - 20250216T132939Z-r17775d4f986jlzchC1SG1vdg80000000b6g00000000w7r1
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1096,23 +793,110 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case/files/sample-JMX-file.jmx?api-version=2024-12-01-preview
+  response:
+    body:
+      string: '{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A46Z&ske=2025-02-16T20%3A29%3A46Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T13%3A39%3A46Z&sr=b&sp=r&sig=groFNI7wBeJZYbb1%2Bp8rmYI9Kv3HD0VKv0RrUe5l4Fs%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T13:39:46.1312408Z","validationStatus":"VALIDATION_SUCCESS"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '559'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 16 Feb 2025 13:29:46 GMT
+      mise-correlation-id:
+      - aef826d5-1536-45e6-b248-d4770e4f6d01
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250216T132944Z-r17775d4f98nqqhrhC1SG15xbg0000000axg000000009aur
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-12-01-preview
+  response:
+    body:
+      string: '{"passFailCriteria":{"passFailMetrics":{"3f19c6f9-5214-4ced-bef1-5bbe37eb29d5":{"clientMetric":"requests_per_sec","aggregate":"avg","condition":">","value":78.0,"action":"continue"},"15bf4a2e-6276-4bd9-b278-5744060764c8":{"clientMetric":"error","aggregate":"percentage","condition":">","value":50.0,"action":"continue"},"8f2c40e3-958f-4126-8577-1acd086b51c2":{"clientMetric":"response_time_ms","aggregate":"p75","condition":">","value":380.0,"action":"continue"},"4a06717f-0c11-4f91-84ad-41f48627ee60":{"clientMetric":"response_time_ms","aggregate":"p99","condition":">","value":520.0,"action":"continue"},"d87ce60f-23ab-41ce-80b3-3361ba7bea15":{"clientMetric":"response_time_ms","aggregate":"p99.9","condition":">","value":540.0,"action":"continue"},"4df0a017-b59d-4e60-a13d-2706f42afc08":{"clientMetric":"latency","aggregate":"avg","condition":">","requestName":"GetCustomerDetails","value":200.0,"action":"continue"}},"passFailServerMetrics":{}},"autoStopCriteria":{"autoStopDisabled":true,"errorRate":90.0,"errorRateTimeWindowInSeconds":60},"environmentVariables":{"rps":"1","duration_in_sec":"1"},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":true,"quickStartTest":false},"inputArtifacts":{"testScriptFileInfo":{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A12Z&ske=2025-02-16T20%3A29%3A12Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T14%3A29%3A46Z&sr=b&sp=r&sig=8y%2F5N0bdfPHlfNMir3v9AxWrGNwCo7%2F3N41Y%2F%2FR31vM%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T14:29:46.3892172Z","validationStatus":"VALIDATION_SUCCESS"},"additionalFileInfo":[{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/dd5e33e3-3fe3-42f7-b3da-d8a79256e402?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A12Z&ske=2025-02-16T20%3A29%3A12Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T14%3A29%3A46Z&sr=b&sp=r&sig=422noo9ulHKHdzPb6%2FGOnsS1CiKFDmnmWHZaYcWxRKY%3D","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2025-02-16T14:29:46.3896493Z","validationStatus":"VALIDATION_NOT_REQUIRED"},{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/289f683a-8c7e-4e34-af45-1c662ca5facd?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A12Z&ske=2025-02-16T20%3A29%3A12Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T14%3A29%3A46Z&sr=b&sp=r&sig=jBfhYRnmqMCk8ZaOhNRVbKc%2BB%2BK%2F6%2BBWFrdWF2AGFW0%3D","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2025-02-16T14:29:46.3897768Z","validationStatus":"VALIDATION_SUCCESS"}]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"delete-test-case","description":"Test
+        created from az load test command","displayName":"CLI-Test","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-02-16T13:29:10.307Z","createdBy":"hbisht@microsoft.com","lastModifiedDateTime":"2025-02-16T13:29:45.346Z","lastModifiedBy":"hbisht@microsoft.com"}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '3382'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 16 Feb 2025 13:29:46 GMT
+      mise-correlation-id:
+      - d7bd3aa4-809c-4905-9e77-ca163f2f85ef
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250216T132946Z-r17775d4f98nqqhrhC1SG15xbg0000000axg000000009b0d
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"mbhardwaj@microsoft.com","createdByType":"User","createdAt":"2024-12-19T12:32:22.6816032Z","lastModifiedBy":"mbhardwaj@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-19T12:32:22.6816032Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"hbisht@microsoft.com","createdByType":"User","createdAt":"2025-02-16T13:28:34.7625198Z","lastModifiedBy":"hbisht@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-16T13:28:34.7625198Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '653'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:53 GMT
+      - Sun, 16 Feb 2025 13:29:46 GMT
       etag:
-      - '"99371f2b-0000-0200-0000-6764126b0000"'
+      - '"080576ea-0000-0200-0000-67b1e8180000"'
       expires:
       - '-1'
       pragma:
@@ -1128,7 +912,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: CBD48B53E9CD4EA98D296F85F7C1D416 Ref B: CO6AA3150219047 Ref C: 2024-12-19T12:33:54Z'
+      - 'Ref A: 8FA1556360A3495C8D0E4673A7DA5AB5 Ref B: MAA201060516023 Ref C: 2025-02-16T13:29:46Z'
     status:
       code: 200
       message: OK
@@ -1142,33 +926,33 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"value":[{"passFailCriteria":{"passFailMetrics":{"420799c7-59fb-42d4-ba85-6ecb67439ae9":{"clientMetric":"requests_per_sec","aggregate":"avg","condition":">","value":78.0,"action":"continue"},"3a419f79-eb32-4d70-92ad-8b644dc6d6e0":{"clientMetric":"error","aggregate":"percentage","condition":">","value":50.0,"action":"continue"},"0cbef86b-5447-4eee-b204-5e95fecf2960":{"clientMetric":"response_time_ms","aggregate":"p75","condition":">","value":380.0,"action":"continue"},"13fe25e1-19ec-4c5c-803e-9ec5c9bd00ab":{"clientMetric":"response_time_ms","aggregate":"p99","condition":">","value":520.0,"action":"continue"},"1e65d4a3-87bd-4bc9-a0d0-a1be9411d133":{"clientMetric":"response_time_ms","aggregate":"p99.9","condition":">","value":540.0,"action":"continue"},"179b3821-6617-4477-ba03-6abc5b19d2cd":{"clientMetric":"latency","aggregate":"avg","condition":">","requestName":"GetCustomerDetails","value":200.0,"action":"continue"}}},"autoStopCriteria":{"autoStopDisabled":true,"errorRate":90.0,"errorRateTimeWindowInSeconds":60},"environmentVariables":{"rps":"1","duration_in_sec":"1"},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":true,"quickStartTest":false},"inputArtifacts":{"testScriptFileInfo":{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/a24ad977-133e-4795-9c4a-5be2633a971a?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T13%3A33%3A54Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2024-12-19T13:33:54.7732488Z","validationStatus":"VALIDATION_SUCCESS"},"additionalFileInfo":[{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/dd76297e-2825-44c3-9679-38b020093149?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T13%3A33%3A54Z&sr=b&sp=r&sig=***","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2024-12-19T13:33:54.7736965Z","validationStatus":"VALIDATION_NOT_REQUIRED"},{"url":"https://jx52rts2joocc7m75gw9ug5c.z26.blob.storage.azure.net/55d53da6-7e34-4bb9-99e5-a2b8e4ba5932/4883f161-8d05-4443-8118-95cbed046d17?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-12-19T12%3A32%3A55Z&ske=2024-12-19T19%3A32%3A55Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2024-12-19T13%3A33%3A54Z&sr=b&sp=r&sig=***","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2024-12-19T13:33:54.7739252Z","validationStatus":"VALIDATION_SUCCESS"}]},"kind":"JMX","publicIPDisabled":false,"testId":"delete-test-case","description":"Test
-        created from az load test command","displayName":"CLI-Test","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2024-12-19T12:32:55.052Z","createdBy":"mbhardwaj@microsoft.com","lastModifiedDateTime":"2024-12-19T12:33:52.583Z","lastModifiedBy":"mbhardwaj@microsoft.com"}]}'
+      string: '{"value":[{"passFailCriteria":{"passFailMetrics":{"3f19c6f9-5214-4ced-bef1-5bbe37eb29d5":{"clientMetric":"requests_per_sec","aggregate":"avg","condition":">","value":78.0,"action":"continue"},"15bf4a2e-6276-4bd9-b278-5744060764c8":{"clientMetric":"error","aggregate":"percentage","condition":">","value":50.0,"action":"continue"},"8f2c40e3-958f-4126-8577-1acd086b51c2":{"clientMetric":"response_time_ms","aggregate":"p75","condition":">","value":380.0,"action":"continue"},"4a06717f-0c11-4f91-84ad-41f48627ee60":{"clientMetric":"response_time_ms","aggregate":"p99","condition":">","value":520.0,"action":"continue"},"d87ce60f-23ab-41ce-80b3-3361ba7bea15":{"clientMetric":"response_time_ms","aggregate":"p99.9","condition":">","value":540.0,"action":"continue"},"4df0a017-b59d-4e60-a13d-2706f42afc08":{"clientMetric":"latency","aggregate":"avg","condition":">","requestName":"GetCustomerDetails","value":200.0,"action":"continue"}},"passFailServerMetrics":{}},"autoStopCriteria":{"autoStopDisabled":true,"errorRate":90.0,"errorRateTimeWindowInSeconds":60},"environmentVariables":{"rps":"1","duration_in_sec":"1"},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":true,"quickStartTest":false},"inputArtifacts":{"testScriptFileInfo":{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/2fb2eaab-40c9-4913-ba50-da620d03ab9d?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A13Z&ske=2025-02-16T20%3A29%3A13Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T14%3A29%3A48Z&sr=b&sp=r&sig=SHXVVEb3uGYh5%2BAPb73gY7%2F%2FP3wzVfzSpCocjhkwecQ%3D","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-16T14:29:48.0693387Z","validationStatus":"VALIDATION_SUCCESS"},"additionalFileInfo":[{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/dd5e33e3-3fe3-42f7-b3da-d8a79256e402?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A13Z&ske=2025-02-16T20%3A29%3A13Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T14%3A29%3A48Z&sr=b&sp=r&sig=cOED4nogDMsW1%2FiB1tq9WeXajXEsfYbdhXPP1x%2BpSzg%3D","fileName":"additional-data.csv","fileType":"ADDITIONAL_ARTIFACTS","expireDateTime":"2025-02-16T14:29:48.0698199Z","validationStatus":"VALIDATION_NOT_REQUIRED"},{"url":"https://rjkazp5g7pdozwssx101hrzv.z42.blob.storage.azure.net/7e3a429f-f242-45c4-860d-5b9632f1ebe8/289f683a-8c7e-4e34-af45-1c662ca5facd?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-16T13%3A29%3A13Z&ske=2025-02-16T20%3A29%3A13Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-16T14%3A29%3A48Z&sr=b&sp=r&sig=FJc5CVjpmEZhM%2B3f7GCxJ%2B6xIbp5O%2FVwidd9yc8tEqk%3D","fileName":"sample-ZIP-artifact.zip","fileType":"ZIPPED_ARTIFACTS","expireDateTime":"2025-02-16T14:29:48.0701826Z","validationStatus":"VALIDATION_SUCCESS"}]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"delete-test-case","description":"Test
+        created from az load test command","displayName":"CLI-Test","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-02-16T13:29:10.307Z","createdBy":"hbisht@microsoft.com","lastModifiedDateTime":"2025-02-16T13:29:45.346Z","lastModifiedBy":"hbisht@microsoft.com"}]}'
     headers:
       accept-ranges:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
-      - '3321'
+      - '3392'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:54 GMT
+      - Sun, 16 Feb 2025 13:29:48 GMT
       mise-correlation-id:
-      - 7eadf473-d0d3-4b20-98b7-b5368191466b
+      - 2e3df142-c035-416e-bc13-6c4269195846
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123354Z-159c6bf6594r4mnshC1YVRkqpg0000000wqg000000006px2
+      - 20250216T132947Z-r17775d4f986jlzchC1SG1vdg80000000beg0000000000m1
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1186,23 +970,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"mbhardwaj@microsoft.com","createdByType":"User","createdAt":"2024-12-19T12:32:22.6816032Z","lastModifiedBy":"mbhardwaj@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-19T12:32:22.6816032Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"hbisht@microsoft.com","createdByType":"User","createdAt":"2025-02-16T13:28:34.7625198Z","lastModifiedBy":"hbisht@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-16T13:28:34.7625198Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '653'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:54 GMT
+      - Sun, 16 Feb 2025 13:29:48 GMT
       etag:
-      - '"99371f2b-0000-0200-0000-6764126b0000"'
+      - '"080576ea-0000-0200-0000-67b1e8180000"'
       expires:
       - '-1'
       pragma:
@@ -1218,7 +1002,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: ABB8B9288207480EA66C82F38CF062F7 Ref B: CO6AA3150219019 Ref C: 2024-12-19T12:33:55Z'
+      - 'Ref A: 21C691585B704083B8D8D33DFF01E0C0 Ref B: MAA201060514053 Ref C: 2025-02-16T13:29:48Z'
     status:
       code: 200
       message: OK
@@ -1234,26 +1018,26 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: DELETE
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests/delete-test-case?api-version=2024-12-01-preview
   response:
     body:
       string: ''
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       date:
-      - Thu, 19 Dec 2024 12:33:55 GMT
+      - Sun, 16 Feb 2025 13:29:49 GMT
       mise-correlation-id:
-      - d2b82b6b-ed03-4e6e-ab6c-3cc122d406bf
+      - 212198b7-4049-4c4b-b351-86dc5bf3dc19
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123355Z-r1996f59795brx55hC1PDXp2p00000000n00000000008vzx
+      - 20250216T132948Z-r17775d4f98dvpdwhC1SG17y380000000au000000000n4dm
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1271,23 +1055,112 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"mbhardwaj@microsoft.com","createdByType":"User","createdAt":"2024-12-19T12:32:22.6816032Z","lastModifiedBy":"mbhardwaj@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-19T12:32:22.6816032Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"hbisht@microsoft.com","createdByType":"User","createdAt":"2025-02-16T13:28:34.7625198Z","lastModifiedBy":"hbisht@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-16T13:28:34.7625198Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '653'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:55 GMT
+      - Sun, 16 Feb 2025 13:29:50 GMT
       etag:
-      - '"99371f2b-0000-0200-0000-6764126b0000"'
+      - '"080576ea-0000-0200-0000-67b1e8180000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: ACBF6D0906004156A8CFF081B5DA4969 Ref B: MAA201060515031 Ref C: 2025-02-16T13:29:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests?api-version=2024-12-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      accept-ranges:
+      - bytes
+      api-supported-versions:
+      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
+        2024-12-01-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 16 Feb 2025 13:29:52 GMT
+      mise-correlation-id:
+      - 24554798-d351-4bb5-a865-bafd44d683f1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250216T132951Z-r17775d4f98gs9wwhC1SG12v7w0000000b1000000000nsgk
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"hbisht@microsoft.com","createdByType":"User","createdAt":"2025-02-16T13:28:34.7625198Z","lastModifiedBy":"hbisht@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-16T13:28:34.7625198Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 16 Feb 2025 13:29:53 GMT
+      etag:
+      - '"080576ea-0000-0200-0000-67b1e8180000"'
       expires:
       - '-1'
       pragma:
@@ -1303,7 +1176,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5C386DB7E6B5493293AE9D61C29D63CE Ref B: CO6AA3150218049 Ref C: 2024-12-19T12:33:55Z'
+      - 'Ref A: 2E1295EE34844B73A837DF720035F7B2 Ref B: MAA201060516047 Ref C: 2025-02-16T13:29:52Z'
     status:
       code: 200
       message: OK
@@ -1317,9 +1190,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests?api-version=2024-05-01-preview
+    uri: https://cc4948cf-11a7-464e-9c74-8a51609d902f.eastus.cnt-prod.loadtesting.azure.com/tests?api-version=2024-12-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -1328,7 +1201,7 @@ interactions:
       - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
+        2024-12-01-preview
       connection:
       - keep-alive
       content-length:
@@ -1336,102 +1209,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 19 Dec 2024 12:33:56 GMT
+      - Sun, 16 Feb 2025 13:29:55 GMT
       mise-correlation-id:
-      - 58579772-b3d3-43e0-bf1f-6a5b8f5d40a7
+      - 04d19a21-4c66-4369-a424-871456f8030b
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20241219T123356Z-159c6bf6594mvml8hC1YVRws040000000wkg000000002zrm
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-mgmt-loadtesting/1.0.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002?api-version=2022-12-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-load-000001/providers/Microsoft.LoadTestService/loadTests/clitest-load-000002","name":"clitest-load-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"mbhardwaj@microsoft.com","createdByType":"User","createdAt":"2024-12-19T12:32:22.6816032Z","lastModifiedBy":"mbhardwaj@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-19T12:32:22.6816032Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '659'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:56 GMT
-      etag:
-      - '"99371f2b-0000-0200-0000-6764126b0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 2BB6A30A3C1A4F91B8EEA5E5F0A6F7C6 Ref B: CO6AA3150219009 Ref C: 2024-12-19T12:33:56Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.8 (Windows-11-10.0.26100-SP0)
-    method: GET
-    uri: https://d91d2977-c21a-46d6-946d-1f8f13bb2f83.eastus.cnt-prod.loadtesting.azure.com/tests?api-version=2024-05-01-preview
-  response:
-    body:
-      string: '{"value":[]}'
-    headers:
-      accept-ranges:
-      - bytes
-      api-supported-versions:
-      - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
-        2024-11-01-preview
-      connection:
-      - keep-alive
-      content-length:
-      - '12'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 19 Dec 2024 12:33:57 GMT
-      mise-correlation-id:
-      - 9073d23f-3874-4f80-984e-7f7287466278
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-azure-ref:
-      - 20241219T123356Z-159c6bf6594c2d9fhC1YVR8btw0000000wm0000000006mhc
+      - 20250216T132953Z-r17775d4f98mc5fbhC1SG1vp2s0000000azg0000000024zf
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
