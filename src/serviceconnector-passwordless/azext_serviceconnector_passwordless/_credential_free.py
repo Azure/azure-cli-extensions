@@ -7,6 +7,7 @@
 import struct
 import sys
 import re
+import requests
 from knack.log import get_logger
 from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core import telemetry
@@ -961,6 +962,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 self.aad_username)
         ]
 
+
 class FabricSqlHandler(SqlHandler):
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, connstr_props, skip_prompt, new_user):
         super().__init__(cmd, target_id, target_type,
@@ -1043,6 +1045,7 @@ class FabricSqlHandler(SqlHandler):
 
         return [delete_q, role_q, grant_q1, grant_q2, grant_q3]
 
+
 def getSourceHandler(source_id, source_type):
     if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
         return WebappHandler(source_id, source_type)
@@ -1054,8 +1057,6 @@ def getSourceHandler(source_id, source_type):
         return SpringHandler(source_id, source_type)
     if source_type in {RESOURCE.Local}:
         return LocalHandler(source_id, source_type)
-    if source_type in {RESOURCE.FabricSql}:
-        return FabricSqlHandler()
     return None
 
 
