@@ -17,6 +17,7 @@ from .converter.live_view_converter import LiveViewConverter
 from .converter.readme_converter import ReadMeConverter
 from .converter.main_converter import MainConverter
 from .converter.param_converter import ParamConverter
+from .converter.cert_converter import CertConverter
 
 logger = get_logger(__name__)
 
@@ -40,6 +41,7 @@ def migration_aca_start(cmd, client, resource_group, service, output_folder):
     context.add_converter(LiveViewConverter())
     context.add_converter(ReadMeConverter())
     context.add_converter(ParamConverter())
+    context.add_converter(CertConverter())
 
     # Prepare bicep parameters
     main_bicep_params = get_aca_bicep_params(asa_arm)

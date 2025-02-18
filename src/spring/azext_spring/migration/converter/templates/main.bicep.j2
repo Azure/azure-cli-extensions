@@ -10,6 +10,18 @@ module containerAppEnv 'environment.bicep' = {
   }
 }
 
+{% for item in data.certs %}
+module {{ item.moduleName }} '{{ item.templateName }}' = {
+  name: 'Cert{{ item.certName }}Deployment'
+  dependsOn: [
+    containerAppEnv
+  ]
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+{% endfor %}
+
 {% for item in data.apps %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
   name: '{{ item.appName }}Deployment'
