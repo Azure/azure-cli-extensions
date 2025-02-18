@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.10.6
+++++++
+* Added support for downloading helm binaries from MCR.
+* Added warnings for custom location feature based on Service Principal Name or User permissions to retrieve OID.
+
 1.10.5
 ++++++
 * Fixed bug impacting long-running operations of the az connectedk8s proxy command.

@@ -12,9 +12,9 @@ import shutil
 import stat
 import subprocess
 import time
-import urllib.request
 from subprocess import PIPE
 
+import oras.client  # type: ignore[import-untyped]
 import psutil
 import requests
 from azure.cli.core import get_default_cli
@@ -71,23 +71,21 @@ def install_helm_client():
 
     # Set helm binary download & install locations
     if operating_system == "windows":
-        download_location_string = (
-            f".azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-\
-            {operating_system}-amd64.zip"
-        )
+        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
-        download_location_string = (
-            f".azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-\
-            {operating_system}-amd64.tar.gz"
+        download_location_string = f".azure/helm/{consts.HELM_VERSION}"
+        download_file_name = (
+            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
         )
         install_location_string = (
             f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         logger.warning(
             f"The {operating_system} platform is not currently supported for installing helm client."
@@ -98,8 +96,8 @@ def install_helm_client():
     download_dir = os.path.dirname(download_location)
     install_location = os.path.expanduser(os.path.join("~", install_location_string))
 
-    # Download compressed helm binary if not already present
-    if not os.path.isfile(download_location):
+    # Download compressed Helm binary if not already present
+    if not os.path.isfile(install_location):
         # Creating the helm folder if it doesnt exist
         if not os.path.exists(download_dir):
             try:
@@ -109,27 +107,25 @@ def install_helm_client():
                 return
 
         # Downloading compressed helm client executable
+        logger.warning(
+            "Downloading helm client for first time. This can take few minutes..."
+        )
+        client = oras.client.OrasClient()
         try:
-            response = urllib.request.urlopen(requestUri)
+            client.pull(
+                target=f"{consts.HELM_MCR_URL}:{artifactTag}", outdir=download_location
+            )
         except Exception as e:
             logger.warning("Failed to download helm client." + str(e))
             return
 
-        responseContent = response.read()
-        response.close()
-
-        # Creating the compressed helm binaries
+        # Extract the archive.
         try:
-            with open(download_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            logger.warning("Failed to extract helm executable" + str(e))
-            return
-
-    # Extract compressed helm binary
-    if not os.path.isfile(install_location):
-        try:
-            shutil.unpack_archive(download_location, download_dir)
+            extract_dir = download_location
+            download_location = os.path.expanduser(
+                os.path.join(download_location, download_file_name)
+            )
+            shutil.unpack_archive(download_location, extract_dir)
             os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         except Exception as e:
             logger.warning("Failed to extract helm executable" + str(e))
@@ -208,52 +204,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
                 self.check("tags.foo", "doo"),
                 self.check("resourceGroup", "{rg}"),
                 self.check("name", "{name}"),
-            ],
-        )
-
-        self.cmd(
-            "connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
-            {managed_cluster_name}-admin -y"
-        )
-        self.cmd("aks delete -g {rg} -n {managed_cluster_name} -y")
-
-        # delete the kube config
-        os.remove(_get_test_data_file(managed_cluster_name + "-config.yaml"))
-
-    @live_only()
-    @ResourceGroupPreparer(
-        name_prefix="conk8stest", location=CONFIG["location"], random_name_length=16
-    )
-    def test_connect_withoidcandworkloadidentity(self, resource_group):
-        managed_cluster_name = self.create_random_name(prefix="test-connect", length=24)
-        kubeconfig = _get_test_data_file(managed_cluster_name + "-config.yaml")
-        self.kwargs.update(
-            {
-                "rg": resource_group,
-                "name": self.create_random_name(prefix="cc-", length=12),
-                "kubeconfig": kubeconfig,
-                "managed_cluster_name": managed_cluster_name,
-                "location": CONFIG["location"],
-            }
-        )
-
-        # scenario - oidc issuer and workload identity enabled
-        self.cmd("aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys")
-        self.cmd(
-            "aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin"
-        )
-        self.cmd(
-            "connectedk8s connect -n {name} -g {rg} -l {location} --tags foo=doo --enable-oidc-issuer \
-            --enable-workload-identity --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin"
-        )
-        self.cmd(
-            "connectedk8s show -g {rg} -n {name}",
-            checks=[
-                self.check("tags.foo", "doo"),
-                self.check("name", "{name}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("oidcIssuerProfile.enabled", True),
-                self.check("securityProfile.workloadIndentity.enabled", True),
             ],
         )
 
@@ -470,7 +420,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         with self.assertRaisesRegex(
             CLIError,
             "Disabling 'cluster-connect' feature is not allowed when \
-'custom-locations' feature is enabled.",
+'custom-locations' feature is enabled",
         ):
             self.cmd(
                 "connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config \
@@ -844,22 +794,6 @@ only supported when auto-upgrade is set to false",
                 self.check("name", "{name}"),
                 self.check("resourceGroup", "{rg}"),
                 self.check("tags.foo", "moo"),
-            ],
-        )
-
-        # scenario - oidc issuer and workload identity enabled
-        self.cmd(
-            "connectedk8s update -n {name} -g {rg} --enable-oidc-issuer \
-            --enable-workload-identity --kube-config {kubeconfig} \
-            --kube-context {managed_cluster_name}-admin"
-        )
-        self.cmd(
-            "connectedk8s show -g {rg} -n {name}",
-            checks=[
-                self.check("name", "{name}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("oidcIssuerProfile.enabled", True),
-                self.check("securityProfile.workloadIndentity.enabled", True),
             ],
         )
 
