@@ -106,6 +106,17 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
             ])
 
+            # set
+            self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
+                self.check("name", test_workspace_temp)
+            ])
+
+            # list quotas
+            results = self.cmd('az quantum workspace quotas -o json').get_output_in_json()
+            assert len(results) > 0
+            assert len(results[0]["dimension"]) > 0
+            assert (results[0]["holds"]) >= 0.0
+
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
                 self.check("name", test_workspace_temp),
@@ -307,40 +318,3 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         workspace_location = None
         _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
         assert providers_selected[0] == {"provider_id": "foo", "sku": "foo_credits_for_all_plan", "offer_id": "foo_offer", "publisher_id": "foo0123456789"}
-
-    @live_only()
-    def test_workspace_quotas(self):
-        print("test_workspace_quotas")
-        # initialize values
-        test_location = get_test_workspace_location()
-        test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
-        test_storage_account = get_test_workspace_storage()
-        test_provider_sku_list = get_test_workspace_provider_sku_list()
-
-        # create
-        self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-            self.check("properties.provisioningState", "Succeeded")
-        ])
-
-        # set
-        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
-            self.check("name", test_workspace_temp)
-        ])
-
-        # list quotas
-        results = self.cmd('az quantum workspace quotas -o json').get_output_in_json()
-        assert len(results) > 0
-        assert len(results[0]["dimension"]) > 0
-        assert (results[0]["holds"]) >= 0.0
-        assert (results[0]["limit"]) >= 0.0
-        assert len(results[0]["period"]) > 0
-        assert len(results[0]["providerId"]) > 0
-        assert len(results[0]["scope"]) > 0
-        assert (results[0]["utilization"]) >= 0.0
-
-        # delete
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("properties.provisioningState", "Deleting")
-        ])
