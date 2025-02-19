@@ -1,6 +1,5 @@
 param containerAppName string = '{{data.containerAppName}}'
 param {{data.containerAppImageName}} string
-param targetPort int = {{data.targetPort}}
 
 @description('Minimum number of replicas that will be deployed')
 @minValue(0)
@@ -19,15 +18,24 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
     managedEnvironmentId: containerAppEnvId
     configuration: {
       ingress: {
-        external: true
-        targetPort: targetPort
+        {% if data.ingress -%}
+        external: {% if data.isPublic %}true{% else %}false{% endif %}
+        targetPort: {{data.ingress.targetPort}}
         allowInsecure: false
+        transport: '{{data.ingress.transport}}'
+        {% if data.ingress.sessionAffinity -%}
+        stickySessions: {
+          affinity: '{{data.ingress.sessionAffinity}}'
+        }
+        {%- endif %}
+        clientCertificateMode: 'Ignore'
         traffic: [
           {
             latestRevision: true
             weight: 100
           }
         ]
+        {%- endif %}
       }
       activeRevisionsMode: '{% if data.isBlueGreen %}Multiple{% else %}Single{% endif %}'
     }
@@ -42,7 +50,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             memory: '{{data.blue.memorySize}}'
           }
           env: [
-            {% for env in data.blue.env %}
+            {% for env in data.blue.env -%}
             {
               name: '{{ env.name }}'
               value: '{{ env.value }}'
@@ -61,7 +69,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
                 port: {{data.blue.livenessProbe.httpGet.port}}
                 scheme: '{{data.blue.livenessProbe.httpGet.scheme}}'
               } 
-              {%- endif %}
+              {%- endif -%}
               {% if data.blue.livenessProbe.tcpSocket -%}
               tcpSocket: {
                 port: {{data.blue.livenessProbe.tcpSocket.port}}
@@ -93,7 +101,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
                 port: {{data.blue.readinessProbe.httpGet.port}}
                 scheme: '{{data.blue.readinessProbe.httpGet.scheme}}'
               }
-              {%- endif %}
+              {%- endif -%}
               {% if data.blue.readinessProbe.tcpSocket -%}
               tcpSocket: {
                 port: {{data.blue.readinessProbe.tcpSocket.port}}
@@ -118,7 +126,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
         }
       ]
       serviceBinds: [
-          {% for bind in data.serviceBinds %}
+          {% for bind in data.serviceBinds -%}
           {
               name: '{{ bind.name }}'
               serviceId: {{ bind.serviceId }}

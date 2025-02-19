@@ -16,12 +16,16 @@ class AppConverter(ConverterTemplate):
         deployments = self._get_deployments(self.source)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
         greenDeployment = deployments[1] if len(deployments) > 1 else {}
+        tier = blueDeployment.get('sku', {}).get('tier')
+        ingress = self._get_ingress(self.source, tier)
+        isPublic = self.source['properties'].get('public')
 
         self.data = {
             "containerAppName": appName,
             "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
             "moduleName": moduleName,
-            "targetPort": "80",
+            "ingress": ingress,
+            "isPublic": isPublic,
             "minReplicas": 1,
             "maxReplicas": 5,
             # "serviceBinds": serviceBinds,
@@ -117,30 +121,23 @@ class AppConverter(ConverterTemplate):
 
     # create a method _convert_probe to convert the probe from the source to the target format
     def _convert_probe(self, probe, tier):
-        print(f"probe: {probe}")
+        # print(f"probe: {probe}")
         if probe is None:
             return None
         if probe.get("disableProbe") == True:
             print(f"Probe is disabled")
             return None
-        result = {}
         initialDelaySeconds = probe.get("initialDelaySeconds", None)
         if initialDelaySeconds is not None:
             if initialDelaySeconds > 60: # Container 'undefined' 'Type' probe's InitialDelaySeconds must be in the range of ['0', '60'].
                 initialDelaySeconds = 60
-            result["initialDelaySeconds"] = initialDelaySeconds
-        periodSeconds = probe.get("periodSeconds", None)
-        if periodSeconds is not None:
-            result["periodSeconds"] = periodSeconds
-        timeoutSeconds = probe.get("timeoutSeconds", None)
-        if timeoutSeconds is not None:
-            result["timeoutSeconds"] = timeoutSeconds
-        successThreshold = probe.get("successThreshold", None)
-        if successThreshold is not None:
-            result["successThreshold"] = successThreshold
-        failureThreshold = probe.get("failureThreshold", None)
-        if failureThreshold is not None:
-            result["failureThreshold"] = failureThreshold
+        result = {
+            "initialDelaySeconds": initialDelaySeconds,
+            "periodSeconds": probe.get("periodSeconds", None),
+            "timeoutSeconds": probe.get("timeoutSeconds", None),
+            "successThreshold": probe.get("successThreshold", None),
+            "failureThreshold": probe.get("failureThreshold", None),
+        }
         httpGet = self._convert_http_probe_action(probe, tier)
         if httpGet is not None:
             result["httpGet"] = httpGet
@@ -157,7 +154,7 @@ class AppConverter(ConverterTemplate):
             }
         else:
             probeAction = None
-        print(f"probeAction: {probeAction}")
+        # print(f"probeAction: {probeAction}")
         return probeAction
 
     def _convert_http_probe_action(self, probe, tier):
@@ -170,6 +167,15 @@ class AppConverter(ConverterTemplate):
             }
         else:
             probeAction = None
-        print(f"probeAction: {probeAction}")
+        # print(f"probeAction: {probeAction}")
         return probeAction
 
+    def _get_ingress(self, source, tier):
+        ingress = source['properties'].get('ingressSettings')
+        if ingress is None:
+            return None
+        return {
+            "targetPort": 8080 if tier == "Enterprise" else 1025,
+            "transport": ingress.get('backendProtocol').replace("Default", "auto"),
+            "sessionAffinity": ingress.get('sessionAffinity').replace("Cookie", "sticky").replace("None", "none")
+        }
