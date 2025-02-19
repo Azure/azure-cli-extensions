@@ -128,7 +128,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 gpu_profile = {
                     "workloadProfileType": "NC24-A100",
                     "name": "gpu",
-                    "minimumCount": 0,
+                    "minimumCount": 1,
                     "maximumCount": 1
                 }
                 workload_profiles.append(gpu_profile)

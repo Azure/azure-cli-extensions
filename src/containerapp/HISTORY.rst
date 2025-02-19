@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
 
 1.1.0b2
 ++++++
