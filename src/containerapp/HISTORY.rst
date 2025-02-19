@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
 
 1.1.0b2
 ++++++
