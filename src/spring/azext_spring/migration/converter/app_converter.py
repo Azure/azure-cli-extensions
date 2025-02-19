@@ -27,7 +27,7 @@ class AppConverter(ConverterTemplate):
             "ingress": ingress,
             "isPublic": isPublic,
             "minReplicas": 1,
-            "maxReplicas": 5,
+            "maxReplicas": blueDeployment.get("capacity", 5),
             # "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
@@ -78,6 +78,8 @@ class AppConverter(ConverterTemplate):
             cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
             memorySize = resource_requests.get("memory")
             tier = deployment.get('sku', {}).get('tier')
+            scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
+            capacity = deployment.get('sku', {}).get('capacity')
             deployment = {
                 "name": deployment_name,
                 "env": [
@@ -90,6 +92,8 @@ class AppConverter(ConverterTemplate):
                 "readinessProbe": self._convert_probe(readiness_probe, tier),
                 "cpuCore": cpuCore,
                 "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
+                "scale": self._convert_scale(scale),
+                "capacity": capacity,
             }
             deployments.append(deployment)
 
@@ -178,4 +182,11 @@ class AppConverter(ConverterTemplate):
             "targetPort": 8080 if tier == "Enterprise" else 1025,
             "transport": ingress.get('backendProtocol').replace("Default", "auto"),
             "sessionAffinity": ingress.get('sessionAffinity').replace("Cookie", "sticky").replace("None", "none")
+        }
+    
+    def _convert_scale(self, scale):
+        return {
+            "minReplicas": scale.get("minReplicas", 1),
+            "maxReplicas": scale.get("maxReplicas", 5),
+            "rules": scale.get("rules", [])
         }
