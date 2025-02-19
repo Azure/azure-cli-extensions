@@ -1,7 +1,8 @@
 # Release History
 
-## 7.1.1
+## 7.2.0 (2025-02)
 
+- Bump minimum required Az CLI version to `2.67.0`
 - Fix parsing errors on response for `az vmware private-cloud rotate-vcenter-password`, `az vmware private-cloud rotate-nsxt-password`, and `az vmware vm restrict-movement`
 
 ## 7.1.0 (2024-09)
