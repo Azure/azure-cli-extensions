@@ -150,7 +150,7 @@ CONST_VIRTUAL_NODE_SUBNET_NAME = "SubnetName"
 CONST_KUBE_DASHBOARD_ADDON_NAME = "kubeDashboard"
 
 # azure policy
-CONST_AZURE_POLICY_ADDON_NAME = "azurepolicy"
+CONST_AZURE_POLICY_ADDON_NAME = "azurePolicy"
 
 # ingressApplicaitonGateway configuration keys
 CONST_INGRESS_APPGW_ADDON_NAME = "ingressApplicationGateway"
