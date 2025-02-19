@@ -28,6 +28,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2024-09-02-preview.
+* `az aks create/update`: Update parameter description of `--custom-ca-certificates`.
 
 13.0.0b1
 +++++++
