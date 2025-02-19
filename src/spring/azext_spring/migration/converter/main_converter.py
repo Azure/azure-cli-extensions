@@ -18,6 +18,7 @@ class MainConverter(ConverterTemplate):
                 "appName": appName,
                 "moduleName": moduleName,
                 "templateName": templateName,
+                "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
             })
         for name, value in self.managedComponents.items():
             self.data[name] = value

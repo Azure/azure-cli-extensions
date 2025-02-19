@@ -5,7 +5,6 @@ from knack.log import get_logger
 from .base_converter import ConverterTemplate
 from .environment_converter import EnvironmentConverter
 from .app_converter import AppConverter
-from .revision_converter import RevisionConverter
 from .readme_converter import ReadMeConverter
 from .main_converter import MainConverter
 from .param_converter import ParamConverter
@@ -47,14 +46,6 @@ class ConversionContext:
 
         asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
 
-        # converted_contents.append(
-        #     self.get_converter(RevisionConverter).convert(
-        #         source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
-        #     )
-        # )
-        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(None)
-        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)
-
         managed_components = {
             'gateway': False,
             'config': False,
@@ -67,16 +58,21 @@ class ConversionContext:
         converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
 
         asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
+        asa_deployments = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
+        # print(asa_deployments)
 
         for app in asa_apps:
             appName = app['name'].split('/')[-1]
             app['enabled_sba'] = managed_components['sba']
+            app['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app['name']}/")]
             converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app)
 
         main_source = {
             "apps": asa_apps,
             "managedComponents": managed_components,
         }
+        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(asa_apps)
+        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)        
         converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert(
             main_source
         )

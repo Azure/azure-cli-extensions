@@ -7,7 +7,6 @@ from knack.log import get_logger
 from .converter.conversion_context import ConversionContext
 from .converter.environment_converter import EnvironmentConverter
 from .converter.app_converter import AppConverter
-from .converter.revision_converter import RevisionConverter
 from .converter.gateway_converter import GatewayConverter
 from .converter.eureka_converter import EurekaConverter
 from .converter.service_registry_converter import ServiceRegistryConverter
@@ -31,7 +30,6 @@ def migration_aca_start(cmd, client, resource_group, service, output_folder):
     context.add_converter(MainConverter())
     context.add_converter(EnvironmentConverter())
     context.add_converter(AppConverter())
-    context.add_converter(RevisionConverter())
     context.add_converter(GatewayConverter(client, resource_group, service))
     context.add_converter(EurekaConverter())
     context.add_converter(ServiceRegistryConverter())
