@@ -34,8 +34,6 @@ def load_arguments(self, _):
         c.argument("autostop_error_rate", argtypes.autostop_error_rate)
         c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
         c.argument("regionwise_engines", argtypes.regionwise_engines)
-        c.argument("engine_reference_identity_type", argtypes.engine_reference_identity_type)
-        c.argument("engine_reference_identities", argtypes.engine_reference_identities)
 
     with self.argument_context("load test update") as c:
         c.argument("load_test_config_file", argtypes.load_test_config_file)
@@ -57,8 +55,6 @@ def load_arguments(self, _):
         c.argument("autostop_error_rate", argtypes.autostop_error_rate)
         c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
         c.argument("regionwise_engines", argtypes.regionwise_engines)
-        c.argument("engine_reference_identity_type", argtypes.engine_reference_identity_type)
-        c.argument("engine_reference_identities", argtypes.engine_reference_identities)
 
     with self.argument_context("load test set-baseline") as c:
         c.argument("test_run_id", argtypes.test_run_id)
