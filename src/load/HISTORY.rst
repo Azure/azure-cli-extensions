@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.5.0
+++++++
+* Add support for engine reference identity using CLI. Engine reference identity can be set using `--engine-reference-identity-type` and `--engine-reference-identities` argument in 'az load test create' and 'az load test update' commands. Engine reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Engine` will also be honoured.
+
 1.4.3
 ++++++
 * Updated the vendored_sdks to include 2024-12-01-preview data plane API version.
