@@ -16,6 +16,20 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   }
 }
 
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: containerAppEnv
+  name: 'default'
+  properties: {
+    workspaceId: logAnalytics.id
+    logs: [
+      {
+        categoryGroup: 'AllLogs'
+        enabled: true
+      }
+    ]
+  }
+}
+
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: managedEnvName
   location: resourceGroup().location
@@ -25,11 +39,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' 
   properties: {
     // vnetConfiguration: {}
     appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: logAnalytics.properties.customerId
-        sharedKey: logAnalytics.listKeys().primarySharedKey
-      }
+      destination: 'azure-monitor'
     }
     zoneRedundant: zoneRedundant
     // customDomainConfiguration: {}
