@@ -5,7 +5,7 @@ class MainConverter(ConverterTemplate):
     def load_source(self, source):
         self.source = source
         self.apps = source["apps"]
-        self.managedComponents = source["managedComponents"]
+        # self.managedComponents = source["managedComponents"]
         self.certs = source["certs"]
 
     def calculate_data(self):
@@ -34,8 +34,8 @@ class MainConverter(ConverterTemplate):
             }
             self.data["apps"].append(appData)
 
-        for name, value in self.managedComponents.items():
-            self.data[name] = value
+        # for name, value in self.managedComponents.items():
+        #     self.data[name] = value
 
     def get_template_name(self):
         return "main.bicep"
