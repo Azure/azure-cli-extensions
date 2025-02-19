@@ -151,18 +151,6 @@ class LoadTestConstants(LoadConstants):
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"
 
-    # Constants for Engine MI tests
-    ENGINE_REFERENCE_TYPE_USERASSIGNED = "UserAssigned"
-    ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED = "SystemAssigned"
-    ENGINE_REFERENCE_TYPE_NONE = "None"
-    ENGINE_REFERENCE_ID1 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
-    ENGINE_REFERENCE_ID2 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi-2"
-    INVALID_ENGINE_REFERENCE_ID = r"/subscriptions/invalid/resource/id"
-    LOAD_TEST_CONFIG_FILE_WITH_SAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-sami.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_UAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-uami.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI1 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi1.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI2 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi2.yaml")
-
 
 class LoadTestRunConstants(LoadConstants):
     # Metric constants

@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, EngineIdentityType
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
 
 logger = get_logger(__name__)
 
@@ -342,8 +342,6 @@ def convert_yaml_to_test(cmd, data):
         for identity in data[LoadTestConfigKeys.REFERENCE_IDENTITIES]:
             if identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
                 new_body["engineBuiltinIdentityType"], new_body["engineBuiltinIdentityIds"] = utils_yaml_config.yaml_parse_engine_identities(data=data)
-                if new_body["engineBuiltinIdentityType"] in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]:
-                    new_body.pop("engineBuiltinIdentityIds")
                 break
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body

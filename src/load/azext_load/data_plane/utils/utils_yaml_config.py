@@ -148,7 +148,7 @@ def yaml_parse_engine_identities(data):
         if identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
             if reference_type and identity.get(LoadTestConfigKeys.TYPE) != reference_type:
                 raise InvalidArgumentValueError(
-                    "Engine identity should be either None, SystemAssigned, or UserAssigned, not a mix of them."
+                    "Engine identity should be either None, SystemAssigned, or UserAssigned, not a mix of them"
                 )
             if identity.get(LoadTestConfigKeys.TYPE) != EngineIdentityType.UserAssigned:
                 if identity.get(LoadTestConfigKeys.VALUE):
@@ -156,7 +156,7 @@ def yaml_parse_engine_identities(data):
                         "Reference identity value should be provided only for UserAssigned identity type."
                     )  
             else: 
-                if not is_valid_resource_id(identity.get(LoadTestConfigKeys.VALUE)):
+                if is_valid_resource_id(identity.get(LoadTestConfigKeys.VALUE)):
                     raise InvalidArgumentValueError(
                         "%s is not a valid resource id" % identity.get(LoadTestConfigKeys.VALUE)
                     )
