@@ -118,7 +118,7 @@ helps['vm repair repair-and-restore'] = """
 """
 helps['vm repair repair-button'] = """
     type: command
-    short-summary: Non-interactive command used by repair VM buttons. Repair issues using ALAR scripts. Create a temporary repair VM and restore the VM by replacing the VM's OS disk with the fixed copy disk.
+    short-summary: Non-interactive command used by repair VM buttons. Repairs issues using ALAR scripts. Creates a temporary repair VM and restores the VM by replacing the VM's OS disk with the fixed copied disk.
     examples:
         - name: repair-button.
           text: >
