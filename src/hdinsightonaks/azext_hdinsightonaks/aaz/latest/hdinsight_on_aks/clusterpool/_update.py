@@ -19,13 +19,13 @@ class Update(AAZCommand):
     """Update a cluster pool.
 
     :example: Updates an existing Cluster enable log analytic.
-        az hdinsight-on-aks clusterpool update -g RG -n testpool --enable-log-analytics --log-analytic-workspace-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/RG/providers/microsoft.operationalinsights/workspaces/yourworkspace"
+        az hdinsight-on-aksclusterpool update -g {RG} -n {poolName} --enable-log-analytics --log-analytic-workspace-id {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/RG/providers/microsoft.operationalinsights/workspaces/yourworkspace"}
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -77,7 +77,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_pool_version = AAZStrArg(
-            options=["--cluster-pool-version"],
+            options=["--version", "--cluster-pool-version"],
             arg_group="ClusterPoolProfile",
             help="Cluster pool version is a 2-part version.",
             fmt=AAZStrArgFormat(
@@ -103,10 +103,28 @@ class Update(AAZCommand):
         # define Arg Group "NetworkProfile"
 
         _args_schema = cls._args_schema
+        _args_schema.api_server_authorized_ip_ranges = AAZListArg(
+            options=["--api-server-ip-ranges", "--api-server-authorized-ip-ranges"],
+            arg_group="NetworkProfile",
+            help="IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with private AKS clusters. So you cannot set enablePrivateApiServer to true and apiServerAuthorizedIpRanges at the same time.",
+            nullable=True,
+        )
+        _args_schema.outbound_type = AAZStrArg(
+            options=["--outbound-type"],
+            arg_group="NetworkProfile",
+            help="This can only be set at cluster pool creation time and cannot be changed later.",
+            nullable=True,
+            enum={"loadBalancer": "loadBalancer", "userDefinedRouting": "userDefinedRouting"},
+        )
         _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="NetworkProfile",
             help="Cluster pool subnet resource id.",
+        )
+
+        api_server_authorized_ip_ranges = cls._args_schema.api_server_authorized_ip_ranges
+        api_server_authorized_ip_ranges.Element = AAZStrArg(
+            nullable=True,
         )
 
         # define Arg Group "Properties"
@@ -129,12 +147,22 @@ class Update(AAZCommand):
         )
 
         compute_profile = cls._args_schema.compute_profile
+        compute_profile.availability_zones = AAZListArg(
+            options=["availability-zones"],
+            help="The list of Availability zones to use for AKS VMSS nodes.",
+            nullable=True,
+        )
         compute_profile.workernode_size = AAZStrArg(
             options=["workernode-size"],
             help="The virtual machine SKU.",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9_\-]{0,256}$",
             ),
+        )
+
+        availability_zones = cls._args_schema.compute_profile.availability_zones
+        availability_zones.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
@@ -216,7 +244,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -315,7 +343,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -390,7 +418,12 @@ class Update(AAZCommand):
 
             compute_profile = _builder.get(".properties.computeProfile")
             if compute_profile is not None:
+                compute_profile.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 compute_profile.set_prop("vmSize", AAZStrType, ".workernode_size", typ_kwargs={"flags": {"required": True}})
+
+            availability_zones = _builder.get(".properties.computeProfile.availabilityZones")
+            if availability_zones is not None:
+                availability_zones.set_elements(AAZStrType, ".")
 
             log_analytics_profile = _builder.get(".properties.logAnalyticsProfile")
             if log_analytics_profile is not None:
@@ -399,7 +432,13 @@ class Update(AAZCommand):
 
             network_profile = _builder.get(".properties.networkProfile")
             if network_profile is not None:
+                network_profile.set_prop("apiServerAuthorizedIpRanges", AAZListType, ".api_server_authorized_ip_ranges")
+                network_profile.set_prop("outboundType", AAZStrType, ".outbound_type")
                 network_profile.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
+
+            api_server_authorized_ip_ranges = _builder.get(".properties.networkProfile.apiServerAuthorizedIpRanges")
+            if api_server_authorized_ip_ranges is not None:
+                api_server_authorized_ip_ranges.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -527,6 +566,9 @@ class _UpdateHelper:
         )
 
         compute_profile = _schema_cluster_pool_read.properties.compute_profile
+        compute_profile.availability_zones = AAZListType(
+            serialized_name="availabilityZones",
+        )
         compute_profile.count = AAZIntType(
             flags={"read_only": True},
         )
@@ -534,6 +576,9 @@ class _UpdateHelper:
             serialized_name="vmSize",
             flags={"required": True},
         )
+
+        availability_zones = _schema_cluster_pool_read.properties.compute_profile.availability_zones
+        availability_zones.Element = AAZStrType()
 
         log_analytics_profile = _schema_cluster_pool_read.properties.log_analytics_profile
         log_analytics_profile.enabled = AAZBoolType(
@@ -544,10 +589,22 @@ class _UpdateHelper:
         )
 
         network_profile = _schema_cluster_pool_read.properties.network_profile
+        network_profile.api_server_authorized_ip_ranges = AAZListType(
+            serialized_name="apiServerAuthorizedIpRanges",
+        )
+        network_profile.enable_private_api_server = AAZBoolType(
+            serialized_name="enablePrivateApiServer",
+        )
+        network_profile.outbound_type = AAZStrType(
+            serialized_name="outboundType",
+        )
         network_profile.subnet_id = AAZStrType(
             serialized_name="subnetId",
             flags={"required": True},
         )
+
+        api_server_authorized_ip_ranges = _schema_cluster_pool_read.properties.network_profile.api_server_authorized_ip_ranges
+        api_server_authorized_ip_ranges.Element = AAZStrType()
 
         system_data = _schema_cluster_pool_read.system_data
         system_data.created_at = AAZStrType(

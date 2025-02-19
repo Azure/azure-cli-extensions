@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub authorized-application show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --provider-namespace
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"providerNamespace":"Private.VPTest","dataAuthorizations":[{"role":"ServiceOwner","resourceTypes":[]}],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","type":"Microsoft.ProviderHub/providerRegistrations/authorizedApplications","name":"8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-06T16:58:32.8885415Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-06T16:58:32.8885415Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '703'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jun 2024 17:00:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/3413197a-39df-4b03-9d8f-9fef9bd0bbe0
+      x-msedge-ref:
+      - 'Ref A: 5187706434B84A558985508114F23471 Ref B: CH1AA2020611011 Ref C: 2024-06-06T17:00:21Z'
+    status:
+      code: 200
+      message: OK
+version: 1

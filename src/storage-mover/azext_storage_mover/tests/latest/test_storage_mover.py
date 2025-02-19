@@ -33,6 +33,8 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
+    # tenant id 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a
+    # subscription id 0b1f6471-1bf0-4dda-aec3-cb9272f09590
     # az group create -n test-storagemover-rg2 -l eastus2euap
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     # https://www.microsoft.com/en-us/download/details.aspx?id=104590
@@ -51,6 +53,37 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover agent unregister -g {rg} -n {agent_name} --storage-mover-name {mover_name} -y')
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
+
+    # @record_only()
+    # need to manually register agent, first create the rg and the storagemover
+    # tenant id 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a
+    # subscription id 0b1f6471-1bf0-4dda-aec3-cb9272f09590
+    # az group create -n test-storagemover-rg2 -l eastus2
+    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
+    # register agent
+    def test_storage_mover_agent_upload_limit_schedule_scenarios(self):
+        self.kwargs.update({
+            "rg": "test-storagemover-rg2",
+            "mover_name": "teststoragemover2",
+            "agent_name": "agent2"
+        })
+        self.cmd('az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} '
+                 '--upload-limit-schedule "{{weekly-recurrences:[{{days:[Monday,Wednesday],'
+                 'start-time:{{hour:10,minute:0}},end-time:{{hour:12,minute:30}},limit-in-mbps:20}}]}}"',
+                 checks=[JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[0].days', ["Monday","Wednesday"]),
+                         JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[0].startTime', {"hour":10, "minute":0}),
+                         JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[0].endTime', {"hour":12, "minute":30}),
+                         JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[0].limitInMbps', 20)])
+        self.cmd('az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} '
+                 '--upload-limit-schedule weekly-recurrences[1]="{{days:[Tuesday,Thursday],'
+                 'start-time:{{hour:15,minute:30}},end-time:{{hour:16,minute:0}},limit-in-mbps:40}}"',
+                 checks=[JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[1].days', ["Tuesday", "Thursday"]),
+                         JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[1].startTime', {"hour": 15, "minute": 30}),
+                         JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[1].endTime', {"hour": 16, "minute": 0}),
+                         JMESPathCheck('uploadLimitSchedule.weeklyRecurrences[1].limitInMbps', 40)])
+        self.cmd('az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} '
+                 '--upload-limit-schedule null',
+                 checks=[JMESPathCheck('uploadLimitSchedule', None)])
 
     @ResourceGroupPreparer(location='eastus2euap')
     @StorageAccountPreparer()

@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.0
+++++++
+* Remove ADAL dependencies
+
 0.3.0
 ++++++
 * Add command ``az costmanagement show-operation-result``

@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update an admin rule.
 
     :example: Update security admin rule
-        az network manager security-admin-config rule-collection rule update --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --access "Deny"
+        az network manager security-admin-config rule-collection rule update --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --access "Deny"
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2024-05-01"],
         ]
     }
 
@@ -47,8 +47,8 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="The name of the network manager Security Configuration.",
+            options=["--config", "--config-name", "--configuration-name"],
+            help="Name of the network manager security configuration.",
             required=True,
             id_part="child_name_1",
         )
@@ -57,12 +57,15 @@ class Update(AAZCommand):
             help="The name of the network manager.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         _args_schema.rule_collection_name = AAZStrArg(
-            options=["--rule-collection-name"],
+            options=["--rc", "--rule-collection-name"],
             help="The name of the network manager security Configuration rule collection.",
             required=True,
             id_part="child_name_2",
@@ -189,7 +192,7 @@ class Update(AAZCommand):
             options=["address-prefix-type"],
             help="Address prefix type.",
             nullable=True,
-            enum={"IPPrefix": "IPPrefix", "ServiceTag": "ServiceTag"},
+            enum={"IPPrefix": "IPPrefix", "NetworkGroup": "NetworkGroup", "ServiceTag": "ServiceTag"},
         )
 
         _schema.address_prefix = cls._args_address_prefix_item_update.address_prefix
@@ -249,7 +252,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -285,7 +288,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -344,7 +347,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -380,7 +383,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -531,7 +534,6 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_base_admin_rule_read(cls, _schema):
         if cls._schema_base_admin_rule_read is not None:
-            _schema.etag = cls._schema_base_admin_rule_read.etag
             _schema.id = cls._schema_base_admin_rule_read.id
             _schema.kind = cls._schema_base_admin_rule_read.kind
             _schema.name = cls._schema_base_admin_rule_read.name
@@ -558,9 +560,6 @@ class _UpdateHelper:
         cls._schema_base_admin_rule_read = _schema_base_admin_rule_read = AAZObjectType()
 
         base_admin_rule_read = _schema_base_admin_rule_read
-        base_admin_rule_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
         base_admin_rule_read.id = AAZStrType(
             flags={"read_only": True},
         )
@@ -625,6 +624,10 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
+            flags={"read_only": True},
+        )
         properties.source_port_ranges = AAZListType(
             serialized_name="sourcePortRanges",
         )
@@ -650,7 +653,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_base_admin_rule_read.discriminate_by("kind", "Default").properties
-        properties.access = AAZStrType()
+        properties.access = AAZStrType(
+            flags={"read_only": True},
+        )
         properties.description = AAZStrType(
             flags={"read_only": True},
         )
@@ -661,14 +666,22 @@ class _UpdateHelper:
         properties.destinations = AAZListType(
             flags={"read_only": True},
         )
-        properties.direction = AAZStrType()
+        properties.direction = AAZStrType(
+            flags={"read_only": True},
+        )
         properties.flag = AAZStrType()
         properties.priority = AAZIntType(
             flags={"read_only": True},
         )
-        properties.protocol = AAZStrType()
+        properties.protocol = AAZStrType(
+            flags={"read_only": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
             flags={"read_only": True},
         )
         properties.source_port_ranges = AAZListType(
@@ -693,7 +706,6 @@ class _UpdateHelper:
         sources.Element = AAZObjectType()
         cls._build_schema_address_prefix_item_read(sources.Element)
 
-        _schema.etag = cls._schema_base_admin_rule_read.etag
         _schema.id = cls._schema_base_admin_rule_read.id
         _schema.kind = cls._schema_base_admin_rule_read.kind
         _schema.name = cls._schema_base_admin_rule_read.name

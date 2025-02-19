@@ -6,19 +6,20 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._workspaces_operations import WorkspacesOperations
-from ._offerings_operations import OfferingsOperations
+from ._operations import WorkspacesOperations
+from ._operations import OfferingsOperations
 from ._operations import Operations
-from ._workspace_operations import WorkspaceOperations
+from ._operations import WorkspaceOperations
 
 from ._patch import __all__ as _patch_all
-from ._patch import *  # type: ignore # pylint: disable=unused-wildcard-import
+from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
+
 __all__ = [
-    'WorkspacesOperations',
-    'OfferingsOperations',
-    'Operations',
-    'WorkspaceOperations',
+    "WorkspacesOperations",
+    "OfferingsOperations",
+    "Operations",
+    "WorkspaceOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])
 _patch_sdk()

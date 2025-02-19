@@ -148,12 +148,15 @@ def load_command_table(self, _):
     # endregion
 
     # region WafPolicy
-    with self.command_group('network front-door waf-policy', waf_policy_sdk) as g:
-        g.custom_command('create', 'create_waf_policy')
-        g.command('delete', 'begin_delete')
-        g.command('list', 'list')
-        g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_waf_policy', setter_name="begin_create_or_update")
+    # with self.command_group('network front-door waf-policy', waf_policy_sdk) as g:
+    #     g.custom_command('create', 'create_waf_policy')
+    #     g.command('delete', 'begin_delete')
+    #     g.command('list', 'list')
+    #     g.show_command('show')
+    #     g.generic_update_command('update', custom_func_name='update_waf_policy', setter_name="begin_create_or_update")
+    from .custom_waf import WafPolicyCreate, WafPolicyUpdate
+    self.command_table['network front-door waf-policy create'] = WafPolicyCreate(loader=self)
+    self.command_table['network front-door waf-policy update'] = WafPolicyUpdate(loader=self)
 
     with self.command_group('network front-door waf-policy managed-rules', waf_policy_sdk) as g:
         g.custom_command('add', 'add_azure_managed_rule_set')

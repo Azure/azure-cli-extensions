@@ -199,7 +199,7 @@ def load_arguments(self, _):
         c.argument('vpn_site_name', vpn_site_name_type, options_list=['--site-name'], id_part=None)
 
     for scope in ['vpn-site', 'vpn-gateway']:
-        with self.argument_context('network {}'.format(scope), arg_group='BGP Peering') as c:
+        with self.argument_context(f"network {scope}", arg_group='BGP Peering') as c:
             c.argument('asn', help='BGP speaker\'s ASN.', type=int)
             c.argument('peer_weight', help='Weight added to routes learned from this BGP speaker.', type=int)
             c.argument('bgp_peering_address', help='Peering address and BGP identifier of this BGP speaker.')
@@ -268,7 +268,7 @@ def load_arguments(self, _):
 
     # region Routing Configuration
     for item in ['vpn-gateway connection', 'p2s-vpn-gateway', 'vhub connection']:
-        with self.argument_context('network {}'.format(item), arg_group='Routing Configuration', min_api='2020-04-01', is_preview=True) as c:
+        with self.argument_context(f"network {item}", arg_group='Routing Configuration', min_api='2020-04-01', is_preview=True) as c:
             c.argument('associated_route_table', associated_route_table_type)
             c.argument('propagated_route_tables', propagated_route_tables_type)
             c.argument('labels', propagated_route_tables_label_type)

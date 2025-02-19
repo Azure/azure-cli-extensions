@@ -12,7 +12,7 @@ manifest = '''
     "datasourceType": "Microsoft.Compute/disks",
     "allowedRestoreModes": [ "RecoveryPointBased" ],
     "allowedRestoreTargetTypes": [ "AlternateLocation" ],
-    "itemLevelRecoveyEnabled": false,
+    "itemLevelRecoveryEnabled": false,
     "addBackupDatasourceParametersList": false,
     "addDataStoreParametersList": true,
     "friendlyNameRequired": false,

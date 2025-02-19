@@ -8,19 +8,19 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 class FrontDoorBYOCScenarioTests(ScenarioTest):
 
-    @record_only()  # This test requires resources in the specific subscription
+    # @record_only()  # This test requires resources in the specific subscription
     def test_frontend_endpoint_byoc_latest_version(self):
-        resource_group = "bzhanafdtest"
-        front_door = "frontdoorpstest2"
-        frontend_endpoint_name = "afd-byoc-latest-localdev-cdn-azure-cn"
+        resource_group = "CliDevReservedGroup"
+        front_door = "frontdoorclitest"
+        frontend_endpoint_name = "afdbyoc-latest-localdev-cdn-azure-cn"
         # Use the latest version of the secret
         byoc_checks = [JMESPathCheck('customHttpsConfiguration.secretVersion', None),
                        JMESPathCheck('customHttpsProvisioningState', "Enabling"),
                        JMESPathCheck('customHttpsProvisioningSubstate', "ImportingUserProvidedCertificate")]
         self.cmd(f'network front-door frontend-endpoint enable-https -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
                  '--certificate-source AzureKeyVault '
-                 f'--vault-id /subscriptions/{self.get_subscription_id()}/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest '
-                 '--secret-name frontdoorpstest2', checks=byoc_checks)
+                 f'--vault-id /subscriptions/{self.get_subscription_id()}/resourceGroups/CliDevReservedGroup/providers/Microsoft.KeyVault/vaults/clibyoc-int '
+                 '--secret-name localdev-multi', checks=byoc_checks)
 
         self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
                  "--custom \"customHttpsProvisioningState=='Enabled'\"")
@@ -30,21 +30,21 @@ class FrontDoorBYOCScenarioTests(ScenarioTest):
         self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
                  "--custom \"customHttpsProvisioningState=='Disabled'\"")
 
-    @record_only()  # This test requires resources in the specific subscription
+    # @record_only()  # This test requires resources in the specific subscription
     def test_frontend_endpoint_byoc_specific_version(self):
-        resource_group = "bzhanafdtest"
-        front_door = "frontdoorpstest2"
-        frontend_endpoint_name = "afd-byoc-specific-localdev-cdn-azure-cn"
+        resource_group = "CliDevReservedGroup"
+        front_door = "frontdoorclitest"
+        frontend_endpoint_name = "afdbyoc-specific-localdev-cdn-azure-cn"
 
         # Use the specific version of the secret
-        byoc_checks = [JMESPathCheck('customHttpsConfiguration.secretVersion', "d6b1f0ffd2a142efb2a8a89289802c77"),
+        byoc_checks = [JMESPathCheck('customHttpsConfiguration.secretVersion', "6244bbfa61c241d78403a6e394cc2d30"),
                        JMESPathCheck('customHttpsProvisioningState', "Enabling"),
                        JMESPathCheck('customHttpsProvisioningSubstate', "ImportingUserProvidedCertificate")]
         self.cmd(f'network front-door frontend-endpoint enable-https -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
                  '--certificate-source AzureKeyVault '
-                 f'--vault-id /subscriptions/{self.get_subscription_id()}/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest '
-                 '--secret-name frontdoorpstest2 '
-                 '--secret-version d6b1f0ffd2a142efb2a8a89289802c77', checks=byoc_checks)
+                 f'--vault-id /subscriptions/{self.get_subscription_id()}/resourceGroups/CliDevReservedGroup/providers/Microsoft.KeyVault/vaults/clibyoc-int '
+                 '--secret-name localdev-multi '
+                 '--secret-version 6244bbfa61c241d78403a6e394cc2d30', checks=byoc_checks)
 
         self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
                  "--custom \"customHttpsProvisioningState=='Enabled'\"")

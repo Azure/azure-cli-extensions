@@ -3,6 +3,7 @@
 - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples and Security Policy Rules Documentation](#microsoft-azure-cli-confcom-acipolicygen-extension-examples-and-security-policy-rules-documentation)
   - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples](#microsoft-azure-cli-confcom-extension-examples)
   - [dmverity Layer Hashing](#dmverity-layer-hashing)
+  - [AKS Virtual Node](#aks-virtual-node)
   - [Security Policy Information Sources](#security-policy-information-sources)
   - [Security Policy Rules Documentation](#security-policy-rules-documentation)
     - [mount_device](#mount_device)
@@ -28,8 +29,8 @@
     - [allow_environment_variable_dropping](#allow_environment_variable_dropping)
     - [allow_unencrypted_scratch](#allow_unencrypted_scratch)
     - [allow_capabilities_dropping](#allow_capabilities_dropping)
+- [Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples](#microsoft-azure-cli-confcom-acifragmentgen-extension-examples)
 - [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples](#microsoft-azure-cli-confcom-katapolicygen-extension-examples)
-  - [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples]
 
 ## Microsoft Azure CLI 'confcom acipolicygen' Extension Examples
 
@@ -275,6 +276,20 @@ An OCI image can be made available for policy generation in three ways:
 3. The image is locally saved as a tar file in the form specified by `docker save`.
 
 Mixed-mode policy generation is available in the `confcom` tooling, meaning images within the same security policy can be in any of these three locations with no issues.
+
+## AKS Virtual Node
+
+Azure Kubernetes Service (AKS) allows pods to be scheduled on Azure Container Instances (ACI)
+using the [AKS Virtual Node](https://learn.microsoft.com/en-us/azure/aks/virtual-nodes) feature. The `confcom` tooling can generate security policies for these ACI-based pods in the same way as for standalone ACI container groups. The key difference is that the `confcom` tooling will ingest an AKS pod specification (`pod.yaml`) instead of an ARM Template.
+
+Use the following command to generate and print a security policy for an AKS pod running on ACI:
+
+```bash
+az confcom acipolicygen --virtual-node-yaml ./pod.yaml --print-policy
+```
+
+> [!NOTE]
+> The `acipolicygen` command is specific to generating policies for ACI-based containers. For generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature, use the `katapolicygen` command.
 
 ## Security Policy Information Sources
 
@@ -643,6 +658,92 @@ This rule determines whether unencrypted writable storage from the UVM to the co
 ## allow_capabilities_dropping
 
 Whether to allow capabilities to be dropped in the same manner as allow_environment_variable_dropping.
+
+## Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples
+
+Run `az confcom acifragmentgen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security fragments.
+
+For information on what a policy fragment is, see [policy fragments](#policy-fragments). For a full walkthrough on how to generate a policy fragment and use it in a policy, see [Create a Key and Cert for Signing](../samples/certs/README.md).
+
+**Examples:**
+
+Example 1: The following command creates a security fragment and prints it to stdout as well as saving it to a file `contoso.rego`:
+
+```bash
+az confcom acifragmentgen --input ./fragment_config.json --svn 1 --namespace contoso
+```
+
+The config file is a JSON file that contains the following information:
+
+```json
+{
+ "containers": [
+  {
+   "name": "my-image",
+   "properties": {
+    "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8",
+    "environmentVariables": [
+     {
+      "name": "PATH",
+      "value": "/customized/path/value"
+     },
+     {
+      "name": "TEST_REGEXP_ENV",
+      "value": "test_regexp_env(.*)",
+      "regex": true
+     }
+    ],
+    "command": [
+     "python3",
+     "main.py"
+    ]
+   }
+  }
+ ]
+}
+```
+
+The `--svn` argument is used to specify the security version number of the fragment and should be an integer. The `--namespace` argument is used to specify the namespace of the fragment and cannot conflict with some built-in names. If a conflicting name occurs, there will be an error message. [This list of reserved names can be found here under 'reserved_fragment_namespaces'](./data/internal_config.json). The format of the config file generally follows that of the [ACI resource in an ARM template](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerinstance/containergroups?pivots=deployment-language-arm-template).
+
+Example 2: This command creates a signed security fragment and attaches it to a container image in an ORAS-compliant registry:
+
+```bash
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/config.json --upload-fragment
+```
+
+Example 3: This command creates a file to be used by `acipolicygen` that says which fragments should be included in the policy. Note that the policy must be [COSE](https://www.iana.org/assignments/cose/cose.xhtml) signed:
+
+```bash
+az confcom acifragmentgen --generate-import -p ./contoso.rego.cose --minimum-svn 1 --fragments-json fragments.json
+```
+
+This outputs a file `fragments.json` that contains the following information:
+
+```json
+{
+    "fragments": [
+        {
+            "feed": "contoso.azurecr.io/example",
+            "includes": [
+            "containers",
+            "fragments"
+            ],
+            "issuer": "did:x509:0:sha256:mLzv0uyBNQvC6hi4y9qy8hr6NSZuYFv6gfCwAEWBNqc::subject:CN:Contoso",
+            "minimum_svn": "1"
+        }
+    ]
+}
+```
+
+This file is then used by `acipolicygen` to generate a policy that includes custom fragments.
+
+Example 4: The command creates a signed policy fragment and attaches it to a specified image in an ORAS-compliant registry:
+
+```bash
+az confcom acifragmentgen --chain ./samples/certs/intermediateCA/certs/www.contoso.com.chain.cert.pem --key ./samples/certs/intermediateCA/private/ec_p384_private.pem --svn 1 --namespace contoso --input ./samples/<my-config>.json --upload-fragment --image-target contoso.azurecr.io/<my-image>:latest --feed contoso.azurecr.io/<my-feed>
+```
+
+This could be useful in scenarios where an image-attached fragment is required but the fragment's feed is different from the image's location.
 
 ## Microsoft Azure CLI 'confcom katapolicygen' Extension Examples
 

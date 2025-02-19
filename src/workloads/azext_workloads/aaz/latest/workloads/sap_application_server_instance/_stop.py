@@ -19,16 +19,22 @@ class Stop(AAZCommand):
     """Stops the SAP Application Server Instance.
 
     :example: Stop Application server instance of the SAP system
-        az workloads sap-application-server-instance stop --sap-virtual-instance-name <VIS Name> -g <Resource-group-name> -n <ResourceName>
+        az workloads sap-application-server-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <app-instance-name>
 
     :example: Stop Application server instance of the SAP system using the Azure resource ID of the instance
-        az workloads sap-application-server-instance stop --id <ResourceID>
+        az workloads sap-application-server-instance stop --id <resource-id>
+
+    :example: Stop Application server instance of the SAP system and its underlying Virtual Machine
+        az workloads sap-application-server-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <app-instance-name> --deallocate-vm
+
+    :example: Soft Stop Application server instance of the SAP system
+        az workloads sap-application-server-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <app-instance-name> --soft-stop-timeout-seconds <timeout-in-seconds>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}/stop", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}/stop", "2023-10-01-preview"],
         ]
     }
 
@@ -54,6 +60,9 @@ class Stop(AAZCommand):
             help="The name of SAP Application Server instance resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,11 +72,20 @@ class Stop(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
 
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.deallocate_vm = AAZBoolArg(
+            options=["--deallocate-vm"],
+            arg_group="Body",
+            help="The boolean value indicates whether to Stop and deallocate the virtual machines along with the SAP instances.",
+            default=False,
+        )
         _args_schema.soft_stop_timeout_seconds = AAZIntArg(
             options=["--soft-stop-timeout-seconds"],
             arg_group="Body",
@@ -105,7 +123,7 @@ class Stop(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -114,7 +132,7 @@ class Stop(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -161,7 +179,7 @@ class Stop(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -186,6 +204,7 @@ class Stop(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
+            _builder.set_prop("deallocateVm", AAZBoolType, ".deallocate_vm")
             _builder.set_prop("softStopTimeoutSeconds", AAZIntType, ".soft_stop_timeout_seconds")
 
             return self.serialize_content(_content_value)
@@ -250,6 +269,9 @@ class _StopHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )

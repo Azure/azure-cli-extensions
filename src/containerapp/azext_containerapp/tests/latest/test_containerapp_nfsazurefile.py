@@ -11,7 +11,8 @@ import unittest
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from .custom_preparers import SubnetPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
@@ -23,39 +24,28 @@ from .utils import create_containerapp_env
 class ContainerAppMountNfsAzureFileTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
-    def test_container_app_mount_nfsazurefile_e2e(self, resource_group):
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
+    def test_container_app_mount_nfsazurefile_e2e(self, resource_group, subnet_id, vnet_name, subnet_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='app1', length=24)
         storage = self.create_random_name(prefix='storage', length=24)
         share = self.create_random_name(prefix='share', length=10)
-        vnet = self.create_random_name(prefix='vnet', length=10)
-        subnet = 'nfstest'
+
         storage_account_location = TEST_LOCATION
-        vnet_location = TEST_LOCATION
         if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
-            vnet_location = "centralus"
-        self.cmd(
-            f'az network vnet create --resource-group {resource_group}  --name {vnet} --address-prefix 10.0.0.0/16 --subnet-name {subnet} --subnet-prefixes 10.0.0.0/23 --location {vnet_location}')
-        self.cmd(
-            f'az network vnet subnet update --resource-group {resource_group} --vnet-name {vnet} --name {subnet} --service-endpoints Microsoft.Storage.Global --delegations Microsoft.App/environments')
-
-        subnet_resource = self.cmd(
-            f'az network vnet subnet show --resource-group {resource_group} --vnet-name {vnet} --name {subnet}')
 
         self.cmd(
             f'az storage account create --resource-group {resource_group}  --name {storage} --location {storage_account_location} --kind FileStorage --sku Premium_LRS --enable-large-file-share --https-only false --output none')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols NFS --root-squash NoRootSquash --output none')
         self.cmd(
-            f'az storage account network-rule add --resource-group {resource_group} --account-name {storage} --vnet-name {vnet} --subnet {subnet}'
+            f'az storage account network-rule add --resource-group {resource_group} --account-name {storage} --vnet-name {vnet_name} --subnet {subnet_name}'
         )
 
-        subnet_id = subnet_resource.get_output_in_json()['id']
-
-        print(*subnet_id, file=sys.stdout)
+        print(subnet_id, file=sys.stdout)
         create_containerapp_env(self, env, resource_group, TEST_LOCATION, subnet_id)
         containerapp_env = self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
             JMESPathCheck('name', env)

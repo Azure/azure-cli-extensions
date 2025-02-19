@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -61,7 +61,6 @@ class Update(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -72,6 +71,7 @@ class Update(AAZCommand):
             options=["--egress-acl-id"],
             arg_group="Properties",
             help="Egress Acl ARM resource ID.",
+            nullable=True,
         )
         _args_schema.export_route_policy = AAZObjectArg(
             options=["--export-route-policy"],
@@ -87,6 +87,7 @@ class Update(AAZCommand):
             options=["--ingress-acl-id"],
             arg_group="Properties",
             help="Ingress Acl ARM resource ID.",
+            nullable=True,
         )
         _args_schema.layer2_configuration = AAZObjectArg(
             options=["--layer2-configuration"],
@@ -108,26 +109,33 @@ class Update(AAZCommand):
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="Export IPv4 Route Policy Id.",
+            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="Export IPv6 Route Policy Id.",
+            nullable=True,
         )
 
         import_route_policy = cls._args_schema.import_route_policy
         import_route_policy.import_ipv4_route_policy_id = AAZResourceIdArg(
             options=["import-ipv4-route-policy-id"],
             help="Import IPv4 Route Policy Id.",
+            nullable=True,
         )
         import_route_policy.import_ipv6_route_policy_id = AAZResourceIdArg(
             options=["import-ipv6-route-policy-id"],
             help="Import IPv6 Route Policy Id.",
+            nullable=True,
         )
 
         layer2_configuration = cls._args_schema.layer2_configuration
         layer2_configuration.interfaces = AAZListArg(
             options=["interfaces"],
             help="List of network device interfaces resource IDs.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         layer2_configuration.mtu = AAZIntArg(
             options=["mtu"],
@@ -149,10 +157,16 @@ class Update(AAZCommand):
         npb_static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Routes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         npb_static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Routes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         bfd_configuration = cls._args_schema.npb_static_route_configuration.bfd_configuration
@@ -226,6 +240,9 @@ class Update(AAZCommand):
             options=["next-hop"],
             help="List of next hop addresses.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         static_route_properties_update.prefix = AAZStrArg(
             options=["prefix"],
@@ -331,7 +348,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -360,23 +377,23 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id")
+                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id", typ_kwargs={"nullable": True})
                 properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
                 properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
-                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id")
+                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id", typ_kwargs={"nullable": True})
                 properties.set_prop("layer2Configuration", AAZObjectType, ".layer2_configuration")
                 properties.set_prop("npbStaticRouteConfiguration", AAZObjectType, ".npb_static_route_configuration")
                 properties.set_prop("optionBLayer3Configuration", AAZObjectType, ".option_b_layer3_configuration")
 
             export_route_policy = _builder.get(".properties.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             import_route_policy = _builder.get(".properties.importRoutePolicy")
             if import_route_policy is not None:
-                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id")
-                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id")
+                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             layer2_configuration = _builder.get(".properties.layer2Configuration")
             if layer2_configuration is not None:
@@ -463,6 +480,7 @@ class Update(AAZCommand):
             )
             properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
+                nullable=True,
             )
             properties.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
@@ -472,6 +490,7 @@ class Update(AAZCommand):
             )
             properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
+                nullable=True,
             )
             properties.is_management_type = AAZStrType(
                 serialized_name="isManagementType",
@@ -500,17 +519,21 @@ class Update(AAZCommand):
             export_route_policy = cls._schema_on_200.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
+                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
+                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
+                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
+                nullable=True,
             )
 
             layer2_configuration = cls._schema_on_200.properties.layer2_configuration

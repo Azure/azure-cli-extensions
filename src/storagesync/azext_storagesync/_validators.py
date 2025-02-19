@@ -5,7 +5,7 @@
 
 
 def parse_storage_sync_service(namespace):
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 
     if namespace.storage_sync_service_name and is_valid_resource_id(namespace.storage_sync_service_name):
         namespace.resource_group_name = parse_resource_id(namespace.storage_sync_service_name)['resource_group']
@@ -14,7 +14,7 @@ def parse_storage_sync_service(namespace):
 
 def parse_server_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     if namespace.server_resource_id and not is_valid_resource_id(namespace.server_resource_id):
         namespace.server_resource_id = resource_id(
@@ -30,7 +30,7 @@ def parse_server_id(cmd, namespace):
 
 def parse_storage_account(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
     if namespace.storage_account_resource_id:
         if not is_valid_resource_id(namespace.storage_account_resource_id):

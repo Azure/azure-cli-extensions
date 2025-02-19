@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -54,7 +54,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -97,10 +96,16 @@ class Create(AAZCommand):
         destination.ipv4_addresses = AAZListArg(
             options=["ipv4-addresses"],
             help="Array of IPv4 Addresses.",
+            fmt=AAZListArgFormat(
+                max_length=16,
+            ),
         )
         destination.ipv6_addresses = AAZListArg(
             options=["ipv6-addresses"],
             help="Array of IPv6 Addresses.",
+            fmt=AAZListArgFormat(
+                max_length=16,
+            ),
         )
 
         ipv4_addresses = cls._args_schema.destination.ipv4_addresses
@@ -199,7 +204,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }

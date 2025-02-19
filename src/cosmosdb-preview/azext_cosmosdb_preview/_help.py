@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -823,6 +824,13 @@ helps['cosmosdb copy create'] = """
             Usage: --dest-mongo database=XX collection=XX'
             database: Database name.
             collection: Collection name.
+      - name: --dest-mongo-vcore
+        short-summary: "Destination Mongo(vCore) collection"
+        long-summary: |
+            Usage: --dest-mongo-vcore database=XX collection=XX connectionStringKeyVaultUri=XX'
+            database: Database name.
+            collection: Collection name.
+            connectionStringKeyVaultUri: Link to Azure KeyVault secret containing connection string.
 
     examples:
       - name: Copy Azure Cosmos DB API for NoSQL container in same account
@@ -837,6 +845,9 @@ helps['cosmosdb copy create'] = """
       - name: Copy Azure Cosmos DB API for MongoDB collection
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
+      - name: Copy Azure Cosmos DB API from MongoDB(RU) collection to Mongo(vCore) collection
+        text: |-
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo-vcore database=d2 collection=c2 connectionStringKeyVaultUri=<link_to_Azure_KeyVault_secret>
 """
 
 helps['cosmosdb copy list'] = """
@@ -882,6 +893,15 @@ helps['cosmosdb copy cancel'] = """
       - name: Cancel job j1
         text: |-
                az cosmosdb copy cancel -g "rg1" --account-name "acc1" --job-name "j1"
+"""
+
+helps['cosmosdb copy complete'] = """
+    type: command
+    short-summary: "Completes an online container copy job."
+    examples:
+      - name: Complete job j1
+        text: |-
+               az cosmosdb copy complete -g "rg1" --account-name "acc1" --job-name "j1"
 """
 
 helps['cosmosdb sql container merge'] = """
@@ -986,6 +1006,35 @@ helps['cosmosdb sql container restore'] = """
       - name: Restore a deleted sql container within the same account.
         text: |-
                az cosmosdb sql container restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_container_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# sql container throughput commands
+helps['cosmosdb sql container throughput'] = """
+type: group
+short-summary: Manage throughput of SQL container under an Azure Cosmos DB account.
+"""
+
+helps['cosmosdb sql container throughput show'] = """
+type: command
+short-summary: Get the throughput of the SQL container under an Azure Cosmos DB SQL database.
+"""
+
+helps['cosmosdb sql container throughput update'] = """
+type: command
+short-summary: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
+examples:
+      - name: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
+        text: |-
+               az cosmosdb sql container throughput update --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput 1000
+"""
+
+helps['cosmosdb sql container throughput migrate'] = """
+type: command
+short-summary: Migrate the throughput of the SQL container between autoscale and manually provisioned.
+examples:
+      - name: Migrate the throughput of the SQL container between autoscale and manually provisioned.
+        text: |-
+               az cosmosdb sql container throughput migrate --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput-type Manual
 """
 
 # in-account restore of a deleted mongodb database

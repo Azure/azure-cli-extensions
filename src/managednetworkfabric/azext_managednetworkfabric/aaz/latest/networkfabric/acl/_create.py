@@ -28,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -57,7 +57,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -114,11 +113,17 @@ class Create(AAZCommand):
             options=["--dynamic-match-configurations"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.match_configurations = AAZListArg(
             options=["--match-configurations"],
             arg_group="Properties",
             help="List of match configurations.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         dynamic_match_configurations = cls._args_schema.dynamic_match_configurations
@@ -128,14 +133,23 @@ class Create(AAZCommand):
         _element.ip_groups = AAZListArg(
             options=["ip-groups"],
             help="List of IP Groups.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.port_groups = AAZListArg(
             options=["port-groups"],
             help="List of the port groups.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.vlan_groups = AAZListArg(
             options=["vlan-groups"],
             help="List of vlan groups.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         ip_groups = cls._args_schema.dynamic_match_configurations.Element.ip_groups
@@ -153,6 +167,9 @@ class Create(AAZCommand):
         _element.ip_prefixes = AAZListArg(
             options=["ip-prefixes"],
             help="List of IP Prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.name = AAZStrArg(
             options=["name"],
@@ -183,6 +200,9 @@ class Create(AAZCommand):
         _element.ports = AAZListArg(
             options=["ports"],
             help="List of the ports that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         ports = cls._args_schema.dynamic_match_configurations.Element.port_groups.Element.ports
@@ -206,6 +226,9 @@ class Create(AAZCommand):
         _element.vlans = AAZListArg(
             options=["vlans"],
             help="List of vlans.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         vlans = cls._args_schema.dynamic_match_configurations.Element.vlan_groups.Element.vlans
@@ -222,6 +245,9 @@ class Create(AAZCommand):
         _element.actions = AAZListArg(
             options=["actions"],
             help="List of actions that need to be performed for the matched conditions.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.ip_address_type = AAZStrArg(
             options=["ip-address-type"],
@@ -234,6 +260,9 @@ class Create(AAZCommand):
         _element.match_conditions = AAZListArg(
             options=["match-conditions"],
             help="List of the match conditions.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.match_configuration_name = AAZStrArg(
             options=["match-configuration-name"],
@@ -278,14 +307,23 @@ class Create(AAZCommand):
         _element.dscp_markings = AAZListArg(
             options=["dscp-markings"],
             help="List of DSCP Markings that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.ether_types = AAZListArg(
             options=["ether-types"],
             help="List of ether type values that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.fragments = AAZListArg(
             options=["fragments"],
             help="List of IP fragment packets that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.ip_condition = AAZObjectArg(
             options=["ip-condition"],
@@ -294,6 +332,9 @@ class Create(AAZCommand):
         _element.ip_lengths = AAZListArg(
             options=["ip-lengths"],
             help="List of IP Lengths that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.port_condition = AAZObjectArg(
             options=["port-condition"],
@@ -302,10 +343,16 @@ class Create(AAZCommand):
         _element.protocol_types = AAZListArg(
             options=["protocol-types"],
             help="List of the protocols that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.ttl_values = AAZListArg(
             options=["ttl-values"],
             help="List of TTL [Time To Live] values that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.vlan_match_condition = AAZObjectArg(
             options=["vlan-match-condition"],
@@ -337,10 +384,16 @@ class Create(AAZCommand):
         ip_condition.ip_group_names = AAZListArg(
             options=["ip-group-names"],
             help="The List of IP Group Names that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         ip_condition.ip_prefix_values = AAZListArg(
             options=["ip-prefix-values"],
             help="The list of IP Prefixes that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         ip_condition.prefix_type = AAZStrArg(
             options=["prefix-type"],
@@ -397,6 +450,9 @@ class Create(AAZCommand):
         port_condition.port_group_names = AAZListArg(
             options=["port-group-names"],
             help="List of the port Group Names that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         port_condition.port_type = AAZStrArg(
             options=["port-type"],
@@ -409,6 +465,9 @@ class Create(AAZCommand):
         port_condition.ports = AAZListArg(
             options=["ports"],
             help="List of the Ports that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         flags = cls._args_schema.match_configurations.Element.match_conditions.Element.port_condition.flags
@@ -446,14 +505,23 @@ class Create(AAZCommand):
         vlan_match_condition.inner_vlans = AAZListArg(
             options=["inner-vlans"],
             help="List of inner vlans that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         vlan_match_condition.vlan_group_names = AAZListArg(
             options=["vlan-group-names"],
             help="List of vlan group names that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         vlan_match_condition.vlans = AAZListArg(
             options=["vlans"],
             help="List of vlans that need to be matched.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         inner_vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.inner_vlans
@@ -559,7 +627,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }

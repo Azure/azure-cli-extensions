@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2025-01-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -186,6 +186,14 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.security_policies = AAZListType(
+                serialized_name="securityPolicies",
+                flags={"read_only": True},
+            )
+            properties.security_policy_configurations = AAZObjectType(
+                serialized_name="securityPolicyConfigurations",
             )
 
             associations = cls._schema_on_200.properties.associations
@@ -198,6 +206,20 @@ class Wait(AAZWaitCommand):
             frontends = cls._schema_on_200.properties.frontends
             frontends.Element = AAZObjectType()
             _WaitHelper._build_schema_resource_id_read(frontends.Element)
+
+            security_policies = cls._schema_on_200.properties.security_policies
+            security_policies.Element = AAZObjectType()
+            _WaitHelper._build_schema_resource_id_read(security_policies.Element)
+
+            security_policy_configurations = cls._schema_on_200.properties.security_policy_configurations
+            security_policy_configurations.waf_security_policy = AAZObjectType(
+                serialized_name="wafSecurityPolicy",
+            )
+
+            waf_security_policy = cls._schema_on_200.properties.security_policy_configurations.waf_security_policy
+            waf_security_policy.id = AAZStrType(
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

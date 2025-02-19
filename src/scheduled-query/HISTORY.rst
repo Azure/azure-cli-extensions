@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.0.0b1
+++++++
+* Fix update action group failure with empty actions
+* Fix action group parameter help message
+
 0.5.3
 ++++++
 * Upgrade antlr to 4.13.1

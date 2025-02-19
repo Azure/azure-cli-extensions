@@ -2,6 +2,23 @@
 
 Release History
 ===============
+1.2.2
+++++++
+* `az network firewall create`: add support public-ip for vhub sku firewall
+
+1.2.1
+++++++
+* Remove ADAL dependencies
+
+1.2.0
+++++++
+* `network firewall policy rule-collection-group collection rule add/update"`: Add parameter `--http-headers-to-insert`
+* new intrusion-detection parameter: IDPS Profile
+
+1.1.0
+++++++
+* `az network firewall policy draft create/update/show`: support policy draft commands
+* `az network firewall policy rule collection group draft create/update/show`: support rule collection group draft commands
 
 1.0.1
 ++++++

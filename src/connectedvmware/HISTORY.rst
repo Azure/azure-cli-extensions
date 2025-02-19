@@ -2,6 +2,36 @@
 
 Release History
 ===============
+1.2.1
+++++++
+* For pwinput, read input from stdin when tty is not available
+
+1.2.0
+++++++
+* Add support to enable a VM using managed object name (moName).
+
+1.1.1
+++++++
+* `create-from-machines` : Search for BIOS IDs with both Little Endian and Middle Endian format.
+
+1.1.0
+++++++
+* Prompt credentials if not provided for Guest Agent.
+
+1.0.1
+++++++
+* Fix bug in `az connectedvmware create` command when RG of machine is different from RG of vCenter.
+* Update help command for vm create to remove non-required parameters.
+* Bug fix in sample resource id format for vcenter
+* Add --private-link-scope flag to `az connectedvmware vm guest-agent enable` command.
+
+1.0.0
+++++++
+* Add command `az connectedvmware create-from-machines`.
+* Delete HCRP Machine resource by default during `delete vm`. To retain, use `--retain-machine` flag.
+* Use GA API Version for VCENTER_KIND_GET_API_VERSION.
+* Set extension to non-preview version
+
 0.2.4
 ++++++
 * Link existing HCRP machine to vCenter using the CLI.

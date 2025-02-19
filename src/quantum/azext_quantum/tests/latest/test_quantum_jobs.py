@@ -12,12 +12,12 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build, _convert_numeric_params
+from ...operations.job import _parse_blob_url, _validate_max_poll_wait_secs, _convert_numeric_params
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -43,81 +43,15 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
 
-    def test_build(self):
-        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\input_data\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
-        assert result == {'result': 'ok'}
-
-        self.testfile = open(os.path.join(os.path.dirname(__file__), 'input_data/obj/qsharp/config/qsc.rsp'))
-        self.testdata = self.testfile.read()
-        self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
-        self.testfile.close()
-
-        try:
-            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\input_data\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
-            assert False
-        except AzureInternalError as e:
-            assert str(e) == "Failed to compile program."
-
-    @live_only()
-    def test_submit_args(self):
-        test_location = get_test_workspace_location()
-        test_workspace = get_test_workspace()
-        test_resource_group = get_test_resource_group()
-        ws = WorkspaceInfo(self, test_resource_group, test_workspace, test_location)
-        target = TargetInfo(self, 'ionq.simulator')
-
-        token = _get_data_credentials(self.cli_ctx, get_test_subscription_id()).get_token().token
-        assert len(token) > 0
-
-        job_parameters = {}
-        job_parameters["key1"] = "value1"
-        job_parameters["key2"] = "value2"
-
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None,
-                                     job_name=None, storage=None, shots=None, job_params=None)
-        self.assertEquals(args[0], "dotnet")
-        self.assertEquals(args[1], "run")
-        self.assertEquals(args[2], "--no-build")
-        self.assertIn("--", args)
-        self.assertIn("submit", args)
-        self.assertIn(test_workspace, args)
-        self.assertIn(test_resource_group, args)
-        self.assertIn("ionq.simulator", args)
-        self.assertIn("--aad-token", args)
-        self.assertIn(token, args)
-        self.assertIn("--foo", args)
-        self.assertIn("--bar", args)
-        self.assertNotIn("--project", args)
-        self.assertNotIn("--job-name", args)
-        self.assertNotIn("--storage", args)
-        self.assertNotIn("--shots", args)
-
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, "../other/path",
-                                     "job-name", 1234, "az-stor", job_parameters)
-        self.assertEquals(args[0], "dotnet")
-        self.assertEquals(args[1], "run")
-        self.assertEquals(args[2], "--no-build")
-        self.assertIn("../other/path", args)
-        self.assertIn("job-name", args)
-        self.assertIn("az-stor", args)
-        self.assertIn(1234, args)
-        self.assertIn("--project", args)
-        self.assertIn("--job-name", args)
-        self.assertIn("--storage", args)
-        self.assertIn("--shots", args)
-        self.assertIn("--job-params", args)
-        self.assertIn("key1=value1", args)
-        self.assertIn("key2=value2", args)
-
     def test_parse_blob_url(self):
         sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
         url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
         args = _parse_blob_url(url)
 
-        self.assertEquals(args['account_name'], "accountname")
-        self.assertEquals(args['container'], "containername")
-        self.assertEquals(args['blob'], "rawOutputData")
-        self.assertEquals(args['sas_token'], sas)
+        self.assertEqual(args['account_name'], "accountname")
+        self.assertEqual(args['container'], "containername")
+        self.assertEqual(args['blob'], "rawOutputData")
+        self.assertEqual(args['sas_token'], sas)
 
     def test_transform_output(self):
         # Call with a good histogram
@@ -126,12 +60,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
         table_row = table[0]
         hist_row = table_row['']
         second_char = hist_row[1]
-        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here
+        self.assertEqual(second_char, "\u2588")    # Expecting a "Full Block" character here
 
         # Give it a malformed histogram
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
+        self.assertEqual(table, json.loads(test_job_results))    # No transform should be done if input param is bad
 
         # Call with output from a failed job
         test_job_results = \
@@ -167,12 +101,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
             }'
 
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table['Status'], "Failed")
-        self.assertEquals(table['Error Code'], "InsufficientResources")
-        self.assertEquals(table['Error Message'], "Too many qubits requested")
-        self.assertEquals(table['Target'], "ionq.simulator")
-        self.assertEquals(table['Job ID'], "11111111-2222-3333-4444-555555555555")
-        self.assertEquals(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
+        self.assertEqual(table['Status'], "Failed")
+        self.assertEqual(table['Error Code'], "InsufficientResources")
+        self.assertEqual(table['Error Message'], "Too many qubits requested")
+        self.assertEqual(table['Target'], "ionq.simulator")
+        self.assertEqual(table['Job ID'], "11111111-2222-3333-4444-555555555555")
+        self.assertEqual(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
 
         # Call with missing "status", "code", "message", "target", "id", and "creationTime"
         test_job_results = \
@@ -203,21 +137,21 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         table = transform_output(json.loads(test_job_results))
         notFound = "Not found"
-        self.assertEquals(table['Status'], notFound)
-        self.assertEquals(table['Error Code'], notFound)
-        self.assertEquals(table['Error Message'], notFound)
-        self.assertEquals(table['Target'], notFound)
-        self.assertEquals(table['Job ID'], notFound)
-        self.assertEquals(table['Submission Time'], notFound)
+        self.assertEqual(table['Status'], notFound)
+        self.assertEqual(table['Error Code'], notFound)
+        self.assertEqual(table['Error Message'], notFound)
+        self.assertEqual(table['Target'], notFound)
+        self.assertEqual(table['Job ID'], notFound)
+        self.assertEqual(table['Submission Time'], notFound)
 
     def test_validate_max_poll_wait_secs(self):
         wait_secs = _validate_max_poll_wait_secs(1)
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 1.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 1.0)
 
         wait_secs = _validate_max_poll_wait_secs("60")
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 60.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 60.0)
 
         # Invalid values should raise errors
         try:
@@ -264,7 +198,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,microsoft-qc/learn-and-develop"
+        test_provider_sku_list = "rigetti/azure-quantum-credits,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
@@ -282,10 +216,18 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     @live_only()
     def test_submit_dft(self):
+        elements_provider_name = "microsoft-elements"
+        elements_capability_name = f"submit.{elements_provider_name}"
+
+        test_capabilities = get_test_capabilities()
+
+        if elements_capability_name not in test_capabilities.split(";"):
+            self.skipTest(f"Skipping test_submit_dft: \"{elements_capability_name}\" capability was not found in \"AZURE_QUANTUM_CAPABILITIES\" env variable.")
+
         test_location = get_test_workspace_location_for_dft()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "microsoft-elements/elements-internal-testing"
+        test_provider_sku_list = f"{elements_provider_name}/elements-internal-testing"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")

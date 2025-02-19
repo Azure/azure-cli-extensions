@@ -1,6 +1,7 @@
 interactions:
 - request:
-    body: '{"tags": {"tag": "test", "tag2": "test2"}}'
+    body: '{"properties": {"managedResourcesNetworkAccessType": "Public"}, "tags":
+      {"tag": "test", "tag2": "test2"}}'
     headers:
       Accept:
       - application/json
@@ -11,67 +12,57 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '42'
+      - '105'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77","name":"U77","type":"microsoft.workloads/sapvirtualinstances","location":"centraluseuap","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"mohitaneja@microsoft.com","createdByType":"User","createdAt":"2022-09-08T12:55:39.5330848Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:32.5774674Z"},"properties":{"environment":"Prod","sapProduct":"S/4HANA","configuration":{"configurationType":"Discovery","appLocation":"eastus","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm"},"managedResourceGroupConfiguration":{"name":"mrg-U77-220271"},"status":"Unavailable","health":"Unknown","state":"RegistrationComplete","errors":{"properties":{"code":"HealthAndStatusFailure","message":"\n      Unable
-        to fetch health and status data from primary central server.\n      Possible
-        causes:\n        - The storage account may have been deleted.\n        - The
-        role assignment from central server VM(s) to managed RG might be unassigned.\n        -
-        The central server VM(s) system assigned managed identity might be disabled.\n        -
-        The VM might be not running.\n        - The VM might have networking issues.\n        -
-        The monitoring extension might not be running on the central server VM.\n      Recommended
-        Action: Status monitoring service will retry the operation, if issue persists
-        for more than 30 mins then please contact support.\n    ","details":[{"code":"ChangeDetectionVisCentralVmNotFound","message":"\n      SAP
-        central instance virtual machine with id - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm
-        was not found.\n      Possible Causes: The SAP central instance virtual machine
-        was deleted or moved to a different Resource group/subscription.\n      Recommended
-        Action: In order to view new updates to the Virtual Instance for SAP metadata,
-        please ensure the central server virtual machine is existing in Resource group
-        U77-rg.\n      If the virtual machine /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm
-        exists, please wait for an hour for the change to be detected. If the issue
-        still persists, please contact support.\n    ","details":[]}]}},"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1","name":"AM1","type":"microsoft.workloads/sapvirtualinstances","location":"northeurope","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"jasksingh@microsoft.com","createdByType":"User","createdAt":"2024-08-28T15:50:03.8060341Z","lastModifiedBy":"jasksingh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T08:48:19.0669219Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/JASKIRAT-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/jaskirat-msi":{"principalId":"1ba872b3-6d24-4f92-be98-483788ce8c61","clientId":"c2a304d0-e20e-4a6c-ab20-bde972296f7f"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","managedResourcesNetworkAccessType":"Public","configuration":{"configurationType":"DeploymentWithOSConfig","appLocation":"northeurope","infrastructureConfiguration":{"deploymentType":"ThreeTier","centralServer":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/appsubnet","virtualMachineConfiguration":{"vmSize":"Standard_D4ds_v4","imageReference":{"sku":"86sapha-gen2","publisher":"RedHat","version":"latest","offer":"RHEL-SAP-HA"},"osProfile":{"adminUsername":"azureuser","osConfiguration":{"osType":"Linux","disablePasswordAuthentication":true,"sshKeyPair":{"publicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDCxeAIppFEIyi3yZmOmav1S0B8DrMnHr/HAB7WqwqyyeAvc4NmEkcrqw3/SSQdGCoDpfiuRF5eTJ18CuiSPHhkvJVneDTYqoQnEva9cLHZBbF/zryCYG6x2F+dDGmCSSacfNh13GbAytQ5rXnnqQMH73UdIVIoYmSszUDlxorf0p5YO1AMBsvbTe9pqmaN4VzzisXmN5cy8oPZ7JZrIAo3+JSxThc353PNOUVrv7t5BoepsAG4Y07jLtTvp7yekQKGRLndWwkfF6uqn3+pLgJlX6ymsBpT+RMwx0AqZRHBAb+8EkCMxrdhSEBIqlhojPaQeGArrnsIaURoJwiXUmymzTrWiwO7gVL9OoBscBppifoM2mElOQbOvsfLLC2w7nwBmGfHSxPd3tofqc9vl27a4uv+40HzbSgkfrivJqx79Y+GnFNvq8H38/3kdKTDxjlR5LvpNwIjeYQHqoIW4ZFKV+cp0eMXbWSeUHOk2ZrSgC3oU/4UZvHF4QYAA72rVnk=
+        generated-by-azure"}}}},"instanceCount":2},"applicationServer":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/appsubnet","virtualMachineConfiguration":{"vmSize":"Standard_D4ds_v4","imageReference":{"sku":"86sapha-gen2","publisher":"RedHat","version":"latest","offer":"RHEL-SAP-HA"},"osProfile":{"adminUsername":"azureuser","osConfiguration":{"osType":"Linux","disablePasswordAuthentication":true,"sshKeyPair":{"publicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDCxeAIppFEIyi3yZmOmav1S0B8DrMnHr/HAB7WqwqyyeAvc4NmEkcrqw3/SSQdGCoDpfiuRF5eTJ18CuiSPHhkvJVneDTYqoQnEva9cLHZBbF/zryCYG6x2F+dDGmCSSacfNh13GbAytQ5rXnnqQMH73UdIVIoYmSszUDlxorf0p5YO1AMBsvbTe9pqmaN4VzzisXmN5cy8oPZ7JZrIAo3+JSxThc353PNOUVrv7t5BoepsAG4Y07jLtTvp7yekQKGRLndWwkfF6uqn3+pLgJlX6ymsBpT+RMwx0AqZRHBAb+8EkCMxrdhSEBIqlhojPaQeGArrnsIaURoJwiXUmymzTrWiwO7gVL9OoBscBppifoM2mElOQbOvsfLLC2w7nwBmGfHSxPd3tofqc9vl27a4uv+40HzbSgkfrivJqx79Y+GnFNvq8H38/3kdKTDxjlR5LvpNwIjeYQHqoIW4ZFKV+cp0eMXbWSeUHOk2ZrSgC3oU/4UZvHF4QYAA72rVnk=
+        generated-by-azure"}}}},"instanceCount":2},"databaseServer":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/dbsubnet","virtualMachineConfiguration":{"vmSize":"Standard_E32ds_v4","imageReference":{"sku":"86sapha-gen2","publisher":"RedHat","version":"latest","offer":"RHEL-SAP-HA"},"osProfile":{"adminUsername":"azureuser","osConfiguration":{"osType":"Linux","disablePasswordAuthentication":true,"sshKeyPair":{"publicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDCxeAIppFEIyi3yZmOmav1S0B8DrMnHr/HAB7WqwqyyeAvc4NmEkcrqw3/SSQdGCoDpfiuRF5eTJ18CuiSPHhkvJVneDTYqoQnEva9cLHZBbF/zryCYG6x2F+dDGmCSSacfNh13GbAytQ5rXnnqQMH73UdIVIoYmSszUDlxorf0p5YO1AMBsvbTe9pqmaN4VzzisXmN5cy8oPZ7JZrIAo3+JSxThc353PNOUVrv7t5BoepsAG4Y07jLtTvp7yekQKGRLndWwkfF6uqn3+pLgJlX6ymsBpT+RMwx0AqZRHBAb+8EkCMxrdhSEBIqlhojPaQeGArrnsIaURoJwiXUmymzTrWiwO7gVL9OoBscBppifoM2mElOQbOvsfLLC2w7nwBmGfHSxPd3tofqc9vl27a4uv+40HzbSgkfrivJqx79Y+GnFNvq8H38/3kdKTDxjlR5LvpNwIjeYQHqoIW4ZFKV+cp0eMXbWSeUHOk2ZrSgC3oU/4UZvHF4QYAA72rVnk=
+        generated-by-azure"}}}},"instanceCount":2},"highAvailabilityConfig":{"highAvailabilityType":"AvailabilitySet"},"storageConfiguration":{"transportFileShareConfiguration":{"configurationType":"Skip"}},"appResourceGroup":"PS_CLI_TF_RG"},"softwareConfiguration":{"softwareInstallationType":"SAPInstallWithoutOSConfig","bomUrl":"https://ybteststorageaccount.blob.core.windows.net/sapbitss4hana2022/sapfiles/boms/S42022SPS00_v0006ms/S42022SPS00_v0006ms.yaml","softwareVersion":"SAP
+        S/4HANA 2022 ISS 00","sapBitsStorageAccountId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yb-SapInstall/providers/Microsoft.Storage/storageAccounts/ybteststorageaccount","highAvailabilitySoftwareConfiguration":{"fencingClientId":"9ec12e34-c451-4592-aad2-7078f497fd5b"}},"osSapConfiguration":{"sapFqdn":"sap.bpaas.com"}},"managedResourceGroupConfiguration":{"name":"mrg-AM1-b08a18"},"status":"Running","health":"Healthy","state":"RegistrationComplete","provisioningState":"Succeeded"}}'
     headers:
       api-supported-versions:
-      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
-      azure-asyncoperation:
-      - subscriptions/49d64d54-e966-4c46-a868-1999802b762c/providers/Microsoft.Workloads/locations/CENTRALUSEUAP/operationStatuses/6e1ce09a-45b0-414c-a19d-eef8338d5065*282FF9D36625B70B7671EBBECC70D0807CBAE5F901A24D0143C35D907481B455?api-version=2023-04-01
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01, 2023-10-01-preview,
+        2024-02-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '2683'
+      - '5278'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 08:59:37 GMT
+      - Wed, 04 Sep 2024 08:48:21 GMT
       etag:
-      - '"04005f99-0000-3400-0000-644250760000"'
+      - '"fb000d45-0000-0c00-0000-66d81ed40000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 47be1437-d03f-454e-9509-2261ead7d054
+      - eb7e8fa0-20b8-4fc2-b137-6fca2625652d
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D3D7C786B35B404E8E6B615AB9263051 Ref B: MAA201060516035 Ref C: 2024-09-04T08:48:16Z'
     status:
       code: 200
       message: OK
@@ -93,40 +84,39 @@ interactions:
       ParameterSetName:
       - --sap-virtual-instance-name -g -n --tags
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/centralInstances/u77scs00cl1-0?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1/centralInstances/cs0?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/centralInstances/u77scs00cl1-0","name":"u77scs00cl1-0","type":"microsoft.workloads/sapvirtualinstances/centralinstances","location":"centraluseuap","tags":{"tag":"test3","tag2":"test4"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2022-09-08T13:01:38.4750662Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:40.8036216Z"},"properties":{"instanceNo":"00","subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet","messageServerProperties":{"msPort":3600,"internalMsPort":3900,"httpPort":8100,"ipAddress":"10.0.5.36","hostname":"u77scs00cl1"},"enqueueServerProperties":{"port":3200,"ipAddress":"10.0.5.36","hostname":"u77scs00cl1"},"gatewayServerProperties":{"port":3300},"kernelVersion":"777","kernelPatch":"patch
-        300","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm","type":"Primary"},{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszbvm","type":"Secondary"}],"provisioningState":"Succeeded","health":"Unknown","status":"Unavailable"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1/centralInstances/cs0","name":"cs0","type":"microsoft.workloads/sapvirtualinstances/centralinstances","location":"northeurope","tags":{"tag":"test3","tag2":"test4"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2024-08-28T15:50:08.1964076Z","lastModifiedBy":"jasksingh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T08:48:23.801344Z"},"properties":{"subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/appsubnet","status":"Running","health":"Healthy","loadBalancerDetails":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Network/loadBalancers/am1-ASCS-loadBalancer"},"vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Compute/virtualMachines/am1ascsvm1","type":"Secondary"},{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Compute/virtualMachines/am1ascsvm0","type":"Primary"}],"provisioningState":"Succeeded","instanceNo":"00","messageServerProperties":{"ipAddress":"10.0.0.102","health":"Healthy"},"enqueueServerProperties":{"ipAddress":"10.0.0.102","health":"Healthy"},"gatewayServerProperties":{"health":"Healthy"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1600'
+      - '1564'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 08:59:44 GMT
+      - Wed, 04 Sep 2024 08:48:24 GMT
       etag:
-      - '"30009f0c-0000-3400-0000-6442507d0000"'
+      - '"7100c1f0-0000-0c00-0000-66d81ed80000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: F055BFC02B0748BBB8E429C64AFC9C86 Ref B: MAA201060516053 Ref C: 2024-09-04T08:48:22Z'
     status:
       code: 200
       message: OK
@@ -148,40 +138,39 @@ interactions:
       ParameterSetName:
       - --sap-virtual-instance-name -g -n --tags
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/applicationInstances/u77appzavm0-0?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1/applicationInstances/app0?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/applicationInstances/u77appzavm0-0","name":"u77appzavm0-0","type":"microsoft.workloads/sapvirtualinstances/applicationinstances","location":"centraluseuap","tags":{"tag":"test5","tag2":"test6"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2022-09-08T13:01:40.38218Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:46.8880977Z"},"properties":{"instanceNo":"00","subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet","hostname":"u77appzavm0","kernelVersion":"777","kernelPatch":"patch
-        300","ipAddress":"10.0.5.34","gatewayPort":3300,"icmHttpPort":0,"icmHttpsPort":0,"provisioningState":"Succeeded","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77appzavm0","type":"Active"}],"health":"Unknown","status":"Unavailable"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1/applicationInstances/app0","name":"app0","type":"microsoft.workloads/sapvirtualinstances/applicationinstances","location":"northeurope","tags":{"tag":"test5","tag2":"test6"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2024-08-28T15:50:07.4626505Z","lastModifiedBy":"jasksingh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T08:48:27.607682Z"},"properties":{"instanceNo":"00","subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/appsubnet","hostname":"am1appvm0","ipAddress":"10.0.0.101","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Compute/virtualMachines/am1appvm0","type":"Active"}],"status":"Running","health":"Healthy","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1236'
+      - '1077'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 08:59:49 GMT
+      - Wed, 04 Sep 2024 08:48:29 GMT
       etag:
-      - '"14000ed1-0000-3400-0000-644250830000"'
+      - '"ce02323f-0000-0c00-0000-66d81edb0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 8DAF7A61B32F4D1FBB9102962431BE49 Ref B: MAA201060514029 Ref C: 2024-09-04T08:48:25Z'
     status:
       code: 200
       message: OK
@@ -203,39 +192,39 @@ interactions:
       ParameterSetName:
       - --sap-virtual-instance-name -g -n --tags
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/databaseInstances/U77?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1/databaseInstances/db0?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/databaseInstances/U77","name":"U77","type":"microsoft.workloads/sapvirtualinstances/databaseinstances","location":"centraluseuap","tags":{"tag":"test7","tag2":"test8"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2022-09-08T13:01:40.9924961Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:52.8977872Z"},"properties":{"subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet-db","databaseSid":"U77","ipAddress":"10.0.129.166","databaseType":"hdb","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77dbzavm"},{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77dbzbvm"}],"provisioningState":"Succeeded","status":"Unavailable"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Workloads/sapVirtualInstances/AM1/databaseInstances/db0","name":"db0","type":"microsoft.workloads/sapvirtualinstances/databaseinstances","location":"northeurope","tags":{"tag":"test7","tag2":"test8"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2024-08-28T15:50:08.4705287Z","lastModifiedBy":"jasksingh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T08:48:32.4167398Z"},"properties":{"subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/dbsubnet","ipAddress":"10.0.64.11","status":"Running","loadBalancerDetails":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Network/loadBalancers/am1-DB-loadBalancer"},"vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Compute/virtualMachines/am1dbvm0","status":"Running"},{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PS_CLI_TF_RG/providers/Microsoft.Compute/virtualMachines/am1dbvm1","status":"Running"}],"provisioningState":"Succeeded","databaseSid":"AM1","databaseType":"hdb"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1270'
+      - '1400'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 08:59:57 GMT
+      - Wed, 04 Sep 2024 08:48:33 GMT
       etag:
-      - '"25000a62-0000-3400-0000-644250890000"'
+      - '"0f000eb3-0000-0c00-0000-66d81ee00000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: A381D97C02F14231BF8AAF5155E431FF Ref B: MAA201060513023 Ref C: 2024-09-04T08:48:30Z'
     status:
       code: 200
       message: OK

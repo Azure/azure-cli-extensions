@@ -4,14 +4,142 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.1.0b2
+++++++
+* 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
+* 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
+* 'az containerapp create': New target-label option for Labels revision mode.
+* 'az containerapp up/update': New revisions-mode and target-label options for Labels revision mode.
+* 'az containerapp label-history': New list and show commands to see label revision assignment history.
+* 'az containerapp revision set-mode': New target-label option for Labels revision mode.
+* 'az containerapp connected-env certificate upload/remove': Support `--no-wait`.
+* 'az containerapp connected-env dapr-component set/remove': Support `--no-wait`.
+* 'az containerapp connected-env storage set/remove': Support `--no-wait`.
+* 'az containerapp env http-route-config': Add commands for the http-route-config feature area.
+* 'az containerapp env java-component': Support more flexible configuration updates with new parameters `--set-configurations`, `--replace-configurations`, `--remove-configurations` and `--remove-all-configurations`.
+* 'az containerapp env java-component gateway-for-spring create/update': Support `--bind` and `--unbind`
+* 'az containerapp arc': Enable setup custom core dns for Aks AzureCore on Arc.
+
+1.1.0b1
+++++++
+* 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
+*  Upgrade api-version to 2024-10-02-preview
+* 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
+* 'az containerapp session code-interpreter upload-file/list-files/show-file-content/show-file-metadata/delete-file': Support `--path` to specify the path of code interpreter session file resource
+* 'az containerapp session code-interpreter': Update response payload format for api-version 2024-10-02-preview
+* 'az containerapp env maintenance-config add/update/list/remove': Support environment maintenance config management
+* 'az containerapp sessionpool create': Support managed identity when create session pool with --mi-system-assigned --mi-user-assigned
+
+1.0.0b4
+++++++
+* 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
+* 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
+* 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
+* 'az containerapp env java-component gateway-for-spring': Support create/update/show/delete Gateway for spring.
+
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
+1.0.0b2
+++++++
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
+
+1.0.0b1
+++++++
+* 'az containerapp sessionpool create': Add NodeLTS container-type.
+* 'az containerapp env java-component': Support --min-replicas and --max-replicas for Java components
+* 'az containerapp env create': Support `--dapr-connection-string` to set application insight connection string
+
+0.3.55
+++++++
+* 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp job create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp registry set': Support --identity to use Environment identity for ACR authentication.
+* 'az containerapp job registry set': Support --identity to use Environment identity for ACR authentication.
+
+0.3.54
+++++++
+* 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
+* Update azure cli dependency version >= "2.62.0"
+* Remove GA commands which exist in azure-cli version 2.62.0
+
+0.3.53
+++++++
+* 'az containerapp job update': Support command in extension
+* 'az containerapp job logs show': Support log streaming for job execution
+* 'az containerapp job replica list': Support list replicas of a job execution
+* 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
+* 'az containerapp auth update': Fix AuthConfigSecretRefNotFound when setting secret
+* 'az containerapp job create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
+
+0.3.52
+++++++
+* 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
+* 'az containerapp env java-component nacos': Support create/update/show/delete Nacos
+* 'az containerapp env java-component': Support --bind, --unbind to bind or unbind with other Java Components
+* 'az containerapp create/update': Update default value of enableMetrics to True for java runtime setting
+* 'az containerapp sessionpool create': Fix default container name to be lower case letters
+* 'az containerapp create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
+* 'az containerapp sessionpool create/update': Fix sessionpool registry server fieldname and appending of registry secrets.
+
+0.3.51
+++++++
+* Upgrade api-version to 2024-02-02-preview
+* 'az containerapp up/create/update': Update Cloud Build code to use the simplified ARM calling pattern
+* 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
+* 'az containerapp env java-component config-server-for-spring': Support create/update/show/delete Spring Cloud Config; deprecation of 'az containerapp env java-component spring-cloud-config'
+* 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
+* 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
+* 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
+* 'az containerapp env dotnet-component': Support create/show/list/delete for dotnet components
+* 'az containerapp env create/update': Support peer-to-peer traffic encryption with --enable-peer-to-peer-encryption
+* 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
+* 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
+* 'az containerapp up': Fix an issue about creating resource group automatically
+* 'az containerapp sessionpool': Support create/update/show/delete/list session pools
+* 'az containerapp update': Update container name to container app name for source to cloud builds
+* 'az containerapp session code-interpreter': Support execute/upload-file/list-files/show-file-content/show-file-metadata/delete-file for code interpreter sessions
+* 'az containerapp create/update': Support enable or disable Java agent with --runtime and --enable-java-agent
+* 'az containerapp java logger set': Support create/update java logger setting with --logger-name and --logger-level
+* 'az containerapp java logger delete': Support delete java logger setting with --logger-name and --all
+* 'az containerapp java logger show': Support display java logger setting with --logger-name and --all
+
+0.3.50
+++++++
+* 'az containerapp env telemetry data-dog show': Support show environment data dog configuration
+* 'az containerapp env telemetry app-insights show': Support show environment app insights configuration
+* 'az containerapp env telemetry otlp add': Support add environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry otlp update': Support update environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry otlp remove': Support remove environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp show': Support show environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp list': Support show environment otlp configurations
+
+0.3.49
+++++++
+* 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
+* 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
+
+0.3.48
+++++++
 * 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 * 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
 * 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+* 'az containerapp up': Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
 * 'az containerapp env java-component': Support list Java components
 * 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
 * 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
 * 'az containerapp create/update': Support bind Java component with --bind
+* 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
+* 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
 
 0.3.47
 ++++++

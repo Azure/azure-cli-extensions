@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11"],
         ]
     }
 
@@ -60,6 +60,7 @@ class Create(AAZCommand):
             options=["--kind"],
             help="The kind of the resource.",
             enum={"Linux": "Linux", "Windows": "Windows"},
+            enum_support_extension=True,
         )
         _args_schema.location = AAZResourceLocationArg(
             help="The geo-location where the resource lives.",
@@ -86,6 +87,7 @@ class Create(AAZCommand):
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum_support_extension=True,
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -104,6 +106,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.agent_settings = AAZObjectArg(
+            options=["--agent-settings"],
+            arg_group="Properties",
+            help="Agent settings used to modify agent behavior on a given host",
+        )
         _args_schema.data_flows = AAZListArg(
             options=["--data-flows"],
             arg_group="Properties",
@@ -119,10 +126,36 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The specification of destinations.",
         )
+        _args_schema.references = AAZObjectArg(
+            options=["--references"],
+            arg_group="Properties",
+            help="Defines all the references that may be used in other sections of the DCR",
+        )
         _args_schema.stream_declarations = AAZDictArg(
             options=["--stream-declarations"],
             arg_group="Properties",
             help="Declaration of custom streams used in this rule.",
+        )
+
+        agent_settings = cls._args_schema.agent_settings
+        agent_settings.logs = AAZListArg(
+            options=["logs"],
+            help="All the settings that are applicable to the logs agent (AMA)",
+        )
+
+        logs = cls._args_schema.agent_settings.logs
+        logs.Element = AAZObjectArg()
+
+        _element = cls._args_schema.agent_settings.logs.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the setting. Must be part of the list of supported settings",
+            enum={"MaxDiskQuotaInMB": "MaxDiskQuotaInMB", "UseTimeReceivedForForwardedEvents": "UseTimeReceivedForForwardedEvents"},
+            enum_support_extension=True,
+        )
+        _element.value = AAZStrArg(
+            options=["value"],
+            help="The value of the setting",
         )
 
         data_flows = cls._args_schema.data_flows
@@ -132,6 +165,10 @@ class Create(AAZCommand):
         _element.built_in_transform = AAZStrArg(
             options=["built-in-transform"],
             help="The builtIn transform to transform stream data",
+        )
+        _element.capture_overflow = AAZBoolArg(
+            options=["capture-overflow"],
+            help="Flag to enable overflow column in LA destinations",
         )
         _element.destinations = AAZListArg(
             options=["destinations"],
@@ -156,6 +193,7 @@ class Create(AAZCommand):
         streams = cls._args_schema.data_flows.Element.streams
         streams.Element = AAZStrArg(
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         data_sources = cls._args_schema.data_sources
@@ -229,7 +267,7 @@ class Create(AAZCommand):
             help="The name of the VM extension.",
             required=True,
         )
-        _element.extension_settings = AAZObjectArg(
+        _element.extension_settings = AAZFreeFormDictArg(
             options=["extension-settings"],
             help="The extension settings. The format is specific for particular extension.",
             blank={},
@@ -253,6 +291,7 @@ class Create(AAZCommand):
         streams = cls._args_schema.data_sources.extensions.Element.streams
         streams.Element = AAZStrArg(
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         iis_logs = cls._args_schema.data_sources.iis_logs
@@ -271,6 +310,10 @@ class Create(AAZCommand):
             options=["streams"],
             help="IIS streams",
             required=True,
+        )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
         )
 
         log_directories = cls._args_schema.data_sources.iis_logs.Element.log_directories
@@ -292,7 +335,8 @@ class Create(AAZCommand):
             options=["format"],
             help="The data format of the log files",
             required=True,
-            enum={"text": "text"},
+            enum={"json": "json", "text": "text"},
+            enum_support_extension=True,
         )
         _element.name = AAZStrArg(
             options=["name"],
@@ -306,6 +350,10 @@ class Create(AAZCommand):
             options=["streams"],
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data source",
             required=True,
+        )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
         )
 
         file_patterns = cls._args_schema.data_sources.log_files.Element.file_patterns
@@ -323,6 +371,7 @@ class Create(AAZCommand):
             help="One of the supported timestamp formats",
             required=True,
             enum={"ISO 8601": "ISO 8601", "M/D/YYYY HH:MM:SS AM/PM": "M/D/YYYY HH:MM:SS AM/PM", "MMM d hh:mm:ss": "MMM d hh:mm:ss", "Mon DD, YYYY HH:MM:SS": "Mon DD, YYYY HH:MM:SS", "YYYY-MM-DD HH:MM:SS": "YYYY-MM-DD HH:MM:SS", "dd/MMM/yyyy:HH:mm:ss zzz": "dd/MMM/yyyy:HH:mm:ss zzz", "ddMMyy HH:mm:ss": "ddMMyy HH:mm:ss", "yyMMdd HH:mm:ss": "yyMMdd HH:mm:ss", "yyyy-MM-ddTHH:mm:ssK": "yyyy-MM-ddTHH:mm:ssK"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.log_files.Element.streams
@@ -348,6 +397,10 @@ class Create(AAZCommand):
             options=["streams"],
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
         )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+        )
 
         counter_specifiers = cls._args_schema.data_sources.performance_counters.Element.counter_specifiers
         counter_specifiers.Element = AAZStrArg()
@@ -355,6 +408,7 @@ class Create(AAZCommand):
         streams = cls._args_schema.data_sources.performance_counters.Element.streams
         streams.Element = AAZStrArg(
             enum={"Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf"},
+            enum_support_extension=True,
         )
 
         platform_telemetry = cls._args_schema.data_sources.platform_telemetry
@@ -397,6 +451,7 @@ class Create(AAZCommand):
         streams = cls._args_schema.data_sources.prometheus_forwarder.Element.streams
         streams.Element = AAZStrArg(
             enum={"Microsoft-PrometheusMetrics": "Microsoft-PrometheusMetrics"},
+            enum_support_extension=True,
         )
 
         syslog = cls._args_schema.data_sources.syslog
@@ -419,20 +474,27 @@ class Create(AAZCommand):
             options=["streams"],
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
         )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+        )
 
         facility_names = cls._args_schema.data_sources.syslog.Element.facility_names
         facility_names.Element = AAZStrArg(
-            enum={"*": "*", "auth": "auth", "authpriv": "authpriv", "cron": "cron", "daemon": "daemon", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "syslog": "syslog", "user": "user", "uucp": "uucp"},
+            enum={"*": "*", "alert": "alert", "audit": "audit", "auth": "auth", "authpriv": "authpriv", "clock": "clock", "cron": "cron", "daemon": "daemon", "ftp": "ftp", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "nopri": "nopri", "ntp": "ntp", "syslog": "syslog", "user": "user", "uucp": "uucp"},
+            enum_support_extension=True,
         )
 
         log_levels = cls._args_schema.data_sources.syslog.Element.log_levels
         log_levels.Element = AAZStrArg(
             enum={"*": "*", "Alert": "Alert", "Critical": "Critical", "Debug": "Debug", "Emergency": "Emergency", "Error": "Error", "Info": "Info", "Notice": "Notice", "Warning": "Warning"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.syslog.Element.streams
         streams.Element = AAZStrArg(
             enum={"Microsoft-Syslog": "Microsoft-Syslog"},
+            enum_support_extension=True,
         )
 
         windows_event_logs = cls._args_schema.data_sources.windows_event_logs
@@ -447,6 +509,10 @@ class Create(AAZCommand):
             options=["streams"],
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
         )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+        )
         _element.x_path_queries = AAZListArg(
             options=["x-path-queries"],
             help="A list of Windows Event Log queries in XPATH format.",
@@ -455,6 +521,7 @@ class Create(AAZCommand):
         streams = cls._args_schema.data_sources.windows_event_logs.Element.streams
         streams.Element = AAZStrArg(
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         x_path_queries = cls._args_schema.data_sources.windows_event_logs.Element.x_path_queries
@@ -468,16 +535,30 @@ class Create(AAZCommand):
             options=["name"],
             help="A friendly name for the data source. This name should be unique across all data sources (regardless of type) within the data collection rule.",
         )
+        _element.profile_filter = AAZListArg(
+            options=["profile-filter"],
+            help="Firewall logs profile filter",
+        )
         _element.streams = AAZListArg(
             options=["streams"],
             help="Firewall logs streams",
             required=True,
         )
 
+        profile_filter = cls._args_schema.data_sources.windows_firewall_logs.Element.profile_filter
+        profile_filter.Element = AAZStrArg(
+            enum={"Domain": "Domain", "Private": "Private", "Public": "Public"},
+            enum_support_extension=True,
+        )
+
         streams = cls._args_schema.data_sources.windows_firewall_logs.Element.streams
         streams.Element = AAZStrArg()
 
         destinations = cls._args_schema.destinations
+        destinations.azure_data_explorer = AAZListArg(
+            options=["azure-data-explorer"],
+            help="List of Azure Data Explorer destinations.",
+        )
         destinations.azure_monitor_metrics = AAZObjectArg(
             options=["azure-monitor-metrics"],
             help="Azure Monitor Metrics destination.",
@@ -494,6 +575,10 @@ class Create(AAZCommand):
             options=["log-analytics"],
             help="List of Log Analytics destinations.",
         )
+        destinations.microsoft_fabric = AAZListArg(
+            options=["microsoft-fabric"],
+            help="List of Microsoft Fabric destinations.",
+        )
         destinations.monitoring_accounts = AAZListArg(
             options=["monitoring-accounts"],
             help="List of monitoring account destinations.",
@@ -509,6 +594,23 @@ class Create(AAZCommand):
         destinations.storage_tables_direct = AAZListArg(
             options=["storage-tables-direct"],
             help="List of Storage Table Direct destinations.",
+        )
+
+        azure_data_explorer = cls._args_schema.destinations.azure_data_explorer
+        azure_data_explorer.Element = AAZObjectArg()
+
+        _element = cls._args_schema.destinations.azure_data_explorer.Element
+        _element.database_name = AAZStrArg(
+            options=["database-name"],
+            help="The name of the database to which data will be ingested.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
+        )
+        _element.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="The ARM resource id of the Adx resource.",
         )
 
         azure_monitor_metrics = cls._args_schema.destinations.azure_monitor_metrics
@@ -556,6 +658,31 @@ class Create(AAZCommand):
             help="The resource ID of the Log Analytics workspace.",
         )
 
+        microsoft_fabric = cls._args_schema.destinations.microsoft_fabric
+        microsoft_fabric.Element = AAZObjectArg()
+
+        _element = cls._args_schema.destinations.microsoft_fabric.Element
+        _element.artifact_id = AAZStrArg(
+            options=["artifact-id"],
+            help="The artifact id of the Microsoft Fabric resource.",
+        )
+        _element.database_name = AAZStrArg(
+            options=["database-name"],
+            help="The name of the database to which data will be ingested.",
+        )
+        _element.ingestion_uri = AAZStrArg(
+            options=["ingestion-uri"],
+            help="The ingestion uri of the Microsoft Fabric resource.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
+        )
+        _element.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="The tenant id of the Microsoft Fabric resource.",
+        )
+
         monitoring_accounts = cls._args_schema.destinations.monitoring_accounts
         monitoring_accounts.Element = AAZObjectArg()
 
@@ -594,6 +721,41 @@ class Create(AAZCommand):
             help="The name of the Storage Table.",
         )
 
+        references = cls._args_schema.references
+        references.enrichment_data = AAZObjectArg(
+            options=["enrichment-data"],
+            help="All the enrichment data sources referenced in data flows",
+        )
+
+        enrichment_data = cls._args_schema.references.enrichment_data
+        enrichment_data.storage_blobs = AAZListArg(
+            options=["storage-blobs"],
+            help="All the storage blobs used as enrichment data sources",
+        )
+
+        storage_blobs = cls._args_schema.references.enrichment_data.storage_blobs
+        storage_blobs.Element = AAZObjectArg()
+
+        _element = cls._args_schema.references.enrichment_data.storage_blobs.Element
+        _element.blob_url = AAZStrArg(
+            options=["blob-url"],
+            help="Url of the storage blob",
+        )
+        _element.lookup_type = AAZStrArg(
+            options=["lookup-type"],
+            help="The type of lookup to perform on the blob",
+            enum={"Cidr": "Cidr", "String": "String"},
+            enum_support_extension=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the enrichment data source used as an alias when referencing this data source in data flows",
+        )
+        _element.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="Resource Id of the storage account that hosts the blob",
+        )
+
         stream_declarations = cls._args_schema.stream_declarations
         stream_declarations.Element = AAZObjectArg()
 
@@ -615,6 +777,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The type of the column data.",
             enum={"boolean": "boolean", "datetime": "datetime", "dynamic": "dynamic", "int": "int", "long": "long", "real": "real", "string": "string"},
+            enum_support_extension=True,
         )
         return cls._args_schema
 
@@ -713,7 +876,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -755,12 +918,27 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("agentSettings", AAZObjectType, ".agent_settings")
                 properties.set_prop("dataCollectionEndpointId", AAZStrType, ".data_collection_endpoint_id")
                 properties.set_prop("dataFlows", AAZListType, ".data_flows")
                 properties.set_prop("dataSources", AAZObjectType, ".data_sources")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("destinations", AAZObjectType, ".destinations")
+                properties.set_prop("references", AAZObjectType, ".references")
                 properties.set_prop("streamDeclarations", AAZDictType, ".stream_declarations")
+
+            agent_settings = _builder.get(".properties.agentSettings")
+            if agent_settings is not None:
+                agent_settings.set_prop("logs", AAZListType, ".logs")
+
+            logs = _builder.get(".properties.agentSettings.logs")
+            if logs is not None:
+                logs.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.agentSettings.logs[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("value", AAZStrType, ".value")
 
             data_flows = _builder.get(".properties.dataFlows")
             if data_flows is not None:
@@ -769,6 +947,7 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.dataFlows[]")
             if _elements is not None:
                 _elements.set_prop("builtInTransform", AAZStrType, ".built_in_transform")
+                _elements.set_prop("captureOverflow", AAZBoolType, ".capture_overflow")
                 _elements.set_prop("destinations", AAZListType, ".destinations")
                 _elements.set_prop("outputStream", AAZStrType, ".output_stream")
                 _elements.set_prop("streams", AAZListType, ".streams")
@@ -812,10 +991,14 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.dataSources.extensions[]")
             if _elements is not None:
                 _elements.set_prop("extensionName", AAZStrType, ".extension_name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("extensionSettings", AAZObjectType, ".extension_settings")
+                _elements.set_prop("extensionSettings", AAZFreeFormDictType, ".extension_settings")
                 _elements.set_prop("inputDataSources", AAZListType, ".input_data_sources")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+
+            extension_settings = _builder.get(".properties.dataSources.extensions[].extensionSettings")
+            if extension_settings is not None:
+                extension_settings.set_anytype_elements(".")
 
             input_data_sources = _builder.get(".properties.dataSources.extensions[].inputDataSources")
             if input_data_sources is not None:
@@ -834,6 +1017,7 @@ class Create(AAZCommand):
                 _elements.set_prop("logDirectories", AAZListType, ".log_directories")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             log_directories = _builder.get(".properties.dataSources.iisLogs[].logDirectories")
             if log_directories is not None:
@@ -854,6 +1038,7 @@ class Create(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("settings", AAZObjectType, ".settings")
                 _elements.set_prop("streams", AAZListType, ".streams", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             file_patterns = _builder.get(".properties.dataSources.logFiles[].filePatterns")
             if file_patterns is not None:
@@ -881,6 +1066,7 @@ class Create(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("samplingFrequencyInSeconds", AAZIntType, ".sampling_frequency_in_seconds")
                 _elements.set_prop("streams", AAZListType, ".streams")
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             counter_specifiers = _builder.get(".properties.dataSources.performanceCounters[].counterSpecifiers")
             if counter_specifiers is not None:
@@ -931,6 +1117,7 @@ class Create(AAZCommand):
                 _elements.set_prop("logLevels", AAZListType, ".log_levels")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             facility_names = _builder.get(".properties.dataSources.syslog[].facilityNames")
             if facility_names is not None:
@@ -952,6 +1139,7 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
                 _elements.set_prop("xPathQueries", AAZListType, ".x_path_queries")
 
             streams = _builder.get(".properties.dataSources.windowsEventLogs[].streams")
@@ -969,7 +1157,12 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.dataSources.windowsFirewallLogs[]")
             if _elements is not None:
                 _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("profileFilter", AAZListType, ".profile_filter")
                 _elements.set_prop("streams", AAZListType, ".streams", typ_kwargs={"flags": {"required": True}})
+
+            profile_filter = _builder.get(".properties.dataSources.windowsFirewallLogs[].profileFilter")
+            if profile_filter is not None:
+                profile_filter.set_elements(AAZStrType, ".")
 
             streams = _builder.get(".properties.dataSources.windowsFirewallLogs[].streams")
             if streams is not None:
@@ -977,14 +1170,26 @@ class Create(AAZCommand):
 
             destinations = _builder.get(".properties.destinations")
             if destinations is not None:
+                destinations.set_prop("azureDataExplorer", AAZListType, ".azure_data_explorer")
                 destinations.set_prop("azureMonitorMetrics", AAZObjectType, ".azure_monitor_metrics")
                 destinations.set_prop("eventHubs", AAZListType, ".event_hubs")
                 destinations.set_prop("eventHubsDirect", AAZListType, ".event_hubs_direct")
                 destinations.set_prop("logAnalytics", AAZListType, ".log_analytics")
+                destinations.set_prop("microsoftFabric", AAZListType, ".microsoft_fabric")
                 destinations.set_prop("monitoringAccounts", AAZListType, ".monitoring_accounts")
                 destinations.set_prop("storageAccounts", AAZListType, ".storage_accounts")
                 destinations.set_prop("storageBlobsDirect", AAZListType, ".storage_blobs_direct")
                 destinations.set_prop("storageTablesDirect", AAZListType, ".storage_tables_direct")
+
+            azure_data_explorer = _builder.get(".properties.destinations.azureDataExplorer")
+            if azure_data_explorer is not None:
+                azure_data_explorer.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.destinations.azureDataExplorer[]")
+            if _elements is not None:
+                _elements.set_prop("databaseName", AAZStrType, ".database_name")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
 
             azure_monitor_metrics = _builder.get(".properties.destinations.azureMonitorMetrics")
             if azure_monitor_metrics is not None:
@@ -1017,6 +1222,18 @@ class Create(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("workspaceResourceId", AAZStrType, ".workspace_resource_id")
 
+            microsoft_fabric = _builder.get(".properties.destinations.microsoftFabric")
+            if microsoft_fabric is not None:
+                microsoft_fabric.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.destinations.microsoftFabric[]")
+            if _elements is not None:
+                _elements.set_prop("artifactId", AAZStrType, ".artifact_id")
+                _elements.set_prop("databaseName", AAZStrType, ".database_name")
+                _elements.set_prop("ingestionUri", AAZStrType, ".ingestion_uri")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("tenantId", AAZStrType, ".tenant_id")
+
             monitoring_accounts = _builder.get(".properties.destinations.monitoringAccounts")
             if monitoring_accounts is not None:
                 monitoring_accounts.set_elements(AAZObjectType, ".")
@@ -1043,6 +1260,25 @@ class Create(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("storageAccountResourceId", AAZStrType, ".storage_account_resource_id")
                 _elements.set_prop("tableName", AAZStrType, ".table_name")
+
+            references = _builder.get(".properties.references")
+            if references is not None:
+                references.set_prop("enrichmentData", AAZObjectType, ".enrichment_data")
+
+            enrichment_data = _builder.get(".properties.references.enrichmentData")
+            if enrichment_data is not None:
+                enrichment_data.set_prop("storageBlobs", AAZListType, ".storage_blobs")
+
+            storage_blobs = _builder.get(".properties.references.enrichmentData.storageBlobs")
+            if storage_blobs is not None:
+                storage_blobs.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.references.enrichmentData.storageBlobs[]")
+            if _elements is not None:
+                _elements.set_prop("blobUrl", AAZStrType, ".blob_url")
+                _elements.set_prop("lookupType", AAZStrType, ".lookup_type")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
 
             stream_declarations = _builder.get(".properties.streamDeclarations")
             if stream_declarations is not None:
@@ -1143,6 +1379,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.agent_settings = AAZObjectType(
+                serialized_name="agentSettings",
+            )
             properties.data_collection_endpoint_id = AAZStrType(
                 serialized_name="dataCollectionEndpointId",
             )
@@ -1154,6 +1393,9 @@ class Create(AAZCommand):
             )
             properties.description = AAZStrType()
             properties.destinations = AAZObjectType()
+            properties.endpoints = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.immutable_id = AAZStrType(
                 serialized_name="immutableId",
                 flags={"read_only": True},
@@ -1165,9 +1407,20 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.references = AAZObjectType()
             properties.stream_declarations = AAZDictType(
                 serialized_name="streamDeclarations",
             )
+
+            agent_settings = cls._schema_on_200_201.properties.agent_settings
+            agent_settings.logs = AAZListType()
+
+            logs = cls._schema_on_200_201.properties.agent_settings.logs
+            logs.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.agent_settings.logs.Element
+            _element.name = AAZStrType()
+            _element.value = AAZStrType()
 
             data_flows = cls._schema_on_200_201.properties.data_flows
             data_flows.Element = AAZObjectType()
@@ -1175,6 +1428,9 @@ class Create(AAZCommand):
             _element = cls._schema_on_200_201.properties.data_flows.Element
             _element.built_in_transform = AAZStrType(
                 serialized_name="builtInTransform",
+            )
+            _element.capture_overflow = AAZBoolType(
+                serialized_name="captureOverflow",
             )
             _element.destinations = AAZListType()
             _element.output_stream = AAZStrType(
@@ -1239,7 +1495,7 @@ class Create(AAZCommand):
                 serialized_name="extensionName",
                 flags={"required": True},
             )
-            _element.extension_settings = AAZObjectType(
+            _element.extension_settings = AAZFreeFormDictType(
                 serialized_name="extensionSettings",
             )
             _element.input_data_sources = AAZListType(
@@ -1265,6 +1521,9 @@ class Create(AAZCommand):
             _element.streams = AAZListType(
                 flags={"required": True},
             )
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             log_directories = cls._schema_on_200_201.properties.data_sources.iis_logs.Element.log_directories
             log_directories.Element = AAZStrType()
@@ -1287,6 +1546,9 @@ class Create(AAZCommand):
             _element.settings = AAZObjectType()
             _element.streams = AAZListType(
                 flags={"required": True},
+            )
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
             )
 
             file_patterns = cls._schema_on_200_201.properties.data_sources.log_files.Element.file_patterns
@@ -1316,6 +1578,9 @@ class Create(AAZCommand):
                 serialized_name="samplingFrequencyInSeconds",
             )
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             counter_specifiers = cls._schema_on_200_201.properties.data_sources.performance_counters.Element.counter_specifiers
             counter_specifiers.Element = AAZStrType()
@@ -1363,6 +1628,9 @@ class Create(AAZCommand):
             )
             _element.name = AAZStrType()
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             facility_names = cls._schema_on_200_201.properties.data_sources.syslog.Element.facility_names
             facility_names.Element = AAZStrType()
@@ -1379,6 +1647,9 @@ class Create(AAZCommand):
             _element = cls._schema_on_200_201.properties.data_sources.windows_event_logs.Element
             _element.name = AAZStrType()
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
             _element.x_path_queries = AAZListType(
                 serialized_name="xPathQueries",
             )
@@ -1394,14 +1665,23 @@ class Create(AAZCommand):
 
             _element = cls._schema_on_200_201.properties.data_sources.windows_firewall_logs.Element
             _element.name = AAZStrType()
+            _element.profile_filter = AAZListType(
+                serialized_name="profileFilter",
+            )
             _element.streams = AAZListType(
                 flags={"required": True},
             )
+
+            profile_filter = cls._schema_on_200_201.properties.data_sources.windows_firewall_logs.Element.profile_filter
+            profile_filter.Element = AAZStrType()
 
             streams = cls._schema_on_200_201.properties.data_sources.windows_firewall_logs.Element.streams
             streams.Element = AAZStrType()
 
             destinations = cls._schema_on_200_201.properties.destinations
+            destinations.azure_data_explorer = AAZListType(
+                serialized_name="azureDataExplorer",
+            )
             destinations.azure_monitor_metrics = AAZObjectType(
                 serialized_name="azureMonitorMetrics",
             )
@@ -1414,6 +1694,9 @@ class Create(AAZCommand):
             destinations.log_analytics = AAZListType(
                 serialized_name="logAnalytics",
             )
+            destinations.microsoft_fabric = AAZListType(
+                serialized_name="microsoftFabric",
+            )
             destinations.monitoring_accounts = AAZListType(
                 serialized_name="monitoringAccounts",
             )
@@ -1425,6 +1708,22 @@ class Create(AAZCommand):
             )
             destinations.storage_tables_direct = AAZListType(
                 serialized_name="storageTablesDirect",
+            )
+
+            azure_data_explorer = cls._schema_on_200_201.properties.destinations.azure_data_explorer
+            azure_data_explorer.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.destinations.azure_data_explorer.Element
+            _element.database_name = AAZStrType(
+                serialized_name="databaseName",
+            )
+            _element.ingestion_uri = AAZStrType(
+                serialized_name="ingestionUri",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType()
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             azure_monitor_metrics = cls._schema_on_200_201.properties.destinations.azure_monitor_metrics
@@ -1461,6 +1760,24 @@ class Create(AAZCommand):
                 serialized_name="workspaceResourceId",
             )
 
+            microsoft_fabric = cls._schema_on_200_201.properties.destinations.microsoft_fabric
+            microsoft_fabric.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.destinations.microsoft_fabric.Element
+            _element.artifact_id = AAZStrType(
+                serialized_name="artifactId",
+            )
+            _element.database_name = AAZStrType(
+                serialized_name="databaseName",
+            )
+            _element.ingestion_uri = AAZStrType(
+                serialized_name="ingestionUri",
+            )
+            _element.name = AAZStrType()
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+
             monitoring_accounts = cls._schema_on_200_201.properties.destinations.monitoring_accounts
             monitoring_accounts.Element = AAZObjectType()
 
@@ -1494,14 +1811,53 @@ class Create(AAZCommand):
                 serialized_name="tableName",
             )
 
+            endpoints = cls._schema_on_200_201.properties.endpoints
+            endpoints.logs_ingestion = AAZStrType(
+                serialized_name="logsIngestion",
+                flags={"read_only": True},
+            )
+            endpoints.metrics_ingestion = AAZStrType(
+                serialized_name="metricsIngestion",
+                flags={"read_only": True},
+            )
+
             metadata = cls._schema_on_200_201.properties.metadata
             metadata.provisioned_by = AAZStrType(
                 serialized_name="provisionedBy",
                 flags={"read_only": True},
             )
+            metadata.provisioned_by_immutable_id = AAZStrType(
+                serialized_name="provisionedByImmutableId",
+                flags={"read_only": True},
+            )
             metadata.provisioned_by_resource_id = AAZStrType(
                 serialized_name="provisionedByResourceId",
                 flags={"read_only": True},
+            )
+
+            references = cls._schema_on_200_201.properties.references
+            references.enrichment_data = AAZObjectType(
+                serialized_name="enrichmentData",
+            )
+
+            enrichment_data = cls._schema_on_200_201.properties.references.enrichment_data
+            enrichment_data.storage_blobs = AAZListType(
+                serialized_name="storageBlobs",
+            )
+
+            storage_blobs = cls._schema_on_200_201.properties.references.enrichment_data.storage_blobs
+            storage_blobs.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.references.enrichment_data.storage_blobs.Element
+            _element.blob_url = AAZStrType(
+                serialized_name="blobUrl",
+            )
+            _element.lookup_type = AAZStrType(
+                serialized_name="lookupType",
+            )
+            _element.name = AAZStrType()
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             stream_declarations = cls._schema_on_200_201.properties.stream_declarations

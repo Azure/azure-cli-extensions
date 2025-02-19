@@ -41,7 +41,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='image_gallery',
+    name='image-gallery',
     version=VERSION,
     description='Support for Azure Image Gallery',
     # TODO: Update author and email, if applicable

@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.9'
+VERSION = '0.1.10'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -59,5 +59,6 @@ setup(
     scripts=['azext_appservice_kube/getfunctionsjson.sh'],
     package_data={'azext_appservice_kube': ['azext_metadata.json',
                                             'resources/LinuxFunctionsStacks.json',
-                                            'resources/WindowsFunctionsStacks.json']},
+                                            'resources/WindowsFunctionsStacks.json',
+                                            'resources/WebappRuntimeStacks.json']},
 )

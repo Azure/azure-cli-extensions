@@ -42,7 +42,7 @@ def get_appid():
 def cf_quantum_mgmt(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .vendored_sdks.azure_mgmt_quantum import AzureQuantumManagementClient
-    client = get_mgmt_service_client(cli_ctx, AzureQuantumManagementClient)
+    client = get_mgmt_service_client(cli_ctx, AzureQuantumManagementClient, base_url_bound=False)
     # Add user agent on the management client to include extension information
     client._config.user_agent_policy.add_user_agent(get_appid())
     return client
@@ -50,6 +50,10 @@ def cf_quantum_mgmt(cli_ctx, *_):
 
 def cf_workspaces(cli_ctx, *_):
     return cf_quantum_mgmt(cli_ctx).workspaces
+
+
+def cf_workspace(cli_ctx, *_):
+    return cf_quantum_mgmt(cli_ctx).workspace
 
 
 def cf_offerings(cli_ctx, *_):

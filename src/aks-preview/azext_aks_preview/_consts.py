@@ -23,6 +23,7 @@ CONST_OS_DISK_TYPE_EPHEMERAL = "Ephemeral"
 # mode
 CONST_NODEPOOL_MODE_SYSTEM = "System"
 CONST_NODEPOOL_MODE_USER = "User"
+CONST_NODEPOOL_MODE_GATEWAY = "Gateway"
 
 # os type
 CONST_DEFAULT_NODE_OS_TYPE = "Linux"
@@ -33,6 +34,7 @@ CONST_OS_SKU_CBLMARINER = "CBLMariner"
 CONST_OS_SKU_MARINER = "Mariner"
 CONST_OS_SKU_WINDOWS2019 = "Windows2019"
 CONST_OS_SKU_WINDOWS2022 = "Windows2022"
+CONST_OS_SKU_WINDOWSANNUAL = "WindowsAnnual"
 CONST_OS_SKU_AZURELINUX = "AzureLinux"
 
 # vm set type
@@ -66,6 +68,10 @@ CONST_LOAD_BALANCER_SKU_STANDARD = "standard"
 CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
 CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD = "standard"
 CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM = "premium"
+
+# ManagedClusterSKU Name
+CONST_MANAGED_CLUSTER_SKU_NAME_BASE = "base"
+CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC = "automatic"
 
 CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG = (
     "Warning: this AKS cluster has multi-zonal nodepools, but NAT Gateway is not currently zone redundant. "
@@ -119,6 +125,10 @@ CONST_NETWORK_POLICY_CALICO = "calico"
 CONST_NETWORK_POLICY_CILIUM = "cilium"
 CONST_NETWORK_POLICY_NONE = "none"
 
+# network pod ip allocation mode
+CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL = "DynamicIndividual"
+CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK = "StaticBlock"
+
 # disk driver versions
 CONST_DISK_DRIVER_V1 = "v1"
 CONST_DISK_DRIVER_V2 = "v2"
@@ -169,6 +179,10 @@ CONST_GITOPS_ADDON_NAME = "gitops"
 # only used as the key of the corresponding description, not to map to the key name in addonProfiles,
 # since its configuration is actually stored in a separate ingress profile
 CONST_WEB_APPLICATION_ROUTING_KEY_NAME = "ingress/webApplicationRouting"
+CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX = "AnnotationControlled"
+CONST_APP_ROUTING_EXTERNAL_NGINX = "External"
+CONST_APP_ROUTING_INTERNAL_NGINX = "Internal"
+CONST_APP_ROUTING_NONE_NGINX = "None"
 
 # all supported addons
 ADDONS = {
@@ -285,6 +299,12 @@ CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK = "Rollback"
 CONST_NODE_PROVISIONING_MODE_MANUAL = "Manual"
 CONST_NODE_PROVISIONING_MODE_AUTO = "Auto"
 
+# Node Provisioning State Consts
+CONST_NODE_PROVISIONING_STATE_SUCCEEDED = "Succeeded"
+
+# Node Image Version Consts
+CONST_MIN_NODE_IMAGE_VERSION = "202403.13.0"
+
 # SSH Access Consts
 CONST_SSH_ACCESS_DISABLED = "disabled"
 CONST_SSH_ACCESS_LOCALUSER = "localuser"
@@ -292,3 +312,21 @@ CONST_SSH_ACCESS_LOCALUSER = "localuser"
 # Dns zone contributor role
 CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"
 CONST_DNS_ZONE_CONTRIBUTOR_ROLE = "DNS Zone Contributor"
+
+# Cluster service health probe mode
+CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT = "Servicenodeport"
+CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED = "Shared"
+
+CONST_ARTIFACT_SOURCE_DIRECT = "Direct"
+CONST_ARTIFACT_SOURCE_CACHE = "Cache"
+
+CONST_OUTBOUND_TYPE_NONE = "none"
+CONST_OUTBOUND_TYPE_BLOCK = "block"
+
+# IMDS restriction consts
+CONST_IMDS_RESTRICTION_ENABLED = "None"
+CONST_IMDS_RESTRICTION_DISABLED = "IMDS"
+
+# GPU Driver Type Consts
+CONST_GPU_DRIVER_TYPE_CUDA = "CUDA"
+CONST_GPU_DRIVER_TYPE_GRID = "GRID"

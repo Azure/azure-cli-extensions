@@ -11,7 +11,7 @@ import datetime
 import isodate
 from knack.util import CLIError
 from knack.log import get_logger
-from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -82,8 +82,8 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
     client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
     try:
         return client.create_or_update(resource_group_name, application, component)
-    except CloudError as ex:
-        ex.error._message = ex.error._message + HELP_MESSAGE
+    except HttpResponseError as ex:
+        ex.message = ex.message + HELP_MESSAGE
         raise ex
 
 
@@ -122,8 +122,8 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
         latest_client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
         try:
             existing_component = latest_client.get(resource_group_name, application)
-        except CloudError as ex:
-            ex.error._message = ex.error._message + HELP_MESSAGE
+        except HttpResponseError as ex:
+            ex.message = ex.message + HELP_MESSAGE
             raise ex
 
         _apm_migration_consent(cmd, workspace_resource_id, existing_component.workspace_resource_id)
@@ -165,6 +165,8 @@ def connect_webapp(cmd, client, resource_group_name, application, app_service, e
         raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
     settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
+    if app_insights.connection_string is not None:
+        settings.append(f"APPINSIGHTS_CONNECTIONSTRING={app_insights.connection_string}")
     if enable_profiler is True:
         settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
     elif enable_profiler is False:
@@ -191,6 +193,9 @@ def connect_function(cmd, client, resource_group_name, application, app_service)
 
     settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
 
+    if app_insights.connection_string is not None:
+        settings.append(f"APPINSIGHTS_CONNECTIONSTRING={app_insights.connection_string}")
+
     if is_valid_resource_id(app_service):
         resource_id = parse_resource_id(app_service)
         app_service = resource_id['name']
@@ -210,7 +215,7 @@ def show_components(cmd, client, application=None, resource_group_name=None):
                                                                   api_version='2020-02-02-preview').components
             try:
                 return latest_client.get(resource_group_name, application)
-            except CloudError:
+            except HttpResponseError:
                 logger.warning(HELP_MESSAGE)
                 return client.get(resource_group_name, application)
         raise CLIError("Application provided without resource group. Either specify app with resource group, or remove app.")
@@ -312,7 +317,7 @@ class BillingShow(_BillingShow):
             }
         result = {
             "currentBillingFeatures": output["CurrentBillingFeatures"],
-            "dataVolumeCap": new_data_volume_cap
+            "dataVolumeCap": new_data_volume_cap  # pylint: disable=possibly-used-before-assignment
         }
         return result
 
