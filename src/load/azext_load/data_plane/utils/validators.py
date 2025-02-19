@@ -21,7 +21,6 @@ from .models import (
     AllowedMetricNamespaces,
     AllowedTestTypes,
     AllowedTestPlanFileExtensions,
-    EngineIdentityType,
 )
 
 logger = get_logger(__name__)
@@ -523,27 +522,3 @@ def validate_regionwise_engines(cmd, namespace):
             )
         regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
     namespace.regionwise_engines = regionwise_engines
-
-def validate_engine_reference_identities(namespace):
-    """Extracts multiple space-separated identities"""
-    if isinstance(namespace.engine_reference_identities, list):
-        engine_reference_identities_list = []
-        for item in namespace.engine_reference_identities:
-            if not is_valid_resource_id(item):
-                raise InvalidArgumentValueError(f"Invalid engine-reference-identities value: {item}")
-
-def validate_engine_identities_id_and_type(engine_reference_identity_type, engine_reference_identities):
-    """Validates combination of engine-reference-identity-type and engine-reference-identities"""
-
-    # if engine_reference_identity_type is None or SystemAssigned, then no value for engine_reference_identities is expected:
-    if (engine_reference_identity_type is None or 
-    engine_reference_identity_type in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]) and engine_reference_identities is not None:
-        raise InvalidArgumentValueError(
-            "engine-reference-identities should not be provided when engine-reference-identity-type is None or SystemAssigned"
-        )
-    
-    # if engine_reference_identity_type is UserAssigned, then engine_reference_identities is expected:
-    if engine_reference_identity_type == EngineIdentityType.UserAssigned and engine_reference_identities is None:
-        raise InvalidArgumentValueError(
-            "Atleast one engine-reference-identities should be provided when engine-reference-identity-type is UserAssigned"
-        )

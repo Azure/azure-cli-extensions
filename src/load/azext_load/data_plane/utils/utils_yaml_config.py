@@ -7,8 +7,6 @@ import uuid
 
 from azext_load.data_plane.utils.constants import LoadTestConfigKeys
 from azext_load.data_plane.utils import validators
-from azext_load.data_plane.utils.models import EngineIdentityType
-from azure.mgmt.core.tools import is_valid_resource_id
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
@@ -139,27 +137,3 @@ def yaml_parse_loadtest_configuration(cmd, data):
     if data.get(LoadTestConfigKeys.SPLIT_CSV) is not None:
         load_test_configuration["splitAllCSVs"] = _yaml_parse_splitcsv(data=data)
     return load_test_configuration
-
-def yaml_parse_engine_identities(data):
-    engine_identities = []
-    reference_type = None
-    reference_identities = data.get(LoadTestConfigKeys.REFERENCE_IDENTITIES)
-    for identity in reference_identities:
-        if identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
-            if reference_type and identity.get(LoadTestConfigKeys.TYPE) != reference_type:
-                raise InvalidArgumentValueError(
-                    "Engine identity should be either None, SystemAssigned, or UserAssigned, not a mix of them"
-                )
-            if identity.get(LoadTestConfigKeys.TYPE) != EngineIdentityType.UserAssigned:
-                if identity.get(LoadTestConfigKeys.VALUE):
-                    raise InvalidArgumentValueError(
-                        "Reference identity value should be provided only for UserAssigned identity type."
-                    )  
-            else: 
-                if is_valid_resource_id(identity.get(LoadTestConfigKeys.VALUE)):
-                    raise InvalidArgumentValueError(
-                        "%s is not a valid resource id" % identity.get(LoadTestConfigKeys.VALUE)
-                    )
-            engine_identities.append(identity.get(LoadTestConfigKeys.VALUE))
-            reference_type = identity.get(LoadTestConfigKeys.TYPE)
-    return reference_type, engine_identities

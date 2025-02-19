@@ -89,8 +89,6 @@ def create_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
-            engine_reference_identity_type=engine_reference_identity_type,
-            engine_reference_identities=engine_reference_identities,
         )
     else:
         yaml = load_yaml(load_test_config_file)
@@ -112,8 +110,6 @@ def create_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
-            engine_reference_identity_type=engine_reference_identity_type,
-            engine_reference_identities=engine_reference_identities,
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -188,8 +184,6 @@ def update_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
-            engine_reference_identity_type=engine_reference_identity_type,
-            engine_reference_identities=engine_reference_identities,
         )
     else:
         body = create_or_update_test_without_config(
@@ -207,8 +201,6 @@ def update_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
-            engine_reference_identity_type=engine_reference_identity_type,
-            engine_reference_identities=engine_reference_identities
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
