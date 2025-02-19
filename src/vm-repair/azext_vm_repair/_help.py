@@ -110,7 +110,7 @@ helps['vm repair reset-nic'] = """
 
 helps['vm repair repair-and-restore'] = """
     type: command
-    short-summary: Non-interactive command. Repair fstab issues using a temporary repair VM and restore the VM by replacing the VM's OS disk with the fixed copy disk.
+    short-summary: Non-interactive command. Repairs fstab issues using a temporary repair VM and restore the VM by replacing the VM's OS disk with the fixed temporary copied disk.
     examples:
         - name: Repair and restore a VM.
           text: >
