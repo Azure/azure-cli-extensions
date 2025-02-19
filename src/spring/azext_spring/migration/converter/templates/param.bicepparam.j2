@@ -2,3 +2,7 @@ using './main.bicep'
 
 param workloadProfileName = 'Consumption'
 param workloadProfileType = 'Consumption'
+
+{% for app in data.apps %}
+param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+{% endfor %}

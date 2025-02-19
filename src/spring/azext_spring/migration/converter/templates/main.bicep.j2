@@ -1,6 +1,9 @@
 // Params
 param workloadProfileName string
 param workloadProfileType string
+{% for app in data.apps %}
+param {{app.containerAppImageName}} string
+{% endfor %}
 
 module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
@@ -30,6 +33,7 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
   ]
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
+    {{item.containerAppImageName}}: {{item.containerAppImageName}}
   }
 }
 {% endfor %}
