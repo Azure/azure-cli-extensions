@@ -479,6 +479,7 @@ def validate_max_unavailable(namespace):
         # pylint: disable=raise-missing-from
         raise CLIError("--max-unavailable should be an int or percentage")
 
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
