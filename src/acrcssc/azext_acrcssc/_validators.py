@@ -162,7 +162,10 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
 
     if image_limit > CONTINUOUSPATCH_IMAGE_LIMIT:
         # get only the part of the log that shows the repositories and tags
-        pattern = "Listing repositories and tags matching the filter"
-        result = re.sub(r'^(.*\n)*?' + re.escape(pattern), pattern, dryrun_log, flags=re.MULTILINE)
+        pattern_prefix = "Listing repositories and tags matching the filter"
+        result = re.sub(r'^(.*\n)*?' + re.escape(pattern_prefix), pattern_prefix, dryrun_log, flags=re.MULTILINE)
+
+        pattern_postfix = "Matches found: " + str(image_limit)
+        result = re.sub(r'(?s)' + re.escape(pattern_postfix) + r'.*', pattern_postfix, result)
 
         raise InvalidArgumentValueError(error_msg=f"This configuration exceeds the {CONTINUOUSPATCH_IMAGE_LIMIT}-image limit. The total includes repositories and tags, including wildcard tags. Please reduce the number of images in the configuration.\n{result}")
