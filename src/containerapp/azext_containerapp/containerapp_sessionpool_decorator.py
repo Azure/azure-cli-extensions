@@ -487,6 +487,13 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         return container_def
 
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
+        if self.has_registry_change():
+            if safe_get(customer_container_template, "registryCredentials") is None:
+                if self.get_argument_registry_server() is None or (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None):
+                    raise ValidationError("The existing registry credentials are empty. \n"
+                                          "Please provide --registry-server, --registry-username, and --registry-password to update the registry credentials. \n"
+                                          "If you want to use managed identity for registry, please use `az containerapp sessionpool create --registry-server myregistry.azurecr.io --registry-identity  MyUserIdentityResourceId`.\n")
+                safe_set(customer_container_template, "registryCredentials", value={})
         if self.get_argument_registry_server() is not None:
             safe_set(customer_container_template, "registryCredentials", "server", value=self.get_argument_registry_server())
         if self.get_argument_registry_user() is not None:
@@ -494,7 +501,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         if secrets_def is None:
             secrets_def = []
         if self.get_argument_registry_pass() is not None:
-            original_secrets = self.existing_pool_def["properties"]["secrets"]
+            original_secrets = safe_get(self.existing_pool_def, "properties", "secrets", default=[])
             original_secrets_names = []
             for secret in original_secrets:
                 original_secrets_names.append(secret["name"])
