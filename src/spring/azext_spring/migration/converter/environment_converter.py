@@ -25,5 +25,7 @@ class EnvironmentConverter(ConverterTemplate):
             }]
             self.data["scheduledEntries"] = aca_maintenance_window
 
+        asa_certs = self.source['properties'].get('certificates')
+
     def get_template_name(self):
         return "environment.bicep"

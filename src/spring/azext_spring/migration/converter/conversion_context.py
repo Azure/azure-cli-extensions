@@ -14,6 +14,7 @@ from .service_registry_converter import ServiceRegistryConverter
 from .config_server_converter import ConfigServerConverter
 from .acs_converter import ACSConverter
 from .live_view_converter import LiveViewConverter
+from .cert_converter import CertConverter
 
 logger = get_logger(__name__)
 
@@ -39,12 +40,19 @@ class ConversionContext:
     def run_converters(self, source):
         converted_contents = {}
         source_wrapper = SourceDataWrapper(source)
+        asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
 
         converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(
-            source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
+            asa_service
         )
+        asa_certs = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
+        asa_kv_certs = []
 
-        asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
+        for cert in asa_certs:
+            certName = cert['name'].split('/')[-1]
+            if cert['properties'].get('type') == "KeyVaultCertificate":
+                asa_kv_certs.append(cert)
+                converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
 
         managed_components = {
             'gateway': False,
@@ -69,6 +77,7 @@ class ConversionContext:
 
         main_source = {
             "apps": asa_apps,
+            "certs": asa_kv_certs,
             "managedComponents": managed_components,
         }
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(asa_apps)

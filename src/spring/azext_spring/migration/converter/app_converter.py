@@ -11,7 +11,7 @@ class AppConverter(ConverterTemplate):
     def calculate_data(self):
         appName = self.source['name'].split('/')[-1]
         envName = self.source['name'].split('/')[0]
-        moduleName = appName.replace("-", "")
+        moduleName = appName.replace("-", "_")
         serviceBinds = self._get_service_bind(self.source, envName)
         deployments = self._get_deployments(self.source)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
@@ -62,7 +62,7 @@ class AppConverter(ConverterTemplate):
             })
         # print(f"Service bind: {service_bind}")
         return service_bind
-    
+
     def _get_deployments(self, source):
         deployments = []
         for deployment in source['deployments']:
@@ -91,8 +91,8 @@ class AppConverter(ConverterTemplate):
 
         # print(f"deployments: {deployments}")
         return deployments
-    
-    # A Container App must add up to one of the following CPU - Memory combinations: 
+
+    # A Container App must add up to one of the following CPU - Memory combinations:
     # [cpu: 0.25, memory: 0.5Gi]; [cpu: 0.5, memory: 1.0Gi]; [cpu: 0.75, memory: 1.5Gi]; [cpu: 1.0, memory: 2.0Gi]; [cpu: 1.25, memory: 2.5Gi]; [cpu: 1.5, memory: 3.0Gi]; [cpu: 1.75, memory: 3.5Gi]; [cpu: 2.0, memory: 4.0Gi]; [cpu: 2.25, memory: 4.5Gi]; [cpu: 2.5, memory: 5.0Gi]; [cpu: 2.75, memory: 5.5Gi]; [cpu: 3, memory: 6.0Gi]; [cpu: 3.25, memory: 6.5Gi]; [cpu: 3.5, memory: 7Gi]; [cpu: 3.75, memory: 7.5Gi]; [cpu: 4, memory: 8Gi]
     def _get_memory_by_cpu(self, cpu):
         cpu_memory_map = {
@@ -114,7 +114,7 @@ class AppConverter(ConverterTemplate):
             4.0: "8.0Gi"
         }
         return cpu_memory_map.get(cpu, None)
-    
+
     # create a method _convert_probe to convert the probe from the source to the target format
     def _convert_probe(self, probe, tier):
         print(f"probe: {probe}")
@@ -148,7 +148,7 @@ class AppConverter(ConverterTemplate):
         if tcpSocket is not None:
             result["tcpSocket"] = tcpSocket
         return result
- 
+
     def _convert_tcp_probe_action(self, probe, tier):
         probeAction = {}
         if probe.get("probeAction", {}).get("type") == "TCPSocketAction":
@@ -172,4 +172,4 @@ class AppConverter(ConverterTemplate):
             probeAction = None
         print(f"probeAction: {probeAction}")
         return probeAction
-    
+

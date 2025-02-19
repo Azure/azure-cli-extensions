@@ -16,7 +16,7 @@ az spring migration-aca start --service <azure-spring-apps-service-name> --resou
 
 ## Steps to Deploy Azure Container Apps Using the Bicep Files
 
-1. Review the Bicep Files and Modify Parameters
+###. Review the Bicep Files and Modify Parameters
 
 After running the command to generate the Bicep files, you will have the following files and related resource definitions:
 
@@ -28,30 +28,29 @@ After running the command to generate the Bicep files, you will have the followi
 
 Replace the values in `param.bicepparam` to customize your Azure Container Apps.
 
-2. [Optional] Customize the Bicep Files
+###. Customize the Bicep Files
 
 Modify values in the Bicep files as needed to align with your environment.
 
-- TODO: Add app containerization links and replace the image.
+- Change the `param.bicepparam` file by filling in the image URL that you get through containerizing your app. Refer to this [doc](https://review.learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-build-overview) for more details about how to containerize your application.
 - If you are migrating Application Configuration Service or Config Server, you need to provide the credentials to the remote Git repository. Replace the "*" with the correct credentials in the file `config_server.bicep`.
 
-3. [Optional] Create a new Resource Group for Azure Container Apps
 
-If the resource group you want to deploy the Azure Container Apps does not already exist, create one with the following command:
+### Create a new Resource Group for Azure Container Apps
+
+#### If the resource group you want to deploy the Azure Container Apps does not already exist, create one with the following command:
 
 ```azurecli
 az group create --name <resource-group-name> --location <location>
 ```
 
-3. Deploy the Bicep Files
-
-Deploy the Bicep files using the Azure CLI:
+#### Deploy the Bicep files using the Azure CLI:
 
 ```azurecli
 az deployment group create --resource-group <resource-group-name> --template-file main.bicep --parameters param.bicepparam
 ```
 
-5. Validate Deployment
+#### Validate Deployment
 
 After deployment, validate that all resources, including the Azure Container Apps environment and applications, are correctly provisioned. You can check this in the Azure Portal:
 
