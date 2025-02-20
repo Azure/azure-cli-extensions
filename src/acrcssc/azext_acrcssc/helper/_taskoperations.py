@@ -11,6 +11,7 @@ import tempfile
 import time
 import logging
 from knack.log import get_logger
+from knack.util import CLIError
 from ._constants import (
     CONTINUOUSPATCH_DEPLOYMENT_NAME,
     CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
@@ -202,19 +203,23 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
 
         # This removes the internal logging from the acr module, reenables it after the setup is completed.
         # Because it is an external logger, the only way to control the output is by changing the level
-        if remove_internal_statements:
-            acr_archive_utils_logger_level = acr_archive_utils_logger.getEffectiveLevel()
-            acr_archive_utils_logger.setLevel(logging.ERROR)
+        try:
+            if remove_internal_statements:
+                acr_archive_utils_logger_level = acr_archive_utils_logger.getEffectiveLevel()
+                acr_archive_utils_logger.setLevel(logging.ERROR)
 
-        source_location = prepare_source_location(
-            cmd,
-            tmp_folder,
-            acr_registries_task_client,
-            registry.name,
-            resource_group_name)
+            source_location = prepare_source_location(
+                cmd,
+                tmp_folder,
+                acr_registries_task_client,
+                registry.name,
+                resource_group_name)
 
-        if remove_internal_statements:
-            acr_archive_utils_logger.setLevel(acr_archive_utils_logger_level)
+        except CLIError as cli_error:
+            raise AzCLIError(f"Failed to prepare source to trigger ACR task: {cli_error}")
+        finally:
+            if remove_internal_statements:
+                acr_archive_utils_logger.setLevel(acr_archive_utils_logger_level)
 
         OS = acr_run_client.models.OS
         Architecture = acr_run_client.models.Architecture
