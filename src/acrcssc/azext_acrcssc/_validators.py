@@ -167,7 +167,7 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
         pattern_prefix = "Listing repositories and tags matching the filter"
         result = re.sub(r'^(.*\n)*?' + re.escape(pattern_prefix), pattern_prefix, dryrun_log, flags=re.MULTILINE)
 
-        pattern_postfix = "Matches found: " + str(image_limit)
+        pattern_postfix = "Adjust the JSON filter to limit the number of images."
         result = re.sub(r'(?s)' + re.escape(pattern_postfix) + r'.*', pattern_postfix, result)
 
-        raise InvalidArgumentValueError(error_msg=f"You have exceeded the maximum limit of {CONTINUOUSPATCH_IMAGE_LIMIT} images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images. Failing the workflow.\n{result}")
+        raise InvalidArgumentValueError(error_msg=result)
