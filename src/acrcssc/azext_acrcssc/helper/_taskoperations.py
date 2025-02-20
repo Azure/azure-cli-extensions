@@ -27,7 +27,7 @@ from ._constants import (
     CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
     DESCRIPTION,
     TaskRunStatus)
-from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
+from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
@@ -179,8 +179,8 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
 
     if config_file_path is None:
         if not cssc_tasks_exists:
-            logger.error("--config parameter is needed to perform dry-run check.")
-            return
+            raise InvalidArgumentValueError("--config parameter is needed to perform dry-run check.")
+
         # attempt to get the config file from the registry, since the configuration should exist
         _, config_file_path = get_oci_artifact_continuous_patch(cmd, registry)
         if config_file_path is None:
