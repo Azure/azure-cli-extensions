@@ -12,6 +12,12 @@ class EnvironmentConverter(ConverterTemplate):
             "containerAppLogAnalyticsName": f"log-{name}",
         }
 
+        isVnet = self.source['isVnet']
+        if isVnet:
+            self.data["vnetConfiguration"] = {
+                "internal": str(True).lower(),
+            }
+
         asa_zone_redundant = self.source['properties'].get('zoneRedundant')
         if asa_zone_redundant is not None:
             self.data["zoneRedundant"] = str(asa_zone_redundant).lower()
@@ -25,7 +31,6 @@ class EnvironmentConverter(ConverterTemplate):
             }]
             self.data["scheduledEntries"] = aca_maintenance_window
 
-        asa_certs = self.source['properties'].get('certificates')
 
     def get_template_name(self):
         return "environment.bicep"

@@ -5,8 +5,8 @@ class EurekaConverter(ConverterTemplate):
     def __init__(self):
         super().__init__()
 
-    def load_source(self):
-        pass
+    def load_source(self, source):
+        self.source = source
 
     def calculate_data(self):
         name = "eureka"

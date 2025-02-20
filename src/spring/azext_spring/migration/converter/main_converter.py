@@ -9,6 +9,7 @@ class MainConverter(ConverterTemplate):
         self.certs = source["certs"]
 
     def calculate_data(self):
+        self.data["isVnet"] = self.source.get("isVnet", False)
         self.data.setdefault("certs", [])
         for item in self.certs:
             certName = item['name'].split('/')[-1]
