@@ -5,6 +5,11 @@ Release History
 upcoming
 ++++++
 
+1.1.0b3
+++++++
+* 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
+
 1.1.0b2
 ++++++
 * 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
