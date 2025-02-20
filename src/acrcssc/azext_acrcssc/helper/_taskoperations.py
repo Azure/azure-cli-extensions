@@ -188,6 +188,9 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
 
     if is_create and cssc_tasks_exists:
         raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
+
+    file_name = None
+    tmp_folder = None
     try:
         file_name = os.path.basename(config_file_path)
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
