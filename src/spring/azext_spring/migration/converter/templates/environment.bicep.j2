@@ -1,13 +1,13 @@
 // Params
-param workloadProfileName string
-param workloadProfileType string
+param workloadProfileName = 'Dedicated'
+param workloadProfileType = 'D4'
+param minNodes = 1
+param maxNodes = 10
 
-param managedEnvName string = '{{data.containerAppEnvName}}'
-param containerAppLogAnalyticsName string = '{{data.containerAppLogAnalyticsName}}'
-param zoneRedundant bool = {{data.zoneRedundant}}
+param vnetSubnetId string = ''
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: containerAppLogAnalyticsName
+  name: '{{data.containerAppLogAnalyticsName}}'
   location: resourceGroup().location
   properties: {
     sku: {
@@ -31,24 +31,30 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
-  name: managedEnvName
+  name: '{{data.containerAppEnvName}}'
   location: resourceGroup().location
+  {% if data.identity %}
   identity: {
       type: 'SystemAssigned'
   }
+  {% endif %}
   properties: {
-    // vnetConfiguration: {}
+    {% if data.vnetConfiguration %}
+    vnetConfiguration: {
+      internal: {{ data.vnetConfiguration.internal }}
+      infrastructureSubnetId: vnetSubnetId
+    }
+    {% endif %}
     appLogsConfiguration: {
       destination: 'azure-monitor'
     }
-    zoneRedundant: zoneRedundant
-    // customDomainConfiguration: {}
+    zoneRedundant: {{data.zoneRedundant}}
     workloadProfiles: [
       {
         name: workloadProfileName
         workloadProfileType: workloadProfileType
-        // minimumCount: minNodes
-        // maximumCount: maxNodes
+        minimumCount: minNodes
+        maximumCount: maxNodes
       }
     ]
   }

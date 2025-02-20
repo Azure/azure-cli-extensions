@@ -42,18 +42,24 @@ class ConversionContext:
         source_wrapper = SourceDataWrapper(source)
         asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
 
-        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(
-            asa_service
-        )
+        # Environment Converter
+        is_vnet = self._is_vnet(asa_service)
+        is_enterprise = self._is_enterprise_tier(asa_service)
+        asa_service['isVnet'] = is_vnet
+        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(asa_service)
+
+        # Cert Converter
         asa_certs = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
         asa_kv_certs = []
-
         for cert in asa_certs:
             certName = cert['name'].split('/')[-1]
             if cert['properties'].get('type') == "KeyVaultCertificate":
                 asa_kv_certs.append(cert)
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
+            elif cert['properties'].get('type') == "ContentCertificate":
+                converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
 
+        # Managed components Converter
         managed_components = {
             'gateway': False,
             'config': False,
@@ -65,26 +71,31 @@ class ConversionContext:
         converted_contents = self._convert_live_view(source_wrapper, converted_contents, managed_components)
         converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
 
+        # Apps Converter
         asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
         asa_deployments = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
-        # print(asa_deployments)
 
-        for app in asa_apps:
-            appName = app['name'].split('/')[-1]
-            app['enabled_sba'] = managed_components['sba']
-            app['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app['name']}/")]
-            converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app)
+        for app_source in asa_apps:
+            appName = app_source['name'].split('/')[-1]
+            app_source['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app_source['name']}/")]
+            app_source['managedComponents'] = managed_components
+            app_source['isEnterprise'] = is_enterprise
+            converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app_source)
 
-        main_source = {
+        # Param, readme and main Converter
+        full_source = {
+            "asa": asa_service,
             "apps": asa_apps,
             "certs": asa_kv_certs,
             "managedComponents": managed_components,
+            "isVnet": is_vnet,
+            "inEnterprise": is_enterprise,
         }
-        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(asa_apps)
-        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)        
-        converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert(
-            main_source
-        )
+
+        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(full_source)
+        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(full_source)
+        converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert(full_source)
+
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):
@@ -151,11 +162,17 @@ class ConversionContext:
         if not is_enterprise_tier:
             managed_components['eureka'] = True
             eureka_key = self.get_converter(EurekaConverter).get_template_name()
-            converted_contents[eureka_key] = self.get_converter(EurekaConverter).convert()
+            converted_contents[eureka_key] = self.get_converter(EurekaConverter).convert(None)
         return converted_contents
 
     def _is_enterprise_tier(self, asa_service):
         return asa_service['sku']['tier'] == 'Enterprise'
+
+    def _is_vnet(self, asa_service):
+        networkProfile = asa_service['properties'].get('networkProfile')
+        if networkProfile is None:
+            return False
+        return networkProfile.get('appSubnetId') is not None
 
 class SourceDataWrapper:
     def __init__(self, source):

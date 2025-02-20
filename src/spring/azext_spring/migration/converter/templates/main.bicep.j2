@@ -1,6 +1,7 @@
 // Params
-param workloadProfileName string
-param workloadProfileType string
+{% if data.isVnet == true %}
+param vnetSubnetId string
+{% endif %}
 {% for app in data.apps %}
 param {{app.containerAppImageName}} string
 {% endfor %}
@@ -8,8 +9,9 @@ param {{app.containerAppImageName}} string
 module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
   params: {
-    workloadProfileName: workloadProfileName
-    workloadProfileType: workloadProfileType
+    {% if data.isVnet == true %}
+    vnetSubnetId: vnetSubnetId
+    {% endif %}
   }
 }
 

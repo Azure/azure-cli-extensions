@@ -6,6 +6,8 @@ from .base_converter import ConverterTemplate
 class AppConverter(ConverterTemplate):
     def load_source(self, source):
         self.source = source
+        self.managed_components = source['managedComponents']
+        self.is_enterprise = source['isEnterprise']
         # print(f"App source: {self.source}")
 
     def calculate_data(self):
@@ -37,7 +39,7 @@ class AppConverter(ConverterTemplate):
         return input_string.split('/')[-1]
 
     def _get_service_bind(self, source, envName):
-        enable_sba = source['enabled_sba']
+        enable_sba = self.managed_components['sba']
         service_bind = []
         addon = source['properties'].get('addonConfigs')
 
@@ -50,7 +52,19 @@ class AppConverter(ConverterTemplate):
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
             })
+        if self.is_enterprise != True and self.managed_components['config'] == True:
+            # standard tier enabled config server and bind all apps automatically
+            service_bind.append({
+                "name": "bind-config",
+                "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
+            })
         if addon.get('serviceRegistry') is not None and addon['serviceRegistry'].get('resourceId') is not None:
+            service_bind.append({
+                "name": "bind-eureka",
+                "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"
+            })
+        if self.is_enterprise != True and self.managed_components['eureka'] == True:
+            # standard tier enabled eureka server and bind all apps automatically
             service_bind.append({
                 "name": "bind-eureka",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"
@@ -117,7 +131,7 @@ class AppConverter(ConverterTemplate):
 
     # create a method _convert_probe to convert the probe from the source to the target format
     def _convert_probe(self, probe, tier):
-        print(f"probe: {probe}")
+        # print(f"probe: {probe}")
         if probe is None:
             return None
         if probe.get("disableProbe") == True:
@@ -157,7 +171,7 @@ class AppConverter(ConverterTemplate):
             }
         else:
             probeAction = None
-        print(f"probeAction: {probeAction}")
+        # print(f"probeAction: {probeAction}")
         return probeAction
 
     def _convert_http_probe_action(self, probe, tier):
@@ -170,6 +184,6 @@ class AppConverter(ConverterTemplate):
             }
         else:
             probeAction = None
-        print(f"probeAction: {probeAction}")
+        # print(f"probeAction: {probeAction}")
         return probeAction
 
