@@ -5,6 +5,7 @@
 
 import ast
 
+
 def repack_response_json(response):
     # Iterate through the response and build a JSON array
     list_string = "["
