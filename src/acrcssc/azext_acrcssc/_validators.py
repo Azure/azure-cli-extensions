@@ -156,16 +156,18 @@ def validate_cssc_optional_inputs(cssc_config_path, schedule):
 def validate_continuous_patch_v1_image_limit(dryrun_log):
     match = re.search(r"Matches found: (\d+)", dryrun_log)
     if match is None:
+        # the quick task did not return the expected output, we cannot validate the image limit but cannot block the operation
         logger.error("Error parsing for image limit.")
+        return
 
     image_limit = int(match.group(1))
 
     if image_limit > CONTINUOUSPATCH_IMAGE_LIMIT:
-        # get only the part of the log that shows the repositories and tags
+        # these expressions remove all the Task related output from the log, and only leaves the listing of repositories and tags
         pattern_prefix = "Listing repositories and tags matching the filter"
         result = re.sub(r'^(.*\n)*?' + re.escape(pattern_prefix), pattern_prefix, dryrun_log, flags=re.MULTILINE)
 
         pattern_postfix = "Matches found: " + str(image_limit)
         result = re.sub(r'(?s)' + re.escape(pattern_postfix) + r'.*', pattern_postfix, result)
 
-        raise InvalidArgumentValueError(error_msg=f"This configuration exceeds the {CONTINUOUSPATCH_IMAGE_LIMIT}-image limit. The total includes repositories and tags, including wildcard tags. Please reduce the number of images in the configuration.\n{result}")
+        raise InvalidArgumentValueError(error_msg=f"You have exceeded the maximum limit of {CONTINUOUSPATCH_IMAGE_LIMIT} images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images. Failing the workflow.\n{result}")

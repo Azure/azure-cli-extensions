@@ -74,6 +74,7 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
 def get_oci_artifact_continuous_patch(cmd, registry):
     logger.debug("Entering get_oci_artifact_continuous_patch with parameter: %s", registry.login_server)
     config = None
+    file_name = None
     try:
         oras_client = _oras_client(registry)
 
@@ -90,7 +91,7 @@ def get_oci_artifact_continuous_patch(cmd, registry):
     finally:
         oras_client.logout(hostname=str.lower(registry.login_server))
 
-    return config
+    return config, file_name
 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):

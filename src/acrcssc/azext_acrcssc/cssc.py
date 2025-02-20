@@ -43,9 +43,10 @@ def _perform_continuous_patch_operation(cmd,
 
     logger.debug('validations completed successfully.')
 
-    # check for the image limit using the dryrun task
-    # TODO, the call to prepare_source_location() will output warnings to the console, which I'm not sure how to remove
-    dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
+    # every time we perform a create or update operation, we need to validate for the number of images selected on the
+    # configuration file. The way to do this is by silently running the dryrun operation. If the limit is exceeded, we
+    # will not proceed with the operation.
+    dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create, remove_internal_statements=not dryrun)
     validate_continuous_patch_v1_image_limit(dryrun_output)
     if dryrun:
         print(dryrun_output)

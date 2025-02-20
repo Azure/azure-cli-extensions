@@ -9,6 +9,7 @@ import base64
 import os
 import tempfile
 import time
+import logging
 from knack.log import get_logger
 from ._constants import (
     CONTINUOUSPATCH_DEPLOYMENT_NAME,
@@ -30,6 +31,7 @@ from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
+from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
 from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
@@ -59,15 +61,9 @@ def create_update_continuous_patch_v1(cmd,
     
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
-<<<<<<< HEAD
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
-    
-=======
-
-    logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
     cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
->>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -82,7 +78,6 @@ def create_update_continuous_patch_v1(cmd,
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
-<<<<<<< HEAD
     # on 'update' schedule is optional
     if schedule is None:
         trigger_task = next(task for task in task_list if task.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
@@ -90,8 +85,6 @@ def create_update_continuous_patch_v1(cmd,
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
 
-=======
->>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
@@ -180,14 +173,19 @@ def list_continuous_patch_v1(cmd, registry):
     return filtered_cssc_tasks
 
 
-def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
+def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_internal_statements=True):
     logger.debug(f"Entering acr_cssc_dry_run with parameters: {registry} {config_file_path}")
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
 
     if config_file_path is None:
-        logger.error("--config parameter is needed to perform dry-run check.")
-        return
+        if not cssc_tasks_exists:
+            logger.error("--config parameter is needed to perform dry-run check.")
+            return
+        # attempt to get the config file from the registry, since the configuration should exist
+        _, config_file_path = get_oci_artifact_continuous_patch(cmd, registry)
+        if config_file_path is None:
+            raise AzCLIError("Failed to get OCI artifact from ACR.")
 
-    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
     if is_create and cssc_tasks_exists:
         raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
     try:
@@ -198,12 +196,22 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
         resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
         acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
         acr_run_client = cf_acr_runs(cmd.cli_ctx)
+
+        # This removes the internal logging from the acr module, reenables it after the setup is completed.
+        # Because it is an external logger, the only way to control the output is by changing the level
+        if remove_internal_statements:
+            acr_archive_utils_logger_level = acr_archive_utils_logger.getEffectiveLevel()
+            acr_archive_utils_logger.setLevel(logging.ERROR)
+
         source_location = prepare_source_location(
             cmd,
             tmp_folder,
             acr_registries_task_client,
             registry.name,
             resource_group_name)
+
+        if remove_internal_statements:
+            acr_archive_utils_logger.setLevel(acr_archive_utils_logger_level)
 
         OS = acr_run_client.models.OS
         Architecture = acr_run_client.models.Architecture
