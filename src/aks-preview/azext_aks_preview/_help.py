@@ -515,7 +515,7 @@ helps['aks create'] = f"""
         - name: --ca-certs --custom-ca-trust-certificates
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
-          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes.
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
@@ -1186,7 +1186,7 @@ helps['aks update'] = """
         - name: --ca-certs --custom-ca-trust-certificates
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
-          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes.
         - name: --safeguards-level
           type: string
           short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
