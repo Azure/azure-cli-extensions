@@ -575,8 +575,7 @@ def update_containerapp_logic(cmd,
                               enable_java_agent=None,
                               user_assigned=None,
                               registry_identity=None,
-                              system_assigned=None,
-                              kind=None):
+                              system_assigned=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -634,8 +633,7 @@ def update_containerapp(cmd,
                         max_inactive_revisions=None,
                         runtime=None,
                         enable_java_metrics=None,
-                        enable_java_agent=None,
-                        kind=None):
+                        enable_java_agent=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -677,8 +675,7 @@ def update_containerapp(cmd,
                                      max_inactive_revisions=max_inactive_revisions,
                                      runtime=runtime,
                                      enable_java_metrics=enable_java_metrics,
-                                     enable_java_agent=enable_java_agent,
-                                     kind=kind)
+                                     enable_java_agent=enable_java_agent)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):

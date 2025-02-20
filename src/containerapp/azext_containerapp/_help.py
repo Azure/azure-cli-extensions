@@ -956,10 +956,6 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --runtime generic
-    - name: Update a container app with kind as functionapp
-      text: |
-          az containerapp update -n my-containerapp -g MyResourceGroup \\
-              --kind functionapp
 """
 
 # containerapp list for preview
