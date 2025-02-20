@@ -22,7 +22,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
-        mock_check_continuoustask_exists.return_value = False
+        mock_check_continuoustask_exists.return_value = False, []
         mock_convert_timespan_to_cron.return_value = "0 0 * * *"
         mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
         cmd = self._setup_cmd()
@@ -48,7 +48,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
-        mock_check_continuoustask_exists.return_value = False
+        mock_check_continuoustask_exists.return_value = False, []
         mock_convert_timespan_to_cron.return_value = "0 0 * * *"
         mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
         cmd = self._setup_cmd()
@@ -75,7 +75,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
-        mock_check_continuoustask_exists.return_value = True
+        mock_check_continuoustask_exists.return_value = True, []
         mock_convert_timespan_to_cron.return_value = "0 0 * * *"
         mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
         cmd = self._setup_cmd()
@@ -100,7 +100,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
-        mock_check_continuoustask_exists.return_value = False
+        mock_check_continuoustask_exists.return_value = False, []
         mock_convert_timespan_to_cron.return_value = "0 0 * * *"
         mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
         cmd = self._setup_cmd()
@@ -125,7 +125,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
-        mock_check_continuoustask_exists.return_value = True
+        mock_check_continuoustask_exists.return_value = True, []
         mock_convert_timespan_to_cron.return_value = "0 0 * * *"
         mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
         cmd = self._setup_cmd()
@@ -153,7 +153,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         cmd = self._setup_cmd()
         mock_registry = mock.MagicMock()
         mock_dryrun = False
-        mock_check_continuoustask_exists.return_value = True
+        mock_check_continuoustask_exists.return_value = True, []
         mock_check_continuous_task_config_exists.return_value = True
         mock_registry.id = 'registry_id'
         mock_resource_group = mock.MagicMock()

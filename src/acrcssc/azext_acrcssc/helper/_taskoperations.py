@@ -60,8 +60,7 @@ def create_update_continuous_patch_v1(cmd,
 
     logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
-    task_list = []
-    cssc_tasks_exists = check_continuous_task_exists(cmd, registry, task_list=task_list)
+    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -112,15 +111,11 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
     # if we need to update the tasks, we will update the cron expression from it
     # if not we just update the cron expression from the given parameter
     for task in task_list:
-        if task.name not in CONTINUOUSPATCH_ALL_TASK_NAMES:
-            logger.debug(f"Task {task.name} is not part of the continuous patching workflow, skipping update")
-            continue
         deployed_task = task.step.encoded_task_content
         extension_task = _create_encoded_task(CONTINUOUSPATCH_TASK_DEFINITION[task.name]["template_file"])
         if deployed_task != extension_task:
             logger.debug(f"Task {task.name} is different from the extension task, updating the task")
 
-            # TODO this is wrong, we don't know if the current taks is the trigger with the schedule
             if schedule_cron_expression is None:
                 trigger_task = next((t for t in task_list if t.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME), None)
                 if trigger_task is None:
@@ -131,7 +126,7 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 
             # the deployment will also update the schedule if it was set, we no longer need to manually set it
             return
-        
+
     logger.debug("No difference found between the existing tasks and the extension tasks")
 
     if schedule_cron_expression is not None:
@@ -149,7 +144,7 @@ def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
 
 def delete_continuous_patch_v1(cmd, registry, dryrun):
     logger.debug("Entering delete_continuous_patch_v1")
-    cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
     if not dryrun and (cssc_tasks_exists or cssc_config_exists):
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
@@ -167,8 +162,8 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
-
-    if not check_continuous_task_exists(cmd, registry):
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    if not cssc_tasks_exists:
         logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
         return
 
@@ -185,7 +180,9 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
     if config_file_path is None:
         logger.error("--config parameter is needed to perform dry-run check.")
         return
-    if is_create and check_continuous_task_exists(cmd, registry):
+
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    if is_create and cssc_tasks_exists:
         raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
     try:
         file_name = os.path.basename(config_file_path)

@@ -78,20 +78,27 @@ def _validate_continuouspatch_config(config):
         raise InvalidArgumentValueError(f"Configuration error: Version {config.get('version', '')} is not supported. Supported versions are {CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS}")
 
 
-# to save on API calls, we offer the option to return the list of tasks
-def check_continuous_task_exists(cmd, registry, task_list=None):
-    exists = True
+# to save on API calls, we the list of tasks found in the registry
+def check_continuous_task_exists(cmd, registry):
+    task_list = []
+    missing_tasks = []
     try:
         acrtask_client = cf_acr_tasks(cmd.cli_ctx)
         for task_name in CONTINUOUSPATCH_ALL_TASK_NAMES:
             task = get_task(cmd, registry, task_name, acrtask_client)
-            exists = exists and task is not None
-            if task_list is not None and task is not None:
+            if task is None:
+                missing_tasks.append(task_name)
+            else:
                 task_list.append(task)
-        return exists
+
+        if len(missing_tasks) > 0:
+            logger.debug(f"Failed to find tasks {', '.join(missing_tasks)} from registry {registry.name}")
+            return False, task_list
+
+        return True, task_list
     except Exception as exception:
-        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
-        return False
+        logger.debug(f"Failed to find tasks from registry {registry.name} : {exception}")
+        return False, task_list
 
 
 def check_continuous_task_config_exists(cmd, registry):
