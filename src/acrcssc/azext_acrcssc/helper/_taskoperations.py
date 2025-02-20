@@ -120,6 +120,8 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
                 trigger_task = next((t for t in task_list if t.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME), None)
                 if trigger_task is None:
                     raise AzCLIError(f"Task {CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME} not found in the registry")
+                if not trigger_task.trigger.timer_triggers:
+                    raise AzCLIError(f"No timer triggers found for task {CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME}")
                 schedule_cron_expression = trigger_task.trigger.timer_triggers[0].schedule
 
             _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, silent_execution=True)
