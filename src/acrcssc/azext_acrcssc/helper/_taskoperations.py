@@ -183,6 +183,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
             raise InvalidArgumentValueError("--config parameter is needed to perform dry-run check.")
 
         # attempt to get the config file from the registry, since the configuration should exist
+        logger.debug("Retrieving the configuration file from the registry.")
         _, config_file_path = get_oci_artifact_continuous_patch(cmd, registry)
         if config_file_path is None:
             raise AzCLIError("Failed to retrieve the configuration file from the registry.")
