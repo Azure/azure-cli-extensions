@@ -54,16 +54,16 @@ class ConversionContext:
                 asa_kv_certs.append(cert)
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
 
-        # managed_components = {
-        #     'gateway': False,
-        #     'config': False,
-        #     'eureka': False,
-        #     'sba': False,
-        # }
-        # converted_contents = self._convert_gateway(source_wrapper, converted_contents, managed_components)
-        # converted_contents = self._convert_config_server_and_ACS(source_wrapper, converted_contents, managed_components)
-        # converted_contents = self._convert_live_view(source_wrapper, converted_contents, managed_components)
-        # converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
+        managed_components = {
+            'gateway': False,
+            'config': False,
+            'eureka': False,
+            'sba': False,
+        }
+        converted_contents = self._convert_gateway(source_wrapper, converted_contents, managed_components)
+        converted_contents = self._convert_config_server_and_ACS(source_wrapper, converted_contents, managed_components)
+        converted_contents = self._convert_live_view(source_wrapper, converted_contents, managed_components)
+        converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
 
         asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
         asa_deployments = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
@@ -71,14 +71,14 @@ class ConversionContext:
 
         for app in asa_apps:
             appName = app['name'].split('/')[-1]
-            # app['enabled_sba'] = managed_components['sba']
+            app['enabled_sba'] = managed_components['sba']
             app['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app['name']}/")]
             converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app)
 
         main_source = {
             "apps": asa_apps,
             "certs": asa_kv_certs,
-            # "managedComponents": managed_components,
+            "managedComponents": managed_components,
         }
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(asa_apps)
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(None)        

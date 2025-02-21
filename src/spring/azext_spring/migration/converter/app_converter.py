@@ -12,7 +12,7 @@ class AppConverter(ConverterTemplate):
         appName = self.source['name'].split('/')[-1]
         envName = self.source['name'].split('/')[0]
         moduleName = appName.replace("-", "_")
-        # serviceBinds = self._get_service_bind(self.source, envName)
+        serviceBinds = self._get_service_bind(self.source, envName)
         deployments = self._get_deployments(self.source)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
         greenDeployment = deployments[1] if len(deployments) > 1 else {}
@@ -30,7 +30,7 @@ class AppConverter(ConverterTemplate):
             "isPublic": isPublic,
             "minReplicas": 1,
             "maxReplicas": blueDeployment.get("capacity", 5),
-            # "serviceBinds": serviceBinds,
+            "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
             "isBlueGreen": len(deployments) > 1,
