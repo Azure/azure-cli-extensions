@@ -177,7 +177,7 @@ class Create(AAZCommand):
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum={"None": "None", "UserAssigned": "UserAssigned"},
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -1110,14 +1110,6 @@ class Create(AAZCommand):
             )
 
             identity = cls._schema_on_200_201.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )

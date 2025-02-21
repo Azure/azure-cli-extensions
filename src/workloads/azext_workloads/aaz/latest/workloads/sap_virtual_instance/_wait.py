@@ -175,14 +175,6 @@ class Wait(AAZWaitCommand):
             )
 
             identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )

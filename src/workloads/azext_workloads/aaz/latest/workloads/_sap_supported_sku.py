@@ -49,45 +49,45 @@ class SapSupportedSku(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "Body"
+        # define Arg Group "SAPSupportedSku"
 
         _args_schema = cls._args_schema
         _args_schema.app_location = AAZStrArg(
             options=["--app-location"],
-            arg_group="Body",
+            arg_group="SAPSupportedSku",
             help="The geo-location where the resource is to be created.",
             required=True,
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
-            arg_group="Body",
+            arg_group="SAPSupportedSku",
             help="The database type. Eg: HANA, DB2, etc",
             required=True,
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
         _args_schema.deployment_type = AAZStrArg(
             options=["--deployment-type"],
-            arg_group="Body",
+            arg_group="SAPSupportedSku",
             help="The deployment type. Eg: SingleServer/ThreeTier",
             required=True,
             enum={"SingleServer": "SingleServer", "ThreeTier": "ThreeTier"},
         )
         _args_schema.environment = AAZStrArg(
             options=["--environment"],
-            arg_group="Body",
+            arg_group="SAPSupportedSku",
             help="Defines the environment type - Production/Non Production.",
             required=True,
             enum={"NonProd": "NonProd", "Prod": "Prod"},
         )
         _args_schema.high_availability_type = AAZStrArg(
             options=["--high-availability-type"],
-            arg_group="Body",
+            arg_group="SAPSupportedSku",
             help="The high availability type.",
             enum={"AvailabilitySet": "AvailabilitySet", "AvailabilityZone": "AvailabilityZone"},
         )
         _args_schema.sap_product = AAZStrArg(
             options=["--sap-product"],
-            arg_group="Body",
+            arg_group="SAPSupportedSku",
             help="Defines the SAP Product type.",
             required=True,
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},

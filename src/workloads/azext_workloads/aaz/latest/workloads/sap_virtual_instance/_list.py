@@ -183,14 +183,6 @@ class List(AAZCommand):
             )
 
             identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )
@@ -447,14 +439,6 @@ class List(AAZCommand):
             )
 
             identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )
