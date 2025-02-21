@@ -820,7 +820,7 @@ class Create(AAZCommand):
         _element = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh.public_keys.Element
         _element.key_data = AAZStrArg(
             options=["key-data"],
-            help="SSH public key certificate used to authenticate with the VM through ssh. The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, see [Create SSH keys on Linux and Mac for Linux VMs in Azure](https://docs.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
+            help="SSH public key certificate used to authenticate with the VM through ssh. The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, see [Create SSH keys on Linux and Mac for Linux VMs in Azure](https://learn.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
         )
 
         ssh_key_pair = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh_key_pair

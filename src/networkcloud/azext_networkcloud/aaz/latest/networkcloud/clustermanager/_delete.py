@@ -24,9 +24,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -34,7 +34,7 @@ class Delete(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -73,10 +73,6 @@ class Delete(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
-
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
 
     class ClusterManagersDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -151,7 +147,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -231,7 +227,7 @@ class _DeleteHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

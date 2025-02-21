@@ -13,26 +13,26 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "durabletask taskhub create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Task Hub
 
-    :example: Create a taskhub in a namespace
-        az durabletask taskhub create -g resource-grou-name -s testnamespace -n taskhub-name
+    :example: Create a taskhub in a scheduler
+        az durabletask taskhub create --resource-group testrg --scheduler-name testscheduler --name testtaskhub
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/namespaces/{}/taskhubs/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2024-10-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,43 +45,30 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.namespace_name = AAZStrArg(
-            options=["-s", "--namespace-name"],
-            help="The name of the namespace",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,64}$",
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group",
             required=True,
         )
-        _args_schema.task_hub_name = AAZStrArg(
-            options=["-n", "--name", "--task-hub-name"],
-            help="Task Hub name",
+        _args_schema.scheduler_name = AAZStrArg(
+            options=["-s", "--scheduler-name"],
+            help="The name of the Scheduler",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="The name of the TaskHub",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,64}$",
+            ),
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TaskHubsCreateOrUpdate(ctx=self.ctx)()
+        yield self.TaskHubsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,15 +89,31 @@ class Create(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces/{namespaceName}/taskHubs/{taskHubName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/taskHubs/{taskHubName}",
                 **self.url_parameters
             )
 
@@ -126,11 +129,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "namespaceName", self.ctx.args.namespace_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "schedulerName", self.ctx.args.scheduler_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -138,7 +141,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.task_hub_name,
+                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -148,7 +151,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -173,11 +176,6 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -210,12 +208,15 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.dashboard_url = AAZStrType(
+                serialized_name="dashboardUrl",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -240,9 +241,6 @@ class Create(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

@@ -245,6 +245,9 @@ class _RunRoHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZFreeFormDictType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )

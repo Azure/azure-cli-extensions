@@ -402,7 +402,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
             self._get_result_resource(status='Failed')
         ]
         deployment = self._get_deployment()
-        with self.assertRaisesRegexp(CLIError, 'Failed to build container image'):
+        with self.assertRaisesRegex(CLIError, 'Failed to build container image'):
             self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', client=client)
 
 
@@ -517,7 +517,7 @@ class TestAppUpdate(BasicTest):
         self.assertEqual(True, resource.properties.public)
 
     def test_invalid_app_update_deployment_settings_without_deployment(self):
-        with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when there is no active deployment.'):
+        with self.assertRaisesRegex(CLIError, '--jvm-options cannot be set when there is no active deployment.'):
             self._execute('rg', 'asc', 'app', jvm_options='test-option')
 
     def test_app_update_jvm_options(self):
@@ -654,7 +654,7 @@ class TestAppUpdate(BasicTest):
         deployment.properties.source.type = 'NetCoreZip'
         deployment.properties.source.runtime_version = 'NetCore_31'
         deployment.properties.source.net_core_main_entry_path = 'main-entry'
-        with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
+        with self.assertRaisesRegex(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
             self._execute('rg', 'asc', 'app', jvm_options='test-option', deployment=deployment)
 
     def test_vnet_public_endpoint(self):
@@ -767,21 +767,21 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_large_instance_count_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 1000{re.escape("]")}'):
+        with self.assertRaisesRegex(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 1000{re.escape("]")}'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1001, client=client)
 
     def test_app_with_large_instance_count(self):
-        with self.assertRaisesRegexp(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 500{re.escape("]")}'):
+        with self.assertRaisesRegex(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 500{re.escape("]")}'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=501)
 
     def test_app_with_large_instance_count_basic(self):
         client = self._get_basic_mock_client(sku='Basic')
-        with self.assertRaisesRegexp(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 25{re.escape("]")}'):
+        with self.assertRaisesRegex(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 25{re.escape("]")}'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=26, client=client)
 
     def test_app_with_persistent_storage_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError,
+        with self.assertRaisesRegex(CLIError,
                                      'Enterprise tier Spring instance does not support --enable-persistent-storage'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
                           enable_persistent_storage=True, client=client)

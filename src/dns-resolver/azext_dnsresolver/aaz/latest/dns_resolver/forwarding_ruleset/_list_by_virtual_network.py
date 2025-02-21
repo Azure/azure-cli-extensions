@@ -22,11 +22,13 @@ class ListByVirtualNetwork(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/virtualnetworks/{}/listdnsforwardingrulesets", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/virtualnetworks/{}/listdnsforwardingrulesets", "2023-07-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -58,7 +60,17 @@ class ListByVirtualNetwork(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.DnsForwardingRulesetsListByVirtualNetwork(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -116,7 +128,7 @@ class ListByVirtualNetwork(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -175,6 +187,10 @@ class ListByVirtualNetwork(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListByVirtualNetworkHelper:
+    """Helper class for ListByVirtualNetwork"""
 
 
 __all__ = ["ListByVirtualNetwork"]
