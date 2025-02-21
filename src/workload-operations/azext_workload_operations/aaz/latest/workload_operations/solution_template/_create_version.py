@@ -236,7 +236,6 @@ class CreateVersion(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.e_tag = AAZStrType(
                 serialized_name="eTag",

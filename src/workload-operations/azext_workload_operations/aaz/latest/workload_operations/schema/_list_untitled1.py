@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema list-untitled1",
+    "workload-operations schema list-subscriptions",
     is_preview=True,
 )
 class ListUntitled1(AAZCommand):
