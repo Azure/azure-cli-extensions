@@ -86,7 +86,7 @@ class CustomActionProperties:
                 raise AzureInternalError(error_message) from ex
 
             logger.warning(
-                "Script execution result can be download from storage account using the "
+                "Script execution result can be downloaded from storage account using the "
                 "command: \n az storage blob download --blob-url %s --file %s --auth-mode login  > /dev/null 2>&1 \n",
                 result_ref,
                 downloaded_blob_name,

@@ -57,7 +57,7 @@ def rp_registrations(cmd, subscription_id):
         raise CLIError(e)
     isInsightsRpRegistered = False
     isAlertsManagementRpRegistered = False
-    isMoniotrRpRegistered = False
+    isMonitorRpRegistered = False
     isDashboardRpRegistered = False
     json_response = json.loads(r.text)
     values_array = json_response["value"]
@@ -67,9 +67,9 @@ def rp_registrations(cmd, subscription_id):
         if value["namespace"].lower() == "microsoft.alertsmanagement" and value["registrationState"].lower() == "registered":
             isAlertsManagementRpRegistered = True
         if value["namespace"].lower() == "microsoft.monitor" and value["registrationState"].lower() == "registered":
-            isAlertsManagementRpRegistered = True
+            isMonitorRpRegistered = True
         if value["namespace"].lower() == "microsoft.dashboard" and value["registrationState"].lower() == "registered":
-            isAlertsManagementRpRegistered = True
+            isDashboardRpRegistered = True
     if isInsightsRpRegistered is False:
         print(f"Registering microsoft.insights RP for the subscription {subscription_id}")
         headers = ['User-Agent=arc-azuremonitormetrics.register_insights_rp']
@@ -78,7 +78,7 @@ def rp_registrations(cmd, subscription_id):
         print(f"Registering microsoft.alertsmanagement RP for the subscription {subscription_id}")
         headers = ['User-Agent=arc-azuremonitormetrics.register_alertsmanagement_rp']
         post_request(cmd, subscription_id, "microsoft.alertsmanagement", headers)
-    if isMoniotrRpRegistered is False:
+    if isMonitorRpRegistered is False:
         print(f"Registering microsoft.monitor RP for the subscription {subscription_id}")
         headers = ['User-Agent=arc-azuremonitormetrics.register_monitor_rp']
         post_request(cmd, subscription_id, "microsoft.monitor", headers)

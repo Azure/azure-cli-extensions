@@ -37,6 +37,7 @@ test_update_infrastructure_svn | mcr.microsoft.com/cbl-mariner/distroless/python
 test_multiple_policies | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot & mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if two unique policies are generated from a single ARM Template container multiple container groups. Also have an extra resource that is untouched. Also has a secureValue for an environment variable.
 test_arm_template_with_init_container | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot & mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if having an initContainer is picked up and added to the list of valid containers
 test_arm_template_without_stdio_access | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if disabling container stdio access gets passed down to individual containers
+test_arm_template_omit_id | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the id field is omitted from the policy
 test_arm_template_allow_elevated_false | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Disabling allow_elevated via securityContext
 test_arm_template_policy_regex | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Make sure the regex generated from the ARM Template workflow matches that of the policy.json workflow
 test_wildcard_env_var | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that an "allow all" regex is created when a value for env var is not provided via a parameter value
@@ -56,6 +57,7 @@ test_arm_template_security_context_user_group | N/A | See if user is set correct
 test_arm_template_security_context_uid_group | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid:group
 test_arm_template_security_context_uid | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid
 test_arm_template_security_context_user_dockerfile | N/A | See if user is set correctly by getting the user field from the Docker image in the format user
+test_zero_sidecar | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Make sure the infrastructure fragment is taken out when the appropriate tag is present in an ARM template
 
 ## policy.json [test file](test_confcom_scenario.py)
 
@@ -78,6 +80,7 @@ test_docker_pull | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Test p
 test_infrastructure_svn | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | make sure the correct infrastructure_svn is present in the policy
 test_stdio_access_default | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Checking the default value for std I/O access
 test_stdio_access_updated | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Checking the value for std I/O when it's set
+test_omit_id | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the id field is omitted from the policy
 test_environment_variables_parsing | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Make sure env vars are output in the right format
 test_get_layers_from_not_exists_image | notexists:1.0.0 | Fail out grabbing layers if image doesn't exist
 test_incorrect_allow_elevated_data_type | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Making allow_elevated fail out if it's not a boolean
@@ -85,7 +88,6 @@ test_incorrect_workingdir_path | mcr.microsoft.com/cbl-mariner/distroless/minima
 test_incorrect_workingdir_data_type | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Fail if working dir is an array
 test_incorrect_command_data_type | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Fail if command is not array of strings
 test_json_missing_containers | N/A | Fail if containers are not specified
-test_json_missing_version | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Fail if version is not included in policy.json
 test_json_missing_containerImage | N/A | Fail if container doesn't have an image specified
 test_json_missing_environmentVariables | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Fail if there are no env vars defined
 test_json_missing_command | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Fail if there is no command specified
@@ -113,6 +115,7 @@ test_invalid_many_input_types | Makes sure we're only getting input from one sou
 test_diff_wrong_input_type | Makes sure we're only doing the diff command if we're using a ARM Template as the input type
 test_parameters_without_template | Makes sure we error out if a parameter file is getting passed in without an ARM Template
 test_input_and_virtual_node | Error out if both input and virtual node are specified
+test_workload_identity | Make sure env vars are injected if workload identity is used
 
 ## Tar File [test file](test_confcom_tar.py)
 
@@ -135,6 +138,7 @@ test_invalid_input_path | mcr.microsoft.com/aks/e2e/library-busybox:master.22031
 test_invalid_config_map_path | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a path that does not exist for the config-map.yaml file
 test_valid_settings | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a valid path for the pod.yaml with the default config file
 test_print_version | N/A | Print the version of the extension
+test_invalid_settings | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input an invalid name for a custom settings file
 
 ## Virtual Node File [test file](test_confcom_virtual_node.py)
 
@@ -145,3 +149,19 @@ Test Name | Image Used | Purpose
 test_compare_policy_sources | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Compare the output of a policy generated from a Virtual Node file and a policy generated from an input json
 test_configmaps | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the configmaps are being added to the policy in env var and mount form
 test_secrets | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the secrets are being added to the policy in env var and mount form
+
+## Fragment File [test file](test_confcom_fragment.py)
+
+This is how to generate a policy fragment to be included in a CCE Policy for Confidential ACI
+
+Test Name | Image Used | Purpose
+---|---|---
+test_fragment_user_container_customized_mounts | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if mounts are translated correctly to the appropriate source and destination locations
+test_fragment_user_container_mount_injected_dns | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if the resolvconf mount works properly
+test_fragment_omit_id | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1 | Check that the id field is omitted from the policy
+test_fragment_injected_sidecar_container_msi | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1 | Make sure User mounts and env vars aren't added to sidecar containers, using JSON output format
+test_debug_processes | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Enable exec_processes via debug_mode
+test_fragment_sidecar | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | See if sidecar fragments can be created by a given policy.json
+test_fragment_sidecar_stdio_access_default | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | Check that sidecar containers have std I/O access by default
+test_fragment_incorrect_sidecar | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | See what output format for failing sidecar validation would be
+test_invalid_input | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | Fail out under various invalid input circumstances

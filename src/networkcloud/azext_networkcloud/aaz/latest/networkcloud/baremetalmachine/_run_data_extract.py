@@ -23,9 +23,9 @@ class RunDataExtract(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/rundataextracts", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/rundataextracts", "2024-10-01-preview"],
         ]
     }
 
@@ -67,6 +67,9 @@ class RunDataExtract(AAZCommand):
             arg_group="BareMetalMachineRunDataExtractsParameters",
             help="The list of curated data extraction commands to be executed directly against the target machine.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.limit_time_seconds = AAZIntArg(
             options=["--limit-time-seconds"],
@@ -178,7 +181,7 @@ class RunDataExtract(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -283,7 +286,7 @@ class _RunDataExtractHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

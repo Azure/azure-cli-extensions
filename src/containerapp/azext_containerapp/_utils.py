@@ -13,6 +13,7 @@ import zipfile
 import hashlib
 import re
 import requests
+import shutil
 import packaging.version as SemVer
 
 from enum import Enum
@@ -102,21 +103,14 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
         raise ResourceNotFoundError("Service with the given name does not exist")
 
 
-def get_linker_client(cmd):
-    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    credential, subscription_id, _ = profile.get_login_credentials(
-        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
-    linker_client = ServiceLinkerManagementClient(credential)
-    return linker_client
-
-
 def validate_binding_name(binding_name):
     pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
     return bool(re.match(pattern, binding_name))
 
 
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
+    from ._client_factory import get_linker_client
+
     linker_client = get_linker_client(cmd)
     containerapp_def = None
 
@@ -127,7 +121,10 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
     all_bindings = []
 
     if containerapp_def:
-        managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        if is_cloud_supported_by_service_connector(cmd.cli_ctx):
+            managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        else:
+            managed_bindings = []
         service_binds = containerapp_def["properties"].get("template", {}).get("serviceBinds", [])
 
         if managed_bindings:
@@ -730,6 +727,12 @@ def parse_build_env_vars(env_list):
 
 
 def is_cloud_supported_by_connected_env(cli_ctx):
+    if cli_ctx.cloud.name == 'AzureCloud':
+        return True
+    return False
+
+
+def is_cloud_supported_by_service_connector(cli_ctx):
     if cli_ctx.cloud.name == 'AzureCloud':
         return True
     return False

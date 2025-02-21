@@ -4,11 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import subprocess
-from typing import List
 import os
 import stat
 import sys
-from pathlib import Path
 import platform
 import requests
 from azext_confcom.config import DATA_FOLDER
@@ -37,6 +35,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
 
         # get the most recent release artifacts from github
         r = requests.get("https://api.github.com/repos/microsoft/kata-containers/releases")
+        r.raise_for_status()
         bin_flag = False
         needed_assets = ["genpolicy", "genpolicy.exe"]
         # search for genpolicy in the assets from kata-container releases
@@ -56,6 +55,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
                         exe_url = asset["browser_download_url"]
                         # download the file
                         r = requests.get(exe_url)
+                        r.raise_for_status()
                         # save the file to the bin folder
                         with open(os.path.join(bin_folder, save_name), "wb") as f:
                             f.write(r.content)
@@ -79,24 +79,19 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         if host_os == "Linux":
             DEFAULT_LIB += "-linux"
         elif host_os == "Windows":
-            if machine.endswith("64"):
-                DEFAULT_LIB += "-windows.exe"
-            else:
-                eprint(
-                    "32-bit Windows is not supported."
-                )
+            eprint("The katapolicygen subcommand for Windows has not been implemented.")
         elif host_os == "Darwin":
-            eprint("The extension for MacOS has not been implemented.")
+            eprint("The katapolicygen subcommand for MacOS has not been implemented.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows, Linux and MacOS"
+                "Unknown target platform. The katapolicygen subcommand only works with Linux"
             )
 
-        self.policy_bin = Path(os.path.join(f"{script_directory}", f"{DEFAULT_LIB}"))
+        self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
-            eprint("The extension binary file cannot be located.")
+            eprint("The katapolicygen subcommand binary file cannot be located.")
         if not os.access(self.policy_bin, os.X_OK):
             # add executable permissions for the current user if they don't exist
             st = os.stat(self.policy_bin)
@@ -114,7 +109,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         print_version=False,
         containerd_pull=False,
         containerd_socket_path=None
-    ) -> List[str]:
+    ) -> list[str]:
         policy_bin_str = str(self.policy_bin)
         # get path to data and rules folder
         arg_list = [policy_bin_str]

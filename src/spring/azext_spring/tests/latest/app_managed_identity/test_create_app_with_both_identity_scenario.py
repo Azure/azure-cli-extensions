@@ -56,7 +56,7 @@ class CreateAppWithBothIdentity(ScenarioTest):
             ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
         self.assertTrue(isinstance(user_identity_dict, dict))
-        self.assertEquals(len(user_identity_dict), 2)
+        self.assertEqual(len(user_identity_dict), 2)
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
