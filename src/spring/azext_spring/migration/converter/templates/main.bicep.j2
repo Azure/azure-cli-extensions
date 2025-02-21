@@ -1,4 +1,9 @@
 // Params
+param workloadProfileName string
+param workloadProfileType string
+param minNodes int
+param maxNodes int
+
 {% if data.isVnet == true %}
 param vnetSubnetId string
 {% endif %}
@@ -9,6 +14,10 @@ param {{app.containerAppImageName}} string
 module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
   params: {
+    workloadProfileName: workloadProfileName
+    workloadProfileType: workloadProfileType
+    minNodes: minNodes
+    maxNodes: maxNodes
     {% if data.isVnet == true %}
     vnetSubnetId: vnetSubnetId
     {% endif %}

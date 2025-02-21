@@ -1,5 +1,10 @@
 using './main.bicep'
 
+param workloadProfileName = 'Dedicated'
+param workloadProfileType = 'D4'
+param minNodes = 1
+param maxNodes = 10
+
 {% for app in data.apps %}
 param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 {% endfor %}
