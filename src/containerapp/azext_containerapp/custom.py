@@ -506,7 +506,8 @@ def create_containerapp(cmd,
                         max_inactive_revisions=None,
                         runtime=None,
                         enable_java_metrics=None,
-                        enable_java_agent=None):
+                        enable_java_agent=None,
+                        kind=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(

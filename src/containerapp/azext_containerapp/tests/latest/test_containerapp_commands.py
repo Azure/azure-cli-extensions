@@ -3361,6 +3361,30 @@ class ContainerappOtherPropertyTests(ScenarioTest):
         self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi')
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="centraluseuap")
+    def test_containerapp_kind_functionapp(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --cpu 0.5 --memory 1Gi', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", None)
+        ])
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --kind functionapp', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
 
 class ContainerappRuntimeTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
