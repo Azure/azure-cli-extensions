@@ -229,5 +229,5 @@ class ContinuousPatchConfig:
 @dataclasses.dataclass
 class Repository:
     repository: str
-    tags: str
+    tags: list[str]
     enabled: bool
