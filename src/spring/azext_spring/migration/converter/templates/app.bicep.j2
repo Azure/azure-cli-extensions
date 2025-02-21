@@ -14,6 +14,19 @@ param containerAppEnvId string
 resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: resourceGroup().location
+  {% if data.identity -%}
+  identity: {
+    type: '{{data.identity.type}}'
+    {% if data.identity.userAssignedIdentities -%}
+    userAssignedIdentities: {
+      {% for miResourceId in data.identity.userAssignedIdentities -%}
+      '{{miResourceId}}': {}
+      {% if not loop.last %}{% endif %}
+      {%- endfor %}
+    }
+    {%- endif %}
+  }
+  {%- endif %}
   properties: {
     managedEnvironmentId: containerAppEnvId
     configuration: {

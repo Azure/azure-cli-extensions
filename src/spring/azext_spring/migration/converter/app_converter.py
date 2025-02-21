@@ -19,6 +19,8 @@ class AppConverter(ConverterTemplate):
         tier = blueDeployment.get('sku', {}).get('tier')
         ingress = self._get_ingress(self.source, tier)
         isPublic = self.source['properties'].get('public')
+        identity = self.source.get('identity')
+        print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
 
         self.data = {
             "containerAppName": appName,
@@ -31,7 +33,8 @@ class AppConverter(ConverterTemplate):
             # "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
-            "isBlueGreen": len(deployments) > 1
+            "isBlueGreen": len(deployments) > 1,
+            "identity": identity,
         }
 
     def get_template_name(self):
