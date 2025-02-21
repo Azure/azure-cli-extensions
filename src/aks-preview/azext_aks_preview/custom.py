@@ -1842,7 +1842,7 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 addon_key += os_type
             enabled = bool(
                 mc.addon_profiles and
-                addon_key in mc.addon_profiles and
+                any(addon_key.lower() == key.lower() for key in mc.addon_profiles) and
                 mc.addon_profiles[addon_key].enabled
             )
         current_addons.append({
