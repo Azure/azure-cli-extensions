@@ -630,9 +630,8 @@ class DeleteApiAnalysisConfig(DefaultWorkspaceParameter, DeleteApiAnalysis):
 
 
 class ImportApiAnalysisRuleset(DefaultWorkspaceParameter, ImportRuleset):
-    # pylint: disable=C0301
     # Zip and encode the ruleset folder to base64
-    def zip_folder_to_buffer(self, folder_path):
+    def _zip_folder_to_buffer(self, folder_path):
         # pylint: disable=unused-variable
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
@@ -661,13 +660,12 @@ class ImportApiAnalysisRuleset(DefaultWorkspaceParameter, ImportRuleset):
         args = self.ctx.args
 
         args.format = 'inline-zip'
-        args.value = self.zip_folder_to_buffer(str(args.ruleset_folder_path))
+        args.value = self._zip_folder_to_buffer(str(args.ruleset_folder_path))
 
 
 class ExportApiAnalysisRuleset(DefaultWorkspaceParameter, ExportRuleset):
-    # pylint: disable=C0301
     # Decode and extract the ruleset folder from base64
-    def unzip_buffer_to_folder(self, buffer, folder_path):
+    def _unzip_buffer_to_folder(self, buffer, folder_path):
         zip_file = io.BytesIO(base64.b64decode(buffer))
         with zipfile.ZipFile(zip_file) as zip_ref:
             zip_ref.extractall(folder_path)
@@ -682,7 +680,6 @@ class ExportApiAnalysisRuleset(DefaultWorkspaceParameter, ExportRuleset):
             help="The folder path to extract the ruleset files.",
             required=True,
         )
-        # args_schema.result = None
         return args_schema
 
     def _output(self, *args, **kwargs):
@@ -704,7 +701,7 @@ class ExportApiAnalysisRuleset(DefaultWorkspaceParameter, ExportRuleset):
                     raise getReponse.raise_for_status()
 
             try:
-                self.unzip_buffer_to_folder(exportedResults, str(arguments.ruleset_folder_path))
+                self._unzip_buffer_to_folder(exportedResults, str(arguments.ruleset_folder_path))
                 logger.info('Results exported to %s', arguments.ruleset_folder_path)
             except Exception as e:  # pylint: disable=broad-except
                 error_message = f'Error while writing the results to the file. Error: {e}'
