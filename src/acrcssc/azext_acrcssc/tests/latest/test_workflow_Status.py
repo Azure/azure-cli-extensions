@@ -94,7 +94,7 @@ class TestWorkflowTaskStatus(unittest.TestCase):
 
     def test_get_patch_error_reason_from_tasklog(self):
         error_logs = """2025/02/11 23:46:22 Launching container with name: patch-image
-#1 resolve image config for docker-image://graycsscsec.azurecr.io/import:openmpi-4.1.5-1-azl3.0.20240727-amd64
+#1 resolve image config for docker-image://test.azurecr.io/repo:tag-9.9.99.20202020-amd64
 Error: unsupported osType azurelinux specified
 2025/02/11 23:46:23 Container failed during run: patch-image. No retries remaining.
 failed to run step ID: patch-image: exit status 1
