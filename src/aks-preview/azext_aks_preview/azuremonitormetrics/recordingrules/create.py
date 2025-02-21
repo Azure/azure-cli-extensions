@@ -8,6 +8,7 @@ from azext_aks_preview.azuremonitormetrics.recordingrules.common import truncate
 from knack.util import CLIError
 
 
+# pylint: disable=line-too-long
 def get_recording_rules_template(cmd, azure_monitor_workspace_resource_id):
     from azure.cli.core.util import send_raw_request
     headers = ['User-Agent=azuremonitormetrics.get_recording_rules_template']
@@ -21,9 +22,7 @@ def get_recording_rules_template(cmd, azure_monitor_workspace_resource_id):
     # Safely filter the templates with case-insensitive check
     filtered_templates = [
         template for template in data.get('value', [])
-        if template.get("properties", {}).get("alertRuleType", "").lower() == "microsoft.alertsmanagement/prometheusrulegroups"
-        and isinstance(template.get("properties", {}).get("rulesArmTemplate", {}).get("resources"), list)
-        and all(
+        if template.get("properties", {}).get("alertRuleType", "").lower() == "microsoft.alertsmanagement/prometheusrulegroups" and isinstance(template.get("properties", {}).get("rulesArmTemplate", {}).get("resources"), list) and all(
             isinstance(rule, dict) and "record" in rule and "expression" in rule
             for resource in template["properties"]["rulesArmTemplate"]["resources"]
             if resource.get("type", "").lower() == "microsoft.alertsmanagement/prometheusrulegroups"
