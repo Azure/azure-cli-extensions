@@ -27,6 +27,7 @@ class AppConverter(ConverterTemplate):
         self.data = {
             "containerAppName": appName,
             "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
+            "targetPort": "targetPortFor_"+appName.replace("-", "_"),
             "moduleName": moduleName,
             "ingress": ingress,
             "isPublic": isPublic,

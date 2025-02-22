@@ -13,6 +13,7 @@ class ParamConverter(ConverterTemplate):
             self.data["apps"].append({
                 "appName": appName,
                 "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
+                "targetPort": "targetPortFor_"+appName.replace("-", "_"),
             })
         self.data["isVnet"] = self.is_vnet
 

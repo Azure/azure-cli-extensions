@@ -3,8 +3,9 @@ param workloadProfileName string
 param workloadProfileType string
 param minNodes int
 param maxNodes int
-
-param vnetSubnetId string = ''
+{% if data.vnetConfiguration -%}
+param vnetSubnetId string
+{%- endif %}
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: '{{data.containerAppLogAnalyticsName}}'
