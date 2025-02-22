@@ -1,6 +1,6 @@
 param containerAppName string = '{{data.containerAppName}}'
 param {{data.containerAppImageName}} string
-param targetPort int = {{data.targetPort}}
+param {{data.targetPort}} int
 
 @description('Minimum number of replicas that will be deployed')
 @minValue(0)
@@ -15,19 +15,41 @@ param containerAppEnvId string
 resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: resourceGroup().location
+  {% if data.identity -%}
+  identity: {
+    type: '{{data.identity.type}}'
+    {% if data.identity.userAssignedIdentities -%}
+    userAssignedIdentities: {
+      {% for miResourceId in data.identity.userAssignedIdentities -%}
+      '{{miResourceId}}': {}
+      {% if not loop.last %}{% endif %}
+      {%- endfor %}
+    }
+    {%- endif %}
+  }
+  {%- endif %}
   properties: {
     managedEnvironmentId: containerAppEnvId
     configuration: {
       ingress: {
-        external: true
-        targetPort: targetPort
+        {% if data.ingress -%}
+        external: {% if data.isPublic %}true{% else %}false{% endif %}
+        targetPort: {{data.targetPort}}
         allowInsecure: false
+        transport: '{{data.ingress.transport}}'
+        {% if data.ingress.sessionAffinity -%}
+        stickySessions: {
+          affinity: '{{data.ingress.sessionAffinity}}'
+        }
+        {%- endif %}
+        clientCertificateMode: 'Ignore'
         traffic: [
           {
             latestRevision: true
             weight: 100
           }
         ]
+        {%- endif %}
       }
       activeRevisionsMode: '{% if data.isBlueGreen %}Multiple{% else %}Single{% endif %}'
     }
@@ -42,7 +64,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             memory: '{{data.blue.memorySize}}'
           }
           env: [
-            {% for env in data.blue.env %}
+            {% for env in data.blue.env -%}
             {
               name: '{{ env.name }}'
               value: '{{ env.value }}'
@@ -58,13 +80,13 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
               {% if data.blue.livenessProbe.httpGet -%}
               httpGet: {
                 path: '{{data.blue.livenessProbe.httpGet.path}}'
-                port: {{data.blue.livenessProbe.httpGet.port}}
+                port: {{data.targetPort}}
                 scheme: '{{data.blue.livenessProbe.httpGet.scheme}}'
               } 
-              {%- endif %}
+              {%- endif -%}
               {% if data.blue.livenessProbe.tcpSocket -%}
               tcpSocket: {
-                port: {{data.blue.livenessProbe.tcpSocket.port}}
+                port: {{data.targetPort}}
               }
               {%- endif %}
               {% if data.blue.livenessProbe.initialDelaySeconds -%}
@@ -90,13 +112,13 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
               {% if data.blue.readinessProbe.httpGet -%}
               httpGet: {
                 path: '{{data.blue.readinessProbe.httpGet.path}}'
-                port: {{data.blue.readinessProbe.httpGet.port}}
+                port: {{data.targetPort}}
                 scheme: '{{data.blue.readinessProbe.httpGet.scheme}}'
               }
-              {%- endif %}
+              {%- endif -%}
               {% if data.blue.readinessProbe.tcpSocket -%}
               tcpSocket: {
-                port: {{data.blue.readinessProbe.tcpSocket.port}}
+                port: {{data.targetPort}}
               }
               {%- endif %}
               {% if data.blue.readinessProbe.initialDelaySeconds -%}
@@ -118,7 +140,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
         }
       ]
       serviceBinds: [
-          {% for bind in data.serviceBinds %}
+          {% for bind in data.serviceBinds -%}
           {
               name: '{{ bind.name }}'
               serviceId: {{ bind.serviceId }}

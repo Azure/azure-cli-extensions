@@ -18,18 +18,26 @@ class AppConverter(ConverterTemplate):
         deployments = self._get_deployments(self.source)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
         greenDeployment = deployments[1] if len(deployments) > 1 else {}
+        tier = blueDeployment.get('sku', {}).get('tier')
+        ingress = self._get_ingress(self.source, tier)
+        isPublic = self.source['properties'].get('public')
+        identity = self.source.get('identity')
+        # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
 
         self.data = {
             "containerAppName": appName,
             "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
+            "targetPort": "targetPortFor_"+appName.replace("-", "_"),
             "moduleName": moduleName,
-            "targetPort": "80",
+            "ingress": ingress,
+            "isPublic": isPublic,
             "minReplicas": 1,
-            "maxReplicas": 5,
+            "maxReplicas": blueDeployment.get("capacity", 5),
             "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
-            "isBlueGreen": len(deployments) > 1
+            "isBlueGreen": len(deployments) > 1,
+            "identity": identity,
         }
 
     def get_template_name(self):
@@ -88,6 +96,8 @@ class AppConverter(ConverterTemplate):
             cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
             memorySize = resource_requests.get("memory")
             tier = deployment.get('sku', {}).get('tier')
+            scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
+            capacity = deployment.get('sku', {}).get('capacity')
             deployment = {
                 "name": deployment_name,
                 "env": [
@@ -100,6 +110,8 @@ class AppConverter(ConverterTemplate):
                 "readinessProbe": self._convert_probe(readiness_probe, tier),
                 "cpuCore": cpuCore,
                 "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
+                "scale": self._convert_scale(scale),
+                "capacity": capacity,
             }
             deployments.append(deployment)
 
@@ -137,24 +149,17 @@ class AppConverter(ConverterTemplate):
         if probe.get("disableProbe") == True:
             print(f"Probe is disabled")
             return None
-        result = {}
         initialDelaySeconds = probe.get("initialDelaySeconds", None)
         if initialDelaySeconds is not None:
             if initialDelaySeconds > 60: # Container 'undefined' 'Type' probe's InitialDelaySeconds must be in the range of ['0', '60'].
                 initialDelaySeconds = 60
-            result["initialDelaySeconds"] = initialDelaySeconds
-        periodSeconds = probe.get("periodSeconds", None)
-        if periodSeconds is not None:
-            result["periodSeconds"] = periodSeconds
-        timeoutSeconds = probe.get("timeoutSeconds", None)
-        if timeoutSeconds is not None:
-            result["timeoutSeconds"] = timeoutSeconds
-        successThreshold = probe.get("successThreshold", None)
-        if successThreshold is not None:
-            result["successThreshold"] = successThreshold
-        failureThreshold = probe.get("failureThreshold", None)
-        if failureThreshold is not None:
-            result["failureThreshold"] = failureThreshold
+        result = {
+            "initialDelaySeconds": initialDelaySeconds,
+            "periodSeconds": probe.get("periodSeconds", None),
+            "timeoutSeconds": probe.get("timeoutSeconds", None),
+            "successThreshold": probe.get("successThreshold", None),
+            "failureThreshold": probe.get("failureThreshold", None),
+        }
         httpGet = self._convert_http_probe_action(probe, tier)
         if httpGet is not None:
             result["httpGet"] = httpGet
@@ -187,3 +192,19 @@ class AppConverter(ConverterTemplate):
         # print(f"probeAction: {probeAction}")
         return probeAction
 
+    def _get_ingress(self, source, tier):
+        ingress = source['properties'].get('ingressSettings')
+        if ingress is None:
+            return None
+        return {
+            "targetPort": 8080 if tier == "Enterprise" else 1025,
+            "transport": ingress.get('backendProtocol').replace("Default", "auto"),
+            "sessionAffinity": ingress.get('sessionAffinity').replace("Cookie", "sticky").replace("None", "none")
+        }
+    
+    def _convert_scale(self, scale):
+        return {
+            "minReplicas": scale.get("minReplicas", 1),
+            "maxReplicas": scale.get("maxReplicas", 5),
+            "rules": scale.get("rules", [])
+        }

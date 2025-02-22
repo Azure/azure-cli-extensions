@@ -1,9 +1,15 @@
 using './main.bicep'
 
+param workloadProfileName = 'Dedicated'
+param workloadProfileType = 'D4'
+param minNodes = 1
+param maxNodes = 10
+
 {% for app in data.apps %}
 param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+param {{app.targetPort}} = 80
 {% endfor %}
 {% if data.isVnet == true %}
 // Replace this wth the actual vnet subnet id
-param vnetSubnetId = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet'
+param vnetSubnetId = '<subnet resource id>'
 {% endif %}

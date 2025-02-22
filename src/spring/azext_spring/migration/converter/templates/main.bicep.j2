@@ -1,23 +1,33 @@
 // Params
+param workloadProfileName string
+param workloadProfileType string
+param minNodes int
+param maxNodes int
+
 {% if data.isVnet == true %}
 param vnetSubnetId string
 {% endif %}
 {% for app in data.apps %}
 param {{app.containerAppImageName}} string
+param {{app.targetPort}} int
 {% endfor %}
 
 module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
   params: {
-    {% if data.isVnet == true %}
+    workloadProfileName: workloadProfileName
+    workloadProfileType: workloadProfileType
+    minNodes: minNodes
+    maxNodes: maxNodes
+    {% if data.isVnet == true -%}
     vnetSubnetId: vnetSubnetId
-    {% endif %}
+    {%- endif %}
   }
 }
 
 {% for item in data.certs %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
-  name: 'Cert{{ item.certName }}Deployment'
+  name: 'Cert{{ item.certName }}-Deployment'
   dependsOn: [
     containerAppEnv
   ]
@@ -29,13 +39,14 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 
 {% for item in data.apps %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
-  name: '{{ item.appName }}Deployment'
+  name: '{{ item.appName }}-Deployment'
   dependsOn: [
     containerAppEnv
   ]
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
     {{item.containerAppImageName}}: {{item.containerAppImageName}}
+    {{item.targetPort}}: {{item.targetPort}}
   }
 }
 {% endfor %}

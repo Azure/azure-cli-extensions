@@ -32,6 +32,7 @@ class MainConverter(ConverterTemplate):
                 "moduleName": moduleName,
                 "templateName": templateName,
                 "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
+                "targetPort": "targetPortFor_"+appName.replace("-", "_"),
             }
             self.data["apps"].append(appData)
 
