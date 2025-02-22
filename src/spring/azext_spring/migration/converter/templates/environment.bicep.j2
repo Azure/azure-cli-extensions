@@ -34,11 +34,19 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: '{{data.containerAppEnvName}}'
   location: resourceGroup().location
-  {% if data.identity %}
+  {% if data.identity.type -%}
   identity: {
-      type: 'SystemAssigned'
+    type: '{{data.identity.type}}'
+    {% if data.identity.userAssignedIdentities -%}
+    userAssignedIdentities: {
+      {% for miResourceId in data.identity.userAssignedIdentities -%}
+      '{{miResourceId}}': {}
+      {% if not loop.last %}{% endif %}
+      {%- endfor %}
+    }
+    {%- endif %}
   }
-  {% endif %}
+  {%- endif %}
   properties: {
     {% if data.vnetConfiguration %}
     vnetConfiguration: {

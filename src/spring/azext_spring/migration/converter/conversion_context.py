@@ -41,11 +41,13 @@ class ConversionContext:
         converted_contents = {}
         source_wrapper = SourceDataWrapper(source)
         asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
+        asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
 
         # Environment Converter
         is_vnet = self._is_vnet(asa_service)
         is_enterprise = self._is_enterprise_tier(asa_service)
         asa_service['isVnet'] = is_vnet
+        asa_service['apps'] = asa_apps
         converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(asa_service)
 
         # Cert Converter
@@ -71,10 +73,7 @@ class ConversionContext:
         converted_contents = self._convert_live_view(source_wrapper, converted_contents, managed_components)
         converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
 
-        # Apps Converter
-        asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
         asa_deployments = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
-
         for app_source in asa_apps:
             appName = app_source['name'].split('/')[-1]
             app_source['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app_source['name']}/")]
