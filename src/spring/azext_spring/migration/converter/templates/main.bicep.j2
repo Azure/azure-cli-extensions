@@ -45,6 +45,7 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
   ]
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
+    workloadProfileName: workloadProfileName
     {{item.containerAppImageName}}: {{item.containerAppImageName}}
     {{item.targetPort}}: {{item.targetPort}}
   }

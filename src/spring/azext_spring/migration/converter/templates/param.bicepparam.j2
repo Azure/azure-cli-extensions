@@ -10,6 +10,7 @@ param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps
 param {{app.targetPort}} = 80
 {% endfor %}
 {% if data.isVnet == true %}
-// Replace this wth the actual vnet subnet id
-param vnetSubnetId = '<subnet resource id>'
+// Provide the full resource ID of the existing subnet.
+// Example: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}
+param vnetSubnetId
 {% endif %}

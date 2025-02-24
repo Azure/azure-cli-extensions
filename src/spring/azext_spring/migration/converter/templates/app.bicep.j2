@@ -11,6 +11,7 @@ param minReplicas int = {{data.minReplicas}}
 param maxReplicas int = {{data.maxReplicas}}
 
 param containerAppEnvId string
+param workloadProfileName string
 
 resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
@@ -30,6 +31,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
   {%- endif %}
   properties: {
     managedEnvironmentId: containerAppEnvId
+    workloadProfileName: workloadProfileName
     configuration: {
       ingress: {
         {% if data.ingress -%}
