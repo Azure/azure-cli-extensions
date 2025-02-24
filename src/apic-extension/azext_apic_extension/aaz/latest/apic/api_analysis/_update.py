@@ -91,6 +91,7 @@ class Update(AAZCommand):
             options=["--analyzer-type"],
             arg_group="Properties",
             help="The type of API analyzer.",
+            default="spectral",
             enum={"spectral": "spectral"},
         )
         _args_schema.description = AAZStrArg(
