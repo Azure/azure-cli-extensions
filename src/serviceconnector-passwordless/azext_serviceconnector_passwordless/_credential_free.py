@@ -971,6 +971,9 @@ class FabricSqlHandler(SqlHandler):
         self.target_id = target_id
 
         if not connstr_props:
+            connstr_props = self.build_connstr_props_ad_hoc()
+
+        if not connstr_props:
             raise CLIInternalError("Missing additional connection string properties for Fabric SQL target.")
 
         Server = connstr_props.get('Server') or connstr_props.get('Data Source')
@@ -982,6 +985,24 @@ class FabricSqlHandler(SqlHandler):
         # Construct the ODBC connection string
         self.ODBCConnectionString = self.construct_odbc_connection_string(Server, Database)
         logger.warning("ODBC connection string: %s", self.ODBCConnectionString)
+
+    def build_connstr_props_ad_hoc(self):
+        fabric_token = self.get_fabric_access_token()
+        headers = {"Authorization": "Bearer {}".format(fabric_token)}
+        response = requests.get(self.target_id, headers=headers)
+
+        if response:
+            response_json = response.json()
+
+            if "properties" in response_json:
+                properties = response_json["properties"]
+                if "databaseName" in properties and "serverFqdn" in properties:
+                    return {
+                        "Server": properties["serverFqdn"],
+                        "Database": properties["databaseName"]
+                    }
+        
+        return None
 
     def check_db_existence(self):
         fabric_token = self.get_fabric_access_token()
