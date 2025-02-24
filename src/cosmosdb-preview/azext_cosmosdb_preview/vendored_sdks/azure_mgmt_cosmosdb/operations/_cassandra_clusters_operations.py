@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines,too-many-statements
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from io import IOBase
 import sys
-from typing import Any, Callable, Dict, IO, Iterable, Iterator, Optional, Type, TypeVar, Union, cast, overload
+from typing import Any, Callable, Dict, IO, Iterable, Iterator, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core.exceptions import (
@@ -36,7 +36,7 @@ from .._serialization import Serializer
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
 else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+    from typing import MutableMapping  # type: ignore
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
@@ -609,7 +609,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -686,7 +686,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -760,7 +760,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.ClusterResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -803,7 +803,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     def _delete_initial(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -910,7 +910,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         body: Union[_models.ClusterResource, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1107,7 +1107,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         body: Union[_models.ClusterResource, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1299,7 +1299,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         body: Union[_models.CommandPostBody, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1488,10 +1488,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.CommandPostBody, IO[bytes]],
+        body: Union[_models.CommandAsyncPostBody, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1512,7 +1512,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            _json = self._serialize.body(body, "CommandPostBody")
+            _json = self._serialize.body(body, "CommandAsyncPostBody")
 
         _request = build_invoke_command_async_request(
             resource_group_name=resource_group_name,
@@ -1541,7 +1541,8 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -1562,7 +1563,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: _models.CommandPostBody,
+        body: _models.CommandAsyncPostBody,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -1575,7 +1576,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
         :param body: Specification which command to run where. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CommandPostBody
+        :type body: ~azure.mgmt.cosmosdb.models.CommandAsyncPostBody
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1618,7 +1619,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.CommandPostBody, IO[bytes]],
+        body: Union[_models.CommandAsyncPostBody, IO[bytes]],
         **kwargs: Any
     ) -> LROPoller[_models.CommandPublicResource]:
         """Invoke a command like nodetool for cassandra maintenance asynchronously.
@@ -1628,9 +1629,9 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
-        :param body: Specification which command to run where. Is either a CommandPostBody type or a
-         IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CommandPostBody or IO[bytes]
+        :param body: Specification which command to run where. Is either a CommandAsyncPostBody type or
+         a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.CommandAsyncPostBody or IO[bytes]
         :return: An instance of LROPoller that returns either CommandPublicResource or the result of
          cls(response)
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CommandPublicResource]
@@ -1705,7 +1706,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListCommands] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1770,7 +1771,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def get_command_async(
         self, resource_group_name: str, cluster_name: str, command_id: str, **kwargs: Any
-    ) -> _models.ListCommands:
+    ) -> _models.CommandPublicResource:
         """Get details about a specified command that was run asynchronously.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1780,11 +1781,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :type cluster_name: str
         :param command_id: Managed Cassandra cluster command id. Required.
         :type command_id: str
-        :return: ListCommands or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ListCommands
+        :return: CommandPublicResource or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.CommandPublicResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1796,7 +1797,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ListCommands] = kwargs.pop("cls", None)
+        cls: ClsType[_models.CommandPublicResource] = kwargs.pop("cls", None)
 
         _request = build_get_command_async_request(
             resource_group_name=resource_group_name,
@@ -1820,7 +1821,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ListCommands", pipeline_response.http_response)
+        deserialized = self._deserialize("CommandPublicResource", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -1848,7 +1849,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListBackups] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1927,7 +1928,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.BackupResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1973,7 +1974,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
     def _deallocate_initial(
         self, resource_group_name: str, cluster_name: str, x_ms_force_deallocate: Optional[str] = None, **kwargs: Any
     ) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2084,7 +2085,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     def _start_initial(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> Iterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2201,7 +2202,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.CassandraClusterPublicStatus
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,

@@ -29,7 +29,7 @@ def load_arguments(self, _):
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
-        c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password.')
+        c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password. The \'--unlock-encrypted-vm\' parameter must be used to use this parameter.')
         c.argument('enable_nested', help='enable nested hyperv.')
         c.argument('associate_public_ip', help='Option to create a repair vm with a public ip. If this parameter is not used, a private ip will be made.')
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
@@ -45,7 +45,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('run_id', help='Unique run id for run scripts.')
         c.argument('custom_script_file', help='Custom script file to run on VM. Script should be PowerShell for windows, Bash for Linux.')
-        c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts.")
+        c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts. To avoid splitting on =, use the prefix \'++\' to send the entire string.")
         c.argument('run_on_repair', help="Script will be run on the linked repair VM.")
         c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
 

@@ -413,6 +413,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         registry_identity=None,
         user_assigned=None,
         system_assigned=None,
+        revisions_mode=None,
+        target_label=None,
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -429,6 +431,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
         self.force_single_container_updates = force_single_container_updates
+        self.revisions_mode = revisions_mode
+        self.target_label = target_label
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -465,7 +469,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             force_single_container_updates=self.force_single_container_updates,
             registry_identity=self.registry_identity,
             system_assigned=self.system_assigned,
-            user_assigned=self.user_assigned
+            user_assigned=self.user_assigned,
+            revisions_mode=self.revisions_mode,
+            target_label=self.target_label,
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):

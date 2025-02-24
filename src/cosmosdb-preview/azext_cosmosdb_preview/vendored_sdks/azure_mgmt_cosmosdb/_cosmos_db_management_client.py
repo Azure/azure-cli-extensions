@@ -67,11 +67,10 @@ from .operations import (
 )
 
 if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential
 
 
-class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-keyword,too-many-instance-attributes
+class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
     """Azure Cosmos DB Chaos Fault REST API.
 
     :ivar chaos_fault: ChaosFaultOperations operations

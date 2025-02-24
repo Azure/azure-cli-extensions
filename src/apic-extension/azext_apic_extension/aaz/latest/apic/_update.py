@@ -21,7 +21,7 @@ class Update(AAZCommand):
         az apic update -g contoso-resources -n contoso
 
     :example: Update Service With System Assigned Identity Example
-        az apic create -g contoso-resources -n contoso --identity '{type:systemassigned}'
+        az apic update -g contoso-resources -n contoso --identity '{type:systemassigned}'
     """
 
     _aaz_info = {

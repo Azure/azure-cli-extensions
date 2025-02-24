@@ -1,5 +1,5 @@
-# coding=utf-8
 # pylint: disable=too-many-lines
+# coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16,10 +16,9 @@ from .. import _serialization
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
 else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+    from typing import MutableMapping  # type: ignore
 
 if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
     from .. import models as _models
 JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
@@ -932,7 +931,7 @@ class CapacityModeChangeTransitionState(_serialization.Model):
         self.capacity_mode_last_successful_transition_end_timestamp = None
 
 
-class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disable=too-many-instance-attributes
+class CassandraClusterDataCenterNodeItem(_serialization.Model):
     """CassandraClusterDataCenterNodeItem.
 
     :ivar address: The node's IP address.
@@ -2887,7 +2886,7 @@ class ClusterResource(ManagedCassandraARMResourceProperties):
         self.properties = properties
 
 
-class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-many-instance-attributes
+class ClusterResourceProperties(_serialization.Model):
     """Properties of a managed Cassandra cluster.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3178,6 +3177,70 @@ class Column(_serialization.Model):
         super().__init__(**kwargs)
         self.name = name
         self.type = type
+
+
+class CommandAsyncPostBody(_serialization.Model):
+    """Specification of which command to run where.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar command: The command which should be run. Required.
+    :vartype command: str
+    :ivar arguments: The arguments for the command to be run.
+    :vartype arguments: dict[str, str]
+    :ivar host: IP address of the cassandra host to run the command on. Required.
+    :vartype host: str
+    :ivar cassandra_stop_start: If true, stops cassandra before executing the command and then
+     start it again.
+    :vartype cassandra_stop_start: bool
+    :ivar readwrite: If true, allows the command to *write* to the cassandra directory, otherwise
+     read-only.
+    :vartype readwrite: bool
+    """
+
+    _validation = {
+        "command": {"required": True},
+        "host": {"required": True},
+    }
+
+    _attribute_map = {
+        "command": {"key": "command", "type": "str"},
+        "arguments": {"key": "arguments", "type": "{str}"},
+        "host": {"key": "host", "type": "str"},
+        "cassandra_stop_start": {"key": "cassandra-stop-start", "type": "bool"},
+        "readwrite": {"key": "readwrite", "type": "bool"},
+    }
+
+    def __init__(
+        self,
+        *,
+        command: str,
+        host: str,
+        arguments: Optional[Dict[str, str]] = None,
+        cassandra_stop_start: Optional[bool] = None,
+        readwrite: Optional[bool] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword command: The command which should be run. Required.
+        :paramtype command: str
+        :keyword arguments: The arguments for the command to be run.
+        :paramtype arguments: dict[str, str]
+        :keyword host: IP address of the cassandra host to run the command on. Required.
+        :paramtype host: str
+        :keyword cassandra_stop_start: If true, stops cassandra before executing the command and then
+         start it again.
+        :paramtype cassandra_stop_start: bool
+        :keyword readwrite: If true, allows the command to *write* to the cassandra directory,
+         otherwise read-only.
+        :paramtype readwrite: bool
+        """
+        super().__init__(**kwargs)
+        self.command = command
+        self.arguments = arguments
+        self.host = host
+        self.cassandra_stop_start = cassandra_stop_start
+        self.readwrite = readwrite
 
 
 class CommandOutput(_serialization.Model):
@@ -4126,7 +4189,7 @@ class DatabaseAccountConnectionString(_serialization.Model):
         self.type = None
 
 
-class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: disable=too-many-instance-attributes
+class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
     """Parameters to create and update Cosmos DB database accounts.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -4533,7 +4596,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         self.enable_per_region_per_partition_autoscale = enable_per_region_per_partition_autoscale
 
 
-class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-many-instance-attributes
+class DatabaseAccountGetResults(ARMResourceProperties):
     """An Azure Cosmos DB database account.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5174,7 +5237,7 @@ class DatabaseAccountsListResult(_serialization.Model):
         self.value = None
 
 
-class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=too-many-instance-attributes
+class DatabaseAccountUpdateParameters(_serialization.Model):
     """Parameters for patching Azure Cosmos DB database account properties.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5601,7 +5664,7 @@ class DataCenterResource(ARMProxyResource):
         self.properties = properties
 
 
-class DataCenterResourceProperties(_serialization.Model):  # pylint: disable=too-many-instance-attributes
+class DataCenterResourceProperties(_serialization.Model):
     """Properties of a managed Cassandra data center.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5803,7 +5866,7 @@ class DataTransferJobFeedResults(_serialization.Model):
         self.next_link = None
 
 
-class DataTransferJobGetResults(ARMProxyResource):  # pylint: disable=too-many-instance-attributes
+class DataTransferJobGetResults(ARMProxyResource):
     """A Cosmos DB Data Transfer Job.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5902,7 +5965,7 @@ class DataTransferJobGetResults(ARMProxyResource):  # pylint: disable=too-many-i
         self.mode = mode
 
 
-class DataTransferJobProperties(_serialization.Model):  # pylint: disable=too-many-instance-attributes
+class DataTransferJobProperties(_serialization.Model):
     """The properties of a DataTransfer Job.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -7495,9 +7558,7 @@ class GremlinGraphResource(_serialization.Model):
         self.create_mode = create_mode
 
 
-class GremlinGraphGetPropertiesResource(
-    GremlinGraphResource, ExtendedResourceProperties
-):  # pylint: disable=too-many-instance-attributes
+class GremlinGraphGetPropertiesResource(GremlinGraphResource, ExtendedResourceProperties):
     """GremlinGraphGetPropertiesResource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -7808,6 +7869,8 @@ class IndexingPolicy(_serialization.Model):
     :vartype composite_indexes: list[list[~azure.mgmt.cosmosdb.models.CompositePath]]
     :ivar spatial_indexes: List of spatial specifics.
     :vartype spatial_indexes: list[~azure.mgmt.cosmosdb.models.SpatialSpec]
+    :ivar vector_indexes: List of paths to include in the vector indexing.
+    :vartype vector_indexes: list[~azure.mgmt.cosmosdb.models.VectorIndex]
     """
 
     _attribute_map = {
@@ -7817,6 +7880,7 @@ class IndexingPolicy(_serialization.Model):
         "excluded_paths": {"key": "excludedPaths", "type": "[ExcludedPath]"},
         "composite_indexes": {"key": "compositeIndexes", "type": "[[CompositePath]]"},
         "spatial_indexes": {"key": "spatialIndexes", "type": "[SpatialSpec]"},
+        "vector_indexes": {"key": "vectorIndexes", "type": "[VectorIndex]"},
     }
 
     def __init__(
@@ -7828,6 +7892,7 @@ class IndexingPolicy(_serialization.Model):
         excluded_paths: Optional[List["_models.ExcludedPath"]] = None,
         composite_indexes: Optional[List[List["_models.CompositePath"]]] = None,
         spatial_indexes: Optional[List["_models.SpatialSpec"]] = None,
+        vector_indexes: Optional[List["_models.VectorIndex"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7844,6 +7909,8 @@ class IndexingPolicy(_serialization.Model):
         :paramtype composite_indexes: list[list[~azure.mgmt.cosmosdb.models.CompositePath]]
         :keyword spatial_indexes: List of spatial specifics.
         :paramtype spatial_indexes: list[~azure.mgmt.cosmosdb.models.SpatialSpec]
+        :keyword vector_indexes: List of paths to include in the vector indexing.
+        :paramtype vector_indexes: list[~azure.mgmt.cosmosdb.models.VectorIndex]
         """
         super().__init__(**kwargs)
         self.automatic = automatic
@@ -7852,6 +7919,7 @@ class IndexingPolicy(_serialization.Model):
         self.excluded_paths = excluded_paths
         self.composite_indexes = composite_indexes
         self.spatial_indexes = spatial_indexes
+        self.vector_indexes = vector_indexes
 
 
 class IpAddressOrRange(_serialization.Model):
@@ -10619,7 +10687,7 @@ class PercentileMetricListResult(_serialization.Model):
         self.value = None
 
 
-class PercentileMetricValue(MetricValue):  # pylint: disable=too-many-instance-attributes
+class PercentileMetricValue(MetricValue):
     """Represents percentile metrics values.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -12589,7 +12657,7 @@ class RestorableSqlContainerPropertiesResource(_serialization.Model):
         self.container = container
 
 
-class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-instance-attributes
+class SqlContainerResource(_serialization.Model):
     """Cosmos DB SQL container resource object.
 
     All required parameters must be populated in order to send to server.
@@ -12623,6 +12691,8 @@ class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-in
     :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
     :ivar computed_properties: List of computed properties.
     :vartype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
+    :ivar vector_embedding_policy: The vector embedding policy for the container.
+    :vartype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
     """
 
     _validation = {
@@ -12642,6 +12712,7 @@ class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-in
         "create_mode": {"key": "createMode", "type": "str"},
         "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
         "computed_properties": {"key": "computedProperties", "type": "[ComputedProperty]"},
+        "vector_embedding_policy": {"key": "vectorEmbeddingPolicy", "type": "VectorEmbeddingPolicy"},
     }
 
     def __init__(
@@ -12659,6 +12730,7 @@ class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-in
         create_mode: Union[str, "_models.CreateMode"] = "Default",
         materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
         computed_properties: Optional[List["_models.ComputedProperty"]] = None,
+        vector_embedding_policy: Optional["_models.VectorEmbeddingPolicy"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12691,6 +12763,8 @@ class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-in
         :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
         :keyword computed_properties: List of computed properties.
         :paramtype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
+        :keyword vector_embedding_policy: The vector embedding policy for the container.
+        :paramtype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
         """
         super().__init__(**kwargs)
         self.id = id
@@ -12705,11 +12779,12 @@ class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-in
         self.create_mode = create_mode
         self.materialized_view_definition = materialized_view_definition
         self.computed_properties = computed_properties
+        self.vector_embedding_policy = vector_embedding_policy
 
 
 class RestorableSqlContainerPropertiesResourceContainer(
     SqlContainerResource, ExtendedResourceProperties
-):  # pylint: disable=too-many-instance-attributes,name-too-long
+):  # pylint: disable=name-too-long
     """Cosmos DB SQL container resource object.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -12752,6 +12827,8 @@ class RestorableSqlContainerPropertiesResourceContainer(
     :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
     :ivar computed_properties: List of computed properties.
     :vartype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
+    :ivar vector_embedding_policy: The vector embedding policy for the container.
+    :vartype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
     :ivar self_property: A system generated property that specifies the addressable path of the
      container resource.
     :vartype self_property: str
@@ -12781,6 +12858,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
         "create_mode": {"key": "createMode", "type": "str"},
         "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
         "computed_properties": {"key": "computedProperties", "type": "[ComputedProperty]"},
+        "vector_embedding_policy": {"key": "vectorEmbeddingPolicy", "type": "VectorEmbeddingPolicy"},
         "self_property": {"key": "_self", "type": "str"},
     }
 
@@ -12799,6 +12877,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
         create_mode: Union[str, "_models.CreateMode"] = "Default",
         materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
         computed_properties: Optional[List["_models.ComputedProperty"]] = None,
+        vector_embedding_policy: Optional["_models.VectorEmbeddingPolicy"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12831,6 +12910,8 @@ class RestorableSqlContainerPropertiesResourceContainer(
         :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
         :keyword computed_properties: List of computed properties.
         :paramtype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
+        :keyword vector_embedding_policy: The vector embedding policy for the container.
+        :paramtype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
         """
         super().__init__(
             id=id,
@@ -12845,6 +12926,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
             create_mode=create_mode,
             materialized_view_definition=materialized_view_definition,
             computed_properties=computed_properties,
+            vector_embedding_policy=vector_embedding_policy,
             **kwargs
         )
         self.rid = None
@@ -12863,6 +12945,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
         self.create_mode = create_mode
         self.materialized_view_definition = materialized_view_definition
         self.computed_properties = computed_properties
+        self.vector_embedding_policy = vector_embedding_policy
 
 
 class RestorableSqlContainersListResult(_serialization.Model):
@@ -13840,9 +13923,7 @@ class SqlContainerGetPropertiesOptions(OptionsResource):
     """
 
 
-class SqlContainerGetPropertiesResource(
-    SqlContainerResource, ExtendedResourceProperties
-):  # pylint: disable=too-many-instance-attributes
+class SqlContainerGetPropertiesResource(SqlContainerResource, ExtendedResourceProperties):
     """SqlContainerGetPropertiesResource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -13885,6 +13966,8 @@ class SqlContainerGetPropertiesResource(
     :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
     :ivar computed_properties: List of computed properties.
     :vartype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
+    :ivar vector_embedding_policy: The vector embedding policy for the container.
+    :vartype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
     """
 
     _validation = {
@@ -13910,6 +13993,7 @@ class SqlContainerGetPropertiesResource(
         "create_mode": {"key": "createMode", "type": "str"},
         "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
         "computed_properties": {"key": "computedProperties", "type": "[ComputedProperty]"},
+        "vector_embedding_policy": {"key": "vectorEmbeddingPolicy", "type": "VectorEmbeddingPolicy"},
     }
 
     def __init__(
@@ -13927,6 +14011,7 @@ class SqlContainerGetPropertiesResource(
         create_mode: Union[str, "_models.CreateMode"] = "Default",
         materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
         computed_properties: Optional[List["_models.ComputedProperty"]] = None,
+        vector_embedding_policy: Optional["_models.VectorEmbeddingPolicy"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -13959,6 +14044,8 @@ class SqlContainerGetPropertiesResource(
         :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
         :keyword computed_properties: List of computed properties.
         :paramtype computed_properties: list[~azure.mgmt.cosmosdb.models.ComputedProperty]
+        :keyword vector_embedding_policy: The vector embedding policy for the container.
+        :paramtype vector_embedding_policy: ~azure.mgmt.cosmosdb.models.VectorEmbeddingPolicy
         """
         super().__init__(
             id=id,
@@ -13973,6 +14060,7 @@ class SqlContainerGetPropertiesResource(
             create_mode=create_mode,
             materialized_view_definition=materialized_view_definition,
             computed_properties=computed_properties,
+            vector_embedding_policy=vector_embedding_policy,
             **kwargs
         )
         self.rid = None
@@ -13990,6 +14078,7 @@ class SqlContainerGetPropertiesResource(
         self.create_mode = create_mode
         self.materialized_view_definition = materialized_view_definition
         self.computed_properties = computed_properties
+        self.vector_embedding_policy = vector_embedding_policy
 
 
 class SqlContainerGetResults(ARMResourceProperties):
@@ -17059,6 +17148,121 @@ class UsagesResult(_serialization.Model):
         """ """
         super().__init__(**kwargs)
         self.value = None
+
+
+class VectorEmbedding(_serialization.Model):
+    """Represents a vector embedding. A vector embedding is used to define a vector field in the
+    documents.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar path: The path to the vector field in the document. Required.
+    :vartype path: str
+    :ivar data_type: Indicates the data type of vector. Required. Known values are: "float32",
+     "uint8", and "int8".
+    :vartype data_type: str or ~azure.mgmt.cosmosdb.models.VectorDataType
+    :ivar distance_function: The distance function to use for distance calculation in between
+     vectors. Required. Known values are: "euclidean", "cosine", and "dotproduct".
+    :vartype distance_function: str or ~azure.mgmt.cosmosdb.models.DistanceFunction
+    :ivar dimensions: The number of dimensions in the vector. Required.
+    :vartype dimensions: int
+    """
+
+    _validation = {
+        "path": {"required": True},
+        "data_type": {"required": True},
+        "distance_function": {"required": True},
+        "dimensions": {"required": True},
+    }
+
+    _attribute_map = {
+        "path": {"key": "path", "type": "str"},
+        "data_type": {"key": "dataType", "type": "str"},
+        "distance_function": {"key": "distanceFunction", "type": "str"},
+        "dimensions": {"key": "dimensions", "type": "int"},
+    }
+
+    def __init__(
+        self,
+        *,
+        path: str,
+        data_type: Union[str, "_models.VectorDataType"],
+        distance_function: Union[str, "_models.DistanceFunction"],
+        dimensions: int,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword path: The path to the vector field in the document. Required.
+        :paramtype path: str
+        :keyword data_type: Indicates the data type of vector. Required. Known values are: "float32",
+         "uint8", and "int8".
+        :paramtype data_type: str or ~azure.mgmt.cosmosdb.models.VectorDataType
+        :keyword distance_function: The distance function to use for distance calculation in between
+         vectors. Required. Known values are: "euclidean", "cosine", and "dotproduct".
+        :paramtype distance_function: str or ~azure.mgmt.cosmosdb.models.DistanceFunction
+        :keyword dimensions: The number of dimensions in the vector. Required.
+        :paramtype dimensions: int
+        """
+        super().__init__(**kwargs)
+        self.path = path
+        self.data_type = data_type
+        self.distance_function = distance_function
+        self.dimensions = dimensions
+
+
+class VectorEmbeddingPolicy(_serialization.Model):
+    """Cosmos DB Vector Embedding Policy.
+
+    :ivar vector_embeddings: List of vector embeddings.
+    :vartype vector_embeddings: list[~azure.mgmt.cosmosdb.models.VectorEmbedding]
+    """
+
+    _attribute_map = {
+        "vector_embeddings": {"key": "vectorEmbeddings", "type": "[VectorEmbedding]"},
+    }
+
+    def __init__(self, *, vector_embeddings: Optional[List["_models.VectorEmbedding"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword vector_embeddings: List of vector embeddings.
+        :paramtype vector_embeddings: list[~azure.mgmt.cosmosdb.models.VectorEmbedding]
+        """
+        super().__init__(**kwargs)
+        self.vector_embeddings = vector_embeddings
+
+
+class VectorIndex(_serialization.Model):
+    """VectorIndex.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar path: The path to the vector field in the document. Required.
+    :vartype path: str
+    :ivar type: The index type of the vector. Currently, flat, diskANN, and quantizedFlat are
+     supported. Required. Known values are: "flat", "diskANN", and "quantizedFlat".
+    :vartype type: str or ~azure.mgmt.cosmosdb.models.VectorIndexType
+    """
+
+    _validation = {
+        "path": {"required": True},
+        "type": {"required": True},
+    }
+
+    _attribute_map = {
+        "path": {"key": "path", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+    }
+
+    def __init__(self, *, path: str, type: Union[str, "_models.VectorIndexType"], **kwargs: Any) -> None:
+        """
+        :keyword path: The path to the vector field in the document. Required.
+        :paramtype path: str
+        :keyword type: The index type of the vector. Currently, flat, diskANN, and quantizedFlat are
+         supported. Required. Known values are: "flat", "diskANN", and "quantizedFlat".
+        :paramtype type: str or ~azure.mgmt.cosmosdb.models.VectorIndexType
+        """
+        super().__init__(**kwargs)
+        self.path = path
+        self.type = type
 
 
 class VirtualNetworkRule(_serialization.Model):
