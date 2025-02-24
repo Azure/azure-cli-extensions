@@ -1,13 +1,27 @@
 #!/usr/bin/env sh
-":" //; if command -v pwsh >/dev/null 2>&1; then pwsh -ExecutionPolicy Bypass -File .githooks/pre-commit.ps1; else sh .githooks/pre-commit.sh; fi; exit $?     # Try PowerShell Core first, then sh on Unix
-":" //; exit                         # Skip rest on Unix
 
+# Unix-like system section
+":" //; echo "Checking for pwsh on Unix-like system..."
+":" //; if command -v pwsh >/dev/null 2>&1; then
+":" //;     echo "pwsh found, executing pre-commit.ps1..."
+":" //;     pwsh -ExecutionPolicy Bypass -File .githooks/pre-commit.ps1
+":" //; else
+":" //;     echo "pwsh not found, executing pre-commit.sh..."
+":" //;     sh .githooks/pre-commit.sh
+":" //; fi
+":" //; echo "Exiting with status $?"
+":" //; exit
+
+# Windows section starts here
 @echo off
+echo "Running pre-commit hook in Windows environment..."
 powershell -NoProfile -Command "if (Get-Command powershell -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }"
 if %errorlevel% equ 0 (
+    echo "PowerShell found, executing pre-commit.ps1..."
     powershell -ExecutionPolicy Bypass -File .githooks\pre-commit.ps1
 ) else (
-    echo Error: PowerShell is not available. Please install PowerShell.
+    echo "Error: PowerShell is not available. Please install PowerShell."
     exit /b 1
 )
+echo "Exiting with status %errorlevel%"
 exit /b %errorlevel%
