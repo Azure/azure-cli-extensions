@@ -136,6 +136,38 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
               type: 'Readiness'
             }
             {%- endif %}
+            {% if data.blue.startupProbe -%}
+            {
+              {% if data.blue.startupProbe.periodSeconds -%}
+              periodSeconds: {{data.blue.startupProbe.periodSeconds}}
+              {%- endif %}
+              {% if data.blue.startupProbe.httpGet -%}
+              httpGet: {
+                path: '{{data.blue.startupProbe.httpGet.path}}'
+                port: {{data.targetPort}}
+                scheme: '{{data.blue.startupProbe.httpGet.scheme}}'
+              }
+              {%- endif -%}
+              {% if data.blue.startupProbe.tcpSocket -%}
+              tcpSocket: {
+                port: {{data.targetPort}}
+              }
+              {%- endif %}
+              {% if data.blue.startupProbe.initialDelaySeconds -%}
+              initialDelaySeconds: {{data.blue.startupProbe.initialDelaySeconds}}
+              {%- endif %}
+              {% if data.blue.startupProbe.timeoutSeconds -%}
+              timeoutSeconds: {{data.blue.startupProbe.timeoutSeconds}}
+              {%- endif %}
+              {% if data.blue.startupProbe.successThreshold -%}
+              successThreshold: {{data.blue.startupProbe.successThreshold}}
+              {%- endif %}
+              {% if data.blue.startupProbe.failureThreshold -%}
+              failureThreshold: {{data.blue.startupProbe.failureThreshold}}
+              {%- endif %}
+              type: 'Startup'
+            }
+            {%- endif %}
           ]
         }
       ]
