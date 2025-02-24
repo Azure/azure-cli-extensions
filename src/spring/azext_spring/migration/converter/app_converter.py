@@ -1,6 +1,9 @@
 import re
 
+from knack.log import get_logger
 from .base_converter import ConverterTemplate
+
+logger = get_logger(__name__)
 
 # Concrete Converter Subclass for Container App
 class AppConverter(ConverterTemplate):
@@ -92,6 +95,7 @@ class AppConverter(ConverterTemplate):
             env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
             liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
             readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
+            startup_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('startupProbe', {})
             resource_requests = deployment.get('properties', {}).get('deploymentSettings', {}).get('resourceRequests', {})
             cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
             memorySize = resource_requests.get("memory")
@@ -100,14 +104,10 @@ class AppConverter(ConverterTemplate):
             capacity = deployment.get('sku', {}).get('capacity')
             deployment = {
                 "name": deployment_name,
-                "env": [
-                    {
-                        "name": key,
-                        "value": value
-                    } for key, value in env.items()
-                ],
+                "env": self._convert_env(env),
                 "livenessProbe": self._convert_probe(liveness_probe, tier),
                 "readinessProbe": self._convert_probe(readiness_probe, tier),
+                "startupProbe": self._convert_probe(startup_probe, tier),
                 "cpuCore": cpuCore,
                 "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
                 "scale": self._convert_scale(scale),
@@ -117,6 +117,16 @@ class AppConverter(ConverterTemplate):
 
         # print(f"deployments: {deployments}")
         return deployments
+
+    def _convert_env(self, env):
+        env_list = []
+        for key, value in env.items():
+            
+            env_list.append({
+                "name": key,
+                "value": value
+            })
+        return env_list
 
     # A Container App must add up to one of the following CPU - Memory combinations:
     # [cpu: 0.25, memory: 0.5Gi]; [cpu: 0.5, memory: 1.0Gi]; [cpu: 0.75, memory: 1.5Gi]; [cpu: 1.0, memory: 2.0Gi]; [cpu: 1.25, memory: 2.5Gi]; [cpu: 1.5, memory: 3.0Gi]; [cpu: 1.75, memory: 3.5Gi]; [cpu: 2.0, memory: 4.0Gi]; [cpu: 2.25, memory: 4.5Gi]; [cpu: 2.5, memory: 5.0Gi]; [cpu: 2.75, memory: 5.5Gi]; [cpu: 3, memory: 6.0Gi]; [cpu: 3.25, memory: 6.5Gi]; [cpu: 3.5, memory: 7Gi]; [cpu: 3.75, memory: 7.5Gi]; [cpu: 4, memory: 8Gi]
@@ -147,26 +157,46 @@ class AppConverter(ConverterTemplate):
         if probe is None:
             return None
         if probe.get("disableProbe") == True:
-            print(f"Probe is disabled")
+            logger.debug(f"Probe is disabled")
             return None
+        result = {}
         initialDelaySeconds = probe.get("initialDelaySeconds", None)
         if initialDelaySeconds is not None:
             if initialDelaySeconds > 60: # Container 'undefined' 'Type' probe's InitialDelaySeconds must be in the range of ['0', '60'].
                 initialDelaySeconds = 60
-        result = {
-            "initialDelaySeconds": initialDelaySeconds,
-            "periodSeconds": probe.get("periodSeconds", None),
-            "timeoutSeconds": probe.get("timeoutSeconds", None),
-            "successThreshold": probe.get("successThreshold", None),
-            "failureThreshold": probe.get("failureThreshold", None),
-        }
+            result['initialDelaySeconds'] = initialDelaySeconds
+        periodSeconds = probe.get("periodSeconds", None)
+        if periodSeconds is not None:
+            result['periodSeconds'] = periodSeconds
+        timeoutSeconds = probe.get("timeoutSeconds", None)
+        if timeoutSeconds is not None:
+            result['timeoutSeconds'] = timeoutSeconds
+        successThreshold = probe.get("successThreshold", None)
+        if successThreshold is not None:
+            result['successThreshold'] = successThreshold
+        failureThreshold = probe.get("failureThreshold", None)
+        if failureThreshold is not None:
+            result['failureThreshold'] = failureThreshold
         httpGet = self._convert_http_probe_action(probe, tier)
         if httpGet is not None:
             result["httpGet"] = httpGet
         tcpSocket = self._convert_tcp_probe_action(probe, tier)
         if tcpSocket is not None:
             result["tcpSocket"] = tcpSocket
-        return result
+        execAction = self._convert_exec_probe_action(probe, tier)
+        if execAction is not None:
+            logger.warning(f"Mismatch: The ExecAction {execAction} is not supported in Azure Container Apps.")
+        return None if result == {} else result
+
+    def _convert_exec_probe_action(self, probe, tier):
+        probeAction = {}
+        if probe.get("probeAction", {}).get("type") == "ExecAction":
+            probeAction = {
+                "command": probe.get("probeAction", {}).get("command"),
+            }
+        else:
+            probeAction = None
+        return probeAction
 
     def _convert_tcp_probe_action(self, probe, tier):
         probeAction = {}
@@ -176,7 +206,6 @@ class AppConverter(ConverterTemplate):
             }
         else:
             probeAction = None
-        # print(f"probeAction: {probeAction}")
         return probeAction
 
     def _convert_http_probe_action(self, probe, tier):
@@ -189,7 +218,6 @@ class AppConverter(ConverterTemplate):
             }
         else:
             probeAction = None
-        # print(f"probeAction: {probeAction}")
         return probeAction
 
     def _get_ingress(self, source, tier):

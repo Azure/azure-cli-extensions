@@ -4,13 +4,13 @@ param workloadProfileType string
 param minNodes int
 param maxNodes int
 
-{% if data.isVnet == true %}
+{%- if data.isVnet == true %}
 param vnetSubnetId string
-{% endif %}
-{% for app in data.apps %}
+{%- endif %}
+{%- for app in data.apps %}
 param {{app.containerAppImageName}} string
 param {{app.targetPort}} int
-{% endfor %}
+{%- endfor %}
 
 module containerAppEnv 'environment.bicep' = { 
   name: 'containerAppEnvDeployment'
@@ -25,7 +25,7 @@ module containerAppEnv 'environment.bicep' = {
   }
 }
 
-{% for item in data.certs %}
+{%- for item in data.certs %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
   name: 'Cert{{ item.certName }}-Deployment'
   dependsOn: [
@@ -35,9 +35,9 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
-{% endfor %}
+{%- endfor %}
 
-{% for item in data.apps %}
+{%- for item in data.apps %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
   name: '{{ item.appName }}-Deployment'
   dependsOn: [
@@ -50,9 +50,9 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
     {{item.targetPort}}: {{item.targetPort}}
   }
 }
-{% endfor %}
+{%- endfor %}
 
-{% if data.gateway == true %}
+{%- if data.gateway == true %}
 module managedGateway 'gateway.bicep' = {
   name: 'gatewayDeployment'
   dependsOn: [
@@ -62,9 +62,9 @@ module managedGateway 'gateway.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
-{% endif %}
+{%- endif %}
 
-{% if data.config == true %}
+{%- if data.config == true %}
 module managedConfig 'config_server.bicep' = {
   name: 'configServerDeployment'
   dependsOn: [
@@ -74,9 +74,9 @@ module managedConfig 'config_server.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
-{% endif %}
+{%- endif %}
 
-{% if data.eureka == true %}
+{%- if data.eureka == true %}
 module managedEureka 'eureka.bicep' = {
   name: 'eurekaDeployment'
   dependsOn: [
@@ -86,9 +86,9 @@ module managedEureka 'eureka.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
-{% endif %}
+{%- endif %}
 
-{% if data.sba == true %}
+{%- if data.sba == true %}
 module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
   name: 'springBootAdminDeployment'
   dependsOn: [
@@ -98,4 +98,4 @@ module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
-{% endif %}
+{%- endif %}
