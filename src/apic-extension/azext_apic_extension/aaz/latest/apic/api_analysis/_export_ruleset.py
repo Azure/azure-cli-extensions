@@ -12,24 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic integration delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "apic api-analysis export-ruleset",
+    is_preview=True,
 )
-class Delete(AAZCommand):
-    """Delete specified API source.
+class ExportRuleset(AAZCommand):
+    """Exports the API analyzer ruleset.
+
+    :example: Export an API Analysis ruleset
+        az apic api-analysis export-ruleset -g contoso-resources -n contoso -c spectral-openapi --path '\\path\\for\\output\\files'
     """
 
     _aaz_info = {
         "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apisources/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/analyzerconfigs/{}/exportruleset", "2024-06-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -42,9 +46,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.integration_name = AAZStrArg(
-            options=["-i", "--integration-name"],
-            help="The name of the integration.",
+        _args_schema.analyzer_config_name = AAZStrArg(
+            options=["-c", "--config-name", "--analyzer-config-name"],
+            help="The name of the configuration.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -54,7 +58,6 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of Azure API Center resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
@@ -83,7 +86,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApiSourcesDelete(ctx=self.ctx)()
+        yield self.AnalyzerConfigsExportRuleset(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -94,29 +97,47 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ApiSourcesDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class AnalyzerConfigsExportRuleset(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
-            if session.http_response.status_code in [204]:
-                return self.on_204(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apiSources/{apiSourceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/analyzerConfigs/{analyzerConfigName}/exportRuleset",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -126,7 +147,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiSourceName", self.ctx.args.integration_name,
+                    "analyzerConfigName", self.ctx.args.analyzer_config_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -158,15 +179,41 @@ class Delete(AAZCommand):
             }
             return parameters
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
         def on_200(self, session):
-            pass
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
 
-        def on_204(self, session):
-            pass
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.format = AAZStrType()
+            _schema_on_200.value = AAZStrType()
+
+            return cls._schema_on_200
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _ExportRulesetHelper:
+    """Helper class for ExportRuleset"""
 
 
-__all__ = ["Delete"]
+__all__ = ["ExportRuleset"]

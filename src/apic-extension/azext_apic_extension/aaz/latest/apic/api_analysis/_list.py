@@ -12,16 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic integration list",
+    "apic api-analysis list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """List a collection of API sources.
+    """List API analyzer configurations.
+
+    :example: List all API Analysis rule configs for the service
+        az apic api-analysis list -g contoso-resources -n contoso
     """
 
     _aaz_info = {
         "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apisources", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/analyzerconfigs", "2024-06-01-preview"],
         ]
     }
 
@@ -73,7 +77,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApiSourcesList(ctx=self.ctx)()
+        self.AnalyzerConfigsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +93,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ApiSourcesList(AAZHttpOperation):
+    class AnalyzerConfigsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +107,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apiSources",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/analyzerConfigs",
                 **self.url_parameters
             )
 
@@ -207,63 +211,13 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.amazon_api_gateway_source = AAZObjectType(
-                serialized_name="amazonApiGatewaySource",
-            )
-            properties.api_source_type = AAZStrType(
-                serialized_name="apiSourceType",
+            properties.analyzer_type = AAZStrType(
+                serialized_name="analyzerType",
                 flags={"required": True},
             )
-            properties.azure_api_management_source = AAZObjectType(
-                serialized_name="azureApiManagementSource",
-            )
-            properties.import_specification = AAZStrType(
-                serialized_name="importSpecification",
-            )
-            properties.link_state = AAZObjectType(
-                serialized_name="linkState",
+            properties.state = AAZStrType(
                 flags={"read_only": True},
             )
-            properties.target_environment_id = AAZStrType(
-                serialized_name="targetEnvironmentId",
-            )
-            properties.target_lifecycle_stage = AAZStrType(
-                serialized_name="targetLifecycleStage",
-            )
-
-            amazon_api_gateway_source = cls._schema_on_200.value.Element.properties.amazon_api_gateway_source
-            amazon_api_gateway_source.access_key = AAZStrType(
-                serialized_name="accessKey",
-                flags={"required": True},
-            )
-            amazon_api_gateway_source.msi_resource_id = AAZStrType(
-                serialized_name="msiResourceId",
-            )
-            amazon_api_gateway_source.region_name = AAZStrType(
-                serialized_name="regionName",
-                flags={"required": True},
-            )
-            amazon_api_gateway_source.secret_access_key = AAZStrType(
-                serialized_name="secretAccessKey",
-                flags={"required": True},
-            )
-
-            azure_api_management_source = cls._schema_on_200.value.Element.properties.azure_api_management_source
-            azure_api_management_source.msi_resource_id = AAZStrType(
-                serialized_name="msiResourceId",
-            )
-            azure_api_management_source.resource_id = AAZStrType(
-                serialized_name="resourceId",
-                flags={"required": True},
-            )
-
-            link_state = cls._schema_on_200.value.Element.properties.link_state
-            link_state.last_updated_on = AAZStrType(
-                serialized_name="lastUpdatedOn",
-                flags={"required": True},
-            )
-            link_state.message = AAZStrType()
-            link_state.state = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
