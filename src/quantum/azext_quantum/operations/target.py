@@ -87,9 +87,9 @@ def get_provider(cmd, target_id, resource_group_name, workspace_name, location):
     provider_list = list(cmd, resource_group_name, workspace_name, location)
     if provider_list is not None:
         for item in provider_list:
-            for target_item in item.targets:
-                if target_item.id.lower() == target_id.lower():
-                    provider_id = item.id
+            for target_item in item["targets"]:
+                if target_item["id"].lower() == target_id.lower():
+                    provider_id = item["id"]
                     break
             if provider_id is not None:
                 break

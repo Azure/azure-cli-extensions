@@ -10,7 +10,7 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
 from ..._client_factory import _get_data_credentials
@@ -39,10 +39,10 @@ class QuantumJobsScenarioTest(ScenarioTest):
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
 
-    # @pytest.fixture(autouse=True)
-    # def _pass_fixtures(self, capsys):
-    #     self.capsys = capsys
-    # # See "TODO" in issue_cmd_with_param_missing un utils.py
+    # # @pytest.fixture(autouse=True)
+    # # def _pass_fixtures(self, capsys):
+    # #     self.capsys = capsys
+    # # # See "TODO" in issue_cmd_with_param_missing un utils.py
 
     def test_job_errors(self):
         issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
@@ -221,13 +221,22 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
         results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
-        self.assertIsNotNone(results["ProviderId"])
-        self.assertTrue(len(results["ProviderId"]) == 1)
-        self.assertTrue(results["ProviderId"] == "rigetti")
+        self.assertIn("rigetti", str(results))
 
-        #
-        # ++++++++ TODO: Add more list command variations here ++++++++
-        #
+        results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
+        self.assertIn("ionq.simulator", str(results))
+
+        results = str(self.cmd("az quantum job list --top 1 -o json").get_output_in_json())
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
+
+        results = str(self.cmd("az quantum job list --skip 1 -o json").get_output_in_json())
+        self.assertIn("ionq", results)
+        self.assertTrue("rigetti" not in results)
+
+        results = str(self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json())
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
@@ -331,11 +340,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         job_name = None
 
 
-        # TODO: add combinations of params
-        # TODO: param[s] with comma-separated list of values
-
         # Validate orderby expression formatting
-        #  
         # Should return None if params are set to None
         orderby = None
         order = None
@@ -369,5 +374,5 @@ class QuantumJobsScenarioTest(ScenarioTest):
         try:
             orderby_expression = _construct_orderby_expression(orderby, order)
             assert False
-        except InvalidArgumentValueError as e:
+        except RequiredArgumentMissingError as e:
             assert str(e) == ERROR_MSG_MISSING_ORDERBY_ARGUMENT

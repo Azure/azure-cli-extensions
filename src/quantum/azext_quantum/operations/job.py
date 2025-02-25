@@ -388,19 +388,30 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             job_params = {"params": job_params}
 
     # Submit the job
-    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
-    job_details = {'name': job_name,
-                   'container_uri': container_uri,
-                   'input_data_format': job_input_format,
-                   'output_data_format': job_output_format,
+    # client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
+    # job_details = {'name': job_name,
+                #    'container_uri': container_uri,
+                #    'input_data_format': job_input_format,
+                #    'output_data_format': job_output_format,
+                #    'provider_id': provider_id,
+                #    'ProviderId': provider_id,
+                #    'target': target_info.target_id,
+                #    'metadata': metadata,
+                #    'tags': tags}
+    job_details = {'Name': job_name,
+                   'ContainerUri': container_uri,
+                   'InputDataFormat': job_input_format,
+                   'OutputDataFormat': job_output_format,
                    'inputParams': job_params,
-                   'provider_id': provider_id,
-                   'target': target_info.target_id,
-                   'metadata': metadata,
-                   'tags': tags}
+                   'ProviderId': provider_id,
+                   'Target': target_info.target_id,
+                   'Metadata': metadata,
+                   'Tags': tags}
 
     knack_logger.warning("Submitting job...")
-    return client.create(job_id, job_details)
+    # return client.create(job_id, job_details)
+    return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details)
 
 
 def _parse_blob_url(url):
@@ -444,8 +455,10 @@ def output(cmd, job_id, resource_group_name, workspace_name, location, item=None
     Get the results of running a job.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    # job = client.get(job_id)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     if job.status != "Succeeded":
         if job.status == "Failed" and job.target in _targets_with_allowed_failure_output:
@@ -469,19 +482,22 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     import time
 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
 
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
     max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
-    job = client.get(job_id)
+    # job = client.get(job_id)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     while not _has_completed(job):
         print('.', end='', flush=True)
         wait_indicators_used = True
         time.sleep(poll_wait)
-        job = client.get(job_id)
+        # job = client.get(job_id)
+        job = client.get(info.subscription, info.resource_group, info.name, job_id)
         poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
 
     if wait_indicators_used:
