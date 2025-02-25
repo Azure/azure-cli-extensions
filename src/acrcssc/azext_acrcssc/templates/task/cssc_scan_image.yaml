@@ -34,7 +34,11 @@ steps:
         bash -c 'echo "EOSL for the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/eosl.txt)"'
 
   - cmd: az login --identity
-  - cmd: |
+  - id: trigger-patch-task
+    retries: 3
+    retryDelay: 10
+    timeout: 1800
+    cmd: |
       az -c '
       vulCount=$(cat /workspace/data/vulCount.txt) && \
       eoslValue=$(cat /workspace/data/eosl.txt) && \
