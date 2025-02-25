@@ -18,9 +18,9 @@ foreach ($file in $files) {
     $content = Get-Content -Path $file.FullName -Raw
 
     # Replace text based on the switch
-    if ($switch -eq "microsoft.edge") {
+    if ($switch -eq "private.edge") {
         $content = $content -replace "(?i)microsoft\.edge", "private.edge"
-    } elseif ($switch -eq "private.edge") {
+    } elseif ($switch -eq "microsoft.edge") {
         $content = $content -replace "(?i)private\.edge", "microsoft.edge"
     }
 
