@@ -19,7 +19,7 @@ module containerAppEnv 'environment.bicep' = {
     workloadProfileType: workloadProfileType
     minNodes: minNodes
     maxNodes: maxNodes
-    {% if data.isVnet == true -%}
+    {%- if data.isVnet == true %}
     vnetSubnetId: vnetSubnetId
     {%- endif %}
   }
