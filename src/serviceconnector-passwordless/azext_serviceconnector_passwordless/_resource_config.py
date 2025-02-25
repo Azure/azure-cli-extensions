@@ -133,11 +133,6 @@ TARGET_RESOURCES_PARAMS = {
         }
     },
     RESOURCE.FabricSql: {
-        'connstr_props': {
-            'options': ['--connstr-props'],
-            'help': 'Connection string properties of the Fabric SQL server. Format like: --connstr-props "Server=<Server_Host>,<Port>" "Database=<Database_Name>".',
-            'placeholder': 'Server=MyServer,1433 Database=MyDB'
-        },
         'fabric_workspace_uuid': {
             'options': ['--fabric-workspace-uuid'],
             'help': 'UUID of Fabric workspace which contains the target SQL database',

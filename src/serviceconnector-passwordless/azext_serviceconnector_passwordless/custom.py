@@ -57,6 +57,8 @@ def connection_create_ext(cmd, client,
                                   opt_out_list=opt_out_list,
                                   app_config_id=app_config_id,
                                   connstr_props=connstr_props,
+                                  fabric_workspace_uuid=fabric_workspace_uuid,
+                                  fabric_sql_db_uuid=fabric_sql_db_uuid,
                                   **kwargs)
 
 
