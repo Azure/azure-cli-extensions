@@ -1,17 +1,29 @@
+
 param (
     [string]$switch
 )
 
-$folderPath = '.\src\workload-operations'
+# Define the root folder and blacklist folders
+# Define the root folder and blacklist folders
+$rootFolder = "src\workload-operations\azext_workload_operations\aaz\latest\workload_operations" # Add your root folder path here
+$blacklist = @("src\workload-operations\azext_workload_operations\aaz\latest\workload_operations\configuration") # Add your blacklist folder paths here
 
-if ($switch -eq 'microsoft.edge') {
-    Get-ChildItem -Path $folderPath -Recurse -File -Filter *.py | ForEach-Object {
-        (Get-Content $_.FullName) -creplace 'private\\.edge', 'microsoft.edge' | Set-Content $_.FullName
+# Get all files in the folder and subfolders, excluding blacklisted folders
+$files = Get-ChildItem -Path $rootFolder -Recurse -File | Where-Object {
+    $blacklist -notcontains $_.DirectoryName
+}
+
+foreach ($file in $files) {
+    # Read the file content
+    $content = Get-Content -Path $file.FullName -Raw
+
+    # Replace text based on the switch
+    if ($switch -eq "microsoft.edge") {
+        $content = $content -replace "(?i)microsoft\.edge", "private.edge"
+    } elseif ($switch -eq "private.edge") {
+        $content = $content -replace "(?i)private\.edge", "microsoft.edge"
     }
-} elseif ($switch -eq 'private.edge') {
-    Get-ChildItem -Path $folderPath -Recurse -File -Filter *.py | ForEach-Object {
-        (Get-Content $_.FullName) -creplace 'microsoft\\.edge', 'private.edge' | Set-Content $_.FullName
-    }
-} else {
-    Write-Host "Invalid method. Choose either 'microsoft.edge' or 'private.edge'."
+
+    # Write the updated content back to the file without adding extra newlines
+    [System.IO.File]::WriteAllText($file.FullName, $content)
 }
