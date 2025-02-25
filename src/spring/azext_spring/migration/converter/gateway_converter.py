@@ -17,7 +17,9 @@ class GatewayConverter(ConverterTemplate):
     def calculate_data(self):
         gatewayName = f"gateway"
         configurations = self._get_configurations(self.source)
-        replicas = min(2, self.source['gateway']['sku']['capacity'])
+        replicas = 2
+        if self.source.get('gateway', {}).get('sku', {}).get('capacity') is not None:
+            replicas = min(2, self.source['gateway']['sku']['capacity'])
         routes = self._get_routes(self.source['routes'])
 
         self.data = {
@@ -45,18 +47,19 @@ class GatewayConverter(ConverterTemplate):
 
     def _get_routes(self, routes):
         aca_routes = []
-        for route in routes:
-            aca_id = route['name'].split('/')[-1]
-            aca_uri = self._get_uri_from_route(route)
-            if route.get('properties', {}).get('routes') is not None:
-                for r in route['properties']['routes']:
-                    aca_routes.append({
-                        "id": aca_id,
-                        "uri": r.get('uri', aca_uri),
-                        "predicates": r.get('predicates'),
-                        "filters": r.get('filters'),
-                        "order": r.get('order') or 0,
-                    })
+        if routes:
+            for route in routes:
+                aca_id = route['name'].split('/')[-1]
+                aca_uri = self._get_uri_from_route(route)
+                if route.get('properties', {}).get('routes') is not None:
+                    for r in route['properties']['routes']:
+                        aca_routes.append({
+                            "id": aca_id,
+                            "uri": r.get('uri', aca_uri),
+                            "predicates": r.get('predicates') if r.get('predicates') else [],
+                            "filters": r.get('filters') if r.get('filters') else [],
+                            "order": r.get('order') or 0,
+                        })
         return aca_routes
 
     def _get_uri_from_route(self, route):

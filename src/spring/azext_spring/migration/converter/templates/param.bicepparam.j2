@@ -4,13 +4,12 @@ param workloadProfileName = 'Dedicated'
 param workloadProfileType = 'D4'
 param minNodes = 1
 param maxNodes = 10
-
-{% for app in data.apps %}
-param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-param {{app.targetPort}} = 80
-{% endfor %}
-{% if data.isVnet == true %}
+{%- if data.isVnet == true %}
 // Provide the full resource ID of the existing subnet.
 // Example: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}
 param vnetSubnetId
-{% endif %}
+{%- endif %}
+{%- for app in data.apps %}
+param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+param {{app.targetPort}} = 80
+{%- endfor %}

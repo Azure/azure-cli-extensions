@@ -5,35 +5,37 @@ resource gatewayTest 'Microsoft.App/managedEnvironments/javaComponents@2024-10-0
     properties: {
         componentType: 'SpringCloudGateway'
         configurations: [
-            {% for config in data.configurations %}
+            {%- for config in data.configurations %}
             {
                 propertyName: '{{ config.propertyName }}'
                 value: '{{ config.value }}'
-            }{% if not loop.last %}{% endif %}
-            {% endfor %}
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
         ]
         scale: {
             minReplicas: {{ data.replicas }}
             maxReplicas: {{ data.replicas }}
         }
         springCloudGatewayRoutes: [
-            {% for route in data.routes %}
+            {%- for route in data.routes %}
             {
                 id: '{{ route.id }}'
                 uri: '{{ route.uri }}'
                 order: {{ route.order }}
                 predicates: [
-                    {% for predicate in route.predicates %}
-                    '{{ predicate }}'{% if not loop.last %}{% endif %}
-                    {% endfor %}
+                    {%- for predicate in route.predicates %}
+                    '{{ predicate }}'
+                    {%- if not loop.last %}{%- endif %}
+                    {%- endfor %}
                 ]
                 filters: [
-                    {% for filter in route.filters %}
-                    '{{ filter }}'{% if not loop.last %}{% endif %}
-                    {% endfor %}
+                    {%- for filter in route.filters %}
+                    '{{ filter }}'
+                    {%- if not loop.last %}{%- endif %}
+                    {%- endfor %}
                 ]
-            }{% if not loop.last %}{% endif %}
-            {% endfor %}
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
         ]
     }
 }

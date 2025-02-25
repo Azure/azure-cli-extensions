@@ -5,15 +5,15 @@ resource {{data.moduleName}} 'Microsoft.App/managedEnvironments/certificates@202
   location: resourceGroup().location
   properties: {
     certificateType: '{{ data.certificateType }}'
-    {% if data.certificateKeyVaultProperties %}
+    {%- if data.certificateKeyVaultProperties %}
     certificateKeyVaultProperties: {
         keyVaultUrl: '{{ data.certificateKeyVaultProperties.keyVaultUrl }}'
         identity: '{{ data.certificateKeyVaultProperties.identity }}'
     }
-    {% endif %}
-    {% if data.value %}
+    {%- endif %}
+    {%- if data.value %}
     value: '{{ data.value }}'
     password: ''
-    {% endif %}
+    {%- endif %}
   }
 }

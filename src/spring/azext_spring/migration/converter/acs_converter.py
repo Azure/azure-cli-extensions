@@ -5,7 +5,7 @@ class ACSConverter(ConverterTemplate):
 
     CONFIGURATION_KEY_PREFIX = "spring.cloud.config.server.git"
     KEY_URI = ".uri"
-    KEY_LABEL = ".label"
+    KEY_LABEL = ".default-label"
     KEY_SEARCH_PATHS = ".search-paths"
     KEY_USERNAME = ".username"
     KEY_PASSWORD = ".password"
@@ -38,9 +38,9 @@ class ACSConverter(ConverterTemplate):
     def _get_configurations_and_params(self, source):
         configurations = []
         params = []
-        git_repos = source['properties']['settings']['gitProperty']['repositories']
 
-        if len(git_repos) > 0:
+        git_repos = source.get('properties', {}).get('settings', {}).get('gitProperty', {}).get('repositories')
+        if git_repos is not None and len(git_repos) > 0:
             default_repo = git_repos[0]
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, default_repo.get('uri'))
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_LABEL, default_repo.get('label'))
@@ -51,17 +51,17 @@ class ACSConverter(ConverterTemplate):
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY, default_repo.get('hostKey'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY_ALGORITHM, default_repo.get('hostKeyAlgorithm'), configurations, params)
 
-        for i in range(1, len(git_repos)):
-            repo = git_repos[i]
-            configuration_key_repo_prefix = self.CONFIGURATION_KEY_PREFIX + ".repos." + repo['name']
-            self._add_property_if_exists(configurations, configuration_key_repo_prefix + self.KEY_URI, repo.get('uri'))
-            self._add_property_if_exists(configurations, configuration_key_repo_prefix + self.KEY_LABEL, repo.get('label'))
-            self._add_property_if_exists(configurations, configuration_key_repo_prefix + self.KEY_SEARCH_PATHS, repo.get('searchPaths'))
-            self._add_secret_config(configuration_key_repo_prefix + self.KEY_USERNAME, repo.get('username'), configurations, params)
-            self._add_secret_config(configuration_key_repo_prefix + self.KEY_PASSWORD, repo.get('password'), configurations, params)
-            self._add_secret_config(configuration_key_repo_prefix + self.KEY_PRIVATE_KEY, repo.get('privateKey'), configurations, params)
-            self._add_secret_config(configuration_key_repo_prefix + self.KEY_HOST_KEY, repo.get('hostKey'), configurations, params)
-            self._add_secret_config(configuration_key_repo_prefix + self.KEY_HOST_KEY_ALGORITHM, repo.get('hostKeyAlgorithm'), configurations, params)
+            for i in range(1, len(git_repos)):
+                repo = git_repos[i]
+                configuration_key_repo_prefix = self.CONFIGURATION_KEY_PREFIX + ".repos." + repo['name']
+                self._add_property_if_exists(configurations, configuration_key_repo_prefix + self.KEY_URI, repo.get('uri'))
+                self._add_property_if_exists(configurations, configuration_key_repo_prefix + self.KEY_LABEL, repo.get('label'))
+                self._add_property_if_exists(configurations, configuration_key_repo_prefix + self.KEY_SEARCH_PATHS, repo.get('searchPaths'))
+                self._add_secret_config(configuration_key_repo_prefix + self.KEY_USERNAME, repo.get('username'), configurations, params)
+                self._add_secret_config(configuration_key_repo_prefix + self.KEY_PASSWORD, repo.get('password'), configurations, params)
+                self._add_secret_config(configuration_key_repo_prefix + self.KEY_PRIVATE_KEY, repo.get('privateKey'), configurations, params)
+                self._add_secret_config(configuration_key_repo_prefix + self.KEY_HOST_KEY, repo.get('hostKey'), configurations, params)
+                self._add_secret_config(configuration_key_repo_prefix + self.KEY_HOST_KEY_ALGORITHM, repo.get('hostKeyAlgorithm'), configurations, params)
 
         return configurations, params
 

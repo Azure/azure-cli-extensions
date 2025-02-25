@@ -5,12 +5,12 @@ resource sbaTest 'Microsoft.App/managedEnvironments/javaComponents@2024-10-02-pr
     properties: {
         componentType: 'SpringBootAdmin'
         configurations: [
-            {% for config in data.configurations %}
+            {%- for config in data.configurations %}
             {
                 propertyName: '{{ config.propertyName }}'
                 value: '{{ config.value }}'
-            }{% if not loop.last %}{% endif %}
-            {% endfor %}
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
         ]
         scale: {
             minReplicas: {{ data.replicas }}
