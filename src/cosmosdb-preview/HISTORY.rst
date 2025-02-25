@@ -1,7 +1,7 @@
 .. :changelog:
 Release History
 ===============
-1.3.0
+1.2.0
 * Add support for Table RBAC role definition and assignment CRUD actions.
 
 +++++++
