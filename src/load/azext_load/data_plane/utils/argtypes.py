@@ -393,7 +393,7 @@ regionwise_engines = CLIArgumentType(
 )
 
 engine_reference_identity_type = CLIArgumentType(
-    options_list=["--engine-reference-identity-type"],
+    options_list=["--engine-ref-id-type"],
     type=str,
     completer=get_generic_completion_list(
         utils.get_enum_values(models.EngineIdentityType)
@@ -403,7 +403,7 @@ engine_reference_identity_type = CLIArgumentType(
 )
 
 engine_reference_identities = CLIArgumentType(
-    options_list=["--engine-reference-identities"],
+    options_list=["--engine-ref-ids"],
     nargs="+",
     validator=validators.validate_engine_reference_identities,
     help="Space separated list of fully qualified resource ID of the managed identities to be used in engine.",

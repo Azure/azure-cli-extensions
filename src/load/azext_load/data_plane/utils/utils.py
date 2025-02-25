@@ -337,10 +337,10 @@ def convert_yaml_to_test(cmd, data):
         new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
     if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
-    
+
     if data.get(LoadTestConfigKeys.REFERENCE_IDENTITIES):
         for identity in data[LoadTestConfigKeys.REFERENCE_IDENTITIES]:
-            if identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
+            if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
                 new_body["engineBuiltinIdentityType"], new_body["engineBuiltinIdentityIds"] = utils_yaml_config.yaml_parse_engine_identities(data=data)
                 if new_body["engineBuiltinIdentityType"] in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]:
                     new_body.pop("engineBuiltinIdentityIds")
@@ -534,6 +534,9 @@ def create_or_update_test_with_config(
     elif yaml_test_body.get("engineBuiltinIdentityType"):
         new_body["engineBuiltinIdentityType"] = yaml_test_body.get("engineBuiltinIdentityType")
         new_body["engineBuiltinIdentityIds"] = yaml_test_body.get("engineBuiltinIdentityIds")
+    else:
+        new_body["engineBuiltinIdentityType"] = body.get("engineBuiltinIdentityType")
+        new_body["engineBuiltinIdentityIds"] = body.get("engineBuiltinIdentityIds")
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
@@ -667,8 +670,12 @@ def create_or_update_test_without_config(
     validators.validate_engine_identities_id_and_type(engine_reference_identity_type, engine_reference_identities)
     if engine_reference_identity_type:
         new_body["engineBuiltinIdentityType"] = engine_reference_identity_type
-    if engine_reference_identities:
         new_body["engineBuiltinIdentityIds"] = engine_reference_identities
+    else:
+        new_body["engineBuiltinIdentityType"] = body.get("engineBuiltinIdentityType")
+        if engine_reference_identities and body.get("engineBuiltinIdentityType") != EngineIdentityType.UserAssigned:
+            raise InvalidArgumentValueError("Engine reference identities can only be provided when engine reference identity type is user assigned")
+        new_body["engineBuiltinIdentityIds"] = engine_reference_identities if engine_reference_identities else body.get("engineBuiltinIdentityIds")
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body

@@ -140,12 +140,13 @@ def yaml_parse_loadtest_configuration(cmd, data):
         load_test_configuration["splitAllCSVs"] = _yaml_parse_splitcsv(data=data)
     return load_test_configuration
 
+
 def yaml_parse_engine_identities(data):
     engine_identities = []
     reference_type = None
     reference_identities = data.get(LoadTestConfigKeys.REFERENCE_IDENTITIES)
     for identity in reference_identities:
-        if identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
+        if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
             if reference_type and identity.get(LoadTestConfigKeys.TYPE) != reference_type:
                 raise InvalidArgumentValueError(
                     "Engine identity should be either None, SystemAssigned, or UserAssigned, not a mix of them."
@@ -154,8 +155,8 @@ def yaml_parse_engine_identities(data):
                 if identity.get(LoadTestConfigKeys.VALUE):
                     raise InvalidArgumentValueError(
                         "Reference identity value should be provided only for UserAssigned identity type."
-                    )  
-            else: 
+                    )
+            else:
                 if not is_valid_resource_id(identity.get(LoadTestConfigKeys.VALUE)):
                     raise InvalidArgumentValueError(
                         "%s is not a valid resource id" % identity.get(LoadTestConfigKeys.VALUE)

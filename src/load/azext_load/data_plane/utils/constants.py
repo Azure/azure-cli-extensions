@@ -34,6 +34,7 @@ class LoadTestConfigKeys:
     KIND = "kind"
     VALUE = "value"
 
+
 @dataclass
 class HighScaleThreshold:
     MAX_ENGINE_INSTANCES_PER_TEST_RUN = 45

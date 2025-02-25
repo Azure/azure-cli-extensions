@@ -67,7 +67,7 @@ class LoadTestScenarioEngineMI(ScenarioTest):
             "--description {description} "
             "--display-name {display_name} "
             "--engine-instance {engine_instance} "
-            "--engine-reference-identity-type {engine_reference_identity_type}",
+            "--engine-ref-id-type {engine_reference_identity_type}",
             checks=checks,
         )
         
@@ -176,12 +176,12 @@ def _configure_command_jmes_checks(self, checks, engine_reference_identity_type=
         self.kwargs.update({
             "engine_reference_identities": engine_reference_identities,
         })
-        command += '--engine-reference-identities {engine_reference_identities} '
+        command += '--engine-ref-ids {engine_reference_identities} '
     if engine_reference_identity_type is not None:
         self.kwargs.update({
             "engine_reference_identity_type": engine_reference_identity_type,
         })
-        command += '--engine-reference-identity-type {engine_reference_identity_type} '
+        command += '--engine-ref-id-type {engine_reference_identity_type} '
     if load_test_config_file is not None:
         self.kwargs.update({
             "load_test_config_file": load_test_config_file,
@@ -202,12 +202,12 @@ def _configure_command_assert_exception(self, message, engine_reference_identity
         self.kwargs.update({
             "engine_reference_identity_type": engine_reference_identity_type,
         })
-        command += '--engine-reference-identity-type {engine_reference_identity_type} '
+        command += '--engine-ref-id-type {engine_reference_identity_type} '
     if engine_reference_identities is not None:
         self.kwargs.update({
             "engine_reference_identities": engine_reference_identities,
         })
-        command += '--engine-reference-identities {engine_reference_identities} '
+        command += '--engine-ref-ids {engine_reference_identities} '
     if load_test_config_file is not None:
         self.kwargs.update({
             "load_test_config_file": load_test_config_file,
