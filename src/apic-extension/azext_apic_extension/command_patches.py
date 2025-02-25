@@ -345,7 +345,6 @@ class ShowIntegrationExtension(DefaultWorkspaceParameter, ShowIntegration):
 
 @register_command(
     "apic integration create apim",
-    is_preview=True,
 )
 class CreateApimIntegration(DefaultWorkspaceParameter, CreateIntegration):
     # pylint: disable=C0301
@@ -547,7 +546,6 @@ class ImportAmazonApiGatewaySource(DefaultWorkspaceParameter, Import):
 
 @register_command(
     "apic import apim",
-    is_preview=True,
 )
 class ImportAzureApiManagementSource(DefaultWorkspaceParameter, Import):
     # pylint: disable=C0301
@@ -617,12 +615,8 @@ class CreateApiAnalysisConfig(DefaultWorkspaceParameter, CreateApiAnalysis):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.filter._registered = False
+        args_schema.analyzer_type._registered = False
         return args_schema
-
-    def pre_operations(self):
-        super().pre_operations()
-        args = self.ctx.args
-        args.analyzer_type = "spectral"
 
 
 class DeleteApiAnalysisConfig(DefaultWorkspaceParameter, DeleteApiAnalysis):
@@ -730,9 +724,5 @@ class UpdateAPIAnalysisConfig(DefaultWorkspaceParameter, UpdateAPIAnalysis):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.filter._registered = False
+        args_schema.analyzer_type._registered = False
         return args_schema
-
-    def pre_operations(self):
-        super().pre_operations()
-        args = self.ctx.args
-        args.analyzer_type = "spectral"
