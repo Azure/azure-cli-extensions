@@ -108,6 +108,9 @@ class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
 
+class MaxUnavailableNamespace:
+    def __init__(self, max_unavailable):
+        self.max_unavailable = max_unavailable
 
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
@@ -155,6 +158,21 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+class TestMaxUnavailable(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_unavailable(MaxUnavailableNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
