@@ -2,7 +2,7 @@
 
 Release History
 ===============
-3.2.1
+3.3.0
 ++++++
 * Fix issue with params to support interactive mode for Fabric SQL
 
