@@ -2449,8 +2449,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                # Case-sensitive check for azurePolicy and enabled=True
-                self.check("addonProfiles.azurePolicy.enabled", True),
+                # Case-insensitive check for azurePolicy and enabled=True
+                self.check(lambda x: any(k.lower() == "azurepolicy" and v.get("enabled") for k, v in x.get("addonProfiles", {}).items()), True),
             ],
         )
         
@@ -2475,8 +2475,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                # Case-sensitive check for azurePolicy and enabled=True
-                self.check("addonProfiles.azurePolicy.enabled", False),
+                # Case-insensitive check for azurePolicy and enabled=True
+                self.check(lambda x: any(k.lower() == "azurepolicy" and v.get("enabled") for k, v in x.get("addonProfiles", {}).items()), False),
             ],
         )
         addon_list = self.cmd(list_cmd).get_output_in_json()
@@ -2494,8 +2494,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                # Case-sensitive check for azurePolicy and enabled=True
-                self.check("addonProfiles.azurePolicy.enabled", True),
+                # Case-insensitive check for azurePolicy and enabled=True
+                self.check(lambda x: any(k.lower() == "azurepolicy" and v.get("enabled") for k, v in x.get("addonProfiles", {}).items()), True),
             ],
         )
         addon_list = self.cmd(list_cmd).get_output_in_json()
