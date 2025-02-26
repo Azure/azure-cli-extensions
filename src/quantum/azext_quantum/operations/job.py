@@ -411,7 +411,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
 
     knack_logger.warning("Submitting job...")
     # return client.create(job_id, job_details)
-    return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details)
+    return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
 def _parse_blob_url(url):
@@ -512,9 +512,12 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     Get the job's status and details.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(info.location, job_id)
-    return job
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    # job = client.get(info.location, job_id)
+    # return job
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+    return job.as_dict()
 
 
 def run(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
@@ -540,15 +543,18 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    # job = client.get(job_id)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     if _has_completed(job):
         print(f"Job {job_id} has already completed with status: {job.status}.")
         return
 
     # If the job hasn't succeeded or failed, attempt to cancel.
-    client.cancel(job_id)
+    # client.cancel(job_id)                                                     # <----- This doesn't work: 'JobsOperations' object has no attribute 'cancel'
+    client.cancel(info.subscription, info.resource_group, info.name, job_id)    # <----- This doesn't work: 'JobsOperations' object has no attribute 'cancel'
 
     # Wait for the job status to complete or be reported as cancelled
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
