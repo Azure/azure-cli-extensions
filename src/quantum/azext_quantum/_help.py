@@ -70,7 +70,7 @@ helps['quantum job list'] = """
             az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation
       - name: List jobs that used the microsoft-elements provider. Assume `az quantum workspace set` has provided the missing parameters.
         text: |-
-            az quantum job list --provider-id microsoft-elements 
+            az quantum job list --provider-id microsoft-elements
       - name: List jobs that ran on the microsoft.dft target.
         text: |-
             az quantum job list --target-id microsoft.dft

@@ -391,14 +391,14 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     # client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
     # job_details = {'name': job_name,
-                #    'container_uri': container_uri,
-                #    'input_data_format': job_input_format,
-                #    'output_data_format': job_output_format,
-                #    'provider_id': provider_id,
-                #    'ProviderId': provider_id,
-                #    'target': target_info.target_id,
-                #    'metadata': metadata,
-                #    'tags': tags}
+    #                'container_uri': container_uri,
+    #                'input_data_format': job_input_format,
+    #                'output_data_format': job_output_format,
+    #                'provider_id': provider_id,
+    #                'ProviderId': provider_id,
+    #                'target': target_info.target_id,
+    #                'metadata': metadata,
+    #                'tags': tags}
     job_details = {'Name': job_name,
                    'ContainerUri': container_uri,
                    'InputDataFormat': job_input_format,
