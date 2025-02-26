@@ -525,25 +525,26 @@ def validate_regionwise_engines(cmd, namespace):
     namespace.regionwise_engines = regionwise_engines
 
 
-def validate_engine_reference_identities(namespace):
+def validate_engine_ref_ids(namespace):
     """Extracts multiple space-separated identities"""
-    if isinstance(namespace.engine_reference_identities, list):
-        for item in namespace.engine_reference_identities:
+    if isinstance(namespace.engine_ref_ids, list):
+        for item in namespace.engine_ref_ids:
             if not is_valid_resource_id(item):
-                raise InvalidArgumentValueError(f"Invalid engine-reference-identities value: {item}")
+                raise InvalidArgumentValueError(f"Invalid engine-ref-ids value: {item}")
 
 
-def validate_engine_identities_id_and_type(engine_reference_identity_type, engine_reference_identities):
-    """Validates combination of engine-reference-identity-type and engine-reference-identities"""
+def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids, exisiting_engine_ref_id_type=None):
+    """Validates combination of engine-ref-id-type and engine-ref-ids"""
 
-    # if engine_reference_identity_type is None or SystemAssigned, then no value for engine_reference_identities is expected:
-    if (engine_reference_identity_type is None or engine_reference_identity_type in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]) and engine_reference_identities is not None:
+    # if engine_ref_id_type is None or SystemAssigned, then no value for engine_ref_ids is expected:
+    engine_ref_id_type = incoming_engine_ref_id_type or exisiting_engine_ref_id_type
+    if engine_ref_id_type != EngineIdentityType.UserAssigned and engine_ref_ids:
         raise InvalidArgumentValueError(
-            "engine-reference-identities should not be provided when engine-reference-identity-type is None or SystemAssigned"
+            "engine-ref-ids should not be provided when engine-ref-id-type is None or SystemAssigned"
         )
 
-    # if engine_reference_identity_type is UserAssigned, then engine_reference_identities is expected:
-    if engine_reference_identity_type == EngineIdentityType.UserAssigned and engine_reference_identities is None:
+    # If engine_ref_id_type is UserAssigned, then engine_ref_ids is expected.
+    if incoming_engine_ref_id_type == EngineIdentityType.UserAssigned and engine_ref_ids is None:
         raise InvalidArgumentValueError(
-            "Atleast one engine-reference-identities should be provided when engine-reference-identity-type is UserAssigned"
+            "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
         )

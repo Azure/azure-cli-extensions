@@ -141,6 +141,8 @@ def yaml_parse_loadtest_configuration(cmd, data):
     return load_test_configuration
 
 
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
 def yaml_parse_engine_identities(data):
     engine_identities = []
     reference_type = None
@@ -149,7 +151,7 @@ def yaml_parse_engine_identities(data):
         if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
             if reference_type and identity.get(LoadTestConfigKeys.TYPE) != reference_type:
                 raise InvalidArgumentValueError(
-                    "Engine identity should be either None, SystemAssigned, or UserAssigned, not a mix of them."
+                    "Engine identity type should be either None, SystemAssigned, or UserAssigned. A combination of identity types are not supported."
                 )
             if identity.get(LoadTestConfigKeys.TYPE) != EngineIdentityType.UserAssigned:
                 if identity.get(LoadTestConfigKeys.VALUE):
@@ -164,3 +166,4 @@ def yaml_parse_engine_identities(data):
             engine_identities.append(identity.get(LoadTestConfigKeys.VALUE))
             reference_type = identity.get(LoadTestConfigKeys.TYPE)
     return reference_type, engine_identities
+# pylint: enable=line-too-long
