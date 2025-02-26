@@ -393,7 +393,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
                    'ContainerUri': container_uri,
                    'InputDataFormat': job_input_format,
                    'OutputDataFormat': job_output_format,
-                   'inputParams': job_params,
+                   'InputParams': job_params,
                    'ProviderId': provider_id,
                    'Target': target_info.target_id,
                    'Metadata': metadata,
