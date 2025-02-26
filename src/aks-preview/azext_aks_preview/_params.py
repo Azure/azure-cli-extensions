@@ -194,6 +194,7 @@ from azext_aks_preview._validators import (
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
+    validate_max_unavailable,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -1469,6 +1470,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1587,6 +1589,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1657,6 +1660,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",

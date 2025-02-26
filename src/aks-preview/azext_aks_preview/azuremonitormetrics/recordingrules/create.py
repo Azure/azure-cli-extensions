@@ -4,9 +4,11 @@
 # --------------------------------------------------------------------------------------------
 import json
 from azext_aks_preview.azuremonitormetrics.constants import ALERTS_API, RULES_API
+from azext_aks_preview.azuremonitormetrics.recordingrules.common import truncate_rule_group_name
 from knack.util import CLIError
 
 
+# pylint: disable=line-too-long
 def get_recording_rules_template(cmd, azure_monitor_workspace_resource_id):
     from azure.cli.core.util import send_raw_request
     headers = ['User-Agent=azuremonitormetrics.get_recording_rules_template']
@@ -17,7 +19,18 @@ def get_recording_rules_template(cmd, azure_monitor_workspace_resource_id):
     )
     r = send_raw_request(cmd.cli_ctx, "GET", url, headers=headers)
     data = json.loads(r.text)
-    return data['value']
+    # Safely filter the templates with case-insensitive check
+    filtered_templates = [
+        template for template in data.get('value', [])
+        if template.get("properties", {}).get("alertRuleType", "").lower() == "microsoft.alertsmanagement/prometheusrulegroups" and isinstance(template.get("properties", {}).get("rulesArmTemplate", {}).get("resources"), list) and all(
+            isinstance(rule, dict) and "record" in rule and "expression" in rule
+            for resource in template["properties"]["rulesArmTemplate"]["resources"]
+            if resource.get("type", "").lower() == "microsoft.alertsmanagement/prometheusrulegroups"
+            for rule in resource.get("properties", {}).get("rules", [])
+        )
+    ]
+
+    return filtered_templates
 
 
 def put_rules(
@@ -71,7 +84,7 @@ def create_rules(
     raw_parameters,
 ):
     default_rules_template = get_recording_rules_template(cmd, azure_monitor_workspace_resource_id)
-    default_rule_group_name = f"NodeRecordingRulesRuleGroup-{cluster_name}"
+    default_rule_group_name = truncate_rule_group_name("{0}-{1}".format(default_rules_template[0]["name"], cluster_name))
     default_rule_group_id = (
         f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
         f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
@@ -90,7 +103,7 @@ def create_rules(
         0,
     )
 
-    default_rule_group_name = f"KubernetesRecordingRulesRuleGroup-{cluster_name}"
+    default_rule_group_name = truncate_rule_group_name("{0}-{1}".format(default_rules_template[1]["name"], cluster_name))
     default_rule_group_id = (
         f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
         f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
@@ -114,7 +127,7 @@ def create_rules(
     if enable_windows_recording_rules is not True:
         enable_windows_recording_rules = False
 
-    default_rule_group_name = f"NodeRecordingRulesRuleGroup-Win-{cluster_name}"
+    default_rule_group_name = truncate_rule_group_name("{0}-{1}".format(default_rules_template[2]["name"], cluster_name))
     default_rule_group_id = (
         f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
         f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
@@ -133,7 +146,7 @@ def create_rules(
         2,
     )
 
-    default_rule_group_name = f"NodeAndKubernetesRecordingRulesRuleGroup-Win-{cluster_name}"
+    default_rule_group_name = truncate_rule_group_name("{0}-{1}".format(default_rules_template[3]["name"], cluster_name))
     default_rule_group_id = (
         f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
         f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
