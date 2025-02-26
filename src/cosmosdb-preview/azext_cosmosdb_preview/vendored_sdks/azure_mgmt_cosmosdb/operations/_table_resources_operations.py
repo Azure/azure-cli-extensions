@@ -1897,6 +1897,7 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.TableRoleDefinitionResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -1949,6 +1950,7 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         create_update_table_role_definition_parameters: Union[_models.TableRoleDefinitionResource, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
+
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -2161,6 +2163,7 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
     def _delete_table_role_definition_initial(
         self, resource_group_name: str, account_name: str, role_definition_id: str, **kwargs: Any
     ) -> Iterator[bytes]:
+
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -2378,6 +2381,7 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.TableRoleAssignmentResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -2430,6 +2434,7 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
         create_update_table_role_assignment_parameters: Union[_models.TableRoleAssignmentResource, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
+
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -2642,6 +2647,7 @@ class TableResourcesOperations:  # pylint: disable=too-many-public-methods
     def _delete_table_role_assignment_initial(
         self, resource_group_name: str, account_name: str, role_assignment_id: str, **kwargs: Any
     ) -> Iterator[bytes]:
+
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,

@@ -65,7 +65,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DedicatedGatewayType,
     ServiceType,
     ThroughputSettingsResource,
-    ThroughputSettingsUpdateParameters
+    ThroughputSettingsUpdateParameters,
+    TableRoleDefinitionResource,
+    TableRoleAssignmentResource
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -2806,3 +2808,114 @@ def cli_cosmosdb_table_restore(cmd,
                                             account_name,
                                             table_name,
                                             table_resource)
+
+def cli_cosmosdb_table_role_definition_exists(client,
+                                              resource_group_name,
+                                              account_name,
+                                              role_definition_id):
+    """Checks if an Azure Cosmos DB Table Role Definition exists"""
+    try:
+        client.get_table_role_definition(resource_group_name, account_name, role_definition_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+def cli_cosmosdb_table_role_definition_create(client,
+                                              resource_group_name,
+                                              account_name,
+                                              table_role_definition_body):
+    '''Creates an Azure Cosmos DB Table Role Definition '''    
+    table_role_definition_create_resource = TableRoleDefinitionResource(
+        role_name=table_role_definition_body['RoleName'],
+        type_properties_type=table_role_definition_body['Type'],
+        permissions=table_role_definition_body['Permissions'],
+        assignable_scopes=table_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_create_resource)
+   
+def cli_cosmosdb_table_role_definition_update(client,
+                                              resource_group_name,
+                                              account_name,
+                                              table_role_definition_body):
+    '''Update an existing Azure Cosmos DB Table Role Definition'''
+    logger.debug('reading Table role definition')
+    table_role_definition = client.get_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'])
+
+    if table_role_definition_body['RoleName'] != table_role_definition.role_name:
+        raise InvalidArgumentValueError('Cannot update Table Role Definition Name.')
+
+    table_role_definition_update_resource = TableRoleDefinitionResource(
+        role_name=table_role_definition_body['RoleName'],
+        type_properties_type=table_role_definition_body['Type'],
+        permissions=table_role_definition_body['Permissions'],
+        assignable_scopes=table_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_table_role_definition( resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_update_resource)
+    
+def cli_cosmosdb_table_role_assignment_exists(client,
+                                              resource_group_name,
+                                              account_name,
+                                              role_assignment_id):
+    """Checks if an Azure Cosmos DB Table Role assignment exists"""
+    try:
+        client.get_table_role_assignment(resource_group_name, account_name,role_assignment_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+def cli_cosmosdb_table_role_assignment_create(client,
+                                            resource_group_name,
+                                            account_name,
+                                            scope,
+                                            principal_id,
+                                            role_assignment_id=None,
+                                            role_definition_name=None,
+                                            role_definition_id=None):
+    """Creates an Azure Cosmos DB Table Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+
+    table_role_assignment_create_update_parameters = TableRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_table_role_assignment(resource_group_name, account_name, role_assignment_id, table_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_table_role_assignment_update(client,
+                                            resource_group_name,
+                                            account_name,
+                                            scope,
+                                            principal_id,
+                                            role_assignment_id=None,
+                                            role_definition_name=None,
+                                            role_definition_id=None):
+    """Updates an Azure Cosmos DB Table Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+        
+    if role_assignment_id is None:
+        raise CLIError('Providing role_assignment_id is required.')
+    
+    table_role_assignment = client.get_table_role_assignment(resource_group_name, account_name, role_assignment_id)
+
+    if role_assignment_id != table_role_assignment.name:
+        raise InvalidArgumentValueError('Cannot update Table Role Assignment Id.')
+
+    table_role_assignment_create_update_parameters = TableRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_table_role_assignment(resource_group_name, account_name, role_assignment_id, table_role_assignment_create_update_parameters)

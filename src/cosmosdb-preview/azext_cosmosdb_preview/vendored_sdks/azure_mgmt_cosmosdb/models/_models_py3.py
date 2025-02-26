@@ -3187,15 +3187,15 @@ class CommandAsyncPostBody(_serialization.Model):
     :ivar command: The command which should be run. Required.
     :vartype command: str
     :ivar arguments: The arguments for the command to be run.
-    :vartype arguments: JSON
+    :vartype arguments: dict[str, str]
     :ivar host: IP address of the cassandra host to run the command on. Required.
     :vartype host: str
     :ivar cassandra_stop_start: If true, stops cassandra before executing the command and then
      start it again.
     :vartype cassandra_stop_start: bool
-    :ivar read_write: If true, allows the command to *write* to the cassandra directory, otherwise
+    :ivar readwrite: If true, allows the command to *write* to the cassandra directory, otherwise
      read-only.
-    :vartype read_write: bool
+    :vartype readwrite: bool
     """
 
     _validation = {
@@ -3205,10 +3205,10 @@ class CommandAsyncPostBody(_serialization.Model):
 
     _attribute_map = {
         "command": {"key": "command", "type": "str"},
-        "arguments": {"key": "arguments", "type": "object"},
+        "arguments": {"key": "arguments", "type": "{str}"},
         "host": {"key": "host", "type": "str"},
         "cassandra_stop_start": {"key": "cassandra-stop-start", "type": "bool"},
-        "read_write": {"key": "readWrite", "type": "bool"},
+        "readwrite": {"key": "readwrite", "type": "bool"},
     }
 
     def __init__(
@@ -3216,31 +3216,31 @@ class CommandAsyncPostBody(_serialization.Model):
         *,
         command: str,
         host: str,
-        arguments: Optional[JSON] = None,
+        arguments: Optional[Dict[str, str]] = None,
         cassandra_stop_start: Optional[bool] = None,
-        read_write: Optional[bool] = None,
+        readwrite: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         """
         :keyword command: The command which should be run. Required.
         :paramtype command: str
         :keyword arguments: The arguments for the command to be run.
-        :paramtype arguments: JSON
+        :paramtype arguments: dict[str, str]
         :keyword host: IP address of the cassandra host to run the command on. Required.
         :paramtype host: str
         :keyword cassandra_stop_start: If true, stops cassandra before executing the command and then
          start it again.
         :paramtype cassandra_stop_start: bool
-        :keyword read_write: If true, allows the command to *write* to the cassandra directory,
+        :keyword readwrite: If true, allows the command to *write* to the cassandra directory,
          otherwise read-only.
-        :paramtype read_write: bool
+        :paramtype readwrite: bool
         """
         super().__init__(**kwargs)
         self.command = command
         self.arguments = arguments
         self.host = host
         self.cassandra_stop_start = cassandra_stop_start
-        self.read_write = read_write
+        self.readwrite = readwrite
 
 
 class CommandOutput(_serialization.Model):
