@@ -553,8 +553,8 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
         return
 
     # If the job hasn't succeeded or failed, attempt to cancel.
-    # client.cancel(job_id)                                                     # <----- This doesn't work: 'JobsOperations' object has no attribute 'cancel'
-    client.cancel(info.subscription, info.resource_group, info.name, job_id)    # <----- This doesn't work: 'JobsOperations' object has no attribute 'cancel'
+    # client.cancel(job_id)
+    client.delete(info.subscription, info.resource_group, info.name, job_id)  # JobOperations.cancel has been replaced with delete in the updated DP client
 
     # Wait for the job status to complete or be reported as cancelled
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
