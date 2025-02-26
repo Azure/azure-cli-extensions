@@ -388,17 +388,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             job_params = {"params": job_params}
 
     # Submit the job
-    # client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
-    # job_details = {'name': job_name,
-    #                'container_uri': container_uri,
-    #                'input_data_format': job_input_format,
-    #                'output_data_format': job_output_format,
-    #                'provider_id': provider_id,
-    #                'ProviderId': provider_id,
-    #                'target': target_info.target_id,
-    #                'metadata': metadata,
-    #                'tags': tags}
     job_details = {'Name': job_name,
                    'ContainerUri': container_uri,
                    'InputDataFormat': job_input_format,
@@ -410,7 +400,6 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
                    'Tags': tags}
 
     knack_logger.warning("Submitting job...")
-    # return client.create(job_id, job_details)
     return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
@@ -455,8 +444,6 @@ def output(cmd, job_id, resource_group_name, workspace_name, location, item=None
     Get the results of running a job.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    # job = client.get(job_id)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
@@ -482,21 +469,18 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     import time
 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
 
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
     max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
-    # job = client.get(job_id)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     while not _has_completed(job):
         print('.', end='', flush=True)
         wait_indicators_used = True
         time.sleep(poll_wait)
-        # job = client.get(job_id)
         job = client.get(info.subscription, info.resource_group, info.name, job_id)
         poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
 
@@ -512,9 +496,6 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     Get the job's status and details.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    # job = client.get(info.location, job_id)
-    # return job
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
     return job.as_dict()
@@ -543,8 +524,6 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    # job = client.get(job_id)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
@@ -553,8 +532,7 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
         return
 
     # If the job hasn't succeeded or failed, attempt to cancel.
-    # client.cancel(job_id)
-    client.delete(info.subscription, info.resource_group, info.name, job_id)  # JobOperations.cancel has been replaced with delete in the updated DP client
+    client.delete(info.subscription, info.resource_group, info.name, job_id)  # JobOperations.cancel has been replaced with .delete in the updated DP client
 
     # Wait for the job status to complete or be reported as cancelled
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
