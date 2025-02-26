@@ -65,7 +65,7 @@ def load_arguments(self, _):
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
     
     with self.argument_context('vm repair repair-button') as c:
-        c.argument('button_command', help='Button_command for repair VM.')
+        c.argument('button_command', help='Specific ALAR script being used for repair VM.')
         c.argument('repair_username', help='Admin username for repair VM.')
         c.argument('repair_password', help='Admin password for the repair VM.')
         c.argument('copy_disk_name', help='Name of OS disk copy.')
