@@ -32,6 +32,7 @@ load_params = {
     "random_name_length": 30,
 }
 
+
 class LoadTestScenarioAdvancedUrl(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestScenarioAdvancedUrl, self).__init__(*args, **kwargs)
