@@ -19,12 +19,16 @@ from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
                           validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
-from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
+from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH,
+                         AKS_AZURE_LOCAL_DISTRO)
 
 
 def load_arguments(self, _):
 
     name_type = CLIArgumentType(options_list=['--name', '-n'])
+
+    with self.argument_context('containerapp', arg_group='Configuration') as c:
+        c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
 
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
@@ -32,7 +36,9 @@ def load_arguments(self, _):
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
+        c.argument('kind', type=str, help="Set to 'functionapp' to get built in support and autoscaling to run Azure functions on Azure Container apps", is_preview=True)
         c.argument('registry_identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
+        c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
     # Springboard
     with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
@@ -63,6 +69,7 @@ def load_arguments(self, _):
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
+        c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding', is_preview=True) as c:
@@ -253,6 +260,8 @@ def load_arguments(self, _):
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.", is_preview=True)
         c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id', is_preview=True)
+        c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
+        c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/owner/repository-name or owner/repository-name')
@@ -357,6 +366,12 @@ def load_arguments(self, _):
         c.argument('dapr_component_name', help="The Dapr component name.")
         c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
+
+    with self.argument_context('containerapp arc setup-core-dns') as c:
+        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
+        c.argument('kube_config', help="Path to the kube config file.")
+        c.argument('kube_context', help="Kube context from current machine.")
+        c.argument('skip_ssl_verification', help="Skip SSL verification for any cluster connection.")
 
     with self.argument_context('containerapp github-action add') as c:
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
@@ -474,3 +489,14 @@ def load_arguments(self, _):
                    help="The name of the container app revision. Default to the latest revision.")
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp label-history') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+
+    with self.argument_context('containerapp label-history show') as c:
+        c.argument('label', help="The label name to show history for.")
+
+    with self.argument_context('containerapp revision set-mode') as c:
+        c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
+        c.argument('target_label', help="The label to apply to new revisions. Required for revision mode 'labels'.", is_preview=True)

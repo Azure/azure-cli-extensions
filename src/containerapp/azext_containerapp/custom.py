@@ -9,6 +9,7 @@ import time
 from urllib.parse import urlparse
 import json
 import requests
+import copy
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
@@ -42,7 +43,8 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            generate_randomized_cert_name, load_cert_file,
                                                            trigger_workflow, _ensure_identity_resource_id,
                                                            AppType, _get_existing_secrets, store_as_secret_and_return_secret_ref,
-                                                           set_managed_identity, is_registry_msi_system)
+                                                           set_managed_identity, is_registry_msi_system, _get_app_from_revision,
+                                                           _validate_revision_name)
 from azure.cli.command_modules.containerapp._models import (
     RegistryCredentials as RegistryCredentialsModel,
 )
@@ -111,7 +113,8 @@ from ._clients import (
     SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient,
     MaintenanceConfigPreviewClient,
-    HttpRouteConfigPreviewClient
+    HttpRouteConfigPreviewClient,
+    LabelHistoryPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -125,7 +128,13 @@ from ._models import (
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
 
-from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity
+from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
+                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+
+from ._arc_utils import (get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
+                         replace_configmap, replace_deployment, delete_configmap, patch_coredns,
+                         create_folder, create_sub_folder,
+                         check_kube_connection, create_kube_client)
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -134,7 +143,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, JAVA_COMPONENT_GATEWAY, DOTNET_COMPONENT_RESOURCE_TYPE,
+                         CUSTOM_CORE_DNS, CORE_DNS, KUBE_SYSTEM)
 
 
 logger = get_logger(__name__)
@@ -451,6 +461,7 @@ def create_containerapp(cmd,
                         ingress=None,
                         allow_insecure=False,
                         revisions_mode="single",
+                        target_label=None,
                         secrets=None,
                         env_vars=None,
                         cpu=None,
@@ -495,7 +506,8 @@ def create_containerapp(cmd,
                         max_inactive_revisions=None,
                         runtime=None,
                         enable_java_metrics=None,
-                        enable_java_agent=None):
+                        enable_java_agent=None,
+                        kind=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -535,6 +547,8 @@ def update_containerapp_logic(cmd,
                               remove_env_vars=None,
                               replace_env_vars=None,
                               remove_all_env_vars=False,
+                              revisions_mode=None,
+                              target_label=None,
                               cpu=None,
                               memory=None,
                               revision_suffix=None,
@@ -601,6 +615,8 @@ def update_containerapp(cmd,
                         remove_env_vars=None,
                         replace_env_vars=None,
                         remove_all_env_vars=False,
+                        revisions_mode=None,
+                        target_label=None,
                         cpu=None,
                         memory=None,
                         revision_suffix=None,
@@ -641,6 +657,8 @@ def update_containerapp(cmd,
                                      remove_env_vars=remove_env_vars,
                                      replace_env_vars=replace_env_vars,
                                      remove_all_env_vars=remove_all_env_vars,
+                                     revisions_mode=revisions_mode,
+                                     target_label=target_label,
                                      cpu=cpu,
                                      memory=memory,
                                      revision_suffix=revision_suffix,
@@ -1206,6 +1224,8 @@ def containerapp_up(cmd,
                     build_env_vars=None,
                     ingress=None,
                     target_port=None,
+                    revisions_mode=None,
+                    target_label=None,
                     registry_user=None,
                     registry_pass=None,
                     env_vars=None,
@@ -1261,9 +1281,9 @@ def containerapp_up(cmd,
         target_port = 80 if not target_port else target_port
 
     if image:
-        if ingress and not target_port:
-            target_port = 80
-            logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
+        if ingress and not target_port and target_port != 0:
+            target_port = 0
+            logger.warning("No target-port provided, defaulting to auto-detect. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
     # Check if source contains a Dockerfile
     # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
@@ -1275,7 +1295,7 @@ def containerapp_up(cmd,
     custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
     extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
     env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
-    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress, registry_identity=registry_identity, user_assigned=user_assigned, system_assigned=system_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
     # Check and see if registry (username and passwords) or registry-identity are specified. If so, set is_registry_server_params_set to True to use those creds.
     is_registry_server_params_set = bool(registry_server and ((registry_user and registry_pass) or registry_identity))
@@ -1317,7 +1337,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1327,9 +1347,9 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates,
-                                         registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned)
+                                         registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type,
-                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned)
+                               registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
@@ -2051,6 +2071,105 @@ def connected_env_remove_storage(cmd, storage_name, name, resource_group_name, n
         return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def setup_core_dns(cmd, distro=None, kube_config=None, kube_context=None, skip_ssl_verification=False):
+    # Checking the connection to kubernetes cluster.
+    check_kube_connection(kube_config, kube_context, skip_ssl_verification)
+
+    # create a local path to store the original and the changed deployment and core dns configmap.
+    time_stamp = time.strftime("%Y-%m-%d-%H.%M.%S")
+
+    parent_folder, folder_status, error = create_folder("setup-core-dns", time_stamp)
+    if not folder_status:
+        raise ValidationError(error)
+
+    original_folder, folder_status, error = create_sub_folder(parent_folder, "original")
+    if not folder_status:
+        raise ValidationError(error)
+
+    kube_client = create_kube_client(kube_config, kube_context, skip_ssl_verification)
+
+    # backup original deployment and configmap
+    logger.info("Backup existing coredns deployment and configmap")
+    original_coredns_deployment = get_core_dns_deployment(kube_client, original_folder)
+    coredns_deployment = copy.deepcopy(original_coredns_deployment)
+
+    original_coredns_configmap = get_core_dns_configmap(kube_client, original_folder)
+    coredns_configmap = copy.deepcopy(original_coredns_configmap)
+
+    volumes = coredns_deployment.spec.template.spec.volumes
+    if volumes is None:
+        raise ValidationError('Unexpected Volumes in coredns deployment, Volumes not found')
+
+    volume_mounts = coredns_deployment.spec.template.spec.containers[0].volume_mounts
+    if volume_mounts is None:
+        raise ValidationError('Unexpected Volume mounts in coredns deployment, VolumeMounts not found')
+
+    coredns_configmap_volume_set = False
+    custom_coredns_configmap_volume_set = False
+    custom_coredns_configmap_volume_mounted = False
+
+    for volume in volumes:
+        if volume.config_map is not None:
+            if volume.config_map.name == CORE_DNS:
+                for mount in volume_mounts:
+                    if mount.name is not None and mount.name == volume.name:
+                        coredns_configmap_volume_set = True
+                        break
+            elif volume.config_map.name == CUSTOM_CORE_DNS:
+                custom_coredns_configmap_volume_set = True
+                for mount in volume_mounts:
+                    if mount.name is not None and mount.name == volume.name:
+                        custom_coredns_configmap_volume_mounted = True
+                        break
+
+    if not coredns_configmap_volume_set:
+        raise ValidationError("Cannot find volume and volume mounts for core dns config map")
+
+    original_custom_core_dns_configmap = backup_custom_core_dns_configmap(kube_client, original_folder)
+
+    new_filepath_with_timestamp, folder_status, error = create_sub_folder(parent_folder, "new")
+    if not folder_status:
+        raise ValidationError(error)
+
+    try:
+        patch_coredns(kube_client, coredns_configmap, coredns_deployment, new_filepath_with_timestamp,
+                      original_custom_core_dns_configmap is not None, not custom_coredns_configmap_volume_set, not custom_coredns_configmap_volume_mounted)
+    except Exception as e:
+        logger.error(f"Failed to setup custom coredns. {e}")
+        logger.info("Start to reverted coredns")
+        replace_succeeded = False
+        retry_count = 0
+        while not replace_succeeded and retry_count < 10:
+            logger.info(f"Retry the revert operation with retry count {retry_count}")
+
+            try:
+                logger.info("Start to reverted coredns configmap")
+                latest_core_dns_configmap = get_core_dns_configmap(kube_client)
+                latest_core_dns_configmap.data = original_coredns_configmap.data
+
+                replace_configmap(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_configmap)
+                logger.info("Reverted coredns configmap successfully")
+
+                logger.info("Start to reverted coredns deployment")
+                latest_core_dns_deployment = get_core_dns_deployment(kube_client)
+                latest_core_dns_deployment.spec.template.spec = original_coredns_deployment.spec.template.spec
+
+                replace_deployment(CORE_DNS, KUBE_SYSTEM, kube_client, latest_core_dns_deployment)
+                logger.info("Reverted coredns deployment successfully")
+
+                if original_custom_core_dns_configmap is None:
+                    delete_configmap(CUSTOM_CORE_DNS, KUBE_SYSTEM, kube_client)
+                replace_succeeded = True
+            except Exception as revertEx:
+                logger.warning(f"Failed to revert coredns configmap or deployment {revertEx}")
+                retry_count = retry_count + 1
+                time.sleep(2)
+
+        if not replace_succeeded:
+            logger.error(f"Failed to revert the deployment and configuration. "
+                         f"You can get the original coredns config and deployment from {original_folder}")
 
 
 def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
@@ -3417,5 +3536,176 @@ def delete_http_route_config(cmd, resource_group_name, name, http_route_config_n
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_label_history(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return LabelHistoryPreviewClient.list(cmd, resource_group_name, name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_label_history(cmd, resource_group_name, name, label):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        return LabelHistoryPreviewClient.show(cmd, resource_group_name, name, label)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def set_revision_mode(cmd, resource_group_name, name, mode, target_label=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    # Mode unchanged, no-op
+    if containerapp_def["properties"]["configuration"]["activeRevisionsMode"].lower() == mode.lower():
+        return containerapp_def["properties"]["configuration"]["activeRevisionsMode"]
+
+    if mode.lower() == "labels" and "ingress" not in containerapp_def['properties']['configuration']:
+        raise ValidationError("Ingress is requried for labels mode.")
+
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, "properties", "configuration", "activeRevisionsMode", value=mode)
+    safe_set(containerapp_patch_def, "properties", "configuration", "targetLabel", value=target_label)
+
+    # If we're going into labels mode, replace the default traffic config with the target label and latest revision.
+    # Otherwise all revisions will be deactivated.
+    traffic = safe_get(containerapp_def, "properties", "configuration", "ingress", "traffic")
+    if mode.lower() == "labels" and len(traffic) == 1 and safe_get(traffic[0], "latestRevision") is True:
+        safe_set(containerapp_patch_def, "properties", "configuration", "ingress", "traffic", value=[{
+            "revisionName": containerapp_def["properties"]["latestRevisionName"],
+            "weight": 100,
+            "label": target_label
+        }])
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["activeRevisionsMode"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False, yes=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not name:
+        name = _get_app_from_revision(revision)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to add labels.")
+
+    traffic_weight = safe_get(containerapp_def, 'properties', 'configuration', 'ingress', 'traffic')
+
+    _validate_revision_name(cmd, revision, resource_group_name, name)
+
+    is_labels_mode = safe_get(containerapp_def, 'properties', 'configuration', 'activeRevisionsMode', default='single').lower() == 'labels'
+
+    label_added = False
+    for weight in traffic_weight:
+        if "label" in weight and weight["label"].lower() == label.lower():
+            r_name = "latest" if "latestRevision" in weight and weight["latestRevision"] else weight["revisionName"]
+            if not yes and r_name.lower() != revision.lower():
+                msg = f"A weight with the label '{label}' already exists. Remove existing label '{label}' from '{r_name}' and add to '{revision}'?"
+                if is_labels_mode:
+                    msg = f"Label '{label}' already exists with revision '{r_name}'. Replace '{r_name}' with '{revision}'?"
+                if not prompt_y_n(msg, default="n"):
+                    raise ArgumentUsageError("Usage Error: cannot specify existing label without agreeing to update values.")
+
+            # in labels mode we update the revision assigned to the label, not the label assigned to the revision
+            if is_labels_mode:
+                weight["revisionName"] = revision
+                label_added = True
+            else:
+                weight["label"] = None
+
+        if "latestRevision" in weight:
+            if revision.lower() == "latest" and weight["latestRevision"]:
+                label_added = True
+                weight["label"] = label
+        elif not is_labels_mode:
+            if revision.lower() == weight["revisionName"].lower():
+                label_added = True
+                weight["label"] = label
+
+    if not label_added:
+        traffic_weight.append({
+            "revisionName": revision if revision.lower() != "latest" else None,
+            "weight": 0,
+            "latestRevision": revision.lower() == "latest",
+            "label": label
+        })
+
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, 'properties', 'configuration', 'ingress', 'traffic', value=traffic_weight)
+
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to remove labels.")
+
+    traffic_list = safe_get(containerapp_def, 'properties', 'configuration', 'ingress', 'traffic')
+
+    label_removed = False
+    is_labels_mode = safe_get(containerapp_def, 'properties', 'configuration', 'activeRevisionsMode', default='single').lower() == 'labels'
+
+    new_traffic_list = []
+    for traffic in traffic_list:
+        if "label" in traffic and traffic["label"].lower() == label.lower():
+            label_removed = True
+            # in labels mode we remove the whole entry, otherwise just clear the label.
+            if not is_labels_mode:
+                traffic["label"] = None
+                new_traffic_list.append(traffic)
+        else:
+            new_traffic_list.append(traffic)
+
+    if not label_removed:
+        raise ValidationError("Please specify a label name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    safe_set(containerapp_patch_def, 'properties', 'configuration', 'ingress', 'traffic', value=new_traffic_list)
+
+    try:
+        r = ContainerAppPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
     except Exception as e:
         handle_raw_exception(e)

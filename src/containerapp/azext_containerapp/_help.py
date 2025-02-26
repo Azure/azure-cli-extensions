@@ -908,6 +908,11 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
+    - name: Create a container app with kind as functionapp
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --kind functionapp
 """
 
 # containerapp update for preview
@@ -1013,6 +1018,23 @@ helps['containerapp connected-env list'] = """
     - name: List connected environments by resource group.
       text: |
           az containerapp connected-env list -g MyResourceGroup
+"""
+
+helps['containerapp arc'] = """
+    type: group
+    short-summary: Install prerequisites for Kubernetes cluster on Arc
+"""
+
+helps['containerapp arc setup-core-dns'] = """
+    type: command
+    short-summary: Setup CoreDNS for Kubernetes cluster on Arc
+    examples:
+    - name: Setup CoreDNS for Aks on Azure Local on Arc
+      text: |
+          az containerapp arc setup-core-dns --distro AksAzureLocal
+    - name: Setup CoreDNS for Aks on Azure Local on Arc by specifying the kubeconfig and kubecontext.
+      text: |
+          az containerapp arc setup-core-dns --distro AksAzureLocal --kube-config /path/to/kubeconfig --kube-context kubeContextName
 """
 
 helps['containerapp connected-env dapr-component'] = """
@@ -2257,6 +2279,33 @@ helps['containerapp debug'] = """
     - name: Debug by connecting to a container app's debug console by replica, revision and container
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
+"""
+
+helps['containerapp label-history'] = """
+    type: group
+    short-summary: Show the history for one or more labels on the Container App.
+    examples:
+    - name: Show Label History
+      text: |
+          az containerapp label-history show -n my-containerapp -g MyResourceGroup --label LabelName
+"""
+
+helps['containerapp label-history list'] = """
+    type: command
+    short-summary: List the history for all labels on the Container App.
+    examples:
+    - name: List All Label History
+      text: |
+          az containerapp label-history list -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp label-history show'] = """
+    type: command
+    short-summary: Show the history for a specific label on the Container App.
+    examples:
+    - name: Show Label History
+      text: |
+          az containerapp label-history show -n my-containerapp -g MyResourceGroup --label LabelName
 """
 
 helps['containerapp env http-route-config'] = """

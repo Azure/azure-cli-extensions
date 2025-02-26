@@ -1769,8 +1769,7 @@ def check_msi_expiry(connected_cluster: ConnectedCluster) -> str:
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.exception(
-            "An exception has occured while performing msi expiry check on the "
-            "cluster."
+            "An exception has occured while performing msi expiry check on the cluster."
         )
         telemetry.set_exception(
             exception=e,

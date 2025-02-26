@@ -108,6 +108,9 @@ class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
 
+class MaxUnavailableNamespace:
+    def __init__(self, max_unavailable):
+        self.max_unavailable = max_unavailable
 
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
@@ -155,6 +158,21 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+class TestMaxUnavailable(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_unavailable(MaxUnavailableNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
@@ -638,32 +656,94 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         namespace = SimpleNamespace(
             **{
                 "asg_ids": "invalid",
+                "allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_application_security_groups(namespace)
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_application_security_groups_without_allowed_host_ports(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": asg_ids,
+                "allowed_host_ports": [],
+            }
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_nodepool_application_security_groups_without_allowed_host_ports(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": asg_ids,
+                "nodepool_allowed_host_ports": [],
+            }
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_application_security_groups(
+                namespace
+            )
 
     def test_empty_application_security_groups(self):
         namespace = SimpleNamespace(
             **{
                 "asg_ids": "",
+                "allowed_host_ports": [],
             }
         )
-        validators.validate_application_security_groups(namespace)
-
-    def test_multiple_application_security_groups(self):
-        asg_ids = ",".join(
-            [
-                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
-                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
-            ]
+        validators.validate_application_security_groups(
+            namespace
         )
+
+    def test_empty_nodepool_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": "",
+                "nodepool_allowed_host_ports": [],
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+    def test_multiple_application_security_groups(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
         namespace = SimpleNamespace(
             **{
                 "asg_ids": asg_ids,
+                "allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
             }
         )
-        validators.validate_application_security_groups(namespace)
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_multiple_nodepool_application_security_groups(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": asg_ids,
+                "nodepool_allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
 
 
 class MaintenanceWindowNameSpace:

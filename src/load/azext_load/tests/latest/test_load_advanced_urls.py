@@ -77,6 +77,21 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             checks=checks,
         )
         
+        # Delete file, since we can't have multiple files with same name irrespective of file type
+        self.kwargs.update(
+            {
+                "file_name": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_NAME,
+            }
+        )
+        self.cmd(
+            "az load test file delete "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--file-name {file_name} "
+            "--yes"
+        )
+
         # Update the load test with advanced URL requests json using file upload
         # file type URL_TEST_CONFIG specified
         # assert test script is generated
@@ -259,7 +274,8 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         assert test_script_uri != urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path
         
         # Invalid: Try upload advanced URL requests json config file as a TEST_SCRIPT
-        _configure_command_assert_exception(self, "File upload failed due to validation failure: Test script is invalid", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="TEST_SCRIPT")
+        # Uncomment when BUG : https://devdiv.visualstudio.com/OnlineServices/_workitems/edit/2393957 is fixed. 
+        #_configure_command_assert_exception(self, "Invalid FileType", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="TEST_SCRIPT")
         
         self.cmd(
             "az load test delete "
