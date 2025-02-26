@@ -15,12 +15,12 @@ jobs:
     name: Introduce git hook in developer env
     steps:
       - name: Checkout git hook notice message
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           sparse-checkout: |
             .github/template/git-hooks-note.md
       - name: Comment on pull request
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         with:
            repo-token: ${{ secrets.GITHUB_TOKEN }}
            message-id: gitHookNoticeComment
