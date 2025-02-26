@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from knack.log import get_logger
-
+from ..profiles import CUSTOM_DATA_STORAGE_FILESHARE
 logger = get_logger(__name__)
 
 
@@ -52,3 +52,17 @@ def close_handle(client, **kwargs):
     if kwargs.pop("close_all", None) or handle == '*':
         return client.close_all_handles(**kwargs)
     return client.close_handle(handle=handle, **kwargs)
+
+
+def create_share(cmd, client, metadata=None, quota=None, fail_on_exist=False, timeout=None, **kwargs):
+    from azure.core.exceptions import HttpResponseError
+    try:
+        client.create_share(metadata=metadata, quota=quota, timeout=timeout, **kwargs)
+        return True
+    except HttpResponseError as ex:
+        from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
+        StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
+                                          resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+        if not fail_on_exist:
+            return _dont_fail_on_exist(ex, StorageErrorCode.share_already_exists)
+        raise ex
