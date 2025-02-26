@@ -2,14 +2,16 @@
 
 Release History
 ===============
-1.4.1
-++++++
-* Move the `from azure.cli.core.util import run_az_cmd` to function scope to unblock users of existing features and most of the new features. Only the high scale download files feature requires this import, and it will be fixed in the next release.
 
 
 1.5.0
 ++++++
 * Add support for Locust based load tests.
+
+
+1.4.1
+++++++
+* Move the `from azure.cli.core.util import run_az_cmd` to function scope to unblock users of existing features and most of the new features. Only the high scale download files feature requires this import, and it will be fixed in the next release.
 
 
 1.4.0
