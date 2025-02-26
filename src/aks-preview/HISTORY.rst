@@ -13,6 +13,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 +++++++
 * `az aks enable-addons`: Fix azure policy key under addonProfiles
 
+Pending
++++++++
+* Vendor new SDK and bump API version to 2024-10-02-preview.
+
 13.0.0b8
 +++++++
 * `az aks create/update``: Update recording rule group create logic for managed prometheus addon
@@ -40,9 +44,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 13.0.0b2
 +++++++
 * `az aks create/update`: Update advanced container networking service (acns) with 2024-09-02-preview API version enablement.
-
-Pending
-+++++++
 * Vendor new SDK and bump API version to 2024-09-02-preview.
 
 13.0.0b1

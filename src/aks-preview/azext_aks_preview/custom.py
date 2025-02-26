@@ -1850,7 +1850,7 @@ def aks_addon_list(cmd, client, resource_group_name, name):
             if mc.addon_profiles:
                 matching_key = next((key for key in mc.addon_profiles if key.lower() == addon_key.lower()), None)
                 if matching_key:
-                    enabled = bool(mc.addon_profiles[matching_key].enabled)                    
+                    enabled = bool(mc.addon_profiles[matching_key].enabled)
         current_addons.append({
             "name": addon_name,
             "api_key": addon_key,
