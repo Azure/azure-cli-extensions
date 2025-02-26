@@ -16,6 +16,7 @@ from azure.cli.command_modules.serviceconnector._params import (
     add_secret_store_argument,
     add_local_connection_block,
     add_customized_keys_argument,
+    add_connstr_props_argument,
     add_configuration_store_argument,
     add_opt_out_argument
 )
@@ -89,6 +90,7 @@ def load_arguments(self, _):
                 add_vnet_block(c, target)
                 add_connection_string_argument(c, source, target)
                 add_customized_keys_argument(c)
+                add_connstr_props_argument(c)
                 add_opt_out_argument(c)
                 c.argument('yes', arg_type=yes_arg_type)
                 c.argument('new', arg_type=new_arg_type)

@@ -72,7 +72,7 @@ class Wait(AAZWaitCommand):
             id_part="child_name_2",
             default="default",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern=r"^[-\w]+$",
                 max_length=100,
                 min_length=1,
             ),

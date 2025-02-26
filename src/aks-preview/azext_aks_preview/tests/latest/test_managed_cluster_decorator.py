@@ -7569,7 +7569,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     components=self.models.IstioComponents(
                         egress_gateways=[
                             self.models.IstioEgressGateway(
-                                enabled=True
+                                enabled=True,
+                                name="fake-name" # TODO: temp fix when bump new SDK
                             )
                         ]
                     )
