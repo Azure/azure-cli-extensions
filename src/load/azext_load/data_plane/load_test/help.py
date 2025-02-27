@@ -43,6 +43,9 @@ examples:
     - name: Create an advanced URL test with multiple HTTP requests using a JSON file.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --test-plan ~/resources/sample-url-requests.json --test-type URL
+    - name: Create a Locust based load test
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --test-plan ~/resources/sample-locust-file.py --test-type Locust --env LOCUST_HOST="https://azure.microsoft.com" LOCUST_SPAWN_RATE=0.3 LOCUST_RUN_TIME=120 LOCUST_USERS=4
     - name: Create a test with user assigned Managed Identity reference for engine.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type UserAssigned --engine-ref-ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
