@@ -47,14 +47,17 @@ class GatewayConverter(ConverterTemplate):
 
     def _get_routes(self, routes):
         aca_routes = []
+        name_counter = {}
         if routes:
             for route in routes:
-                aca_id = route['name'].split('/')[-1]
+                base_name = route['name'].split('/')[-1]
                 aca_uri = self._get_uri_from_route(route)
                 if route.get('properties', {}).get('routes') is not None:
                     for r in route['properties']['routes']:
+                        count = name_counter.get(base_name, 0) + 1
+                        name_counter[base_name] = count
                         aca_routes.append({
-                            "id": aca_id,
+                            "id": f"{base_name}_{count}",
                             "uri": r.get('uri', aca_uri),
                             "predicates": r.get('predicates') if r.get('predicates') else [],
                             "filters": r.get('filters') if r.get('filters') else [],
