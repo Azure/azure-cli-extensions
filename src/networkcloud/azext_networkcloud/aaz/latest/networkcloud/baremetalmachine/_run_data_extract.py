@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine run-data-extract",
-    is_preview=True,
 )
 class RunDataExtract(AAZCommand):
     """Run one or more data extractions on the provided bare metal machine. The URL to storage account with the command execution results and the command exit code can be retrieved from the operation status API once available.
@@ -23,9 +22,9 @@ class RunDataExtract(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/rundataextracts", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/rundataextracts", "2025-02-01"],
         ]
     }
 
@@ -181,7 +180,7 @@ class RunDataExtract(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }

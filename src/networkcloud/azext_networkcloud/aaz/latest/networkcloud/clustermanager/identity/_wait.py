@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2024-10-01-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-02-01", "identity"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -163,6 +163,7 @@ class _WaitHelper:
     @classmethod
     def _build_schema_cluster_manager_read(cls, _schema):
         if cls._schema_cluster_manager_read is not None:
+            _schema.etag = cls._schema_cluster_manager_read.etag
             _schema.id = cls._schema_cluster_manager_read.id
             _schema.identity = cls._schema_cluster_manager_read.identity
             _schema.location = cls._schema_cluster_manager_read.location
@@ -176,6 +177,9 @@ class _WaitHelper:
         cls._schema_cluster_manager_read = _schema_cluster_manager_read = AAZObjectType()
 
         cluster_manager_read = _schema_cluster_manager_read
+        cluster_manager_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
         cluster_manager_read.id = AAZStrType(
             flags={"read_only": True},
         )
@@ -318,6 +322,7 @@ class _WaitHelper:
         tags = _schema_cluster_manager_read.tags
         tags.Element = AAZStrType()
 
+        _schema.etag = cls._schema_cluster_manager_read.etag
         _schema.id = cls._schema_cluster_manager_read.id
         _schema.identity = cls._schema_cluster_manager_read.identity
         _schema.location = cls._schema_cluster_manager_read.location

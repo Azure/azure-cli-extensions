@@ -3,6 +3,12 @@
 Release History
 ===============
 
+3.0.0
+++++++++
+* This stable version supports NetworkCloud 2025-02-01 APIs.
+* Concurency control parameters have been introduced and include `ETag` property on resources and the ability to pass it via `--if-match` or `--if-none-match` parameters to create and update commands.
+* Alias `--mrg` is added to the `--managed-resource-group-configuration` parameter of the Cluster and Cluster Manager create commands for convenience.
+
 3.0.0b1
 ++++++++
 * This beta version supports NetworkCloud 2024-10-01-preview APIs.
