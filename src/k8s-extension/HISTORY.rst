@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.1
+++++++++++++++++++
+* microsoft.azuremonitor.containers.metrics: Update default region for azure monitor metrics extension in mooncake
+
 1.7.0
 ++++++++++++++++++
 * microsoft.workloadiam: Enhanced security by utilizing protected configuration settings for the join token instead of regular configuration settings.
