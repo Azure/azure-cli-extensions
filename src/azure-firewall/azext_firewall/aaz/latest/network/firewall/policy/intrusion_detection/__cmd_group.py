@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "network firewall policy intrusion-detection",
+)
 class __CMDGroup(AAZCommandGroup):
     """Manage intrusion signature rules and bypass rules
     """
