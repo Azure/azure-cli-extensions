@@ -2470,9 +2470,21 @@ networkfabric internalnetwork create:
     static_route_configuration:
       rule_exclusions:
       - option_length_too_long
+    native_ipv4_prefix_limit:
+      rule_exclusions:
+      - option_length_too_long
+    native_ipv6_prefix_limit:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric internalnetwork update:
   parameters:
     static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    native_ipv4_prefix_limit:
+      rule_exclusions:
+      - option_length_too_long
+    native_ipv6_prefix_limit:
       rule_exclusions:
       - option_length_too_long
   rule_exclusions:
