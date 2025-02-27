@@ -1,7 +1,10 @@
 .. :changelog:
-
 Release History
 ===============
+1.2.0
+* Add support for Table RBAC role definition and assignment CRUD actions.
+
++++++++
 1.2.0b1
 * Add support for Throughput bucketing.
 

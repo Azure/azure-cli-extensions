@@ -142,7 +142,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
-    source_os_disk_snapshot_url = json_output['accessSas']
+    source_os_disk_snapshot_url = json_output.get('accessSAS')
     logger.debug("source os disk snapshot url: %s",
                  source_os_disk_snapshot_url)
 
