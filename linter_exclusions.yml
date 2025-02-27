@@ -2352,14 +2352,20 @@ networkfabric acl create:
     dynamic_match_configurations:
       rule_exclusions:
       - option_length_too_long
+    global_access_control_list_actions:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric acl update:
   parameters:
     dynamic_match_configurations:
       rule_exclusions:
       - option_length_too_long
+    global_access_control_list_actions:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric controller create:
   parameters:
-    workload_er_connections:
+    workload_express_route_connections:
       rule_exclusions:
       - option_length_too_long
     is_workload_management_network_enabled:
@@ -2367,14 +2373,31 @@ networkfabric controller create:
       - option_length_too_long
 networkfabric controller update:
   parameters:
-    workload_er_connections:
+    workload_express_route_connections:
       rule_exclusions:
       - option_length_too_long
-  rule_exclusions:
-  - missing_command_test_coverage
+    rule_exclusions:
+      - missing_command_test_coverage
+networkfabric fabric create:
+  parameters:
+    rule_exclusions:
+    - missing_command_test_coverage
+    hardware_alert_threshold:
+      rule_exclusions:
+      - option_length_too_long
+    storage_account_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    unique_rd_configuration:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric fabric update:
   rule_exclusions:
   - missing_command_test_coverage
+  parameters:
+    hardware_alert_threshold:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric rack create:
   rule_exclusions:
   - missing_command_test_coverage
@@ -2401,12 +2424,21 @@ networkfabric nni create:
     option_b_layer3_configuration:
       rule_exclusions:
       - option_length_too_long
+    conditional_default_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric nni update:
   parameters:
     npb_static_route_configuration:
       rule_exclusions:
       - option_length_too_long
     option_b_layer3_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    static_route_configuration:
       rule_exclusions:
       - option_length_too_long
   rule_exclusions:
@@ -2428,6 +2460,9 @@ networkfabric l3domain create:
     redistribute_static_routes:
       rule_exclusions:
       - option_length_too_long
+    static_route_route_policy:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric l3domain update:
   parameters:
     aggregate_route_configuration:
@@ -2442,6 +2477,9 @@ networkfabric l3domain update:
     redistribute_static_routes:
       rule_exclusions:
       - option_length_too_long
+    static_route_route_policy:
+      rule_exclusions:
+      - option_length_too_long
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric internalnetwork create:
@@ -2449,9 +2487,21 @@ networkfabric internalnetwork create:
     static_route_configuration:
       rule_exclusions:
       - option_length_too_long
+    native_ipv4_prefix_limit:
+      rule_exclusions:
+      - option_length_too_long
+    native_ipv6_prefix_limit:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric internalnetwork update:
   parameters:
     static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    native_ipv4_prefix_limit:
+      rule_exclusions:
+      - option_length_too_long
+    native_ipv6_prefix_limit:
       rule_exclusions:
       - option_length_too_long
   rule_exclusions:
@@ -2464,9 +2514,18 @@ networkfabric internetgateway update:
 networkfabric internetgatewayrule update:
   rule_exclusions:
   - missing_command_test_coverage
+networkfabric externalnetwork create:
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric externalnetwork update:
   rule_exclusions:
   - missing_command_test_coverage
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric ipextendedcommunity create:
   parameters:
     ip_extended_community_rules:
@@ -2488,9 +2547,15 @@ networkfabric taprule create:
     polling_interval_in_seconds:
       rule_exclusions:
       - option_length_too_long
+    global_network_tap_rule_actions:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric taprule update:
   parameters:
     dynamic_match_configurations:
+      rule_exclusions:
+      - option_length_too_long
+    global_network_tap_rule_actions:
       rule_exclusions:
       - option_length_too_long
 notification-hub authorization-rule create:
