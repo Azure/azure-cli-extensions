@@ -340,13 +340,7 @@ def convert_yaml_to_test(cmd, data):
     if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
 
-    if data.get(LoadTestConfigKeys.REFERENCE_IDENTITIES):
-        for identity in data[LoadTestConfigKeys.REFERENCE_IDENTITIES]:
-            if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
-                new_body["engineBuiltinIdentityType"], new_body["engineBuiltinIdentityIds"] = utils_yaml_config.yaml_parse_engine_identities(data=data)
-                if new_body["engineBuiltinIdentityType"] in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]:
-                    new_body.pop("engineBuiltinIdentityIds")
-                break
+    utils_yaml_config.update_engine_reference_identity(new_body, data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 # pylint: enable=line-too-long
