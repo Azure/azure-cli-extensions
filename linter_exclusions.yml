@@ -2416,10 +2416,16 @@ networkfabric interface delete:
   - missing_command_test_coverage
 networkfabric nni create:
   parameters:
+    conditional_default_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
     npb_static_route_configuration:
       rule_exclusions:
       - option_length_too_long
     option_b_layer3_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    static_route_configuration:
       rule_exclusions:
       - option_length_too_long
 networkfabric nni update:
@@ -2428,6 +2434,9 @@ networkfabric nni update:
       rule_exclusions:
       - option_length_too_long
     option_b_layer3_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    static_route_configuration:
       rule_exclusions:
       - option_length_too_long
   rule_exclusions:
@@ -2449,6 +2458,9 @@ networkfabric l3domain create:
     redistribute_static_routes:
       rule_exclusions:
       - option_length_too_long
+    static_route_route_policy:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric l3domain update:
   parameters:
     aggregate_route_configuration:
@@ -2461,6 +2473,9 @@ networkfabric l3domain update:
       rule_exclusions:
       - option_length_too_long
     redistribute_static_routes:
+      rule_exclusions:
+      - option_length_too_long
+    static_route_route_policy:
       rule_exclusions:
       - option_length_too_long
   rule_exclusions:
@@ -2527,12 +2542,18 @@ networkfabric taprule create:
     dynamic_match_configurations:
       rule_exclusions:
       - option_length_too_long
+    global_network_tap_rule_actions:
+      rule_exclusions:
+      - option_length_too_long
     polling_interval_in_seconds:
       rule_exclusions:
       - option_length_too_long
 networkfabric taprule update:
   parameters:
     dynamic_match_configurations:
+      rule_exclusions:
+      - option_length_too_long
+    global_network_tap_rule_actions:
       rule_exclusions:
       - option_length_too_long
 notification-hub authorization-rule create:
