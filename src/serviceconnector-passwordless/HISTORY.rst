@@ -2,6 +2,14 @@
 
 Release History
 ===============
+3.3.0
+++++++
+* Fix issue with params to support interactive mode for Fabric SQL
+
+3.2.0
+++++++
+* Introduce support for Fabric SQL as a target service. Introduce new `connstr_props` argument to configure Fabric SQL.
+
 3.1.3
 ++++++
 * Fix argument missing

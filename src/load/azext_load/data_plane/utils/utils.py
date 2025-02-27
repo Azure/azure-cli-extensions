@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes, AllowedTestTypes
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, AllowedTestPlanFileExtensions
 
 logger = get_logger(__name__)
 
@@ -745,10 +745,26 @@ def upload_zipped_artifacts_helper(
                 file_to_upload=zip_artifact, file_type=AllowedFileTypes.ZIPPED_ARTIFACTS,
                 wait=wait
             )
-            if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
+            if wait and file_response.get("validationStatus") not in ("VALIDATION_SUCCESS", "NOT_VALIDATED"):
+                # pylint: disable=line-too-long
                 raise FileOperationError(
-                    f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again."
+                    "ZIP artifact {} is not valid. Please check the file and try again. Current file status is {}".format(
+                        zip_artifact, file_response.get("validationStatus")
+                    )
                 )
+
+
+def infer_test_type_from_test_plan(test_plan):
+    if test_plan is None:
+        return None
+    _, file_extension = os.path.splitext(test_plan)
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.JMX.value:
+        return AllowedTestTypes.JMX.value
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.URL.value:
+        return AllowedTestTypes.URL.value
+    if file_extension.casefold() == AllowedTestPlanFileExtensions.LOCUST.value:
+        return AllowedTestTypes.LOCUST.value
+    return None
 
 
 def _evaluate_file_type_for_test_script(test_type, test_plan):
@@ -797,8 +813,7 @@ def upload_test_plan_helper(
 def upload_files_helper(
     client, test_id, yaml_data, test_plan, load_test_config_file, wait, test_type
 ):
-    files = client.list_test_files(test_id)
-
+    files = list(client.list_test_files(test_id))
     upload_properties_file_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data,
