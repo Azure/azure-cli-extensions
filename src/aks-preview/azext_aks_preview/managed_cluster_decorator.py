@@ -2388,6 +2388,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.components.egress_gateways.append(
                     self.models.IstioEgressGateway(  # pylint: disable=no-member
                         enabled=enable_egress_gateway,
+                        name="fake-name",  # TODO: temp fix when bump new SDK
                     )
                 )
                 updated = True
