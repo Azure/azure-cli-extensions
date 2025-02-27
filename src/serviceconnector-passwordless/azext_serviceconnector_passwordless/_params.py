@@ -9,7 +9,6 @@ from azure.cli.command_modules.serviceconnector._params import (
     add_client_type_argument,
     add_connection_name_argument,
     add_source_resource_block,
-    add_target_resource_block,
     add_new_addon_argument,
     add_vnet_block,
     add_connection_string_argument,
@@ -59,6 +58,29 @@ def add_auth_block(context, source, target):
         else:
             for arg in AUTH_TYPE_PARAMS.get(auth_type):
                 context.ignore(arg)
+
+
+def add_target_resource_block(context, target):
+    target_args = TARGET_RESOURCES_PARAMS.get(target)
+    for resource, args in TARGET_RESOURCES_PARAMS.items():
+        if resource != target:
+            for arg in args:
+                if arg not in target_args:
+                    context.ignore(arg)
+
+    required_args = []
+    if target in TARGET_RESOURCES_PARAMS:
+        for arg, content in TARGET_RESOURCES_PARAMS.get(target).items():
+            context.argument(arg, options_list=content.get('options'), type=str,
+                             help='{}. Required if \'--target-id\' is not specified.'.format(content.get('help')))
+            required_args.append(content.get('options')[0])
+
+        context.argument('target_id', type=str,
+                         help='The resource id of target service. Required if {required_args} '
+                         'are not specified.'.format(required_args=str(required_args)))
+
+    if target != RESOURCE.KeyVault:
+        context.ignore('enable_csi')
 
 
 def load_arguments(self, _):
