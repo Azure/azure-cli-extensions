@@ -2379,6 +2379,10 @@ networkfabric controller update:
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric fabric update:
+  parameters:
+    hardware_alert_threshold:
+      rule_exclusions:
+      - option_length_too_long
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric rack create:
@@ -2470,7 +2474,16 @@ networkfabric internetgateway update:
 networkfabric internetgatewayrule update:
   rule_exclusions:
   - missing_command_test_coverage
+networkfabric externalnetwork create:
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric externalnetwork update:
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric ipextendedcommunity create:
