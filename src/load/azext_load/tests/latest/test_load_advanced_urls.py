@@ -286,7 +286,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         )
         
         # Invalid: Try create a load test with invalid test plan file extension
-        _configure_command_assert_exception(self, "Invalid test plan file extension: .yaml. Allowed values: .jmx, .json for JMX, URL test types respectively", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_plan=LoadTestConstants.LOAD_TEST_CONFIG_FILE)
+        _configure_command_assert_exception(self, "Invalid test plan file extension: .yaml. Allowed values: .jmx, .json, .py for JMX, URL, Locust test types respectively", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_plan=LoadTestConstants.LOAD_TEST_CONFIG_FILE)
 
         # Create JMX load test using .jmx test plan even with test type as URL
         self.kwargs.update(
