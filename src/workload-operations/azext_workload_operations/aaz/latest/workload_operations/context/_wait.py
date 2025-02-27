@@ -46,7 +46,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -87,7 +87,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}",
                 **self.url_parameters
             )
 
@@ -195,6 +195,7 @@ class Wait(AAZWaitCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
+            _element.state = AAZStrType()
 
             hierarchies = cls._schema_on_200.properties.hierarchies
             hierarchies.Element = AAZObjectType()

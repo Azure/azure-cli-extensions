@@ -93,7 +93,7 @@ class Deprecate(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}/deprecate",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/targets/{targetName}/deprecate",
                 **self.url_parameters
             )
 

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -49,7 +49,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -203,16 +203,16 @@ class Wait(AAZWaitCommand):
                 serialized_name="hierarchyLevel",
                 flags={"required": True},
             )
-            properties.is_deprecated = AAZBoolType(
-                serialized_name="isDeprecated",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.solution_scope = AAZStrType(
                 serialized_name="solutionScope",
+            )
+            properties.state = AAZStrType()
+            properties.status = AAZObjectType(
+                flags={"read_only": True},
             )
             properties.target_specification = AAZFreeFormDictType(
                 serialized_name="targetSpecification",
@@ -221,6 +221,43 @@ class Wait(AAZWaitCommand):
 
             capabilities = cls._schema_on_200.properties.capabilities
             capabilities.Element = AAZStrType()
+
+            status = cls._schema_on_200.properties.status
+            status.deployed = AAZIntType()
+            status.expected_running_job_id = AAZIntType(
+                serialized_name="expectedRunningJobId",
+            )
+            status.generation = AAZIntType()
+            status.last_modified = AAZStrType(
+                serialized_name="lastModified",
+            )
+            status.running_job_id = AAZIntType(
+                serialized_name="runningJobId",
+            )
+            status.status = AAZStrType()
+            status.status_details = AAZStrType(
+                serialized_name="statusDetails",
+            )
+            status.target_statuses = AAZListType(
+                serialized_name="targetStatuses",
+            )
+
+            target_statuses = cls._schema_on_200.properties.status.target_statuses
+            target_statuses.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.status.target_statuses.Element
+            _element.component_statuses = AAZListType(
+                serialized_name="componentStatuses",
+            )
+            _element.name = AAZStrType()
+            _element.status = AAZStrType()
+
+            component_statuses = cls._schema_on_200.properties.status.target_statuses.Element.component_statuses
+            component_statuses.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.status.target_statuses.Element.component_statuses.Element
+            _element.name = AAZStrType()
+            _element.status = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

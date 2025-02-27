@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations context site-reference create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create Site Reference  Resource
+    """Create Site Reference Resource
     """
 
     _aaz_info = {
@@ -71,7 +70,7 @@ class Create(AAZCommand):
         _args_schema.site_id = AAZStrArg(
             options=["--site-id"],
             arg_group="Properties",
-            help="Site Id of Site reference",
+            help="Azure Resource ID for Site",
         )
         return cls._args_schema
 
@@ -122,7 +121,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}/siteReferences/{siteReferenceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}/siteReferences/{siteReferenceName}",
                 **self.url_parameters
             )
 

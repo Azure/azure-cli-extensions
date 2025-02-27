@@ -22,8 +22,8 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.edge/workflows", "2025-01-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/workflows", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/private.edge/workflows", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/workflows", "2025-01-01-preview"],
         ]
     }
 
@@ -84,7 +84,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/microsoft.edge/workflows",
+                "/subscriptions/{subscriptionId}/providers/Private.Edge/workflows",
                 **self.url_parameters
             )
 
@@ -237,7 +237,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflows",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/workflows",
                 **self.url_parameters
             )
 

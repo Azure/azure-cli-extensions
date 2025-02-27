@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations solution-template create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Solution Template Resource
@@ -68,10 +67,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Description of Solution template",
         )
-        _args_schema.latest_version = AAZStrArg(
-            options=["--latest-version"],
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
             arg_group="Properties",
-            help="Latest solution template version",
+            help="State of resource",
+            enum={"active": "active", "inactive": "inactive"},
         )
 
         capabilities = cls._args_schema.capabilities
@@ -145,7 +145,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/solutionTemplates/{solutionTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}",
                 **self.url_parameters
             )
 
@@ -212,7 +212,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("capabilities", AAZListType, ".capabilities", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("latestVersion", AAZStrType, ".latest_version", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("state", AAZStrType, ".state")
 
             capabilities = _builder.get(".properties.capabilities")
             if capabilities is not None:
@@ -272,18 +272,15 @@ class Create(AAZCommand):
             properties.description = AAZStrType(
                 flags={"required": True},
             )
-            properties.is_deprecated = AAZBoolType(
-                serialized_name="isDeprecated",
-                flags={"read_only": True},
-            )
             properties.latest_version = AAZStrType(
                 serialized_name="latestVersion",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.state = AAZStrType()
 
             capabilities = cls._schema_on_200_201.properties.capabilities
             capabilities.Element = AAZStrType()

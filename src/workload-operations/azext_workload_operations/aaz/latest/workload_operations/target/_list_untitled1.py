@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations target list-subscriptions",
+    "workload-operations target list-untitled1",
     is_preview=True,
 )
 class ListUntitled1(AAZCommand):
-    """List by subscription id 
+    """List by subscription
     """
 
     _aaz_info = {
@@ -75,7 +75,7 @@ class ListUntitled1(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/private.edge/targets",
+                "/subscriptions/{subscriptionId}/providers/Private.Edge/targets",
                 **self.url_parameters
             )
 

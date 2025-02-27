@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations config-template version list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Config Template Version Resources
@@ -88,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}/versions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}/versions",
                 **self.url_parameters
             )
 
@@ -192,9 +191,6 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
-            )
-            properties.schema = AAZStrType(
-                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

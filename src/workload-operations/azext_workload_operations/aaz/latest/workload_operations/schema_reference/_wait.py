@@ -86,7 +86,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/microsoft.edge/schemaReferences/{schemaReferenceName}",
+                "/{resourceUri}/providers/Microsoft.Edge/schemaReferences/{schemaReferenceName}",
                 **self.url_parameters
             )
 

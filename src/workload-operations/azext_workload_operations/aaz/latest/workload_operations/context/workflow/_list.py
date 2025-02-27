@@ -12,22 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations config-template version wait",
+    "workload-operations context workflow list",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class List(AAZCommand):
+    """List Workflow resources
     """
 
     _aaz_info = {
+        "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/configtemplates/{}/versions/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/contexts/{}/workflows", "2025-01-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,22 +42,14 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.config_template_name = AAZStrArg(
-            options=["--config-template-name"],
-            help="The name of the ConfigTemplate",
+        _args_schema.context_name = AAZStrArg(
+            options=["--context-name"],
+            help="The name of the Context.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
-        _args_schema.config_template_version_name = AAZStrArg(
-            options=["-n", "--name", "--config-template-version-name"],
-            help="The name of the ConfigTemplateVersion",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
+                max_length=61,
+                min_length=3,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -65,7 +59,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ConfigTemplateVersionsGet(ctx=self.ctx)()
+        self.WorkflowsListByContext(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +71,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ConfigTemplateVersionsGet(AAZHttpOperation):
+    class WorkflowsListByContext(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +89,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}/versions/{configTemplateVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}/workflows",
                 **self.url_parameters
             )
 
@@ -110,11 +105,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configTemplateName", self.ctx.args.config_template_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "configTemplateVersionName", self.ctx.args.config_template_version_name,
+                    "contextName", self.ctx.args.context_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -165,38 +156,58 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.e_tag = AAZStrType(
                 serialized_name="eTag",
                 flags={"read_only": True},
             )
-            _schema_on_200.id = AAZStrType(
+            _element.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.configurations = AAZStrType(
+            extended_location = cls._schema_on_200.value.Element.extended_location
+            extended_location.name = AAZStrType(
                 flags={"required": True},
             )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.schema = AAZStrType(
-                flags={"required": True},
+            properties.workflow_template_id = AAZStrType(
+                serialized_name="workflowTemplateId",
+                flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -219,8 +230,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Wait"]
+__all__ = ["List"]

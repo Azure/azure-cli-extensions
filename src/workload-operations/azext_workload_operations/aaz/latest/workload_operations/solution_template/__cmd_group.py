@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workload-operations solution-template",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """to manage Solution Template
+    """This is for edge Config-Manager
     """
     pass
 

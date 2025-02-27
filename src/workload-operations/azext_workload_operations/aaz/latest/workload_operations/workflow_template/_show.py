@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations workflow-template show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a Workflow Template Resource
@@ -87,7 +86,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}",
                 **self.url_parameters
             )
 
@@ -183,7 +182,6 @@ class Show(AAZCommand):
             )
             properties.latest_version = AAZStrType(
                 serialized_name="latestVersion",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

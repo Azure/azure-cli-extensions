@@ -94,7 +94,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
                 **self.url_parameters
             )
 
@@ -185,9 +185,7 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.configurations = AAZStrType(
-                flags={"required": True},
-            )
+            properties.configurations = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -206,7 +204,6 @@ class Wait(AAZWaitCommand):
             )
             _element.orchestrator_type = AAZStrType(
                 serialized_name="orchestratorType",
-                flags={"required": True},
             )
             _element.specification = AAZFreeFormDictType()
 

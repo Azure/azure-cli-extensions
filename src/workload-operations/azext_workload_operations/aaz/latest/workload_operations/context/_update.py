@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations context update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update Context Resource
@@ -51,7 +50,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -87,6 +86,12 @@ class Update(AAZCommand):
         _element.name = AAZStrArg(
             options=["name"],
             help="Name of Capability",
+        )
+        _element.state = AAZStrArg(
+            options=["state"],
+            help="State of resource",
+            nullable=True,
+            enum={"active": "active", "inactive": "inactive"},
         )
 
         hierarchies = cls._args_schema.hierarchies
@@ -164,7 +169,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}",
                 **self.url_parameters
             )
 
@@ -263,7 +268,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}",
                 **self.url_parameters
             )
 
@@ -371,6 +376,7 @@ class Update(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("state", AAZStrType, ".state")
 
             hierarchies = _builder.get(".properties.hierarchies")
             if hierarchies is not None:
@@ -457,6 +463,7 @@ class _UpdateHelper:
         _element.name = AAZStrType(
             flags={"required": True},
         )
+        _element.state = AAZStrType()
 
         hierarchies = _schema_context_read.properties.hierarchies
         hierarchies.Element = AAZObjectType()

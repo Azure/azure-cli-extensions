@@ -118,7 +118,7 @@ class DeleteRevision(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}/deleteRevision",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/targets/{targetName}/deleteRevision",
                 **self.url_parameters
             )
 

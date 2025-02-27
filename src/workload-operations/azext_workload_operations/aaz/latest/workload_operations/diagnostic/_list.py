@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations diagnostic list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Diagnostics resources within an Azure subscription.
@@ -84,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/microsoft.edge/diagnostics",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Edge/diagnostics",
                 **self.url_parameters
             )
 
@@ -164,6 +163,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -172,6 +174,7 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -210,6 +213,9 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
     class DiagnosticsListByResourceGroup(AAZHttpOperation):
@@ -226,7 +232,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/diagnostics",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/diagnostics",
                 **self.url_parameters
             )
 
@@ -310,6 +316,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -318,6 +327,7 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -355,6 +365,9 @@ class List(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

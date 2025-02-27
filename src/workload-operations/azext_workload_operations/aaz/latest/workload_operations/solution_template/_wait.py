@@ -85,7 +85,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/solutionTemplates/{solutionTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}",
                 **self.url_parameters
             )
 
@@ -182,18 +182,15 @@ class Wait(AAZWaitCommand):
             properties.description = AAZStrType(
                 flags={"required": True},
             )
-            properties.is_deprecated = AAZBoolType(
-                serialized_name="isDeprecated",
-                flags={"read_only": True},
-            )
             properties.latest_version = AAZStrType(
                 serialized_name="latestVersion",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.state = AAZStrType()
 
             capabilities = cls._schema_on_200.properties.capabilities
             capabilities.Element = AAZStrType()

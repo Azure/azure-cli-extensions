@@ -13,7 +13,10 @@ from ._create import *
 from ._create_version import *
 from ._delete import *
 from ._delete_version import *
+from ._deprecate import *
 from ._list import *
+from ._list_untitled1 import *
+from ._remove_version import *
 from ._show import *
 from ._update import *
 from ._wait import *

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema list-subscriptions",
+    "workload-operations schema list-untitled1",
     is_preview=True,
 )
 class ListUntitled1(AAZCommand):
@@ -22,7 +22,7 @@ class ListUntitled1(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.edge/schemas", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/private.edge/schemas", "2025-01-01-preview"],
         ]
     }
 
@@ -75,7 +75,7 @@ class ListUntitled1(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/microsoft.edge/schemas",
+                "/subscriptions/{subscriptionId}/providers/Private.Edge/schemas",
                 **self.url_parameters
             )
 

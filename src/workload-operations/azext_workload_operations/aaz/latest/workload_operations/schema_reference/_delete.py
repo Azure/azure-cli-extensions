@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations schema-reference delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -111,7 +110,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/microsoft.edge/schemaReferences/{schemaReferenceName}",
+                "/{resourceUri}/providers/Microsoft.Edge/schemaReferences/{schemaReferenceName}",
                 **self.url_parameters
             )
 

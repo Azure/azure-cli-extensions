@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations target uninstall",
-    is_preview=True,
 )
 class Uninstall(AAZCommand):
     """Post request to uninstall
@@ -22,7 +21,7 @@ class Uninstall(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/targets/{}/uninstall", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/uninstallsolution", "2025-01-01-preview"],
         ]
     }
 
@@ -71,7 +70,7 @@ class Uninstall(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TargetsUninstall(ctx=self.ctx)()
+        yield self.TargetsUninstallSolution(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +81,7 @@ class Uninstall(AAZCommand):
     def post_operations(self):
         pass
 
-    class TargetsUninstall(AAZHttpOperation):
+    class TargetsUninstallSolution(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +102,7 @@ class Uninstall(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}/uninstall",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/uninstallSolution",
                 **self.url_parameters
             )
 

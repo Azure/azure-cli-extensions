@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations schema-reference show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a Schema Reference Resource
@@ -88,7 +87,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/microsoft.edge/schemaReferences/{schemaReferenceName}",
+                "/{resourceUri}/providers/Microsoft.Edge/schemaReferences/{schemaReferenceName}",
                 **self.url_parameters
             )
 

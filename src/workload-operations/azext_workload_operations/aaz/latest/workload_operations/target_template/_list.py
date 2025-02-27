@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations target-template list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List by subscription
@@ -84,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/microsoft.edge/targetTemplates",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Edge/targetTemplates",
                 **self.url_parameters
             )
 
@@ -233,7 +232,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/targetTemplates",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targetTemplates",
                 **self.url_parameters
             )
 

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations workflow-template version update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Workflow Template Version Resource
@@ -80,6 +79,7 @@ class Update(AAZCommand):
             options=["--configurations"],
             arg_group="Properties",
             help="Config expressions for this workflow version",
+            nullable=True,
         )
         _args_schema.stage_spec_template = AAZListArg(
             options=["--stage-spec-template"],
@@ -100,6 +100,7 @@ class Update(AAZCommand):
         _element.orchestrator_type = AAZStrArg(
             options=["orchestrator-type"],
             help="Orchestrator type",
+            nullable=True,
             enum={"TO": "TO"},
         )
         _element.specification = AAZFreeFormDictArg(
@@ -153,7 +154,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
                 **self.url_parameters
             )
 
@@ -256,7 +257,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}/versions/{workflowTemplateVersionName}",
                 **self.url_parameters
             )
 
@@ -360,7 +361,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("configurations", AAZStrType, ".configurations")
                 properties.set_prop("stageSpecTemplate", AAZListType, ".stage_spec_template", typ_kwargs={"flags": {"required": True}})
 
             stage_spec_template = _builder.get(".properties.stageSpecTemplate")
@@ -370,7 +371,7 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.stageSpecTemplate[]")
             if _elements is not None:
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("orchestratorType", AAZStrType, ".orchestrator_type")
                 _elements.set_prop("specification", AAZFreeFormDictType, ".specification")
 
             specification = _builder.get(".properties.stageSpecTemplate[].specification")
@@ -427,9 +428,7 @@ class _UpdateHelper:
         )
 
         properties = _schema_workflow_template_version_read.properties
-        properties.configurations = AAZStrType(
-            flags={"required": True},
-        )
+        properties.configurations = AAZStrType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
@@ -448,7 +447,6 @@ class _UpdateHelper:
         )
         _element.orchestrator_type = AAZStrType(
             serialized_name="orchestratorType",
-            flags={"required": True},
         )
         _element.specification = AAZFreeFormDictType()
 

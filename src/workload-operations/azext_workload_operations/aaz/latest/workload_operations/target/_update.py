@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations target update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Target Resource
@@ -22,7 +21,7 @@ class Update(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/targets/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -54,7 +53,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -88,6 +87,13 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Scope of the target resource",
             nullable=True,
+        )
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
+            arg_group="Properties",
+            help="State of resource",
+            nullable=True,
+            enum={"active": "active", "inactive": "inactive"},
         )
         _args_schema.target_specification = AAZFreeFormDictArg(
             options=["--target-specification"],
@@ -160,7 +166,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
                 **self.url_parameters
             )
 
@@ -259,7 +265,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
                 **self.url_parameters
             )
 
@@ -361,6 +367,7 @@ class Update(AAZCommand):
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("hierarchyLevel", AAZStrType, ".hierarchy_level", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("solutionScope", AAZStrType, ".solution_scope")
+                properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification", typ_kwargs={"flags": {"required": True}})
 
             capabilities = _builder.get(".properties.capabilities")
@@ -457,16 +464,16 @@ class _UpdateHelper:
             serialized_name="hierarchyLevel",
             flags={"required": True},
         )
-        properties.is_deprecated = AAZBoolType(
-            serialized_name="isDeprecated",
-            flags={"read_only": True},
-        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
         properties.solution_scope = AAZStrType(
             serialized_name="solutionScope",
+        )
+        properties.state = AAZStrType()
+        properties.status = AAZObjectType(
+            flags={"read_only": True},
         )
         properties.target_specification = AAZFreeFormDictType(
             serialized_name="targetSpecification",
@@ -475,6 +482,43 @@ class _UpdateHelper:
 
         capabilities = _schema_target_read.properties.capabilities
         capabilities.Element = AAZStrType()
+
+        status = _schema_target_read.properties.status
+        status.deployed = AAZIntType()
+        status.expected_running_job_id = AAZIntType(
+            serialized_name="expectedRunningJobId",
+        )
+        status.generation = AAZIntType()
+        status.last_modified = AAZStrType(
+            serialized_name="lastModified",
+        )
+        status.running_job_id = AAZIntType(
+            serialized_name="runningJobId",
+        )
+        status.status = AAZStrType()
+        status.status_details = AAZStrType(
+            serialized_name="statusDetails",
+        )
+        status.target_statuses = AAZListType(
+            serialized_name="targetStatuses",
+        )
+
+        target_statuses = _schema_target_read.properties.status.target_statuses
+        target_statuses.Element = AAZObjectType()
+
+        _element = _schema_target_read.properties.status.target_statuses.Element
+        _element.component_statuses = AAZListType(
+            serialized_name="componentStatuses",
+        )
+        _element.name = AAZStrType()
+        _element.status = AAZStrType()
+
+        component_statuses = _schema_target_read.properties.status.target_statuses.Element.component_statuses
+        component_statuses.Element = AAZObjectType()
+
+        _element = _schema_target_read.properties.status.target_statuses.Element.component_statuses.Element
+        _element.name = AAZStrType()
+        _element.status = AAZStrType()
 
         system_data = _schema_target_read.system_data
         system_data.created_at = AAZStrType(

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations target resolve",
-    is_preview=True,
 )
 class Resolve(AAZCommand):
     """Post request to resolve configuration
@@ -22,7 +21,7 @@ class Resolve(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/targets/{}/resolve", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/resolveconfiguration", "2025-01-01-preview"],
         ]
     }
 
@@ -52,7 +51,7 @@ class Resolve(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -61,6 +60,20 @@ class Resolve(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.solution_dependencies = AAZListArg(
+            options=["--solution-dependencies"],
+            arg_group="Body",
+            help="Solution Dependencies",
+        )
+        _args_schema.solution_instance_name = AAZStrArg(
+            options=["--solution-instance-name"],
+            arg_group="Body",
+            help="Solution Instance Name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
+                max_length=24,
+            ),
+        )
         _args_schema.solution_template = AAZStrArg(
             options=["--solution-template"],
             arg_group="Body",
@@ -73,11 +86,61 @@ class Resolve(AAZCommand):
             help="Solution Template Version Name",
             required=True,
         )
+
+        solution_dependencies = cls._args_schema.solution_dependencies
+        solution_dependencies.Element = AAZObjectArg()
+        cls._build_args_solution_dependency_parameter_create(solution_dependencies.Element)
         return cls._args_schema
+
+    _args_solution_dependency_parameter_create = None
+
+    @classmethod
+    def _build_args_solution_dependency_parameter_create(cls, _schema):
+        if cls._args_solution_dependency_parameter_create is not None:
+            _schema.dependencies = cls._args_solution_dependency_parameter_create.dependencies
+            _schema.solution_template_id = cls._args_solution_dependency_parameter_create.solution_template_id
+            _schema.solution_template_version = cls._args_solution_dependency_parameter_create.solution_template_version
+            _schema.solution_version_id = cls._args_solution_dependency_parameter_create.solution_version_id
+            _schema.target_id = cls._args_solution_dependency_parameter_create.target_id
+            return
+
+        cls._args_solution_dependency_parameter_create = AAZObjectArg()
+
+        solution_dependency_parameter_create = cls._args_solution_dependency_parameter_create
+        solution_dependency_parameter_create.dependencies = AAZListArg(
+            options=["dependencies"],
+            help="Solution dependencies",
+        )
+        solution_dependency_parameter_create.solution_template_id = AAZStrArg(
+            options=["solution-template-id"],
+            help="Solution Template Id",
+        )
+        solution_dependency_parameter_create.solution_template_version = AAZStrArg(
+            options=["solution-template-version"],
+            help="Solution Template Version",
+        )
+        solution_dependency_parameter_create.solution_version_id = AAZStrArg(
+            options=["solution-version-id"],
+            help="Solution Version Id",
+        )
+        solution_dependency_parameter_create.target_id = AAZStrArg(
+            options=["target-id"],
+            help="Target Id",
+        )
+
+        dependencies = cls._args_solution_dependency_parameter_create.dependencies
+        dependencies.Element = AAZObjectArg()
+        cls._build_args_solution_dependency_parameter_create(dependencies.Element)
+
+        _schema.dependencies = cls._args_solution_dependency_parameter_create.dependencies
+        _schema.solution_template_id = cls._args_solution_dependency_parameter_create.solution_template_id
+        _schema.solution_template_version = cls._args_solution_dependency_parameter_create.solution_template_version
+        _schema.solution_version_id = cls._args_solution_dependency_parameter_create.solution_version_id
+        _schema.target_id = cls._args_solution_dependency_parameter_create.target_id
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TargetsResolve(ctx=self.ctx)()
+        yield self.TargetsResolveConfiguration(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -92,7 +155,7 @@ class Resolve(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TargetsResolve(AAZHttpOperation):
+    class TargetsResolveConfiguration(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -122,7 +185,7 @@ class Resolve(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}/resolve",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/resolveConfiguration",
                 **self.url_parameters
             )
 
@@ -181,8 +244,14 @@ class Resolve(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("solutionDependencies", AAZListType, ".solution_dependencies")
+            _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
             _builder.set_prop("solutionTemplate", AAZStrType, ".solution_template", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version", typ_kwargs={"flags": {"required": True}})
+
+            solution_dependencies = _builder.get(".solutionDependencies")
+            if solution_dependencies is not None:
+                _ResolveHelper._build_schema_solution_dependency_parameter_create(solution_dependencies.set_elements(AAZObjectType, "."))
 
             return self.serialize_content(_content_value)
 
@@ -213,6 +282,20 @@ class Resolve(AAZCommand):
 
 class _ResolveHelper:
     """Helper class for Resolve"""
+
+    @classmethod
+    def _build_schema_solution_dependency_parameter_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("dependencies", AAZListType, ".dependencies")
+        _builder.set_prop("solutionTemplateId", AAZStrType, ".solution_template_id")
+        _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version")
+        _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")
+        _builder.set_prop("targetId", AAZStrType, ".target_id")
+
+        dependencies = _builder.get(".dependencies")
+        if dependencies is not None:
+            cls._build_schema_solution_dependency_parameter_create(dependencies.set_elements(AAZObjectType, "."))
 
 
 __all__ = ["Resolve"]

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations config-template update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Config Template Resource
@@ -127,7 +126,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}",
                 **self.url_parameters
             )
 
@@ -226,7 +225,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}",
                 **self.url_parameters
             )
 
@@ -387,6 +386,10 @@ class _UpdateHelper:
         properties = _schema_config_template_read.properties
         properties.description = AAZStrType(
             flags={"required": True},
+        )
+        properties.latest_version = AAZStrType(
+            serialized_name="latestVersion",
+            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations schema-reference list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List by specified resource group
@@ -82,7 +81,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/microsoft.edge/schemaReferences",
+                "/{resourceUri}/providers/Microsoft.Edge/schemaReferences",
                 **self.url_parameters
             )
 

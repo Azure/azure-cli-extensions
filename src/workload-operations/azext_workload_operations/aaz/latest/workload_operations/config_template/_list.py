@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations config-template list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List by subscription
@@ -84,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/microsoft.edge/configTemplates",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Edge/configTemplates",
                 **self.url_parameters
             )
 
@@ -181,6 +180,10 @@ class List(AAZCommand):
             properties.description = AAZStrType(
                 flags={"required": True},
             )
+            properties.latest_version = AAZStrType(
+                serialized_name="latestVersion",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -225,7 +228,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates",
                 **self.url_parameters
             )
 
@@ -325,6 +328,10 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.description = AAZStrType(
                 flags={"required": True},
+            )
+            properties.latest_version = AAZStrType(
+                serialized_name="latestVersion",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

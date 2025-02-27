@@ -18,8 +18,10 @@ from ._install import *
 from ._list import *
 from ._list_untitled1 import *
 from ._publish import *
+from ._remove_revision import *
 from ._resolve import *
 from ._review import *
+from ._review_solution_version import *
 from ._show import *
 from ._uninstall import *
 from ._update import *

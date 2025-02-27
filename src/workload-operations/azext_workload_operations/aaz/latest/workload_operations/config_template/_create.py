@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations config-template create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Config Template Resource
@@ -132,7 +131,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}",
                 **self.url_parameters
             )
 
@@ -249,6 +248,10 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.description = AAZStrType(
                 flags={"required": True},
+            )
+            properties.latest_version = AAZStrType(
+                serialized_name="latestVersion",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

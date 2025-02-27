@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations workflow-template version list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Workflow Template Version Resources
@@ -88,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}/versions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}/versions",
                 **self.url_parameters
             )
 
@@ -186,9 +185,7 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.configurations = AAZStrType(
-                flags={"required": True},
-            )
+            properties.configurations = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -207,7 +204,6 @@ class List(AAZCommand):
             )
             _element.orchestrator_type = AAZStrType(
                 serialized_name="orchestratorType",
-                flags={"required": True},
             )
             _element.specification = AAZFreeFormDictType()
 

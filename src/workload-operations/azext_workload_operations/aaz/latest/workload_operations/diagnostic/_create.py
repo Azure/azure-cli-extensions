@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations diagnostic create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create new or updates existing Diagnostic resource.
@@ -48,7 +47,7 @@ class Create(AAZCommand):
             help="Name of Diagnostic.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=90,
                 min_length=1,
             ),
@@ -65,6 +64,19 @@ class Create(AAZCommand):
             arg_group="Resource",
             help="The complex type of the extended location.",
         )
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
 
         extended_location = cls._args_schema.extended_location
         extended_location.name = AAZStrArg(
@@ -78,6 +90,9 @@ class Create(AAZCommand):
             required=True,
             enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -127,7 +142,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/diagnostics/{diagnosticName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/diagnostics/{diagnosticName}",
                 **self.url_parameters
             )
 
@@ -187,11 +202,17 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location")
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             extended_location = _builder.get(".extendedLocation")
             if extended_location is not None:
                 extended_location.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 extended_location.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -223,6 +244,9 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -231,6 +255,7 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -268,6 +293,9 @@ class Create(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

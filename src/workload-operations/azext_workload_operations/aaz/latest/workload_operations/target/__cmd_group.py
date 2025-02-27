@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-operations target",
 )
 class __CMDGroup(AAZCommandGroup):
-    """ is for edge Config-Manager
+    """This is for edge Config-Manager
     """
     pass
 

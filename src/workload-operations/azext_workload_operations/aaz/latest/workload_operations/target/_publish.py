@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations target publish",
-    is_preview=True,
 )
 class Publish(AAZCommand):
     """Post request to publish
@@ -22,7 +21,7 @@ class Publish(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/private.edge/targets/{}/publish", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/publishsolutionversion", "2025-01-01-preview"],
         ]
     }
 
@@ -52,7 +51,7 @@ class Publish(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -68,13 +67,13 @@ class Publish(AAZCommand):
             required=True,
         )
         _args_schema.solution = AAZStrArg(
-            options=["--solution"],
+            options=["--solution-template"],
             arg_group="Body",
             help="Solution Name",
             required=True,
         )
         _args_schema.solution_version = AAZStrArg(
-            options=["--solution-version"],
+            options=["--solution-template-version"],
             arg_group="Body",
             help="Solution Version Name",
             required=True,
@@ -83,7 +82,7 @@ class Publish(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TargetsPublish(ctx=self.ctx)()
+        yield self.TargetsPublishSolutionVersion(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -98,7 +97,7 @@ class Publish(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TargetsPublish(AAZHttpOperation):
+    class TargetsPublishSolutionVersion(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -128,7 +127,7 @@ class Publish(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/private.edge/targets/{targetName}/publish",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/publishSolutionVersion",
                 **self.url_parameters
             )
 
@@ -256,6 +255,18 @@ class Publish(AAZCommand):
             properties.revision = AAZIntType(
                 flags={"read_only": True},
             )
+            properties.solution_dependencies = AAZListType(
+                serialized_name="solutionDependencies",
+                flags={"read_only": True},
+            )
+            properties.solution_instance_name = AAZStrType(
+                serialized_name="solutionInstanceName",
+                flags={"read_only": True},
+            )
+            properties.solution_template_version_id = AAZStrType(
+                serialized_name="solutionTemplateVersionId",
+                flags={"read_only": True},
+            )
             properties.specification = AAZFreeFormDictType(
                 flags={"required": True},
             )
@@ -266,6 +277,10 @@ class Publish(AAZCommand):
                 serialized_name="targetDisplayName",
                 flags={"read_only": True},
             )
+
+            solution_dependencies = cls._schema_on_200.properties.solution_dependencies
+            solution_dependencies.Element = AAZObjectType()
+            _PublishHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -292,6 +307,43 @@ class Publish(AAZCommand):
 
 class _PublishHelper:
     """Helper class for Publish"""
+
+    _schema_solution_dependency_read = None
+
+    @classmethod
+    def _build_schema_solution_dependency_read(cls, _schema):
+        if cls._schema_solution_dependency_read is not None:
+            _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+            _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
+            _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
+            _schema.target_id = cls._schema_solution_dependency_read.target_id
+            return
+
+        cls._schema_solution_dependency_read = _schema_solution_dependency_read = AAZObjectType()
+
+        solution_dependency_read = _schema_solution_dependency_read
+        solution_dependency_read.dependencies = AAZListType()
+        solution_dependency_read.solution_template_version_id = AAZStrType(
+            serialized_name="solutionTemplateVersionId",
+            flags={"required": True},
+        )
+        solution_dependency_read.solution_version_id = AAZStrType(
+            serialized_name="solutionVersionId",
+            flags={"required": True},
+        )
+        solution_dependency_read.target_id = AAZStrType(
+            serialized_name="targetId",
+            flags={"required": True},
+        )
+
+        dependencies = _schema_solution_dependency_read.dependencies
+        dependencies.Element = AAZObjectType()
+        cls._build_schema_solution_dependency_read(dependencies.Element)
+
+        _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+        _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
+        _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
+        _schema.target_id = cls._schema_solution_dependency_read.target_id
 
 
 __all__ = ["Publish"]

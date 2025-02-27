@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workload-operations schema",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """To manage schema
+    """This is for edge Config-Manager
     """
     pass
 

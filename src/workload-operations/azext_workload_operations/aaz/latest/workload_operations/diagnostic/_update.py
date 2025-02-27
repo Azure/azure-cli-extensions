@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations diagnostic update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update new or updates existing Diagnostic resource.
@@ -51,13 +50,28 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=90,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
@@ -105,7 +119,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/diagnostics/{diagnosticName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/diagnostics/{diagnosticName}",
                 **self.url_parameters
             )
 
@@ -204,7 +218,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/diagnostics/{diagnosticName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/diagnostics/{diagnosticName}",
                 **self.url_parameters
             )
 
@@ -296,6 +310,11 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -319,9 +338,11 @@ class _UpdateHelper:
             _schema.e_tag = cls._schema_diagnostic_read.e_tag
             _schema.extended_location = cls._schema_diagnostic_read.extended_location
             _schema.id = cls._schema_diagnostic_read.id
+            _schema.location = cls._schema_diagnostic_read.location
             _schema.name = cls._schema_diagnostic_read.name
             _schema.properties = cls._schema_diagnostic_read.properties
             _schema.system_data = cls._schema_diagnostic_read.system_data
+            _schema.tags = cls._schema_diagnostic_read.tags
             _schema.type = cls._schema_diagnostic_read.type
             return
 
@@ -338,6 +359,9 @@ class _UpdateHelper:
         diagnostic_read.id = AAZStrType(
             flags={"read_only": True},
         )
+        diagnostic_read.location = AAZStrType(
+            flags={"required": True},
+        )
         diagnostic_read.name = AAZStrType(
             flags={"read_only": True},
         )
@@ -346,6 +370,7 @@ class _UpdateHelper:
             serialized_name="systemData",
             flags={"read_only": True},
         )
+        diagnostic_read.tags = AAZDictType()
         diagnostic_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -384,12 +409,17 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
+        tags = _schema_diagnostic_read.tags
+        tags.Element = AAZStrType()
+
         _schema.e_tag = cls._schema_diagnostic_read.e_tag
         _schema.extended_location = cls._schema_diagnostic_read.extended_location
         _schema.id = cls._schema_diagnostic_read.id
+        _schema.location = cls._schema_diagnostic_read.location
         _schema.name = cls._schema_diagnostic_read.name
         _schema.properties = cls._schema_diagnostic_read.properties
         _schema.system_data = cls._schema_diagnostic_read.system_data
+        _schema.tags = cls._schema_diagnostic_read.tags
         _schema.type = cls._schema_diagnostic_read.type
 
 

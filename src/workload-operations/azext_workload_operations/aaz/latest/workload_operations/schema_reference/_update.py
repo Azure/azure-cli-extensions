@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations schema-reference update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Schema Reference Resource
@@ -113,7 +112,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/microsoft.edge/schemaReferences/{schemaReferenceName}",
+                "/{resourceUri}/providers/Microsoft.Edge/schemaReferences/{schemaReferenceName}",
                 **self.url_parameters
             )
 
@@ -209,7 +208,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/microsoft.edge/schemaReferences/{schemaReferenceName}",
+                "/{resourceUri}/providers/Microsoft.Edge/schemaReferences/{schemaReferenceName}",
                 **self.url_parameters
             )
 

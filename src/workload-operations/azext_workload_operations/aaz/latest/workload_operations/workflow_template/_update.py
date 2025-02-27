@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations workflow-template update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Workflow Template Resource
@@ -70,6 +69,7 @@ class Update(AAZCommand):
             options=["--latest-version"],
             arg_group="Properties",
             help="Latest Workflow template version",
+            nullable=True,
         )
 
         # define Arg Group "Resource"
@@ -132,7 +132,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}",
                 **self.url_parameters
             )
 
@@ -231,7 +231,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/workflowTemplates/{workflowTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/workflowTemplates/{workflowTemplateName}",
                 **self.url_parameters
             )
 
@@ -329,7 +329,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("latestVersion", AAZStrType, ".latest_version", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("latestVersion", AAZStrType, ".latest_version")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -396,7 +396,6 @@ class _UpdateHelper:
         )
         properties.latest_version = AAZStrType(
             serialized_name="latestVersion",
-            flags={"required": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",

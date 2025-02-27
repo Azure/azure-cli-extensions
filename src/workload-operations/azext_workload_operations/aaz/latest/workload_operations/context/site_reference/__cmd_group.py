@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workload-operations context site-reference",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """This is for edge Config-Manager

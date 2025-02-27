@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations context site-reference update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update Site Reference  Resource
+    """Update Site Reference Resource
     """
 
     _aaz_info = {
@@ -75,7 +74,7 @@ class Update(AAZCommand):
         _args_schema.site_id = AAZStrArg(
             options=["--site-id"],
             arg_group="Properties",
-            help="Site Id of Site reference",
+            help="Azure Resource ID for Site",
         )
         return cls._args_schema
 
@@ -123,7 +122,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}/siteReferences/{siteReferenceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}/siteReferences/{siteReferenceName}",
                 **self.url_parameters
             )
 
@@ -226,7 +225,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}/siteReferences/{siteReferenceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}/siteReferences/{siteReferenceName}",
                 **self.url_parameters
             )
 

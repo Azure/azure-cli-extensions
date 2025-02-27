@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations context create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create Context Resource
@@ -48,7 +47,7 @@ class Create(AAZCommand):
             help="The name of the Context.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
@@ -84,6 +83,11 @@ class Create(AAZCommand):
             options=["name"],
             help="Name of Capability",
             required=True,
+        )
+        _element.state = AAZStrArg(
+            options=["state"],
+            help="State of resource",
+            enum={"active": "active", "inactive": "inactive"},
         )
 
         hierarchies = cls._args_schema.hierarchies
@@ -169,7 +173,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/contexts/{contextName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}",
                 **self.url_parameters
             )
 
@@ -245,6 +249,7 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("state", AAZStrType, ".state")
 
             hierarchies = _builder.get(".properties.hierarchies")
             if hierarchies is not None:
@@ -320,6 +325,7 @@ class Create(AAZCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
+            _element.state = AAZStrType()
 
             hierarchies = cls._schema_on_200_201.properties.hierarchies
             hierarchies.Element = AAZObjectType()

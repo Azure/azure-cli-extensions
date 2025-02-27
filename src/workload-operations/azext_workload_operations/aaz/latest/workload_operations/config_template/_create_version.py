@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-operations config-template create-version",
-    is_preview=True,
 )
 class CreateVersion(AAZCommand):
     """Create or update a Config Template Version Resource with the specified UpdateType
@@ -78,10 +77,6 @@ class CreateVersion(AAZCommand):
             options=["configurations"],
             help="Configuration values",
         )
-        config_template_version.schema = AAZStrArg(
-            options=["schema"],
-            help="Schema of configuration",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -131,7 +126,7 @@ class CreateVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}/createVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}/createVersion",
                 **self.url_parameters
             )
 
@@ -200,7 +195,6 @@ class CreateVersion(AAZCommand):
             properties = _builder.get(".configTemplateVersion.properties")
             if properties is not None:
                 properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("schema", AAZStrType, ".schema", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -248,9 +242,6 @@ class CreateVersion(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
-            )
-            properties.schema = AAZStrType(
-                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data
