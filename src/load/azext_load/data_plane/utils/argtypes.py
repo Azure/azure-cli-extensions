@@ -92,7 +92,7 @@ test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file.",
+    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file. If `testType: Locust`: path to the Locust test script.",
 )
 
 test_type = CLIArgumentType(

@@ -2,6 +2,13 @@
 
 Release History
 ===============
+
+
+1.5.0
+++++++
+* Add support for Locust based load tests.
+
+
 1.4.3
 ++++++
 * Updated the vendored_sdks to include 2024-12-01-preview data plane API version.
