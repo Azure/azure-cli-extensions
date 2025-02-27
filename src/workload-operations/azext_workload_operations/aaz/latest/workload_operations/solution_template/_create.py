@@ -21,7 +21,7 @@ class Create(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/solutiontemplates/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -53,9 +53,6 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-
-        # define Arg Group "Properties"
-
         _args_schema = cls._args_schema
         _args_schema.capabilities = AAZListArg(
             options=["--capabilities"],
@@ -72,6 +69,26 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="State of resource",
             enum={"active": "active", "inactive": "inactive"},
+        )
+        _args_schema.update_type = AAZStrArg(
+            options=["--update-type"],
+            arg_group="Body",
+            help="Update type",
+            required=True,
+            enum={"Major": "Major", "Minor": "Minor", "Patch": "Patch"},
+        )
+        _args_schema.configurations = AAZFileArg(
+            options=["--config-template"],
+            help="Link to File containing Config expressions  for this solution version",
+        )
+        _args_schema.orchestrator_type = AAZStrArg(
+            options=["--orchestrator-type"],
+            help="Orchestrator type",
+            enum={"TO": "TO"},
+        )
+        _args_schema.specification = AAZFreeFormDictArg(
+            options=["--specification"],
+            help="App components spec, use @ to load from file",
         )
 
         capabilities = cls._args_schema.capabilities
@@ -101,6 +118,7 @@ class Create(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         yield self.SolutionTemplatesCreateOrUpdate(ctx=self.ctx)()
+        yield self.SolutionTemplatesCreateVersion(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -309,6 +327,208 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+    class SolutionTemplatesCreateVersion(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/createVersion",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "POST"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "solutionTemplateName", self.ctx.args.solution_template_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-01-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("solutionTemplateVersion", AAZObjectType)
+            _builder.set_prop("updateType", AAZStrType, ".update_type", typ_kwargs={"flags": {"required": True}})
+
+            solution_template_version = _builder.get(".solutionTemplateVersion")
+            print("Solution template version:", solution_template_version)
+            if solution_template_version is not None:
+                solution_template_version.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".solutionTemplateVersion.properties")
+            print("Properties:", properties)
+            if properties is not None:
+                properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
+
+            specification = _builder.get(".solutionTemplateVersion.properties.specification")
+            print("Specification:", specification)
+            if specification is not None:
+                specification.set_anytype_elements(".")
+            return self.serialize_content(_content_value)
+
+
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            print("this is data ",data)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.e_tag = AAZStrType(
+                serialized_name="eTag",
+                flags={"read_only": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.capabilities = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.configurations = AAZStrType(
+                flags={"required": True},
+            )
+            properties.is_deprecated = AAZBoolType(
+                serialized_name="isDeprecated",
+                flags={"read_only": True},
+            )
+            properties.orchestrator_type = AAZStrType(
+                serialized_name="orchestratorType",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.specification = AAZFreeFormDictType(
+                flags={"required": True},
+            )
+
+            capabilities = cls._schema_on_200.properties.capabilities
+            capabilities.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            return cls._schema_on_200
+
+
+class _CreateVersionHelper:
+    """Helper class for CreateVersion"""
+
 
 
 class _CreateHelper:

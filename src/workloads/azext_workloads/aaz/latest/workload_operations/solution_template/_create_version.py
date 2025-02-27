@@ -216,6 +216,7 @@ class CreateVersion(AAZCommand):
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
+            print("this is data ",data)
             self.ctx.set_var(
                 "instance",
                 data,
