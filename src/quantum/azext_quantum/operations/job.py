@@ -488,7 +488,7 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
         # Insert a new line if we had to display wait indicators.
         print()
 
-    return job
+    return job.as_dict()
 
 
 def job_show(cmd, job_id, resource_group_name, workspace_name, location):
