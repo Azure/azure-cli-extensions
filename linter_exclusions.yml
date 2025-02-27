@@ -2378,6 +2378,17 @@ networkfabric controller update:
       - option_length_too_long
   rule_exclusions:
   - missing_command_test_coverage
+networkfabric fabric create:
+  parameters:
+    hardware_alert_threshold:
+      rule_exclusions:
+      - option_length_too_long
+    storage_account_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    unique_rd_configuration:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric fabric update:
   parameters:
     hardware_alert_threshold:
