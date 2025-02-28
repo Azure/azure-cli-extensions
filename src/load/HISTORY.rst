@@ -4,7 +4,7 @@ Release History
 ===============
 
 
-1.5.1
+1.6.0
 ++++++
 * Add support for engine reference identity using CLI. Engine reference identity can be set using `--engine-ref-id-type` and `--engine-ref-ids` argument in 'az load test create' and 'az load test update' commands. Engine reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Engine` will also be honoured.
 
