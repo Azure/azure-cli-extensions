@@ -1,0 +1,441 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice list-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --period-start-date --period-end-date
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices?periodEndDate=2024-06-30&periodStartDate=2024-01-01&api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641","name":"EA02268641","properties":{"amountDue":{"currency":"USD","value":0.0},"billedAmount":{"currency":"USD","value":730.8900},"documents":[{"documentNumbers":["9882787315"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882787315"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882787315"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-03-11T00:00:00.0000000Z","invoiceDate":"2024-02-10T00:00:00.0000000Z","invoicePeriodEndDate":"2024-01-31T23:59:59.9999999Z","invoicePeriodStartDate":"2024-01-01T00:00:00.0000000Z","payments":[{"amount":{"currency":"USD","value":730.8900},"date":"2024-03-28T00:00:00.0000000Z","paymentMethodFamily":"Other"}],"purchaseOrderNumber":"PO
+        Test 02/06/24","status":"Paid","totalAmount":{"currency":"USD","value":730.8900}},"type":"Microsoft.Billing/billingAccounts/invoices"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02310651","name":"EA02310651","properties":{"amountDue":{"currency":"USD","value":2976.6600},"billedAmount":{"currency":"USD","value":2976.6600},"documents":[{"documentNumbers":["9882838876"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02310651/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882838876"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02310651/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882838876"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02310651/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-04-04T00:00:00.0000000Z","invoiceDate":"2024-03-05T00:00:00.0000000Z","invoicePeriodEndDate":"2024-02-29T23:59:59.9999999Z","invoicePeriodStartDate":"2024-02-01T00:00:00.0000000Z","payments":[],"purchaseOrderNumber":"PO
+        Test 12/2/24","status":"OverDue","totalAmount":{"currency":"USD","value":2976.6600}},"type":"Microsoft.Billing/billingAccounts/invoices"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02336798","name":"EA02336798","properties":{"amountDue":{"currency":"USD","value":3487.9600},"billedAmount":{"currency":"USD","value":3487.9600},"documents":[{"documentNumbers":["9882927732"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02336798/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882927732"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02336798/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882927732"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02336798/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-05-05T00:00:00.0000000Z","invoiceDate":"2024-04-05T00:00:00.0000000Z","invoicePeriodEndDate":"2024-03-31T23:59:59.9999999Z","invoicePeriodStartDate":"2024-03-01T00:00:00.0000000Z","payments":[],"purchaseOrderNumber":"PO
+        Test 03/27/24","status":"OverDue","totalAmount":{"currency":"USD","value":3487.9600}},"type":"Microsoft.Billing/billingAccounts/invoices"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02416675","name":"EA02416675","properties":{"amountDue":{"currency":"USD","value":3548.6100},"billedAmount":{"currency":"USD","value":3548.6100},"documents":[{"documentNumbers":["9883026328"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02416675/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9883026328"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02416675/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9883026328"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02416675/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-06-09T00:00:00.0000000Z","invoiceDate":"2024-05-10T00:00:00.0000000Z","invoicePeriodEndDate":"2024-04-30T23:59:59.9999999Z","invoicePeriodStartDate":"2024-04-01T00:00:00.0000000Z","payments":[],"purchaseOrderNumber":"PO
+        Test1 03/28/24","status":"OverDue","totalAmount":{"currency":"USD","value":3548.6100}},"type":"Microsoft.Billing/billingAccounts/invoices"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02469662","name":"EA02469662","properties":{"amountDue":{"currency":"USD","value":4363.3300},"billedAmount":{"currency":"USD","value":4363.3300},"documents":[{"documentNumbers":["9883107930"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02469662/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9883107930"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02469662/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9883107930"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02469662/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-07-10T00:00:00.0000000Z","invoiceDate":"2024-06-10T00:00:00.0000000Z","invoicePeriodEndDate":"2024-05-31T23:59:59.9999999Z","invoicePeriodStartDate":"2024-05-01T00:00:00.0000000Z","payments":[],"purchaseOrderNumber":"PO
+        Test2 03/27/24","status":"OverDue","totalAmount":{"currency":"USD","value":4363.3300}},"type":"Microsoft.Billing/billingAccounts/invoices"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02510779","name":"EA02510779","properties":{"amountDue":{"currency":"USD","value":3355.7600},"billedAmount":{"currency":"USD","value":3355.7600},"documents":[{"documentNumbers":["9883234458"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02510779/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9883234458"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02510779/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9883234458"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02510779/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-08-17T00:00:00.0000000Z","invoiceDate":"2024-07-18T00:00:00.0000000Z","invoicePeriodEndDate":"2024-06-30T23:59:59.9999999Z","invoicePeriodStartDate":"2024-06-01T00:00:00.0000000Z","payments":[],"purchaseOrderNumber":"PO
+        Test2 03/27/24","status":"OverDue","totalAmount":{"currency":"USD","value":3355.7600}},"type":"Microsoft.Billing/billingAccounts/invoices"}]}'
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '7670'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 06:49:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 32E54820505A44828CDC5DDC27A51A18 Ref B: MAA201060513035 Ref C: 2024-11-18T06:49:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice get-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641","name":"EA02268641","properties":{"amountDue":{"currency":"USD","value":0.0},"billedAmount":{"currency":"USD","value":730.8900},"documents":[{"documentNumbers":["9882787315"],"kind":"Invoice","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/download?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882787315"],"kind":"Summary","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/downloadSummary?api-version=2024-04-01","source":"Other"},{"documentNumbers":["9882787315"],"kind":"Transactions","url":"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/transactionsDownload?api-version=2024-04-01","source":"Other"}],"dueDate":"2024-03-11T00:00:00.0000000Z","invoiceDate":"2024-02-10T00:00:00.0000000Z","invoicePeriodEndDate":"2024-01-31T23:59:59.9999999Z","invoicePeriodStartDate":"2024-01-01T00:00:00.0000000Z","payments":[{"amount":{"currency":"USD","value":730.8900},"date":"2024-03-28T00:00:00.0000000Z","paymentMethodFamily":"Other"}],"purchaseOrderNumber":"PO
+        Test 02/06/24","status":"Paid","totalAmount":{"currency":"USD","value":730.8900}},"type":"Microsoft.Billing/billingAccounts/invoices"}'
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1361'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 06:49:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: E54D4B90D28E4C668A1D4BE0B4BBB53E Ref B: MAA201060514037 Ref C: 2024-11-18T06:49:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice download-by-billing-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/download?api-version=2024-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 18 Nov 2024 06:49:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/operationResults/invoiceDownload_e56822c3-66e6-464c-b4af-baa87c0aae8c?api-version=2024-04-01&t=638675094002319150&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=KfTtD3LvCcJv91TD-HDli4sndYP3otTmtDsavv5K7eh_PrcGxk3Tr8n8a9ufW3mcMwF46WtcLnDcr27OU1kHqJiFgyLxEBvjCJlh98uD8_47gC34ucirjrv8MybhxuWipsn8w43hBVLAvOYPi-puIXO4vGx-0APgHGha8DuhvsT37vA7NL78X4p0WD0uzRq0lnr7B4SQ44-BPl4VEgTQ5q2QCDlArL1VDgA_PyThK9eU-xj92zs9x6kKIk6SdMbdJZnem81shMsQ88mV-BigSH2EVCHyW-knTWk4uTtNqQJfUQbi5zOMgwdmNKZbA0cnL9dixf7_l2t69ts8t4DMqA&h=RX6qTIyYX3KITr9LCp86c7KJd1c_E2tXOF0oC-rKwzg
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: A03EA141EC1E455185081C9F96627427 Ref B: MAA201060515033 Ref C: 2024-11-18T06:49:56Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice download-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/operationResults/invoiceDownload_e56822c3-66e6-464c-b4af-baa87c0aae8c?api-version=2024-04-01&t=638675094002319150&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=KfTtD3LvCcJv91TD-HDli4sndYP3otTmtDsavv5K7eh_PrcGxk3Tr8n8a9ufW3mcMwF46WtcLnDcr27OU1kHqJiFgyLxEBvjCJlh98uD8_47gC34ucirjrv8MybhxuWipsn8w43hBVLAvOYPi-puIXO4vGx-0APgHGha8DuhvsT37vA7NL78X4p0WD0uzRq0lnr7B4SQ44-BPl4VEgTQ5q2QCDlArL1VDgA_PyThK9eU-xj92zs9x6kKIk6SdMbdJZnem81shMsQ88mV-BigSH2EVCHyW-knTWk4uTtNqQJfUQbi5zOMgwdmNKZbA0cnL9dixf7_l2t69ts8t4DMqA&h=RX6qTIyYX3KITr9LCp86c7KJd1c_E2tXOF0oC-rKwzg
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 18 Nov 2024 06:50:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/operationResults/invoiceDownload_e56822c3-66e6-464c-b4af-baa87c0aae8c?api-version=2024-04-01&t=638675094006231448&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=FlCNrBkuuyG9AV4khFn9NwLzCRP7jAeHf09QyIS_nLeQlet_yblIhoKJ0iJiSOdAsTxINa1wqDpmO1Ux-1h3oPN1zgVAHmEetE7ml_TtaKsEsgwLRsxuL1fy3MUacFtsUO1vittZG2fQJt69Z3MWERjIURvZFoevI-2fLzHf_f1iVZjk4QiMO5VW8uu5wH6nanNOGUhHRVR5O19g1IzU-uFUN96dTwrTYC7pOFrJQ2WrbYdhCBRaTEETIr0jPIuywXSd4YKLAwZfLlpcEbGP48WEk7r-4MO5jaHLBjq_DhQXFYubWjMK-Xxnkmw5iCClgtKzUnd9bEiHizwlSru42A&h=s40kAk0KqrqJ_HxulFDiC-_pZJpeeUvMdew_ZNAreZs
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: B5C96FC1EF624829941B89429B3CC646 Ref B: MAA201060515033 Ref C: 2024-11-18T06:50:00Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice download-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/operationResults/invoiceDownload_e56822c3-66e6-464c-b4af-baa87c0aae8c?api-version=2024-04-01&t=638675094006231448&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=FlCNrBkuuyG9AV4khFn9NwLzCRP7jAeHf09QyIS_nLeQlet_yblIhoKJ0iJiSOdAsTxINa1wqDpmO1Ux-1h3oPN1zgVAHmEetE7ml_TtaKsEsgwLRsxuL1fy3MUacFtsUO1vittZG2fQJt69Z3MWERjIURvZFoevI-2fLzHf_f1iVZjk4QiMO5VW8uu5wH6nanNOGUhHRVR5O19g1IzU-uFUN96dTwrTYC7pOFrJQ2WrbYdhCBRaTEETIr0jPIuywXSd4YKLAwZfLlpcEbGP48WEk7r-4MO5jaHLBjq_DhQXFYubWjMK-Xxnkmw5iCClgtKzUnd9bEiHizwlSru42A&h=s40kAk0KqrqJ_HxulFDiC-_pZJpeeUvMdew_ZNAreZs
+  response:
+    body:
+      string: '{"url":"https://billingrppub.blob.core.windows.net/invoices/6575495/9882787315.pdf?skoid=12619eff-3425-4983-acf8-91ebc4e8674c&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-11-18T06%3A50%3A01Z&ske=2024-11-18T07%3A00%3A01Z&sks=b&skv=2024-05-04&sv=2024-05-04&st=2024-11-18T06%3A50%3A01Z&se=2024-11-18T07%3A00%3A01Z&sr=b&sp=r&sig=%2BPI%2FnooNhOKjNZqtQdEUJbsY07BZiaUmJ2uK9KIMzgU%3D"}'
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '384'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 06:50:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 9033B5A352E044C5ADEECCA3B3894C2E Ref B: MAA201060515033 Ref C: 2024-11-18T06:50:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice download-summary-by-ea-billing-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/invoices/EA02268641/downloadSummary?api-version=2024-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 18 Nov 2024 06:50:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/operationResults/invoiceSummaryDownload_f4622502-38f0-4f53-8bba-8613ab9bed3d?api-version=2024-04-01&t=638675094153884685&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=Cv1U67HQDWqEJvJ8kNTAll4B1fN5Ducg7Tijm3xikiLj0a86ssKnQi-poYqbYRt-DGScuzKYh7tXtZ6A1bbXHsTLGpjAgH3_SwQ_SKbgY2QZ622Di2iKG-I3uZ8OCUavejrjbZZofuiBz1IMBVyPXlPazoGqE8yHJL9hBftPtmTYUQLinWDNlSV1xcHSIBqoKEMUsRJZLPx9jJesGQQToXJsXlrycLac57DEudM8PApNEbN1KmbCX00UmjQA6KbWxupZxdQcKIv_OEzw0powgrbRCCs_AIrB0CU-K6lNyyZ9sbyt5Gnn6vIw412rydgPvP1s0Hku-ykHYaz1LqlUIg&h=DAsM6SK813u2fSpMj9vRqXVuzd08H-aLu5oVcjrZyS8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 46B583EFB63C431FA4DEE384EDB6B380 Ref B: MAA201060515019 Ref C: 2024-11-18T06:50:11Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice download-summary-by-ea-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/operationResults/invoiceSummaryDownload_f4622502-38f0-4f53-8bba-8613ab9bed3d?api-version=2024-04-01&t=638675094153884685&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=Cv1U67HQDWqEJvJ8kNTAll4B1fN5Ducg7Tijm3xikiLj0a86ssKnQi-poYqbYRt-DGScuzKYh7tXtZ6A1bbXHsTLGpjAgH3_SwQ_SKbgY2QZ622Di2iKG-I3uZ8OCUavejrjbZZofuiBz1IMBVyPXlPazoGqE8yHJL9hBftPtmTYUQLinWDNlSV1xcHSIBqoKEMUsRJZLPx9jJesGQQToXJsXlrycLac57DEudM8PApNEbN1KmbCX00UmjQA6KbWxupZxdQcKIv_OEzw0powgrbRCCs_AIrB0CU-K6lNyyZ9sbyt5Gnn6vIw412rydgPvP1s0Hku-ykHYaz1LqlUIg&h=DAsM6SK813u2fSpMj9vRqXVuzd08H-aLu5oVcjrZyS8
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 18 Nov 2024 06:50:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/operationResults/invoiceSummaryDownload_f4622502-38f0-4f53-8bba-8613ab9bed3d?api-version=2024-04-01&t=638675094161338308&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=yqLWkug1MPVt5G3vGioUX4DBHyNgw8ArEqvBd_kV7SkZbkuvLdlGlBsVpsFItclo3Jqr7kUbcNWt_HaBZaP-j039pfHM6r5pLsiHv1UgdeAGWNzPYwhTrYTJcu6kcqraS2MytbXDyGXVFnCW0DoCFy2k_Zi4VwgIN_i70MYXtlzH1ygSwPmZxmJzPLnjwhLH8bz6FMZSgS23GG8O41G2rxp4qZV2CNfBWYc77asCnJY8lJhgvwBsAwpdt39FKtT8arGW_MPcNsrIZPneG7zCxN8czxNmT4-ZX8lYON1OofTOJ1lALmn0ZdPzJeq-ZXzd2dnTeN2Ps1f7OqBHgHuTow&h=wyz3WHOWiBxe3nbuzPu_yJUt4s5OQ-VbiG-9EsRAOFc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 978A046B63174C498342ACE45F6996B2 Ref B: MAA201060515019 Ref C: 2024-11-18T06:50:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice download-summary-by-ea-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --invoice-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/operationResults/invoiceSummaryDownload_f4622502-38f0-4f53-8bba-8613ab9bed3d?api-version=2024-04-01&t=638675094161338308&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=yqLWkug1MPVt5G3vGioUX4DBHyNgw8ArEqvBd_kV7SkZbkuvLdlGlBsVpsFItclo3Jqr7kUbcNWt_HaBZaP-j039pfHM6r5pLsiHv1UgdeAGWNzPYwhTrYTJcu6kcqraS2MytbXDyGXVFnCW0DoCFy2k_Zi4VwgIN_i70MYXtlzH1ygSwPmZxmJzPLnjwhLH8bz6FMZSgS23GG8O41G2rxp4qZV2CNfBWYc77asCnJY8lJhgvwBsAwpdt39FKtT8arGW_MPcNsrIZPneG7zCxN8czxNmT4-ZX8lYON1OofTOJ1lALmn0ZdPzJeq-ZXzd2dnTeN2Ps1f7OqBHgHuTow&h=wyz3WHOWiBxe3nbuzPu_yJUt4s5OQ-VbiG-9EsRAOFc
+  response:
+    body:
+      string: '{"url":"https://billingrppub.blob.core.windows.net/invoicesummaries/6575495/9882787315_invoice_summary.pdf?skoid=12619eff-3425-4983-acf8-91ebc4e8674c&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2024-11-18T06%3A50%3A17Z&ske=2024-11-18T07%3A00%3A17Z&sks=b&skv=2024-05-04&sv=2024-05-04&st=2024-11-18T06%3A50%3A17Z&se=2024-11-18T07%3A00%3A17Z&sr=b&sp=r&sig=vfp%2BryhanSmLvhPv8%2BJkHYsAPbevPhRq3lah7gp2yqM%3D"}'
+    headers:
+      api-supported-versions:
+      - 2017-02-27-preview, 2017-04-24-preview, 2018-03-01-preview, 2018-11-01-preview,
+        2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '408'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 06:50:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: EDD97C1B70984D879004C67802488978 Ref B: MAA201060515019 Ref C: 2024-11-18T06:50:26Z'
+    status:
+      code: 200
+      message: OK
+version: 1
