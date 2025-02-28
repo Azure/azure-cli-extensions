@@ -19,7 +19,7 @@ examples:
         az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml
     - name: Create a test with arguments.
       text: |
-        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --description "Test description" --test-plan sample-jmx.jmx --engine-instances 1 --env rps=2 count=1
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --description "Test description" --test-plan sample-jmx.jmx --engine-instances 1 --env rps=2 count=1 --engine-ref-id-type SystemAssigned
     - name: Create a test with load test config file and override engine-instance and env using arguments and don't wait for file upload.
       text: |
         az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml --engine-instances 1 --env rps=2 count=1 --no-wait
@@ -46,6 +46,9 @@ examples:
     - name: Create a Locust based load test
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --test-plan ~/resources/sample-locust-file.py --test-type Locust --env LOCUST_HOST="https://azure.microsoft.com" LOCUST_SPAWN_RATE=0.3 LOCUST_RUN_TIME=120 LOCUST_USERS=4
+    - name: Create a test with user assigned Managed Identity reference for engine.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type UserAssigned --engine-ref-ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
 """
 
 helps[
@@ -97,6 +100,9 @@ examples:
     - name: Update multi-region load configuration.
       text: |
         az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --engine-instances 5 --regionwise-engines eastus=2 westus2=1 eastasia=2
+    - name: Update a test with user assigned Managed Identity reference for engine to SystemAssigned.
+      text: |
+        az load test update --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type SystemAssigned
 """
 
 helps[

@@ -392,6 +392,23 @@ regionwise_engines = CLIArgumentType(
     help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
 )
 
+engine_ref_id_type = CLIArgumentType(
+    options_list=["--engine-ref-id-type"],
+    type=str,
+    completer=get_generic_completion_list(
+        utils.get_enum_values(models.EngineIdentityType)
+    ),
+    choices=utils.get_enum_values(models.EngineIdentityType),
+    help="Type of identity to be configured for the engine.",
+)
+
+engine_ref_ids = CLIArgumentType(
+    options_list=["--engine-ref-ids"],
+    nargs="+",
+    validator=validators.validate_engine_ref_ids,
+    help="Space separated list of fully qualified resource IDs of the managed identities to be configured on the engine. Required only for user assigned identities. ",
+)
+
 response_time_aggregate = CLIArgumentType(
     options_list=["--aggregation"],
     type=str,

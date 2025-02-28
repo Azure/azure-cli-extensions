@@ -105,7 +105,8 @@ interactions:
       {"aggregate": "p99.9", "clientMetric": "response_time_ms", "condition": ">",
       "value": "540"}, "4b3e4726-a0d1-43ee-8faa-29d892b0f70b": {"aggregate": "avg",
       "clientMetric": "latency", "condition": ">", "value": "200", "requestName":
-      "GetCustomerDetails"}}}, "autoStopCriteria": {"autoStopDisabled": true}}'
+      "GetCustomerDetails"}}}, "autoStopCriteria": {"autoStopDisabled": true}, "engineBuiltinIdentityType":
+      null, "engineBuiltinIdentityIds": null}'
     headers:
       Accept:
       - application/json
@@ -114,7 +115,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1307'
+      - '1376'
       Content-Type:
       - application/merge-patch+json
       User-Agent:
@@ -542,8 +543,6 @@ interactions:
     body:
       string: '{"url":"https://oss9p9kw3li5gxxrl3orjdtp.z32.blob.storage.azure.net/955eabf8-a55f-418e-b519-4c1c32e27b2a/b975db42-4581-4401-a2d6-bdd614e5eedc?skoid=713ccf3d-dc33-4787-a1ee-6b0cc537c37a&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2025-02-24T21%3A59%3A41Z&ske=2025-02-25T04%3A59%3A41Z&sks=b&skv=2024-05-04&sv=2024-05-04&se=2025-02-24T22%3A09%3A41Z&sr=b&sp=r&sig=***","fileName":"sample-JMX-file.jmx","fileType":"TEST_SCRIPT","expireDateTime":"2025-02-24T22:09:41.0820525Z","validationStatus":"VALIDATION_INITIATED"}'
     headers:
-      accept-ranges:
-      - bytes
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
         2024-12-01-preview
@@ -566,8 +565,8 @@ interactions:
       x-content-type-options:
       - nosniff
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:

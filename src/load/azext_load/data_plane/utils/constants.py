@@ -28,6 +28,11 @@ class LoadTestConfigKeys:
     REGION = "region"
     QUICK_START = "quickStartTest"
     SPLIT_CSV = "splitAllCSVs"
+    REFERENCE_IDENTITIES = "referenceIdentities"
+    ENGINE = "Engine"
+    TYPE = "type"
+    KIND = "kind"
+    VALUE = "value"
 
 
 @dataclass
