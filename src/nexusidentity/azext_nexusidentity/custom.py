@@ -28,9 +28,12 @@ def generate_nexus_identity_keys() -> None:
     from msgraph.generated.models.o_data_errors.o_data_error import ODataError
 
     # Generate SSH key
-    if sys.platform.startswith("win"):
+    if sys.platform.startswith("win") or sys.platform.startswith("linux"):
 
-        dir_path = os.path.expanduser("~\\.ssh")
+        if sys.platform.startswith("win"):
+            dir_path = os.path.expanduser("~\\.ssh")
+        elif sys.platform.startswith("linux"):
+            dir_path = os.path.expanduser("~/.ssh")
 
         # check if the ssh directory exists or not
         if not os.path.exists(dir_path):
@@ -122,4 +125,4 @@ def generate_nexus_identity_keys() -> None:
         asyncio.run(me())
     else:
         logger.warning(
-            "This command is currently supported only on Windows platforms")
+            "This command is currently supported only on Windows and linux platforms")

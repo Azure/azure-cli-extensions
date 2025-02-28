@@ -7,7 +7,7 @@
 Nexus Identity Ssh-Key Geneation Scenario Test
 '''
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
@@ -35,7 +35,8 @@ class NexusidentityScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+    
+    @live_only()
     def test_nexusidentity_scenario1(self):
 
         # Testcase: scenario1
