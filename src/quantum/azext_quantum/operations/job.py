@@ -510,13 +510,13 @@ def run(cmd, resource_group_name, workspace_name, location, target_id, job_input
     job = submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
                  job_name, shots, storage, job_params, target_capability,
                  job_output_format, entry_point)
-    logger.warning("Job id: %s", job.id)
+    logger.warning("Job id: %s", job["id"])
     logger.debug(job)
 
-    job = wait(cmd, job.id, resource_group_name, workspace_name, location)
+    job = wait(cmd, job["id"], resource_group_name, workspace_name, location)
     logger.debug(job)
 
-    return output(cmd, job.id, resource_group_name, workspace_name, location)
+    return output(cmd, job["id"], resource_group_name, workspace_name, location)
 
 
 def cancel(cmd, job_id, resource_group_name, workspace_name, location):
