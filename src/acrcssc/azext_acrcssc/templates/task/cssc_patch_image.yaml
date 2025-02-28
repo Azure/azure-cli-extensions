@@ -35,7 +35,7 @@ steps:
       --output /workspace/data/$ScanReport
 
   - id: buildkitd
-    cmd: moby/buildkit --addr tcp://0.0.0.0:8888
+    cmd: mobybuildkit --addr tcp://0.0.0.0:8888
     entrypoint: buildkitd
     detach: true
     privileged: true
