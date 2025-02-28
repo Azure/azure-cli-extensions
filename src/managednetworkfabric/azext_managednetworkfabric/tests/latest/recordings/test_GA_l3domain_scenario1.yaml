@@ -19,11 +19,11 @@ interactions:
       - application/json
       ParameterSetName:
       - --resource-group --resource-name --location --nf-id --redistribute-connected-subnets
-        --redistribute-static-routes --aggregate-route-configuration
+        --redistribute-static-routes --aggregate-route-configuration --connected-subnet-route-policy --route-prefix-limit --static-route-route-policy
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD?api-version=2024-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD?api-version=2024-06-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD","name":"NFVlab16-L3ISD","type":"microsoft.managednetworkfabric/l3isolationdomains","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-29T12:25:23.8064877Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-29T12:25:23.8064877Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/networkFabrics/NFVlab16","provisioningState":"Accepted","configurationState":"Succeeded","administrativeState":"Disabled","redistributeConnectedSubnets":"True","redistributeStaticRoutes":"True","aggregateRouteConfiguration":{"ipv4Routes":[{"prefix":"10.18.32.0/22"}],"ipv6Routes":[{"prefix":"fda0:d59c:da02:20::/62"}]},"connectedSubnetRoutePolicy":null}}'
@@ -76,7 +76,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --resource-name --location --nf-id --redistribute-connected-subnets
-        --redistribute-static-routes --aggregate-route-configuration
+        --redistribute-static-routes --aggregate-route-configuration --connected-subnet-route-policy --route-prefix-limit --static-route-route-policy
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
@@ -125,7 +125,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --resource-name --location --nf-id --redistribute-connected-subnets
-        --redistribute-static-routes --aggregate-route-configuration
+        --redistribute-static-routes --aggregate-route-configuration --connected-subnet-route-policy --route-prefix-limit --static-route-route-policy
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
@@ -174,11 +174,11 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --resource-name --location --nf-id --redistribute-connected-subnets
-        --redistribute-static-routes --aggregate-route-configuration
+        --redistribute-static-routes --aggregate-route-configuration --connected-subnet-route-policy --route-prefix-limit --static-route-route-policy
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD?api-version=2024-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD?api-version=2024-06-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD","name":"NFVlab16-L3ISD","type":"microsoft.managednetworkfabric/l3isolationdomains","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-29T12:25:23.8064877Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-29T12:25:30.5612557Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/networkFabrics/NFVlab16","provisioningState":"Succeeded","configurationState":"Succeeded","administrativeState":"Disabled","redistributeConnectedSubnets":"True","redistributeStaticRoutes":"True","aggregateRouteConfiguration":{"ipv4Routes":[{"prefix":"10.18.32.0/22"}],"ipv6Routes":[{"prefix":"fda0:d59c:da02:20::/62"}]},"connectedSubnetRoutePolicy":null}}'
@@ -226,7 +226,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD?api-version=2024-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD?api-version=2024-06-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD","name":"NFVlab16-L3ISD","type":"microsoft.managednetworkfabric/l3isolationdomains","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-29T12:25:23.8064877Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-29T12:25:30.5612557Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/networkFabrics/NFVlab16","provisioningState":"Succeeded","configurationState":"Succeeded","administrativeState":"Disabled","redistributeConnectedSubnets":"True","redistributeStaticRoutes":"True","aggregateRouteConfiguration":{"ipv4Routes":[{"prefix":"10.18.32.0/22"}],"ipv6Routes":[{"prefix":"fda0:d59c:da02:20::/62"}]},"connectedSubnetRoutePolicy":null}}'
@@ -274,7 +274,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains?api-version=2024-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains?api-version=2024-06-15-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/NFVlab16-L3ISD","name":"NFVlab16-L3ISD","type":"microsoft.managednetworkfabric/l3isolationdomains","location":"eastus2euap","systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2024-02-29T12:25:23.8064877Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-29T12:25:30.5612557Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/networkFabrics/NFVlab16","provisioningState":"Succeeded","configurationState":"Succeeded","administrativeState":"Disabled","redistributeConnectedSubnets":"True","redistributeStaticRoutes":"True","aggregateRouteConfiguration":{"ipv4Routes":[{"prefix":"10.18.32.0/22"}],"ipv6Routes":[{"prefix":"fda0:d59c:da02:20::/62"}]},"connectedSubnetRoutePolicy":null}}]}'
@@ -324,7 +324,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains?api-version=2024-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains?api-version=2024-06-15-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pipeline-test-rg082823/providers/microsoft.managednetworkfabric/L3IsolationDomains/pipeline-nf082823-l3domain-2613-2614","name":"pipeline-nf082823-l3domain-2613-2614","type":"microsoft.managednetworkfabric/l3isolationdomains","location":"eastus2euap","systemData":{"createdBy":"97fdd529-68de-4ba5-aa3c-adf86bd564bf","createdByType":"Application","createdAt":"2023-09-29T09:33:41.6836677Z","lastModifiedBy":"REDACTED","createdByType":"User","createdAt":"2024-02-29T12:25:23.8064877Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-29T12:25:30.5612557Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tfranklandVLab/providers/Microsoft.ManagedNetworkFabric/networkFabrics/NFVlab16","provisioningState":"Succeeded","configurationState":"Succeeded","administrativeState":"Disabled","redistributeConnectedSubnets":"True","redistributeStaticRoutes":"True","aggregateRouteConfiguration":{"ipv4Routes":[{"prefix":"10.18.32.0/22"}],"ipv6Routes":[{"prefix":"fda0:d59c:da02:20::/62"}]},"connectedSubnetRoutePolicy":null}}]}'

@@ -22,9 +22,9 @@ class Provision(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/provision", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/provision", "2024-06-15-preview"],
         ]
     }
 
@@ -50,6 +50,9 @@ class Provision(AAZCommand):
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -137,7 +140,7 @@ class Provision(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -168,51 +171,32 @@ class Provision(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ProvisionHelper._build_schema_common_post_action_response_for_device_update_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            _schema_on_200.error = AAZObjectType()
+            _ProvisionHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.failed_devices = AAZListType(
+                serialized_name="failedDevices",
+            )
+            _schema_on_200.successful_devices = AAZListType(
+                serialized_name="successfulDevices",
+            )
+
+            failed_devices = cls._schema_on_200.failed_devices
+            failed_devices.Element = AAZStrType()
+
+            successful_devices = cls._schema_on_200.successful_devices
+            successful_devices.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _ProvisionHelper:
     """Helper class for Provision"""
-
-    _schema_common_post_action_response_for_device_update_read = None
-
-    @classmethod
-    def _build_schema_common_post_action_response_for_device_update_read(cls, _schema):
-        if cls._schema_common_post_action_response_for_device_update_read is not None:
-            _schema.configuration_state = cls._schema_common_post_action_response_for_device_update_read.configuration_state
-            _schema.error = cls._schema_common_post_action_response_for_device_update_read.error
-            _schema.failed_devices = cls._schema_common_post_action_response_for_device_update_read.failed_devices
-            _schema.successful_devices = cls._schema_common_post_action_response_for_device_update_read.successful_devices
-            return
-
-        cls._schema_common_post_action_response_for_device_update_read = _schema_common_post_action_response_for_device_update_read = AAZObjectType()
-
-        common_post_action_response_for_device_update_read = _schema_common_post_action_response_for_device_update_read
-        common_post_action_response_for_device_update_read.configuration_state = AAZStrType(
-            serialized_name="configurationState",
-            flags={"read_only": True},
-        )
-        common_post_action_response_for_device_update_read.error = AAZObjectType()
-        cls._build_schema_error_detail_read(common_post_action_response_for_device_update_read.error)
-        common_post_action_response_for_device_update_read.failed_devices = AAZListType(
-            serialized_name="failedDevices",
-        )
-        common_post_action_response_for_device_update_read.successful_devices = AAZListType(
-            serialized_name="successfulDevices",
-        )
-
-        failed_devices = _schema_common_post_action_response_for_device_update_read.failed_devices
-        failed_devices.Element = AAZStrType()
-
-        successful_devices = _schema_common_post_action_response_for_device_update_read.successful_devices
-        successful_devices.Element = AAZStrType()
-
-        _schema.configuration_state = cls._schema_common_post_action_response_for_device_update_read.configuration_state
-        _schema.error = cls._schema_common_post_action_response_for_device_update_read.error
-        _schema.failed_devices = cls._schema_common_post_action_response_for_device_update_read.failed_devices
-        _schema.successful_devices = cls._schema_common_post_action_response_for_device_update_read.successful_devices
 
     _schema_error_detail_read = None
 
