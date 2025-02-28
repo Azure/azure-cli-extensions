@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
-from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, AllowedTestPlanFileExtensions
+from .models import IdentityType, AllowedFileTypes, AllowedTestTypes, EngineIdentityType, AllowedTestPlanFileExtensions
 
 logger = get_logger(__name__)
 
@@ -306,6 +306,8 @@ def load_yaml(file_path):
         ) from e
 
 
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
 def convert_yaml_to_test(cmd, data):
     new_body = {}
     if LoadTestConfigKeys.DISPLAY_NAME in data:
@@ -337,8 +339,11 @@ def convert_yaml_to_test(cmd, data):
         new_body["passFailCriteria"] = utils_yaml_config.yaml_parse_failure_criteria(data=data)
     if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
+
+    utils_yaml_config.update_engine_reference_identity(new_body, data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
+# pylint: enable=line-too-long
 
 
 # pylint: disable=too-many-branches
@@ -360,6 +365,8 @@ def create_or_update_test_with_config(
     disable_public_ip=None,
     autostop_criteria=None,
     regionwise_engines=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -514,6 +521,20 @@ def create_or_update_test_with_config(
             "This can lead to incoming charges for an incorrectly configured test."
         )
 
+    # if argument is provided prefer that over yaml values
+    if engine_ref_id_type:
+        validators.validate_engine_ref_ids_and_type(engine_ref_id_type, engine_ref_ids)
+        if engine_ref_id_type:
+            new_body["engineBuiltinIdentityType"] = engine_ref_id_type
+        if engine_ref_ids:
+            new_body["engineBuiltinIdentityIds"] = engine_ref_ids
+    elif yaml_test_body.get("engineBuiltinIdentityType"):
+        new_body["engineBuiltinIdentityType"] = yaml_test_body.get("engineBuiltinIdentityType")
+        new_body["engineBuiltinIdentityIds"] = yaml_test_body.get("engineBuiltinIdentityIds")
+    else:
+        new_body["engineBuiltinIdentityType"] = body.get("engineBuiltinIdentityType")
+        new_body["engineBuiltinIdentityIds"] = body.get("engineBuiltinIdentityIds")
+
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
@@ -537,6 +558,8 @@ def create_or_update_test_without_config(
     autostop_criteria=None,
     regionwise_engines=None,
     baseline_test_run_id=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -639,6 +662,21 @@ def create_or_update_test_without_config(
             "This can lead to incoming charges for an incorrectly configured test."
         )
     new_body["baselineTestRunId"] = baseline_test_run_id if baseline_test_run_id else body.get("baselineTestRunId")
+
+    # pylint: disable=line-too-long
+    # Disabling this because dictionary key are too long
+    # raises error if engine_reference_identity_type and corresponding identities is not a valid combination
+    validators.validate_engine_ref_ids_and_type(engine_ref_id_type, engine_ref_ids, body.get("engineBuiltinIdentityType"))
+    if engine_ref_id_type:
+        new_body["engineBuiltinIdentityType"] = engine_ref_id_type
+        if engine_ref_ids:
+            new_body["engineBuiltinIdentityIds"] = engine_ref_ids
+    else:
+        new_body["engineBuiltinIdentityType"] = body.get("engineBuiltinIdentityType")
+        if engine_ref_ids and body.get("engineBuiltinIdentityType") != EngineIdentityType.UserAssigned:
+            raise InvalidArgumentValueError("Engine reference identities can only be provided when engine reference identity type is user assigned")
+        new_body["engineBuiltinIdentityIds"] = engine_ref_ids if engine_ref_ids else body.get("engineBuiltinIdentityIds")
+    # pylint: enable=line-too-long
 
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body

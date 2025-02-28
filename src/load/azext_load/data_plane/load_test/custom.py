@@ -56,6 +56,8 @@ def create_test(
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
     regionwise_engines=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
@@ -91,6 +93,8 @@ def create_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids,
         )
     else:
         yaml = load_yaml(load_test_config_file)
@@ -119,6 +123,8 @@ def create_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids,
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -158,6 +164,8 @@ def update_test(
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
     regionwise_engines=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Update test has started for test ID : %s", test_id)
@@ -191,6 +199,8 @@ def update_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids,
         )
     else:
         body = create_or_update_test_without_config(
@@ -208,6 +218,8 @@ def update_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
