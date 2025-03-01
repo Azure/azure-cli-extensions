@@ -389,15 +389,15 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
 
     # Submit the job
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
-    job_details = {'Name': job_name,
-                   'ContainerUri': container_uri,
-                   'InputDataFormat': job_input_format,
-                   'OutputDataFormat': job_output_format,
-                   'InputParams': job_params,
-                   'ProviderId': provider_id,
-                   'Target': target_info.target_id,
-                   'Metadata': metadata,
-                   'Tags': tags}
+    job_details = {'name': job_name,
+                   'containerUri': container_uri,
+                   'inputDataFormat': job_input_format,
+                   'outputDataFormat': job_output_format,
+                   'inputParams': job_params,
+                   'providerId': provider_id,
+                   'target': target_info.target_id,
+                   'metadata': metadata,
+                   'tags': tags}
 
     knack_logger.warning("Submitting job...")
     return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
