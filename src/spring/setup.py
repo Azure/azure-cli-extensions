@@ -53,5 +53,8 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_spring': ['azext_metadata.json']},
+    package_data={
+        'azext_spring': ['azext_metadata.json'],
+        'azext_spring.migration.converter': ['templates/*.j2']
+    },
 )
