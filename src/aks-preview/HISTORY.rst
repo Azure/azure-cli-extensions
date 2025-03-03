@@ -13,6 +13,10 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2024-10-02-preview.
 
+13.0.0b9
++++++++
+* Add `enable-egress-gateway` and `disable-egress-gateway` to the `az aks mesh` command.
+
 13.0.0b8
 +++++++
 * `az aks create/update``: Update recording rule group create logic for managed prometheus addon

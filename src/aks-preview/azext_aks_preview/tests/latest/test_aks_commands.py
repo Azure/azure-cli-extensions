@@ -12546,6 +12546,174 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_azure_service_mesh_with_egress_gateway(
+        self, resource_group, resource_group_location
+    ):
+        """This test case exercises enabling and disabling Istio egress gateways.
+
+        It creates a cluster with azure service mesh profile. After that, we enable two egress
+        gateways, then disable them.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
+            }
+        )
+
+        # create cluster with --enable-azure-service-mesh
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-azure-service-mesh --revision={revision} --output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+            ],
+        )
+
+        # enable egress gateway
+        update_cmd = (
+            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+            "--egress-gateway-name istio-egress-1 --egress-gateway-namespace istio-ns-1 "
+            "--gateway-configuration-name istio-sgc-1"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].name",
+                    "istio-egress-1",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                    True,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].namespace",
+                    "istio-ns-1",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].gatewayConfigurationName",
+                    "istio-sgc-1",
+                ),
+            ],
+        )
+
+        # enable another egress gateway
+        update_cmd = (
+            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+            "--egress-gateway-name istio-egress-2 --egress-gateway-namespace istio-ns-2 "
+            "--gateway-configuration-name istio-sgc-2"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].name",
+                    "istio-egress-2",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].enabled",
+                    True,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].namespace",
+                    "istio-ns-2",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].gatewayConfigurationName",
+                    "istio-sgc-2",
+                ),
+            ],
+        )
+
+        # disable first egress gateway
+        update_cmd = (
+            "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} "
+            "--egress-gateway-name istio-egress-1 --egress-gateway-namespace istio-ns-1"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].name",
+                    "istio-egress-1",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                    False,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].namespace",
+                    "istio-ns-1",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].gatewayConfigurationName",
+                    "istio-sgc-1",
+                ),
+            ],
+        )
+
+        # disable second egress gateway
+        update_cmd = (
+            "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} "
+            "--egress-gateway-name istio-egress-2 --egress-gateway-namespace istio-ns-2 "
+            "--gateway-configuration-name istio-sgc-2"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].name",
+                    "istio-egress-2",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].enabled",
+                    False,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].namespace",
+                    "istio-ns-2",
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[1].gatewayConfigurationName",
+                    "istio-sgc-2",
+                ),
+            ],
+        )
+
+        # delete the cluster
+        delete_cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_azure_service_mesh_with_ingress_gateway(
         self, resource_group, resource_group_location
     ):

@@ -104,6 +104,7 @@ from azext_aks_preview._consts import (
     CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+    CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
@@ -151,6 +152,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_asm_egress_name,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -2223,6 +2225,11 @@ def load_arguments(self, _):
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
         )
+    
+    with self.argument_context("aks mesh enable-egress-gateway") as c:
+        c.argument("istio_egressgateway_name", validator=validate_asm_egress_name, required=True,)
+        c.argument("istio_egressgateway_namespace", required=False, default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE)
+        c.argument("gateway_configuration_name", required=True)
 
     with self.argument_context("aks mesh enable") as c:
         c.argument("revision", validator=validate_azure_service_mesh_revision)
