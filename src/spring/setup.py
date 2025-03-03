@@ -33,7 +33,9 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'jinja2'
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
