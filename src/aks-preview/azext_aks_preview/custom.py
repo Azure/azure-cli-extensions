@@ -3121,8 +3121,7 @@ def aks_mesh_enable_egress_gateway(
         enable_egress_gateway=True,
         egress_gateway_name=egress_gateway_name,
         egress_gateway_namespace=egress_gateway_namespace,
-        gateway_configuration_name=gateway_configuration_name
-        )
+        gateway_configuration_name=gateway_configuration_name)
 
 
 def aks_mesh_disable_egress_gateway(
@@ -3265,6 +3264,9 @@ def _aks_mesh_update(
         ingress_gateway_type=None,
         enable_egress_gateway=None,
         disable_egress_gateway=None,
+        egress_gateway_name=None,
+        egress_gateway_namespace=None,
+        gateway_configuration_name=None,
         revision=None,
         yes=False,
         mesh_upgrade_command=None,
