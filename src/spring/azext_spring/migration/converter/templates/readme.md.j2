@@ -18,6 +18,22 @@ az spring migration-aca start --service <azure-spring-apps-service-name> --resou
 
 ## Steps to Deploy Azure Container Apps Using the Bicep Files
 
+### Check Output Message
+
+During the script execution, two types of messages may appear:
+
+1. **Mismatch Message**: Sometimes, the properties in Azure Spring Apps and Azure Container Apps do not completely match. In such cases, a mismatch message will be displayed to inform the user. Here is a sample:
+
+   ```
+   "Mismatch Detected: Property 'X' in Azure Spring Apps does not match any Property in Azure Container Apps."
+   ```
+
+2. **Action Message**: Occasionally, some port actions need to be taken by the user. In these instances, the system will display a warning message. Please refer to the post-deployment configuration for further details. Here is a sample:
+
+   ```
+   "Action Needed: This service uses blue-green deployment. The green deployment needs to be done manually."
+   ```
+
 ### Review the Bicep Files
 
 After generating the Bicep files, the specified output directory will contain the following files and related resource definitions:
@@ -65,6 +81,14 @@ az group create --name <resource-group-name> --location <location>
 az deployment group create --resource-group <resource-group-name> --template-file main.bicep --parameters param.bicepparam
 ```
 
+**Bicep Validation Failed Message**: If there are issues with the Bicep template validation, a Bicep validation failed message will be displayed. Here is a sample:
+
+```
+Error BCP028: Identifier "xxx" is declared multiple times. Remove or rename the duplicates. [https://aka.ms/bicep/core-diagnostics#BCP028]
+```
+
+Normally, this script does not take too long to complete. However, if you find that it has been stuck for an hour or more, please do not hesitate to cancel the deployment on the portal. There might be something wrong, and canceling the operation can help speed up the process.
+
 **Step 3**: Validate the deployment:
 
 After deployment, verify that all resources, including the Azure Container Apps environment and applications, are properly provisioned.
@@ -85,10 +109,9 @@ You can check the deployment status either in the CLI output or in the Azure Por
 Some properties and configurations are not included in the Bicep files and must be manually updated.
 
 - **Custom Domain**: If you have a custom domain configured in Azure Spring Apps, the TLS certificates from Azure Key Vault have been migrated by the migration tool, but you need to follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-custom-domain) to configure the custom domain in Azure Container Apps.
-- **Managed Identity**: If you have enbled a system-assigned managed identity in Azure Spring Apps, your Azure Container Apps instance will also have a system-assigned managed identity, but you need to reassign the corresponding roles to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity?tabs=portal%2Cdotnet) to understand how to use managed identity in Azure Container Apps.
+- **Managed Identity**: If you have enabled a system-assigned managed identity in Azure Spring Apps, your Azure Container Apps instance will also have a system-assigned managed identity, but you need to reassign the corresponding roles to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity?tabs=portal%2Cdotnet) to understand how to use managed identity in Azure Container Apps.
 - **Blue-green deployment**: If you have enabled blue-green deployments in Azure Spring Apps, the **blue** deployments have been migrated to Azure Container Apps, but you need to follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-blue-green) to configure the **green** deployment in Azure Container Apps.
-// todo: add green deployment settings here
-- **Auto scale**: If you have enabled auto scaling in Azure Spring Apps, you need to manually configure the differnt auto scaling rules in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
+- **Auto scale**: If you have enabled auto scaling in Azure Spring Apps, you need to manually configure the different auto scaling rules in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
 - **Monitoring**: The migration has enabled logging and monitoring in Azure Container Apps. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-monitoring) for sample queries to help with troubleshooting. 
 
 Refer to the [migration documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview) for more detailed feature migration steps.
