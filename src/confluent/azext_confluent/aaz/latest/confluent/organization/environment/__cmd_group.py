@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to get the confluent environments in the organization
+    """Commands to get the confluent environments in the organization.
     """
     pass
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization api-key",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage cluster api key
+    """Manage cluster API key
     """
     pass
 

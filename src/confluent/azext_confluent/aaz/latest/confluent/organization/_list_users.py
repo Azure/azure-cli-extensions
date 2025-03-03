@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization list-users",
 )
 class ListUsers(AAZCommand):
-    """Organization users details
+    """Organization users details.
     """
 
     _aaz_info = {

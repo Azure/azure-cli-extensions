@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete API key of a kafka or schema registry cluster
+    """Delete API key of a kafka or schema registry cluster.
     """
 
     _aaz_info = {

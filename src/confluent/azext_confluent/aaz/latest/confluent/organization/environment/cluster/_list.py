@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment cluster list",
 )
 class List(AAZCommand):
-    """List of all the clusters in a environment
+    """List of all the clusters in an environment.
     """
 
     _aaz_info = {

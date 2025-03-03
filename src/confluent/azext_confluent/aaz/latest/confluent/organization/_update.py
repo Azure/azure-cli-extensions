@@ -63,9 +63,6 @@ class Update(AAZCommand):
             arg_group="Body",
             help="Location of Organization resource",
             nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -172,7 +169,7 @@ class Update(AAZCommand):
             options=["email-address"],
             help="Email address",
             fmt=AAZStrArgFormat(
-                pattern="^\S+@\S+\.\S+$",
+                pattern="^\\S+@\\S+\\.\\S+$",
             ),
         )
         user_detail.first_name = AAZStrArg(

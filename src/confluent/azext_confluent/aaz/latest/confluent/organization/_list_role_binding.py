@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization list-role-binding",
 )
 class ListRoleBinding(AAZCommand):
-    """Organization role bindings
+    """Organization role bindings.
     """
 
     _aaz_info = {

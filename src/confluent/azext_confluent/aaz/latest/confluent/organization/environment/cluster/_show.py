@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment cluster show",
 )
 class Show(AAZCommand):
-    """Get cluster by Id
+    """Get cluster by ID.
     """
 
     _aaz_info = {
