@@ -7611,6 +7611,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_azure_service_mesh": True,
                 "enable_egress_gateway": True,
+                "egress_gateway_name": "istio-egress-1",
+                "gateway_configuration_name": "istio-sgc-1",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -7628,7 +7630,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                         egress_gateways=[
                             self.models.IstioEgressGateway(
                                 enabled=True,
-                                name="fake-name" # TODO: temp fix when bump new SDK
+                                name="istio-egress-1",
+                                gateway_configuration_name="istio-sgc-1",
+                                namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
                             )
                         ]
                     )
