@@ -65,7 +65,7 @@ CONTINUOUSPATCH_ALL_TASK_NAMES = [
 
 WORKFLOW_STATUS_NOT_AVAILABLE = "---Not Available---"
 WORKFLOW_STATUS_PATCH_NOT_AVAILABLE = "---No patch image available---"
-WORKFLOW_VALIDATION_MESSAGE="Validating configuration..."
+WORKFLOW_VALIDATION_MESSAGE="Validating configuration"
 
 ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Schedule value is invalid. "
