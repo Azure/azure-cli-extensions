@@ -28,7 +28,7 @@ def base_url(location):
 def _get_data_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
-    creds, _, _ = profile.get_login_credentials(subscription_id=subscription_id, resource="https://quantum.microsoft.com")
+    creds, _, _ = profile.get_login_credentials(subscription_id=subscription_id)
     return creds
 
 
