@@ -198,7 +198,7 @@ class ContinuousPatchConfig:
         except ValidationError as e:
             logger.error("Error validating the continuous patch config file: %s", e)
             return None
-#something here is not working, we are getting an object that is not set as we need it
+
         self.version = json_config.get("version", "")
         repositories = json_config.get("repositories", [])
         for repo in repositories:
