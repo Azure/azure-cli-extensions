@@ -29,7 +29,7 @@ from ._constants import (
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.acr._utils import prepare_source_location
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
@@ -110,24 +110,13 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
     # compare the task definition to the existing tasks, if there is a difference, we need to update the tasks
     # if we need to update the tasks, we will update the cron expression from it
     # if not we just update the cron expression from the given parameter
+    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     for task in task_list:
         deployed_task = task.step.encoded_task_content
         extension_task = _create_encoded_task(CONTINUOUSPATCH_TASK_DEFINITION[task.name]["template_file"])
         if deployed_task != extension_task:
             logger.debug(f"Task {task.name} is different from the extension task, updating the task")
-
-            if schedule_cron_expression is None:
-                trigger_task = next((t for t in task_list if t.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME), None)
-                if trigger_task is None:
-                    raise AzCLIError(f"Task {CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME} not found in the registry")
-                if not trigger_task.trigger.timer_triggers:
-                    raise AzCLIError(f"No timer triggers found for task {CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME}")
-                schedule_cron_expression = trigger_task.trigger.timer_triggers[0].schedule
-
-            _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, silent_execution=True)
-
-            # the deployment will also update the schedule if it was set, we no longer need to manually set it
-            return
+            _update_task_yaml(cmd, acr_task_client, registry, resource_group, task, extension_task)
 
     logger.debug("No difference found between the existing tasks and the extension tasks")
 
@@ -332,9 +321,24 @@ def _create_encoded_task(task_file):
         return base64_content.decode('utf-8')
 
 
-def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, dryrun):
+def _update_task_yaml(cmd, acr_task_client, registry, resource_group_name, task, encoded_task):
+    logger.debug("Entering update_task_yaml for task %s", task.name)
+    try:
+        taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
+            step=acr_task_client.models.EncodedTaskStepUpdateParameters(
+                encoded_task_content=encoded_task))
+
+        result = LongRunningOperation(cmd.cli_ctx)(
+            acr_task_client.begin_update(resource_group_name,
+                                         registry.name,
+                                         task.name,
+                                         taskUpdateParameters))
+    except HttpResponseError as exception:
+        logger.warning(f"Failed to update task {task.name} in registry {registry.name}: {exception}")
+
+
+def _update_task_schedule(cmd, acr_task_client, registry, cron_expression, resource_group_name, dryrun):
     logger.debug(f"converted schedule to cron_expression: {cron_expression}")
-    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
             timer_triggers=[
