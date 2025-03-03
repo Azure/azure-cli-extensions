@@ -7,6 +7,9 @@ logger = get_logger(__name__)
 
 # Concrete Converter Subclass for Container App
 class AppConverter(ConverterTemplate):
+    
+    DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
+
     def load_source(self, source):
         self.source = source
         self.managed_components = source['managedComponents']
@@ -26,7 +29,33 @@ class AppConverter(ConverterTemplate):
         isPublic = self.source['properties'].get('public')
         identity = self.source.get('identity')
         # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
-
+        volumeMounts = []
+        volumes = []
+        if 'properties' in self.source and 'customPersistentDisks' in self.source['properties']:
+            disks = self.source['properties']['customPersistentDisks']
+            for disk_props in disks:
+                print(f"Disk props: {disk_props}")
+                storage_id = disk_props.get('storageId', '')
+                storage_name = self._get_resource_name(storage_id) if storage_id else ''
+                # print("Storage name: ", storage_name)
+                mountOptions = self.DEFAULT_MOUNT_OPTIONS
+                if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
+                    len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
+                    mountOptions = ""
+                    for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
+                        mountOptions += option + ("," if not mountOptions else "") 
+                print("Mount options: ", mountOptions)
+                volumeMounts.append({
+                    "volumeName": storage_name,
+                    "mountPath": disk_props.get('customPersistentDiskProperties').get('mountPath'),
+                })
+                volumes.append({
+                    "volumeName": storage_name,
+                    "storageName": appName + "-" + storage_name,
+                    "mountOptions": mountOptions,
+                })
+        # print("Volume mounts: ", volumeMounts)
+        # print("Volumes: ", volumes)
         self.data = {
             "containerAppName": appName,
             "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
@@ -41,6 +70,8 @@ class AppConverter(ConverterTemplate):
             "green": greenDeployment,
             "isBlueGreen": len(deployments) > 1,
             "identity": identity,
+            "volumeMounts": volumeMounts,
+            "volumes": volumes,
         }
 
     def get_template_name(self):

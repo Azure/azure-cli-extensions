@@ -42,13 +42,15 @@ class ConversionContext:
         source_wrapper = SourceDataWrapper(source)
         asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
         asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
+        storages = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
 
         # Environment Converter
         is_vnet = self._is_vnet(asa_service)
         is_enterprise = self._is_enterprise_tier(asa_service)
         asa_service['isVnet'] = is_vnet
         asa_service['apps'] = asa_apps
-        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(asa_service)
+        asa_service['storages'] = storages
+        
 
         # Cert Converter
         asa_certs = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
@@ -60,7 +62,7 @@ class ConversionContext:
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
             elif cert['properties'].get('type') == "ContentCertificate":
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
-
+        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(asa_service)
         # Managed components Converter
         managed_components = {
             'gateway': False,

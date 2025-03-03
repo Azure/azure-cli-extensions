@@ -171,8 +171,30 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             }
             {%- endif %}
           ]
+          {%- if data.volumeMounts %}
+          volumeMounts: [
+            {%- for volume in data.volumeMounts %}
+            {
+              volumeName: '{{ volume.volumeName }}'
+              mountPath: '{{ volume.mountPath }}'
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          {%- endif %}
         }
       ]
+      {%- if data.volumes %}
+      volumes: [
+        {%- for volume in data.volumes %}
+        {
+          name: '{{ volume.volumeName }}'
+          storageName: '{{ volume.storageName }}'
+          mountOptions: '{{ volume.mountOptions }}'
+          storageType: 'AzureFile'
+        }{%- if not loop.last %}{%- endif %}
+        {%- endfor %}
+      ]
+      {%- endif %}
       serviceBinds: [
           {%- for bind in data.serviceBinds %}
           {
