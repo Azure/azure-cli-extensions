@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b2
+++++++
+* Revert max name length change
+
 1.0.0b1
 ++++++
 * Migrate to AAZ
