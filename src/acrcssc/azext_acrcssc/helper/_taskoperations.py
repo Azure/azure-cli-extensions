@@ -194,6 +194,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
 
     file_name = None
     tmp_folder = None
+    acr_archive_utils_logger_level = acr_archive_utils_logger.getEffectiveLevel()
     try:
         file_name = os.path.basename(config_file_path)
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
@@ -207,7 +208,6 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
         # Because it is an external logger, the only way to control the output is by changing the level
         try:
             if remove_internal_statements:
-                acr_archive_utils_logger_level = acr_archive_utils_logger.getEffectiveLevel()
                 acr_archive_utils_logger.setLevel(logging.ERROR)
 
             source_location = prepare_source_location(
