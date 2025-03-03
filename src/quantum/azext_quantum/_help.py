@@ -68,30 +68,30 @@ helps['quantum job list'] = """
       - name: Get the list of jobs from an Azure Quantum workspace.
         text: |-
             az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation
-      - name: List jobs that used the microsoft-elements provider. Assume `az quantum workspace set` has provided the missing parameters.
+      - name: List jobs that used the microsoft-elements provider.
         text: |-
-            az quantum job list --provider-id microsoft-elements
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --provider-id microsoft-elements
       - name: List jobs that ran on the microsoft.dft target.
         text: |-
-            az quantum job list --target-id microsoft.dft
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --target-id microsoft.dft
       - name: List jobs that completed successfully.
         text: |-
-            az quantum job list --status Succeeded
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --status Succeeded
       - name: List jobs created after January 15th, 2025.
         text: |-
-            az quantum job list --created-after 2025-01-15
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --created-after 2025-01-15
       - name: List jobs whose names start with "Generate...".
         text: |-
-            az quantum job list --job-name Generate
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --job-name Generate
       - name: Skip the first 50 jobs, start listing at the 51st job and list 10 jobs.
         text: |-
-            az quantum job list --skip 50 --top 10
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --skip 50 --top 10
       - name: Sort the job list by Target ID and display in tabular format.
         text: |-
-            az quantum job list --orderby Target -o table
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --orderby Target -o table
       - name: Sort the job list by Job Name in descending order, display in tabular format.
         text: |-
-            az quantum job list --orderby Name --order desc -o table
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --orderby Name --order desc -o table
 """
 
 helps['quantum job output'] = """
