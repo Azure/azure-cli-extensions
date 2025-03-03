@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.0.2
+++++++
+* Bug fix: Removed help command that overrode default
+  `acr -h` command.
+
 1.0.1
 ++++++
 * Add: New mock files to validate query request.
