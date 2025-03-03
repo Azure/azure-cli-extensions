@@ -3835,7 +3835,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
         )
-        new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
+        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
             mode="Istio",
