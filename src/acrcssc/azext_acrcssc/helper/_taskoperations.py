@@ -27,6 +27,7 @@ from ._constants import (
     CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME,
     CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
     DESCRIPTION,
+    WORKFLOW_VALIDATION_MESSAGE,
     TaskRunStatus)
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
@@ -246,14 +247,21 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
             agent_pool_name=None,
             log_template=None
         )
-
-        queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
+        queued = LongRunningOperation(cmd.cli_ctx, start_msg=WORKFLOW_VALIDATION_MESSAGE)(acr_registries_task_client.begin_schedule_run(
             resource_group_name=resource_group_name,
             registry_name=registry.name,
             run_request=request))
         run_id = queued.run_id
         logger.info("Performing dry-run check for filter policy using acr task run id: %s", run_id)
-        return WorkflowTaskStatus.remove_internal_acr_statements(WorkflowTaskStatus.generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name))
+        return WorkflowTaskStatus.remove_internal_acr_statements(
+            WorkflowTaskStatus.generate_logs(
+                cmd,
+                acr_run_client,
+                run_id,
+                registry.name,
+                resource_group_name,
+                await_task_run=True,
+                await_task_message=WORKFLOW_VALIDATION_MESSAGE))
     finally:
         delete_temporary_dry_run_file(tmp_folder)
 
@@ -277,7 +285,7 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
 def track_scan_progress(cmd, resource_group_name, registry, status):
     logger.debug("Entering track_scan_progress")
 
-    config = get_oci_artifact_continuous_patch(cmd, registry)
+    config, _ = get_oci_artifact_continuous_patch(cmd, registry)
 
     return _retrieve_logs_for_image(cmd, registry, resource_group_name, config.schedule, status)
 
@@ -310,7 +318,7 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
 
     start_time = time.time()
 
-    progress_indicator = IndeterminateProgressBar(cmd.cli_ctx)
+    progress_indicator = IndeterminateProgressBar(cmd.cli_ctx, message="Retrieving logs for images")
     progress_indicator.begin()
 
     image_status = WorkflowTaskStatus.from_taskrun(cmd, acr_task_run_client, registry, scan_taskruns, patch_taskruns, progress_indicator=progress_indicator)

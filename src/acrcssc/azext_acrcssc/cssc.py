@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=logging-fstring-interpolation
+from azure.cli.core.util import user_confirmation
 from knack.log import get_logger
 from .helper._constants import CONTINUOUS_PATCHING_WORKFLOW_NAME
 from .helper._taskoperations import (
@@ -105,7 +106,6 @@ def delete_acrcssc(cmd,
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
 
-    from azure.cli.core.util import user_confirmation
     user_confirmation(f"Are you sure you want to delete the workflow {CONTINUOUS_PATCHING_WORKFLOW_NAME} from registry {registry_name}?")
 
     delete_continuous_patch_v1(cmd, registry, False)
