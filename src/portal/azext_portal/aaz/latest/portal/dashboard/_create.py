@@ -49,7 +49,6 @@ class Create(AAZCommand):
             help="The name of the dashboard.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
                 max_length=64,
                 min_length=3,
             ),
