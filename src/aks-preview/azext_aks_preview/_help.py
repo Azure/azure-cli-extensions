@@ -3098,9 +3098,9 @@ helps['aks mesh enable-egress-gateway'] = """
       - name: --gateway-configuration-name
         type: string
         short-summary: Specify the name of the StaticGatewayConfiguration resource.
-        long-summary: This required field specifies the name of the StaticGatewayConfiguration resource for the Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway.
+        long-summary: This required field specifies the name of the StaticGatewayConfiguration resource for the Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
     examples:
-      - name: Enable an Istio egress gateway. Static egress gateway must be enabled prior to creating an Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway.
+      - name: Enable an Istio egress gateway. Static egress gateway must be enabled prior to creating an Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
         text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --istio-egressgateway-name my-istio-egress-1 --istio-egressgateway-namespace my-namespace-1 --gateway-configuration-name sgc-istio-egress-1
 """
 
