@@ -20,7 +20,6 @@ from .helper._constants import (
     CONTINUOUSPATCH_ALL_TASK_NAMES,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
-    RESOURCE_GROUP,
     SUBSCRIPTION)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_SCHEDULE
 from .helper._ociartifactoperations import _get_acr_token
@@ -130,9 +129,9 @@ def _validate_schedule(schedule):
     match = re.match(r'(\d+)(d)$', schedule)
     if not match:
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_SCHEDULE)
-    if match is not None:
-        value = int(match.group(1))
-        unit = match.group(2)
+
+    value = int(match.group(1))
+    unit = match.group(2)
     if unit == 'd' and (value < 1 or value > 30):  # day of the month
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 

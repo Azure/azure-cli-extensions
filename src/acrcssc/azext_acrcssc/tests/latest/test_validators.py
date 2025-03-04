@@ -20,7 +20,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
     def test_validate_schedule_valid(self):
         test_cases = [
-            ('1d' ),
+            ('1d'),
             ('5d'),
             ('10d')
         ]

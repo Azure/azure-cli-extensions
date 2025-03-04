@@ -3,7 +3,7 @@ alias:
   values:
     patchimagetask: cssc-patch-image
     DATE: $(date "+%Y-%m-%d")
-    cssc : mcr.microsoft.com/acr/cssc:f86c1b6
+    cssc : mcr.microsoft.com/acr/cssc:9fb281c
 steps:
   - id: print-inputs
     cmd: |
@@ -33,8 +33,11 @@ steps:
         bash -c 'echo "Vulnerabilities found for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/vulCount.txt)"'
         bash -c 'echo "EOSL for the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/eosl.txt)"'
 
-  - cmd: az login --identity
-  - cmd: |
+  - id: trigger-patch-task
+    retries: 3
+    retryDelay: 10
+    timeout: 1800
+    cmd: |
       az -c '
       vulCount=$(cat /workspace/data/vulCount.txt) && \
       eoslValue=$(cat /workspace/data/eosl.txt) && \
@@ -42,6 +45,7 @@ steps:
       if [ "$eoslValue" = "true" ]; then \
         echo "PATCHING will be skipped as EOSL is $eoslValue for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
       elif [ $vulCount -gt 0 ]; then \
+          az login --identity; \
           echo "Total OS vulnerabilities found -> $vulCount"; \
           echo "PATCHING task scheduled for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
           az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
