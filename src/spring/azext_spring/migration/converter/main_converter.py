@@ -23,8 +23,9 @@ class MainConverter(ConverterTemplate):
             self.data["certs"].append(certData)
 
         self.data.setdefault("apps", [])
-        for item in self.apps:
-            appName = item['name'].split('/')[-1]
+        storage_configs = []
+        for app in self.apps:
+            appName = app['name'].split('/')[-1]
             moduleName = appName.replace("-", "_")
             templateName = f"{appName}_app.bicep"
             appData = {
@@ -34,7 +35,21 @@ class MainConverter(ConverterTemplate):
                 "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
                 "targetPort": "targetPortFor_"+appName.replace("-", "_"),
             }
+            if 'properties' in app and 'customPersistentDisks' in app['properties']:
+                disks = app['properties']['customPersistentDisks']
+                for disk_props in disks:
+                    # Get the account name from storage map using storageId
+                    storage_id = disk_props.get('storageId', '')
+                    storage_name = self._get_resource_name(storage_id) if storage_id else ''
+                    app_name = app['name'].split('/')[-1]
+                    containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + (app_name + "_" + storage_name).replace("-", "")
+                    storage_config = {
+                        'containerAppEnvStorageAccountKey': containerAppEnvStorageAccountKey,
+                    }
+                    storage_configs.append(storage_config)
+
             self.data["apps"].append(appData)
+        self.data["storages"] = storage_configs
 
         for name, value in self.managedComponents.items():
             self.data[name] = value
