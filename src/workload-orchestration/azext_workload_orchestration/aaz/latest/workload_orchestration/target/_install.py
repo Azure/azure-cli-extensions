@@ -60,12 +60,6 @@ class Install(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.review_id = AAZStrArg(
-            options=["--review-id"],
-            arg_group="Body",
-            help="Review ID",
-            required=True,
-        )
         _args_schema.solution = AAZStrArg(
             options=["--solution-template"],
             arg_group="Body",
@@ -170,7 +164,6 @@ class Install(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("reviewId", AAZStrType, ".review_id", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
 

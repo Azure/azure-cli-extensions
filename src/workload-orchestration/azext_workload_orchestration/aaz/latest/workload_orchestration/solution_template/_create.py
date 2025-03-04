@@ -10,6 +10,8 @@
 
 from azure.cli.core.aaz import *
 import time
+from knack.log import get_logger
+logger = get_logger(__name__)
 
 
 @register_command(
@@ -120,8 +122,8 @@ class Create(AAZCommand):
         self.pre_operations()
         yield self.SolutionTemplatesCreateOrUpdate(ctx=self.ctx)()
         for i in range(1, 6):
-          print(f"sleeping for 2 seconds, iteration {i}")
-          time.sleep(2)
+            logger.debug(f"sleeping for 2 seconds, iteration {i}")
+            time.sleep(2)
         yield self.SolutionTemplatesCreateVersion(ctx=self.ctx)()
         self.post_operations()
 
