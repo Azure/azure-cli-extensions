@@ -356,7 +356,7 @@ def check_and_download_sqlServerSchema_console_app(exePath, baseFolder):
 
     # Downloading console app zip and extracting it
     if not testPath:
-        zipSource = "https://migrationapps.blob.core.windows.net/schemamigration/SqlSchemaMigration.zip"
+        zipSource = "https://aka.ms/sqlschemamigrationpackage"
         zipDestination = os.path.join(baseFolder, "SqlSchemaMigration.zip")
 
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
