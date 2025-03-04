@@ -548,3 +548,38 @@ def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids
         raise InvalidArgumentValueError(
             "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
         )
+
+def validate_trigger_id(namespace):
+    """Validates trigger-id"""
+    if not isinstance(namespace.trigger_id, str):
+        raise InvalidArgumentValueError(
+            f"Invalid trigger-id type: {type(namespace.trigger_id)}"
+        )
+    if not re.match("^[a-z0-9_-]*$", namespace.trigger_id):
+        raise InvalidArgumentValueError("Invalid trigger-id value")
+    
+def validate_recurrence_dates_in_month(namespace):
+    if namespace.recurrence_dates_in_month is None:
+        return
+    if not isinstance(namespace.recurrence_dates_in_month, list):
+        raise InvalidArgumentValueError(
+            f"Invalid recurrence-dates-in-month type: {type(namespace.recurrence_dates_in_month)}. \
+                Expected list of integers"
+        )
+    for item in namespace.recurrence_dates_in_month:
+        if not isinstance(item, int) or item < 1 or item > 31:
+            raise InvalidArgumentValueError(
+                f"Invalid recurrence-dates-in-month item: {item}. Expected integer between 1 and 31"
+            )
+        
+def validate_schedule_test_ids(namespace):
+    if namespace.test_ids is None:
+        return
+    if isinstance(namespace.test_ids, list) and len(namespace.test_ids) != 1:
+        raise InvalidArgumentValueError(
+            f"Invalid test-ids type: {type(namespace.test_ids)}. \
+                Expected list of test ids"
+        )
+    if not re.match("^[a-z0-9_-]*$", namespace.test_ids[0]):
+        raise InvalidArgumentValueError("Invalid test-id value")
+

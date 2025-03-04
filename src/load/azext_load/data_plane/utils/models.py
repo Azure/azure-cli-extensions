@@ -64,3 +64,7 @@ class AllowedTrendsResponseTimeAggregations(str, Enum):
     P99 = "P99"
     P999 = "P999"
     P9999 = "P9999"
+
+class AllowedTriggerStates(str, Enum):
+    ACTIVE = "ACTIVE"
+    PAUSED = "PAUSED"
