@@ -2225,11 +2225,23 @@ def load_arguments(self, _):
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
         )
-    
+
     with self.argument_context("aks mesh enable-egress-gateway") as c:
-        c.argument("istio_egressgateway_name", validator=validate_asm_egress_name, required=True,)
-        c.argument("istio_egressgateway_namespace", required=False, default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE)
-        c.argument("gateway_configuration_name", required=True)
+        c.argument(
+            "istio_egressgateway_name",
+            validator=validate_asm_egress_name,
+            required=True,
+            options_list=["--istio-egressgateway-name", "--istio-eg-gtw-name"]
+        )
+        c.argument("istio_egressgateway_namespace",
+            required=False,
+            default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+            options_list=["--istio-egressgateway-namespace", "--istio-eg-gtw-ns"]
+        )
+        c.argument("gateway_configuration_name",
+            required=True,
+            options_list=["--gateway-configuration-name", "--gtw-config-name"]
+        )
 
     with self.argument_context("aks mesh enable") as c:
         c.argument("revision", validator=validate_azure_service_mesh_revision)

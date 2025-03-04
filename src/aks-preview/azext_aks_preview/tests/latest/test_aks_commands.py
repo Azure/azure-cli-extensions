@@ -12569,25 +12569,44 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create cluster with --enable-azure-service-mesh
+        # create cluster with --enable-azure-service-mesh and --enable-static-egress-gateway
+        # Static Egress Gateway is required for Istio Egress Gateway
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
             "--ssh-key-value={ssh_key_value} "
-            "--enable-azure-service-mesh --revision={revision} --output=json"
+            "--enable-azure-service-mesh --revision={revision} --output=json "
+            "--enable"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("serviceMeshProfile.mode", "Istio"),
+                self.check("networkProfile.staticEgressGatewayProfile.enabled", True)
             ],
         )
 
-        # enable egress gateway
+        # add Gateway-mode agentpool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name=gwnp "
+            "--mode=Gateway "
+            "--node-count=2 "
+            "--gateway-prefix-size=31 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/StaticEgressGatewayPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("gatewayProfile.publicIpPrefixSize", 31),
+            ],
+        )
+
+        # enable Istio egress gateway
         update_cmd = (
             "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-name istio-egress-1 --egress-gateway-namespace istio-ns-1 "
+            "--istio-egressgateway-name istio-egress-1 --istio-egressgateway-namespace istio-ns-1 "
             "--gateway-configuration-name istio-sgc-1"
         )
         self.cmd(
@@ -12616,7 +12635,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # enable another egress gateway
         update_cmd = (
             "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-name istio-egress-2 --egress-gateway-namespace istio-ns-2 "
+            "--istio-egressgateway-name istio-egress-2 --istio-egressgateway-namespace istio-ns-2 "
             "--gateway-configuration-name istio-sgc-2"
         )
         self.cmd(
@@ -12645,7 +12664,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # disable first egress gateway
         update_cmd = (
             "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-name istio-egress-1 --egress-gateway-namespace istio-ns-1"
+            "--istio-egressgateway-name istio-egress-1 --istio-egressgateway-namespace istio-ns-1"
         )
         self.cmd(
             update_cmd,
@@ -12673,7 +12692,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # disable second egress gateway
         update_cmd = (
             "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-name istio-egress-2 --egress-gateway-namespace istio-ns-2 "
+            "--istio-egressgateway-name istio-egress-2 --istio-egressgateway-namespace istio-ns-2 "
             "--gateway-configuration-name istio-sgc-2"
         )
         self.cmd(
