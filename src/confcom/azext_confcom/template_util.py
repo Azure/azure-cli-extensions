@@ -104,16 +104,22 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
         # if we have a tar location, we can try to get the image info
         if tar_location:
-            with tarfile.open(tar_location) as tar:
+            with tarfile.open(tar_location) as tar_file:
                 # get all the info out of the tarfile
                 try:
+                    logger.info("using backwards compatibility tar file")
                     image_info = os_util.map_image_from_tar_backwards_compatibility(
-                        image_name, tar, tar_location
+                        image_name, tar_file, tar_location
                     )
                 except IndexError:
+                    logger.info("using docker formatted tar file")
                     image_info = os_util.map_image_from_tar(
-                        image_name, tar, tar_location
+                        image_name, tar_file, tar_location
                     )
+                except (KeyError, AttributeError):
+                    # manifest.json not found
+                    logger.info("using OCI tar file")
+                    image_info = os_util.map_image_from_tar_oci_layout_v1(image_name, tar_file, tar_location)
                 if image_info is not None:
                     tar = True
                     message_queue.append(f"{image_name} read from local tar file")
@@ -177,6 +183,7 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             f"{raw_image.attrs.get(config.ACI_FIELD_CONTAINERS_ARCHITECTURE_KEY)}. "
             f"Only {config.ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE} is supported by Confidential ACI"
         ))
+
     return image_info, tar
 
 
@@ -231,7 +238,7 @@ def process_env_vars_from_template(params: dict,
                     response = approve_wildcards or input(
                         f'Create a wildcard policy for the environment variable {name} (y/n): ')
                     if approve_wildcards or response.lower() == 'y':
-                        logger.info(f'Creating a wildcard policy for the environment variable {name}')
+                        logger.info('Creating a wildcard policy for the environment variable %s', name)
                         env_vars.append({
                             config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
                             config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",

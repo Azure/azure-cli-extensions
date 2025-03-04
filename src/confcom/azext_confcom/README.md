@@ -194,6 +194,8 @@ Use the following command to generate CCE policy for the image.
 az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
 ```
 
+Note that multiple images saved to the tar file is only available using the docker-archive format for tar files. OCI does not support multi-image tar files at this time.
+
 Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
 
 ```bash

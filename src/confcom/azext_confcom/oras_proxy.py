@@ -7,6 +7,7 @@ import subprocess
 import json
 import platform
 import re
+from knack.log import get_logger
 from typing import List
 from azext_confcom.errors import eprint
 from azext_confcom.config import ARTIFACT_TYPE
@@ -15,8 +16,6 @@ from azext_confcom.os_util import delete_silently
 
 host_os = platform.system()
 machine = platform.machine()
-
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -43,11 +42,12 @@ def prepend_docker_registry(image_name: str) -> str:
         # If no registry is specified, assume docker.io/library
         if "/" not in name:
             # Add the `library` namespace for official images
-            registry = f"library/"
+            registry = "library/"
         # Add the default `docker.io` registry
-        registry = f"docker.io/" + registry
+        registry = f"docker.io/{registry}"
 
     return f"{registry}{image_name}"
+
 
 def call_oras_cli(args, check=False):
     return subprocess.run(args, check=check, capture_output=True, timeout=120)
@@ -65,7 +65,7 @@ def discover(
     item = call_oras_cli(arg_list, check=False)
     hashes = []
 
-    logger.info(f"Discovering fragments for {image}: {item.stdout.decode('utf-8')}")
+    logger.info("Discovering fragments for %s: %s", image, item.stdout.decode('utf-8'))
     if item.returncode == 0:
         json_output = json.loads(item.stdout.decode("utf-8"))
         manifests = json_output.get("manifests", [])
@@ -91,7 +91,7 @@ def pull(
     if "@sha256:" in image:
         image = image.split("@")[0]
     arg_list = ["oras", "pull", f"{image}@{image_hash}"]
-    logger.info(f"Pulling fragment: {image}@{image_hash}")
+    logger.info("Pulling fragment: %s@%s", image, image_hash)
     item = call_oras_cli(arg_list, check=False)
 
     # get the exit code from the subprocess
