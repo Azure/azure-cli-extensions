@@ -28,13 +28,18 @@ class AppConverter(ConverterTemplate):
         ingress = self._get_ingress(self.source, tier)
         isPublic = self.source['properties'].get('public')
         identity = self.source.get('identity')
+        storages = self.source.get('storages')
         # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
         volumeMounts = []
         volumes = []
         if 'properties' in self.source and 'customPersistentDisks' in self.source['properties']:
             disks = self.source['properties']['customPersistentDisks']
+            storage_map = {
+                storage['name'].split('/')[-1]: storage['properties']['accountName'] 
+                for storage in storages
+            }
             for disk_props in disks:
-                print(f"Disk props: {disk_props}")
+                # print(f"Disk props: {disk_props}")
                 storage_id = disk_props.get('storageId', '')
                 storage_name = self._get_resource_name(storage_id) if storage_id else ''
                 # print("Storage name: ", storage_name)
@@ -43,15 +48,21 @@ class AppConverter(ConverterTemplate):
                     len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
                     mountOptions = ""
                     for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
-                        mountOptions += option + ("," if not mountOptions else "") 
-                print("Mount options: ", mountOptions)
+                        mountOptions += ("," if mountOptions != "" else "") + option  
+                account_name = storage_map.get(storage_name, '')
+                mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
+                readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
+                share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
+                access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
+                storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
+                # print("Mount options: ", mountOptions)
                 volumeMounts.append({
                     "volumeName": storage_name,
-                    "mountPath": disk_props.get('customPersistentDiskProperties').get('mountPath'),
+                    "mountPath": mount_path,
                 })
                 volumes.append({
                     "volumeName": storage_name,
-                    "storageName": appName + "-" + storage_name,
+                    "storageName": storage_unique_name,
                     "mountOptions": mountOptions,
                 })
         # print("Volume mounts: ", volumeMounts)
