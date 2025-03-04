@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.0.0b3'
+VERSION = '1.0.0b4'
 try:
     from azext_datamigration.manual.version import VERSION
 except ImportError:
