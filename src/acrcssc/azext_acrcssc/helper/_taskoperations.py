@@ -55,12 +55,12 @@ def create_update_continuous_patch_v1(cmd,
 
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
     schedule_cron_expression = None
+    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
+    
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
-
-    logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
-
-    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
+        logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
+    
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -74,6 +74,13 @@ def create_update_continuous_patch_v1(cmd,
     if cssc_config_file is not None:
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
+
+    # on 'update' schedule is optional
+    if schedule is None:
+        trigger_task = next(task for task in task_list if task.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
+        trigger = trigger_task.trigger
+        if trigger and trigger.timer_triggers:
+            schedule_cron_expression = trigger.timer_triggers[0].schedule
 
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
@@ -326,17 +333,19 @@ def _update_task_yaml(cmd, acr_task_client, registry, resource_group_name, task,
             step=acr_task_client.models.EncodedTaskStepUpdateParameters(
                 encoded_task_content=encoded_task))
 
-        LongRunningOperation(cmd.cli_ctx)(
+        result = LongRunningOperation(cmd.cli_ctx)(
             acr_task_client.begin_update(resource_group_name,
                                          registry.name,
                                          task.name,
                                          taskUpdateParameters))
+
+        logger.debug(f"Task {task.name} updated successfully")
     except HttpResponseError as exception:
         logger.warning(f"Failed to update task {task.name} in registry {registry.name}: {exception}")
 
 
 def _update_task_schedule(cmd, acr_task_client, registry, resource_group_name, cron_expression, dryrun):
-    logger.debug(f"converted schedule to cron_expression: {cron_expression}")
+    logger.debug(f"Using cron_expression: {cron_expression}")
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
             timer_triggers=[
@@ -349,11 +358,12 @@ def _update_task_schedule(cmd, acr_task_client, registry, resource_group_name, c
         logger.debug("Dry run, skipping the update of the task schedule")
         return
     try:
-        LongRunningOperation(cmd.cli_ctx)(
+        result = LongRunningOperation(cmd.cli_ctx)(
             acr_task_client.begin_update(resource_group_name,
                                          registry.name,
                                          CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
                                          taskUpdateParameters))
+
         print("Schedule has been successfully updated.")
     except HttpResponseError as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
