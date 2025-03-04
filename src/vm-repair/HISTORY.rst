@@ -2,6 +2,18 @@
 Release History
 ===============
 
+2.0.3
+++++++
+Added new long parameter functionality in `vm repair run` cmd `parameters` parameter. When using the prefix `++`, the entire key=value string will be sent to the running script, not just the value.
+
+2.0.2
+++++++
+Updated parameter descriptions and examples for `az vm repair create`.
+
+2.0.1
+++++++
+Fixed 2 Unbound variable bugs in `vm repair create` and improved the code documentation.  
+
 2.0.0
 ++++++
 Changed default VM image to 2022-datacenter-smalldisk for better default security. 

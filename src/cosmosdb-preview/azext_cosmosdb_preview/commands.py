@@ -49,6 +49,10 @@ def load_command_table(self, _):
     cosmosdb_sql_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.cosmosdb.operations#SqlResourcesOperations.{}',
         client_factory=cf_sql_resources)
+        
+    cosmosdb_rbac_table_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#TableResourcesOperations.{}',
+        client_factory=cf_table_resources)
 
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
@@ -93,6 +97,22 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_sql_container_create')
         g.custom_command('update', 'cli_cosmosdb_sql_container_update')
+
+    with self.command_group('cosmosdb table role definition', cosmosdb_rbac_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_table_role_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_table_role_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_table_role_definition_exists')
+        g.command('list', 'list_table_role_definitions')
+        g.show_command('show', 'get_table_role_definition')
+        g.command('delete', 'begin_delete_table_role_definition', confirmation=True)        
+    
+    with self.command_group('cosmosdb table role assignment', cosmosdb_rbac_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_table_role_assignment_create')
+        g.custom_command('update', 'cli_cosmosdb_table_role_assignment_update')
+        g.custom_command('exists', 'cli_cosmosdb_table_role_assignment_exists')
+        g.command('list', 'list_table_role_assignments')
+        g.show_command('show', 'get_table_role_assignment')
+        g.command('delete', 'begin_delete_table_role_assignment', confirmation=True)
 
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
@@ -233,6 +253,12 @@ def load_command_table(self, _):
     # Retrieve partition throughput for Sql containers
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('retrieve-partition-throughput', 'cli_begin_retrieve_sql_container_partition_throughput', is_preview=True)
+
+    # Get and update offer throughput for Sql containers
+    with self.command_group('cosmosdb sql container throughput', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.show_command('show', 'get_sql_container_throughput')
+        g.custom_command('update', 'cli_cosmosdb_sql_container_throughput_update')
+        g.custom_command('migrate', 'cli_cosmosdb_sql_container_throughput_migrate')
 
     # Merge partitions for Sql databases
     with self.command_group('cosmosdb sql database', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:

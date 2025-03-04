@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-11-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -155,7 +155,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
@@ -202,6 +202,10 @@ class Wait(AAZWaitCommand):
             properties.auto_upgrade_profile = AAZObjectType(
                 serialized_name="autoUpgradeProfile",
             )
+            properties.dataplane_api_endpoint = AAZStrType(
+                serialized_name="dataplaneApiEndpoint",
+                flags={"read_only": True},
+            )
             properties.enable_diagnostics_support = AAZBoolType(
                 serialized_name="enableDiagnosticsSupport",
             )
@@ -210,9 +214,6 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             properties.logging = AAZObjectType()
-            properties.managed_resource_group = AAZStrType(
-                serialized_name="managedResourceGroup",
-            )
             properties.network_profile = AAZObjectType(
                 serialized_name="networkProfile",
             )

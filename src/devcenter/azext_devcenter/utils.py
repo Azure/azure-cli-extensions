@@ -5,10 +5,17 @@
 #
 # --------------------------------------------------------------------------
 import json
-from datetime import (timedelta, datetime)
+import sys
+from datetime import datetime, timedelta
 from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
+from ._validators import validate_endpoint
+
+
+def clear_running_line():
+    sys.stdout.write('\r' + ' ' * 80 + '\r')
+    sys.stdout.flush()
 
 
 def get_project_arg(cli_ctx, dev_center_name, project_name=None):
@@ -76,8 +83,8 @@ use a different tenant where you have access to projects."""
 def get_earliest_time(action_iterator):
     earliest_time = None
     for action in action_iterator:
-        if action["next"] is not None:
-            action_string = action["next"]["scheduledTime"]
+        action_string = action.get("next", {}).get("scheduledTime")
+        if action_string:
             action_time = datetime.strptime(action_string, "%Y-%m-%dT%H:%M:%S.%fZ")
             if earliest_time is None or action_time < earliest_time:
                 earliest_time = action_time
@@ -88,4 +95,15 @@ def get_delayed_time(delay_time, action_time):
     split_time = delay_time.split(":")
     hours = int(split_time[0])
     minutes = int(split_time[1])
-    return action_time + timedelta(hours=hours, minutes=minutes)
+    delayed_time = action_time + timedelta(hours=hours, minutes=minutes)
+    return delayed_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+def get_dataplane_endpoint(cli_ctx, endpoint=None, dev_center=None, project_name=None):
+    validate_endpoint(endpoint, dev_center)
+    if endpoint is None and dev_center is not None:
+        project = get_project_data(cli_ctx, dev_center, project_name)
+        endpoint = project["devCenterUri"]
+    endpoint = endpoint.split('//', 1)[-1]
+
+    return endpoint

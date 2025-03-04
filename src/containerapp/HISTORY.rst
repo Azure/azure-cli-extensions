@@ -4,7 +4,28 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create': support --kind {functionapp}
+
+1.1.0b3
+++++++
+* 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
+
+1.1.0b2
+++++++
+* 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
+* 'az containerapp create': New target-label option for Labels revision mode.
+* 'az containerapp up/update': New revisions-mode and target-label options for Labels revision mode.
+* 'az containerapp label-history': New list and show commands to see label revision assignment history.
+* 'az containerapp revision set-mode': New target-label option for Labels revision mode.
+* 'az containerapp connected-env certificate upload/remove': Support `--no-wait`.
+* 'az containerapp connected-env dapr-component set/remove': Support `--no-wait`.
+* 'az containerapp connected-env storage set/remove': Support `--no-wait`.
+* 'az containerapp env http-route-config': Add commands for the http-route-config feature area.
+* 'az containerapp env java-component': Support more flexible configuration updates with new parameters `--set-configurations`, `--replace-configurations`, `--remove-configurations` and `--remove-all-configurations`.
+* 'az containerapp env java-component gateway-for-spring create/update': Support `--bind` and `--unbind`
+* 'az containerapp arc': Enable setup custom core dns for Aks AzureCore on Arc.
 
 1.1.0b1
 ++++++
@@ -13,7 +34,7 @@ upcoming
 * 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
 * 'az containerapp session code-interpreter upload-file/list-files/show-file-content/show-file-metadata/delete-file': Support `--path` to specify the path of code interpreter session file resource
 * 'az containerapp session code-interpreter': Update response payload format for api-version 2024-10-02-preview
-* 'az containerapp env maintenance-config add/update/list/remove': Support environment maintenance config management 
+* 'az containerapp env maintenance-config add/update/list/remove': Support environment maintenance config management
 * 'az containerapp sessionpool create': Support managed identity when create session pool with --mi-system-assigned --mi-user-assigned
 
 1.0.0b4
