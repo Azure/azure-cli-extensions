@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="Name of the Organizations resource",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -87,7 +87,6 @@ class Create(AAZCommand):
         marketplace.subscription_id = AAZStrArg(
             options=["subscription-id"],
             help="Azure subscription id for the the marketplace offer is purchased from",
-            required=True,
         )
         marketplace.subscription_status = AAZStrArg(
             options=["subscription-status"],
@@ -134,7 +133,7 @@ class Create(AAZCommand):
             help="Organization name in partner's system",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -151,7 +150,7 @@ class Create(AAZCommand):
             options=["workspace-name"],
             help="Workspace name in partner's system",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\-.: ]*$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
             ),
@@ -185,7 +184,7 @@ class Create(AAZCommand):
             help="Email address of the user",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         user.first_name = AAZStrArg(
@@ -230,16 +229,29 @@ class Create(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
+
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -356,19 +368,25 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("type", AAZStrType, ".identity.type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".identity.user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".identity.mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".identity.mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -379,7 +397,7 @@ class Create(AAZCommand):
             marketplace = _builder.get(".properties.marketplace")
             if marketplace is not None:
                 marketplace.set_prop("offerDetails", AAZObjectType, ".offer_details", typ_kwargs={"flags": {"required": True}})
-                marketplace.set_prop("subscriptionId", AAZStrType, ".subscription_id", typ_kwargs={"flags": {"required": True}})
+                marketplace.set_prop("subscriptionId", AAZStrType, ".subscription_id")
                 marketplace.set_prop("subscriptionStatus", AAZStrType, ".subscription_status")
 
             offer_details = _builder.get(".properties.marketplace.offerDetails")
@@ -445,16 +463,14 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -502,6 +518,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.user = AAZObjectType(
                 flags={"required": True},
@@ -514,7 +531,6 @@ class Create(AAZCommand):
             )
             marketplace.subscription_id = AAZStrType(
                 serialized_name="subscriptionId",
-                flags={"required": True},
             )
             marketplace.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -570,6 +586,7 @@ class Create(AAZCommand):
             )
             single_sign_on_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             single_sign_on_properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
