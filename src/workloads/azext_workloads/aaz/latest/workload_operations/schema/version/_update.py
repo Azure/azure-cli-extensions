@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema version update",
+    "workload-orchestration schema version update",
     is_preview=True,
 )
 class Update(AAZCommand):

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations target uninstall",
+    "workload-orchestration target uninstall",
     is_preview=True,
 )
 class Uninstall(AAZCommand):

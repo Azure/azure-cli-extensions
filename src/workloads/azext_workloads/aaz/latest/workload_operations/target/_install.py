@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations target install",
+    "workload-orchestration target install",
     is_preview=True,
 )
 class Install(AAZCommand):

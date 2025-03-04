@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema-reference list",
+    "workload-orchestration schema-reference list",
     is_preview=True,
 )
 class List(AAZCommand):

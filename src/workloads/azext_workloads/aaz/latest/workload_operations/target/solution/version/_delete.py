@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations target solution version delete",
+    "workload-orchestration target solution version delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )

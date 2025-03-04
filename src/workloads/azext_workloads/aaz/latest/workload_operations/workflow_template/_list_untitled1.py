@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations workflow-template list-untitled1",
+    "workload-orchestration workflow-template list-untitled1",
     is_preview=True,
 )
 class ListUntitled1(AAZCommand):

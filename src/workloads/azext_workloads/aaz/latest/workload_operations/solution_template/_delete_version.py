@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations solution-template delete-version",
+    "workload-orchestration solution-template delete-version",
     is_preview=True,
 )
 class DeleteVersion(AAZCommand):

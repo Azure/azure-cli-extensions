@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations context site-reference create",
+    "workload-orchestration context site-reference create",
     is_preview=True,
 )
 class Create(AAZCommand):

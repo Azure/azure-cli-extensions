@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations context site-reference delete",
+    "workload-orchestration context site-reference delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )

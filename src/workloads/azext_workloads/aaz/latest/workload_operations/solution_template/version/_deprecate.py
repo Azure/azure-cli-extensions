@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations solution-template version deprecate",
+    "workload-orchestration solution-template version deprecate",
     is_preview=True,
 )
 class Deprecate(AAZCommand):

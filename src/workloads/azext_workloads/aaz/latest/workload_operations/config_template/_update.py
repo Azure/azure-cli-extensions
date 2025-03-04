@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations config-template update",
+    "workload-orchestration config-template update",
     is_preview=True,
 )
 class Update(AAZCommand):

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations context site-reference show",
+    "workload-orchestration context site-reference show",
     is_preview=True,
 )
 class Show(AAZCommand):

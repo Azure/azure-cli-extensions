@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations target resolve",
+    "workload-orchestration target resolve",
     is_preview=True,
 )
 class Resolve(AAZCommand):

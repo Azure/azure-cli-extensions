@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema dynamic-schema version create",
+    "workload-orchestration schema dynamic-schema version create",
     is_preview=True,
 )
 class Create(AAZCommand):

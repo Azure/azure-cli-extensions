@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations diagnostic show",
+    "workload-orchestration diagnostic show",
     is_preview=True,
 )
 class Show(AAZCommand):

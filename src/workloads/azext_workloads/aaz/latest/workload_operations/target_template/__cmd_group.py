@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-operations target-template",
+    "workload-orchestration target-template",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):

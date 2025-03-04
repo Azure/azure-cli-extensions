@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations schema delete",
+    "workload-orchestration schema delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )

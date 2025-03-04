@@ -76,11 +76,11 @@ azdev setup --cli {path to azure-cli} --repo {path to azure-cli-extensions}
 
 ## Azure CLI Extension
 
-This repository contains workload operations. The main-workload-operations branch is the primary branch. 
+This repository contains workload operations. The main-workload-orchestration branch is the primary branch. 
 
 ### Source Code
 
-The source code is located in `src/workload-operations`.
+The source code is located in `src/workload-orchestration`.
 
 ### Switcher Script
 
@@ -97,7 +97,7 @@ We have a switcher script that changes the source code between `Microsoft.edge` 
 
 ## Making Changes as per Swagger Change
 
-1. Navigate to the required folder `src/workload-operations/<module>`.
+1. Navigate to the required folder `src/workload-orchestration/<module>`.
 2. Make the necessary changes in the respective files.
 3. Raise a new PR to the main branch.
 
@@ -105,7 +105,7 @@ We have a switcher script that changes the source code between `Microsoft.edge` 
 
 1. Create a wheel file:
     ```bash
-    cd src/workload-operations
+    cd src/workload-orchestration
     python setup.py bdist_wheel
     ```
 2. In the `dist` folder, you will find the `.whl` file. Remove any unnecessary spaces and filenames.

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations target publish",
+    "workload-orchestration target publish",
     is_preview=True,
 )
 class Publish(AAZCommand):

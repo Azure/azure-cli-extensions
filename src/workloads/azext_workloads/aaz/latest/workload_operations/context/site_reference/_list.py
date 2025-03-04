@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-operations context site-reference list",
+    "workload-orchestration context site-reference list",
     is_preview=True,
 )
 class List(AAZCommand):
