@@ -7,7 +7,6 @@ import os
 import tempfile
 import unittest
 from unittest import mock
-from datetime import ( datetime,timezone)
 from ..._validators import (
     _validate_schedule, check_continuous_task_exists, validate_continuouspatch_config_v1
 )
@@ -21,21 +20,20 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
     def test_validate_schedule_valid(self):
         test_cases = [
-            ('1d' ),
+            ('1d'),
             ('5d'),
             ('10d')
         ]
 
         for timespan in test_cases:
             with self.subTest(timespan=timespan):
-               _validate_schedule(timespan)
-    
+                _validate_schedule(timespan)
+
     def test_validate_schedule_invalid(self):
         test_cases = [('df'),('12'),('dd'),('41d'), ('21dd')]
 
         for timespan in test_cases:
             self.assertRaises(InvalidArgumentValueError, _validate_schedule, timespan)
-
 
     @patch('azext_acrcssc._validators.cf_acr_tasks')
     def test_check_continuoustask_exists(self, mock_cf_acr_tasks):
@@ -120,7 +118,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
              patch('os.access', return_value=True):
              validate_continuouspatch_config_v1(temp_file_path)
              mock_load.assert_called_once_with(mock.ANY)
-    
+
     @patch('azext_acrcssc._validators.json.load')
     def test_validate_continuouspatch_json_invalid_json_should_fail(self, mock_load):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
