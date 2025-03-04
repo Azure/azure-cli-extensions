@@ -42,3 +42,15 @@ class ConverterTemplate(ABC):
         with open(f"{script_dir}/templates/{template_name}.j2") as file:
             template = Template(file.read())
         return template.render(data=self.data, params=self.params)
+
+    # Extracts the resource name from a resource ID string in Azure ARM template format
+    # Format: [resourceId('Microsoft.AppPlatform/Spring/<ResourceType>', '<parent_resource_name>', '<resource_name>')]
+    # Example input: [resourceId('Microsoft.AppPlatform/Spring/storages', 'sample-service', 'storage1')]
+    # Returns: 'storage1'
+    def _get_resource_name(self, resource_id):
+        # Extract content between square brackets
+        content = resource_id.strip('[]').strip('resourceId()')
+        # Split by comma and get the last parameter
+        params = content.split(',')
+        # Return the last parameter stripped of quotes and whitespace
+        return params[-1].strip().strip("'") if params else ''
