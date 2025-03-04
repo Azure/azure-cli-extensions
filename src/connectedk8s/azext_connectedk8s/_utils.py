@@ -1267,6 +1267,10 @@ def helm_install_release(
                     "systemDefaultValues.image.repository={}".format(
                         registry_path.split("/")[0]
                     ),
+                    "--set",
+                    "systemDefaultValues.customIdentityProviderEnabled=true",
+                    "--set",
+                    "systemDefaultValues.sniEnabled=false",
                 ]
             )
         else:
