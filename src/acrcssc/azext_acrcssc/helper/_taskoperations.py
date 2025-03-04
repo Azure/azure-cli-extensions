@@ -59,8 +59,15 @@ def create_update_continuous_patch_v1(cmd,
     
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
+<<<<<<< HEAD
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
     
+=======
+
+    logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
+
+    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
+>>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -75,6 +82,7 @@ def create_update_continuous_patch_v1(cmd,
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
+<<<<<<< HEAD
     # on 'update' schedule is optional
     if schedule is None:
         trigger_task = next(task for task in task_list if task.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
@@ -82,6 +90,8 @@ def create_update_continuous_patch_v1(cmd,
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
 
+=======
+>>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
@@ -363,7 +373,6 @@ def _update_task_schedule(cmd, acr_task_client, registry, resource_group_name, c
                                          registry.name,
                                          CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
                                          taskUpdateParameters))
-
         print("Schedule has been successfully updated.")
     except HttpResponseError as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
