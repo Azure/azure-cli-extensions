@@ -121,7 +121,7 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
     logger.debug("No difference found between the existing tasks and the extension tasks")
 
     if schedule_cron_expression is not None:
-        _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
+        _update_task_schedule(cmd, acr_task_client, registry, resource_group, schedule_cron_expression, dry_run)
 
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
@@ -328,7 +328,7 @@ def _update_task_yaml(cmd, acr_task_client, registry, resource_group_name, task,
             step=acr_task_client.models.EncodedTaskStepUpdateParameters(
                 encoded_task_content=encoded_task))
 
-        result = LongRunningOperation(cmd.cli_ctx)(
+        LongRunningOperation(cmd.cli_ctx)(
             acr_task_client.begin_update(resource_group_name,
                                          registry.name,
                                          task.name,
@@ -337,28 +337,27 @@ def _update_task_yaml(cmd, acr_task_client, registry, resource_group_name, task,
         logger.warning(f"Failed to update task {task.name} in registry {registry.name}: {exception}")
 
 
-def _update_task_schedule(cmd, acr_task_client, registry, cron_expression, resource_group_name, dryrun):
+def _update_task_schedule(cmd, acr_task_client, registry, resource_group_name, cron_expression, dryrun):
     logger.debug(f"converted schedule to cron_expression: {cron_expression}")
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
             timer_triggers=[
                 acr_task_client.models.TimerTriggerUpdateParameters(
                     name='azcli_defined_schedule',
-                    schedule=cron_expression
-                )
-            ]
-        )
-    )
+                    schedule=cron_expression)
+            ]))
 
     if dryrun:
         logger.debug("Dry run, skipping the update of the task schedule")
-        return None
+        return
     try:
-        acr_task_client.begin_update(resource_group_name, registry.name,
-                                     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
-                                     taskUpdateParameters)
+        LongRunningOperation(cmd.cli_ctx)(
+            acr_task_client.begin_update(resource_group_name,
+                                         registry.name,
+                                         CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
+                                         taskUpdateParameters))
         print("Schedule has been successfully updated.")
-    except Exception as exception:
+    except HttpResponseError as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
 
 
