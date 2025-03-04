@@ -76,7 +76,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - yes: If True, confirmation prompts will be skipped. Default is False.  
     - encrypt_recovery_key: The Bitlocker recovery key to use for encrypting the VM. Default is an empty string.  
     - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard.
-    - os_disk_type: A flag parameter that, when used, sets the OS disk type of the repair VM to the specified type. 
+    - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS. 
     """  
     
     # Logging all the command parameters, except the sensitive data.
