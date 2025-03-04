@@ -58,6 +58,7 @@ class TestProviderDescription:
 class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
+    @live_only()
     def test_workspace(self):
         print("test_workspace")
         # clear
