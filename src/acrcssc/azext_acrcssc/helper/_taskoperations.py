@@ -118,8 +118,6 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
             logger.debug(f"Task {task.name} is different from the extension task, updating the task")
             _update_task_yaml(cmd, acr_task_client, registry, resource_group, task, extension_task)
 
-    logger.debug("No difference found between the existing tasks and the extension tasks")
-
     if schedule_cron_expression is not None:
         _update_task_schedule(cmd, acr_task_client, registry, resource_group, schedule_cron_expression, dry_run)
 
