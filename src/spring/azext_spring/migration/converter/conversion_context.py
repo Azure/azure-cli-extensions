@@ -78,7 +78,9 @@ class ConversionContext:
             converted_contents[self.get_converter(ACSConverter).get_template_name()] = self.get_converter(ACSConverter).convert()
             logger.debug(f"converted_contents for Application Configuration Service: {converted_contents[self.get_converter(ACSConverter).get_template_name()]}")
 
-        converted_contents = self._convert_live_view(source_wrapper, converted_contents, managed_components)
+        converted_contents[self.get_converter(LiveViewConverter).get_template_name()] = self.get_converter(LiveViewConverter).convert()
+        logger.info(f"converted_contents for Live View: {converted_contents[self.get_converter(LiveViewConverter).get_template_name()]}")
+
         converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
 
         converted_contents.update(self.get_converter(AppConverter).convert2())
@@ -107,14 +109,6 @@ class ConversionContext:
             with open(output_filename, 'w', encoding='utf-8') as output_file:
                 logger.info(f"Generating the file {output_filename}...")
                 output_file.write(content)
-
-    def _convert_live_view(self, source_wrapper, converted_contents, managed_components):
-        for live_view in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews'):
-            managed_components['sba'] = True
-            live_view_key = self.get_converter(LiveViewConverter).get_template_name()
-            converted_contents[live_view_key] = self.get_converter(LiveViewConverter).convert(live_view)
-            logger.info(f"converted_contents for Live View: {converted_contents[live_view_key]}")
-        return converted_contents
 
     def _convert_eureka_and_service_registry(self, source_wrapper, converted_contents, asa_service, managed_components):
         is_enterprise_tier = self.is_enterprise_tier(asa_service)
