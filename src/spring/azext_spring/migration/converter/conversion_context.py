@@ -60,7 +60,7 @@ class ConversionContext:
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
             elif cert['properties'].get('type') == "ContentCertificate":
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
-        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert(asa_service)
+        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert()
         # Managed components Converter
         managed_components = {
             'gateway': False,
