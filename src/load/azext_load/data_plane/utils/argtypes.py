@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
 )
 from knack.arguments import CLIArgumentType
-from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency 
+from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency, TriggerState 
 from datetime import datetime
 from azext_load.data_plane.load_trigger import utils as trigger_utils
 
@@ -508,4 +508,17 @@ recurrence_index = CLIArgumentType(
     type=int,
     choices=[1, 2, 3, 4, 5],
     help="Index for the recurrence type 'MonthlyByDays'.",
+)
+
+list_schedule_test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs="*",
+    help="List all the schedules which are associated with the provided test ids.",
+)
+
+list_schedule_states = CLIArgumentType(
+    options_list=["--states"],
+    nargs="*",
+    choices=utils.get_enum_values(TriggerState),
+    help="List all the schedules in the resource which are in the provided states.",
 )

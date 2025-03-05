@@ -46,5 +46,10 @@ def load_arguments(self, _):
         c.argument("end_after_occurrence", argtypes.end_after_occurrence)
         c.argument("end_after_date_time", argtypes.end_after_date_time)
         c.argument("test_ids", argtypes.test_ids)
+
+    # Load Trigger Schedule List
+    with self.argument_context("load trigger schedule list") as c:
+        c.argument("test_ids", argtypes.list_schedule_test_ids)
+        c.argument("trigger_states", argtypes.list_schedule_states)
     
  

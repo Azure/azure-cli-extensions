@@ -212,3 +212,22 @@ def enable_trigger_schedule(
         return response
     else:
         logger.error("Trigger schedule is not paused. It is in %s state.", result.state.value)
+
+
+def list_trigger_schedules(
+    cmd,
+    load_test_resource,
+    resource_group_name=None,
+    trigger_states=None,
+    test_ids=None,
+):
+    logger.info("Listing trigger schedules")
+    client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
+    if trigger_states:
+        trigger_states = ",".join(trigger_states)
+    if test_ids:
+        test_ids = ",".join(test_ids)
+    logger.info("Trigger states: %s", trigger_states)
+    response = client.list_trigger(test_ids=test_ids, states=trigger_states)
+    logger.debug("Fetched list of trigger schedules: %s", response)
+    return response

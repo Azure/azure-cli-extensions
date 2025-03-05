@@ -74,3 +74,14 @@ examples:
       text: |
         az load trigger schedule enable --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id
 """
+
+helps[
+    "load trigger schedule list"
+] = """
+type: command
+short-summary: List all load trigger schedules.
+examples:
+    - name: List schedule.
+      text: |
+        az load trigger schedule list --load-test-resource sample-alt-resource --resource-group sample-rg --test-ids sample-test-id1 sample-test-id2 --states Active
+"""

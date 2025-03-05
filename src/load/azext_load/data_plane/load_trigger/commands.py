@@ -27,3 +27,4 @@ def load_trigger_schedule_commands(self, _):
         g.custom_show_command("show", "get_trigger_schedule")
         g.custom_command("pause", "pause_trigger_schedule")
         g.custom_command("enable", "enable_trigger_schedule")
+        g.custom_command("list", "list_trigger_schedules")
