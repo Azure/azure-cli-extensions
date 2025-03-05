@@ -2,9 +2,15 @@ from .base_converter import ConverterTemplate
 
 # Concrete Converter Subclass for paramter
 class ParamConverter(ConverterTemplate):
+
+    def __init__(self, input):
+        def extract_data(input):
+            # TODO: Implement the extract_data method
+            return input
+        super().__init__(input, extract_data)
+
     def load_source(self, source):
         self.apps = source['apps']
-        self.is_vnet = source['isVnet']
         self.storages = source['storages']
 
     def calculate_data(self):
@@ -12,11 +18,11 @@ class ParamConverter(ConverterTemplate):
             storage['name'].split('/')[-1]: storage['properties']['accountName'] 
             for storage in self.storages
         }        
-        self.data.setdefault("apps", [])
         storage_configs = []
+        apps_data = []
         for app in self.apps:
             appName = app['name'].split('/')[-1]
-            self.data["apps"].append({
+            apps_data.append({
                 "appName": appName,
                 "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
                 "targetPort": "targetPortFor_"+appName.replace("-", "_"),
@@ -41,8 +47,11 @@ class ParamConverter(ConverterTemplate):
                         'accountName': account_name,
                     }
                     storage_configs.append(storage_config)
-        self.data["storages"] = storage_configs
-        self.data["isVnet"] = self.is_vnet
+        self.data = {
+            "apps": apps_data,
+            "storages": storage_configs,
+            "isVnet": self.wrapper_data.is_vnet()
+        }
 
     def get_template_name(self):
         return "param.bicepparam"

@@ -2,6 +2,13 @@ from .base_converter import ConverterTemplate
 
 # Concrete Subclass for Container App Environment
 class EnvironmentConverter(ConverterTemplate):
+
+    def __init__(self, input):
+        def extract_data(input):
+            # TODO: Implement the extract_data method
+            return input
+        super().__init__(input, extract_data)
+
     def load_source(self, source):
         self.source = source
 
@@ -19,8 +26,7 @@ class EnvironmentConverter(ConverterTemplate):
             "storages": self._get_app_storage_configs(apps, storages),
         }
 
-        isVnet = self.source['isVnet']
-        if isVnet:
+        if self.wrapper_data.is_vnet():
             self.data["vnetConfiguration"] = {
                 "internal": str(True).lower(),
             }

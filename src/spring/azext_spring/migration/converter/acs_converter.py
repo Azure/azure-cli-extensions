@@ -14,32 +14,28 @@ class ACSConverter(ConverterTemplate):
     KEY_HOST_KEY_ALGORITHM = ".host-key-algorithm"
     KEY_PATTERN = ".pattern"
 
-    def __init__(self):
-        super().__init__()
-
-    def load_source(self, source):
-        self.source = source
-
-    def calculate_data(self):
-        name = f"config"
-        configurations, params = self._get_configurations_and_params(self.source)
-        replicas = 2
-
-        self.data = {
-            "configServerName": name,
-            "params": params,
-            "configurations": configurations,
-            "replicas": replicas
-        }
+    def __init__(self, input):
+        def extract_data(input):
+            acs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configurationServices')[0]
+            name = f"config"
+            configurations, params = self._get_configurations_and_params(acs)
+            replicas = 2
+            return {
+                "configServerName": name,
+                "params": params,
+                "configurations": configurations,
+                "replicas": replicas
+            }
+        super().__init__(input, extract_data)
 
     def get_template_name(self):
         return "config_server.bicep"
 
-    def _get_configurations_and_params(self, source):
+    def _get_configurations_and_params(self, acs):
         configurations = []
         params = []
 
-        git_repos = source.get('properties', {}).get('settings', {}).get('gitProperty', {}).get('repositories')
+        git_repos = acs.get('properties', {}).get('settings', {}).get('gitProperty', {}).get('repositories')
         if git_repos is not None and len(git_repos) > 0:
             default_repo = git_repos[0]
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, default_repo.get('uri'))

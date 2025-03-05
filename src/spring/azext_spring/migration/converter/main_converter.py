@@ -2,6 +2,13 @@ from .base_converter import ConverterTemplate
 
 # Concrete Converter Subclass for Read Me
 class MainConverter(ConverterTemplate):
+
+    def __init__(self, input):
+        def extract_data(input):
+            # TODO: Implement the extract_data method
+            return input
+        super().__init__(input, extract_data)
+
     def load_source(self, source):
         self.source = source
         self.apps = source["apps"]
@@ -10,8 +17,7 @@ class MainConverter(ConverterTemplate):
         self.storages = source["storages"]
 
     def calculate_data(self):
-        self.data["isVnet"] = self.source.get("isVnet", False)
-        self.data.setdefault("certs", [])
+        certs = []
         for item in self.certs:
             certName = item['name'].split('/')[-1]
             moduleName = "cert_" + certName.replace("-", "_")
@@ -21,13 +27,13 @@ class MainConverter(ConverterTemplate):
                 "moduleName": moduleName,
                 "templateName": templateName,
             }
-            self.data["certs"].append(certData)
+            certs.append(certData)
         storage_map = {
             storage['name'].split('/')[-1]: storage['properties']['accountName'] 
             for storage in self.storages
         }
-        self.data.setdefault("apps", [])
         storage_configs = []
+        apps_data = []
         for app in self.apps:
             appName = app['name'].split('/')[-1]
             moduleName = appName.replace("-", "_")
@@ -59,11 +65,18 @@ class MainConverter(ConverterTemplate):
                     }
                     storage_configs.append(storage_config)
 
-            self.data["apps"].append(appData)
-        self.data["storages"] = storage_configs
+            apps_data.append(appData)
 
-        for name, value in self.managedComponents.items():
-            self.data[name] = value
+        self.data = {
+            "isVnet": self.wrapper_data.is_vnet(),
+            "certs": certs,
+            "apps": apps_data,
+            "storages": storage_configs,
+            "gateway": self.wrapper_data.is_support_gateway(),
+            "config": self.wrapper_data.is_support_configserver(),
+            "eureka": self.wrapper_data.is_support_eureka(),
+            "sba": self.wrapper_data.is_support_sba(),
+        }
 
     def get_template_name(self):
         return "main.bicep"

@@ -2,7 +2,7 @@ import os
 
 from abc import ABC, abstractmethod
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import ConverterTemplate, SourceDataWrapper
 from .environment_converter import EnvironmentConverter
 from .app_converter import AppConverter
 from .readme_converter import ReadMeConverter
@@ -20,7 +20,8 @@ logger = get_logger(__name__)
 
 # Context Class
 class ConversionContext:
-    def __init__(self):
+    def __init__(self, input):
+        self.data_wrapper = SourceDataWrapper(input)
         self.converters = []
 
     def add_converter(self, converter: ConverterTemplate):
@@ -45,9 +46,6 @@ class ConversionContext:
         storages = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
 
         # Environment Converter
-        is_vnet = self._is_vnet(asa_service)
-        is_enterprise = self._is_enterprise_tier(asa_service)
-        asa_service['isVnet'] = is_vnet
         asa_service['apps'] = asa_apps
         asa_service['storages'] = storages
         
@@ -71,18 +69,18 @@ class ConversionContext:
             'sba': False,
         }
         converted_contents = self._convert_gateway(source_wrapper, converted_contents, managed_components)
-        converted_contents = self._convert_config_server_and_ACS(source_wrapper, converted_contents, managed_components)
+
+        if self.data_wrapper.is_support_ssoconfigserver():
+            converted_contents[self.get_converter(ConfigServerConverter).get_template_name()] = self.get_converter(ConfigServerConverter).convert()
+            logger.debug(f"converted_contents for config server: {converted_contents[self.get_converter(ConfigServerConverter).get_template_name()]}")
+        elif self.data_wrapper.is_support_acs():
+            converted_contents[self.get_converter(ACSConverter).get_template_name()] = self.get_converter(ACSConverter).convert()
+            logger.debug(f"converted_contents for Application Configuration Service: {converted_contents[self.get_converter(ACSConverter).get_template_name()]}")
+
         converted_contents = self._convert_live_view(source_wrapper, converted_contents, managed_components)
         converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
 
-        asa_deployments = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
-        for app_source in asa_apps:
-            appName = app_source['name'].split('/')[-1]
-            app_source['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app_source['name']}/")]
-            app_source['managedComponents'] = managed_components
-            app_source['isEnterprise'] = is_enterprise
-            app_source['storages'] = storages
-            converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app_source)
+        converted_contents.update(self.get_converter(AppConverter).convert2())
 
         # Param, readme and main Converter
         full_source = {
@@ -90,8 +88,6 @@ class ConversionContext:
             "apps": asa_apps,
             "certs": asa_kv_certs,
             "managedComponents": managed_components,
-            "isVnet": is_vnet,
-            "inEnterprise": is_enterprise,
             "storages": storages,
         }
 
@@ -126,25 +122,6 @@ class ConversionContext:
             logger.info(f"converted_contents for gateway: {converted_contents[gateway_key]}")
         return converted_contents
 
-    def _convert_config_server_and_ACS(self, source_wrapper, converted_contents, managed_components):
-        enabled_config_server = False
-
-        for config_server in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers'):
-            managed_components['config'] = True
-            enabled_config_server = True
-            config_key = self.get_converter(ConfigServerConverter).get_template_name()
-            converted_contents[config_key] = self.get_converter(ConfigServerConverter).convert(config_server)
-            logger.debug(f"converted_contents for config server: {converted_contents[config_key]}")
-
-        if not enabled_config_server:
-            for acs in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/configurationServices'):
-                managed_components['config'] = True
-                config_key = self.get_converter(ACSConverter).get_template_name()
-                converted_contents[config_key] = self.get_converter(ACSConverter).convert(acs)
-                logger.debug(f"converted_contents for Application Configuration Service: {converted_contents[config_key]}")
-
-        return converted_contents
-
     def _convert_live_view(self, source_wrapper, converted_contents, managed_components):
         for live_view in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews'):
             managed_components['sba'] = True
@@ -154,7 +131,7 @@ class ConversionContext:
         return converted_contents
 
     def _convert_eureka_and_service_registry(self, source_wrapper, converted_contents, asa_service, managed_components):
-        is_enterprise_tier = self._is_enterprise_tier(asa_service)
+        is_enterprise_tier = self.is_enterprise_tier(asa_service)
         for service_registry in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries'):
             managed_components['eureka'] = True
             eureka_key = self.get_converter(ServiceRegistryConverter).get_template_name()
@@ -168,18 +145,7 @@ class ConversionContext:
             converted_contents[eureka_key] = self.get_converter(EurekaConverter).convert(None)
         return converted_contents
 
-    def _is_enterprise_tier(self, asa_service):
+    def is_enterprise_tier(self, asa_service):
         return asa_service['sku']['tier'] == 'Enterprise'
 
-    def _is_vnet(self, asa_service):
-        networkProfile = asa_service['properties'].get('networkProfile')
-        if networkProfile is None:
-            return False
-        return networkProfile.get('appSubnetId') is not None
 
-class SourceDataWrapper:
-    def __init__(self, source):
-        self.source = source
-
-    def get_resources_by_type(self, resource_type):
-        return [resource for resource in self.source['resources'] if resource['type'] == resource_type]

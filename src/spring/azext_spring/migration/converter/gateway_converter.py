@@ -3,8 +3,11 @@ from .base_converter import ConverterTemplate
 class GatewayConverter(ConverterTemplate):
     DEFAULT_NAME = "default"
 
-    def __init__(self, client, resource_group, service):
-        super().__init__()
+    def __init__(self, input, client, resource_group, service):
+        def extract_data(input):
+            # TODO: Implement the extract_data method
+            return input        
+        super().__init__(input, extract_data)
         self.client = client
         self.resource_group = resource_group
         self.service = service

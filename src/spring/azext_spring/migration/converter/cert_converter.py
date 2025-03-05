@@ -4,6 +4,13 @@ from .base_converter import ConverterTemplate
 
 # Concrete Converter Subclass for certificate
 class CertConverter(ConverterTemplate):
+
+    def __init__(self, input):
+        def extract_data(input):
+            # TODO: Implement the extract_data method
+            return input
+        super().__init__(input, extract_data)
+    
     def load_source(self, source):
         self.source = source
         # print(f"Cert source: {self.source}")
