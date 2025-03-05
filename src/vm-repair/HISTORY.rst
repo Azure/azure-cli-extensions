@@ -4,7 +4,7 @@ Release History
 
 2.1.0
 ++++++
-Added new parameter `os-disk-type` to `vm repair create` to let users specify the repair vm's os disk storage account type. 
+Added new parameter `--os-disk-type` to `vm repair create` to let users specify the repair vm's os disk storage account type. 
 
 2.0.3
 ++++++
