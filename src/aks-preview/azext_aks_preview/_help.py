@@ -3087,15 +3087,15 @@ helps['aks mesh enable-egress-gateway'] = """
     short-summary: Enable an Azure Service Mesh egress gateway.
     long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
     parameters:
-      - name: --istio-egressgateway-name
+      - name: --istio-egressgateway-name --istio-eg-gtw-name
         type: string
         short-summary: Specify the name of the Istio egress gateway.
         long-summary: This required field specifies the name of the Istio egress gateway. Must not exceed 253 characters, and must be alphanumeric characters and hyphens only.
-      - name: --istio-egressgateway-namespace
+      - name: --istio-egressgateway-namespace --istio-eg-gtw-ns
         type: string
         short-summary: Specify the namespace of the Istio egress gateway.
         long-summary: This optional field specifies the namespace of the Istio egress gateway. Defaults to "aks-istio-egress" if unspecified.
-      - name: --gateway-configuration-name
+      - name: --gateway-configuration-name --gtw-config-name
         type: string
         short-summary: Specify the name of the StaticGatewayConfiguration resource.
         long-summary: This required field specifies the name of the StaticGatewayConfiguration resource for the Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
@@ -3109,11 +3109,11 @@ helps['aks mesh disable-egress-gateway'] = """
     short-summary: Disable an Azure Service Mesh ingress gateway.
     long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
     parameters:
-      - name: --istio-egressgateway-name
+      - name: --istio-egressgateway-name --istio-eg-gtw-name
         type: string
         short-summary: Specify the name of the Istio egress gateway.
         long-summary: This required field specifies the name of the Istio egress gateway. Must not exceed 253 characters, and must be alphanumeric characters and hyphens only.
-      - name: --istio-egressgateway-namespace
+      - name: --istio-egressgateway-namespace --istio-eg-gtw-ns
         type: string
         short-summary: Specify the namespace of the Istio egress gateway.
         long-summary: This optional field specifies the namespace of the Istio egress gateway. Defaults to "aks-istio-egress" if unspecified.
