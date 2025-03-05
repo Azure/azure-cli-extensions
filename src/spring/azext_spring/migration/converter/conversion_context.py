@@ -36,7 +36,7 @@ class ConversionContext:
     def run_converters(self, source):
         converted_contents = {}
         # Cert Converter
-        converted_contents.update(self.get_converter(CertConverter).convert2())
+        converted_contents.update(self.get_converter(CertConverter).convert_many())
         # Environment Converter
         converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert()
         # Gateway Converter
@@ -59,7 +59,7 @@ class ConversionContext:
             converted_contents[self.get_converter(EurekaConverter).get_template_name()] = self.get_converter(EurekaConverter).convert()
             logger.info(f"converted_contents for Eureka: {converted_contents[self.get_converter(EurekaConverter).get_template_name()]}")
         # App Converter
-        converted_contents.update(self.get_converter(AppConverter).convert2())
+        converted_contents.update(self.get_converter(AppConverter).convert_many())
         # Param Converter
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert()
         # ReadMe Converter

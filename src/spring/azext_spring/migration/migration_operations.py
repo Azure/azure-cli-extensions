@@ -1,5 +1,3 @@
-import os
-
 from azure.cli.command_modules.resource._client_factory import (_resource_client_factory)
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id

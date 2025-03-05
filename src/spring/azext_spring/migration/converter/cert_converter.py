@@ -1,5 +1,3 @@
-import re
-
 from .base_converter import ConverterTemplate
 
 # Concrete Converter Subclass for certificate
@@ -17,14 +15,6 @@ class CertConverter(ConverterTemplate):
             return certs
         super().__init__(input, extract_data)
 
-    def convert2(self):
-        outputs = {}
-        for cert in self.data:
-            certName = cert['name'].split('/')[-1]
-            certData = self.transform_data(cert)
-            outputs[certName+"_"+self.get_template_name()] = self.generate_output(certData)
-        return outputs
-    
     def transform_data(self, cert):
         certName = cert['name'].split('/')[-1]
         moduleName = "cert_" + certName.replace("-", "_")

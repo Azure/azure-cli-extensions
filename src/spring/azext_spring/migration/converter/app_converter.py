@@ -1,8 +1,5 @@
-import os
-import re
 from knack.log import get_logger
 from .base_converter import ConverterTemplate
-from jinja2 import Template
 
 logger = get_logger(__name__)
 
@@ -15,14 +12,6 @@ class AppConverter(ConverterTemplate):
         def extract_data():
             return self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
         super().__init__(input, extract_data)
-
-    def convert2(self):
-        outputs = {}
-        for app in self.data:
-            appName = app['name'].split('/')[-1]
-            appData = self.transform_data(app)
-            outputs[appName+"_"+self.get_template_name()] = self.generate_output(appData)
-        return outputs
 
     def transform_data(self, app):
         appName = app['name'].split('/')[-1]

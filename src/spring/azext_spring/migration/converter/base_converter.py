@@ -15,6 +15,14 @@ class ConverterTemplate(ABC):
     def convert(self):
         return self.generate_output(self.data)
 
+    def convert_many(self):
+        outputs = {}
+        for item in self.data:
+            name = item['name'].split('/')[-1]
+            data = self.transform_data(item)
+            outputs[name+"_"+self.get_template_name()] = self.generate_output(data)
+        return outputs
+
     @abstractmethod
     def get_template_name(self):
         pass
