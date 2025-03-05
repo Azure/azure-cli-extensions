@@ -4,23 +4,17 @@ class ServiceRegistryConverter(ConverterTemplate):
 
     def __init__(self, input):
         def extract_data(input):
-            # TODO: Implement the extract_data method
-            return input
+            service_registry = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries')
+            name = f"eureka"
+            configurations = []
+            replicas = 1
+
+            return {
+                "eurekaName": name,
+                "configurations": configurations,
+                "replicas": replicas
+            }
         super().__init__(input, extract_data)
-
-    def load_source(self, source):
-        self.source = source
-
-    def calculate_data(self):
-        name = f"eureka"
-        configurations = []
-        replicas = 1
-
-        self.data = {
-            "eurekaName": name,
-            "configurations": configurations,
-            "replicas": replicas
-        }
 
     def get_template_name(self):
         return "eureka.bicep"

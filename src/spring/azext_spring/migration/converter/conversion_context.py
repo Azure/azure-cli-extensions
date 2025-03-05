@@ -81,7 +81,11 @@ class ConversionContext:
         converted_contents[self.get_converter(LiveViewConverter).get_template_name()] = self.get_converter(LiveViewConverter).convert()
         logger.info(f"converted_contents for Live View: {converted_contents[self.get_converter(LiveViewConverter).get_template_name()]}")
 
-        converted_contents = self._convert_eureka_and_service_registry(source_wrapper, converted_contents, asa_service, managed_components)
+        converted_contents[self.get_converter(ServiceRegistryConverter).get_template_name()] = self.get_converter(ServiceRegistryConverter).convert()
+        logger.info(f"converted_contents for Service Registry: {converted_contents[self.get_converter(ServiceRegistryConverter).get_template_name()]}")
+        if not self.data_wrapper.is_enterprise_tier():
+            converted_contents[self.get_converter(EurekaConverter).get_template_name()] = self.get_converter(EurekaConverter).convert()
+            logger.info(f"converted_contents for Eureka: {converted_contents[self.get_converter(EurekaConverter).get_template_name()]}")
 
         converted_contents.update(self.get_converter(AppConverter).convert2())
 
@@ -110,22 +114,5 @@ class ConversionContext:
                 logger.info(f"Generating the file {output_filename}...")
                 output_file.write(content)
 
-    def _convert_eureka_and_service_registry(self, source_wrapper, converted_contents, asa_service, managed_components):
-        is_enterprise_tier = self.is_enterprise_tier(asa_service)
-        for service_registry in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries'):
-            managed_components['eureka'] = True
-            eureka_key = self.get_converter(ServiceRegistryConverter).get_template_name()
-            converted_contents[eureka_key] = self.get_converter(ServiceRegistryConverter).convert(service_registry)
-            logger.info(f"converted_contents for Service Registry: {converted_contents[eureka_key]}")
-            return converted_contents
-
-        if not is_enterprise_tier:
-            managed_components['eureka'] = True
-            eureka_key = self.get_converter(EurekaConverter).get_template_name()
-            converted_contents[eureka_key] = self.get_converter(EurekaConverter).convert(None)
-        return converted_contents
-
-    def is_enterprise_tier(self, asa_service):
-        return asa_service['sku']['tier'] == 'Enterprise'
 
 

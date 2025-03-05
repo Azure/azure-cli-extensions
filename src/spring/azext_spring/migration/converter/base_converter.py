@@ -87,8 +87,11 @@ class SourceDataWrapper:
         return self.is_support_feature('Microsoft.AppPlatform/Spring/configurationServices')
     
     def is_support_eureka(self):
-        return self.is_support_feature('Microsoft.AppPlatform/Spring/serviceRegistries')
+        return self.is_support_serviceregistry() or not self.is_enterprise_tier()
     
+    def is_support_serviceregistry(self):
+        return self.is_support_feature('Microsoft.AppPlatform/Spring/serviceRegistries')
+
     def is_support_sba(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/applicationLiveViews')
     
