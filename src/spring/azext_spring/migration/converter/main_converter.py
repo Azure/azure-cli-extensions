@@ -12,7 +12,6 @@ class MainConverter(ConverterTemplate):
     def load_source(self, source):
         self.source = source
         self.apps = source["apps"]
-        self.managedComponents = source["managedComponents"]
         self.certs = source["certs"]
         self.storages = source["storages"]
 

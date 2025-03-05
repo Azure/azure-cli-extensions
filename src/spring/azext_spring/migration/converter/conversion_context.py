@@ -61,13 +61,7 @@ class ConversionContext:
             elif cert['properties'].get('type') == "ContentCertificate":
                 converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
         converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert()
-        # Managed components Converter
-        managed_components = {
-            'gateway': False,
-            'config': False,
-            'eureka': False,
-            'sba': False,
-        }
+
         converted_contents[self.get_converter(GatewayConverter).get_template_name()] = self.get_converter(GatewayConverter).convert()
         logger.info(f"converted_contents for gateway: {converted_contents[self.get_converter(GatewayConverter).get_template_name()]}")
 
@@ -94,11 +88,10 @@ class ConversionContext:
             "asa": asa_service,
             "apps": asa_apps,
             "certs": asa_kv_certs,
-            "managedComponents": managed_components,
             "storages": storages,
         }
 
-        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(full_source)
+        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert()
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(full_source)
         converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert(full_source)
 
