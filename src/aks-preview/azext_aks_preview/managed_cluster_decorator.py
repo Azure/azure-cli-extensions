@@ -2346,7 +2346,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
         istio_egressgateway_name = self.raw_param.get("istio_egressgateway_name", None)
-        istio_egressgateway_namespace = self.raw_param.get("istio_egressgateway_namespace", CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE)
+        istio_egressgateway_namespace = self.raw_param.get(
+            "istio_egressgateway_namespace", 
+            CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE
+        )
         gateway_configuration_name = self.raw_param.get("gateway_configuration_name", None)
 
         # disallow disable egress gateway on a cluser with no asm enabled
@@ -2409,7 +2412,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                         )
                     )
                 elif disable_egress_gateway:
-                    raise ArgumentUsageError(f'Egress gateway {istio_egressgateway_name} in namespace {istio_egressgateway_namespace} does not exist, cannot disable.')
+                    raise ArgumentUsageError(
+                        f'Egress gateway {istio_egressgateway_name} '
+                        'in namespace {istio_egressgateway_namespace} does not exist, cannot disable.'
+                    )
 
                 updated = True
 
