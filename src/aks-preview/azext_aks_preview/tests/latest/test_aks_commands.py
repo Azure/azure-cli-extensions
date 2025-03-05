@@ -12575,8 +12575,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/StaticEgressGatewayPreview "
             "--ssh-key-value={ssh_key_value} "
-            "--enable-azure-service-mesh --revision={revision} --output=json "
-            "--enable-static-egress-gateway"
+            "--enable-static-egress-gateway "
+            "--enable-azure-service-mesh --revision={revision} --output=json"
         )
         self.cmd(
             create_cmd,
