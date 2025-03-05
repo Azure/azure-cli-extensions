@@ -3109,8 +3109,8 @@ def aks_mesh_enable_egress_gateway(
         client,
         resource_group_name,
         name,
-        istio_egressgateway_name,
-        istio_egressgateway_namespace,
+        egress_gateway_name,
+        egress_gateway_namespace,
         gateway_configuration_name,
 ):
     return _aks_mesh_update(
