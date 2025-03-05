@@ -30,6 +30,7 @@ from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
@@ -42,14 +43,31 @@ from ._workflow_status import WorkflowTaskStatus
 logger = get_logger(__name__)
 
 
-def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule, dryrun, run_immediately, is_create_workflow=True):
+def create_update_continuous_patch_v1(cmd,
+                                      registry,
+                                      cssc_config_file,
+                                      schedule,
+                                      dryrun,
+                                      run_immediately,
+                                      is_create_workflow=True):
+
     logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {run_immediately}")
+
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
     schedule_cron_expression = None
+    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
+    
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
+<<<<<<< HEAD
+        logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
+    
+=======
+
     logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
-    cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
+
+    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
+>>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -57,26 +75,29 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule,
     else:
         if not cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Use 'az acr supply-chain workflow create' command to create {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow.")
-        _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+
+        _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun, task_list)
 
     if cssc_config_file is not None:
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
-    _eval_trigger_run(cmd, registry, resource_group, run_immediately)
-
+<<<<<<< HEAD
     # on 'update' schedule is optional
     if schedule is None:
-        task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
-        trigger = task.trigger
+        trigger_task = next(task for task in task_list if task.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
+        trigger = trigger_task.trigger
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
 
+=======
+>>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
+    _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
 
 
-def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
+def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, silent_execution=False):
     parameters = {
         "AcrName": {"value": registry.name},
         "AcrLocation": {"value": registry.location},
@@ -98,12 +119,24 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         dry_run
     )
 
-    logger.warning(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
+    if not silent_execution:
+        print(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
 
 
-def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
+def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, task_list):
+    # compare the task definition to the existing tasks, if there is a difference, we need to update the tasks
+    # if we need to update the tasks, we will update the cron expression from it
+    # if not we just update the cron expression from the given parameter
+    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+    for task in task_list:
+        deployed_task = task.step.encoded_task_content
+        extension_task = _create_encoded_task(CONTINUOUSPATCH_TASK_DEFINITION[task.name]["template_file"])
+        if deployed_task != extension_task:
+            logger.debug(f"Task {task.name} is different from the extension task, updating the task")
+            _update_task_yaml(cmd, acr_task_client, registry, resource_group, task, extension_task)
+
     if schedule_cron_expression is not None:
-        _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
+        _update_task_schedule(cmd, acr_task_client, registry, resource_group, schedule_cron_expression, dry_run)
 
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
@@ -117,7 +150,7 @@ def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
 
 def delete_continuous_patch_v1(cmd, registry, dryrun):
     logger.debug("Entering delete_continuous_patch_v1")
-    cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
     if not dryrun and (cssc_tasks_exists or cssc_config_exists):
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
@@ -135,8 +168,8 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
-
-    if not check_continuous_task_exists(cmd, registry):
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    if not cssc_tasks_exists:
         logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
         return
 
@@ -153,7 +186,9 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
     if config_file_path is None:
         logger.error("--config parameter is needed to perform dry-run check.")
         return
-    if is_create and check_continuous_task_exists(cmd, registry):
+
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    if is_create and cssc_tasks_exists:
         raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
     try:
         file_name = os.path.basename(config_file_path)
@@ -301,29 +336,45 @@ def _create_encoded_task(task_file):
         return base64_content.decode('utf-8')
 
 
-def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, dryrun):
-    logger.debug(f"converted schedule to cron_expression: {cron_expression}")
-    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+def _update_task_yaml(cmd, acr_task_client, registry, resource_group_name, task, encoded_task):
+    logger.debug("Entering update_task_yaml for task %s", task.name)
+    try:
+        taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
+            step=acr_task_client.models.EncodedTaskStepUpdateParameters(
+                encoded_task_content=encoded_task))
+
+        result = LongRunningOperation(cmd.cli_ctx)(
+            acr_task_client.begin_update(resource_group_name,
+                                         registry.name,
+                                         task.name,
+                                         taskUpdateParameters))
+
+        logger.debug(f"Task {task.name} updated successfully")
+    except HttpResponseError as exception:
+        logger.warning(f"Failed to update task {task.name} in registry {registry.name}: {exception}")
+
+
+def _update_task_schedule(cmd, acr_task_client, registry, resource_group_name, cron_expression, dryrun):
+    logger.debug(f"Using cron_expression: {cron_expression}")
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
             timer_triggers=[
                 acr_task_client.models.TimerTriggerUpdateParameters(
                     name='azcli_defined_schedule',
-                    schedule=cron_expression
-                )
-            ]
-        )
-    )
+                    schedule=cron_expression)
+            ]))
 
     if dryrun:
         logger.debug("Dry run, skipping the update of the task schedule")
-        return None
+        return
     try:
-        acr_task_client.begin_update(resource_group_name, registry.name,
-                                     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
-                                     taskUpdateParameters)
+        result = LongRunningOperation(cmd.cli_ctx)(
+            acr_task_client.begin_update(resource_group_name,
+                                         registry.name,
+                                         CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
+                                         taskUpdateParameters))
         print("Schedule has been successfully updated.")
-    except Exception as exception:
+    except HttpResponseError as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
 
 
@@ -483,15 +534,3 @@ def get_next_date(cron_expression):
     cron = croniter(cron_expression, now, expand_from_start_time=False)
     next_date = cron.get_next(datetime)
     return str(next_date)
-
-
-def get_task(cmd, registry, task_name=""):
-    acrtask_client = cf_acr_tasks(cmd.cli_ctx)
-    resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid[RESOURCE_GROUP]
-
-    try:
-        return acrtask_client.get(resource_group, registry.name, task_name)
-    except Exception as exception:
-        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
-        return None

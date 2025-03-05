@@ -44,7 +44,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
         mock_cf_acr_tasks.return_value = cf_acr_tasks_mock
         cf_acr_tasks_mock.get.return_value = {"name": "my_task"}
-        exists = check_continuous_task_exists(cmd, registry)
+        exists, _ = check_continuous_task_exists(cmd, registry)
         self.assertTrue(exists)
 
     @patch('azext_acrcssc._validators.cf_acr_tasks')
@@ -57,15 +57,15 @@ class AcrCsscCommandsTests(unittest.TestCase):
         mock_cf_acr_tasks.return_value = cf_acr_tasks_mock
         cf_acr_tasks_mock.get.return_value = None
 
-        exists = check_continuous_task_exists(cmd, registry)
+        exists, _ = check_continuous_task_exists(cmd, registry)
         self.assertFalse(exists)
-    
+
     def test_validate_continuouspatch_file(self):
         # Create a temporary file for testing
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
 
-       # Test when the file does not exist
+        # Test when the file does not exist
         with patch('os.path.exists', return_value=False):
             self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
@@ -116,8 +116,8 @@ class AcrCsscCommandsTests(unittest.TestCase):
              patch('os.path.isfile', return_value=True), \
              patch('os.path.getsize', return_value=100), \
              patch('os.access', return_value=True):
-             validate_continuouspatch_config_v1(temp_file_path)
-             mock_load.assert_called_once_with(mock.ANY)
+            validate_continuouspatch_config_v1(temp_file_path)
+            mock_load.assert_called_once_with(mock.ANY)
 
     @patch('azext_acrcssc._validators.json.load')
     def test_validate_continuouspatch_json_invalid_json_should_fail(self, mock_load):
@@ -129,14 +129,14 @@ class AcrCsscCommandsTests(unittest.TestCase):
                 {
                     "repository": "docker-local",
                     "tags": ["v1"],
-                }],
-            }
+                }]
+        }
         mock_load.return_value = mock_invalid_config
 
         with patch('os.path.exists', return_value=True), \
-            patch('os.path.isfile', return_value=True), \
-            patch('os.path.getsize', return_value=100), \
-            patch('os.access', return_value=True):
+             patch('os.path.isfile', return_value=True), \
+             patch('os.path.getsize', return_value=100), \
+             patch('os.access', return_value=True):
             self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
     @patch('azext_acrcssc._validators.json.load')
@@ -149,14 +149,14 @@ class AcrCsscCommandsTests(unittest.TestCase):
                 {
                     "repository": "docker-local",
                     "tags": ["v1-patched"],
-                }],
-            }
+                }]
+        }
         mock_load.return_value = mock_invalid_config
 
         with patch('os.path.exists', return_value=True), \
-            patch('os.path.isfile', return_value=True), \
-            patch('os.path.getsize', return_value=100), \
-            patch('os.access', return_value=True):
+             patch('os.path.isfile', return_value=True), \
+             patch('os.path.getsize', return_value=100), \
+             patch('os.access', return_value=True):
             self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
         mock_invalid_config = {
@@ -169,9 +169,9 @@ class AcrCsscCommandsTests(unittest.TestCase):
         mock_load.return_value = mock_invalid_config
 
         with patch('os.path.exists', return_value=True), \
-            patch('os.path.isfile', return_value=True), \
-            patch('os.path.getsize', return_value=100), \
-            patch('os.access', return_value=True):
+             patch('os.path.isfile', return_value=True), \
+             patch('os.path.getsize', return_value=100), \
+             patch('os.access', return_value=True):
             self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
     def _setup_cmd(self):
