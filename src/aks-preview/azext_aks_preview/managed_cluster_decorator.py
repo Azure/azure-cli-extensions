@@ -2345,8 +2345,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         updated = False
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
-        egress_gateway_name = self.raw_param.get("egress_gateway_name", None)
-        egress_gateway_namespace = self.raw_param.get("egress_gateway_namespace", CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE)
+        istio_egressgateway_name = self.raw_param.get("istio_egressgateway_name", None)
+        istio_egressgateway_namespace = self.raw_param.get("istio_egressgateway_namespace", CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE)
         gateway_configuration_name = self.raw_param.get("gateway_configuration_name", None)
 
         # disallow disable egress gateway on a cluser with no asm enabled
@@ -2376,7 +2376,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 if not gateway_configuration_name:
                     raise RequiredArgumentMissingError("--gateway-configuration-name is required.")
 
-            if not egress_gateway_name:
+            if not istio_egressgateway_name:
                 raise RequiredArgumentMissingError("--istio-egressgateway-name is required.")
 
             # ensure necessary fields
@@ -2390,7 +2390,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # make update if the egress gateway already exists
             egress_gateway_exists = False
             for egress in new_profile.istio.components.egress_gateways:
-                if egress.name == egress_gateway_name and egress.namespace == egress_gateway_namespace:
+                if egress.name == istio_egressgateway_name and egress.namespace == istio_egressgateway_namespace:
                     egress.enabled = enable_egress_gateway
                     egress.gateway_configuration_name = gateway_configuration_name
                     egress_gateway_exists = True
@@ -2403,13 +2403,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     new_profile.istio.components.egress_gateways.append(
                         self.models.IstioEgressGateway(  # pylint: disable=no-member
                             enabled=enable_egress_gateway,
-                            name=egress_gateway_name,
-                            namespace=egress_gateway_namespace,
+                            name=istio_egressgateway_name,
+                            namespace=istio_egressgateway_namespace,
                             gateway_configuration_name=gateway_configuration_name,
                         )
                     )
                 elif disable_egress_gateway:
-                    raise ArgumentUsageError(f'Egress gateway {egress_gateway_name} in namespace {egress_gateway_namespace} does not exist, cannot disable.')
+                    raise ArgumentUsageError(f'Egress gateway {istio_egressgateway_name} in namespace {istio_egressgateway_namespace} does not exist, cannot disable.')
 
                 updated = True
 

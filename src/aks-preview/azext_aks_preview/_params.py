@@ -2228,19 +2228,32 @@ def load_arguments(self, _):
 
     with self.argument_context("aks mesh enable-egress-gateway") as c:
         c.argument(
-            "egress_gateway_name",
+            "istio_egressgateway_name",
             validator=validate_asm_egress_name,
             required=True,
-            options_list=["--istio-egressgateway-name", "--istio-eg-gtw-name"]
+            options_list=["--istio-eg-gtw-name"]
         )
-        c.argument("egress_gateway_namespace",
+        c.argument("istio_egressgateway_namespace",
             required=False,
             default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
-            options_list=["--istio-egressgateway-namespace", "--istio-eg-gtw-ns"]
+            options_list=["--istio-eg-gtw-ns"]
         )
         c.argument("gateway_configuration_name",
             required=True,
-            options_list=["--gateway-configuration-name", "--gtw-config-name"]
+            options_list=["--gtw-config-name"]
+        )
+
+    with self.argument_context("aks mesh disable-egress-gateway") as c:
+        c.argument(
+            "istio_egressgateway_name",
+            validator=validate_asm_egress_name,
+            required=True,
+            options_list=["--istio-eg-gtw-name"]
+        )
+        c.argument("istio_egressgateway_namespace",
+            required=False,
+            default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+            options_list=["--istio-eg-gtw-ns"]
         )
 
     with self.argument_context("aks mesh enable") as c:
