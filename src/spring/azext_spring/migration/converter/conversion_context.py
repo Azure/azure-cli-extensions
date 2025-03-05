@@ -41,14 +41,6 @@ class ConversionContext:
     def run_converters(self, source):
         converted_contents = {}
         source_wrapper = SourceDataWrapper(source)
-        asa_service = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
-        asa_apps = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-        storages = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
-
-        # Environment Converter
-        asa_service['apps'] = asa_apps
-        asa_service['storages'] = storages
-        
 
         # Cert Converter
         asa_certs = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
@@ -83,17 +75,9 @@ class ConversionContext:
 
         converted_contents.update(self.get_converter(AppConverter).convert2())
 
-        # Param, readme and main Converter
-        full_source = {
-            "asa": asa_service,
-            "apps": asa_apps,
-            "certs": asa_kv_certs,
-            "storages": storages,
-        }
-
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert()
-        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert(full_source)
-        converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert(full_source)
+        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert()
+        converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert()
 
         return converted_contents
 

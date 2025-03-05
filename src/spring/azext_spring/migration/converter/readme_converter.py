@@ -9,11 +9,5 @@ class ReadMeConverter(ConverterTemplate):
             return input
         super().__init__(input, extract_data)
 
-    def load_source(self, source):
-        pass
-
-    def calculate_data(self):
-        pass
-
     def get_template_name(self):
         return "readme.md"
