@@ -39,6 +39,7 @@ TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
 
 
 # Continuous Patch Constants
+CONTINUOUSPATCH_IMAGE_LIMIT = 100
 CONTINUOUSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
 CSSC_WORKFLOW_POLICY_REPOSITORY = "csscpolicies"
 CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG = "patchpolicy"
@@ -64,6 +65,7 @@ CONTINUOUSPATCH_ALL_TASK_NAMES = [
 
 WORKFLOW_STATUS_NOT_AVAILABLE = "---Not Available---"
 WORKFLOW_STATUS_PATCH_NOT_AVAILABLE = "---No patch image available---"
+WORKFLOW_VALIDATION_MESSAGE="Validating configuration"
 
 ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Schedule value is invalid. "

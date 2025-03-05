@@ -9,7 +9,9 @@ import base64
 import os
 import tempfile
 import time
+import logging
 from knack.log import get_logger
+from knack.util import CLIError
 from ._constants import (
     CONTINUOUSPATCH_DEPLOYMENT_NAME,
     CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
@@ -25,11 +27,13 @@ from ._constants import (
     CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME,
     CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
     DESCRIPTION,
+    WORKFLOW_VALIDATION_MESSAGE,
     TaskRunStatus)
-from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
+from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
+from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
 from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
@@ -59,15 +63,9 @@ def create_update_continuous_patch_v1(cmd,
     
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
-<<<<<<< HEAD
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
-    
-=======
-
-    logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
     cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
->>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
@@ -82,7 +80,6 @@ def create_update_continuous_patch_v1(cmd,
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
-<<<<<<< HEAD
     # on 'update' schedule is optional
     if schedule is None:
         trigger_task = next(task for task in task_list if task.name == CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
@@ -90,8 +87,6 @@ def create_update_continuous_patch_v1(cmd,
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
 
-=======
->>>>>>> 4a05db42c260d5855854e5d76b63823c87d58976
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
@@ -180,16 +175,26 @@ def list_continuous_patch_v1(cmd, registry):
     return filtered_cssc_tasks
 
 
-def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
+def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_internal_statements=True):
     logger.debug(f"Entering acr_cssc_dry_run with parameters: {registry} {config_file_path}")
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
 
     if config_file_path is None:
-        logger.error("--config parameter is needed to perform dry-run check.")
-        return
+        if not cssc_tasks_exists:
+            raise InvalidArgumentValueError("--config parameter is needed to perform dry-run check.")
 
-    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+        # attempt to get the config file from the registry, since the configuration should exist
+        logger.debug("Retrieving the configuration file from the registry.")
+        _, config_file_path = get_oci_artifact_continuous_patch(cmd, registry)
+        if config_file_path is None:
+            raise AzCLIError("Failed to retrieve the configuration file from the registry.")
+
     if is_create and cssc_tasks_exists:
         raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
+
+    file_name = None
+    tmp_folder = None
+    acr_archive_utils_logger_level = acr_archive_utils_logger.getEffectiveLevel()
     try:
         file_name = os.path.basename(config_file_path)
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
@@ -198,12 +203,25 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
         resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
         acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
         acr_run_client = cf_acr_runs(cmd.cli_ctx)
-        source_location = prepare_source_location(
-            cmd,
-            tmp_folder,
-            acr_registries_task_client,
-            registry.name,
-            resource_group_name)
+
+        # This removes the internal logging from the acr module, reenables it after the setup is completed.
+        # Because it is an external logger, the only way to control the output is by changing the level
+        try:
+            if remove_internal_statements:
+                acr_archive_utils_logger.setLevel(logging.ERROR)
+
+            source_location = prepare_source_location(
+                cmd,
+                tmp_folder,
+                acr_registries_task_client,
+                registry.name,
+                resource_group_name)
+
+        except CLIError as cli_error:
+            raise AzCLIError(f"Failed to prepare source to trigger ACR task: {cli_error}")
+        finally:
+            if remove_internal_statements:
+                acr_archive_utils_logger.setLevel(acr_archive_utils_logger_level)
 
         OS = acr_run_client.models.OS
         Architecture = acr_run_client.models.Architecture
@@ -229,14 +247,21 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
             agent_pool_name=None,
             log_template=None
         )
-
-        queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
+        queued = LongRunningOperation(cmd.cli_ctx, start_msg=WORKFLOW_VALIDATION_MESSAGE)(acr_registries_task_client.begin_schedule_run(
             resource_group_name=resource_group_name,
             registry_name=registry.name,
             run_request=request))
         run_id = queued.run_id
-        logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
-        return WorkflowTaskStatus.remove_internal_acr_statements(WorkflowTaskStatus.generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name))
+        logger.info("Performing dry-run check for filter policy using acr task run id: %s", run_id)
+        return WorkflowTaskStatus.remove_internal_acr_statements(
+            WorkflowTaskStatus.generate_logs(
+                cmd,
+                acr_run_client,
+                run_id,
+                registry.name,
+                resource_group_name,
+                await_task_run=True,
+                await_task_message=WORKFLOW_VALIDATION_MESSAGE))
     finally:
         delete_temporary_dry_run_file(tmp_folder)
 
@@ -260,7 +285,7 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
 def track_scan_progress(cmd, resource_group_name, registry, status):
     logger.debug("Entering track_scan_progress")
 
-    config = get_oci_artifact_continuous_patch(cmd, registry)
+    config, _ = get_oci_artifact_continuous_patch(cmd, registry)
 
     return _retrieve_logs_for_image(cmd, registry, resource_group_name, config.schedule, status)
 
@@ -293,7 +318,7 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
 
     start_time = time.time()
 
-    progress_indicator = IndeterminateProgressBar(cmd.cli_ctx)
+    progress_indicator = IndeterminateProgressBar(cmd.cli_ctx, message="Retrieving logs for images")
     progress_indicator.begin()
 
     image_status = WorkflowTaskStatus.from_taskrun(cmd, acr_task_run_client, registry, scan_taskruns, patch_taskruns, progress_indicator=progress_indicator)

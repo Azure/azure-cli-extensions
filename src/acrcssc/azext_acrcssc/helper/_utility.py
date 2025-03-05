@@ -77,6 +77,8 @@ def create_temporary_dry_run_file(file_location, tmp_folder):
 
 
 def delete_temporary_dry_run_file(tmp_folder):
+    if tmp_folder is None or not os.path.exists(tmp_folder):
+        return
     logger.debug(f"Deleting contents and directory {tmp_folder}")
     shutil.rmtree(tmp_folder)
 

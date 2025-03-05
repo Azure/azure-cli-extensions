@@ -74,6 +74,7 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
 def get_oci_artifact_continuous_patch(cmd, registry):
     logger.debug("Entering get_oci_artifact_continuous_patch with parameter: %s", registry.login_server)
     config = None
+    file_name = None
     try:
         oras_client = _oras_client(registry)
 
@@ -84,13 +85,13 @@ def get_oci_artifact_continuous_patch(cmd, registry):
             stream=True)
         trigger_task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         file_name = oci_artifacts[0]
-        config = ContinuousPatchConfig.from_file(file_name, trigger_task)
+        config = ContinuousPatchConfig().from_file(file_name, trigger_task)
     except Exception as exception:
         raise AzCLIError(f"Failed to get OCI artifact from ACR: {exception}")
     finally:
         oras_client.logout(hostname=str.lower(registry.login_server))
 
-    return config
+    return config, file_name
 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
@@ -183,14 +184,11 @@ class ContinuousPatchConfig:
         self.repositories = []
         self.schedule = None
 
-    @staticmethod
-    def from_file(file_path, trigger_task=None):
-        config = ContinuousPatchConfig()
+    def from_file(self, file_path, trigger_task=None):
         with open(file_path, "r") as file:
-            return config.from_json(file.read(), trigger_task)
+            return self.from_json(file.read(), trigger_task)
 
-    @staticmethod
-    def from_json(json_str, trigger_task=None):
+    def from_json(self, json_str, trigger_task=None):
         import json
         from jsonschema import validate
 
@@ -201,20 +199,19 @@ class ContinuousPatchConfig:
             logger.error("Error validating the continuous patch config file: %s", e)
             return None
 
-        config = ContinuousPatchConfig()
-        config.version = json_config.get("version", "")
+        self.version = json_config.get("version", "")
         repositories = json_config.get("repositories", [])
         for repo in repositories:
             enabled = repo.get("enabled", True)  # optional field, default to True
             repository = Repository(repo["repository"], repo["tags"], enabled)
-            config.repositories.append(repository)
+            self.repositories.append(repository)
 
         if trigger_task:
             trigger = trigger_task.trigger
             if trigger and trigger.timer_triggers:
-                config.schedule = convert_cron_to_schedule(trigger.timer_triggers[0].schedule, just_days=True)
+                self.schedule = convert_cron_to_schedule(trigger.timer_triggers[0].schedule, just_days=True)
 
-        return config
+        return self
 
     def get_enabled_images(self):
         enabled_images = []

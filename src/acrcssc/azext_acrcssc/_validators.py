@@ -13,6 +13,7 @@ from azure.cli.command_modules.acr.repository import acr_repository_show
 from .helper._constants import (
     BEARER_TOKEN_USERNAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
+    CONTINUOUSPATCH_IMAGE_LIMIT,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
@@ -149,4 +150,24 @@ def validate_task_type(task_type):
 
 def validate_cssc_optional_inputs(cssc_config_path, schedule):
     if cssc_config_path is None and schedule is None:
-        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule, --config")
+        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule or --config")
+
+
+def validate_continuous_patch_v1_image_limit(dryrun_log):
+    match = re.search(r"Matches found: (\d+)", dryrun_log)
+    if match is None:
+        # the quick task did not return the expected output, we cannot validate the image limit but cannot block the operation
+        logger.error("Error parsing for image limit.")
+        return
+
+    image_limit = int(match.group(1))
+
+    if image_limit > CONTINUOUSPATCH_IMAGE_LIMIT:
+        # these expressions remove all the Task related output from the log, and only leaves the listing of repositories and tags
+        pattern_prefix = "Listing repositories and tags matching the filter"
+        result = re.sub(r'^(.*\n)*?' + re.escape(pattern_prefix), pattern_prefix, dryrun_log, flags=re.MULTILINE)
+
+        pattern_postfix = "Adjust the JSON filter to limit the number of images."
+        result = re.sub(r'(?s)' + re.escape(pattern_postfix) + r'.*', pattern_postfix, result)
+
+        raise InvalidArgumentValueError(error_msg=result)

@@ -20,6 +20,9 @@ from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from enum import Enum
 from msrestazure.azure_exceptions import CloudError
+from azure.cli.core.commands import LongRunningOperation
+from azure.core.polling import PollingMethod
+from azure.cli.core.commands.progress import IndeterminateProgressBar
 
 logger = get_logger(__name__)
 
@@ -260,6 +263,10 @@ class WorkflowTaskStatus:
         for scan in scan_taskruns:
             if progress_indicator:
                 progress_indicator.update_progress()
+                if hasattr(progress_indicator, 'hook') and \
+                    hasattr(progress_indicator.hook, 'active_progress') and \
+                    hasattr(progress_indicator.hook.active_progress, 'spinner'):
+                    progress_indicator.hook.active_progress.spinner.step(label=progress_indicator.message)
             if not hasattr(scan, 'task_log_result'):
                 logger.debug("Scan Taskrun: %s has no logs, silent failure", scan.run_id)
                 continue
@@ -381,7 +388,8 @@ class WorkflowTaskStatus:
         return result
 
     @staticmethod
-    def generate_logs(cmd, client, run_id, registry_name, resource_group_name, await_task_run=True):
+    def generate_logs(cmd, client, run_id, registry_name, resource_group_name, await_task_run=True, await_task_message=None):
+
         log_file_sas = None
         error_msg = "Could not get logs for ID: {}".format(run_id)
         try:
@@ -398,12 +406,9 @@ class WorkflowTaskStatus:
                          "resource_group: %s -- exception: %s",
                          run_id, registry_name, resource_group_name, e)
 
-        run_status = TaskRunStatus.Running.value
-        while await_task_run and WorkflowTaskStatus._evaluate_task_run_nonterminal_state(run_status):
-            run_status = WorkflowTaskStatus._get_run_status_local(client, resource_group_name, registry_name, run_id)
-            if WorkflowTaskStatus._evaluate_task_run_nonterminal_state(run_status):
-                logger.debug("Waiting for the task run to complete. Current status: %s", run_status)
-                time.sleep(2)
+        if await_task_run:
+            polling_method = WorkflowLogPollingMethod(client, resource_group_name, registry_name, run_id)
+            LongRunningOperation(cmd.cli_ctx, progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message))(polling_method)
 
         blobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
         return WorkflowTaskStatus._download_logs(blobClient.from_blob_url(log_file_sas))
@@ -494,3 +499,37 @@ class WorkflowTaskStatus:
 
         taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter_str, top=top)
         return list(taskruns)
+
+class WorkflowLogPollingMethod(PollingMethod):
+    def __init__(self, client, resource_group_name, registry_name, run_id):
+        self.client = client
+        self.resource_group_name = resource_group_name
+        self.registry_name = registry_name
+        self.run_id = run_id
+        self.run_status = TaskRunStatus.Running.value
+
+    def initialize(self, client, initial_response, deserialization_callback):
+        pass
+
+    def run(self):
+        
+        while WorkflowTaskStatus._evaluate_task_run_nonterminal_state(self.run_status):
+            self.run_status = WorkflowTaskStatus._get_run_status_local(self.client, self.resource_group_name, self.registry_name, self.run_id)
+            if WorkflowTaskStatus._evaluate_task_run_nonterminal_state(self.run_status):
+                logger.debug("Waiting for the task run to complete. Current status: %s", self.run_status)
+                time.sleep(2)
+
+    def status(self):
+        return WorkflowTaskStatus._get_run_status_local(self.client, self.resource_group_name, self.registry_name, self.run_id)
+
+    def finished(self):
+        return not WorkflowTaskStatus._evaluate_task_run_nonterminal_state(self.status())
+
+    def done(self):
+        return self.finished()
+
+    def result(self):
+        return self.run_status
+
+    def resource(self):
+        return self.status()
