@@ -7,31 +7,14 @@ from jinja2 import Template
 # Abstract Base Class for Converter
 # The converter is a template class that defines the structure of the conversion process
 # The responsibility of the converter is to convert the input data into the output data
-# The conversion process is divided into three steps:
-# 1. Load the input data
-# 2. Calculate the output data
-# 3. Generate the output data
 class ConverterTemplate(ABC):
     def __init__(self, input, extract_data):
-        self.data = {}   # output data of the converter
-        self.source = {} # input data of the converter
-
         self.wrapper_data = SourceDataWrapper(input)
         self.data = extract_data()
 
-    def convert(self, source=None):
-        self.load_source(source)
-        self.calculate_data()
+    def convert(self):
         return self.generate_output(self.data)
 
-    # @abstractmethod # TODO: To be removed
-    def load_source(self, source): # load the input data
-        pass
-
-    # @abstractmethod # TODO: To be removed
-    def calculate_data(self): # calculate the output data
-        pass
-    
     @abstractmethod
     def get_template_name(self):
         pass
