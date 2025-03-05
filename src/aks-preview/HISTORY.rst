@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Vendor new SDK and bump API version to 2024-10-02-preview.
 
 13.0.0b9
 +++++++
+* Vendor new SDK and bump API version to 2024-10-02-preview.
 * Add `enable-egress-gateway` and `disable-egress-gateway` to the `az aks mesh` command.
 
 13.0.0b8
