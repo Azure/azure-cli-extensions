@@ -3803,7 +3803,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_azure_service_mesh": True,
                     "enable_egress_gateway": True,
-                    "istio_egressgateway_name": "istio-egress-1",
+                    "egress_gateway_name": "istio-egress-1",
                     "gateway_configuration_name": "istio-sgc-1",
                 }
             ),
@@ -7611,7 +7611,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_azure_service_mesh": True,
                 "enable_egress_gateway": True,
-                "istio_egressgateway_name": "istio-egress-1",
+                "egress_gateway_name": "istio-egress-1",
                 "gateway_configuration_name": "istio-sgc-1",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
