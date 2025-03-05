@@ -17,5 +17,5 @@ param {{app.targetPort}} = 80
 {%- endfor %}
 
 {%- for storage in data.storages %}
-param {{storage.containerAppEnvStorageAccountKey}} = 'fill in storage account key'
+param {{storage.containerAppEnvStorageAccountKey}} = 'fill in account key for storage "{{storage.accountName}}"'
 {%- endfor %}

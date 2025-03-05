@@ -81,6 +81,7 @@ class ConversionContext:
             app_source['deployments'] = [deployment for deployment in asa_deployments if deployment['name'].startswith(f"{app_source['name']}/")]
             app_source['managedComponents'] = managed_components
             app_source['isEnterprise'] = is_enterprise
+            app_source['storages'] = storages
             converted_contents[appName+"_"+self.get_converter(AppConverter).get_template_name()] = self.get_converter(AppConverter).convert(app_source)
 
         # Param, readme and main Converter
@@ -91,6 +92,7 @@ class ConversionContext:
             "managedComponents": managed_components,
             "isVnet": is_vnet,
             "inEnterprise": is_enterprise,
+            "storages": storages,
         }
 
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert(full_source)

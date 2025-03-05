@@ -92,12 +92,16 @@ class EnvironmentConverter(ConverterTemplate):
                     app_name = app['name'].split('/')[-1]
                     readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
                     access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
+                    mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
+                    # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
+                    storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
                     containerAppEnvStorageName = (app_name + "_" + storage_name).replace("-", "_")
-                    containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + (app_name + "_" + storage_name).replace("-", "")
+                    containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
+                    # print("storage_unique_name:", storage_unique_name)
                     storage_config = {
                         'containerAppEnvStorageName': containerAppEnvStorageName,
                         'containerAppEnvStorageAccountKey': containerAppEnvStorageAccountKey,
-                        'storageName': app_name + "-" + storage_name,
+                        'storageName': storage_unique_name,
                         'shareName': share_name,
                         'accessMode': access_mode,
                         'accountName': account_name,

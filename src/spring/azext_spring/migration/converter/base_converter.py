@@ -1,3 +1,4 @@
+import hashlib
 import os
 
 from abc import ABC, abstractmethod
@@ -53,4 +54,12 @@ class ConverterTemplate(ABC):
         # Split by comma and get the last parameter
         params = content.split(',')
         # Return the last parameter stripped of quotes and whitespace
-        return params[-1].strip().strip("'") if params else ''
+        result = params[-1].strip().strip("'") if params else ''
+        # print(f"Resource name: {result}")
+        return result
+
+    def _get_storage_unique_name(self, storage_name, account_name, share_name, mount_path, access_mode):
+        storage_unique_name = f"{storage_name}|{account_name}|{share_name}|{mount_path}|{access_mode}"
+        hash_value = hashlib.md5(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
+        result = f"{storage_name}{hash_value}"
+        return result[:32]  # Ensure total length is no more than 32
