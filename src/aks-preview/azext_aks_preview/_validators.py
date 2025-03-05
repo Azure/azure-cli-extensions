@@ -862,7 +862,8 @@ def validate_asm_egress_name(namespace):
     asm_egress_name_regex = re.compile(r'[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
     found = asm_egress_name_regex.findall(name)
     if not found or len(name) > 253:
-        InvalidArgumentValueError(f"Istio egress name {name} is invalid. Name must start and end with an alphanumeric character and cannot be greater than 253 characters.")
+        raise InvalidArgumentValueError(f"Istio egress name {name} is invalid. Name must start and end with an "
+        "alphanumeric character and cannot be greater than 253 characters.")
 
 
 def validate_artifact_streaming(namespace):
