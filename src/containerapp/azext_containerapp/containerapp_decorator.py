@@ -659,6 +659,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
+    def get_argument_kind(self):
+        return self.get_param("kind")
+
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
@@ -906,6 +909,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_repo()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
+        if self.get_argument_kind() is not None:
+            safe_set(self.containerapp_def, "kind", value=self.get_argument_kind())
         self.set_up_runtime()
 
     # copy from parent
