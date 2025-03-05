@@ -33,11 +33,6 @@ class ConversionContext:
                 return converter
         raise ValueError(f"Unknown converter type: {converter_type}")
 
-    def set_params_for_converter(self, converter_type, params):
-        for converter in self.converters:
-            if isinstance(converter, converter_type):
-                converter.set_params(params)
-
     def run_converters(self, source):
         converted_contents = {}
         # Cert Converter

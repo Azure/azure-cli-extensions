@@ -13,15 +13,11 @@ from jinja2 import Template
 # 3. Generate the output data
 class ConverterTemplate(ABC):
     def __init__(self, input, extract_data):
-        self.params = {} # custom facing parameters for the converter
         self.data = {}   # output data of the converter
         self.source = {} # input data of the converter
 
         self.wrapper_data = SourceDataWrapper(input)
         self.data = extract_data()
-
-    def set_params(self, params):
-        self.params = params
 
     def convert(self, source=None):
         self.load_source(source)
@@ -45,7 +41,7 @@ class ConverterTemplate(ABC):
         template_name = self.get_template_name()
         with open(f"{script_dir}/templates/{template_name}.j2") as file:
             template = Template(file.read())
-        return template.render(data=data, params=self.params)
+        return template.render(data=data)
 
     # Extracts the resource name from a resource ID string in Azure ARM template format
     # Format: [resourceId('Microsoft.AppPlatform/Spring/<ResourceType>', '<parent_resource_name>', '<resource_name>')]

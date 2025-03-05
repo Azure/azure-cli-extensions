@@ -41,12 +41,6 @@ def migration_aca_start(cmd, client, resource_group, service, output_folder):
     context.add_converter(ParamConverter(asa_arm))
     context.add_converter(CertConverter(asa_arm))
 
-    # Prepare bicep parameters
-    main_bicep_params = get_aca_bicep_params(asa_arm)
-
-    # Set parameters for EnvironmentConverter such as workload profile
-    context.set_params_for_converter(EnvironmentConverter, main_bicep_params)
-
     # Run all converters
     logger.warning("Converting resources to Azure Container Apps...")
     converted_contents = context.run_converters(asa_arm)
@@ -79,7 +73,3 @@ def export_asa_arm_template(cmd, resource_group, service):
         result = rcf.resource_groups.begin_export_template(resource_group,
                                                            parameters=export_template_request)
     return result.template
-
-
-def get_aca_bicep_params(asa_arm):
-    return {"key1": "value1"}
