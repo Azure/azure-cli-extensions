@@ -18,7 +18,7 @@ class ConverterTemplate(ABC):
         self.source = {} # input data of the converter
 
         self.wrapper_data = SourceDataWrapper(input)
-        self.data = extract_data(input=None)
+        self.data = extract_data()
 
     def set_params(self, params):
         self.params = params

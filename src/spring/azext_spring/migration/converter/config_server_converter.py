@@ -17,7 +17,7 @@ class ConfigServerConverter(ConverterTemplate):
     KEY_PATTERN = ".pattern"
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             configServer = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers')[0]
             name = f"config"
             configurations, params = self._get_configurations_and_params(configServer)

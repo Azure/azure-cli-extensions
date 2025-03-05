@@ -15,7 +15,7 @@ class ACSConverter(ConverterTemplate):
     KEY_PATTERN = ".pattern"
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             acs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configurationServices')[0]
             name = f"config"
             configurations, params = self._get_configurations_and_params(acs)

@@ -6,7 +6,7 @@ from .base_converter import ConverterTemplate
 class CertConverter(ConverterTemplate):
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             certs = []
             asa_certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
             for cert in asa_certs:

@@ -7,7 +7,7 @@ class GatewayConverter(ConverterTemplate):
     DEFAULT_NAME = "default"
 
     def __init__(self, input, client, resource_group, service):
-        def extract_data(input):
+        def extract_data():
             gateway = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways')[0]
             routes = []
             for gateway_route in self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):

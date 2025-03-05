@@ -3,7 +3,7 @@ from .base_converter import ConverterTemplate
 class ServiceRegistryConverter(ConverterTemplate):
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             service_registry = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries')
             name = f"eureka"
             configurations = []

@@ -4,7 +4,7 @@ from .base_converter import ConverterTemplate
 class EnvironmentConverter(ConverterTemplate):
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             asa_service = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
             name = asa_service['name'].split('/')[-1]
             apps = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')

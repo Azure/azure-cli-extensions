@@ -4,7 +4,7 @@ from .base_converter import ConverterTemplate
 class MainConverter(ConverterTemplate):
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             apps = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
             storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
             asa_certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')

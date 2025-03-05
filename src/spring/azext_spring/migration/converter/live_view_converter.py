@@ -3,7 +3,7 @@ from .base_converter import ConverterTemplate
 class LiveViewConverter(ConverterTemplate):
 
     def __init__(self, input):
-        def extract_data(input):
+        def extract_data():
             live_view = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews')[0]
             name = "admin"
             configurations = []
