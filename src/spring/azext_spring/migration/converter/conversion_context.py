@@ -40,45 +40,37 @@ class ConversionContext:
 
     def run_converters(self, source):
         converted_contents = {}
-        source_wrapper = SourceDataWrapper(source)
-
         # Cert Converter
-        asa_certs = source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
-        asa_kv_certs = []
-        for cert in asa_certs:
-            certName = cert['name'].split('/')[-1]
-            if cert['properties'].get('type') == "KeyVaultCertificate":
-                asa_kv_certs.append(cert)
-                converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
-            elif cert['properties'].get('type') == "ContentCertificate":
-                converted_contents[certName+"_"+self.get_converter(CertConverter).get_template_name()] = self.get_converter(CertConverter).convert(cert)
+        converted_contents.update(self.get_converter(CertConverter).convert2())
+        # Environment Converter
         converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert()
-
+        # Gateway Converter
         converted_contents[self.get_converter(GatewayConverter).get_template_name()] = self.get_converter(GatewayConverter).convert()
         logger.info(f"converted_contents for gateway: {converted_contents[self.get_converter(GatewayConverter).get_template_name()]}")
-
+        # Config Server and ACS Converter
         if self.data_wrapper.is_support_ssoconfigserver():
             converted_contents[self.get_converter(ConfigServerConverter).get_template_name()] = self.get_converter(ConfigServerConverter).convert()
             logger.debug(f"converted_contents for config server: {converted_contents[self.get_converter(ConfigServerConverter).get_template_name()]}")
         elif self.data_wrapper.is_support_acs():
             converted_contents[self.get_converter(ACSConverter).get_template_name()] = self.get_converter(ACSConverter).convert()
             logger.debug(f"converted_contents for Application Configuration Service: {converted_contents[self.get_converter(ACSConverter).get_template_name()]}")
-
+        # Live View Converter
         converted_contents[self.get_converter(LiveViewConverter).get_template_name()] = self.get_converter(LiveViewConverter).convert()
         logger.info(f"converted_contents for Live View: {converted_contents[self.get_converter(LiveViewConverter).get_template_name()]}")
-
+        # Service Registry and Eureka Converter
         converted_contents[self.get_converter(ServiceRegistryConverter).get_template_name()] = self.get_converter(ServiceRegistryConverter).convert()
         logger.info(f"converted_contents for Service Registry: {converted_contents[self.get_converter(ServiceRegistryConverter).get_template_name()]}")
         if not self.data_wrapper.is_enterprise_tier():
             converted_contents[self.get_converter(EurekaConverter).get_template_name()] = self.get_converter(EurekaConverter).convert()
             logger.info(f"converted_contents for Eureka: {converted_contents[self.get_converter(EurekaConverter).get_template_name()]}")
-
+        # App Converter
         converted_contents.update(self.get_converter(AppConverter).convert2())
-
+        # Param Converter
         converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert()
+        # ReadMe Converter
         converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert()
+        # Main Converter
         converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert()
-
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):

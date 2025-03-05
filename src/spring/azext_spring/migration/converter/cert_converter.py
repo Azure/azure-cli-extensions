@@ -7,44 +7,52 @@ class CertConverter(ConverterTemplate):
 
     def __init__(self, input):
         def extract_data(input):
-            # TODO: Implement the extract_data method
-            return input
+            certs = []
+            asa_certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
+            for cert in asa_certs:
+                if cert['properties'].get('type') == "KeyVaultCertificate":
+                    certs.append(cert)    
+                elif cert['properties'].get('type') == "ContentCertificate":
+                    certs.append(cert)
+            return certs
         super().__init__(input, extract_data)
-    
-    def load_source(self, source):
-        self.source = source
-        # print(f"Cert source: {self.source}")
 
-    def calculate_data(self):
-        certName = self.source['name'].split('/')[-1]
+    def convert2(self):
+        outputs = {}
+        for cert in self.data:
+            certName = cert['name'].split('/')[-1]
+            certData = self.transform_data(cert)
+            outputs[certName+"_"+self.get_template_name()] = self.generate_output(certData)
+        return outputs
+    
+    def transform_data(self, cert):
+        certName = cert['name'].split('/')[-1]
         moduleName = "cert_" + certName.replace("-", "_")
         isKeyVaultCert = False
-        certKeyVault = self._get_cert_key_vault()
-
-        self.data = {
+        certKeyVault = self._get_cert_key_vault(cert)
+        cert = {
             "certName": certName,
             "moduleName": moduleName,
             "certificateType": "ServerSSLCertificate",
         }
-
         if certKeyVault:
-            self.data["certificateKeyVaultProperties"] = certKeyVault
+            cert["certificateKeyVaultProperties"] = certKeyVault
             isKeyVaultCert = True
         else:
-            self.data["value"] = "*"
+            cert["value"] = "*"
             isKeyVaultCert = False
-        self.data["isKeyVaultCert"] = isKeyVaultCert
-        # print(f"cert data: {self.data}")
+        cert["isKeyVaultCert"] = isKeyVaultCert
+        return cert        
 
     def get_template_name(self):
         return "cert.bicep"
     
-    def _get_cert_key_vault(self):
+    def _get_cert_key_vault(self, cert):
         certKeyVault = None
-        if self.source['properties'].get('type') == "KeyVaultCertificate":
-            if self.source['properties'].get('vaultUri') and self.source['properties'].get('keyVaultCertName'):
+        if cert['properties'].get('type') == "KeyVaultCertificate":
+            if cert['properties'].get('vaultUri') and cert['properties'].get('keyVaultCertName'):
                 certKeyVault = {
-                    "keyVaultUrl": self.source['properties']['vaultUri'] + "/secrets/" + self.source['properties']['keyVaultCertName'],
+                    "keyVaultUrl": cert['properties']['vaultUri'] + "/secrets/" + cert['properties']['keyVaultCertName'],
                     "identity": "system"
                 }
         return certKeyVault
