@@ -52,7 +52,6 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
                 max_length=64,
                 min_length=3,
             ),
