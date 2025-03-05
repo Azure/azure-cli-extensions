@@ -68,7 +68,8 @@ class ConversionContext:
             'eureka': False,
             'sba': False,
         }
-        converted_contents = self._convert_gateway(source_wrapper, converted_contents, managed_components)
+        converted_contents[self.get_converter(GatewayConverter).get_template_name()] = self.get_converter(GatewayConverter).convert()
+        logger.info(f"converted_contents for gateway: {converted_contents[self.get_converter(GatewayConverter).get_template_name()]}")
 
         if self.data_wrapper.is_support_ssoconfigserver():
             converted_contents[self.get_converter(ConfigServerConverter).get_template_name()] = self.get_converter(ConfigServerConverter).convert()
@@ -106,21 +107,6 @@ class ConversionContext:
             with open(output_filename, 'w', encoding='utf-8') as output_file:
                 logger.info(f"Generating the file {output_filename}...")
                 output_file.write(content)
-
-    def _convert_gateway(self, source_wrapper, converted_contents, managed_components):
-        for gateway in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways'):
-            managed_components['gateway'] = True
-            gateway_key = self.get_converter(GatewayConverter).get_template_name()
-            routes = []
-            for gateway_route in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
-                routes.append(gateway_route)
-            gateway_source = {
-                "gateway": gateway,
-                "routes": routes,
-            }
-            converted_contents[gateway_key] = self.get_converter(GatewayConverter).convert(gateway_source)
-            logger.info(f"converted_contents for gateway: {converted_contents[gateway_key]}")
-        return converted_contents
 
     def _convert_live_view(self, source_wrapper, converted_contents, managed_components):
         for live_view in source_wrapper.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews'):
