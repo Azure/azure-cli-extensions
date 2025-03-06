@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List cluster managers in the provided resource group or subscription.
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clustermanagers", "2024-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clustermanagers", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers", "2025-02-01"],
         ]
     }
 
@@ -116,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -158,6 +157,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -346,7 +348,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -388,6 +390,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
