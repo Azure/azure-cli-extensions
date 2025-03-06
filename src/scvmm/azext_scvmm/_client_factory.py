@@ -90,6 +90,7 @@ def cf_machine_extension(cli_ctx: AzCli, *_):
     """
     return cf_hybridcompute(cli_ctx).machine_extensions
 
+
 def cf_resource_graph(cli_ctx: AzCli, *_) -> ResourceGraphClient:
     """
     Client factory for resource graph.

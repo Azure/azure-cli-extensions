@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=unused-argument,too-many-lines
+# pylint: disable=unused-argument,too-many-lines,too-many-locals
 
 from collections import defaultdict
 from getpass import getpass

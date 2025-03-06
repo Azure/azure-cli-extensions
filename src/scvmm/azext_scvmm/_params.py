@@ -181,7 +181,7 @@ def load_arguments(self: AzCommandsLoader, _):
             'rg_name', options_list=['--resource-group', '-g'],
             help=(
                 "Name of the resource group which will be scanned for HCRP machines. "
-                "NOTE: The default group configured using 'az configure --defaults group=<name>' "
+                "NOTE: The default group configured using 'az configure --defaults group=`<name>`' "
                 "is not used, and it must be specified explicitly."
             )
         )
