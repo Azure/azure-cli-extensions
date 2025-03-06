@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.10.7
+++++++
+* Added support for discovering additional k8s distributions and Infrastructure.
+* Updated Connect command help to indicate the kubeconfig prerequisite.
+
 1.10.6
 ++++++
 * Added support for downloading helm binaries from MCR.
