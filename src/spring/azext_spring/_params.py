@@ -1308,6 +1308,7 @@ def load_arguments(self, _):
     with self.argument_context('spring private-dns-zone clean') as c:
         c.argument('service', service_name_type)
 
-    with self.argument_context('spring migration-aca start') as c:
+    with self.argument_context('spring export') as c:
         c.argument('service', service_name_type)
+        c.argument('target', help='The target Azure service to migrate to, allowed values: aca, azure-container-apps.')
         c.argument('output_folder', help='The output folder for the generated Bicep files.')

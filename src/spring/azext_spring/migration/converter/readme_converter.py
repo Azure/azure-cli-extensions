@@ -10,4 +10,4 @@ class ReadMeConverter(ConverterTemplate):
         super().__init__(source, extract_data)
 
     def get_template_name(self):
-        return "readme.md"
+        return "README.md"
