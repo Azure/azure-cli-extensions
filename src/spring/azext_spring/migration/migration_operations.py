@@ -1,5 +1,3 @@
-import os
-
 from azure.cli.command_modules.resource._client_factory import (_resource_client_factory)
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -27,25 +25,19 @@ def migration_aca_start(cmd, client, resource_group, service, output_folder):
     asa_arm = export_asa_arm_template(cmd, resource_group, service)
 
     # Create context and add converters
-    context = ConversionContext()
-    context.add_converter(MainConverter())
-    context.add_converter(EnvironmentConverter())
-    context.add_converter(AppConverter())
-    context.add_converter(GatewayConverter(client, resource_group, service))
-    context.add_converter(EurekaConverter())
-    context.add_converter(ServiceRegistryConverter())
-    context.add_converter(ConfigServerConverter())
-    context.add_converter(ACSConverter())
-    context.add_converter(LiveViewConverter())
-    context.add_converter(ReadMeConverter())
-    context.add_converter(ParamConverter())
-    context.add_converter(CertConverter())
-
-    # Prepare bicep parameters
-    main_bicep_params = get_aca_bicep_params(asa_arm)
-
-    # Set parameters for EnvironmentConverter such as workload profile
-    context.set_params_for_converter(EnvironmentConverter, main_bicep_params)
+    context = ConversionContext(asa_arm)
+    context.add_converter(MainConverter(asa_arm))
+    context.add_converter(EnvironmentConverter(asa_arm))
+    context.add_converter(AppConverter(asa_arm))
+    context.add_converter(GatewayConverter(asa_arm, client, resource_group, service))
+    context.add_converter(EurekaConverter(asa_arm))
+    context.add_converter(ServiceRegistryConverter(asa_arm))
+    context.add_converter(ConfigServerConverter(asa_arm))
+    context.add_converter(ACSConverter(asa_arm))
+    context.add_converter(LiveViewConverter(asa_arm))
+    context.add_converter(ReadMeConverter(asa_arm))
+    context.add_converter(ParamConverter(asa_arm))
+    context.add_converter(CertConverter(asa_arm))
 
     # Run all converters
     logger.info("Converting resources to Azure Container Apps...")
@@ -79,7 +71,3 @@ def export_asa_arm_template(cmd, resource_group, service):
         result = rcf.resource_groups.begin_export_template(resource_group,
                                                            parameters=export_template_request)
     return result.template
-
-
-def get_aca_bicep_params(asa_arm):
-    return {"key1": "value1"}
