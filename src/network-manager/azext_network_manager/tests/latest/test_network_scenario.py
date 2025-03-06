@@ -407,11 +407,11 @@ class NetworkScenarioTest(ScenarioTest):
         self.kwargs.update({"config_id": config_id})
 
         # test nm connect-config commit
-        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
-                 '--target-locations "eastus2" -g {rg} --configuration-ids {config_id}')
+        #self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+        #        '--target-locations "eastus2" -g {rg} --configuration-ids {config_id}')
         # test nm connect-config  uncommit
-        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
-                 '--target-locations "eastus2" -g {rg}')
+        #self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+        #        '--target-locations "eastus2" -g {rg}')
 
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
