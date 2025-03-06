@@ -16,7 +16,7 @@ param {{storage.containerAppEnvStorageAccountKey}} string
 {%- endfor %}
 
 module containerAppEnv 'environment.bicep' = { 
-  name: 'containerAppEnvDeployment'
+  name: 'container-app-environment-Deployment'
   params: {
     workloadProfileName: workloadProfileName
     workloadProfileType: workloadProfileType
@@ -33,10 +33,7 @@ module containerAppEnv 'environment.bicep' = {
 
 {%- for item in data.certs %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
-  name: 'Cert{{ item.certName }}-Deployment'
-  dependsOn: [
-    containerAppEnv
-  ]
+  name: 'cert-{{ item.certName }}-Deployment'
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -46,9 +43,6 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 {%- for item in data.apps %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
   name: '{{ item.appName }}-Deployment'
-  dependsOn: [
-    containerAppEnv
-  ]
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
     workloadProfileName: workloadProfileName
@@ -60,10 +54,7 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 
 {%- if data.gateway == true %}
 module managedGateway 'gateway.bicep' = {
-  name: 'gatewayDeployment'
-  dependsOn: [
-    containerAppEnv
-  ]
+  name: 'gateway-Deployment'
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -72,10 +63,7 @@ module managedGateway 'gateway.bicep' = {
 
 {%- if data.config == true %}
 module managedConfig 'config_server.bicep' = {
-  name: 'configServerDeployment'
-  dependsOn: [
-    containerAppEnv
-  ]
+  name: 'config-server-Deployment'
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -84,10 +72,7 @@ module managedConfig 'config_server.bicep' = {
 
 {%- if data.eureka == true %}
 module managedEureka 'eureka.bicep' = {
-  name: 'eurekaDeployment'
-  dependsOn: [
-    containerAppEnv
-  ]
+  name: 'eureka-Deployment'
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
@@ -96,10 +81,7 @@ module managedEureka 'eureka.bicep' = {
 
 {%- if data.sba == true %}
 module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
-  name: 'springBootAdminDeployment'
-  dependsOn: [
-    containerAppEnv
-  ]
+  name: 'spring-boot-admin-Deployment'
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }

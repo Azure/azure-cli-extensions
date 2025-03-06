@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 
 
 def migration_aca_start(cmd, client, resource_group, service, output_folder):
-    logger.warning("Getting your Azure Spring Apps service...")
+    logger.info("Getting your Azure Spring Apps service...")
     logger.debug("Start to export ARM template for Azure Spring Apps service...")
     asa_arm = export_asa_arm_template(cmd, resource_group, service)
 
@@ -40,13 +40,13 @@ def migration_aca_start(cmd, client, resource_group, service, output_folder):
     context.add_converter(CertConverter(asa_arm))
 
     # Run all converters
-    logger.warning("Converting resources to Azure Container Apps...")
+    logger.info("Converting resources to Azure Container Apps...")
     converted_contents = context.run_converters(asa_arm)
 
     logger.debug("Start to save the converted content to files...")
     # Save each line of converted content to a separate file
     context.save_to_files(converted_contents, output_folder)
-    logger.warning(f"Successfully generated the Bicep files in folder {output_folder}. Please review the files and follow the instructions in the `readme.md` for the next steps.")
+    logger.warning(f"Successfully generated the Bicep files in folder '{output_folder}'. Please review the files and follow the instructions in the `README.md` for the next steps.")
 
 
 def export_asa_arm_template(cmd, resource_group, service):

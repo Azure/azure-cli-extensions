@@ -1,3 +1,4 @@
+from knack.log import get_logger
 from .base_converter import ConverterTemplate
 from knack.log import get_logger
 
@@ -12,16 +13,16 @@ class GatewayConverter(ConverterTemplate):
             routes = []
             for gateway_route in self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
                 routes.append(gateway_route)
-            gatewayName = f"gateway"
             secretEnvs = self.client.gateways.list_env_secrets(self.resource_group, self.service, self.DEFAULT_NAME)
             configurations = self._get_configurations(gateway, secretEnvs)
             replicas = 2
             if gateway.get('sku', {}).get('capacity') is not None:
                 replicas = min(2, gateway['sku']['capacity'])
-            routes = self._get_routes(routes)                
+            routes = self._get_routes(routes)
+            self._check_features(gateway.get('properties', {}))
             return {
                 "routes": routes,
-                "gatewayName": gatewayName,
+                "gatewayName": f"gateway",
                 "configurations": configurations,
                 "replicas": replicas,
                 "routes": routes,                
@@ -62,7 +63,7 @@ class GatewayConverter(ConverterTemplate):
                             "id": f"{base_name}_{count}",
                             "uri": r.get('uri', aca_uri),
                             "predicates": r.get('predicates') if r.get('predicates') else [],
-                            "filters": r.get('filters') if r.get('filters') else [],
+                            "filters": self._get_filters(base_name, r),
                             "order": r.get('order') or 0,
                         })
         return aca_routes
@@ -79,6 +80,20 @@ class GatewayConverter(ConverterTemplate):
         previous_comma = app_resource_id.rfind(",", 0, start)
         return app_resource_id[previous_comma + 3:start]
 
+    def _get_filters(self, route_name, r):
+        filters = []
+        if r.get('filters'):
+            for f in r.get('filters'):
+                if 'cors' in f.lower():
+                    logger.warning(f"Mismatch: The cors filter '{f}' of route '{route_name}' is not supported in gateway for Spring in Azure Container Apps, refer to migration doc for further steps.")
+                filters.append(f)
+        return filters
+
+    def _check_features(self, scg_properties):
+        if scg_properties.get('ssoProperties') is not None:
+            logger.warning("Mismatch: The SSO feature is not supported of gateway for Spring in Azure Container Apps.")
+        if scg_properties.get('corsProperties', {}) is not None:
+            logger.warning("CORS configuration detected, please refer to public doc to migrate CORS feature of gateway for Spring to Azure Container Apps.")
 
     def get_template_name(self):
         return "gateway.bicep"

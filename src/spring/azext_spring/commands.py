@@ -520,9 +520,9 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception, is_preview=True) as g:
         g.custom_command('list', 'job_execution_instance_list', validator=job_validators.validate_job_execution_instance_list)
 
-    with self.command_group('spring migration-aca', custom_command_type=spring_routing_util, resource_type=ResourceType.MGMT_RESOURCE_RESOURCES,
+    with self.command_group('spring', custom_command_type=spring_routing_util, resource_type=ResourceType.MGMT_RESOURCE_RESOURCES,
                             exception_handler=handle_asc_exception, is_preview=True) as g:
-        g.custom_command('start', 'spring_migration_aca_start')
+        g.custom_command('export', 'spring_migration_start')
 
     with self.command_group('spring', exception_handler=handle_asc_exception):
         pass
