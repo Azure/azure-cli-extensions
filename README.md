@@ -82,18 +82,6 @@ This repository contains workload operations. The main-workload-orchestration br
 
 The source code is located in `src/workload-orchestration`.
 
-### Switcher Script
-
-We have a switcher script that changes the source code between `Microsoft.edge` and `Private.edge`.
-
-- To switch to `Microsoft.edge`:
-    ```powershell
-    .\switcher.ps1 -switch 'microsoft.edge'
-    ```
-- To switch to `Private.edge`:
-    ```powershell
-    .\switcher.ps1 -switch 'private.edge'
-    ```
 
 ## Making Changes as per Swagger Change
 

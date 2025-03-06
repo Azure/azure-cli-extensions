@@ -340,6 +340,8 @@ class Create(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            ## Save the Post Call response and use it for Output
+            self.post_response_session = session
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -444,7 +446,7 @@ class Create(AAZCommand):
 
 
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
+            data = self.deserialize_http_content(self.post_response_session)
             self.ctx.set_var(
                 "instance",
                 data,
