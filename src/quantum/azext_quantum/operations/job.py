@@ -21,6 +21,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 from .._storage import create_container, upload_blob
 
 from .._client_factory import cf_jobs
+from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
 
@@ -33,6 +34,9 @@ ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-inpu
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
+ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
+JOB_LIST_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list"
 
 # Job types
 QIO_JOB = 1
@@ -45,13 +49,99 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
-def list(cmd, resource_group_name, workspace_name, location):
+def list(cmd, resource_group_name, workspace_name, location, job_type=None, item_type=None, provider_id=None,
+         target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
+         skip=None, top=None, orderby=None, order=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+
+    query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+    orderby_expression = _construct_orderby_expression(orderby, order)
+
+    response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
+    first_page = next(iter(response.by_page()), [])
+    # Note: --top produces multi-page responses, but we only process the first page. All the other params put everything on the first page.
+    return repack_response_json(first_page)
+
+
+def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
+    """
+    Construct a job-list filter query expression
+    """
+    query = ""
+
+    query = _parse_pagination_param_values("JobType", query, job_type)
+    query = _parse_pagination_param_values("ItemType", query, item_type)
+    query = _parse_pagination_param_values("ProviderId", query, provider_id)
+    query = _parse_pagination_param_values("Target", query, target_id)
+    query = _parse_pagination_param_values("State", query, job_status)
+
+    query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
+    query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
+    query = _parse_pagination_param_values("Name", query, job_name, "startswith")
+
+    if query == "":
+        query = None
+    return query
+
+
+def _parse_pagination_param_values(param_name, query, raw_values, logic_operator=None):
+    """
+    Parse the pagination parameter values for a job-list filter query expression
+    """
+    if raw_values is not None:
+        if len(query) > 0:
+            query += " and "
+
+        # Special handling of --job-name
+        if param_name == "Name":
+            query += logic_operator + "(Name, '" + raw_values + "')"
+            return query
+
+        # Special handling of --created-before and --created-after (No quotes around the date)
+        if param_name == "CreationTime":
+            query += "CreationTime " + logic_operator + " " + raw_values
+            return query
+
+        if logic_operator is None:
+            logic_operator = "eq"
+        padded_logic_operator = " " + logic_operator + " '"
+
+        first_value = True
+        values_list = raw_values.split(",")
+
+        if len(values_list) <= 1:
+            query += param_name + padded_logic_operator + values_list[0] + "'"
+        else:
+            for value in values_list:
+                value = value.strip()
+
+                if first_value:
+                    query += "(" + param_name + padded_logic_operator + value + "'"
+                    first_value = False
+                else:
+                    query += " or " + param_name + padded_logic_operator + value + "'"
+            query += ")"
+    return query
+
+
+def _construct_orderby_expression(orderby, order):
+    """
+    Construct a job-list orderby expression
+    """
+    if (orderby == "" or orderby is None) and not (order == "" or order is None):
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ORDERBY_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
+
+    orderby_expression = orderby
+    if orderby_expression is not None and order is not None:
+        # Validate order, otherwise the error message will be vague
+        if not (order == "asc" or order == "desc"):
+            raise InvalidArgumentValueError(ERROR_MSG_INVALID_ORDER_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
+        orderby_expression += " " + order
+    return orderby_expression
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
@@ -298,19 +388,19 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             job_params = {"params": job_params}
 
     # Submit the job
-    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
     job_details = {'name': job_name,
-                   'container_uri': container_uri,
-                   'input_data_format': job_input_format,
-                   'output_data_format': job_output_format,
+                   'containerUri': container_uri,
+                   'inputDataFormat': job_input_format,
+                   'outputDataFormat': job_output_format,
                    'inputParams': job_params,
-                   'provider_id': provider_id,
+                   'providerId': provider_id,
                    'target': target_info.target_id,
                    'metadata': metadata,
                    'tags': tags}
 
     knack_logger.warning("Submitting job...")
-    return client.create(job_id, job_details)
+    return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
 def _parse_blob_url(url):
@@ -354,8 +444,8 @@ def output(cmd, job_id, resource_group_name, workspace_name, location, item=None
     Get the results of running a job.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     if job.status != "Succeeded":
         if job.status == "Failed" and job.target in _targets_with_allowed_failure_output:
@@ -379,26 +469,26 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     import time
 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
 
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
     max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
-    job = client.get(job_id)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     while not _has_completed(job):
         print('.', end='', flush=True)
         wait_indicators_used = True
         time.sleep(poll_wait)
-        job = client.get(job_id)
+        job = client.get(info.subscription, info.resource_group, info.name, job_id)
         poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
 
     if wait_indicators_used:
         # Insert a new line if we had to display wait indicators.
         print()
 
-    return job
+    return job.as_dict()
 
 
 def job_show(cmd, job_id, resource_group_name, workspace_name, location):
@@ -406,9 +496,9 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     Get the job's status and details.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
-    return job
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+    return job.as_dict()
 
 
 def run(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
@@ -420,13 +510,13 @@ def run(cmd, resource_group_name, workspace_name, location, target_id, job_input
     job = submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
                  job_name, shots, storage, job_params, target_capability,
                  job_output_format, entry_point)
-    logger.warning("Job id: %s", job.id)
+    logger.warning("Job id: %s", job["id"])
     logger.debug(job)
 
-    job = wait(cmd, job.id, resource_group_name, workspace_name, location)
+    job = wait(cmd, job["id"], resource_group_name, workspace_name, location)
     logger.debug(job)
 
-    return output(cmd, job.id, resource_group_name, workspace_name, location)
+    return output(cmd, job["id"], resource_group_name, workspace_name, location)
 
 
 def cancel(cmd, job_id, resource_group_name, workspace_name, location):
@@ -434,15 +524,15 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     if _has_completed(job):
         print(f"Job {job_id} has already completed with status: {job.status}.")
         return
 
     # If the job hasn't succeeded or failed, attempt to cancel.
-    client.cancel(job_id)
+    client.delete(info.subscription, info.resource_group, info.name, job_id)  # JobOperations.cancel has been replaced with .delete in the updated DP client
 
     # Wait for the job status to complete or be reported as cancelled
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
