@@ -1,16 +1,19 @@
 import hashlib
 import os
 
+from knack.log import get_logger
 from abc import ABC, abstractmethod
 from jinja2 import Template
+
+logger = get_logger(__name__)
 
 # Abstract Base Class for Converter
 # The converter is a template class that defines the structure of the conversion process
 # The responsibility of the converter is to convert the source data into the output data
 class ConverterTemplate(ABC):
-    def __init__(self, source, extract_data):
+    def __init__(self, source, transform_data):
         self.wrapper_data = SourceDataWrapper(source)
-        self.data = extract_data()
+        self.data = transform_data()
 
     def convert(self):
         outputs = {}
@@ -21,7 +24,7 @@ class ConverterTemplate(ABC):
         outputs = {}
         for item in self.data:
             name = item['name'].split('/')[-1]
-            data = self.transform_data(item)
+            data = self.transform_data_item(item)
             outputs[name+"_"+self.get_template_name()] = self.generate_output(data)
         return outputs
 
@@ -108,3 +111,22 @@ class SourceDataWrapper:
         if networkProfile is None:
             return False
         return networkProfile.get('appSubnetId') is not None
+    
+    def get_certificates(self):
+        return self.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
+
+    def get_keyvault_certificates(self):
+        return self.get_certificates_by_type("KeyVaultCertificate")
+    
+    def get_content_certificates(self):
+        return self.get_certificates_by_type("ContentCertificate")
+    
+    def get_certificates_by_type(self, type):
+        certs = []
+        for cert in self.get_certificates():
+            if cert['properties'].get('type') == type:
+                certs.append(cert)
+        return certs
+    
+    def get_storages(self):
+        return self.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')

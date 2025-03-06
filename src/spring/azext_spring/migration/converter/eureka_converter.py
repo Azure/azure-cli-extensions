@@ -3,7 +3,7 @@ from .base_converter import ConverterTemplate
 class EurekaConverter(ConverterTemplate):
 
     def __init__(self, source):
-        def extract_data():
+        def transform_data():
             name = "eureka"
             configurations = []
             replicas = 1
@@ -13,7 +13,7 @@ class EurekaConverter(ConverterTemplate):
                 "configurations": configurations,
                 "replicas": replicas
             }
-        super().__init__(source, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "eureka.bicep"

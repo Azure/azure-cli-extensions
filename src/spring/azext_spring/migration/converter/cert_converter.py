@@ -1,21 +1,20 @@
+from knack.log import get_logger
 from .base_converter import ConverterTemplate
+
+logger = get_logger(__name__)
 
 # Concrete Converter Subclass for certificate
 class CertConverter(ConverterTemplate):
 
     def __init__(self, source):
-        def extract_data():
-            certs = []
-            asa_certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
-            for cert in asa_certs:
-                if cert['properties'].get('type') == "KeyVaultCertificate":
-                    certs.append(cert)    
-                elif cert['properties'].get('type') == "ContentCertificate":
-                    certs.append(cert)
-            return certs
-        super().__init__(source, extract_data)
+        def transform_data():
+            asa_content_certs = self.wrapper_data.get_content_certificates()
+            for cert in asa_content_certs:
+                logger.warning(f"Mismatch: The content certificate: {cert['name']} cannot be exported automatically. Please export it manually.")
+            return self.wrapper_data.get_certificates()
+        super().__init__(source, transform_data)
 
-    def transform_data(self, cert):
+    def transform_data_item(self, cert):
         certName = cert['name'].split('/')[-1]
         moduleName = "cert_" + certName.replace("-", "_")
         isKeyVaultCert = False

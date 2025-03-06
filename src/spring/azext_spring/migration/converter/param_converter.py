@@ -4,9 +4,9 @@ from .base_converter import ConverterTemplate
 class ParamConverter(ConverterTemplate):
 
     def __init__(self, source):
-        def extract_data():
-            self.apps = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-            self.storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
+        def transform_data():
+            self.apps = self.wrapper_data.get_apps()
+            self.storages = self.wrapper_data.get_storages()
             storage_map = {
                     storage['name'].split('/')[-1]: storage['properties']['accountName'] 
                     for storage in self.storages
@@ -45,7 +45,7 @@ class ParamConverter(ConverterTemplate):
                 "storages": storage_configs,
                 "isVnet": self.wrapper_data.is_vnet()
             }
-        super().__init__(source, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "param.bicepparam"

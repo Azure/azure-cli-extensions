@@ -4,10 +4,10 @@ from .base_converter import ConverterTemplate
 class ReadMeConverter(ConverterTemplate):
 
     def __init__(self, source):
-        def extract_data():
-            # TODO: Implement the extract_data method
+        def transform_data():
+            # TODO: Implement the transform_data method
             pass
-        super().__init__(source, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "README.md"

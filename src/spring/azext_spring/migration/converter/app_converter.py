@@ -9,11 +9,11 @@ class AppConverter(ConverterTemplate):
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 
     def __init__(self, source):
-        def extract_data():
-            return self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-        super().__init__(source, extract_data)
+        def transform_data():
+            return self.wrapper_data.get_apps()
+        super().__init__(source, transform_data)
 
-    def transform_data(self, app):
+    def transform_data_item(self, app):
         appName = app['name'].split('/')[-1]
         envName = app['name'].split('/')[0]
         asa_deployments = self.wrapper_data.get_deployments_by_app(app['name'])
@@ -26,7 +26,7 @@ class AppConverter(ConverterTemplate):
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
         identity = app.get('identity')
-        storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
+        storages = self.wrapper_data.get_storages()
         # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
         volumeMounts = []
         volumes = []
