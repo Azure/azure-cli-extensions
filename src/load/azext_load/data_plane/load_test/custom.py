@@ -7,6 +7,7 @@
 
 import os
 
+from azext_load.data_plane.utils.constants import LoadTestConfigKeys
 from azext_load.data_plane.utils.utils import (
     convert_yaml_to_test,
     create_autostop_criteria_from_args,
@@ -16,6 +17,7 @@ from azext_load.data_plane.utils.utils import (
     generate_trends_row,
     get_admin_data_plane_client,
     get_testrun_data_plane_client,
+    infer_test_type_from_test_plan,
     load_yaml,
     upload_file_to_test,
     upload_files_helper,
@@ -54,6 +56,8 @@ def create_test(
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
     regionwise_engines=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
@@ -71,6 +75,8 @@ def create_test(
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is None:
+        test_type = test_type or infer_test_type_from_test_plan(test_plan)
+        logger.debug("Inferred test type: %s", test_type)
         body = create_or_update_test_without_config(
             test_id,
             body,
@@ -87,10 +93,19 @@ def create_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids,
         )
     else:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        test_type = (
+            test_type or
+            yaml.get(LoadTestConfigKeys.TEST_TYPE) or
+            infer_test_type_from_test_plan(test_plan) or
+            infer_test_type_from_test_plan(yaml.get(LoadTestConfigKeys.TEST_PLAN))
+        )
+        logger.debug("Inferred test type: %s", test_type)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -108,6 +123,8 @@ def create_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids,
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -147,6 +164,8 @@ def update_test(
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
     regionwise_engines=None,
+    engine_ref_id_type=None,
+    engine_ref_ids=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Update test has started for test ID : %s", test_id)
@@ -180,6 +199,8 @@ def update_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids,
         )
     else:
         body = create_or_update_test_without_config(
@@ -197,6 +218,8 @@ def update_test(
             disable_public_ip=disable_public_ip,
             autostop_criteria=autostop_criteria,
             regionwise_engines=regionwise_engines,
+            engine_ref_id_type=engine_ref_id_type,
+            engine_ref_ids=engine_ref_ids
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)

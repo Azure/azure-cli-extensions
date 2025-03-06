@@ -464,6 +464,22 @@ def validate_max_surge(namespace):
         raise CLIError("--max-surge should be an int or percentage")
 
 
+def validate_max_unavailable(namespace):
+    """validates parameters max unavailable are positive integers or percents."""
+    if namespace.max_unavailable is None:
+        return
+    int_or_percent = namespace.max_unavailable
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise CLIError("--max-unavailable must be positive")
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise CLIError("--max-unavailable should be an int or percentage")
+
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
@@ -756,12 +772,26 @@ def validate_allowed_host_ports(namespace):
 
 
 def validate_application_security_groups(namespace):
+    is_nodepool_operation = False
     if hasattr((namespace), "nodepool_asg_ids"):
+        is_nodepool_operation = True
         asg_ids = namespace.nodepool_asg_ids
+        host_ports = namespace.nodepool_allowed_host_ports
     else:
         asg_ids = namespace.asg_ids
+        host_ports = namespace.allowed_host_ports
+
     if not asg_ids:
         return
+
+    if not host_ports:
+        if is_nodepool_operation:
+            raise ArgumentUsageError(
+                '--nodepool-asg-ids must be used with --nodepool-allowed-host-ports'
+            )
+        raise ArgumentUsageError(
+            '--asg-ids must be used with --allowed-host-ports'
+        )
 
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):

@@ -64,6 +64,9 @@ helps['vm repair run'] = """
         - name: Run a script with parameters on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
+        - name: Run a verified script with some parameters. In the first parameter named 'key', only the value 'test' is sent to the script. The second parameter named \'initiator\', uses the prefix '++' to send the entire following string 'initiator=selfhelp' to the script. 
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id linux-alar2 --parameters key=test ++initiator=selfhelp --verbose --debug
         - name: Run a local custom script on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
@@ -92,7 +95,7 @@ helps['vm repair list-scripts'] = """
 
 helps['vm repair reset-nic'] = """
     type: command
-    short-summary: Reset the network interface stack on the VM guest OS. https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/reset-network-interface
+    short-summary: Reset the network interface stack on the VM guest OS. https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/reset-network-interface
     examples:
         - name: Reset the VM guest NIC. Specify VM resource group and name.
           text: >

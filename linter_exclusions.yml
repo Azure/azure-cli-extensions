@@ -207,6 +207,11 @@ aks update:
     cluster_service_load_balancer_health_probe_mode:
       rule_exclusions:
       - option_length_too_long
+arcdata dc config init:
+  parameters:
+    path:
+      rule_exclusions:
+      - disallowed_html_tag_from_parameter
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -221,6 +226,12 @@ arcdata dc create:
     metrics_ui_public_key_file:
       rule_exclusions:
       - option_length_too_long
+arcdata dc:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+arcdata ad-connector:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 arcdata ad-connector create:
   parameters:
     domain_service_account_secret:
@@ -237,6 +248,17 @@ arcdata ad-connector update:
     secondary_domain_controllers:
       rule_exclusions:
       - option_length_too_long
+sql instance-failover-group-arc:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+sql instance-failover-group-arc create:
+  parameters:
+    partner_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+sql server-arc availability-group:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 sql server-arc availability-group create:
   parameters:
     automated_backup_preference:
@@ -268,6 +290,9 @@ sql mi-arc update:
     tde_protector_public_key_file:
       rule_exclusions:
       - option_length_too_long
+sql mi-arc:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 sql mi-arc create:
   parameters:
     sync_secondary_to_commit:

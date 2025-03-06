@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided cluster, or update the tags associated with the cluster. Properties and tag updates can be done independently.
@@ -29,8 +30,8 @@ class Update(AAZCommand):
     :example: Patch cluster runtime protection configuration
         az az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --runtime-protection enforcement-level="OnDemand"
 
-    :example: Patch secret archive
-        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --secret-archive use-key-vault=True key-vault-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.KeyVault/vaults/keyVaultName"
+    :example: Patch Vulnerability Settings
+        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --vulnerability-scanning-settings container-scan="Enabled"
 
     :example: Patch update strategy
         az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --update-strategy strategy-type="Rack" threshold-type="CountSuccess" threshold-value=4 max-unavailable=4 wait-time-minutes=10
@@ -40,12 +41,18 @@ class Update(AAZCommand):
 
     :example: Add system assigned identity to cluster
         az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --mi-system-assigned
+
+    :example: Add user assigned identity and log analytics output settings to cluster
+        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --mi-user-assigned "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/userAssignedIdentity" --analytics-output-settings analytics-workspace-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/userIdentity"
+
+    :example: Add user assigned identity and secret archive settings to cluster
+        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --secret-archive-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" vault_uri="https://keyvaultname.vault.azure.net/"
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -136,6 +143,12 @@ class Update(AAZCommand):
             help="The rack definition that is intended to reflect only a single rack in a single rack cluster, or an aggregator rack in a multi-rack cluster.",
         )
         cls._build_args_rack_definition_update(_args_schema.aggregator_or_single_rack_definition)
+        _args_schema.analytics_output_settings = AAZObjectArg(
+            options=["--ao-settings", "--analytics-output-settings"],
+            arg_group="Properties",
+            help="The settings for the log analytics workspace used for output of logs from this cluster.",
+            nullable=True,
+        )
         _args_schema.cluster_location = AAZStrArg(
             options=["--cluster-location"],
             arg_group="Properties",
@@ -170,16 +183,38 @@ class Update(AAZCommand):
             help="The settings for cluster runtime protection.",
             nullable=True,
         )
-        _args_schema.secret_archive = AAZObjectArg(
-            options=["--secret-archive"],
+        _args_schema.secret_archive_settings = AAZObjectArg(
+            options=["--sa-settings", "--secret-archive-settings"],
             arg_group="Properties",
-            help="The configuration for use of a key vault to store secrets for later retrieval by the operator.",
+            help="The settings for the secret archive used to hold credentials for the cluster.",
             nullable=True,
         )
         _args_schema.update_strategy = AAZObjectArg(
             options=["--update-strategy"],
             arg_group="Properties",
             help="The strategy for updating the cluster.",
+            nullable=True,
+        )
+        _args_schema.vulnerability_scanning_settings = AAZObjectArg(
+            options=["--vs-settings", "--vulnerability-scanning-settings"],
+            arg_group="Properties",
+            help="The settings for how security vulnerability scanning is applied to the cluster.",
+            nullable=True,
+        )
+
+        analytics_output_settings = cls._args_schema.analytics_output_settings
+        analytics_output_settings.analytics_workspace_id = AAZResourceIdArg(
+            options=["analytics-workspace-id"],
+            help="The resource ID of the analytics workspace that is to be used by the specified identity.",
+        )
+        analytics_output_settings.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        analytics_output_settings.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type",
             nullable=True,
         )
 
@@ -255,17 +290,20 @@ class Update(AAZCommand):
             enum={"Audit": "Audit", "Disabled": "Disabled", "OnDemand": "OnDemand", "Passive": "Passive", "RealTime": "RealTime"},
         )
 
-        secret_archive = cls._args_schema.secret_archive
-        secret_archive.key_vault_id = AAZResourceIdArg(
-            options=["key-vault-id"],
-            help="The resource ID of the key vault to archive the secrets of the cluster.",
-            required=True,
+        secret_archive_settings = cls._args_schema.secret_archive_settings
+        secret_archive_settings.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
         )
-        secret_archive.use_key_vault = AAZStrArg(
-            options=["use-key-vault"],
-            help="The indicator if the specified key vault should be used to archive the secrets of the cluster.",
-            default="False",
-            enum={"False": "False", "True": "True"},
+        secret_archive_settings.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
+        )
+        secret_archive_settings.vault_uri = AAZStrArg(
+            options=["vault-uri"],
+            help="The URI for the key vault used as the secret archive.",
         )
 
         update_strategy = cls._args_schema.update_strategy
@@ -304,6 +342,13 @@ class Update(AAZCommand):
                 maximum=60,
                 minimum=0,
             ),
+        )
+
+        vulnerability_scanning_settings = cls._args_schema.vulnerability_scanning_settings
+        vulnerability_scanning_settings.container_scan = AAZStrArg(
+            options=["container-scan"],
+            help="The mode selection for container vulnerability scanning.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         return cls._args_schema
 
@@ -404,7 +449,7 @@ class Update(AAZCommand):
         _element = cls._args_rack_definition_update.bare_metal_machine_configuration_data.Element
         _element.bmc_credentials = AAZObjectArg(
             options=["bmc-credentials"],
-            help="The credentials of the baseboard management controller on this bare metal machine.",
+            help="The credentials of the baseboard management controller on this bare metal machine. The password field is expected to be an Azure Key Vault key URL. Until the cluster is converted to utilize managed identity by setting the secret archive settings, the actual password value should be provided instead.",
             required=True,
         )
         cls._build_args_administrative_credentials_update(_element.bmc_credentials)
@@ -577,7 +622,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -624,14 +669,26 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 _UpdateHelper._build_schema_rack_definition_update(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition"))
+                properties.set_prop("analyticsOutputSettings", AAZObjectType, ".analytics_output_settings", typ_kwargs={"nullable": True})
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
                 properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal", typ_kwargs={"nullable": True})
                 properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings", typ_kwargs={"nullable": True})
                 properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold", typ_kwargs={"nullable": True})
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
                 properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection", typ_kwargs={"nullable": True})
-                properties.set_prop("secretArchive", AAZObjectType, ".secret_archive", typ_kwargs={"nullable": True})
+                properties.set_prop("secretArchiveSettings", AAZObjectType, ".secret_archive_settings", typ_kwargs={"nullable": True})
                 properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy", typ_kwargs={"nullable": True})
+                properties.set_prop("vulnerabilityScanningSettings", AAZObjectType, ".vulnerability_scanning_settings", typ_kwargs={"nullable": True})
+
+            analytics_output_settings = _builder.get(".properties.analyticsOutputSettings")
+            if analytics_output_settings is not None:
+                analytics_output_settings.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id")
+                analytics_output_settings.set_prop("associatedIdentity", AAZObjectType)
+
+            associated_identity = _builder.get(".properties.analyticsOutputSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
 
             cluster_service_principal = _builder.get(".properties.clusterServicePrincipal")
             if cluster_service_principal is not None:
@@ -664,10 +721,15 @@ class Update(AAZCommand):
             if runtime_protection_configuration is not None:
                 runtime_protection_configuration.set_prop("enforcementLevel", AAZStrType, ".enforcement_level")
 
-            secret_archive = _builder.get(".properties.secretArchive")
-            if secret_archive is not None:
-                secret_archive.set_prop("keyVaultId", AAZStrType, ".key_vault_id", typ_kwargs={"flags": {"required": True}})
-                secret_archive.set_prop("useKeyVault", AAZStrType, ".use_key_vault")
+            secret_archive_settings = _builder.get(".properties.secretArchiveSettings")
+            if secret_archive_settings is not None:
+                secret_archive_settings.set_prop("associatedIdentity", AAZObjectType)
+                secret_archive_settings.set_prop("vaultUri", AAZStrType, ".vault_uri")
+
+            associated_identity = _builder.get(".properties.secretArchiveSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
 
             update_strategy = _builder.get(".properties.updateStrategy")
             if update_strategy is not None:
@@ -676,6 +738,10 @@ class Update(AAZCommand):
                 update_strategy.set_prop("thresholdType", AAZStrType, ".threshold_type", typ_kwargs={"flags": {"required": True}})
                 update_strategy.set_prop("thresholdValue", AAZIntType, ".threshold_value", typ_kwargs={"flags": {"required": True}})
                 update_strategy.set_prop("waitTimeMinutes", AAZIntType, ".wait_time_minutes")
+
+            vulnerability_scanning_settings = _builder.get(".properties.vulnerabilityScanningSettings")
+            if vulnerability_scanning_settings is not None:
+                vulnerability_scanning_settings.set_prop("containerScan", AAZStrType, ".container_scan")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -856,6 +922,9 @@ class _UpdateHelper:
             flags={"required": True},
         )
         cls._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
+        properties.analytics_output_settings = AAZObjectType(
+            serialized_name="analyticsOutputSettings",
+        )
         properties.analytics_workspace_id = AAZStrType(
             serialized_name="analyticsWorkspaceId",
         )
@@ -941,6 +1010,9 @@ class _UpdateHelper:
         properties.secret_archive = AAZObjectType(
             serialized_name="secretArchive",
         )
+        properties.secret_archive_settings = AAZObjectType(
+            serialized_name="secretArchiveSettings",
+        )
         properties.support_expiry_date = AAZStrType(
             serialized_name="supportExpiryDate",
             flags={"read_only": True},
@@ -948,10 +1020,22 @@ class _UpdateHelper:
         properties.update_strategy = AAZObjectType(
             serialized_name="updateStrategy",
         )
+        properties.vulnerability_scanning_settings = AAZObjectType(
+            serialized_name="vulnerabilityScanningSettings",
+        )
         properties.workload_resource_ids = AAZListType(
             serialized_name="workloadResourceIds",
             flags={"read_only": True},
         )
+
+        analytics_output_settings = _schema_cluster_read.properties.analytics_output_settings
+        analytics_output_settings.analytics_workspace_id = AAZStrType(
+            serialized_name="analyticsWorkspaceId",
+        )
+        analytics_output_settings.associated_identity = AAZObjectType(
+            serialized_name="associatedIdentity",
+        )
+        cls._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
 
         available_upgrade_versions = _schema_cluster_read.properties.available_upgrade_versions
         available_upgrade_versions.Element = AAZObjectType()
@@ -1029,17 +1113,9 @@ class _UpdateHelper:
         command_output_settings.associated_identity = AAZObjectType(
             serialized_name="associatedIdentity",
         )
+        cls._build_schema_identity_selector_read(command_output_settings.associated_identity)
         command_output_settings.container_url = AAZStrType(
             serialized_name="containerUrl",
-        )
-
-        associated_identity = _schema_cluster_read.properties.command_output_settings.associated_identity
-        associated_identity.identity_type = AAZStrType(
-            serialized_name="identityType",
-        )
-        associated_identity.user_assigned_identity_resource_id = AAZStrType(
-            serialized_name="userAssignedIdentityResourceId",
-            nullable=True,
         )
 
         compute_deployment_threshold = _schema_cluster_read.properties.compute_deployment_threshold
@@ -1075,6 +1151,15 @@ class _UpdateHelper:
             serialized_name="useKeyVault",
         )
 
+        secret_archive_settings = _schema_cluster_read.properties.secret_archive_settings
+        secret_archive_settings.associated_identity = AAZObjectType(
+            serialized_name="associatedIdentity",
+        )
+        cls._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+        secret_archive_settings.vault_uri = AAZStrType(
+            serialized_name="vaultUri",
+        )
+
         update_strategy = _schema_cluster_read.properties.update_strategy
         update_strategy.max_unavailable = AAZIntType(
             serialized_name="maxUnavailable",
@@ -1093,6 +1178,11 @@ class _UpdateHelper:
         )
         update_strategy.wait_time_minutes = AAZIntType(
             serialized_name="waitTimeMinutes",
+        )
+
+        vulnerability_scanning_settings = _schema_cluster_read.properties.vulnerability_scanning_settings
+        vulnerability_scanning_settings.container_scan = AAZStrType(
+            serialized_name="containerScan",
         )
 
         workload_resource_ids = _schema_cluster_read.properties.workload_resource_ids
@@ -1152,6 +1242,29 @@ class _UpdateHelper:
 
         _schema.name = cls._schema_extended_location_read.name
         _schema.type = cls._schema_extended_location_read.type
+
+    _schema_identity_selector_read = None
+
+    @classmethod
+    def _build_schema_identity_selector_read(cls, _schema):
+        if cls._schema_identity_selector_read is not None:
+            _schema.identity_type = cls._schema_identity_selector_read.identity_type
+            _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+            return
+
+        cls._schema_identity_selector_read = _schema_identity_selector_read = AAZObjectType()
+
+        identity_selector_read = _schema_identity_selector_read
+        identity_selector_read.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+        identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._schema_identity_selector_read.identity_type
+        _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
     _schema_rack_definition_read = None
 

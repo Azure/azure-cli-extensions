@@ -13,6 +13,7 @@ import zipfile
 import hashlib
 import re
 import requests
+import shutil
 import packaging.version as SemVer
 
 from enum import Enum
@@ -100,15 +101,6 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
             break
     else:
         raise ResourceNotFoundError("Service with the given name does not exist")
-
-
-def get_linker_client(cmd):
-    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    credential, subscription_id, _ = profile.get_login_credentials(
-        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
-    linker_client = ServiceLinkerManagementClient(credential)
-    return linker_client
 
 
 def validate_binding_name(binding_name):
