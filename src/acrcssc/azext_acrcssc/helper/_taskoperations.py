@@ -368,11 +368,10 @@ def _update_task_yaml(cmd, acr_task_client, registry, resource_group_name, task,
             step=acr_task_client.models.EncodedTaskStepUpdateParameters(
                 encoded_task_content=encoded_task))
 
-        result = LongRunningOperation(cmd.cli_ctx)(
-            acr_task_client.begin_update(resource_group_name,
-                                         registry.name,
-                                         task.name,
-                                         taskUpdateParameters))
+        result = acr_task_client.begin_update(resource_group_name,
+                                              registry.name,
+                                              task.name,
+                                              taskUpdateParameters)
 
         logger.debug(f"Task {task.name} updated successfully")
     except HttpResponseError as exception:
@@ -393,11 +392,10 @@ def _update_task_schedule(cmd, acr_task_client, registry, resource_group_name, c
         logger.debug("Dry run, skipping the update of the task schedule")
         return
     try:
-        result = LongRunningOperation(cmd.cli_ctx)(
-            acr_task_client.begin_update(resource_group_name,
-                                         registry.name,
-                                         CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
-                                         taskUpdateParameters))
+        result = acr_task_client.begin_update(resource_group_name,
+                                              registry.name,
+                                              CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
+                                              taskUpdateParameters)
         print("Schedule has been successfully updated.")
     except HttpResponseError as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
