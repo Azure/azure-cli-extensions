@@ -3,7 +3,7 @@ from .base_converter import ConverterTemplate
 # Concrete Converter Subclass for certificate
 class CertConverter(ConverterTemplate):
 
-    def __init__(self, input):
+    def __init__(self, source):
         def extract_data():
             certs = []
             asa_certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
@@ -13,7 +13,7 @@ class CertConverter(ConverterTemplate):
                 elif cert['properties'].get('type') == "ContentCertificate":
                     certs.append(cert)
             return certs
-        super().__init__(input, extract_data)
+        super().__init__(source, extract_data)
 
     def transform_data(self, cert):
         certName = cert['name'].split('/')[-1]

@@ -14,7 +14,7 @@ class ACSConverter(ConverterTemplate):
     KEY_HOST_KEY_ALGORITHM = ".host-key-algorithm"
     KEY_PATTERN = ".pattern"
 
-    def __init__(self, input):
+    def __init__(self, source):
         def extract_data():
             acs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configurationServices')[0]
             name = f"config"
@@ -26,7 +26,7 @@ class ACSConverter(ConverterTemplate):
                 "configurations": configurations,
                 "replicas": replicas
             }
-        super().__init__(input, extract_data)
+        super().__init__(source, extract_data)
 
     def get_template_name(self):
         return "config_server.bicep"

@@ -6,7 +6,7 @@ logger = get_logger(__name__)
 class GatewayConverter(ConverterTemplate):
     DEFAULT_NAME = "default"
 
-    def __init__(self, input, client, resource_group, service):
+    def __init__(self, source, client, resource_group, service):
         def extract_data():
             gateway = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways')[0]
             routes = []
@@ -29,7 +29,7 @@ class GatewayConverter(ConverterTemplate):
         self.client = client
         self.resource_group = resource_group
         self.service = service
-        super().__init__(input, extract_data)
+        super().__init__(source, extract_data)
 
     def _get_configurations(self, gateway, secretEnvs):
         configurations = []

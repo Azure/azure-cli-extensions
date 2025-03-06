@@ -3,7 +3,7 @@ from .base_converter import ConverterTemplate
 # Concrete Subclass for Container App Environment
 class EnvironmentConverter(ConverterTemplate):
 
-    def __init__(self, input):
+    def __init__(self, source):
         def extract_data():
             asa_service = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
             name = asa_service['name'].split('/')[-1]
@@ -37,7 +37,7 @@ class EnvironmentConverter(ConverterTemplate):
                 }]
                 data["scheduledEntries"] = aca_maintenance_window
             return data
-        super().__init__(input, extract_data)
+        super().__init__(source, extract_data)
 
     def get_template_name(self):
         return "environment.bicep"

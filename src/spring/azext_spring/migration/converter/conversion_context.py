@@ -20,8 +20,8 @@ logger = get_logger(__name__)
 
 # Context Class
 class ConversionContext:
-    def __init__(self, input):
-        self.data_wrapper = SourceDataWrapper(input)
+    def __init__(self, source):
+        self.data_wrapper = SourceDataWrapper(source)
         self.converters = []
 
     def add_converter(self, converter: ConverterTemplate):

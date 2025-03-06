@@ -8,10 +8,10 @@ class AppConverter(ConverterTemplate):
     
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 
-    def __init__(self, input):
+    def __init__(self, source):
         def extract_data():
             return self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-        super().__init__(input, extract_data)
+        super().__init__(source, extract_data)
 
     def transform_data(self, app):
         appName = app['name'].split('/')[-1]
@@ -89,9 +89,9 @@ class AppConverter(ConverterTemplate):
     def get_app_name(input_string):
         return input_string.split('/')[-1]
 
-    def _get_service_bind(self, source, envName):
+    def _get_service_bind(self, app, envName):
         service_bind = []
-        addon = source['properties'].get('addonConfigs')
+        addon = app['properties'].get('addonConfigs')
 
         if addon is None:
             return None
@@ -259,8 +259,8 @@ class AppConverter(ConverterTemplate):
             probeAction = None
         return probeAction
 
-    def _get_ingress(self, source, tier):
-        ingress = source['properties'].get('ingressSettings')
+    def _get_ingress(self, app, tier):
+        ingress = app['properties'].get('ingressSettings')
         if ingress is None:
             return None
         return {

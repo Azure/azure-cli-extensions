@@ -6,10 +6,10 @@ from jinja2 import Template
 
 # Abstract Base Class for Converter
 # The converter is a template class that defines the structure of the conversion process
-# The responsibility of the converter is to convert the input data into the output data
+# The responsibility of the converter is to convert the source data into the output data
 class ConverterTemplate(ABC):
-    def __init__(self, input, extract_data):
-        self.wrapper_data = SourceDataWrapper(input)
+    def __init__(self, source, extract_data):
+        self.wrapper_data = SourceDataWrapper(source)
         self.data = extract_data()
 
     def convert(self):

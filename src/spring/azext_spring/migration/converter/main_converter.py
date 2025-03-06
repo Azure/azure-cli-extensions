@@ -3,7 +3,7 @@ from .base_converter import ConverterTemplate
 # Concrete Converter Subclass for Read Me
 class MainConverter(ConverterTemplate):
 
-    def __init__(self, input):
+    def __init__(self, source):
         def extract_data():
             apps = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
             storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
@@ -73,7 +73,7 @@ class MainConverter(ConverterTemplate):
                 "eureka": self.wrapper_data.is_support_eureka(),
                 "sba": self.wrapper_data.is_support_sba(),
             }
-        super().__init__(input, extract_data)
+        super().__init__(source, extract_data)
 
     def get_template_name(self):
         return "main.bicep"
