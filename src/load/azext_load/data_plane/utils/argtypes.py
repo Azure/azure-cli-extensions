@@ -499,7 +499,7 @@ recurrence_dates_in_month = CLIArgumentType(
 recurrence_week_days = CLIArgumentType(
     options_list=["--recurrence-week-days"],
     choices=utils.get_enum_values(WeekDays),
-    type=str,
+    nargs="*",
     help="Week days for the recurrence type 'Weekly' and 'MonthlyByDays'.",
 )
 
