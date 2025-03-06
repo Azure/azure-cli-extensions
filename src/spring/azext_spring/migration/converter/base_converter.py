@@ -13,7 +13,9 @@ class ConverterTemplate(ABC):
         self.data = extract_data()
 
     def convert(self):
-        return self.generate_output(self.data)
+        outputs = {}
+        outputs[self.get_template_name()] =self.generate_output(self.data)
+        return outputs
 
     def convert_many(self):
         outputs = {}
