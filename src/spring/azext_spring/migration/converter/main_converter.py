@@ -3,18 +3,13 @@ from .base_converter import ConverterTemplate
 # Concrete Converter Subclass for Read Me
 class MainConverter(ConverterTemplate):
 
-    def __init__(self, input):
-        def extract_data():
-            apps = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-            storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
-            asa_certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
-            asa_kv_certs = []
-            for cert in asa_certs:
-                certName = cert['name'].split('/')[-1]
-                if cert['properties'].get('type') == "KeyVaultCertificate":
-                    asa_kv_certs.append(cert)
+    def __init__(self, source):
+        def transform_data():
+            apps = self.wrapper_data.get_apps()
+            storages = self.wrapper_data.get_storages()
+            asa_certs = self.wrapper_data.get_certificates()
             certs = []
-            for item in asa_kv_certs:
+            for item in asa_certs:
                 certName = item['name'].split('/')[-1]
                 moduleName = "cert_" + certName.replace("-", "_")
                 templateName = f"{certName}_cert.bicep"
@@ -73,7 +68,7 @@ class MainConverter(ConverterTemplate):
                 "eureka": self.wrapper_data.is_support_eureka(),
                 "sba": self.wrapper_data.is_support_sba(),
             }
-        super().__init__(input, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "main.bicep"

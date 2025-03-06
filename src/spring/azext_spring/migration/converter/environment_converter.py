@@ -3,13 +3,13 @@ from .base_converter import ConverterTemplate
 # Concrete Subclass for Container App Environment
 class EnvironmentConverter(ConverterTemplate):
 
-    def __init__(self, input):
-        def extract_data():
+    def __init__(self, source):
+        def transform_data():
             asa_service = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
             name = asa_service['name'].split('/')[-1]
-            apps = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-            storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
-            certs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
+            apps = self.wrapper_data.get_apps()
+            storages = self.wrapper_data.get_storages()
+            certs = self.wrapper_data.get_certificates()
             data = {
                 "containerAppEnvName": name,
                 "containerAppLogAnalyticsName": f"log-{name}",
@@ -37,7 +37,7 @@ class EnvironmentConverter(ConverterTemplate):
                 }]
                 data["scheduledEntries"] = aca_maintenance_window
             return data
-        super().__init__(input, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "environment.bicep"

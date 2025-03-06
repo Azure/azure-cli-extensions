@@ -3,11 +3,11 @@ from .base_converter import ConverterTemplate
 # Concrete Converter Subclass for Read Me
 class ReadMeConverter(ConverterTemplate):
 
-    def __init__(self, input):
-        def extract_data():
-            # TODO: Implement the extract_data method
+    def __init__(self, source):
+        def transform_data():
+            # TODO: Implement the transform_data method
             pass
-        super().__init__(input, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "README.md"

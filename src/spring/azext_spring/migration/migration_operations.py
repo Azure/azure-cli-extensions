@@ -40,8 +40,8 @@ def migration_aca_start(cmd, client, resource_group, service, output_folder):
     context.add_converter(CertConverter(asa_arm))
 
     # Run all converters
-    logger.info("Converting resources to Azure Container Apps...")
-    converted_contents = context.run_converters(asa_arm)
+    logger.warning("Converting resources to Azure Container Apps...")
+    converted_contents = context.run_converters()
 
     logger.debug("Start to save the converted content to files...")
     # Save each line of converted content to a separate file

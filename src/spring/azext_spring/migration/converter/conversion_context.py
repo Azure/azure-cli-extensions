@@ -20,8 +20,8 @@ logger = get_logger(__name__)
 
 # Context Class
 class ConversionContext:
-    def __init__(self, input):
-        self.data_wrapper = SourceDataWrapper(input)
+    def __init__(self, source):
+        self.data_wrapper = SourceDataWrapper(source)
         self.converters = []
 
     def add_converter(self, converter: ConverterTemplate):
@@ -33,39 +33,62 @@ class ConversionContext:
                 return converter
         raise ValueError(f"Unknown converter type: {converter_type}")
 
-    def run_converters(self, source):
+    def run_converters(self):
         converted_contents = {}
         # Cert Converter
-        converted_contents.update(self.get_converter(CertConverter).convert_many())
+        certs = self.get_converter(CertConverter).convert_many()
+        converted_contents.update(certs)
+        # for cert in certs.keys():
+        #     logger.debug(f"converted_contents for cert {cert}:\n{converted_contents.get(cert)}")
+
         # Environment Converter
-        converted_contents[self.get_converter(EnvironmentConverter).get_template_name()] = self.get_converter(EnvironmentConverter).convert()
+        converted_contents.update(self.get_converter(EnvironmentConverter).convert())
+        # logger.debug(f"converted_contents for environment:\n{converted_contents.get(self.get_converter(EnvironmentConverter).get_template_name())}")
+
         # Gateway Converter
-        converted_contents[self.get_converter(GatewayConverter).get_template_name()] = self.get_converter(GatewayConverter).convert()
-        logger.info(f"converted_contents for gateway: {converted_contents[self.get_converter(GatewayConverter).get_template_name()]}")
+        if self.data_wrapper.is_support_gateway():
+            converted_contents.update(self.get_converter(GatewayConverter).convert())
+            # logger.debug(f"converted_contents for gateway:\n{converted_contents.get(self.get_converter(GatewayConverter).get_template_name())}")
+
         # Config Server and ACS Converter
         if self.data_wrapper.is_support_ssoconfigserver():
-            converted_contents[self.get_converter(ConfigServerConverter).get_template_name()] = self.get_converter(ConfigServerConverter).convert()
-            logger.debug(f"converted_contents for config server: {converted_contents[self.get_converter(ConfigServerConverter).get_template_name()]}")
+            converted_contents.update(self.get_converter(ConfigServerConverter).convert())
+            # logger.debug(f"converted_contents for config server:\n{converted_contents.get(self.get_converter(ConfigServerConverter).get_template_name())}")
         elif self.data_wrapper.is_support_acs():
-            converted_contents[self.get_converter(ACSConverter).get_template_name()] = self.get_converter(ACSConverter).convert()
-            logger.debug(f"converted_contents for Application Configuration Service: {converted_contents[self.get_converter(ACSConverter).get_template_name()]}")
+            converted_contents.update(self.get_converter(ACSConverter).convert())
+            # logger.debug(f"converted_contents for Application Configuration Service:\n{converted_contents.get(self.get_converter(ACSConverter).get_template_name())}")
+
         # Live View Converter
-        converted_contents[self.get_converter(LiveViewConverter).get_template_name()] = self.get_converter(LiveViewConverter).convert()
-        logger.info(f"converted_contents for Live View: {converted_contents[self.get_converter(LiveViewConverter).get_template_name()]}")
+        if self.data_wrapper.is_support_sba():
+            converted_contents.update(self.get_converter(LiveViewConverter).convert())
+            # logger.debug(f"converted_contents for Live View:\n{converted_contents.get(self.get_converter(LiveViewConverter).get_template_name())}")
+
         # Service Registry and Eureka Converter
-        converted_contents[self.get_converter(ServiceRegistryConverter).get_template_name()] = self.get_converter(ServiceRegistryConverter).convert()
-        logger.info(f"converted_contents for Service Registry: {converted_contents[self.get_converter(ServiceRegistryConverter).get_template_name()]}")
-        if not self.data_wrapper.is_enterprise_tier():
-            converted_contents[self.get_converter(EurekaConverter).get_template_name()] = self.get_converter(EurekaConverter).convert()
-            logger.info(f"converted_contents for Eureka: {converted_contents[self.get_converter(EurekaConverter).get_template_name()]}")
+        if self.data_wrapper.is_enterprise_tier():
+            if self.data_wrapper.is_support_serviceregistry():
+                converted_contents.update(self.get_converter(ServiceRegistryConverter).convert())
+                # logger.debug(f"converted_contents for Service Registry:\n{converted_contents.get(self.get_converter(ServiceRegistryConverter).get_template_name())}")
+        else: # Basic Tier or Standard Tier
+            converted_contents.update(self.get_converter(EurekaConverter).convert())
+            # logger.debug(f"converted_contents for Eureka:\n{converted_contents.get(self.get_converter(EurekaConverter).get_template_name())}")
+
         # App Converter
-        converted_contents.update(self.get_converter(AppConverter).convert_many())
+        apps = self.get_converter(AppConverter).convert_many()
+        converted_contents.update(apps)
+        # for app in apps.keys():
+        #     logger.debug(f"converted_contents for App {app}:\n{converted_contents.get(app)}")        
+
         # Param Converter
-        converted_contents[self.get_converter(ParamConverter).get_template_name()] = self.get_converter(ParamConverter).convert()
+        converted_contents.update(self.get_converter(ParamConverter).convert())
+        # logger.debug(f"converted_contents for Param:\n{converted_contents.get(self.get_converter(ParamConverter).get_template_name())}")
+
         # ReadMe Converter
-        converted_contents[self.get_converter(ReadMeConverter).get_template_name()] = self.get_converter(ReadMeConverter).convert()
+        converted_contents.update(self.get_converter(ReadMeConverter).convert())
+        # logger.debug(f"converted_contents for ReadMe:\n{converted_contents.get(self.get_converter(ReadMeConverter).get_template_name())}")
+
         # Main Converter
-        converted_contents[self.get_converter(MainConverter).get_template_name()] = self.get_converter(MainConverter).convert()
+        converted_contents.update(self.get_converter(MainConverter).convert())
+        # logger.debug(f"converted_contents for Main:\n{converted_contents.get(self.get_converter(MainConverter).get_template_name())}")
         return converted_contents
 
     def save_to_files(self, converted_contents, output_path):
