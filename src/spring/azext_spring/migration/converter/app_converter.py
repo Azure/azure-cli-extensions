@@ -1,5 +1,3 @@
-import re
-
 from knack.log import get_logger
 from .base_converter import ConverterTemplate
 
@@ -10,30 +8,30 @@ class AppConverter(ConverterTemplate):
     
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 
-    def load_source(self, source):
-        self.source = source
-        self.managed_components = source['managedComponents']
-        self.is_enterprise = source['isEnterprise']
-        # print(f"App source: {self.source}")
+    def __init__(self, input):
+        def extract_data():
+            return self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
+        super().__init__(input, extract_data)
 
-    def calculate_data(self):
-        appName = self.source['name'].split('/')[-1]
-        envName = self.source['name'].split('/')[0]
+    def transform_data(self, app):
+        appName = app['name'].split('/')[-1]
+        envName = app['name'].split('/')[0]
+        asa_deployments = self.wrapper_data.get_deployments_by_app(app['name'])
         moduleName = appName.replace("-", "_")
-        serviceBinds = self._get_service_bind(self.source, envName)
-        deployments = self._get_deployments(self.source)
+        serviceBinds = self._get_service_bind(app, envName)
+        deployments = self._get_deployments(asa_deployments)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
         greenDeployment = deployments[1] if len(deployments) > 1 else {}
         tier = blueDeployment.get('sku', {}).get('tier')
-        ingress = self._get_ingress(self.source, tier)
-        isPublic = self.source['properties'].get('public')
-        identity = self.source.get('identity')
-        storages = self.source.get('storages')
+        ingress = self._get_ingress(app, tier)
+        isPublic = app['properties'].get('public')
+        identity = app.get('identity')
+        storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
         # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
         volumeMounts = []
         volumes = []
-        if 'properties' in self.source and 'customPersistentDisks' in self.source['properties']:
-            disks = self.source['properties']['customPersistentDisks']
+        if 'properties' in app and 'customPersistentDisks' in app['properties']:
+            disks = app['properties']['customPersistentDisks']
             storage_map = {
                 storage['name'].split('/')[-1]: storage['properties']['accountName'] 
                 for storage in storages
@@ -67,7 +65,7 @@ class AppConverter(ConverterTemplate):
                 })
         # print("Volume mounts: ", volumeMounts)
         # print("Volumes: ", volumes)
-        self.data = {
+        return {
             "containerAppName": appName,
             "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
             "targetPort": "targetPortFor_"+appName.replace("-", "_"),
@@ -83,7 +81,7 @@ class AppConverter(ConverterTemplate):
             "identity": identity,
             "volumeMounts": volumeMounts,
             "volumes": volumes,
-        }
+        }        
 
     def get_template_name(self):
         return "app.bicep"
@@ -92,7 +90,6 @@ class AppConverter(ConverterTemplate):
         return input_string.split('/')[-1]
 
     def _get_service_bind(self, source, envName):
-        enable_sba = self.managed_components['sba']
         service_bind = []
         addon = source['properties'].get('addonConfigs')
 
@@ -105,7 +102,7 @@ class AppConverter(ConverterTemplate):
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
             })
-        if self.is_enterprise != True and self.managed_components['config'] == True:
+        if self.wrapper_data.is_enterprise_tier() != True and self.wrapper_data.is_support_configserver():
             # standard tier enabled config server and bind all apps automatically
             service_bind.append({
                 "name": "bind-config",
@@ -116,13 +113,13 @@ class AppConverter(ConverterTemplate):
                 "name": "bind-eureka",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"
             })
-        if self.is_enterprise != True and self.managed_components['eureka'] == True:
+        if self.wrapper_data.is_enterprise_tier() != True and self.wrapper_data.is_support_eureka():
             # standard tier enabled eureka server and bind all apps automatically
             service_bind.append({
                 "name": "bind-eureka",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"
             })
-        if enable_sba:
+        if self.wrapper_data.is_support_sba():
             service_bind.append({
                 "name": "bind-sba",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'admin')"
@@ -130,9 +127,9 @@ class AppConverter(ConverterTemplate):
         # print(f"Service bind: {service_bind}")
         return service_bind
 
-    def _get_deployments(self, source):
+    def _get_deployments(self, asa_deployments):
         deployments = []
-        for deployment in source['deployments']:
+        for deployment in asa_deployments:
             deployment_name = deployment['name'].split('/')[-1]
             env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
             liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})

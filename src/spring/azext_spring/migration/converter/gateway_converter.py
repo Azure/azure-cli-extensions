@@ -1,44 +1,46 @@
 from .base_converter import ConverterTemplate
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 class GatewayConverter(ConverterTemplate):
     DEFAULT_NAME = "default"
 
-    def __init__(self, client, resource_group, service):
-        super().__init__()
+    def __init__(self, input, client, resource_group, service):
+        def extract_data():
+            gateway = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways')[0]
+            routes = []
+            for gateway_route in self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
+                routes.append(gateway_route)
+            gatewayName = f"gateway"
+            secretEnvs = self.client.gateways.list_env_secrets(self.resource_group, self.service, self.DEFAULT_NAME)
+            configurations = self._get_configurations(gateway, secretEnvs)
+            replicas = 2
+            if gateway.get('sku', {}).get('capacity') is not None:
+                replicas = min(2, gateway['sku']['capacity'])
+            routes = self._get_routes(routes)                
+            return {
+                "routes": routes,
+                "gatewayName": gatewayName,
+                "configurations": configurations,
+                "replicas": replicas,
+                "routes": routes,                
+            }        
         self.client = client
         self.resource_group = resource_group
         self.service = service
+        super().__init__(input, extract_data)
 
-    def load_source(self, source):
-        self.source = source
-        secret_envs_dict = self.client.gateways.list_env_secrets(self.resource_group, self.service, self.DEFAULT_NAME)
-        self.source['secretEnvs'] = secret_envs_dict
-
-    def calculate_data(self):
-        gatewayName = f"gateway"
-        configurations = self._get_configurations(self.source)
-        replicas = 2
-        if self.source.get('gateway', {}).get('sku', {}).get('capacity') is not None:
-            replicas = min(2, self.source['gateway']['sku']['capacity'])
-        routes = self._get_routes(self.source['routes'])
-
-        self.data = {
-            "gatewayName": gatewayName,
-            "configurations": configurations,
-            "replicas": replicas,
-            "routes": routes,
-        }
-
-    def _get_configurations(self, source):
+    def _get_configurations(self, gateway, secretEnvs):
         configurations = []
-        if source.get('gateway', {}).get('properties', {}).get('environmentVariables', {}).get('properties') is not None:
-            for key, value in source['gateway']['properties']['environmentVariables']['properties'].items():
+        if gateway.get('properties', {}).get('environmentVariables', {}).get('properties') is not None:
+            for key, value in gateway['properties']['environmentVariables']['properties'].items():
                 configurations.append({
                     "propertyName": key,
                     "value": value,
                 })
-        if source.get('secretEnvs') is not None:
-            for key, value in source['secretEnvs'].items():
+        if secretEnvs is not None:
+            for key, value in secretEnvs.items():
                 configurations.append({
                     "propertyName": key,
                     "value": value,
