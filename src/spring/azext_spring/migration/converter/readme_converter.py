@@ -9,4 +9,4 @@ class ReadMeConverter(ConverterTemplate):
         pass
 
     def get_template_name(self):
-        return "readme.md"
+        return "README.md"

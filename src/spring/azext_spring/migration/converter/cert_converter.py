@@ -1,12 +1,9 @@
-import re
-
 from .base_converter import ConverterTemplate
 
 # Concrete Converter Subclass for certificate
 class CertConverter(ConverterTemplate):
     def load_source(self, source):
         self.source = source
-        # print(f"Cert source: {self.source}")
 
     def calculate_data(self):
         certName = self.source['name'].split('/')[-1]
@@ -27,7 +24,6 @@ class CertConverter(ConverterTemplate):
             self.data["value"] = "*"
             isKeyVaultCert = False
         self.data["isKeyVaultCert"] = isKeyVaultCert
-        # print(f"cert data: {self.data}")
 
     def get_template_name(self):
         return "cert.bicep"

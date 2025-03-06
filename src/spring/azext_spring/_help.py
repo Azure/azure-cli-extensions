@@ -1810,15 +1810,10 @@ helps['spring private-dns-zone clean'] = """
           text: az spring private-dns-zone clean --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
 """
 
-helps['spring migration-aca'] = """
-    type: group
-    short-summary: Commands to migrate from Azure Spring Apps to Azure Container Apps.
-"""
-
-helps['spring migration-aca start'] = """
+helps['spring export'] = """
     type: command
-    short-summary: Commands to start migration from Azure Spring Apps to Azure Container Apps.
+    short-summary: Commands to export target Azure resource definitions from Azure Spring Apps.
     examples:
-        - name: Generate corresponding bicep files and readme doc to create Azure Container Apps service.
-          text: az spring migration-aca start --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+        - name: Generate corresponding bicep files and README doc to create Azure Container Apps service.
+          text: az spring export --target aca --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --output-folder output
 """

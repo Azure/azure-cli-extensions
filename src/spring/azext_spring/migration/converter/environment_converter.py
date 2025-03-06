@@ -8,16 +8,17 @@ class EnvironmentConverter(ConverterTemplate):
     def calculate_data(self):
         name = self.source['name'].split('/')[-1]
         apps = self.source.get('apps')
+        certs = self.source.get('certs')
         storages = self.source.get('storages')
         self.data = {
             "containerAppEnvName": name,
             "containerAppLogAnalyticsName": f"log-{name}",
-            "identity": {
-                "type": self._get_identity_type(apps),
-                "userAssignedIdentities": self._get_user_assigned_identity_list(apps),
-            },
             "storages": self._get_app_storage_configs(apps, storages),
         }
+        if self._need_identity(certs):
+            self.data["identity"] = {
+                "type": "SystemAssigned",
+            }
 
         isVnet = self.source['isVnet']
         if isVnet:
@@ -42,33 +43,10 @@ class EnvironmentConverter(ConverterTemplate):
     def get_template_name(self):
         return "environment.bicep"
 
-    def _get_identity_type(self, apps):
-        type = None
-        hasUserAssignedIdentity = False
-        hasSystemAssignedIdentity = False
-        for app in apps:
-            if app.get('identity') is not None:
-                if 'SystemAssigned' in app['identity'].get('type'):
-                    hasSystemAssignedIdentity = True
-                elif 'UserAssigned' in app['identity'].get('type'):
-                    hasUserAssignedIdentity = True
-        if hasUserAssignedIdentity and hasSystemAssignedIdentity:
-            type = "SystemAssigned,UserAssigned"
-        elif hasUserAssignedIdentity:
-            type = "UserAssigned"
-        elif hasSystemAssignedIdentity:
-            type = "SystemAssigned"
-        return type
-    
-    def _get_user_assigned_identity_list(self, apps):
-        user_assigned_identities = []
-        for app in apps:
-            if app.get('identity') is not None:
-                if 'UserAssigned' in app['identity'].get('type'):
-                    if app.get('identity').get('userAssignedIdentities') is not None:
-                        for id in app['identity']['userAssignedIdentities']:
-                            user_assigned_identities.append(id)
-        return user_assigned_identities
+    def _need_identity(self, certs):
+        if certs is not None and len(certs) > 0:
+            return True
+        return False
 
     def _get_app_storage_configs(self, apps, storages):
         storage_configs = []

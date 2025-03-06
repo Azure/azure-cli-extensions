@@ -327,5 +327,8 @@ def spring_private_dns_zone_clean(cmd, client, resource_group, service):
                        resource_group_name=resource_group, service_name=service, resource=updated_resource)
 
 
-def spring_migration_aca_start(cmd, client, resource_group, service, output_folder=None):
-    migration_aca_start(cmd, client, resource_group, service, output_folder)
+def spring_migration_start(cmd, client, resource_group, service, target="aca", output_folder=None):
+    if target == "aca" or target == "azure-container-apps":
+        migration_aca_start(cmd, client, resource_group, service, output_folder)
+    else:
+        raise InvalidArgumentValueError("Invalid target value. The value must be 'aca' or 'azure-container-apps'.")
