@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.0
+2.0.0
 ++++++
 * Use stable ARM API version `2024-08-01` *
 
