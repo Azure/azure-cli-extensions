@@ -178,6 +178,24 @@ class SourceDataWrapper:
         deployments = self.get_deployments()
         return [deployment for deployment in deployments if deployment['name'].startswith(f"{app['name']}/")]
 
+    def get_blue_deployment_by_app(self, app):
+        deployments = self.get_deployments_by_app(app)
+        deployments = [deployment for deployment in deployments if deployment['properties']['active'] == True]
+        return deployments[0] if deployments else {}
+
+    def get_green_deployment_by_app(self, app):
+        deployments = self.get_deployments_by_app(app)
+        deployments = [deployment for deployment in deployments if deployment['properties']['active'] == False]
+        return deployments[0] if deployments else {}
+    
+    def get_green_deployments(self):
+        deployments = self.get_deployments()
+        deployments = [deployment for deployment in deployments if deployment['properties']['active'] == False]
+        return deployments if deployments else []
+
+    def is_support_blue_green_deployment(self, app):
+        return len(self.get_deployments_by_app(app)) > 1
+
     def is_enterprise_tier(self):
         return self.get_asa_service()['sku']['tier'] == 'Enterprise'
 
