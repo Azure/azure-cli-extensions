@@ -1,10 +1,10 @@
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
 # Concrete Converter Subclass for certificate
-class CertConverter(ConverterTemplate):
+class CertConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():

@@ -1,7 +1,7 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 # Concrete Subclass for Container App Environment
-class EnvironmentConverter(ConverterTemplate):
+class EnvironmentConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():

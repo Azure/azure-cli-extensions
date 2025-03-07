@@ -1,10 +1,10 @@
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
 # Concrete Converter Subclass for Container App
-class AppConverter(ConverterTemplate):
+class AppConverter(BaseConverter):
     
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 

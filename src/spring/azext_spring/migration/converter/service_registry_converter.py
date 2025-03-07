@@ -1,6 +1,6 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
-class ServiceRegistryConverter(ConverterTemplate):
+class ServiceRegistryConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():

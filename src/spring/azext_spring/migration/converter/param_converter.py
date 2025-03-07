@@ -1,7 +1,7 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 # Concrete Converter Subclass for paramter
-class ParamConverter(ConverterTemplate):
+class ParamConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():

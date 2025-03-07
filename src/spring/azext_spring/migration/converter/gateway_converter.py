@@ -1,10 +1,10 @@
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-class GatewayConverter(ConverterTemplate):
+class GatewayConverter(BaseConverter):
     DEFAULT_NAME = "default"
 
     def __init__(self, source, client, resource_group, service):

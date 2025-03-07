@@ -1,9 +1,9 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 # Concrete Converter Subclass for Config Server
-class ConfigServerConverter(ConverterTemplate):
+class ConfigServerConverter(BaseConverter):
 
     CONFIGURATION_KEY_PREFIX = "spring.cloud.config.server.git"
     KEY_URI = ".uri"

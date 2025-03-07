@@ -39,6 +39,9 @@ class ConverterTemplate(ABC):
             template = Template(file.read())
         return template.render(data=data)
 
+# Base Converter Class
+# The BaseConverter class provides common utility methods that can be used by all concrete converter classes
+class BaseConverter(ConverterTemplate):
     # Extracts the resource name from a resource ID string in Azure ARM template format
     # Format: [resourceId('Microsoft.AppPlatform/Spring/<ResourceType>', '<parent_resource_name>', '<resource_name>')]
     # Example input: [resourceId('Microsoft.AppPlatform/Spring/storages', 'sample-service', 'storage1')]
