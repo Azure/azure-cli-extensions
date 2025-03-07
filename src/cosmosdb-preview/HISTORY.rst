@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.27.0
+* Remove restore validations from 'azure cosmosdb restore' command
+
 0.26.0
 * Add '--enable-priority-based-execution' and '--default-priority-level' parameter for create/update database account.
 * Add support for cross account container copy
