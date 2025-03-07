@@ -152,17 +152,25 @@ def get_extension_installed_and_cluster_configs(
     cluster_name,
     agentpool_profiles
 ) -> Tuple[bool, bool, bool, bool, bool, float, str, str]:
-    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
-    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    is_extension_installed = False
-    is_elasticSan_enabled = False
-    is_azureDisk_enabled = False
-    is_ephemeralDisk_nvme_enabled = False
-    is_ephemeralDisk_localssd_enabled = False
-    ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
-    perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
-    resource_cpu_value = -1
+
+    try:
+        client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+        client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+        k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+        is_extension_installed = False
+        is_elasticSan_enabled = False
+        is_azureDisk_enabled = False
+        is_ephemeralDisk_nvme_enabled = False
+        is_ephemeralDisk_localssd_enabled = False
+        ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
+        perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        resource_cpu_value = -1
+    except UnknownError as e:
+        logger.error(f"\nError fetching k8s extension module: {e}")
+        return False, False, False, False, False, -1, "", ""
+    except Exception as ex:
+        logger.error(f"\Exception occurred while fetching k8s extension module: {ex}")
+        return False, False, False, False, False, -1, "", ""
 
     try:
         extension = k8s_extension_custom_mod.show_k8s_extension(
