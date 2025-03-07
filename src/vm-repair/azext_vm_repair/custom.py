@@ -79,7 +79,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     """  
     
     # A warning about a future breaking change.  
-    logger.warning('After the November 2024 release, if the image of the source Windows VM is not found, the \'az vm repair create\' command will default to use a 2022-Datacenter image for the repair VM.')  
+    logger.warning('After the Build 2025 release, the --associate-public-ip option will be changed to just be a flag parameter instead of a boolean.')  
       
     # Logging all the command parameters, except the sensitive data.
     # Mask sensitive information
