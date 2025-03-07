@@ -18,6 +18,7 @@ from .helper._constants import (
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
     CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS,
+    CONTINUOUSPATCH_CONFIG_SUPPORTED_TAGCONVENTIONS,
     CONTINUOUSPATCH_ALL_TASK_NAMES,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
@@ -76,6 +77,8 @@ def _validate_continuouspatch_config(config):
                 raise InvalidArgumentValueError("Configuration error: Tag '*' is not allowed with other tags in the same repository. Use '*' as the only tag in the repository to avoid overlaps.")
     if config.get("version", "") not in CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS:
         raise InvalidArgumentValueError(f"Configuration error: Version {config.get('version', '')} is not supported. Supported versions are {CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS}")
+    if "tag-convention" in config and config.get("tag-convention", "") not in CONTINUOUSPATCH_CONFIG_SUPPORTED_TAGCONVENTIONS:
+        raise InvalidArgumentValueError(f"Configuration error: Tag convention {config.get('tag-convention', '')} is not supported. Supported tag conventions are {CONTINUOUSPATCH_CONFIG_SUPPORTED_TAGCONVENTIONS}")
 
 
 # to save on API calls, we the list of tasks found in the registry
