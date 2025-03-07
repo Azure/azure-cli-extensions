@@ -5,8 +5,8 @@
 import unittest
 from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from msrestazure.azure_exceptions import CloudError
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
+from .common.test_utils import get_test_cmd
 from ..._app_validator import (fulfill_deployment_param, active_deployment_exist,
                                validate_cpu, validate_memory, validate_deloyment_create_path, validate_deloy_path)
 
@@ -18,16 +18,6 @@ except ImportError:
 from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCliCommand
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 def _get_deployment(resource_group, service, app, deployment, active):
@@ -82,33 +72,33 @@ class TestDeployPath(unittest.TestCase):
         client = mock.MagicMock()
         client.buildservices.get.return_value = []
         client_factory_mock.return_value = client
-        validate_deloyment_create_path(_get_test_cmd(), ns)
+        validate_deloyment_create_path(get_test_cmd(), ns)
 
     def test_no_deploy_path_when_deploy(self):
         ns = Namespace(source_path=None, artifact_path=None, container_image=None)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(_get_test_cmd(), ns)
+            validate_deloy_path(get_test_cmd(), ns)
 
     def test_more_than_one_path(self):
         ns = Namespace(source_path='test', artifact_path='test', container_image=None)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(_get_test_cmd(), ns)
+            validate_deloy_path(get_test_cmd(), ns)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloyment_create_path(_get_test_cmd(), ns)
+            validate_deloyment_create_path(get_test_cmd(), ns)
 
     def test_more_than_one_path_1(self):
         ns = Namespace(source_path='test', artifact_path='test', container_image='test')
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(_get_test_cmd(), ns)
+            validate_deloy_path(get_test_cmd(), ns)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloyment_create_path(_get_test_cmd(), ns)
+            validate_deloyment_create_path(get_test_cmd(), ns)
 
     def test_more_than_one_path_2(self):
         ns = Namespace(source_path='test', artifact_path=None, container_image='test')
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(_get_test_cmd(), ns)
+            validate_deloy_path(get_test_cmd(), ns)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloyment_create_path(_get_test_cmd(), ns)
+            validate_deloyment_create_path(get_test_cmd(), ns)
 
 
 class TestActiveDeploymentExist(unittest.TestCase):
@@ -122,7 +112,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
         client_factory_mock.return_value = client
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
-        active_deployment_exist(_get_test_cmd(), ns)
+        active_deployment_exist(get_test_cmd(), ns)
 
     @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
     def test_deployment_without_active_exist(self, client_factory_mock):
@@ -134,7 +124,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            active_deployment_exist(_get_test_cmd(), ns)
+            active_deployment_exist(get_test_cmd(), ns)
         self.assertEqual(
             'This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment.',
             str(context.exception))
@@ -147,7 +137,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            active_deployment_exist(_get_test_cmd(), ns)
+            active_deployment_exist(get_test_cmd(), ns)
         self.assertEqual(
             'This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment.',
             str(context.exception))
@@ -163,7 +153,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            active_deployment_exist(_get_test_cmd(), ns)
+            active_deployment_exist(get_test_cmd(), ns)
         self.assertEqual('App app1 not found', str(context.exception))
 
 
@@ -175,7 +165,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         client_factory_mock.return_value = client
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment='green1')
-        fulfill_deployment_param(_get_test_cmd(), ns)
+        fulfill_deployment_param(get_test_cmd(), ns)
         self.assertEqual(
             '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/green1',
             ns.deployment.id)
@@ -187,12 +177,12 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         resp = mock.MagicMock()
         resp.status_code = 404
         resp.text = '{"Message": "Not Found"}'
-        client.deployments.get.side_effect = CloudError(resp, error='deployment not found.')
+        client.deployments.get.side_effect = HttpResponseError(resp, error='deployment not found.')
         client_factory_mock.return_value = client
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment='green1')
         with self.assertRaises(InvalidArgumentValueError) as context:
-            fulfill_deployment_param(_get_test_cmd(), ns)
+            fulfill_deployment_param(get_test_cmd(), ns)
         self.assertEqual('Deployment green1 not found under app app1', str(context.exception))
 
     @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
@@ -205,7 +195,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         client_factory_mock.return_value = client
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
-        fulfill_deployment_param(_get_test_cmd(), ns)
+        fulfill_deployment_param(get_test_cmd(), ns)
         self.assertEqual(
             '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/default',
             ns.deployment.id)
@@ -221,7 +211,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         client_factory_mock.return_value = client
 
         ns = Namespace(app='app1', service='asc1', resource_group='rg1', deployment=None)
-        fulfill_deployment_param(_get_test_cmd(), ns)
+        fulfill_deployment_param(get_test_cmd(), ns)
         self.assertEqual(
             '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/default',
             ns.deployment.id)
@@ -237,7 +227,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            fulfill_deployment_param(_get_test_cmd(), ns)
+            fulfill_deployment_param(get_test_cmd(), ns)
         self.assertEqual(
             'No production deployment found, use --deployment to specify deployment or create deployment with: az spring app deployment create',
             str(context.exception))
@@ -250,7 +240,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            fulfill_deployment_param(_get_test_cmd(), ns)
+            fulfill_deployment_param(get_test_cmd(), ns)
         self.assertEqual(
             'No production deployment found, use --deployment to specify deployment or create deployment with: az spring app deployment create',
             str(context.exception))

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster agentpool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided Kubernetes cluster agent pool, or update the tags associated with the Kubernetes cluster agent pool. Properties and tag updates can be done independently.
@@ -26,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2025-02-01"],
         ]
     }
 
@@ -49,6 +48,14 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.agent_pool_name = AAZStrArg(
             options=["-n", "--name", "--agent-pool-name"],
             help="The name of the Kubernetes cluster agent pool.",
@@ -59,7 +66,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.kubernetes_cluster_name = AAZStrArg(
-            options=["--kubernetes-cluster-name"],
+            options=["--kc-name", "--kubernetes-cluster-name"],
             help="The name of the Kubernetes cluster.",
             required=True,
             id_part="name",
@@ -120,10 +127,22 @@ class Update(AAZCommand):
         )
 
         upgrade_settings = cls._args_schema.upgrade_settings
+        upgrade_settings.drain_timeout = AAZIntArg(
+            options=["drain-timeout"],
+            help="The maximum time in seconds that is allowed for a node drain to complete before proceeding with the upgrade of the agent pool. If not specified during creation, a value of 1800 seconds is used.",
+            fmt=AAZIntArgFormat(
+                maximum=86400,
+                minimum=60,
+            ),
+        )
         upgrade_settings.max_surge = AAZStrArg(
             options=["max-surge"],
             help="The maximum number or percentage of nodes that are surged during upgrade. This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1.",
             default="1",
+        )
+        upgrade_settings.max_unavailable = AAZStrArg(
+            options=["max-unavailable"],
+            help="The maximum number or percentage of nodes that can be unavailable during upgrade. This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified during creation, a value of 0 is used. One of MaxSurge and MaxUnavailable must be greater than 0.",
         )
         return cls._args_schema
 
@@ -212,7 +231,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -221,6 +240,12 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -260,7 +285,9 @@ class Update(AAZCommand):
 
             upgrade_settings = _builder.get(".properties.upgradeSettings")
             if upgrade_settings is not None:
+                upgrade_settings.set_prop("drainTimeout", AAZIntType, ".drain_timeout")
                 upgrade_settings.set_prop("maxSurge", AAZStrType, ".max_surge")
+                upgrade_settings.set_prop("maxUnavailable", AAZStrType, ".max_unavailable")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -297,6 +324,7 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_agent_pool_read(cls, _schema):
         if cls._schema_agent_pool_read is not None:
+            _schema.etag = cls._schema_agent_pool_read.etag
             _schema.extended_location = cls._schema_agent_pool_read.extended_location
             _schema.id = cls._schema_agent_pool_read.id
             _schema.location = cls._schema_agent_pool_read.location
@@ -310,6 +338,9 @@ class _UpdateHelper:
         cls._schema_agent_pool_read = _schema_agent_pool_read = AAZObjectType()
 
         agent_pool_read = _schema_agent_pool_read
+        agent_pool_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
         agent_pool_read.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
         )
@@ -475,8 +506,14 @@ class _UpdateHelper:
         cls._build_schema_kubernetes_label_read(taints.Element)
 
         upgrade_settings = _schema_agent_pool_read.properties.upgrade_settings
+        upgrade_settings.drain_timeout = AAZIntType(
+            serialized_name="drainTimeout",
+        )
         upgrade_settings.max_surge = AAZStrType(
             serialized_name="maxSurge",
+        )
+        upgrade_settings.max_unavailable = AAZStrType(
+            serialized_name="maxUnavailable",
         )
 
         system_data = _schema_agent_pool_read.system_data
@@ -502,6 +539,7 @@ class _UpdateHelper:
         tags = _schema_agent_pool_read.tags
         tags.Element = AAZStrType()
 
+        _schema.etag = cls._schema_agent_pool_read.etag
         _schema.extended_location = cls._schema_agent_pool_read.extended_location
         _schema.id = cls._schema_agent_pool_read.id
         _schema.location = cls._schema_agent_pool_read.location

@@ -58,6 +58,48 @@ def create_dev_center_with_identity(self):
 
     self.kwargs.update({"devCenterId": dev_center["id"]})
 
+def create_project_with_identity(self):
+    self.kwargs.update(
+        {
+            "devcenterName": self.create_random_name(prefix="cli", length=24),
+            "projectName": self.create_random_name(prefix="cli", length=24),
+            "identityName": self.create_random_name(prefix="testid_", length=24),
+        }
+    )
+
+    test_identity = create_identity(self)
+
+    self.kwargs.update(
+        {
+            "userAssignedIdentity": test_identity["id"],
+            "identityPrincipalId": test_identity["principalId"],
+        }
+    )
+
+    dev_center = self.cmd(
+        "az devcenter admin devcenter create "
+        '--location "{location}" '
+        '--identity-type "UserAssigned" '
+        '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+        '--tags CostCode="12345" '
+        '--name "{devcenterName}" '
+        '--project-catalog-item-sync-enable-status "Enabled" '
+        '--resource-group "{rg}"'
+    ).get_output_in_json()
+
+    self.kwargs.update({"devCenterId": dev_center["id"]})
+
+    project = self.cmd(
+        "az devcenter admin project create "
+        '--location "{location}" '
+        '--identity-type "UserAssigned" '
+        '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+        '--name "{projectName}" '
+        '--dev-center-id "{devCenterId}" '
+        '--catalog-item-sync-types ["EnvironmentDefinition"] '
+        '--resource-group "{rg}"'
+    )
+
 
 def create_virtual_network_with_subnet(self):
     self.kwargs.update(
@@ -618,7 +660,3 @@ def create_dev_box_dependencies(self):
     add_dev_box_user_role_to_project(self)
     create_pool(self)
 
-
-def login_account(self):
-    if self.is_live:
-        self.cmd("az login -t 003b06c3-d471-4452-9686-9e7f3ca85f0a")

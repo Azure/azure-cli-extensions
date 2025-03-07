@@ -10,6 +10,7 @@ RackSku tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
 
@@ -53,6 +54,7 @@ class RackSkuScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update({"rackskuname": CONFIG.get("RACKSKU", "name")})
 
+    @AllowLargeResponse()
     def test_racksku_scenario1(self):
         """test scenario for RackSku operations"""
         call_scenario1(self)

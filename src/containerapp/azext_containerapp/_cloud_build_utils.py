@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with, too-many-branches
+# pylint: disable=line-too-long, too-many-locals
 
 from threading import Thread
 import os
@@ -17,12 +17,13 @@ from azure.cli.core.azclierror import (
 
 from ._archive_utils import archive_source_code
 
-from ._clients import BuilderClient, BuildClient
+from ._clients import BuilderClient, BuildClient, ContainerAppPreviewClient
 
 from ._utils import (
     log_in_file,
     remove_ansi_characters,
-    parse_build_env_vars
+    parse_build_env_vars,
+    safe_get,
 )
 
 
@@ -30,7 +31,8 @@ class CloudBuildError(Exception):
     pass
 
 
-def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
+# pylint: disable=too-many-branches
+def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, container_app_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
@@ -78,7 +80,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             thread.start()
             return thread
 
-        log_in_file(f"\n  {font_bold}Preparing the Container Apps Cloud Build environment{font_default}\n", logs_file)
+        log_in_file(f"\n  {font_bold}Preparing the Azure Container Apps Cloud Build environment{font_default}\n", logs_file)
 
         # List the builders in the resource group
         thread = display_spinner("Listing the builders available in the Container Apps environment")
@@ -106,53 +108,67 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             thread.join()
             log_in_file(f"{substatus_indentation}Builder created: {builder_name}", logs_file)
 
-        log_in_file(f"\n  {font_bold}Building the application{font_default}\n", logs_file)
-
-        # Build creation
+        # Getting the Container App
         done_spinner = False
-        thread = display_spinner("Starting the Container Apps Cloud Build agent")
-        build_env_vars = parse_build_env_vars(build_env_vars)
-        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, build_env_vars, True)
-        build_name = build_create_json_content["name"]
-        upload_endpoint = build_create_json_content["properties"]["uploadEndpoint"]
-        log_streaming_endpoint = build_create_json_content["properties"]["logStreamEndpoint"]
+        thread = display_spinner("Getting the Container App")
+        container_app_result = ContainerAppPreviewClient.show(cmd, resource_group_name, container_app_name)
         done_spinner = True
         thread.join()
-        log_in_file(f"{substatus_indentation}Cloud Build agent started: {build_name}", logs_file)
+        log_in_file(f"\n {font_bold}Building the application{font_default}\n", logs_file)
 
         # Token retrieval
         done_spinner = False
         thread = display_spinner("Retrieving the authentication token")
-        token_retrieval_json_content = BuildClient.list_auth_token(cmd, builder_name, build_name, resource_group_name, location)
-        token = token_retrieval_json_content["token"]
+        token_retrieval_json_content = ContainerAppPreviewClient.get_auth_token(cmd, resource_group_name, container_app_name)
+        token = safe_get(token_retrieval_json_content, "properties", "token")
         done_spinner = True
         thread.join()
 
         # Source code compression
-        done_spinner = False
-        thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
-        tar_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
-        archive_source_code(tar_file_path, source)
-        done_spinner = True
-        thread.join()
+        data_file_path = source
+        source_is_folder = os.path.isdir(source)
+        if source_is_folder:
+            done_spinner = False
+            thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
+            data_file_path = os.path.join(tempfile.gettempdir(), f"{generated_build_name}.tar.gz")
+            archive_source_code(data_file_path, source)
+            done_spinner = True
+            thread.join()
 
         # File upload
         done_spinner = False
-        thread = display_spinner("Uploading compressed data")
+        thread = display_spinner("Uploading data")
+        base_proxy_endpoint_not_stripped = safe_get(container_app_result, "properties", "eventStreamEndpoint")
+        str_list = base_proxy_endpoint_not_stripped.split("/eventstream")
+        base_proxy_endpoint = "".join(str_list)
+        upload_endpoint = f"{base_proxy_endpoint}/upload?token={token}"
         headers = {'Authorization': 'Bearer ' + token}
+        if build_env_vars:
+            import json
+            # Parse the env vars into a json raw string in the format [{"name": "key1", "value": "value1"}, {"name": "key2", "value": "value2"}]
+            parsed_build_env_vars = parse_build_env_vars(build_env_vars)
+            json_build_env_vars = json.dumps(parsed_build_env_vars)
+            headers["BuildtimeEnvVars"] = json_build_env_vars
+
         try:
-            tar_file = open(tar_file_path, "rb")
-            files = [("file", ("build_data.tar.gz", tar_file, "application/x-tar"))]
+            data_file = open(data_file_path, "rb")
+            file_name = os.path.basename(data_file_path)
+            files = [("file", (file_name, data_file))]
             response_file_upload = requests.post(
                 upload_endpoint,
                 files=files,
                 headers=headers)
         finally:
-            # Close and delete the file now that it was uploaded.
-            tar_file.close()
-            os.unlink(tar_file_path)
+            # Close the file now that it was uploaded.
+            data_file.close()
+            # if customer uploaded source file is a folder, delete the temp compressed file
+            if source_is_folder:
+                os.unlink(data_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
+        file_upload_json = response_file_upload.json()
+        build_name = file_upload_json["name"]
+        log_streaming_endpoint = f"{base_proxy_endpoint}/builds/{build_name}/logstream"
         done_spinner = True
         thread.join()
 
@@ -177,7 +193,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
         logs_stream_retries = 0
-        maximum_logs_stream_retries = 5
+        maximum_logs_stream_retries = 8
         while logs_stream_retries < maximum_logs_stream_retries:
             logs_stream_retries += 1
             response_log_streaming = requests.get(
@@ -188,7 +204,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
                 raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
             # Actually validate that we logs streams successfully
             response_log_streaming_lines = response_log_streaming.iter_lines()
-            count_lines_check = 2
+            count_lines_check = 4
             for line in response_log_streaming_lines:
                 log_line = remove_ansi_characters(line.decode("utf-8"))
                 log_in_file(log_line, logs_file, no_print=True)
@@ -205,6 +221,9 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             if count_lines_check <= 0:
                 # We checked the set number of lines and logs stream without error. Let's continue.
                 break
+            # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
+            log_in_file(f"{substatus_indentation}Wait logstream for build container...\n", logs_file)
+            time.sleep(logs_stream_retries)
         done_spinner = True
         thread.join()
 

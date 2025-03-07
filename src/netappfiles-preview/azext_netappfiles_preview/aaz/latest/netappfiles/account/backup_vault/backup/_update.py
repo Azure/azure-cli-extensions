@@ -20,9 +20,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2024-03-01-preview"],
         ]
     }
 
@@ -51,25 +51,25 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,127}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$",
             ),
         )
         _args_schema.backup_name = AAZStrArg(
-            options=["-n", "--name", "--backup-name"],
+            options=["-b", "-n", "--name", "--backup-name"],
             help="The name of the backup",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,255}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$",
             ),
         )
         _args_schema.backup_vault_name = AAZStrArg(
-            options=["--backup-vault-name"],
+            options=["-v", "--backup-vault-name"],
             help="The name of the Backup Vault",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,63}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -83,12 +83,6 @@ class Update(AAZCommand):
             options=["--label"],
             arg_group="Properties",
             help="Label for backup",
-            nullable=True,
-        )
-        _args_schema.use_existing_snapshot = AAZBoolArg(
-            options=["--use-existing-snapshot"],
-            arg_group="Properties",
-            help="Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups",
             nullable=True,
         )
         return cls._args_schema
@@ -179,7 +173,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }
@@ -286,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }
@@ -349,7 +343,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("label", AAZStrType, ".label")
-                properties.set_prop("useExistingSnapshot", AAZBoolType, ".use_existing_snapshot")
 
             return _instance_value
 
@@ -400,6 +393,10 @@ class _UpdateHelper:
         properties = _schema_backup_read.properties
         properties.backup_id = AAZStrType(
             serialized_name="backupId",
+            flags={"read_only": True},
+        )
+        properties.backup_policy_resource_id = AAZStrType(
+            serialized_name="backupPolicyResourceId",
             flags={"read_only": True},
         )
         properties.backup_type = AAZStrType(

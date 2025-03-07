@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots", "2024-06-01-preview"],
         ]
     }
 
@@ -70,7 +70,7 @@ class List(AAZCommand):
         )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="Specify $filter='volumeName eq <volume name>' to filter on volume.",
+            help="Specify `$filter='volumeName eq <volume name>'` to filter on volume.",
         )
         return cls._args_schema
 
@@ -147,7 +147,7 @@ class List(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }

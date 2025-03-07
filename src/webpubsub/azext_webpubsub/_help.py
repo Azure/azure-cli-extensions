@@ -58,8 +58,28 @@ helps['webpubsub service permission'] = """
 """
 
 helps['webpubsub replica'] = """
-type: group
-short-summary: Manage replica settings.
+    type: group
+    short-summary: Manage replica settings.
+"""
+
+helps['webpubsub network-rule ip-rule'] = """
+    type: group
+    short-summary: Manage WebPubSub Service IP rules.
+"""
+
+helps['webpubsub custom-certificate'] = """
+    type: group
+    short-summary: Manage WebPubSub custom certificates.
+"""
+
+helps['webpubsub custom-domain'] = """
+    type: group
+    short-summary: Manage custom domain settings.
+"""
+
+helps['webpubsub identity'] = """
+    type: group
+    short-summary: Manage managed identity settings.
 """
 
 helps['webpubsub create'] = """
@@ -72,6 +92,9 @@ helps['webpubsub create'] = """
       - name: Create a Web PubSub for Socket.IO with Premium SKU and unit 1.
         text: >
           az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Premium_P1 --unit-count 1 --kind SocketIO
+      - name: Create a Web PubSub for Socket.IO in Serverless mode with Premium SKU and unit 1
+        text: >
+          az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Premium_P1 --unit-count 1 --kind SocketIO --service-mode Serverless
 """
 
 helps['webpubsub list'] = """
@@ -96,6 +119,28 @@ helps['webpubsub update'] = """
       - name: Update a WebPubSub Service to unit 10.
         text: >
           az webpubsub update -n MyWebPubSub -g MyResourceGroup --sku Standard_S1 --unit-count 10
+      - name: Update a Web PubSub for Socket.IO to Serverless mode.
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --service-mode Serverless
+      - name: Enable or disable client certificate authentication for a WebPubSub Service
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --client-cert-enabled true
+      - name: Enable or disable local auth for a WebPubSub Service
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --disable-local-auth true
+      - name: Enable or disable region endpoint for a WebPubSub Service
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --region-endpoint-enabled true
+"""
+
+helps['webpubsub start'] = """
+    type: command
+    short-summary: Start a Webpubsub.
+"""
+
+helps['webpubsub stop'] = """
+    type: command
+    short-summary: Stop a Webpubsub.
 """
 
 helps['webpubsub restart'] = """
@@ -151,6 +196,24 @@ helps['webpubsub network-rule update'] = """
             az webpubsub network-rule update --public-network --connection-name MyPrivateEndpointConnection1 MyPrivateEndpointConnection2 -n MyWebPubSub -g MyResourceGroup --deny ClientConnection
 """
 
+helps['webpubsub network-rule ip-rule add'] = """
+    type: command
+    short-summary: Add IP rule to WebPubSub Service.
+    examples:
+      - name: Add IP rule
+        text: >
+            az webpubsub network-rule ip-rule add -n MyWebPubSub -g MyResourceGroup --ip-rule value="10.0.0.24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"
+"""
+
+helps['webpubsub network-rule ip-rule remove'] = """
+    type: command
+    short-summary: Remove IP rule from WebPubSub Service.
+    examples:
+      - name: Remove IP rule
+        text: >
+            az webpubsub network-rule ip-rule remove -n MyWebPubSub -g MyResourceGroup --ip-rule value="10.0.0.24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"
+"""
+
 helps['webpubsub hub show'] = """
     type: command
     short-summary: Show hub settings for WebPubSub Service.
@@ -168,7 +231,7 @@ helps['webpubsub hub delete'] = """
 
 helps['webpubsub hub create'] = """
     type: command
-    short-summary: Create hub settings for WebPubSub Service.
+    short-summary: Create hub settings for WebPubSub Service or Web PubSub for Socket.IO in Serverless Mode.
     examples:
       - name: Create a hub setting with two event handler settings
         text: >
@@ -180,7 +243,7 @@ helps['webpubsub hub create'] = """
 
 helps['webpubsub hub update'] = """
     type: command
-    short-summary: Update hub settings for WebPubSub Service.
+    short-summary: Update hub settings for WebPubSub Service or Web PubSub for Socket.IO in Serverless Mode.
     examples:
       - name: Update event handler settings of a hub
         text: >
@@ -188,6 +251,9 @@ helps['webpubsub hub update'] = """
       - name: Update to allow anonymous connection
         text: >
             az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --allow-anonymous true
+      - name: Update to web socket keep alive interval in seconds (default is 20 seconds, minimum is 1, maximum is 120)
+        text: >
+            az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --websocket-keepalive 30
 """
 
 helps['webpubsub client start'] = """
@@ -278,6 +344,34 @@ examples:
         az webpubsub replica show --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
 """
 
+helps['webpubsub replica start'] = """
+type: command
+short-summary: Start a replica of WebPubSub Service.
+examples:
+  - name: Start a replica
+    text: >
+        az webpubsub replica start --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica stop'] = """
+type: command
+short-summary: Stop a replica of WebPubSub Service.
+examples:
+  - name: Stop a replica
+    text: >
+        az webpubsub replica stop --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica restart'] = """
+type: command
+short-summary: Restart a replica of WebPubSub Service.
+examples:
+  - name: Restart a replica
+    text: >
+        az webpubsub replica restart --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+
 helps['webpubsub replica delete'] = """
 type: command
 short-summary: Delete a replica of WebPubSub Service.
@@ -303,4 +397,118 @@ examples:
   - name: Get the detail of a replica
     text: >
         az webpubsub replica create --sku Premium_P1 -l eastus --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica update'] = """
+type: command
+short-summary: Update a replica of Webpubsub Service.
+examples:
+  - name: Enable or disable region endpoint for the replica of WebPubSub Service
+    text: >
+        az webpubsub replica update --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup --region-endpoint-enabled true
+  - name: Update the unit count of the replica of WebPubSub Service
+    text: >
+        az webpubsub replica update --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup --unit-count 2
+"""
+
+helps['webpubsub custom-certificate list'] = """
+type: command
+short-summary: List custom certificates of WebPubSub Service.
+examples:
+  - name: List custom certificates
+    text: >
+        az webpubsub custom-certificate list --webpubsub-name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub custom-certificate show'] = """
+type: command
+short-summary: Show the detail of a custom certificate of WebPubSub Service.
+examples:
+  - name: Show custom certificate
+    text: >
+        az webpubsub custom-certificate show --webpubsub-name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+"""
+
+helps['webpubsub custom-certificate create'] = """
+type: command
+short-summary: Create a custom certificate of WebPubSub Service.
+examples:
+  - name: Create a custom certificate
+    text: >
+        az webpubsub custom-certificate create --webpubsub-name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate --key-vault-base-uri https://myvault.vault.azure.net/ --key-vault-secret-name MySecret --key-vault-secret-version 8d35338681be4cf09b97e899cb7179b8
+"""
+
+helps['webpubsub custom-certificate delete'] = """
+type: command
+short-summary: Delete a custom certificate of WebPubSub Service.
+examples:
+  - name: Delete a custom certificate
+    text: >
+        az webpubsub custom-certificate delete --webpubsub-name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+"""
+
+helps['webpubsub custom-domain create'] = """
+type: command
+short-summary: Create a custom domain of WebPubSub Service.
+examples:
+  - name: Create a custom domain
+    text: >
+        az webpubsub custom-domain create --webpubsub-name MyWebPubSub -g MyResourceGroup --name MyDomain --domain-name MyDomain.com --certificate-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/certificates/MyCertificate
+"""
+
+helps['webpubsub custom-domain delete'] = """
+type: command
+short-summary: Delete a custom domain of WebPubSub Service.
+examples:
+  - name: Delete a custom domain
+    text: >
+        az webpubsub custom-domain delete --webpubsub-name MyWebPubSub -g MyResourceGroup --name MyDomain
+"""
+
+helps['webpubsub custom-domain list'] = """
+type: command
+short-summary: List custom domains of WebPubSub Service.
+examples:
+  - name: List custom domains
+    text: >
+        az webpubsub custom-domain list --webpubsub-name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub custom-domain show'] = """
+type: command
+short-summary: Show the detail of a custom domain of WebPubSub Service.
+examples:
+  - name: Show custom domain
+    text: >
+        az webpubsub custom-domain show --webpubsub-name MyWebPubSub -g MyResourceGroup --name MyDomain
+"""
+
+helps['webpubsub identity assign'] = """
+type: command
+short-summary: Assign managed identity for WebPubSub Service.
+examples:
+  - name: Assign system assigned identity.
+    text: >
+        az webpubsub identity assign --identity [system] -n MyWebPubSub -g MyResourceGroup
+  - name: Assign user assigned identity.
+    text: >
+        az webpubsub identity assign --identity MyManagedIdentityId -n MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub identity remove'] = """
+type: command
+short-summary: Remove managed identity for WebPubSub Service.
+examples:
+  - name: Remove managed identity.
+    text: >
+        az webpubsub identity remove -n MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub identity show'] = """
+type: command
+short-summary: Show managed identity for WebPubSub Service.
+examples:
+  - name: Show managed identity.
+    text: >
+        az webpubsub identity show -n MyWebPubSub -g MyResourceGroup
 """

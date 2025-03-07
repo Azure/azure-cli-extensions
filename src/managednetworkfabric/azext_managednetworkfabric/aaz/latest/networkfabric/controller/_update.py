@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -55,7 +55,6 @@ class Update(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -201,7 +200,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -388,7 +387,7 @@ class _UpdateHelper:
     def _build_schema_express_route_connection_information_update(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("expressRouteAuthorizationKey", AAZStrType, ".express_route_authorization_key", typ_kwargs={"flags": {"required": True, "secret": True}})
+        _builder.set_prop("expressRouteAuthorizationKey", AAZStrType, ".express_route_authorization_key", typ_kwargs={"flags": {"secret": True}})
         _builder.set_prop("expressRouteCircuitId", AAZStrType, ".express_route_circuit_id", typ_kwargs={"flags": {"required": True}})
 
     _schema_controller_services_read = None
@@ -435,7 +434,7 @@ class _UpdateHelper:
         express_route_connection_information_read = _schema_express_route_connection_information_read
         express_route_connection_information_read.express_route_authorization_key = AAZStrType(
             serialized_name="expressRouteAuthorizationKey",
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         express_route_connection_information_read.express_route_circuit_id = AAZStrType(
             serialized_name="expressRouteCircuitId",

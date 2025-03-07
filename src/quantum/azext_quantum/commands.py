@@ -53,10 +53,7 @@ def transform_job(result):
 
 
 def transform_jobs(results):
-    def creation(job):
-        return job['creationTime']
-
-    return [transform_job(job) for job in sorted(results, key=creation, reverse=True)]
+    return [transform_job(job) for job in results]
 
 
 def transform_offerings(offerings):
@@ -182,6 +179,9 @@ def load_command_table(self, _):
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
         w.command('quotas', 'quotas', validator=validate_workspace_info)
+        w.command('keys list', 'list_keys')
+        w.command('keys regenerate', 'regenerate_keys')
+        w.command('update', 'enable_keys')
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)

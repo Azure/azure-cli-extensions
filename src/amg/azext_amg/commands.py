@@ -5,19 +5,17 @@
 
 # pylint: disable=line-too-long,too-many-statements
 
-from ._validators import process_grafana_create_namespace
-
 
 def load_command_table(self, _):
 
     with self.command_group('grafana') as g:
-        g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
-        g.custom_command('delete', 'delete_grafana', confirmation=True)
-        g.custom_command('list', 'list_grafana')
-        g.custom_show_command('show', 'show_grafana')
-        g.custom_command('update', 'update_grafana')
+        from .custom import GrafanaCreate, GrafanaDelete, GrafanaUpdate
+        self.command_table['grafana create'] = GrafanaCreate(loader=self)
+        self.command_table['grafana delete'] = GrafanaDelete(loader=self)
+        self.command_table['grafana update'] = GrafanaUpdate(loader=self)
         g.custom_command('backup', 'backup_grafana', is_preview=True)
         g.custom_command('restore', 'restore_grafana', is_preview=True)
+        g.custom_command('migrate', 'migrate_grafana', is_preview=True)
 
     with self.command_group('grafana dashboard') as g:
         g.custom_command('create', 'create_dashboard')
@@ -72,3 +70,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_service_account_token')
         g.custom_command('list', 'list_service_account_tokens')
         g.custom_command('delete', 'delete_service_account_token')
+
+    with self.command_group('grafana integrations monitor') as g:
+        g.custom_command('add', 'link_monitor', is_preview=True)
+        g.custom_command('list', 'list_monitors', is_preview=True)
+        g.custom_command('delete', 'unlink_monitor', is_preview=True)

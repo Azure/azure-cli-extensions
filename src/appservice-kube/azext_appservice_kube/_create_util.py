@@ -47,4 +47,4 @@ def generate_default_app_service_plan_name(webapp_name):
     random_uuid = str(uuid.uuid4().hex)
     webapp_name = webapp_name[:222]  # max length for app service plan name is 260
 
-    return '{}_plan_{}'.format(webapp_name, random_uuid)
+    return f'{webapp_name}_plan_{random_uuid}'

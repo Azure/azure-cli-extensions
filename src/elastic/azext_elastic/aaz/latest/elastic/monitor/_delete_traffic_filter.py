@@ -22,9 +22,9 @@ class DeleteTrafficFilter(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/deletetrafficfilter", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/deletetrafficfilter", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class DeleteTrafficFilter(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -123,7 +126,7 @@ class DeleteTrafficFilter(AAZCommand):
                     "rulesetId", self.ctx.args.ruleset_id,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }

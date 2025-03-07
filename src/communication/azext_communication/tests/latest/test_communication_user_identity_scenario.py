@@ -19,10 +19,9 @@ class CommunicationIdentityScenarios(ScenarioTest):
 
     def __init__(self, method_name):
         super().__init__(method_name, recording_processors=[
-            URIIdentityReplacer(), 
+            URIIdentityReplacer(),
             BodyReplacerProcessor(keys=["id", "token"])
         ])
-
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -32,7 +31,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
         assert res is not None
         assert res['properties']['id'] == res['rawId']
 
-
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_delete_user(self, communication_resource_info):
@@ -40,7 +38,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
         res = self.cmd('az communication user-identity user create').get_output_in_json()
         user_id = res['properties']['id']
 
-        self.kwargs.update({ 'user_id': user_id })
+        self.kwargs.update({'user_id': user_id})
         self.cmd('az communication user-identity user delete --user {user_id} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -55,7 +53,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token_with_id(self, communication_resource_info):
-        
+
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
@@ -64,7 +62,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
         val = self.cmd(
             'az communication user-identity issue-access-token --scope chat --userid {id}').get_output_in_json()
         self.assertIsNotNone(val['token'])
-    
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -74,7 +71,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
         val = self.cmd(
             'az communication user-identity issue-access-token --scope voip chat').get_output_in_json()
         self.assertIsNotNone(val['token'])
-        
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -88,7 +84,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_token_issue_with_id(self, communication_resource_info):
-        
+
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
@@ -97,7 +93,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
         val = self.cmd(
             'az communication user-identity token issue --scope chat --user {id}').get_output_in_json()
         self.assertIsNotNone(val['token'])
-    
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -107,7 +102,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
         val = self.cmd(
             'az communication user-identity token issue --scope voip chat').get_output_in_json()
         self.assertIsNotNone(val['token'])
-        
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')

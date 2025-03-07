@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2025-02-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -152,10 +152,14 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
+            _WaitHelper._build_schema_extended_location_read(_schema_on_200.extended_location)
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -175,14 +179,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            extended_location = cls._schema_on_200.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
             )
 
             properties = cls._schema_on_200.properties
@@ -209,6 +205,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="clusterId",
                 flags={"read_only": True},
             )
+            properties.console_extended_location = AAZObjectType(
+                serialized_name="consoleExtendedLocation",
+            )
+            _WaitHelper._build_schema_extended_location_read(properties.console_extended_location)
             properties.cpu_cores = AAZIntType(
                 serialized_name="cpuCores",
                 flags={"required": True},
@@ -423,6 +423,28 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
+
+    _schema_extended_location_read = None
+
+    @classmethod
+    def _build_schema_extended_location_read(cls, _schema):
+        if cls._schema_extended_location_read is not None:
+            _schema.name = cls._schema_extended_location_read.name
+            _schema.type = cls._schema_extended_location_read.type
+            return
+
+        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
+
+        extended_location_read = _schema_extended_location_read
+        extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_extended_location_read.name
+        _schema.type = cls._schema_extended_location_read.type
 
 
 __all__ = ["Wait"]

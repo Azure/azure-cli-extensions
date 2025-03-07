@@ -22,9 +22,9 @@ class ListSku(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2024-06-01-preview"],
         ]
     }
 
@@ -46,7 +46,7 @@ class ListSku(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="Specify $filter='location eq <location>' to filter on location.",
+            help="Specify `$filter='location eq <location>'` to filter on location.",
         )
         return cls._args_schema
 
@@ -110,7 +110,7 @@ class ListSku(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }

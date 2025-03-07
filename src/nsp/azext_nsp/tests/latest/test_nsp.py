@@ -83,6 +83,7 @@ class NspScenario(ScenarioTest):
             'nsp_accessrule_name': 'TestNspAccessRule_nsp',
             'sms_accessrule_name': 'TestNspAccessRule_sms',
             'email_accessrule_name': 'TestNspAccessRule_email',
+            'servicetag_accessrule_name': 'TestNspAccessRule_servicetag',
             'sub': self.get_subscription_id()
         })
 
@@ -114,6 +115,11 @@ class NspScenario(ScenarioTest):
         # SMS based access rule
         self.cmd('az network perimeter profile access-rule create --name {sms_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --phone-numbers "[\'+919898989898\', \'+929898989898\']" --direction "Outbound"')
 
+        # ServiceTag based access rule
+        self.cmd('az network perimeter profile access-rule create --name {servicetag_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --service-tags  [MicrosoftPublicIPSpace]', checks=[
+            self.check('properties.serviceTags', "['MicrosoftPublicIPSpace']")
+        ])
+        
     @ResourceGroupPreparer(name_prefix='test_nsp_association_crud', location='eastus2euap')
     def test_nsp_association_crud(self, resource_group):
 
@@ -121,7 +127,7 @@ class NspScenario(ScenarioTest):
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': 'kvclinsp17',
+            'resource_name': 'kvclinsp18',
             'sub': self.get_subscription_id()
         })
 
@@ -193,3 +199,36 @@ class NspScenario(ScenarioTest):
 
         # delete link reference
         self.cmd('az network perimeter link-reference delete --perimeter-name {nsp2_name} --resource-group {rg} --name {ref2_name} --yes')
+    
+    @ResourceGroupPreparer(name_prefix='test_nsp_logging_configuration_crud', location='eastus2euap')
+    def test_nsp_logging_configuration_crud(self, resource_group):
+        self.kwargs.update({
+            'nsp_name': 'TestNetworkSecurityPerimeter',
+            'logging_config_name': 'instance'
+        })
+
+        # Create NSP
+        self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
+
+        # Create logging configuration
+        self.cmd('network perimeter logging-configuration create --perimeter-name {nsp_name} --resource-group {rg} --enabled-log-categories "[\'NspPublicInboundPerimeterRulesDenied\']"')
+
+        # Show logging configuration and verify the enabled log categories
+        self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
+            self.check('properties.enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\']")
+        ])
+
+        # Update logging configuration
+        self.cmd('network perimeter logging-configuration update --name {logging_config_name} --perimeter-name {nsp_name} --resource-group {rg} --enabled-log-categories "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']"')
+
+        # Show logging configuration and verify the updated enabled log categories
+        self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
+            self.check('properties.enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']")
+        ])
+
+        # Delete logging configuration
+        self.cmd('network perimeter logging-configuration delete --perimeter-name {nsp_name} --resource-group {rg} --yes')
+
+        # Verify the logging configuration is deleted
+        self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', expect_failure=True)
+

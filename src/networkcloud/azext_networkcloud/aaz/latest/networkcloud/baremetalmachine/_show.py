@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided bare metal machine.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2025-02-01"],
         ]
     }
 
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -157,6 +156,9 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -229,9 +231,11 @@ class Show(AAZCommand):
             )
             properties.hardware_inventory = AAZObjectType(
                 serialized_name="hardwareInventory",
+                flags={"read_only": True},
             )
             properties.hardware_validation_status = AAZObjectType(
                 serialized_name="hardwareValidationStatus",
+                flags={"read_only": True},
             )
             properties.hybrid_aks_clusters_associated_ids = AAZListType(
                 serialized_name="hybridAksClustersAssociatedIds",
@@ -244,6 +248,9 @@ class Show(AAZCommand):
             properties.kubernetes_version = AAZStrType(
                 serialized_name="kubernetesVersion",
                 flags={"read_only": True},
+            )
+            properties.machine_cluster_version = AAZStrType(
+                serialized_name="machineClusterVersion",
             )
             properties.machine_details = AAZStrType(
                 serialized_name="machineDetails",
@@ -295,6 +302,11 @@ class Show(AAZCommand):
             )
             properties.runtime_protection_status = AAZObjectType(
                 serialized_name="runtimeProtectionStatus",
+                flags={"read_only": True},
+            )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
             )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
@@ -358,6 +370,7 @@ class Show(AAZCommand):
             _element = cls._schema_on_200.properties.hardware_inventory.nics.Element
             _element.lldp_neighbor = AAZObjectType(
                 serialized_name="lldpNeighbor",
+                flags={"read_only": True},
             )
             _element.mac_address = AAZStrType(
                 serialized_name="macAddress",
@@ -419,6 +432,45 @@ class Show(AAZCommand):
             )
             runtime_protection_status.scan_started_time = AAZStrType(
                 serialized_name="scanStartedTime",
+                flags={"read_only": True},
+            )
+
+            secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.secret_rotation_status.Element
+            _element.expire_period_days = AAZIntType(
+                serialized_name="expirePeriodDays",
+                flags={"read_only": True},
+            )
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.rotation_period_days = AAZIntType(
+                serialized_name="rotationPeriodDays",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
                 flags={"read_only": True},
             )
 

@@ -35,7 +35,7 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
     try {
 
         # Configure NAT so nested guest has external network connectivity
-        # See also https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/nested-virtualization#networking-options
+        # See also https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/nested-virtualization#networking-options
         $switch = Get-VMSwitch -Name Internal -SwitchType Internal -ErrorAction SilentlyContinue | select -first 1
         if (!$switch)
         {
@@ -105,6 +105,9 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
         # Suppress the prompt for "Do you want to allow your PC to be discoverable by other PCs and devices on this network"
         $return = new-item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network\NewNetworkWindowOff" -Force
         "END: Creating nested guest VM" | out-file -FilePath $logFile -Append
+        $return.ExitCode
+        write-host $return.ExitCode
+        return $STATUS_SUCCESS
     }
     catch {
         throw $_

@@ -7,15 +7,24 @@
 # pylint: disable=too-many-lines
 
 import json
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer,
-    ScenarioTest
+    ScenarioTest,
+    live_only
 )
 
 
-
 class CommunicationClientTest(ScenarioTest):
+    
+    def __init__(self, *args, **kwargs):
+        super(CommunicationClientTest, self).__init__(recording_processors=[
+            URIIdentityReplacer(),
+            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy", "identity", "dataLocation"])
+        ], *args, **kwargs)
+        
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_communication', location='eastus')
     def test_communication_identity(self):
         self.kwargs.update({
@@ -41,4 +50,3 @@ class CommunicationClientTest(ScenarioTest):
         self.cmd('communication identity remove -n {resource_name} -g {rg} --system-assigned', checks={
             self.check('type', "UserAssigned")
         })
-

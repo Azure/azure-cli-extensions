@@ -13,12 +13,12 @@ import time
 
 def create_vault_and_policy(test):
     backup_vault = test.cmd('az dataprotection backup-vault create '
-        '-g "{rg}" --vault-name "{vaultName}" -l {location} '
-        '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned '
-        '--soft-delete-state Off',
-        checks=[
-            test.exists('identity.principalId')
-        ]).get_output_in_json()
+                            '-g "{rg}" --vault-name "{vaultName}" -l {location} '
+                            '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned '
+                            '--soft-delete-state Off',
+                            checks=[
+                                test.exists('identity.principalId')
+                            ]).get_output_in_json()
 
     # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
     sp_list = []
@@ -78,7 +78,7 @@ class UpdateMSIPermissionsScenarioTest(ScenarioTest):
             "ossDb": "postgres",
             "ossDbId": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres",
             "secretStoreUri": "https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret",
-            "keyVaultId":  "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault"
+            "keyVaultId": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault"
         })
         create_vault_and_policy(test)
         backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
@@ -123,13 +123,13 @@ class UpdateMSIPermissionsScenarioTest(ScenarioTest):
             "backupConfig": backup_config_json
         })
         backup_instance_json = test.cmd('az dataprotection backup-instance initialize '
-                                    '--datasource-id "{aksClusterId}" '
-                                    '--datasource-location "{location}" '
-                                    '--datasource-type "{dataSourceType}" '
-                                    '--policy-id "{policyId}" '
-                                    '--backup-configuration "{backupConfig}" '
-                                    '--friendly-name "{friendlyName}" '
-                                    '--snapshot-resource-group-name "{rg}"').get_output_in_json()
+                                        '--datasource-id "{aksClusterId}" '
+                                        '--datasource-location "{location}" '
+                                        '--datasource-type "{dataSourceType}" '
+                                        '--policy-id "{policyId}" '
+                                        '--backup-configuration "{backupConfig}" '
+                                        '--friendly-name "{friendlyName}" '
+                                        '--snapshot-resource-group-name "{rg}"').get_output_in_json()
         test.kwargs.update({
             "backupInstance": backup_instance_json,
         })

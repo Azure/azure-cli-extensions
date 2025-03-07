@@ -32,7 +32,8 @@ def confluent_organization_create(cmd,
     # PyJWT < 2.0.0 is using `verify` to verify token
     # PyJWT >= 2.0.0 has moved this paramter in options
     # For compatibility, keep two options for now.
-    decode = jwt.decode(token_info['accessToken'], algorithms=['RS256'], verify=False, options={"verify_signature": False})
+    decode = jwt.decode(token_info['accessToken'], algorithms=['RS256'],
+                        verify=False, options={"verify_signature": False})
     body = {}
     body['user_detail'] = {}
     try:
@@ -40,16 +41,18 @@ def confluent_organization_create(cmd,
         body['user_detail']['last_name'] = decode['family_name']
         body['user_detail']['email_address'] = decode['email'] if 'email' in decode else decode['unique_name']
     except KeyError as ex:
-        raise UnauthorizedError(f'Cannot create the organization as CLI cannot get the right value for {str(ex)} from access '
-                                'token.') from ex
+        raise UnauthorizedError('Cannot create the organization as CLI' +
+                                f'cannot get the right value for {str(ex)} from access token.') from ex
 
     # Check owner or contributor role of subscription
     user_object_id = decode['oid']
-    role_assignments = list_role_assignments(cmd, assignee=user_object_id, role='Owner', include_inherited=True, include_groups=True) + \
-        list_role_assignments(cmd, assignee=user_object_id, role='Contributor', include_inherited=True, include_groups=True)
+    role_assignments = list_role_assignments(cmd, assignee=user_object_id, role='Owner',
+                                             include_inherited=True, include_groups=True) + \
+        list_role_assignments(cmd, assignee=user_object_id, role='Contributor',
+                              include_inherited=True, include_groups=True)
     if not role_assignments:
-        raise UnauthorizedError('You must have Owner or Contributor role of the subscription to create an organization.')
-
+        raise UnauthorizedError('You must have Owner or Contributor role of the subscription' +
+                                'to create an organization.')
     body['tags'] = tags
     body['location'] = location
     body['offer_detail'] = {}
@@ -115,7 +118,7 @@ def confluent_offer_detail_show(cmd, publisher_id=None, offer_id=None):
                   'planName': plan['displayName'],
                   'offerId': offer_id,
                   'publisherId': publisher_id,
-                  'termUnits':[{
+                  'termUnits': [{
                       'price': {
                           'currencyCode': item['price']['currencyCode'],
                           'listPrice': item['price']['listPrice']

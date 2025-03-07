@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Move(AAZCommand):
     """Move a hybrid worker to a different group.
-    
-    :example: Move a hybrid runbook worker to a different hybrid runbook worker group
-        az automation hrwg hrw move --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --target-hybrid-runbook-worker-group-name targetHybridWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId
     """
 
     _aaz_info = {
-        "version": "2022-08-08",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}/move", "2022-08-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}/move", "2023-11-01"],
         ]
     }
 
@@ -48,19 +45,31 @@ class Move(AAZCommand):
             options=["--automation-account-name"],
             help="The name of the automation account.",
             required=True,
+            id_part="name",
         )
         _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
             options=["--hybrid-runbook-worker-group-name"],
             help="The hybrid runbook worker group name",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.hybrid_runbook_worker_id = AAZStrArg(
-            options=["--hybrid-runbook-worker-id"],
+            options=["-n", "--name", "--hybrid-runbook-worker-id"],
             help="The hybrid runbook worker id",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "HybridRunbookWorkerMoveParameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.target_hybrid_runbook_worker_group_name = AAZStrArg(
+            options=["--target-hybrid-runbook-worker-group-name"],
+            arg_group="HybridRunbookWorkerMoveParameters",
+            help="Gets or sets the target hybrid runbook worker group.",
         )
         return cls._args_schema
 
@@ -69,11 +78,11 @@ class Move(AAZCommand):
         self.HybridRunbookWorkersMove(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -133,7 +142,7 @@ class Move(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-08",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -155,12 +164,16 @@ class Move(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("hybridRunbookWorkerGroupName", AAZStrType, ".hybrid_runbook_worker_group_name")
+            _builder.set_prop("hybridRunbookWorkerGroupName", AAZStrType, ".target_hybrid_runbook_worker_group_name")
 
             return self.serialize_content(_content_value)
 
         def on_200(self, session):
             pass
+
+
+class _MoveHelper:
+    """Helper class for Move"""
 
 
 __all__ = ["Move"]

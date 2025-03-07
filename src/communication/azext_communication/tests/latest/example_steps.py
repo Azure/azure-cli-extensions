@@ -49,7 +49,7 @@ def step_list(test, rg_2, rg, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /CommunicationService/get/List by subscription
+# EXAMPLE: /CommunicationService/get/List by resource group alternative command
 @try_manual
 def step_list2(test, rg_2, rg, checks=None):
     if checks is None:
@@ -117,4 +117,3 @@ def step_delete(test, rg_2, rg, checks=None):
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
              checks=checks)
-

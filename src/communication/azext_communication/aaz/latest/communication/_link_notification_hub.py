@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class LinkNotificationHub(AAZCommand):
     """Links an Azure Notification Hub to this communication service.
-
-    :example: Create a communication resource
-        az communication link-notification-hub -n ResourceName -g ResourceGroup --resource-id /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/testResource/providers/Microsoft.NotificationHubs/namespaces/my-hub/NotificationHubs/testHub
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices/{}/linknotificationhub", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices/{}/linknotificationhub", "2023-04-01"],
         ]
     }
 
@@ -56,7 +53,6 @@ class LinkNotificationHub(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -140,7 +136,7 @@ class LinkNotificationHub(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

@@ -5,9 +5,10 @@
 import json
 import unittest
 from azure.cli.testsdk import (ScenarioTest)
+from .common.test_utils import get_test_cmd
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ...application_accelerator import (application_accelerator_create as create,
                                         application_accelerator_delete as delete)
 
@@ -24,16 +25,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 free_mock_client = mock.MagicMock()
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 def _get_basic_mock_client(*_):
@@ -87,19 +78,19 @@ class ApplicationAccelerator(unittest.TestCase):
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_not_get_dev_tool_portal)
     def test_asa_acc_create_dev_tool_portal_disable_wait(self):
-        self._execute(create, _get_test_cmd(), None, 'asa', 'rg', False)
+        self._execute(create, get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNotNone(self.created_resource)
         self.assertIsNone(self.dev_tool_portal)
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_enabled_get_dev_tool_portal)
     def test_asa_acc_create_skip_configure_dev_tool_portal_wait(self):
-        self._execute(create, _get_test_cmd(), None, 'asa', 'rg', False)
+        self._execute(create, get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNotNone(self.created_resource)
         self.assertIsNone(self.dev_tool_portal)
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_disabled_get_dev_tool_portal)
     def test_asa_acc_create_configure_dev_tool_portal_wait(self):
-        self._execute(create, _get_test_cmd(), None, 'asa', 'rg', False)
+        self._execute(create, get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNotNone(self.created_resource)
         self.assertIsNotNone(self.dev_tool_portal)
         self.assertEqual(models.DevToolPortalFeatureState.ENABLED,
@@ -107,21 +98,21 @@ class ApplicationAccelerator(unittest.TestCase):
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_not_get_dev_tool_portal)
     def test_asa_acc_delete_dev_tool_portal_disable_wait(self):
-        self._execute(delete, _get_test_cmd(), None, 'asa', 'rg', False)
+        self._execute(delete, get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNone(self.created_resource)
         self.assertIsNone(self.dev_tool_portal)
         self.assertTrue(self.deleted)
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_disabled_get_dev_tool_portal)
     def test_asa_acc_delete_skip_configure_dev_tool_portal_wait(self):
-        self._execute(delete, _get_test_cmd(), None, 'asa', 'rg', False)
+        self._execute(delete, get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNone(self.created_resource)
         self.assertTrue(self.deleted)
         self.assertIsNone(self.dev_tool_portal)
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_enabled_get_dev_tool_portal)
     def test_asa_acc_delete_configure_dev_tool_portal_wait(self):
-        self._execute(delete, _get_test_cmd(), None, 'asa', 'rg', False)
+        self._execute(delete, get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNone(self.created_resource)
         self.assertTrue(self.deleted)
         self.assertIsNotNone(self.dev_tool_portal)

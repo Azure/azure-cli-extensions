@@ -142,7 +142,7 @@ class IdentityRemove(_IdentityRemove):
                         current_assigned_identities.pop(str(identity))
                     else:
                         raise ResourceNotFoundError(
-                            'The following was not found as a managed identity for the current resource: ' + str(identity)
+                            'The following was not found as a managed identity for current resource: ' + str(identity)
                         )
 
         if len(current_assigned_identities) == 0:

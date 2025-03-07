@@ -11,9 +11,10 @@ from azure.cli.testsdk.reverse_dependency import (
 from azure.cli.testsdk.preparers import (
     RoleBasedServicePrincipalPreparer
 )
+from .common.test_utils import get_test_cmd
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer, SpringSubResourceWrapper
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ...api_portal import (api_portal_custom_domain_update, api_portal_custom_domain_unbind)
 
 try:
@@ -96,16 +97,6 @@ class ApiPortalTest(ScenarioTest):
         ])
 
 
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
-
-
 def _get_basic_mock_client(*_):
     return mock.MagicMock()
 
@@ -123,7 +114,7 @@ class ApiPortalUnitTest(unittest.TestCase):
 
     def test_custom_domain(self):
         client = _get_basic_mock_client()
-        api_portal_custom_domain_update(_get_test_cmd(),
+        api_portal_custom_domain_update(get_test_cmd(),
                                         client,
                                         'rg',
                                         'asa',
@@ -145,7 +136,7 @@ class ApiPortalUnitTest(unittest.TestCase):
 
         client = _get_basic_mock_client()
         client.certificates.get = _get_cert
-        api_portal_custom_domain_update(_get_test_cmd(),
+        api_portal_custom_domain_update(get_test_cmd(),
                                         client,
                                         'rg',
                                         'asa',
@@ -166,7 +157,7 @@ class ApiPortalUnitTest(unittest.TestCase):
         client.certificates.get = _get_cert
         self.assertRaises(RuntimeError,
                           api_portal_custom_domain_update,
-                          _get_test_cmd(),
+                          get_test_cmd(),
                           client,
                           'rg',
                           'asa',
@@ -175,7 +166,7 @@ class ApiPortalUnitTest(unittest.TestCase):
 
     def test_custom_domain_unbind(self):
         client = _get_basic_mock_client()
-        api_portal_custom_domain_unbind(_get_test_cmd(),
+        api_portal_custom_domain_unbind(get_test_cmd(),
                                         client,
                                         'rg',
                                         'asa',

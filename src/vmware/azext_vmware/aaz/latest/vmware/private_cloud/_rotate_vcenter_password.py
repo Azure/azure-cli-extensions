@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "vmware private-cloud rotate-vcenter-password",
-    confirmation="Any services connected using these credentials will stop working and may cause you to be locked out of your account.\n\nCheck if you're using your cloudadmin credentials for any connected services like backup and disaster recovery appliances, VMware HCX, or any vRealize suite products. Verify you're not using cloudadmin credentials for connected services before generating a new password.\n\nIf you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://docs.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter\n\nPress Y to confirm no services are using my cloudadmin credentials to connect to vCenter",
+    confirmation="Any services connected using these credentials will stop working and may cause you to be locked out of your account.\n\nCheck if you're using your cloudadmin credentials for any connected services like backup and disaster recovery appliances, VMware HCX, or any vRealize suite products. Verify you're not using cloudadmin credentials for connected services before generating a new password.\n\nIf you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://learn.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter\n\nPress Y to confirm no services are using my cloudadmin credentials to connect to vCenter",
 )
 class RotateVcenterPassword(AAZCommand):
     """Rotate the vCenter password
@@ -23,9 +23,9 @@ class RotateVcenterPassword(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/rotatevcenterpassword", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/rotatevcenterpassword", "2023-09-01"],
         ]
     }
 
@@ -85,7 +85,7 @@ class RotateVcenterPassword(AAZCommand):
                     session,
                     None,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -94,7 +94,7 @@ class RotateVcenterPassword(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -137,7 +137,7 @@ class RotateVcenterPassword(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }

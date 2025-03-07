@@ -3,6 +3,22 @@
 Release History
 ===============
 
+1.0.0b4
+++++++
+* [2024-10-16] Version intended to work with QDK version 1.9.0
+* The Classic QDK is now fully deprecated.  Jobs must be prepared using the Modern QDK or other QIR tools.
+* See https://github.com/Azure/azure-cli-extensions/pull/7987
+
+1.0.0b3
+++++++
+* [2024-04-11] Version intended to work with QDK version 0.29.0
+* Change role assignment for new Workspaces to linked Storage Accounts from Contributor to Storage Account Contributor.
+
+1.0.0b2
+++++++
+* [2024-02-14] Version intended to work with QDK version 0.29.0
+* Add azure quantum connection string/ api key functionalities.
+
 1.0.0b1
 ++++++
 * [2024-02-08] Version intended to work with QDK version 0.29.0

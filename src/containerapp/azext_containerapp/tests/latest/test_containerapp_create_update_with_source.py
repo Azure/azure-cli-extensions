@@ -8,9 +8,10 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
-from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, verify_containerapp_create_exception
+from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, verify_containerapp_create_exception, create_and_verify_containerapp_create_and_update_env_vars
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 
 class ContainerAppCreateTest(ScenarioTest):
     # These tests should have the `@live_only`attribute because they
@@ -35,9 +36,9 @@ class ContainerAppCreateTest(ScenarioTest):
     @live_only()
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_and_image_e2e(self, resource_group):
-       image = "mcr.microsoft.com/dotnet/runtime:7.0"
-       source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
-       create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, image=image, source_path=source_path)
+        image = "mcr.microsoft.com/dotnet/runtime:7.0"
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
+        create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, image=image, source_path=source_path)
 
     @live_only()
     @ResourceGroupPreparer(location="eastus")
@@ -55,27 +56,27 @@ class ContainerAppCreateTest(ScenarioTest):
         verify_containerapp_create_exception(self, resource_group=resource_group, err= err, source_path=source_path, repo=repo)
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_source_and_yaml_e2e(self,resource_group):
+    def test_containerapp_create_source_and_yaml_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         yaml = "./test.yaml"
         err = ("Usage error: --source or --repo cannot be used with --yaml together. Can either deploy from a local directory or provide a yaml file")
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, source_path=source_path, yaml=yaml)
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_repo_and_yaml_e2e(self,resource_group):
+    def test_containerapp_create_repo_and_yaml_e2e(self, resource_group):
         repo = "https://github.com/test/repo"
         yaml = "./test.yaml"
         err = ("Usage error: --source or --repo cannot be used with --yaml together. Can either deploy from a local directory or provide a yaml file")
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, repo = repo, yaml=yaml)
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_repo_and_connected_environment_e2e(self,resource_group):
+    def test_containerapp_create_repo_and_connected_environment_e2e(self, resource_group):
         repo = "https://github.com/test/repo"
         err = ("Usage error: --source or --repo cannot be used with --environment-type connectedEnvironment together. Please use --environment-type managedEnvironment")
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, repo = repo, environment_type="connected")
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_source_and_connected_environment_e2e(self,resource_group):
+    def test_containerapp_create_source_and_connected_environment_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         err = ("Usage error: --source or --repo cannot be used with --environment-type connectedEnvironment together. Please use --environment-type managedEnvironment")
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, source_path=source_path, environment_type="connected")
@@ -88,3 +89,13 @@ class ContainerAppCreateTest(ScenarioTest):
         registry_pass = "test"
         err = ("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --repo")
         verify_containerapp_create_exception(self, resource_group, err=err, repo=repo, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+
+    # We have to use @live_only() here as cloud builder and build resource name is generated randomly
+    # and no matched request could be found for all builder/build ARM requests
+    @live_only()
+    @ResourceGroupPreparer()
+    def test_containerapp_create_and_update_with_env_vars_e2e(self, resource_group):
+        containerapp_name = self.create_random_name(prefix='aca', length=24)
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_source_to_cloud_dotnet"))
+        create_and_verify_containerapp_create_and_update_env_vars(self, resource_group=resource_group, name=containerapp_name, source_path=source_path)
+

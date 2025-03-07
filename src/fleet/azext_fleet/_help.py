@@ -181,10 +181,10 @@ helps['fleet updaterun create'] = """
     parameters:
         - name: --upgrade-type
           type: string
-          short-summary: Specify the upgrade type of members. Acceptable values are 'Full' and 'NodeImageOnly'.
+          short-summary: Specify the upgrade type of members. Acceptable values are 'Full', 'ControlPlaneOnly', and 'NodeImageOnly'.
         - name: --kubernetes-version
           type: string
-          short-summary: Specify the kubernetes version to upgrade member(s) to, when --upgrade-type is set to 'Full'. Acceptable format is x.x.x (eg. 1.2.3).
+          short-summary: Specify the kubernetes version to upgrade member(s) to, when --upgrade-type is set to 'Full' or 'ControlPlaneOnly'. Acceptable format is x.x.x (eg. 1.2.3).
         - name: --stages
           type: string
           short-summary: Path to a JSON file that defines stages to upgrade a fleet. See examples for reference.
@@ -274,7 +274,18 @@ helps['fleet updaterun stop'] = """
     examples:
         - name: Stop an update run.
           text: az fleet updaterun stop -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
+"""
 
+helps['fleet updaterun skip'] = """
+    type: command
+    short-summary: Sets targets to be skipped within an UpdateRun.
+    parameters:
+        - name: --targets
+          type: string array
+          short-summary: Space-separated list of targets to skip.  Targets must be of the form 'targetType:targetName' such as Group:MyGroup. Valid target types are ('Member', 'Group', 'Stage', 'AfterStageWait'). The target type is case-sensitive.
+    examples:
+        - name: Set two targets to be skipped.
+          text: az fleet updaterun skip -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun --targets Group:my-group-name Stage:my-stage-name
 """
 
 helps['fleet updaterun wait'] = """
@@ -328,4 +339,49 @@ helps['fleet updatestrategy wait'] = """
     type: command
     short-summary: Wait for a update strategy resource to reach a desired state.
     long-summary: If an operation on an update strategy was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
+helps['fleet autoupgradeprofile'] = """
+    type: group
+    short-summary: Commands to manage auto upgrade profiles.
+"""
+
+helps['fleet autoupgradeprofile create'] = """
+    type: command
+    short-summary: Creates or updates an auto upgrade profile.
+    examples:
+        - name: Create an auto upgrade profile with channel 'Rapid' and disabled by default.
+          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName -c Rapid --disabled
+        - name: Create an auto upgrade profile with channel 'NodeImage'.
+          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName -c NodeImage
+"""
+
+helps['fleet autoupgradeprofile delete'] = """
+    type: command
+    short-summary: Deletes an auto upgrade profile.
+    examples:
+        - name: Delete an auto upgrade profile.
+          text: az fleet autoupgradeprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName
+"""
+
+helps['fleet autoupgradeprofile show'] = """
+    type: command
+    short-summary: Shows an auto upgrade profile.
+    examples:
+        - name: Show the details of an auto upgrade profile.
+          text: az fleet autoupgradeprofile show -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName
+"""
+
+helps['fleet autoupgradeprofile list'] = """
+    type: command
+    short-summary: Lists all auto upgrade profiles for a given fleet.
+    examples:
+        - name: List auto upgrade profiles of a fleet.
+          text: az fleet autoupgradeprofile list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet autoupgradeprofile wait'] = """
+    type: command
+    short-summary: Wait for an auto upgrade resource to reach a desired state.
+    long-summary: If an operation on an auto upgrade profile was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """

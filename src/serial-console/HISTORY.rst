@@ -1,5 +1,20 @@
 Release History
 ===============
+1.0.0b2
+++++++
+* Changed to 2024 API version, fixes Disable API to track "properties". Essentially return to 2018 format
+
+1.0.0b1
+++++++
+* Migrated to a new authentication flow to enhance overall security
+
+0.1.8
+++++++
+* Changed first message flow, fixed typo
+
+0.1.7
+++++++
+* Preparation for the new websocket authentication mechanism
 
 0.1.6
 ++++++

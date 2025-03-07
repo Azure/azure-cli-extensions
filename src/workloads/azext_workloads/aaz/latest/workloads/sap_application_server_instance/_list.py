@@ -13,21 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-application-server-instance list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List the SAP Application Server Instance resources for a given Virtual Instance for SAP solutions resource.
 
     :example: Get an overview of The App Server Instances in a Virtual instance for SAP solutions (VIS)
-        az workloads sap-application-server-instance list -g <Resource-group-name> --sap-virtual-instance-name <VIS name>
+        az workloads sap-application-server-instance list -g <resource-group-name> --sap-virtual-instance-name <vis-name>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances", "2024-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -51,12 +52,15 @@ class List(AAZCommand):
             options=["--vis-name", "--sap-virtual-instance-name"],
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPApplicationServerInstancesList(ctx=self.ctx)()
+        self.SapApplicationServerInstancesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +76,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SAPApplicationServerInstancesList(AAZHttpOperation):
+    class SapApplicationServerInstancesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -156,7 +160,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -184,24 +190,29 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.errors = AAZObjectType()
-            properties.gateway_port = AAZIntType(
-                serialized_name="gatewayPort",
-                nullable=True,
+            properties.dispatcher_status = AAZStrType(
+                serialized_name="dispatcherStatus",
                 flags={"read_only": True},
             )
-            properties.health = AAZStrType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
+            properties.gateway_port = AAZIntType(
+                serialized_name="gatewayPort",
+                flags={"read_only": True},
+            )
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )
             properties.icm_http_port = AAZIntType(
                 serialized_name="icmHttpPort",
-                nullable=True,
                 flags={"read_only": True},
             )
             properties.icm_https_port = AAZIntType(
                 serialized_name="icmHttpsPort",
-                nullable=True,
                 flags={"read_only": True},
             )
             properties.instance_no = AAZStrType(
@@ -222,12 +233,15 @@ class List(AAZCommand):
             )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )

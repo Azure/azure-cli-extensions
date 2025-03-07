@@ -7,7 +7,6 @@ import os
 import unittest
 import json
 import deepdiff
-import docker
 from unittest.mock import patch
 
 from azext_confcom.security_policy import (
@@ -17,7 +16,12 @@ from azext_confcom.security_policy import (
 )
 import azext_confcom.config as config
 from azext_confcom.custom import acipolicygen_confcom
-from azext_confcom.template_util import case_insensitive_dict_get, extract_confidential_properties, extract_containers_from_text, DockerClient
+from azext_confcom.template_util import (
+    case_insensitive_dict_get,
+    decompose_confidential_properties,
+    extract_containers_from_text,
+    DockerClient,
+)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
@@ -28,41 +32,12 @@ class PolicyGeneratingArm(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "python:3.6.14-slim-buster",
+                    "name": "simple-container",
+                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                     "environmentVariables": [
                         {
                             "name":"PATH",
-                            "value":"/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"LANG",
-                            "value":"C.UTF-8",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"GPG_KEY",
-                            "value":"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_VERSION",
-                            "value":"3.6.14",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_PIP_VERSION",
-                            "value":"21.2.4",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_URL",
-                            "value":"https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_SHA256",
-                            "value":"fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
+                            "value":"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
                             "strategy":"string"
                         }
                     ],
@@ -90,7 +65,7 @@ class PolicyGeneratingArm(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -252,7 +227,6 @@ class PolicyGeneratingArm(unittest.TestCase):
 
         normalized_aci_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
         normalized_aci_arm_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
-
         self.assertEqual(
             deepdiff.DeepDiff(
                 normalized_aci_policy, normalized_aci_arm_policy, ignore_order=True
@@ -723,7 +697,7 @@ class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
         "contentVersion": "1.0.0.0",
         "parameters": {
             "image": {
-            "value": "python:3.6.14-slim-buster"
+            "value": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
             "containername": {
             "value": "simple-container"
@@ -784,7 +758,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the image"
                 },
-                "defaultValue": "python:3.6.14-slim-buster"
+                "defaultValue": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
 
             "port": {
@@ -924,7 +898,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"python:3.6.14-slim-buster"
+            "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
              "imagebase": {
             "type": "string",
@@ -1093,7 +1067,7 @@ class PolicyGeneratingArmContainerConfig(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"python:3.6.14-slim-buster"
+            "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
              "imagebase": {
             "type": "string",
@@ -1280,7 +1254,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/base/nginx:1-cm2.0"
             },
             "containername": {
                 "type": "string",
@@ -1385,22 +1359,21 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
     }
     """
         with DockerClient() as client:
-            # client = docker.from_env()
-            original_image = "alpine:3.16"
+            original_image = "mcr.microsoft.com/cbl-mariner/base/nginx:1-cm2.0"
             try:
                 client.images.remove(original_image)
             except:
                 # do nothing
                 pass
-            regular_image = load_policy_from_arm_template_str(
-                custom_arm_json_default_value, ""
-            )
-            regular_image[0].populate_policy_content_for_all_images()
+        regular_image = load_policy_from_arm_template_str(
+            custom_arm_json_default_value, ""
+        )
+        regular_image[0].populate_policy_content_for_all_images()
             # create and tag same image to the new name to see if docker will error out that the image is not in a remote repo
-            new_repo = "fakerepo.microsoft.com"
-            new_image_name = "azure-functions"
-            new_tag = "fake-tag"
-
+        new_repo = "fakerepo.microsoft.com"
+        new_image_name = "azure-functions"
+        new_tag = "fake-tag"
+        with DockerClient() as client:
             image = client.images.get(original_image)
             try:
                 client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
@@ -1408,8 +1381,6 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 # do nothing
                 pass
             image.tag(new_repo + "/" + new_image_name, tag=new_tag)
-
-            # client.close()
 
         clean_room = load_policy_from_arm_template_str(
             custom_arm_json_default_value, self.parameter_file
@@ -1441,7 +1412,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "alpine:3.16"
+        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
     },
     "resources": [
         {
@@ -1520,7 +1491,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "alpine:3.16"
+        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
     },
     "resources": [
         {
@@ -1612,8 +1583,7 @@ class PolicyDiff(unittest.TestCase):
         cls.aci_policy.populate_policy_content_for_all_images()
         cls.aci_policy2 = load_policy_from_arm_template_str(cls.custom_json2, "")[0]
         cls.aci_policy2.populate_policy_content_for_all_images()
-        container_start = "containers := "
-        cls.containers = json.loads(extract_containers_from_text(cls.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        cls.containers = json.loads(extract_containers_from_text(cls.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT), config.REGO_CONTAINER_START))
 
     def test_policy_diff(self):
         self.aci_policy._existing_cce_policy = self.containers
@@ -1626,7 +1596,7 @@ class PolicyDiff(unittest.TestCase):
         is_valid, diff = self.aci_policy2.validate_cce_policy()
         self.assertFalse(is_valid)
         expected_diff = {
-            "alpine:3.16": {
+            "aci-test": {
                 "values_changed": {
                     "mounts": [
                         {
@@ -1652,7 +1622,7 @@ class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -1820,9 +1790,9 @@ class MultiplePolicyTemplate(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "alpine:3.16",
+        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0",
         "container2name": "aci-test2",
-        "container2image": "python:3.6.14-slim-buster"
+        "container2image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
     },
     "resources": [
         {
@@ -1949,6 +1919,97 @@ class MultiplePolicyTemplate(unittest.TestCase):
             }
         },
         {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2023-05-01",
+            "name": "secret-volume-demo",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "confidentialComputeProperties": {
+                    "isolationType": "SevSnp",
+                    "ccePolicy": ""
+                },
+                "containers": [
+                    {
+                        "name": "aci-test-1",
+                        "properties": {
+                            "image": "[variables('container1image')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "PATH",
+                                    "secureValue": "/customized/path/value"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "aci-test-2",
+                        "properties": {
+                            "image": "[variables('container1image')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "PATH",
+                                    "secureValue": "/customized/different/path/value"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "aci-test-3",
+                        "properties": {
+                            "image": "[variables('container1image')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "PATH",
+                                    "secureValue": "/customized/different/path/value2"
+                                },
+                                {
+                                    "name": "VERSION",
+                                    "value": "1.0"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "osType": "Linux",
+                "ipAddress": {
+                    "type": "Public",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": "80"
+                        }
+                    ]
+                },
+                "volumes": [
+                    {
+                        "name": "azurefile",
+                        "azureFile": {
+                            "key1": "key-3",
+                            "key2": "key-4"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "type": "Microsoft.Compute/disks",
             "apiVersion": "2018-06-01",
             "name": "my-vm-datadisk1",
@@ -1976,18 +2037,31 @@ class MultiplePolicyTemplate(unittest.TestCase):
         temp_policies = load_policy_from_arm_template_str(cls.custom_json, "")
         cls.aci_policy = temp_policies[0]
         cls.aci_policy2 = temp_policies[1]
-        cls.aci_policy.populate_policy_content_for_all_images()
-        cls.aci_policy2.populate_policy_content_for_all_images()
+        cls.aci_policy3 = temp_policies[2]
+        cls.aci_policy.populate_policy_content_for_all_images(faster_hashing=True)
+        cls.aci_policy2.populate_policy_content_for_all_images(faster_hashing=True)
+        cls.aci_policy3.populate_policy_content_for_all_images(faster_hashing=True)
 
     def test_multiple_policies(self):
-        container_start = "containers := "
-        policy2_containers = json.loads(extract_containers_from_text(self.aci_policy2.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        policy2_containers = json.loads(extract_containers_from_text(self.aci_policy2.get_serialized_output(OutputType.PRETTY_PRINT), config.REGO_CONTAINER_START))
 
         self.aci_policy._existing_cce_policy = policy2_containers
         is_valid, diff = self.aci_policy.validate_cce_policy()
         self.assertFalse(is_valid)
         # just check to make sure the containers in both policies are different
-        expected_diff = {"alpine:3.16": "alpine:3.16 not found in policy"}
+        expected_diff = {"aci-test": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 not found in policy"}
+        self.assertEqual(diff, expected_diff)
+
+    def test_multiple_diffs(self):
+        container_start = "containers := "
+        policy3_containers = json.loads(extract_containers_from_text(self.aci_policy3.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+
+        self.aci_policy3._existing_cce_policy = policy3_containers
+        is_valid, diff = self.aci_policy3.validate_cce_policy()
+
+        self.assertTrue(is_valid)
+        # just check to make sure the containers in both policies are different
+        expected_diff = {}
         self.assertEqual(diff, expected_diff)
 
 
@@ -2012,7 +2086,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -2092,9 +2166,9 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                 ],
                 "initContainers": [
                     {
-                        "name": "init-container",
+                        "name": "init-container-python",
                         "properties": {
-                            "image": "python:3.6.14-slim-buster",
+                            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                             "environmentVariables": [
                                 {
                                     "name":"PATH",
@@ -2197,7 +2271,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -2322,6 +2396,149 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
         self.assertFalse(stdio_access)
 
 
+class PolicyGeneratingOmitId(unittest.TestCase):
+
+    custom_arm_json_default_value = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+
+
+        "parameters": {
+            "containergroupname": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"simple-container-group"
+            },
+            "image": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            },
+            "containername": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container"
+                },
+                "defaultValue":"simple-container"
+            },
+
+            "port": {
+                "type": "string",
+                "metadata": {
+                    "description": "Port to open on the container and the public IP address."
+                },
+                "defaultValue": "8080"
+            },
+            "cpuCores": {
+                "type": "string",
+                "metadata": {
+                    "description": "The number of CPU cores to allocate to the container."
+                },
+                "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+                "type": "string",
+                "metadata": {
+                    "description": "The amount of memory to allocate to the container in gigabytes."
+                },
+                "defaultValue": "1.5"
+            },
+            "location": {
+                "type": "string",
+                "defaultValue": "[resourceGroup().location]",
+                "metadata": {
+                    "description": "Location for all resources."
+                }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2023-05-01",
+            "location": "[parameters('location')]",
+
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+                    "properties": {
+                    "image": "[parameters('image')]",
+                    "environmentVariables": [
+                        {
+                        "name": "PORT",
+                        "value": "80"
+                        }
+                    ],
+
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "command": [
+                        "/bin/bash",
+                        "-c",
+                        "while sleep 5; do cat /mnt/input/access.log; done"
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+                    }
+                }
+                ],
+
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.aci_arm_policy = load_policy_from_arm_template_str(
+            cls.custom_arm_json_default_value, ""
+        )[0]
+        cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+    def test_arm_template_omit_id(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False, omit_id=True
+            )
+        )
+
+        self.assertTrue(config.POLICY_FIELD_CONTAINERS_ID not in regular_image_json[0])
+
+
 class PolicyGeneratingAllowElevated(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -2343,7 +2560,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -2478,7 +2695,7 @@ class PrintExistingPolicy(unittest.TestCase):
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
             "contentVersion": "1.0.0.0",
             "variables": {
-                "image": "python:3.6.14-slim-buster"
+                "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
 
 
@@ -2618,7 +2835,7 @@ class PrintExistingPolicy(unittest.TestCase):
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "variables": {
-    "image": "python:3.6.14-slim-buster"
+    "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
   },
   "parameters": {
     "containergroupname": {
@@ -2756,14 +2973,11 @@ class PrintExistingPolicy(unittest.TestCase):
             f.write(template2)
         try:
             with self.assertRaises(SystemExit) as exc_info:
-                acipolicygen_confcom(None, "test_template.json", None, None, None, None, print_existing_policy=True)
+                acipolicygen_confcom(None, "test_template.json", None, None, None, None, None, print_existing_policy=True)
 
             self.assertEqual(exc_info.exception.code, 1)
 
-            with self.assertRaises(SystemExit) as exc_info:
-                acipolicygen_confcom(None, "test_template2.json", None, None, None, None, print_existing_policy=True)
-
-            self.assertEqual(exc_info.exception.code, 0)
+            acipolicygen_confcom(None, "test_template2.json", None, None, None, None, None, print_existing_policy=True)
         finally:
             # delete test file
             os.remove("test_template.json")
@@ -2776,41 +2990,12 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "python:3.6.14-slim-buster",
+                    "name": "simple-container",
+                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                     "environmentVariables": [
                         {
                             "name":"PATH",
                             "value":"/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"LANG",
-                            "value":"C.UTF-8",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"GPG_KEY",
-                            "value":"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_VERSION",
-                            "value":"3.6.14",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_PIP_VERSION",
-                            "value":"21.2.4",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_URL",
-                            "value":"https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_SHA256",
-                            "value":"fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
                             "strategy":"string"
                         },
                         {
@@ -2832,7 +3017,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -2950,7 +3135,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3066,7 +3251,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3200,7 +3385,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3376,7 +3561,6 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         normalized_aci_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
         normalized_aci_arm_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
-
         self.assertEqual(
             deepdiff.DeepDiff(
                 normalized_aci_policy, normalized_aci_arm_policy, ignore_order=True
@@ -3456,7 +3640,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -3520,6 +3704,11 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                         "port": "[parameters('port')]"
                         }
                     ],
+                    "configMap": {
+                        "keyValuePairs": {
+                            "key1": "value1"
+                        }
+                    },
                     "command": [
                         "/bin/bash",
                         "-c",
@@ -3579,7 +3768,18 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(env_var, "PORT=parameters('abc')")
-        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
+        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0")
+
+    def test_arm_template_config_map_sidecar(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        mount_locations = list(map(lambda x: x[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] ,regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]))
+
+        self.assertTrue(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION in mount_locations)
 
 
 class PolicyGeneratingSecurityContext(unittest.TestCase):
@@ -3588,7 +3788,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3640,7 +3840,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "resources": [
             {
             "name": "[parameters('containergroupname')]",
-            "type": "Microsoft.ContainerInstance/containerGroups",
+            "type": "Microsoft.ContainerInstance/containerGroupProfiles",
             "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
@@ -3729,7 +3929,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3880,7 +4080,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4027,7 +4227,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4199,8 +4399,8 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         expected_user_json = json.loads("""{
             "user_idname":
             {
-                "pattern": "",
-                "strategy": "any"
+                "pattern": "nonroot",
+                "strategy": "name"
             },
             "group_idnames": [
                 {
@@ -4315,7 +4515,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4465,7 +4665,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4780,7 +4980,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         cls.dockerfile_path5 = os.path.join(cls.path, "./Dockerfile5.dockerfile")
         cls.dockerfile_path6 = os.path.join(cls.path, "./Dockerfile6.dockerfile")
 
-        cls.client = docker.from_env()
+        cls.client = DockerClient().get_client()
 
     @classmethod
     def tearDownClass(cls):
@@ -4835,7 +5035,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.assertEqual(deepdiff.DeepDiff(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER], expected_user_json, ignore_order=True), {})
 
     def test_arm_template_security_context_uid_gid(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER 456:123\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456:123\n"]
 
         try:
             with open(self.dockerfile_path, "w") as dockerfile:
@@ -4874,7 +5074,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_gid(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER test_user:123\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user:123\n"]
 
         try:
             with open(self.dockerfile_path2, "w") as dockerfile:
@@ -4913,7 +5113,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_group(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER test_user:test_group\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user:test_group\n"]
         try:
             with open(self.dockerfile_path3, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -4952,7 +5152,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
 
     def test_arm_template_security_context_uid_group(self):
         # valid values are "user", "uid",
-        dockerfile_contents = ["FROM ubuntu\n", "USER 456:test_group\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456:test_group\n"]
         try:
             with open(self.dockerfile_path4, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -4991,7 +5191,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_uid(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER 456\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456\n"]
         try:
             with open(self.dockerfile_path5, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5029,7 +5229,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_dockerfile(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER test_user\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user\n"]
         try:
             with open(self.dockerfile_path6, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5073,7 +5273,7 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -5290,7 +5490,7 @@ class PolicyStopSignal(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "nginx:1.24"
+            "image": "mcr.microsoft.com/azurelinux/base/nginx:1"
         },
 
 
@@ -5417,4 +5617,145 @@ class PolicyStopSignal(unittest.TestCase):
         self.assertTrue(
             3 in
             regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES]
+        )
+
+
+class PolicyZeroSidecar(unittest.TestCase):
+    custom_arm_json = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "variables": {
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+        },
+
+
+        "parameters": {
+            "containergroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            },
+            "defaultValue":"simple-container-group"
+            },
+
+            "containername": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container"
+            },
+            "defaultValue":"simple-container"
+            },
+            "port": {
+            "type": "string",
+            "metadata": {
+                "description": "Port to open on the container and the public IP address."
+            },
+            "defaultValue": "80"
+            },
+            "cpuCores": {
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container."
+            },
+            "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            },
+            "defaultValue": "1.5"
+            },
+            "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "tags": {
+                "Annotate-zero-sidecar": "true"
+            },
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+
+                    "properties": {
+                    "image": "[variables('image')]",
+                    "command": [
+                        "python3"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+
+                }
+                }
+
+                ],
+
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+    aci_policy = None
+
+    @classmethod
+    def setUpClass(cls):
+
+        cls.aci_arm_policy = load_policy_from_arm_template_str(cls.custom_arm_json, "")[
+            0
+        ]
+        cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+    def test_zero_sidecar(self):
+        content = self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.DEFAULT
+            )
+
+        _, fragments = decompose_confidential_properties(
+            content
+        )
+
+        # check for the empty fragments section
+        self.assertEqual(
+            fragments, []
         )

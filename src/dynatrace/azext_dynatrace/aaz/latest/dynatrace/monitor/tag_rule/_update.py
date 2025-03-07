@@ -12,26 +12,29 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule update"
+    "dynatrace monitor tag-rule update",
 )
 class Update(AAZCommand):
-    """Update a tag rule
+    """Update a TagRule
 
     :example: Update tag-rule
         az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2023-04-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2023-04-27"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -55,58 +58,75 @@ class Update(AAZCommand):
         )
         _args_schema.rule_set_name = AAZStrArg(
             options=["-n", "--name", "--rule-set-name"],
-            help="Monitor rule set name",
+            help="Monitor resource name",
             required=True,
             id_part="child_name_1",
         )
 
-        # define Arg Group "Resource"
+        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.log_rules = AAZObjectArg(
             options=["--log-rules"],
-            arg_group="Resource",
+            arg_group="Properties",
             help="Set of rules for sending logs for the Monitor resource.",
+            nullable=True,
         )
         _args_schema.metric_rules = AAZObjectArg(
             options=["--metric-rules"],
-            arg_group="Resource",
+            arg_group="Properties",
             help="Set of rules for sending metrics for the Monitor resource.",
+            nullable=True,
         )
 
         log_rules = cls._args_schema.log_rules
         log_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
+            nullable=True,
         )
         log_rules.send_aad_logs = AAZStrArg(
             options=["send-aad-logs"],
             help="Flag specifying if AAD logs should be sent for the Monitor resource.",
+            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         log_rules.send_activity_logs = AAZStrArg(
             options=["send-activity-logs"],
             help="Flag specifying if activity logs from Azure resources should be sent for the Monitor resource.",
+            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         log_rules.send_subscription_logs = AAZStrArg(
             options=["send-subscription-logs"],
             help="Flag specifying if subscription logs should be sent for the Monitor resource.",
+            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         filtering_tags = cls._args_schema.log_rules.filtering_tags
-        filtering_tags.Element = AAZObjectArg()
+        filtering_tags.Element = AAZObjectArg(
+            nullable=True,
+        )
         cls._build_args_filtering_tag_update(filtering_tags.Element)
 
         metric_rules = cls._args_schema.metric_rules
         metric_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing metrics. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
+            nullable=True,
+        )
+        metric_rules.sending_metrics = AAZStrArg(
+            options=["sending-metrics"],
+            help="Flag specifying if metrics from Azure resources should be sent for the Monitor resource.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         filtering_tags = cls._args_schema.metric_rules.filtering_tags
-        filtering_tags.Element = AAZObjectArg()
+        filtering_tags.Element = AAZObjectArg(
+            nullable=True,
+        )
         cls._build_args_filtering_tag_update(filtering_tags.Element)
         return cls._args_schema
 
@@ -120,21 +140,26 @@ class Update(AAZCommand):
             _schema.value = cls._args_filtering_tag_update.value
             return
 
-        cls._args_filtering_tag_update = AAZObjectArg()
+        cls._args_filtering_tag_update = AAZObjectArg(
+            nullable=True,
+        )
 
         filtering_tag_update = cls._args_filtering_tag_update
         filtering_tag_update.action = AAZStrArg(
             options=["action"],
             help="Valid actions for a filtering tag. Exclusion takes priority over inclusion.",
+            nullable=True,
             enum={"Exclude": "Exclude", "Include": "Include"},
         )
         filtering_tag_update.name = AAZStrArg(
             options=["name"],
             help="The name (also known as the key) of the tag.",
+            nullable=True,
         )
         filtering_tag_update.value = AAZStrArg(
             options=["value"],
             help="The value of the tag.",
+            nullable=True,
         )
 
         _schema.action = cls._args_filtering_tag_update.action
@@ -143,7 +168,12 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TagRulesUpdate(ctx=self.ctx)()
+        self.TagRulesGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        yield self.TagRulesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -154,11 +184,19 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TagRulesUpdate(AAZHttpOperation):
+    class TagRulesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -178,7 +216,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -210,7 +248,110 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2023-04-27",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_tag_rule_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class TagRulesCreateOrUpdate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "monitorName", self.ctx.args.monitor_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "ruleSetName", self.ctx.args.rule_set_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-04-27",
                     required=True,
                 ),
             }
@@ -232,158 +373,211 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
             )
-            _builder.set_prop("logRules", AAZObjectType, ".log_rules")
-            _builder.set_prop("metricRules", AAZObjectType, ".metric_rules")
 
-            log_rules = _builder.get(".logRules")
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_tag_rule_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("logRules", AAZObjectType, ".log_rules")
+                properties.set_prop("metricRules", AAZObjectType, ".metric_rules")
+
+            log_rules = _builder.get(".properties.logRules")
             if log_rules is not None:
                 log_rules.set_prop("filteringTags", AAZListType, ".filtering_tags")
                 log_rules.set_prop("sendAadLogs", AAZStrType, ".send_aad_logs")
                 log_rules.set_prop("sendActivityLogs", AAZStrType, ".send_activity_logs")
                 log_rules.set_prop("sendSubscriptionLogs", AAZStrType, ".send_subscription_logs")
 
-            filtering_tags = _builder.get(".logRules.filteringTags")
+            filtering_tags = _builder.get(".properties.logRules.filteringTags")
             if filtering_tags is not None:
-                _build_schema_filtering_tag_update(filtering_tags.set_elements(AAZObjectType, "."))
+                _UpdateHelper._build_schema_filtering_tag_update(filtering_tags.set_elements(AAZObjectType, "."))
 
-            metric_rules = _builder.get(".metricRules")
+            metric_rules = _builder.get(".properties.metricRules")
             if metric_rules is not None:
                 metric_rules.set_prop("filteringTags", AAZListType, ".filtering_tags")
+                metric_rules.set_prop("sendingMetrics", AAZStrType, ".sending_metrics")
 
-            filtering_tags = _builder.get(".metricRules.filteringTags")
+            filtering_tags = _builder.get(".properties.metricRules.filteringTags")
             if filtering_tags is not None:
-                _build_schema_filtering_tag_update(filtering_tags.set_elements(AAZObjectType, "."))
+                _UpdateHelper._build_schema_filtering_tag_update(filtering_tags.set_elements(AAZObjectType, "."))
 
-            return self.serialize_content(_content_value)
+            return _instance_value
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
             )
 
-        _schema_on_200 = None
 
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+class _UpdateHelper:
+    """Helper class for Update"""
 
-            cls._schema_on_200 = AAZObjectType()
+    @classmethod
+    def _build_schema_filtering_tag_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("action", AAZStrType, ".action")
+        _builder.set_prop("name", AAZStrType, ".name")
+        _builder.set_prop("value", AAZStrType, ".value")
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
+    _schema_filtering_tag_read = None
 
-            properties = cls._schema_on_200.properties
-            properties.log_rules = AAZObjectType(
-                serialized_name="logRules",
-            )
-            properties.metric_rules = AAZObjectType(
-                serialized_name="metricRules",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-            )
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
 
-            log_rules = cls._schema_on_200.properties.log_rules
-            log_rules.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
-            )
-            log_rules.send_aad_logs = AAZStrType(
-                serialized_name="sendAadLogs",
-            )
-            log_rules.send_activity_logs = AAZStrType(
-                serialized_name="sendActivityLogs",
-            )
-            log_rules.send_subscription_logs = AAZStrType(
-                serialized_name="sendSubscriptionLogs",
-            )
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
 
-            filtering_tags = cls._schema_on_200.properties.log_rules.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
 
-            metric_rules = cls._schema_on_200.properties.metric_rules
-            metric_rules.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
-            )
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
-            filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+    _schema_tag_rule_read = None
 
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+    @classmethod
+    def _build_schema_tag_rule_read(cls, _schema):
+        if cls._schema_tag_rule_read is not None:
+            _schema.id = cls._schema_tag_rule_read.id
+            _schema.name = cls._schema_tag_rule_read.name
+            _schema.properties = cls._schema_tag_rule_read.properties
+            _schema.system_data = cls._schema_tag_rule_read.system_data
+            _schema.type = cls._schema_tag_rule_read.type
+            return
 
-            return cls._schema_on_200
+        cls._schema_tag_rule_read = _schema_tag_rule_read = AAZObjectType()
 
+        tag_rule_read = _schema_tag_rule_read
+        tag_rule_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        tag_rule_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        tag_rule_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        tag_rule_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        tag_rule_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-def _build_schema_filtering_tag_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("action", AAZStrType, ".action")
-    _builder.set_prop("name", AAZStrType, ".name")
-    _builder.set_prop("value", AAZStrType, ".value")
+        properties = _schema_tag_rule_read.properties
+        properties.log_rules = AAZObjectType(
+            serialized_name="logRules",
+        )
+        properties.metric_rules = AAZObjectType(
+            serialized_name="metricRules",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
 
+        log_rules = _schema_tag_rule_read.properties.log_rules
+        log_rules.filtering_tags = AAZListType(
+            serialized_name="filteringTags",
+        )
+        log_rules.send_aad_logs = AAZStrType(
+            serialized_name="sendAadLogs",
+        )
+        log_rules.send_activity_logs = AAZStrType(
+            serialized_name="sendActivityLogs",
+        )
+        log_rules.send_subscription_logs = AAZStrType(
+            serialized_name="sendSubscriptionLogs",
+        )
 
-_schema_filtering_tag_read = None
+        filtering_tags = _schema_tag_rule_read.properties.log_rules.filtering_tags
+        filtering_tags.Element = AAZObjectType()
+        cls._build_schema_filtering_tag_read(filtering_tags.Element)
 
+        metric_rules = _schema_tag_rule_read.properties.metric_rules
+        metric_rules.filtering_tags = AAZListType(
+            serialized_name="filteringTags",
+        )
+        metric_rules.sending_metrics = AAZStrType(
+            serialized_name="sendingMetrics",
+        )
 
-def _build_schema_filtering_tag_read(_schema):
-    global _schema_filtering_tag_read
-    if _schema_filtering_tag_read is not None:
-        _schema.action = _schema_filtering_tag_read.action
-        _schema.name = _schema_filtering_tag_read.name
-        _schema.value = _schema_filtering_tag_read.value
-        return
+        filtering_tags = _schema_tag_rule_read.properties.metric_rules.filtering_tags
+        filtering_tags.Element = AAZObjectType()
+        cls._build_schema_filtering_tag_read(filtering_tags.Element)
 
-    _schema_filtering_tag_read = AAZObjectType()
+        system_data = _schema_tag_rule_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    filtering_tag_read = _schema_filtering_tag_read
-    filtering_tag_read.action = AAZStrType()
-    filtering_tag_read.name = AAZStrType()
-    filtering_tag_read.value = AAZStrType()
-
-    _schema.action = _schema_filtering_tag_read.action
-    _schema.name = _schema_filtering_tag_read.name
-    _schema.value = _schema_filtering_tag_read.value
+        _schema.id = cls._schema_tag_rule_read.id
+        _schema.name = cls._schema_tag_rule_read.name
+        _schema.properties = cls._schema_tag_rule_read.properties
+        _schema.system_data = cls._schema_tag_rule_read.system_data
+        _schema.type = cls._schema_tag_rule_read.type
 
 
 __all__ = ["Update"]

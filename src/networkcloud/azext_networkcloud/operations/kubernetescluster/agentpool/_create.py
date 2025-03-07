@@ -22,7 +22,6 @@ logger = get_logger(__name__)
 
 
 class Create(_Create, CustomSshOptions):
-
     """
     This custom code inherits from generate agentpool functions. It is
     integrated into the generated code via:

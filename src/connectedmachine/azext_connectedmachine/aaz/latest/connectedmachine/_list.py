@@ -15,19 +15,20 @@ from azure.cli.core.aaz import *
     "connectedmachine list",
 )
 class List(AAZCommand):
-    """List all the Azure Arc-Enabled Servers in the specified resource group.
+    """List all Azure Arc-Enabled Servers in the specified resource group.
 
     :example: Sample command for list
         az connectedmachine list --resource-group myResourceGroup
-        az connectedmachine list
     """
 
     _aaz_info = {
-        "version": "2023-10-03-preview",
+        "version": "2024-07-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines", "2024-07-31-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -118,7 +119,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-07-31-preview",
                     required=True,
                 ),
             }
@@ -243,6 +244,14 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.extensions = AAZListType()
+            properties.firmware_profile = AAZObjectType(
+                serialized_name="firmwareProfile",
+                flags={"read_only": True},
+            )
+            properties.hardware_profile = AAZObjectType(
+                serialized_name="hardwareProfile",
+                flags={"read_only": True},
+            )
             properties.last_status_change = AAZStrType(
                 serialized_name="lastStatusChange",
                 flags={"read_only": True},
@@ -300,6 +309,10 @@ class List(AAZCommand):
                 serialized_name="serviceStatuses",
             )
             properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.storage_profile = AAZObjectType(
+                serialized_name="storageProfile",
                 flags={"read_only": True},
             )
             properties.vm_id = AAZStrType(
@@ -394,12 +407,50 @@ class List(AAZCommand):
             detected_properties.Element = AAZStrType()
 
             error_details = cls._schema_on_200.value.Element.properties.error_details
-            error_details.Element = AAZObjectType()
+            error_details.Element = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ListHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.value.Element.properties.extensions
             extensions.Element = AAZObjectType()
             _ListHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
+
+            firmware_profile = cls._schema_on_200.value.Element.properties.firmware_profile
+            firmware_profile.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+                flags={"read_only": True},
+            )
+            firmware_profile.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            hardware_profile = cls._schema_on_200.value.Element.properties.hardware_profile
+            hardware_profile.number_of_cpu_sockets = AAZIntType(
+                serialized_name="numberOfCpuSockets",
+                flags={"read_only": True},
+            )
+            hardware_profile.processors = AAZListType(
+                flags={"read_only": True},
+            )
+            hardware_profile.total_physical_memory_in_bytes = AAZIntType(
+                serialized_name="totalPhysicalMemoryInBytes",
+                flags={"read_only": True},
+            )
+
+            processors = cls._schema_on_200.value.Element.properties.hardware_profile.processors
+            processors.Element = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            _element = cls._schema_on_200.value.Element.properties.hardware_profile.processors.Element
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.number_of_cores = AAZIntType(
+                serialized_name="numberOfCores",
+                flags={"read_only": True},
+            )
 
             license_profile = cls._schema_on_200.value.Element.properties.license_profile
             license_profile.esu_profile = AAZObjectType(
@@ -415,7 +466,7 @@ class List(AAZCommand):
             )
             license_profile.product_profile = AAZObjectType(
                 serialized_name="productProfile",
-                flags={"client_flatten": True},
+                flags={"client_flatten": True, "read_only": True},
             )
             license_profile.software_assurance = AAZObjectType(
                 serialized_name="softwareAssurance",
@@ -432,9 +483,11 @@ class List(AAZCommand):
             )
             esu_profile.esu_eligibility = AAZStrType(
                 serialized_name="esuEligibility",
+                flags={"read_only": True},
             )
             esu_profile.esu_key_state = AAZStrType(
                 serialized_name="esuKeyState",
+                flags={"read_only": True},
             )
             esu_profile.esu_keys = AAZListType(
                 serialized_name="esuKeys",
@@ -445,6 +498,7 @@ class List(AAZCommand):
             )
             esu_profile.server_type = AAZStrType(
                 serialized_name="serverType",
+                flags={"read_only": True},
             )
 
             assigned_license = cls._schema_on_200.value.Element.properties.license_profile.esu_profile.assigned_license
@@ -499,6 +553,20 @@ class List(AAZCommand):
             license_details.state = AAZStrType()
             license_details.target = AAZStrType()
             license_details.type = AAZStrType()
+            license_details.volume_license_details = AAZListType(
+                serialized_name="volumeLicenseDetails",
+            )
+
+            volume_license_details = cls._schema_on_200.value.Element.properties.license_profile.esu_profile.assigned_license.properties.license_details.volume_license_details
+            volume_license_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.license_profile.esu_profile.assigned_license.properties.license_details.volume_license_details.Element
+            _element.invoice_id = AAZStrType(
+                serialized_name="invoiceId",
+            )
+            _element.program_year = AAZStrType(
+                serialized_name="programYear",
+            )
 
             tags = cls._schema_on_200.value.Element.properties.license_profile.esu_profile.assigned_license.tags
             tags.Element = AAZStrType()
@@ -507,12 +575,16 @@ class List(AAZCommand):
             esu_keys.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.license_profile.esu_profile.esu_keys.Element
-            _element.license_status = AAZStrType(
+            _element.license_status = AAZIntType(
                 serialized_name="licenseStatus",
             )
             _element.sku = AAZStrType()
 
             product_profile = cls._schema_on_200.value.Element.properties.license_profile.product_profile
+            product_profile.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
             product_profile.billing_start_date = AAZStrType(
                 serialized_name="billingStartDate",
                 flags={"read_only": True},
@@ -525,6 +597,10 @@ class List(AAZCommand):
                 serialized_name="enrollmentDate",
                 flags={"read_only": True},
             )
+            product_profile.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_error_detail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -539,6 +615,10 @@ class List(AAZCommand):
             product_features.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.license_profile.product_profile.product_features.Element
+            _element.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
             _element.billing_start_date = AAZStrType(
                 serialized_name="billingStartDate",
                 flags={"read_only": True},
@@ -551,6 +631,10 @@ class List(AAZCommand):
                 serialized_name="enrollmentDate",
                 flags={"read_only": True},
             )
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_error_detail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -582,9 +666,14 @@ class List(AAZCommand):
             )
 
             _element = cls._schema_on_200.value.Element.properties.network_profile.network_interfaces.Element
+            _element.id = AAZStrType()
             _element.ip_addresses = AAZListType(
                 serialized_name="ipAddresses",
             )
+            _element.mac_address = AAZStrType(
+                serialized_name="macAddress",
+            )
+            _element.name = AAZStrType()
 
             ip_addresses = cls._schema_on_200.value.Element.properties.network_profile.network_interfaces.Element.ip_addresses
             ip_addresses.Element = AAZObjectType(
@@ -640,6 +729,31 @@ class List(AAZCommand):
                 serialized_name="guestConfigurationService",
             )
             _ListHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
+
+            storage_profile = cls._schema_on_200.value.Element.properties.storage_profile
+            storage_profile.disks = AAZListType()
+
+            disks = cls._schema_on_200.value.Element.properties.storage_profile.disks
+            disks.Element = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            _element = cls._schema_on_200.value.Element.properties.storage_profile.disks.Element
+            _element.disk_type = AAZStrType(
+                serialized_name="diskType",
+            )
+            _element.generated_id = AAZStrType(
+                serialized_name="generatedId",
+            )
+            _element.id = AAZStrType()
+            _element.max_size_in_bytes = AAZIntType(
+                serialized_name="maxSizeInBytes",
+            )
+            _element.name = AAZStrType()
+            _element.path = AAZStrType()
+            _element.used_space_in_bytes = AAZIntType(
+                serialized_name="usedSpaceInBytes",
+            )
 
             resources = cls._schema_on_200.value.Element.resources
             resources.Element = AAZObjectType()
@@ -739,7 +853,9 @@ class _ListHelper:
             _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         error_detail_read = _schema_error_detail_read
         error_detail_read.additional_info = AAZListType(
@@ -763,12 +879,17 @@ class _ListHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType()
+        details.Element = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info
@@ -818,7 +939,9 @@ class _ListHelper:
     def _build_schema_patch_settings_read(cls, _schema):
         if cls._schema_patch_settings_read is not None:
             _schema.assessment_mode = cls._schema_patch_settings_read.assessment_mode
+            _schema.enable_hotpatching = cls._schema_patch_settings_read.enable_hotpatching
             _schema.patch_mode = cls._schema_patch_settings_read.patch_mode
+            _schema.status = cls._schema_patch_settings_read.status
             return
 
         cls._schema_patch_settings_read = _schema_patch_settings_read = AAZObjectType()
@@ -827,12 +950,29 @@ class _ListHelper:
         patch_settings_read.assessment_mode = AAZStrType(
             serialized_name="assessmentMode",
         )
+        patch_settings_read.enable_hotpatching = AAZBoolType(
+            serialized_name="enableHotpatching",
+        )
         patch_settings_read.patch_mode = AAZStrType(
             serialized_name="patchMode",
         )
+        patch_settings_read.status = AAZObjectType(
+            flags={"read_only": True},
+        )
+
+        status = _schema_patch_settings_read.status
+        status.error = AAZObjectType(
+            flags={"read_only": True},
+        )
+        cls._build_schema_error_detail_read(status.error)
+        status.hotpatch_enablement_status = AAZStrType(
+            serialized_name="hotpatchEnablementStatus",
+        )
 
         _schema.assessment_mode = cls._schema_patch_settings_read.assessment_mode
+        _schema.enable_hotpatching = cls._schema_patch_settings_read.enable_hotpatching
         _schema.patch_mode = cls._schema_patch_settings_read.patch_mode
+        _schema.status = cls._schema_patch_settings_read.status
 
     _schema_service_status_read = None
 

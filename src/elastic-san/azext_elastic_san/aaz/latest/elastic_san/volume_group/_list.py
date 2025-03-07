@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2024-06-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -221,6 +221,9 @@ class List(AAZCommand):
             properties.encryption = AAZStrType()
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
+            )
+            properties.enforce_data_integrity_check_for_iscsi = AAZBoolType(
+                serialized_name="enforceDataIntegrityCheckForIscsi",
             )
             properties.network_acls = AAZObjectType(
                 serialized_name="networkAcls",

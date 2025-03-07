@@ -7,6 +7,7 @@ import os
 import platform
 import re
 import stat
+import sys
 import tempfile
 from typing import TypeVar
 
@@ -15,6 +16,12 @@ from azext_aks_preview._client_factory import (
     get_mc_snapshots_client,
     get_nodepool_snapshots_client,
 )
+
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_MONITORING_ADDON_NAME
+)
+
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
 from azure.cli.command_modules.acs._validators import extract_comma_separated_string
 from azure.cli.core.azclierror import (
@@ -309,7 +316,7 @@ def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
     return False
 
 
-def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
+def setup_common_safeguards_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
     if (level is not None or version is not None or excludedNamespaces is not None) and mc.safeguards_profile is None:
         mc.safeguards_profile = models.SafeguardsProfile(
             level=level,
@@ -321,3 +328,49 @@ def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: Mana
             excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
 
     return mc
+
+
+def process_message_for_run_command(message):
+    result = message.split("\n")
+    if result[-2] != "[stderr]":
+        raise CLIError("Error: " + result[-2])
+
+    for line in result[2:len(result) - 2]:
+        print(line)
+
+
+def check_is_azure_cli_core_editable_installed():
+    try:
+        editable = os.getenv("AZURE_CLI_CORE_EDITABLE", "false").lower() == "true"
+        if editable:
+            return True
+        for path_item in sys.path:
+            egg_link = os.path.join(path_item, 'azure-cli-core.egg-link')
+            if os.path.isfile(egg_link):
+                os.environ["AZURE_CLI_CORE_EDITABLE"] = "true"
+                return True
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.debug("failed to check if azure-cli-core is installed as editable: %s", ex)
+    return False
+
+
+def check_is_monitoring_addon_enabled(addons, instance):
+    is_monitoring_addon_enabled = False
+    is_monitoring_addon = False
+    try:
+        addon_args = addons.split(',')
+        for addon_arg in addon_args:
+            if addon_arg in ADDONS:
+                addon = ADDONS[addon_arg]
+                if addon == CONST_MONITORING_ADDON_NAME:
+                    is_monitoring_addon = True
+                    break
+        addon_profiles = instance.addon_profiles or {}
+        is_monitoring_addon_enabled = (
+            is_monitoring_addon
+            and CONST_MONITORING_ADDON_NAME in addon_profiles
+            and addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        )
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.debug("failed to check monitoring addon enabled: %s", ex)
+    return is_monitoring_addon_enabled

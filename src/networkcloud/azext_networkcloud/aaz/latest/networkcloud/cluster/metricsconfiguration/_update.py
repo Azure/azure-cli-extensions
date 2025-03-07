@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster metricsconfiguration update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of metrics configuration for the provided cluster, or update the tags associated with it. Properties and tag updates can be done independently.
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations/{}", "2025-02-01"],
         ]
     }
 
@@ -46,6 +45,14 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
             help="The name of the cluster.",
@@ -187,7 +194,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -196,6 +203,12 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -259,6 +272,7 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_cluster_metrics_configuration_read(cls, _schema):
         if cls._schema_cluster_metrics_configuration_read is not None:
+            _schema.etag = cls._schema_cluster_metrics_configuration_read.etag
             _schema.extended_location = cls._schema_cluster_metrics_configuration_read.extended_location
             _schema.id = cls._schema_cluster_metrics_configuration_read.id
             _schema.location = cls._schema_cluster_metrics_configuration_read.location
@@ -272,6 +286,9 @@ class _UpdateHelper:
         cls._schema_cluster_metrics_configuration_read = _schema_cluster_metrics_configuration_read = AAZObjectType()
 
         cluster_metrics_configuration_read = _schema_cluster_metrics_configuration_read
+        cluster_metrics_configuration_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
         cluster_metrics_configuration_read.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
             flags={"required": True},
@@ -359,6 +376,7 @@ class _UpdateHelper:
         tags = _schema_cluster_metrics_configuration_read.tags
         tags.Element = AAZStrType()
 
+        _schema.etag = cls._schema_cluster_metrics_configuration_read.etag
         _schema.extended_location = cls._schema_cluster_metrics_configuration_read.extended_location
         _schema.id = cls._schema_cluster_metrics_configuration_read.id
         _schema.location = cls._schema_cluster_metrics_configuration_read.location

@@ -16,7 +16,7 @@ def step_create(test, checks=None, cache_num=1):
     if test.kwargs.get('no_database'):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
-                 '--location "East US" '
+                 '--location "WEST US 3" '
                  '--sku "EnterpriseFlash_F300" '
                  '--tags tag1="value1" '
                  '--no-database '
@@ -27,14 +27,14 @@ def step_create(test, checks=None, cache_num=1):
             test.cmd('az redisenterprise create '
                         '--cluster-name "{cluster31}" '
                         '--sku "EnterpriseFlash_F300" '
-                        '--location "East US" '
+                        '--location "WEST US 3" '
                         '--tags tag1="value1" '
                         '--no-database '
                         '--resource-group "{rg31}"',
                         checks=checks)
         elif cache_num == 2:
                 test.cmd('az redisenterprise create '
-                     '--location "West US" '
+                     '--location "WEST US 3" '
                      '--cluster-name "{cluster32}" '
                      '--sku "EnterpriseFlash_F300" '
                      '--client-protocol "Encrypted" '
@@ -46,14 +46,40 @@ def step_create(test, checks=None, cache_num=1):
                      '--port 10000 '
                      '--resource-group "{rg32}"',
                 checks=checks)
+    elif test.kwargs.get('access-policy-assignment'):
+        test.cmd('az redisenterprise create '
+                 '--cluster-name "{cluster}" '
+                 '--sku "Balanced_B1" '
+                 '--location "WEST US 3" '
+                 '--tags tag1="value1" '
+                 '--resource-group "{rg}" '
+                 '--high-availability "Disabled" '
+                 '--minimum-tls-version "1.2" '
+                 '--client-protocol "Encrypted" '
+                 '--clustering-policy "EnterpriseCluster" '
+                 '--eviction-policy "NoEviction"',
+                 checks=checks)
+    elif test.kwargs.get('access-key-authentication'):
+        test.cmd('az redisenterprise create '
+                 '--cluster-name "{cluster}" '
+                 '--sku "Balanced_B1" '
+                 '--location "WEST US 3" '
+                 '--tags tag1="value1" '
+                 '--access-keys-auth Disabled '
+                 '--resource-group "{rg}" '
+                 '--minimum-tls-version "1.2" '
+                 '--client-protocol "Encrypted" '
+                 '--clustering-policy "EnterpriseCluster" '
+                 '--eviction-policy "NoEviction"',
+                 checks=checks)
     else:
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
                  '--sku "Enterprise_E20" '
                  '--capacity 4 '
-                 '--location "East US" '
+                 '--location "WEST US 3" '
                  '--tags tag1="value1" '
-                 '--zones "1" "2" "3" '
+                 #'--zones "1" "2" "3" '
                  '--minimum-tls-version "1.2" '
                  '--client-protocol "Encrypted" '
                  '--clustering-policy "EnterpriseCluster" '
@@ -113,6 +139,15 @@ def step_delete(test, checks=None):
                  '--resource-group "{rg}"',
                  checks=checks)
 
+def step_database_update(test, checks=None):
+    if checks is None:
+        checks = []
+    if test.kwargs.get('access-key-authentication'):
+        test.cmd('az redisenterprise database update '
+                 '--cluster-name "{cluster}" '
+                 '--access-keys-auth Enabled '
+                 '--resource-group "{rg}"',
+                 checks=checks)
 
 # EXAMPLE: /Databases/put/RedisEnterpriseDatabasesCreate
 def step_database_create(test, checks=None):
@@ -129,6 +164,16 @@ def step_database_create(test, checks=None):
                 '--port 10000 '
                 '--resource-group "{rg31}"',
         checks=checks)
+    elif test.kwargs.get('access-key-authentication'):
+        test.cmd('az redisenterprise database create '
+                 '--cluster-name "{cluster}" '
+                 '--client-protocol "Plaintext" '
+                 '--clustering-policy "OSSCluster" '
+                 '--eviction-policy "AllKeysLRU" '
+                 '--port 10000 '
+                 '--access-keys-auth Disabled '
+                 '--resource-group "{rg}"',
+                 checks=checks)
     else:
         test.cmd('az redisenterprise database create '
                  '--cluster-name "{cluster}" '
@@ -138,6 +183,38 @@ def step_database_create(test, checks=None):
                  '--port 10000 '
                  '--resource-group "{rg}"',
                  checks=checks)
+                 
+def step_database_access_policy_assignment_create(test, checks=None):
+    if checks is None:
+        checks = []
+    if test.kwargs.get('access-policy-assignment'):
+        test.cmd('az redisenterprise database access-policy-assignment create '
+                 '--cluster-name "{cluster}" '
+                 '--access-policy-assignment-name defaultTestEntraApp1 '
+                 '--access-policy-name default '
+                 '--object-id 6497c918-11ad-41e7-1b0f-7c518a87d0b0 '
+                 '--database-name "default" '
+                 '--resource-group "{rg}"',
+                 checks=checks)
+
+def step_database_access_policy_assignment_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az redisenterprise database access-policy-assignment list '
+             '--cluster-name "{cluster}" '
+             '--database-name "default" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+def step_database_access_policy_assignment_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az redisenterprise database access-policy-assignment delete -y '
+             '--cluster-name "{cluster}" '
+             '--database-name "default" '
+             '--resource-group "{rg}" '
+             '--access-policy-assignment-name defaultTestEntraApp1',
+             checks=checks)
 
 def step_database_force_unlink(test, checks=None):
     if checks is None:

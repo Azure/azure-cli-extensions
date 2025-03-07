@@ -9,6 +9,7 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 class RecoveryPointScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -17,11 +18,16 @@ class RecoveryPointScenarioTest(ScenarioTest):
             'location': 'centraluseuap',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',
-            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
+            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e',
+            'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
+            'crrBackupInstanceName': 'clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052',
         })
 
     @AllowLargeResponse()
     def test_dataprotection_recovery_point_show(test):
+        test.kwargs.update({
+            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
+        })
         recovery_point_list = test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
             test.exists('[0].properties.recoveryPointId')
         ]).get_output_in_json()
@@ -35,6 +41,9 @@ class RecoveryPointScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     def test_dataprotection_recovery_point_list(test):
+        test.kwargs.update({
+            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
+        })
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
             test.greater_than('length([])', 0)
         ])
@@ -51,10 +60,24 @@ class RecoveryPointScenarioTest(ScenarioTest):
 
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--end-time 2023-06-16T01:00:00.0000000Z --start-time 2033-06-16T01:00:00', checks=[
-                    test.is_empty()
-                ])
+                     test.is_empty()
+                 ])
 
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--start-time 0000-13-32T01:00:00', expect_failure=True)
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--end-time 2023-12-31T25:60:00', expect_failure=True)
+
+        test.cmd('az dataprotection recovery-point list -g "{rg}" -v "{crrVaultName}" '
+                 '--backup-instance-name "{crrBackupInstanceName}" --use-secondary-region', checks=[
+                     test.greater_than('length([])', 0)
+                 ])
+
+    @AllowLargeResponse()
+    def test_dataprotection_recovery_point_vaulted_blob(test):
+        test.kwargs.update({
+            'backupInstanceName': 'clitestsavltdonotdelete-clitestsavltdonotdelete-65176b0a-64ad-4247-9866-19204633c0d5'
+        })
+        test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
+            test.greater_than('length([])', 0)
+        ])

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine console delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -24,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2025-02-01"],
         ]
     }
 
@@ -34,7 +33,7 @@ class Delete(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -47,6 +46,14 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.console_name = AAZStrArg(
             options=["-n", "--name", "--console-name"],
             help="The name of the virtual machine console.",
@@ -82,10 +89,6 @@ class Delete(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
-
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
 
     class ConsolesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -164,7 +167,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -173,6 +176,12 @@ class Delete(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
@@ -218,7 +227,9 @@ class _DeleteHelper:
             _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         error_detail_read = _schema_error_detail_read
         error_detail_read.additional_info = AAZListType(
@@ -242,6 +253,9 @@ class _DeleteHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZFreeFormDictType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -267,6 +281,7 @@ class _DeleteHelper:
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
             _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.properties = cls._schema_operation_status_result_read.properties
             _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
@@ -277,14 +292,27 @@ class _DeleteHelper:
         operation_status_result_read = _schema_operation_status_result_read
         operation_status_result_read.end_time = AAZStrType(
             serialized_name="endTime",
+            flags={"read_only": True},
         )
-        operation_status_result_read.error = AAZObjectType()
+        operation_status_result_read.error = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_error_detail_read(operation_status_result_read.error)
-        operation_status_result_read.id = AAZStrType()
-        operation_status_result_read.name = AAZStrType()
-        operation_status_result_read.operations = AAZListType()
+        operation_status_result_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        operation_status_result_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        operation_status_result_read.operations = AAZListType(
+            flags={"read_only": True},
+        )
         operation_status_result_read.percent_complete = AAZFloatType(
             serialized_name="percentComplete",
+            flags={"read_only": True},
+        )
+        operation_status_result_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
         )
         operation_status_result_read.resource_id = AAZStrType(
             serialized_name="resourceId",
@@ -292,6 +320,7 @@ class _DeleteHelper:
         )
         operation_status_result_read.start_time = AAZStrType(
             serialized_name="startTime",
+            flags={"read_only": True},
         )
         operation_status_result_read.status = AAZStrType(
             flags={"required": True},
@@ -301,12 +330,31 @@ class _DeleteHelper:
         operations.Element = AAZObjectType()
         cls._build_schema_operation_status_result_read(operations.Element)
 
+        properties = _schema_operation_status_result_read.properties
+        properties.exit_code = AAZStrType(
+            serialized_name="exitCode",
+            flags={"read_only": True},
+        )
+        properties.output_head = AAZStrType(
+            serialized_name="outputHead",
+            flags={"read_only": True},
+        )
+        properties.result_ref = AAZStrType(
+            serialized_name="resultRef",
+            flags={"read_only": True},
+        )
+        properties.result_url = AAZStrType(
+            serialized_name="resultUrl",
+            flags={"read_only": True},
+        )
+
         _schema.end_time = cls._schema_operation_status_result_read.end_time
         _schema.error = cls._schema_operation_status_result_read.error
         _schema.id = cls._schema_operation_status_result_read.id
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
         _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.properties = cls._schema_operation_status_result_read.properties
         _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status

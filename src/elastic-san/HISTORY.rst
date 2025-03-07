@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.2.0b1
+++++++
+* `az elastic-san create/update`: Support AutoScale, Add `--auto-scale-policy-enforcement`, `--capacity-unit-scale-up-limit-tib`, `--increase-capacity-unit-by-tib`, `--unused-size-tib`
+
+1.1.0
+++++++
+* `az elastic-san volume-group create/update`: Add `--enforce-data-integrity-check-for-iscsi`
 
 1.0.0
 ++++++

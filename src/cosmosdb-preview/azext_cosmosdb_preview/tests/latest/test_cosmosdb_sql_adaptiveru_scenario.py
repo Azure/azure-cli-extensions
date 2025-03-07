@@ -14,17 +14,15 @@ from dateutil import parser
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
 class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_adaptiveru', location='australiaeast')
     def test_cosmosdb_sql_container_adaptiveru(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        # Assumption: There exists a cosmosTest rg with the account adrutest2. This test only creates the database and collection
+
         self.kwargs.update({
-            'rg' : 'cosmosTest',
-            'acc': 'adrutest2',
+            'acc': self.create_random_name(prefix='adru-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'australiaeast',
@@ -32,8 +30,11 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
             'src': '2'
         })
 
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+
         # Create database
-        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')       
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
         # Create container
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk --throughput 18000').get_output_in_json()
@@ -56,7 +57,6 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         # make throughput equal for all partitions
         all_equal_throughput = self.cmd('az cosmosdb sql container redistribute-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --evenly-distribute ').get_output_in_json()
         print(all_equal_throughput)
-        
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_adaptiveru', location='australiaeast')
     def test_cosmosdb_mongodb_collection_adaptiveru(self, resource_group):
@@ -64,8 +64,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg':'cosmosTest',
-            'acc': 'adrutest3',
+            'acc': self.create_random_name(prefix='adru-test', length=15),
             'db_name': db_name,
             'col': col,
             'loc': 'australiaeast',
@@ -75,13 +74,16 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
             'src': '2'
         })
 
+        # Create account
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+
         # Create database
-        self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')       
+        self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
 
         # Create collection
         self.cmd('az cosmosdb mongodb collection create -g {rg} -a {acc} -d {db_name} -n {col} --shard {shard_key} --throughput {throughput}')
 
-        #Lower the throughput
+        # Lower the throughput
         self.cmd('az cosmosdb mongodb collection throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 3000')
 
         # retrieve throughput for all partitions

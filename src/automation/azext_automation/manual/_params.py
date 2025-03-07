@@ -18,8 +18,7 @@ from azure.cli.core.commands.parameters import get_datetime_type
 from azext_automation.action import (
     AddPropertiesParameters, validator_duration
 )
-from azext_automation.vendored_sdks.automation.models import SkuNameEnum, RunbookTypeEnum, WindowsUpdateClasses, \
-    OperatingSystemType
+from azext_automation.vendored_sdks.automation.models import SkuNameEnum, RunbookTypeEnum, OperatingSystemType
 
 
 def load_arguments(self, _):

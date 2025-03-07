@@ -13,22 +13,24 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-central-instance stop",
-    is_preview=True,
 )
 class Stop(AAZCommand):
     """Stops the SAP Central Services Instance.
 
     :example: Stop Central services instance of the SAP system
-        az workloads sap-central-instance stop --sap-virtual-instance-name <VIS Name> -g <Resource-group-name> -n <ResourceName>
+        az workloads sap-central-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name>
 
     :example: Stop Central services instance of the SAP system using the Azure resource ID of the instance
-        az workloads sap-central-instance stop --id <ResourceID>
+        az workloads sap-central-instance stop --id <resource-id>
+
+    :example: Stop Central services instance of the SAP system and its underlying Virtual Machine
+        az workloads sap-central-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name> --deallocate-vm
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}/stop", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}/stop", "2024-09-01"],
         ]
     }
 
@@ -54,6 +56,9 @@ class Stop(AAZCommand):
             help="Central Services Instance resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,22 +68,25 @@ class Stop(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
 
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.soft_stop_timeout_seconds = AAZIntArg(
-            options=["--soft-stop-timeout-seconds"],
+        _args_schema.deallocate_vm = AAZBoolArg(
+            options=["--deallocate-vm"],
             arg_group="Body",
-            help="This parameter defines how long (in seconds) the soft shutdown waits until the RFC/HTTP clients no longer consider the server for calls with load balancing. Value 0 means that the kernel does not wait, but goes directly into the next shutdown state, i.e. hard stop.",
-            default=0,
+            help="The boolean value indicates whether to Stop and deallocate the virtual machines along with the SAP instances.",
+            default=False,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SAPCentralInstancesStopInstance(ctx=self.ctx)()
+        yield self.SapCentralServerInstancesStop(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -93,7 +101,7 @@ class Stop(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPCentralInstancesStopInstance(AAZHttpOperation):
+    class SapCentralServerInstancesStop(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -105,7 +113,7 @@ class Stop(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -114,7 +122,7 @@ class Stop(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -161,7 +169,7 @@ class Stop(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -186,7 +194,7 @@ class Stop(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("softStopTimeoutSeconds", AAZIntType, ".soft_stop_timeout_seconds")
+            _builder.set_prop("deallocateVm", AAZBoolType, ".deallocate_vm")
 
             return self.serialize_content(_content_value)
 
@@ -250,6 +258,9 @@ class _StopHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZFreeFormDictType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -275,6 +286,7 @@ class _StopHelper:
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
             _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
             return
@@ -293,6 +305,10 @@ class _StopHelper:
         operation_status_result_read.percent_complete = AAZFloatType(
             serialized_name="percentComplete",
         )
+        operation_status_result_read.resource_id = AAZStrType(
+            serialized_name="resourceId",
+            flags={"read_only": True},
+        )
         operation_status_result_read.start_time = AAZStrType(
             serialized_name="startTime",
         )
@@ -310,6 +326,7 @@ class _StopHelper:
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
         _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status
 

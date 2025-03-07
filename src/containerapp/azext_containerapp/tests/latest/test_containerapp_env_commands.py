@@ -6,12 +6,15 @@
 import os
 import time
 import yaml
+import json
+import tempfile
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, live_only, StorageAccountPreparer)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
+from .custom_preparers import SubnetPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -25,7 +28,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
         user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
@@ -82,7 +85,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
@@ -121,7 +124,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
         user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
@@ -173,6 +176,245 @@ class ContainerappEnvIdentityTests(ScenarioTest):
             JMESPathCheck('type', 'UserAssigned'),
             JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"')
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_msi_custom_domains(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        verification_id = self.cmd('az containerapp show-custom-domain-verification-id').output
+        key_vault_name = self.create_random_name(prefix='capp-kv-', length=24)
+        cert_name = self.create_random_name(prefix='akv-cert-', length=24)
+
+        signInUser = self.cmd("ad signed-in-user show").get_output_in_json()
+        # create azure keyvault and assign role
+        kv = self.cmd(f"keyvault create -g {resource_group} -n {key_vault_name}").get_output_in_json()
+        roleAssignmentName1 = self.create_guid()
+        self.cmd(f'role assignment create --role "Key Vault Administrator" --assignee {signInUser["id"]} --scope {kv["id"]} --name {roleAssignmentName1}')
+
+        # create an App service domain and update its txt records
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
+        zone_name = "{}.com".format(env_name)
+        subdomain_1 = "devtest"
+        txt_name_1 = "asuid.{}".format(subdomain_1)
+        hostname_1 = "{}.{}".format(subdomain_1, zone_name)
+        self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
+    
+        defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
+        defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.{hostname_1}"
+        defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
+        
+        temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
+        temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
+        temp.close()
+
+        time.sleep(5)
+
+        # create a self assigned certificate in the keyvault
+        cert = self.cmd('keyvault certificate create --vault-name {} -n {} -p @"{}"'.format(key_vault_name, cert_name, temp.name)).get_output_in_json()
+        akv_secret_url = cert["target"].replace("certificates", "secrets")
+
+        user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
+        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()
+        user_identity_id1 = identity_json["id"]
+        principal_id1 = identity_json["principalId"]
+
+        # assign secret permissions to the user assigned identity
+        time.sleep(10)
+        roleAssignmentName2 = self.create_guid()
+        self.cmd(f'role assignment create --role "Key Vault Secrets User" --assignee-object-id {principal_id1} --assignee-principal-type ServicePrincipal --scope {kv["id"]} --name {roleAssignmentName2}')
+
+        # create an environment with custom domain and user assigned identity
+        self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none --dns-suffix {} --certificate-identity {} --certificate-akv-url {}'.format(
+            resource_group, env_name, user_identity_id1, hostname_1, user_identity_id1, akv_secret_url))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+            JMESPathCheck('properties.customDomainConfiguration.certificateKeyVaultProperties.identity', user_identity_id1),
+            JMESPathCheck('properties.customDomainConfiguration.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
+        ])
+
+        # update env with custom domain using file and password
+        tmpFile = os.path.join(tempfile.gettempdir(), "{}.pem".format(env_name))
+        self.cmd(f'keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f "{tmpFile}"')
+        self.cmd('containerapp env update -g {} -n {} --certificate-file "{}"'.format(
+            resource_group, env_name, tmpFile))
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+            JMESPathCheck('properties.customDomainConfiguration.certificateKeyVaultProperties', None),
+        ])
+
+        # update env with custom domain using msi
+        self.cmd('containerapp env update -g {} -n {} --certificate-identity {} --certificate-akv-url {}'.format(
+            resource_group, env_name, user_identity_id1, akv_secret_url))
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+            JMESPathCheck('properties.customDomainConfiguration.certificateKeyVaultProperties.identity', user_identity_id1),
+            JMESPathCheck('properties.customDomainConfiguration.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
+        ])
+
+        # remove temp file
+        os.remove(temp.name)
+        os.remove(tmpFile)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_msi_certificate(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+        env_name = self.create_random_name(prefix='capp-env', length=24)
+        key_vault_name = self.create_random_name(prefix='capp-kv-', length=24)
+        cert_name = self.create_random_name(prefix='akv-cert-', length=24)
+
+        signInUser = self.cmd("ad signed-in-user show").get_output_in_json()
+        # create azure keyvault and assign role
+        kv = self.cmd(f"keyvault create -g {resource_group} -n {key_vault_name}").get_output_in_json()
+        roleAssignmentName1 = self.create_guid()
+        self.cmd(f'role assignment create --role "Key Vault Administrator" --assignee {signInUser["id"]} --scope {kv["id"]} --name {roleAssignmentName1}')
+
+        defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
+        defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.contoso.com"
+        defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
+        
+        temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
+        temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
+        temp.close()
+        time.sleep(5)
+        # create a self assigned certificate in the keyvault
+        cert = self.cmd('keyvault certificate create --vault-name {} -n {} -p @"{}"'.format(key_vault_name, cert_name, temp.name)).get_output_in_json()
+        akv_secret_url = cert["target"].replace("certificates", "secrets")
+        # create an environment with custom domain and user assigned identity
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --logs-destination none'.format(
+            resource_group, env_name))
+        
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        # assign secret permissions to the system assigned identity
+        principal_id = containerapp_env["identity"]["principalId"]
+        roleAssignmentName2 = self.create_guid()
+        self.cmd(f'role assignment create --role "Key Vault Secrets User" --assignee {principal_id} --scope {kv["id"]} --name {roleAssignmentName2}')
+        
+        containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
+        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name}  --akv-url {akv_secret_url}", checks=[
+            JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+        ]).get_output_in_json()
+        containerapp_cert_id = cert["id"]
+        containerapp_cert_thumbprint = cert["properties"]["thumbprint"]
+        containerapp_cert_location = cert["location"]
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, containerapp_cert_location),
+            checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
+                JMESPathCheck('[0].properties.certificateKeyVaultProperties.identity', "system"),
+                JMESPathCheck('[0].properties.thumbprint', containerapp_cert_thumbprint),
+                JMESPathCheck('[0].name', containerapp_cert_name),
+                JMESPathCheck('[0].id', containerapp_cert_id),
+            ])
+        tmpFile = os.path.join(tempfile.gettempdir(), "{}.pem".format(env_name))
+        self.cmd(f'keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f "{tmpFile}"')
+        containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
+        self.cmd('containerapp env certificate upload -g {} -n {} -c {} --certificate-file "{}"'.format(
+            resource_group, env_name, containerapp_cert_name, tmpFile), checks=[
+                JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+                JMESPathCheck('properties.certificateKeyVaultProperties', None),
+            ])
+        
+        containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
+        self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name} --akv-url {akv_secret_url}", checks=[
+            JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+            JMESPathCheck('properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
+            JMESPathCheck('properties.certificateKeyVaultProperties.identity', "system"),
+        ])
+        # remove temp file
+        os.remove(temp.name)
+        os.remove(tmpFile)
+
+    @AllowLargeResponse(8192)
+    @live_only()
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_msi_certificate_random_name(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+        env_name = self.create_random_name(prefix='capp-env', length=24)
+        key_vault_name = self.create_random_name(prefix='capp-kv-', length=24)
+        cert_name = self.create_random_name(prefix='akv-cert-', length=24)
+
+        signInUser = self.cmd("ad signed-in-user show").get_output_in_json()
+        # create azure keyvault and assign role
+        kv = self.cmd(f"keyvault create -g {resource_group} -n {key_vault_name}").get_output_in_json()
+        roleAssignmentName1 = self.create_guid()
+        self.cmd(f'role assignment create --role "Key Vault Administrator" --assignee {signInUser["id"]} --scope {kv["id"]} --name {roleAssignmentName1}')
+
+        defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
+        defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.contoso.com"
+        defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
+        
+        temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
+        temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
+        temp.close()
+        time.sleep(5)
+        # create a self assigned certificate in the keyvault
+        cert = self.cmd('keyvault certificate create --vault-name {} -n {} -p @"{}"'.format(key_vault_name, cert_name, temp.name)).get_output_in_json()
+        akv_secret_url = cert["target"].replace("certificates", "secrets")
+
+
+        user_identity_name = self.create_random_name(prefix='env-msi', length=24)
+        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = identity_json["id"]
+        principal_id = identity_json["principalId"]
+        # assign secret permissions to the user assigned identity
+        time.sleep(10)
+        roleAssignmentName2 = self.create_guid()
+        self.cmd(f'role assignment create --role "Key Vault Secrets User" --assignee-object-id {principal_id} --assignee-principal-type ServicePrincipal --scope {kv["id"]} --name {roleAssignmentName2}')
+
+        # create an environment with custom domain and user assigned identity
+        self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none'.format(
+            resource_group, env_name, user_identity_id))
+        
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        
+        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --akv-url {akv_secret_url} --identity {user_identity_id}", checks=[
+            JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+        ]).get_output_in_json()
+        containerapp_cert_name = cert["name"]
+        containerapp_cert_id = cert["id"]
+        containerapp_cert_thumbprint = cert["properties"]["thumbprint"]
+        containerapp_cert_location = cert["location"]
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, containerapp_cert_location),
+            checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
+                JMESPathCheck('[0].properties.certificateKeyVaultProperties.identity', user_identity_id),
+                JMESPathCheck('[0].properties.thumbprint', containerapp_cert_thumbprint),
+                JMESPathCheck('[0].name', containerapp_cert_name),
+                JMESPathCheck('[0].id', containerapp_cert_id),
+            ])
+    
 
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -396,21 +638,14 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_env_infrastructure_rg(self, resource_group):
+    @SubnetPreparer(location="centralus", vnet_address_prefixes='14.0.0.0/23',  delegations='Microsoft.App/environments', subnet_address_prefixes='14.0.0.0/23')
+    def test_containerapp_env_infrastructure_rg(self, resource_group, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
-        vnet = self.create_random_name(prefix='name', length=24)
         infra_rg = self.create_random_name(prefix='irg', length=24)
 
-        vnet_location = TEST_LOCATION
-        if format_location(vnet_location) == format_location(STAGE_LOCATION):
-            vnet_location = "centralus"
-
-        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet} --location {vnet_location}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
-
-        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true --logs-destination none')
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {subnet_id} -i {infra_rg} --enable-workload-profiles true --logs-destination none')
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
@@ -423,7 +658,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
         ])
 
-        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes')
+        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes --no-wait')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -459,6 +694,55 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.peerAuthentication.mtls.enabled', False),
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_p2p_traffic_encryption(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-peer-to-peer-encryption false --enable-mtls'
+                    .format(resource_group, env_name, logs_workspace_id, logs_workspace_key), expect_failure=True)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-peer-to-peer-encryption'
+                    .format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.peerTrafficConfiguration.encryption.enabled', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --enable-peer-to-peer-encryption false'.format(resource_group, env_name))
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.peerTrafficConfiguration.encryption.enabled', False),
+        ])
+
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_dapr_connection_string_extension(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -d "Endpoint=https://foo.azconfig.io;Id=osOX-l9-s0:sig;InstrumentationKey=00000000000000000000000000000000000000000000"'.format(resource_group, env_name), expect_failure=False)
+
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name), expect_failure=False)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -498,6 +782,46 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.assertGreater(usages[0]["limit"], 0)
         self.assertGreaterEqual(usages[0]["usage"], 0)
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_public_network_access(self, resource_group):
+        location = TEST_LOCATION
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd(
+            'containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(
+                'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('properties.publicNetworkAccess', 'Enabled'),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --public-network-access Disabled'.format(
+            resource_group, env_name),
+                 checks=[
+                     JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
+
+        enabled_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled --logs-destination none'.format(
+            resource_group, enabled_env_name),
+                 checks=[
+                     JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, enabled_env_name))
+
 
 class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
@@ -517,7 +841,7 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
 
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
+        # create env with log-analytics
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -531,9 +855,19 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
+        # update env log destination to none
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none'.format(resource_group, env_name), checks=[
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+        # update env log destination from log-analytics to none
+        self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key), checks=[
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+        ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
         storage_account = self.cmd('storage account create -g {} -n {} --https-only'.format(resource_group, storage_account_name)).get_output_in_json()["id"]
+        # update env log destination from none to azure-monitor
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -544,14 +878,14 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
 
         self.assertEqual(storage_account in diagnostic_settings["storageAccountId"], True)
-
+        # update env log destination from azure-monitor to none
         self.cmd('containerapp env update -g {} -n {} --logs-destination none'.format(resource_group, env_name))
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
-
+        # update env log destination from none to log-analytics
         self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -912,3 +1246,81 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+    @ResourceGroupPreparer(location="southcentralus")
+    def test_containerapp_env_certificate_upload_with_certificate_name(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+        self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        # test that non pfx or pem files are not supported
+        txt_file = os.path.join(TEST_DIR, 'cert.txt')
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), expect_failure=True)
+
+        # test pfx file with password
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        pfx_password = 'test12'
+        cert_pfx_name = self.create_random_name(prefix='cert-pfx', length=24)
+        cert = self.cmd(
+            'containerapp env certificate upload -g {} -n {} -c {} --certificate-file "{}" --password {}'.format(
+                resource_group, env_name, cert_pfx_name, pfx_file, pfx_password), checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('name', cert_pfx_name),
+                JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+            ]).get_output_in_json()
+
+        cert_name = cert["name"]
+        cert_id = cert["id"]
+        cert_thumbprint = cert["properties"]["thumbprint"]
+
+        self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            JMESPathCheck('[0].name', cert_name),
+            JMESPathCheck('[0].id', cert_id),
+        ])
+
+        # upload without password will fail
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, pfx_file), expect_failure=True)
+
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group,
+                                                                                    cert_name), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group,
+                                                                                    cert_id), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} --thumbprint {}'.format(env_name, resource_group,
+                                                                                   cert_thumbprint), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} --certificate {} --yes'.format(
+            env_name, resource_group, cert_thumbprint, cert_name), expect_failure=False)
+        self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+        self.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)

@@ -13,22 +13,24 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-central-instance start",
-    is_preview=True,
 )
 class Start(AAZCommand):
     """Starts the SAP Central Services Instance.
 
     :example: Start Central services instance of the SAP system
-        az workloads sap-central-instance start --sap-virtual-instance-name <VIS Name> -g <Resource-group-name> -n <ResourceName>
+        az workloads sap-central-instance start --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name>
 
     :example: Start Central services instance of the SAP system using the Azure resource ID of the instance
-        az workloads sap-central-instance start --id <ResourceID>
+        az workloads sap-central-instance start --id <resource-id>
+
+    :example: Start Central services instance of the SAP system and its underlying Virtual Machine
+        az workloads sap-central-instance start --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name> --start-vm
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}/start", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}/start", "2024-09-01"],
         ]
     }
 
@@ -54,6 +56,9 @@ class Start(AAZCommand):
             help="Central Services Instance resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,12 +68,25 @@ class Start(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
+        )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.start_vm = AAZBoolArg(
+            options=["--start-vm"],
+            arg_group="Body",
+            help="The boolean value indicates whether to start the virtual machines before starting the SAP instances.",
+            default=False,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SAPCentralInstancesStartInstance(ctx=self.ctx)()
+        yield self.SapCentralServerInstancesStart(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +101,7 @@ class Start(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPCentralInstancesStartInstance(AAZHttpOperation):
+    class SapCentralServerInstancesStart(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -95,7 +113,7 @@ class Start(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -104,7 +122,7 @@ class Start(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -151,7 +169,7 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -161,10 +179,24 @@ class Start(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("startVm", AAZBoolType, ".start_vm")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -226,6 +258,9 @@ class _StartHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZFreeFormDictType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -251,6 +286,7 @@ class _StartHelper:
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
             _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
             return
@@ -269,6 +305,10 @@ class _StartHelper:
         operation_status_result_read.percent_complete = AAZFloatType(
             serialized_name="percentComplete",
         )
+        operation_status_result_read.resource_id = AAZStrType(
+            serialized_name="resourceId",
+            flags={"read_only": True},
+        )
         operation_status_result_read.start_time = AAZStrType(
             serialized_name="startTime",
         )
@@ -286,6 +326,7 @@ class _StartHelper:
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
         _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status
 

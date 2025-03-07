@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -59,7 +59,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -350,18 +349,30 @@ class Create(AAZCommand):
         route_targets.export_ipv4_route_targets = AAZListArg(
             options=["export-ipv4-route-targets"],
             help="Route Targets to be applied for outgoing routes into CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         route_targets.export_ipv6_route_targets = AAZListArg(
             options=["export-ipv6-route-targets"],
             help="Route Targets to be applied for outgoing routes from CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         route_targets.import_ipv4_route_targets = AAZListArg(
             options=["import-ipv4-route-targets"],
             help="Route Targets to be applied for incoming routes into CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         route_targets.import_ipv6_route_targets = AAZListArg(
             options=["import-ipv6-route-targets"],
             help="Route Targets to be applied for incoming routes from CE.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         export_ipv4_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.route_targets.export_ipv4_route_targets
@@ -478,7 +489,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -528,7 +539,7 @@ class Create(AAZCommand):
 
             terminal_server_configuration = _builder.get(".properties.terminalServerConfiguration")
             if terminal_server_configuration is not None:
-                terminal_server_configuration.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                terminal_server_configuration.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 terminal_server_configuration.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix", typ_kwargs={"flags": {"required": True}})
                 terminal_server_configuration.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix", typ_kwargs={"nullable": True})
                 terminal_server_configuration.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix", typ_kwargs={"flags": {"required": True}})
@@ -678,7 +689,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             terminal_server_configuration.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             terminal_server_configuration.primary_ipv4_prefix = AAZStrType(
                 serialized_name="primaryIpv4Prefix",

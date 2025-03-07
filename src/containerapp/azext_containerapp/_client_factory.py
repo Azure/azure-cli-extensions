@@ -17,10 +17,10 @@ def ex_handler_factory(no_throw=False):
             content = json.loads(ex.response.content)
             if 'message' in content:
                 detail = content['message']
+                ex = CLIInternalError(detail)
             elif 'Message' in content:
                 detail = content['Message']
-
-            ex = CLIInternalError(detail)
+                ex = CLIInternalError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
         if no_throw:
@@ -93,7 +93,7 @@ def handle_non_404_exception(e):
 def handle_non_404_status_code_exception(e):
     import json
 
-    if hasattr(e, 'status_code') and e.status_code == 404:
+    if (hasattr(e, 'status_code') and e.status_code == 404) or (hasattr(e, 'response') and hasattr(e.response, 'status_code') and e.response.status_code == 404):
         return e
 
     string_err = str(e)
@@ -135,8 +135,6 @@ def log_analytics_shared_key_client_factory(cli_ctx):
 
 
 def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=None, **_):
-    from azure.cli.core.profiles import ResourceType
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CUSTOMLOCATION, api_version=api_version,
                                    subscription_id=subscription_id).custom_locations
@@ -154,3 +152,9 @@ def connected_k8s_client_factory(cli_ctx, subscription_id=None):
 
     r = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
     return r.connected_cluster
+
+
+def get_linker_client(cmd):
+    from azure.mgmt.servicelinker import ServiceLinkerManagementClient
+    linker_client = get_mgmt_service_client(cmd.cli_ctx, ServiceLinkerManagementClient, subscription_bound=False)
+    return linker_client

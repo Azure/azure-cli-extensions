@@ -2,6 +2,50 @@
 
 Release History
 ===============
+1.11.2
+++++++
+* Adding an error message for incorrect formats of inline attachments in Email communication send mail.
+
+1.11.1
+++++++
+* Fix bug in Email services - send email with attachments.
+
+1.11.0
+++++++
+* Update to email SDK version to 1.0.1b1.
+* Adding new feature inline attachments to Email communication send mail.
+
+1.10.0
+++++++
+* Adding new parameter waituntil to Email communication send mail.
+* Adding new command get send status to Email communication.
+
+1.9.3
+++++++
+* Update Email service create - Global as the default value for Location 
+* Update Email service domain create - Global as the default value for Location 
+* Update Email service domain sender username create - example and text update
+
+1.9.2
+++++++
+* Update azure-rooms-communication to 1.1.0 (pstn-dial-out GA)
+* Update azure-communication-chat to 1.3.0
+* Update azure-communication-phonenumbers to 1.2.0b3
+
+1.9.1
+++++++
+* Add Email communication Domain resource Initiate and Cancel verification operations
+
+1.9.0
+++++++
+* Adding managed identity support for stable api version 2023-04-01
+
+1.8.0b2
+++++++
+* Add Email communication resource CRUD operations
+* Add Domain resource CRUD operations
+* Add Sender username CRUD operations
+
 1.8.0b1
 ++++++
 * Update ACS Rooms to use 1.1.0b1 version

@@ -11,6 +11,7 @@
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
 
+import base64
 import ctypes
 import json
 import os
@@ -18,6 +19,7 @@ import platform
 import subprocess
 import time
 import urllib.request
+import uuid
 from zipfile import ZipFile
 import shutil
 import requests
@@ -28,12 +30,48 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# Common helper function to check if string is empty or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_string_null_or_empty(value):
+    return value is None or value == "" or value.strip() == ""
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if an input string has escape characters.
+# -----------------------------------------------------------------------------------------------------------------
+def has_shell_escape_characters(inputString):
+    escape_characters = ['&', '|', ';', '<', '>', '(', ')', '[', ']', '{', '}', '$', '`', '\\', '"', "'", ' ', '\t', '\n', '\r']
+    return any(character in inputString for character in escape_characters)
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Common helper function to validate if the commands are running on Windows.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_os_env():
 
-    if not platform.system().__contains__('Windows'):
+    if 'Windows' not in platform.system():
         raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input string is in valid Guid format or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_valid_guid(guid):
+    try:
+        _ = uuid.UUID(guid)
+    except ValueError:
+        return False
+    return True
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input string is in valid base64 string or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_base64(s):
+    try:
+        return base64.b64encode(base64.b64decode(s)).decode() == s
+    except Exception:
+        return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -88,21 +126,35 @@ def console_app_setup():
 # LoginMigration helper function to do console app setup (mkdir, download and extract)
 # -----------------------------------------------------------------------------------------------------------------
 def loginMigration_console_app_setup():
-
     validate_os_env()
 
-    defaultOutputFolder = get_loginMigration_default_output_folder()
+    # Create downloads directory if it doesn't already exists
+    default_output_folder = get_loginMigration_default_output_folder()
+    downloads_folder = os.path.join(default_output_folder, "Downloads")
+    os.makedirs(downloads_folder, exist_ok=True)
 
-    # Assigning base folder path
-    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
-    exePath = os.path.join(baseFolder, "Logins.Console.csproj", "Logins.Console.exe")
+    # Delete the old Login console app
+    login_migration_console_zip = os.path.join(downloads_folder, "LoginsMigration.zip")
+    login_migration_console_csproj = os.path.join(downloads_folder, "Logins.Console.csproj")
+    login_migration_version_file = os.path.join(downloads_folder, "loginconsoleappversion.json")
+    if os.path.exists(login_migration_console_zip):
+        os.remove(login_migration_console_zip)
+    if os.path.exists(login_migration_console_csproj):
+        shutil.rmtree(login_migration_console_csproj)
+    if os.path.exists(login_migration_version_file):
+        os.remove(login_migration_version_file)
 
-    # Creating base folder structure
-    create_dir_path(baseFolder)
     # check and download console app
-    check_and_download_loginMigration_console_app(exePath, baseFolder)
+    console_app_version = check_and_download_loginMigration_console_app(downloads_folder)
+    if console_app_version is None:
+        raise CLIError("Connection to NuGet.org required. Please check connection and try again.")
 
-    return defaultOutputFolder, exePath
+    # Assigning base folder path\LoginsConsoleApp\console
+    console_app_location = os.path.join(downloads_folder, console_app_version)
+
+    exePath = os.path.join(console_app_location, "tools", "Microsoft.SqlServer.Migration.Logins.ConsoleApp.exe")
+
+    return default_output_folder, exePath
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -157,9 +209,9 @@ def get_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlAssessment")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlAssessment")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlAssessment")
@@ -174,9 +226,9 @@ def get_loginMigration_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlLoginMigrations")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlLoginMigrations")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlLoginMigrations")
@@ -191,9 +243,9 @@ def get_tdeMigration_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlTdeMigrations")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlTdeMigrations")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlTdeMigrations")
@@ -208,9 +260,9 @@ def get_sqlServerSchema_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlSchemaMigration")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlSchemaMigration")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlSchemaMigration")
@@ -227,7 +279,7 @@ def check_and_download_console_app(exePath, baseFolder):
 
     # Downloading console app zip and extracting it
     if not testPath:
-        zipSource = "https://sqlassess.blob.core.windows.net/app/SqlAssessment.zip"
+        zipSource = "https://aka.ms/sqlassessmentpackage"
         zipDestination = os.path.join(baseFolder, "SqlAssessment.zip")
 
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
@@ -238,18 +290,61 @@ def check_and_download_console_app(exePath, baseFolder):
 # -----------------------------------------------------------------------------------------------------------------
 # LoginMigration helper function to check if console app exists, if not download it.
 # -----------------------------------------------------------------------------------------------------------------
-def check_and_download_loginMigration_console_app(exePath, baseFolder):
+def check_and_download_loginMigration_console_app(downloads_folder):
+    # Get latest LoginConsoleApp name from nuget.org
+    package_id = "Microsoft.SqlServer.Migration.LoginsConsoleApp"
 
-    testPath = os.path.exists(exePath)
+    latest_nuget_org_version = get_latest_nuget_org_version(package_id)
+    latest_nuget_org_name_and_version = f"{package_id}.{latest_nuget_org_version}"
+    latest_local_name_and_version = get_latest_local_name_and_version(downloads_folder)
 
-    # Downloading console app zip and extracting it
-    if not testPath:
-        zipSource = "https://sqlassess.blob.core.windows.net/app/LoginsMigration.zip"
-        zipDestination = os.path.join(baseFolder, "LoginsMigration.zip")
+    if latest_nuget_org_version is None:
+        # Cannot retrieve latest version on NuGet.org, return latest local version
+        return latest_local_name_and_version
 
-        urllib.request.urlretrieve(zipSource, filename=zipDestination)
-        with ZipFile(zipDestination, 'r') as zipFile:
-            zipFile.extractall(path=baseFolder)
+    print(f"Latest Login migration console app nupkg version on Nuget.org: {package_id}.{latest_nuget_org_version}")
+    if latest_local_name_and_version is not None and latest_local_name_and_version >= latest_nuget_org_name_and_version:
+        # Console app is up to date, do not download update
+        print(f"Installed Login migration console app nupkg version: {latest_local_name_and_version}")
+        return latest_local_name_and_version
+
+    # if cx has no consent return local version
+    if latest_local_name_and_version is not None:
+        print(f"Installed Login migration console app nupkg version: {latest_local_name_and_version}")
+        while True:
+            user_input = input("New version available. Do you want to upgrade to the new version? (yes/no): ").strip().lower()
+            if user_input == "yes":
+                print("Updating to the new version...")
+                break
+            if user_input == "no":
+                print("You chose not to upgrade.")
+                return latest_local_name_and_version
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+    # Download latest version of NuGet
+    latest_nuget_org_download_directory = os.path.join(downloads_folder, latest_nuget_org_name_and_version)
+    os.makedirs(latest_nuget_org_download_directory, exist_ok=True)
+
+    latest_nuget_org_download_name = f"{latest_nuget_org_download_directory}/{latest_nuget_org_name_and_version}.nupkg"
+    download_url = f"https://www.nuget.org/api/v2/package/{package_id}/{latest_nuget_org_version}"
+
+    # Extract downloaded NuGet
+    print(f"Downloading and extracting the latest Login migration console app nupkg: {package_id}.{latest_nuget_org_version}")
+    urllib.request.urlretrieve(download_url, filename=latest_nuget_org_download_name)
+    with ZipFile(latest_nuget_org_download_name, 'r') as zipFile:
+        zipFile.extractall(path=latest_nuget_org_download_directory)
+
+    exe_path = os.path.join(latest_nuget_org_download_directory, "tools", "Microsoft.SqlServer.Migration.Logins.ConsoleApp.exe")
+
+    if os.path.exists(exe_path):
+        print("Removing all older Login migration console apps...")
+        for nuget_version in os.listdir(downloads_folder):
+            if nuget_version != latest_nuget_org_name_and_version:
+                shutil.rmtree(os.path.join(downloads_folder, nuget_version))
+    else:
+        return latest_local_name_and_version
+
+    return latest_nuget_org_name_and_version
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -261,7 +356,7 @@ def check_and_download_sqlServerSchema_console_app(exePath, baseFolder):
 
     # Downloading console app zip and extracting it
     if not testPath:
-        zipSource = "https://migrationapps.blob.core.windows.net/schemamigration/SqlSchemaMigration.zip"
+        zipSource = "https://aka.ms/sqlschemamigrationpackage"
         zipDestination = os.path.join(baseFolder, "SqlSchemaMigration.zip")
 
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
@@ -270,7 +365,7 @@ def check_and_download_sqlServerSchema_console_app(exePath, baseFolder):
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Get latest version of TDE Console App on NuGet.org
+# Get latest version of Console App on NuGet.org
 # -----------------------------------------------------------------------------------------------------------------
 def get_latest_nuget_org_version(package_id):
     # Get Nuget.org service index
@@ -280,7 +375,7 @@ def get_latest_nuget_org_version(package_id):
     except Exception:
         print("Unable to connect to NuGet.org to check for updates.")
 
-    if(service_index_response is None or
+    if (service_index_response is None or
        service_index_response.status_code != 200 or
        len(service_index_response.content) > 999999):
         return None
@@ -301,7 +396,7 @@ def get_latest_nuget_org_version(package_id):
 
     package_versions_response = None
     package_versions_response = requests.get(f"{package_base_address_url}{package_id.lower()}/index.json")
-    if(package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
+    if (package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
         return None
 
     package_versions_json = json.loads(package_versions_response.content)
@@ -402,8 +497,41 @@ def is_user_admin():
 # Helper function to validate key input.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
-    if key == "":
-        raise InvalidArgumentValueError("Failed: IR Auth key is empty. Please provide a valid auth key.")
+
+    if is_string_null_or_empty(key):
+        raise InvalidArgumentValueError("Failed: IR Auth key is null or empty. Please provide a valid auth key.")
+    if has_shell_escape_characters(key):
+        raise InvalidArgumentValueError("Failed: IR Auth key has invalid characters. Please provide a valid auth key.")
+    if not is_valid_ir_key_format(key):
+        raise InvalidArgumentValueError("Failed: Invalid IR Auth key format. Please provide a valid auth key.")
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input key is in valid format.
+# IR key format: IR@{KeyId : Guid}@{PartitionId: Factory Name}@{Factory Region or Factory ServiceEndpoint}@{Base64String}
+# -----------------------------------------------------------------------------------------------------------------
+def is_valid_ir_key_format(key):
+
+    try:
+        keyPrefix = "IR"
+        separator = '@'
+        keyParts = 5
+
+        key_parts = key.split(separator)
+
+        # Length of the split auth key should be 5 and should start with "IR"
+        if len(key_parts) != keyParts or key.startswith(keyPrefix) is False:
+            return False
+        # Check if all parts are not null or empty
+        for part in key_parts:
+            if is_string_null_or_empty(part):
+                return False
+        # Check pattern of second part as Guid and last part is a base64 string
+        if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[-1]):
+            return False
+        return True
+    except Exception:
+        return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -432,10 +560,7 @@ def check_whether_gateway_installed(name):
     # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there) to tackle x32 bit python
     try:
         diaCmdPath = get_cmd_file_path_static()
-        if os.path.exists(diaCmdPath):
-            return True
-        else:
-            return False
+        return os.path.exists(diaCmdPath)
     except (FileNotFoundError, IndexError):
         return False
 
@@ -557,6 +682,8 @@ def get_cmd_file_path_from_input(installed_ir_path):
 
     if not os.path.exists(installed_ir_path):
         raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
+    if has_shell_escape_characters(installed_ir_path):
+        raise InvalidArgumentValueError("Failed: Installed IR path has invalid characters. Please provide a valid path.")
 
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")

@@ -3,18 +3,18 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions, logging-fstring-interpolation
 
+from copy import copy as shallowcopy
+from knack.log import get_logger
+from msrest.exceptions import DeserializationError
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from msrest.exceptions import DeserializationError
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (clean_null_values, _convert_object_from_snake_to_camel_case, safe_get, safe_set,
                                                            _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
-from knack.log import get_logger
-
-from copy import copy as shallowcopy
 
 from ._decorator_utils import load_yaml_file, create_deserializer, process_dapr_component_resiliency_yaml
 from ._models import (
@@ -30,6 +30,7 @@ logger = get_logger(__name__)
 
 
 class DaprComponentResiliencyDecorator(BaseResource):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -63,6 +64,24 @@ class DaprComponentResiliencyDecorator(BaseResource):
     def get_argument_out_http_retry_interval_in_milliseconds(self):
         return self.get_param("out_http_retry_interval_in_milliseconds")
 
+    def get_argument_in_circuit_breaker_consecutive_errors(self):
+        return self.get_param("in_circuit_breaker_consecutive_errors")
+
+    def get_argument_out_circuit_breaker_consecutive_errors(self):
+        return self.get_param("out_circuit_breaker_consecutive_errors")
+
+    def get_argument_in_circuit_breaker_timeout(self):
+        return self.get_param("in_circuit_breaker_timeout")
+
+    def get_argument_out_circuit_breaker_timeout(self):
+        return self.get_param("out_circuit_breaker_timeout")
+
+    def get_argument_in_circuit_breaker_interval(self):
+        return self.get_param("in_circuit_breaker_interval")
+
+    def get_argument_out_circuit_breaker_interval(self):
+        return self.get_param("out_circuit_breaker_interval")
+
     def get_argument_environment(self):
         return self.get_param("environment")
 
@@ -83,6 +102,33 @@ class DaprComponentResiliencyDecorator(BaseResource):
         if argument_value is not None and argument_value < 1:
             raise ValidationError(f"--{param_name} must be greater than 0")
 
+    def validate_not_negative_argument(self, argument_name, param_name):
+        argument_value = getattr(self, f"get_argument_{argument_name}")()
+        if argument_value is not None and argument_value < 0:
+            raise ValidationError(f"--{param_name} must not be negative")
+
+    def validate_required_argument_group(self, required_argument_names, required_param_names, optional_argument_names, condition_message):
+        first_validation_error = None
+        argument_group_in_use = False
+        for argument_name, param_name in zip(required_argument_names, required_param_names):
+            argument_value = getattr(self, f"get_argument_{argument_name}")()
+            if not argument_value:
+                if first_validation_error is None:
+                    first_validation_error = ValidationError(f"--{param_name} is required {condition_message}")
+                    if argument_group_in_use:
+                        raise first_validation_error
+            else:
+                argument_group_in_use = True
+                if first_validation_error is not None:
+                    raise first_validation_error
+        for argument_name in optional_argument_names:
+            argument_value = getattr(self, f"get_argument_{argument_name}")()
+            if argument_value:
+                argument_group_in_use = True
+                break
+        if argument_group_in_use and first_validation_error is not None:
+            raise first_validation_error
+
     def validate_arguments(self):
         self.validate_positive_argument("in_timeout_response_in_seconds", "in-timeout")
         self.validate_positive_argument("out_timeout_response_in_seconds", "out-timeout")
@@ -92,20 +138,39 @@ class DaprComponentResiliencyDecorator(BaseResource):
         self.validate_positive_argument("out_http_retry_delay_in_milliseconds", "out-http-delay")
         self.validate_positive_argument("in_http_retry_interval_in_milliseconds", "in-http-interval")
         self.validate_positive_argument("out_http_retry_interval_in_milliseconds", "out-http-interval")
+        self.validate_positive_argument("in_circuit_breaker_consecutive_errors", "in-cb-sequential-err")
+        self.validate_positive_argument("out_circuit_breaker_consecutive_errors", "out-cb-sequential-err")
+        self.validate_positive_argument("in_circuit_breaker_timeout", "in-cb-timeout")
+        self.validate_positive_argument("out_circuit_breaker_timeout", "out-cb-timeout")
+        self.validate_not_negative_argument("in_circuit_breaker_interval", "in-cb-interval")
+        self.validate_not_negative_argument("out_circuit_breaker_interval", "out-cb-interval")
+        self.validate_required_argument_group(required_argument_names=["in_circuit_breaker_consecutive_errors", "in_circuit_breaker_timeout"],
+                                              required_param_names=["in-cb-sequential-err", "in-cb-timeout"],
+                                              optional_argument_names=["in_circuit_breaker_interval"],
+                                              condition_message="when providing an inbound dapr component circuit breaker policy.")
+        self.validate_required_argument_group(required_argument_names=["out_circuit_breaker_consecutive_errors", "out_circuit_breaker_timeout"],
+                                              required_param_names=["out-cb-sequential-err", "out-cb-timeout"],
+                                              optional_argument_names=["out_circuit_breaker_interval"],
+                                              condition_message="when providing an outbound dapr component circuit breaker policy.")
 
+    # pylint: disable=expression-not-assigned
     def set_up_component_resiliency_yaml(self, file_name):
         component_resiliency_def = DaprComponentResiliencyModel
-        if self.get_argument_in_http_retry_delay_in_milliseconds() or self.get_argument_in_http_retry_interval_in_milliseconds()\
-                or self.get_argument_out_http_retry_delay_in_milliseconds() or self.get_argument_out_http_retry_interval_in_milliseconds() or \
-                self.get_argument_in_http_retry_max() or self.get_argument_out_http_retry_max() \
-                or self.get_argument_in_timeout_response_in_seconds() or self.get_argument_out_timeout_response_in_seconds():
+        if (self.get_argument_in_http_retry_delay_in_milliseconds() or self.get_argument_in_http_retry_interval_in_milliseconds()
+                or self.get_argument_out_http_retry_delay_in_milliseconds() or self.get_argument_out_http_retry_interval_in_milliseconds()
+                or self.get_argument_in_http_retry_max() or self.get_argument_out_http_retry_max()
+                or self.get_argument_in_timeout_response_in_seconds() or self.get_argument_out_timeout_response_in_seconds()
+                or self.get_argument_in_circuit_breaker_consecutive_errors() or self.get_argument_out_circuit_breaker_consecutive_errors()
+                or self.get_argument_in_circuit_breaker_timeout() or self.get_argument_out_circuit_breaker_timeout()
+                # these arguments accept 0 as value, so we need to distinguish between unassigned and 0
+                or (self.get_argument_in_circuit_breaker_interval() is not None) or (self.get_argument_out_circuit_breaker_interval() is not None)):
             not self.get_argument_disable_warnings() and logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration '
                 'defined in the yaml will be used instead')
 
         yaml_component_resiliency = load_yaml_file(file_name)
 
-        if type(yaml_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_component_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
 
         if yaml_component_resiliency.get('type') and yaml_component_resiliency.get('type').lower() != "microsoft.app/managedenvironments/daprcomponents/resiliencypolicies":
@@ -164,6 +229,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
 
 
 class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.component_resiliency_def = DaprComponentResiliencyModel
@@ -206,6 +272,16 @@ class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecor
             in_retry_def["retryBackOff"]["maxIntervalInMilliseconds"] = self.get_argument_in_http_retry_interval_in_milliseconds() if self.get_argument_in_http_retry_interval_in_milliseconds() is not None else DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_MAX_DELAY
             self.component_resiliency_def["properties"]["inboundPolicy"]["httpRetryPolicy"] = in_retry_def
 
+        # CircuitBreakerPolicy
+        in_circuit_breaker_def = {
+            "consecutiveErrors": self.get_argument_in_circuit_breaker_consecutive_errors(),
+            "intervalInSeconds": self.get_argument_in_circuit_breaker_interval(),
+            "timeoutInSeconds": self.get_argument_in_circuit_breaker_timeout(),
+        }
+        if self.get_argument_in_circuit_breaker_consecutive_errors() is not None or self.get_argument_in_circuit_breaker_interval() is not None or self.get_argument_in_circuit_breaker_timeout() is not None:
+            # we only want to set the circuit breaker policy if at least one of the arguments is not None
+            self.component_resiliency_def["properties"]["inboundPolicy"]["circuitBreakerPolicy"] = in_circuit_breaker_def
+
         # Outbound
         # TimeoutPolicy
         out_timeout_def = {"responseTimeoutInSeconds": None}
@@ -227,6 +303,16 @@ class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecor
             out_retry_def["retryBackOff"]["maxIntervalInMilliseconds"] = self.get_argument_out_http_retry_interval_in_milliseconds() if self.get_argument_out_http_retry_interval_in_milliseconds() is not None else DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_MAX_DELAY
             self.component_resiliency_def["properties"]["outboundPolicy"]["httpRetryPolicy"] = out_retry_def
 
+        # CircuitBreakerPolicy
+        out_circuit_breaker_def = {
+            "consecutiveErrors": self.get_argument_out_circuit_breaker_consecutive_errors(),
+            "intervalInSeconds": self.get_argument_out_circuit_breaker_interval(),
+            "timeoutInSeconds": self.get_argument_out_circuit_breaker_timeout(),
+        }
+        if self.get_argument_out_circuit_breaker_consecutive_errors() is not None or self.get_argument_out_circuit_breaker_interval() is not None or self.get_argument_out_circuit_breaker_timeout() is not None:
+            # we only want to set the circuit breaker policy if at least one of the arguments is not None
+            self.component_resiliency_def["properties"]["outboundPolicy"]["circuitBreakerPolicy"] = out_circuit_breaker_def
+
         self.component_resiliency_def = clean_null_values(self.component_resiliency_def)
 
         if self.component_resiliency_def is None or self.component_resiliency_def == {}:
@@ -239,6 +325,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
         self.component_resiliency_update_def = DaprComponentResiliencyModel
         self.component_resiliency_patch_def = shallowcopy(self.component_resiliency_update_def)
 
+    # pylint: disable=too-many-branches
     def construct_payload(self):
         if self.get_argument_yaml():
             self.component_resiliency_update_def = self.set_up_component_resiliency_yaml(file_name=self.get_argument_yaml())
@@ -250,7 +337,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
             component_resiliency_def = DaprComponentResiliencyPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                                                                  name=self.get_argument_name(), dapr_component_name=self.get_argument_dapr_component_name(),
                                                                                  environment_name=self.get_argument_environment())
-        except:
+        except:  # pylint: disable=bare-except
             pass
 
         if not component_resiliency_def:
@@ -281,6 +368,23 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
 
         safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds", value=(self.get_argument_in_timeout_response_in_seconds() or safe_get(component_resiliency_def, "properties", "inboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds")))
 
+        if self.get_argument_in_circuit_breaker_consecutive_errors() is not None or self.get_argument_in_circuit_breaker_interval() is not None or self.get_argument_in_circuit_breaker_timeout() is not None:
+            # First, fetch the value from the flag if it exists, else fetch it from the existing component resiliency policy
+            if self.get_argument_out_circuit_breaker_consecutive_errors() is not None:
+                safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=self.get_argument_in_circuit_breaker_consecutive_errors())
+            elif safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"):
+                safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"))
+
+            if self.get_argument_in_circuit_breaker_interval() is not None:
+                safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=self.get_argument_in_circuit_breaker_interval())
+            elif safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"):
+                safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"))
+
+            if self.get_argument_in_circuit_breaker_timeout() is not None:
+                safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds", value=self.get_argument_in_circuit_breaker_timeout())
+            elif safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"):
+                safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds", value=safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"))
+
         if self.get_argument_out_http_retry_delay_in_milliseconds() is not None or self.get_argument_out_http_retry_interval_in_milliseconds() is not None or self.get_argument_out_http_retry_max() is not None:
             if self.get_argument_out_http_retry_max() is not None:
                 safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "httpRetryPolicy", "maxRetries", value=self.get_argument_out_http_retry_max())
@@ -305,14 +409,34 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
 
         safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds", value=(self.get_argument_out_timeout_response_in_seconds() or safe_get(component_resiliency_def, "properties", "outboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds")))
 
+        if self.get_argument_out_circuit_breaker_consecutive_errors() is not None or self.get_argument_out_circuit_breaker_interval() is not None or self.get_argument_out_circuit_breaker_timeout() is not None:
+            if self.get_argument_out_circuit_breaker_consecutive_errors() is not None:
+                safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=self.get_argument_out_circuit_breaker_consecutive_errors())
+            elif safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"):
+                safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"))
+
+            if self.get_argument_out_circuit_breaker_interval() is not None:
+                safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=self.get_argument_out_circuit_breaker_interval())
+            elif safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"):
+                safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"))
+
+            if self.get_argument_out_circuit_breaker_timeout() is not None:
+                safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds", value=self.get_argument_out_circuit_breaker_timeout())
+            elif safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"):
+                safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds", value=safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"))
+
         if safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "httpRetryPolicy", "maxRetries") or safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "httpRetryPolicy", "retryBackOff", "initialDelayInMilliseconds") or safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "httpRetryPolicy", "retryBackOff", "maxIntervalInMilliseconds"):
             safe_set(component_resiliency_def, "properties", "inboundPolicy", "httpRetryPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "httpRetryPolicy"))
         if safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds"):
             safe_set(component_resiliency_def, "properties", "inboundPolicy", "timeoutPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "timeoutPolicy"))
+        if safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors") or safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds") or safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"):
+            safe_set(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy"))
         if safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "httpRetryPolicy", "maxRetries") or safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "httpRetryPolicy", "retryBackOff", "initialDelayInMilliseconds") or safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "httpRetryPolicy", "retryBackOff", "maxIntervalInMilliseconds"):
             safe_set(component_resiliency_def, "properties", "outboundPolicy", "httpRetryPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "httpRetryPolicy"))
         if safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds"):
             safe_set(component_resiliency_def, "properties", "outboundPolicy", "timeoutPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "timeoutPolicy"))
+        if safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors") or safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds") or safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"):
+            safe_set(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy"))
 
         component_resiliency_def = clean_null_values(component_resiliency_def)
         self.component_resiliency_update_def = component_resiliency_def
@@ -334,6 +458,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
 
 
 class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -349,6 +474,7 @@ class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorat
 
 
 class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -363,6 +489,7 @@ class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorat
 
 
 class DaprComponentResiliencyPreviewDeleteDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 

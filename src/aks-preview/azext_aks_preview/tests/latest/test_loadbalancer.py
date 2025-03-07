@@ -68,11 +68,33 @@ class TestLoadBalancer(unittest.TestCase):
             outbound_ports,
             idle_timeout,
             backend_pool_type,
+            "",
             profile,
             self.load_balancer_models,
         )
 
         self.assertEqual(p.managed_outbound_i_ps.count, 5)
+        self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
+        self.assertEqual(p.outbound_i_ps, None)
+        self.assertEqual(p.outbound_ip_prefixes, None)
+        self.assertEqual(p.allocated_outbound_ports, 80)
+        self.assertEqual(p.idle_timeout_in_minutes, 3600)
+        self.assertEqual(p.backend_pool_type, "nodeIP")
+        managed_outbound_ip_count = 0
+        p = loadbalancer.configure_load_balancer_profile(
+            managed_outbound_ip_count,
+            managed_outbound_ipv6_count,
+            outbound_ips,
+            outbound_ip_prefixes,
+            outbound_ports,
+            idle_timeout,
+            backend_pool_type,
+            "",
+            profile,
+            self.load_balancer_models,
+        )
+
+        self.assertEqual(p.managed_outbound_i_ps.count, 0)
         self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
         self.assertEqual(p.outbound_i_ps, None)
         self.assertEqual(p.outbound_ip_prefixes, None)
@@ -125,6 +147,7 @@ class TestLoadBalancer(unittest.TestCase):
             outbound_ports,
             idle_timeout,
             backend_pool_type,
+            "",
             profile,
             self.load_balancer_models,
         )

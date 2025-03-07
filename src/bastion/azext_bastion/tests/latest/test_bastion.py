@@ -12,7 +12,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class BastionScenario(ScenarioTest):
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus2")
     def test_bastion_host_crud(self):
         self.kwargs.update({
@@ -26,10 +26,23 @@ class BastionScenario(ScenarioTest):
         self.cmd("network vnet subnet create -n {subnet_name} -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.2.0/24")
         self.cmd("network public-ip create -n {ip_name} -g {rg} --sku Standard")
         self.cmd("vm create -n {vm_name} -g {rg} --vnet-name {vnet_name} --subnet {subnet_name} --nsg-rule None --image Canonical:UbuntuServer:18.04-LTS:latest --authentication-type password --admin-username testadmin --admin-password TestPassword11!!")
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet_name} -n {subnet_name} --default-outbound-access false')
+
+        self.cmd(
+            "network bastion create -n {bastion_name} -g {rg} --vnet-name {vnet_name} "
+            "--sku Developer --network-acls-ips \"1.1.1.1/16 1.1.1.2/16\"",
+            checks=[
+                self.check("name", "{bastion_name}"),
+                self.check("sku.name", "Developer"),
+                self.check("type", "Microsoft.Network/bastionHosts"),
+            ]
+        )
+
+        self.cmd("network bastion delete -n {bastion_name} -g {rg} -y")
 
         self.cmd(
             "network bastion create -n {bastion_name} -g {rg} --public-ip-address {ip_name} --vnet-name {vnet_name} "
-            "--disable-copy-paste --enable-ip-connect --enable-tunneling --scale-units 21 --tags foo=bar",
+            "--disable-copy-paste --enable-ip-connect --enable-tunneling --scale-units 2 --tags foo=bar",
             checks=[
                 self.check("name", "{bastion_name}"),
                 self.check("disableCopyPaste", True),
@@ -37,18 +50,18 @@ class BastionScenario(ScenarioTest):
                 self.check("enableTunneling", True),
                 self.check("sku.name", "Standard"),
                 self.check("tags.foo", "bar"),
-                self.check("scaleUnits", 21),
+                self.check("scaleUnits", 2),
                 self.check("type", "Microsoft.Network/bastionHosts"),
             ]
         )
         self.cmd(
             "network bastion update -n {bastion_name} -g {rg} "
-            "--disable-copy-paste false --enable-ip-connect false --enable-tunneling false --scale-units 42",
+            "--disable-copy-paste false --enable-ip-connect false --enable-tunneling false --scale-units 6",
             checks=[
                 self.check("disableCopyPaste", False),
                 self.check("enableIpConnect", False),
                 self.check("enableTunneling", False),
-                self.check("scaleUnits", 42),
+                self.check("scaleUnits", 6),
             ]
         )
         self.cmd("network bastion list")
@@ -66,4 +79,4 @@ class BastionScenario(ScenarioTest):
                 self.check("type", "Microsoft.Network/bastionHosts"),
             ]
         )
-        self.cmd("network bastion delete -n {bastion_name} -g {rg}")
+        self.cmd("network bastion delete -n {bastion_name} -g {rg} -y")

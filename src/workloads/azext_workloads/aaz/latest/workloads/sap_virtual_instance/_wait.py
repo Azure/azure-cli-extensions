@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2024-09-01"],
         ]
     }
 
@@ -48,12 +48,15 @@ class Wait(AAZWaitCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPVirtualInstancesGet(ctx=self.ctx)()
+        self.SapVirtualInstancesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,7 +71,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class SAPVirtualInstancesGet(AAZHttpOperation):
+    class SapVirtualInstancesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -160,7 +163,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -180,7 +183,9 @@ class Wait(AAZWaitCommand):
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
@@ -199,10 +204,17 @@ class Wait(AAZWaitCommand):
             properties.environment = AAZStrType(
                 flags={"required": True},
             )
-            properties.errors = AAZObjectType()
-            properties.health = AAZStrType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
+            )
+            properties.managed_resources_network_access_type = AAZStrType(
+                serialized_name="managedResourcesNetworkAccessType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -212,8 +224,12 @@ class Wait(AAZWaitCommand):
                 serialized_name="sapProduct",
                 flags={"required": True},
             )
-            properties.state = AAZStrType()
-            properties.status = AAZStrType()
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             configuration = cls._schema_on_200.properties.configuration
             configuration.configuration_type = AAZStrType(
@@ -391,7 +407,7 @@ class _WaitHelper:
         )
         high_availability_software_configuration_read.fencing_client_password = AAZStrType(
             serialized_name="fencingClientPassword",
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         _schema.fencing_client_id = cls._schema_high_availability_software_configuration_read.fencing_client_id
@@ -819,7 +835,7 @@ class _WaitHelper:
         )
         disc_service_initiated.ssh_private_key = AAZStrType(
             serialized_name="sshPrivateKey",
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         _schema.software_installation_type = cls._schema_software_configuration_read.software_installation_type
@@ -875,6 +891,7 @@ class _WaitHelper:
         )
 
         image_reference = _schema_virtual_machine_configuration_read.image_reference
+        image_reference.id = AAZStrType()
         image_reference.offer = AAZStrType()
         image_reference.publisher = AAZStrType()
         image_reference.sku = AAZStrType()
@@ -883,6 +900,7 @@ class _WaitHelper:
         os_profile = _schema_virtual_machine_configuration_read.os_profile
         os_profile.admin_password = AAZStrType(
             serialized_name="adminPassword",
+            flags={"secret": True},
         )
         os_profile.admin_username = AAZStrType(
             serialized_name="adminUsername",
@@ -922,6 +940,7 @@ class _WaitHelper:
         ssh_key_pair = _schema_virtual_machine_configuration_read.os_profile.os_configuration.discriminate_by("os_type", "Linux").ssh_key_pair
         ssh_key_pair.private_key = AAZStrType(
             serialized_name="privateKey",
+            flags={"secret": True},
         )
         ssh_key_pair.public_key = AAZStrType(
             serialized_name="publicKey",

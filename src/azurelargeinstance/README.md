@@ -2,10 +2,23 @@
 This is an extension to Azure CLI to manage Azure Large Instance resources.
 
 ## Setup:
-1. Install CLI first: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+1. Install CLI first: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
 2. Install the extension by running `az extension add -n azurelargeinstance`
 
 ## Usage Examples:
+### Compute Operations
+To create an Azure Large Instance
+
+```bash
+az large-instance create -g $RESOURCE_GROUP -n $NAME -l westus2 --sku S72
+```
+
+To delete an Azure Large Instance
+```bash
+az large-instance delete -g $RESOURCE_GROUP -n $NAME
+```
+
+
 To list Azure Large Instances in a subscription
 
 `az large-instance list --subscription $SUBSCRIPTION_ID`
@@ -33,6 +46,19 @@ To start an Azure Large Instance
 To add an Azure Large Instance tag
 
 `az large-instance update --subscription $SUBSCRIPTION_ID --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags newKey=value`
+
+### Storage Operations
+To create an Azure Large Storage Instance
+
+```bash
+az large-storage-instance create -g $RESOURCE_GROUP -n $INSTANCE_NAME -l westus2 --sku n10"
+```
+
+To delete an Azure Large Storage Instance
+
+```bash
+az large-storage-instance delete -g $RESOURCE_GROUP -n $INSTANCE_NAME
+```
 
 To list Azure Large Storage Instances in a subscription
 

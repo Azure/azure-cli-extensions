@@ -4,26 +4,34 @@
 # --------------------------------------------------------------------------------------------
 
 
-def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
+# pylint: disable=too-many-locals,too-many-statements,unused-argument,too-many-positional-arguments
+def connection_create_ext(cmd, client,
                           connection_name=None, client_type=None,
                           source_resource_group=None, source_id=None,
                           target_resource_group=None, target_id=None,
                           secret_auth_info=None, secret_auth_info_auto=None,
                           user_identity_auth_info=None, system_identity_auth_info=None,
+                          workload_identity_auth_info=None,                     # only used as arg
                           service_principal_auth_info_secret=None,
                           key_vault_id=None,
+                          app_config_id=None,
                           service_endpoint=None,
                           private_endpoint=None,
                           store_in_connection_string=False,
                           new_addon=False, no_wait=False,
-                          yes=False,
+                          yes=False, new=False,
                           # Resource.KubernetesCluster
                           cluster=None, scope=None, enable_csi=False,
                           customized_keys=None,
+                          opt_out_list=None,
                           site=None, slot=None,                                  # Resource.WebApp
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
+                          # Resource.FabricSQL
+                          connstr_props=None,
+                          fabric_workspace_uuid=None,
+                          fabric_sql_db_uuid=None,
                           **kwargs,
                           ):
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
@@ -44,12 +52,17 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   site, slot,
                                   spring, app, deployment,
                                   server, database,
-                                  enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                  enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes, new),
                                   customized_keys=customized_keys,
+                                  opt_out_list=opt_out_list,
+                                  app_config_id=app_config_id,
+                                  connstr_props=connstr_props,
+                                  fabric_workspace_uuid=fabric_workspace_uuid,
+                                  fabric_sql_db_uuid=fabric_sql_db_uuid,
                                   **kwargs)
 
 
-def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
+def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements,too-many-positional-arguments
                                 resource_group_name,
                                 connection_name=None,
                                 location=None,
@@ -60,7 +73,7 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 service_principal_auth_info_secret=None,
                                 no_wait=False,
                                 customized_keys=None,
-                                yes=False,
+                                yes=False, new=False,
                                 # Resource.*Postgres, Resource.*Sql*
                                 server=None, database=None,
                                 **kwargs
@@ -79,6 +92,6 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                         no_wait,
                                         # Resource.*Postgres, Resource.*Sql*
                                         server, database,
-                                        enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                        enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes, new),
                                         customized_keys=customized_keys,
                                         **kwargs)
