@@ -4,7 +4,7 @@ class ServiceRegistryConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            service_registry = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries')
+            # service_registry = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries')
             name = f"eureka"
             configurations = []
             replicas = 1

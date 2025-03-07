@@ -106,7 +106,12 @@ Some properties and configurations are not included in the Bicep files and must 
 
 - **Custom Domain**: If you have a custom domain configured in Azure Spring Apps, the TLS certificates from Azure Key Vault have been migrated by the migration tool, to make sure Azure Container Apps can load that certificate, you need to assign **Key Vault Secrets User** role to the system-assigned managed identity of Azure Container Apps environment after it creates. Then you can follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-custom-domain) to configure the custom domain in Azure Container Apps.
 - **Managed Identity**: If you have enabled a system-assigned managed identity in Azure Spring Apps applications, your Azure Container Apps instance will also have a system-assigned managed identity, but you need to reassign the corresponding roles to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity) to understand how to use managed identity in Azure Container Apps.
+{%- if data.greenDeployments %}
 - **Blue-green deployment**: If you have enabled blue-green deployments in Azure Spring Apps, the **blue** deployments have been migrated to Azure Container Apps, but you need to follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-blue-green) to configure the **green** deployment in Azure Container Apps.
+{%- for deployment in data.greenDeployments %}
+  - Please manually deploy your staging deployment `{{deployment.appName}}/{{deployment.name}}`. Refer to this [doc](https://learn.microsoft.com/en-us/azure/spring-apps/basic-standard/how-to-staging-environment).
+{%- endfor %}
+{%- endif %}
 - **Auto scale**: If you have enabled auto scaling in Azure Spring Apps, you need to manually configure the different auto scaling rules in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
 - **Monitoring**: The migration has enabled logging and monitoring in Azure Container Apps. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-monitoring) for sample queries to help with troubleshooting. 
 

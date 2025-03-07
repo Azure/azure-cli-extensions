@@ -14,13 +14,12 @@ class AppConverter(BaseConverter):
         super().__init__(source, transform_data)
 
     def transform_data_item(self, app):
-        envName = self._get_parent_resource_name(app)
-        asa_deployments = self.wrapper_data.get_deployments_by_app(app)
-        serviceBinds = self._get_service_bind(app, envName)
-        deployments = self._get_deployments(asa_deployments)
-        blueDeployment = deployments[0] if len(deployments) > 0 else {}
-        greenDeployment = deployments[1] if len(deployments) > 1 else {}
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        blueDeployment = self._transform_deployment(blueDeployment)
+        greenDeployment = self.wrapper_data.get_green_deployment_by_app(app)
+        greenDeployment = self._transform_deployment(greenDeployment)
         tier = blueDeployment.get('sku', {}).get('tier')
+        serviceBinds = self._get_service_bind(app)
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
         identity = app.get('identity')
@@ -53,7 +52,7 @@ class AppConverter(BaseConverter):
             "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
-            "isBlueGreen": len(deployments) > 1,
+            "isBlueGreen": self.wrapper_data.is_support_blue_green_deployment(app),
             "identity": identity,
             "volumeMounts": volumeMounts,
             "volumes": volumes,
@@ -62,8 +61,9 @@ class AppConverter(BaseConverter):
     def get_template_name(self):
         return "app.bicep"
     
-    def _get_service_bind(self, app, envName):
+    def _get_service_bind(self, app):
         service_bind = []
+        envName = self._get_parent_resource_name(app)
         addon = app['properties'].get('addonConfigs')
 
         if addon is None:
@@ -100,34 +100,30 @@ class AppConverter(BaseConverter):
         # print(f"Service bind: {service_bind}")
         return service_bind
 
-    def _get_deployments(self, asa_deployments):
-        deployments = []
-        for deployment in asa_deployments:
-            env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
-            liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
-            readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
-            startup_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('startupProbe', {})
-            resource_requests = deployment.get('properties', {}).get('deploymentSettings', {}).get('resourceRequests', {})
-            cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
-            memorySize = resource_requests.get("memory")
-            tier = deployment.get('sku', {}).get('tier')
-            scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
-            capacity = deployment.get('sku', {}).get('capacity')
-            deployment = {
-                "name": self._get_resource_name(deployment),
-                "env": self._convert_env(env),
-                "livenessProbe": self._convert_probe(liveness_probe, tier),
-                "readinessProbe": self._convert_probe(readiness_probe, tier),
-                "startupProbe": self._convert_probe(startup_probe, tier),
-                "cpuCore": cpuCore,
-                "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
-                "scale": self._convert_scale(scale),
-                "capacity": capacity,
-            }
-            deployments.append(deployment)
-
-        # print(f"deployments: {deployments}")
-        return deployments
+    def _transform_deployment(self, deployment):
+        if deployment is None or deployment == {}:
+            return
+        env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
+        liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
+        readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
+        startup_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('startupProbe', {})
+        resource_requests = deployment.get('properties', {}).get('deploymentSettings', {}).get('resourceRequests', {})
+        cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
+        memorySize = resource_requests.get("memory")
+        tier = deployment.get('sku', {}).get('tier')
+        scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
+        capacity = deployment.get('sku', {}).get('capacity')
+        return {
+            "name": self._get_resource_name(deployment),
+            "env": self._convert_env(env),
+            "livenessProbe": self._convert_probe(liveness_probe, tier),
+            "readinessProbe": self._convert_probe(readiness_probe, tier),
+            "startupProbe": self._convert_probe(startup_probe, tier),
+            "cpuCore": cpuCore,
+            "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
+            "scale": self._convert_scale(scale),
+            "capacity": capacity,
+        }
 
     def _convert_env(self, env):
         env_list = []
