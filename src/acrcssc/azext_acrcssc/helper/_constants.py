@@ -99,11 +99,11 @@ CONTINUOUSPATCH_CONFIG_SCHEMA_V1 = {
     "properties": {
         "version": {
             "type": "string",
-            "pattern": "v1"
+            "pattern": "^(v1)$"
         },
         "tag-convention": {
             "type": "string",
-            "pattern": "floating|incremental"
+            "pattern": "^(floating|incremental)$"
         },
         "repositories": {
             "type": "array",
