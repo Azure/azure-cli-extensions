@@ -33,15 +33,8 @@ class AppConverter(ConverterTemplate):
             disks = app['properties']['customPersistentDisks']
             for disk_props in disks:
                 storage_name = self._get_storage_name(disk_props)
-                mountOptions = self.DEFAULT_MOUNT_OPTIONS
-                if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
-                    len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
-                    mountOptions = ""
-                    for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
-                        mountOptions += ("," if mountOptions != "" else "") + option  
                 mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
                 storage_unique_name = self._get_storage_unique_name(disk_props)
-                # print("Mount options: ", mountOptions)
                 volumeMounts.append({
                     "volumeName": storage_name,
                     "mountPath": mount_path,
@@ -49,7 +42,7 @@ class AppConverter(ConverterTemplate):
                 volumes.append({
                     "volumeName": storage_name,
                     "storageName": storage_unique_name,
-                    "mountOptions": mountOptions,
+                    "mountOptions": self.get_mount_options(disk_props),
                 })
         # print("Volume mounts: ", volumeMounts)
         # print("Volumes: ", volumes)
@@ -70,6 +63,16 @@ class AppConverter(ConverterTemplate):
             "volumeMounts": volumeMounts,
             "volumes": volumes,
         }        
+
+    def get_mount_options(self, disk_props):
+        mountOptions = self.DEFAULT_MOUNT_OPTIONS
+        if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
+            len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
+            mountOptions = ""
+            for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
+                mountOptions += ("," if mountOptions != "" else "") + option
+        # print("Mount options: ", mountOptions)
+        return mountOptions
 
     def get_template_name(self):
         return "app.bicep"
