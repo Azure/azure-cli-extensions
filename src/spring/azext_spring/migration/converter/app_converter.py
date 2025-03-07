@@ -17,7 +17,6 @@ class AppConverter(BaseConverter):
         appName = app['name'].split('/')[-1]
         envName = app['name'].split('/')[0]
         asa_deployments = self.wrapper_data.get_deployments_by_app(app['name'])
-        moduleName = appName.replace("-", "_")
         serviceBinds = self._get_service_bind(app, envName)
         deployments = self._get_deployments(asa_deployments)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
@@ -26,7 +25,6 @@ class AppConverter(BaseConverter):
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
         identity = app.get('identity')
-        # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
         volumeMounts = []
         volumes = []
         if 'properties' in app and 'customPersistentDisks' in app['properties']:
@@ -48,7 +46,7 @@ class AppConverter(BaseConverter):
             "containerAppName": appName,
             "paramContainerAppImageName": self._get_param_name_of_container_image(app),
             "paramTargetPort": self._get_param_name_of_target_port(app),
-            "moduleName": moduleName,
+            "moduleName": self._get_app_module_name(app),
             "ingress": ingress,
             "isPublic": isPublic,
             "minReplicas": 1,

@@ -100,6 +100,16 @@ class BaseConverter(ConverterTemplate):
         # print("Mount options: ", mountOptions)
         return mountOptions
 
+# module name
+    def _get_app_module_name(self, app):
+        appName = app['name'].split('/')[-1]
+        return appName.replace("-", "_")
+
+    def _get_cert_module_name(self, cert):
+        certName = cert['name'].split('/')[-1]
+        return "cert_" + certName.replace("-", "_")
+
+# param name
     # get param name of paramContainerAppImageName
     def _get_param_name_of_container_image(self, app):
         appName = app['name'].split('/')[-1]

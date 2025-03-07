@@ -10,11 +10,10 @@ class MainConverter(BaseConverter):
             certs = []
             for item in asa_certs:
                 certName = item['name'].split('/')[-1]
-                moduleName = "cert_" + certName.replace("-", "_")
                 templateName = f"{certName}_cert.bicep"
                 certData = {
                     "certName": certName,
-                    "moduleName": moduleName,
+                    "moduleName": self._get_cert_module_name(item),
                     "templateName": templateName,
                 }
                 certs.append(certData)
@@ -22,11 +21,10 @@ class MainConverter(BaseConverter):
             apps_data = []
             for app in apps:
                 appName = app['name'].split('/')[-1]
-                moduleName = appName.replace("-", "_")
                 templateName = f"{appName}_app.bicep"
                 appData = {
                     "appName": appName,
-                    "moduleName": moduleName,
+                    "moduleName": self._get_app_module_name(app),
                     "templateName": templateName,
                     "paramContainerAppImageName": self._get_param_name_of_container_image(app),
                     "paramTargetPort": self._get_param_name_of_target_port(app),

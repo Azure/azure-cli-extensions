@@ -16,14 +16,13 @@ class CertConverter(BaseConverter):
 
     def transform_data_item(self, cert):
         certName = cert['name'].split('/')[-1]
-        moduleName = "cert_" + certName.replace("-", "_")
         isKeyVaultCert = False
-        certKeyVault = self._get_cert_key_vault(cert)
         cert = {
             "certName": certName,
-            "moduleName": moduleName,
+            "moduleName": self._get_cert_module_name(cert),
             "certificateType": "ServerSSLCertificate",
         }
+        certKeyVault = self._get_cert_key_vault(cert)
         if certKeyVault:
             cert["certificateKeyVaultProperties"] = certKeyVault
             isKeyVaultCert = True
