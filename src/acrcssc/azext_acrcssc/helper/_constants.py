@@ -94,17 +94,16 @@ CONTINUOUSPATCH_TASK_DEFINITION = {
         },
 }
 CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT = 1024 * 1024 * 10  # 10MB, we don't want to allow huge files
-CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS = ["v1"]
-CONTINUOUSPATCH_CONFIG_SUPPORTED_TAGCONVENTIONS = ["incremental", "floating"]
 CONTINUOUSPATCH_CONFIG_SCHEMA_V1 = {
     "type": "object",
     "properties": {
         "version": {
             "type": "string",
+            "pattern": "v1"
         },
         "tag-convention": {
             "type": "string",
-            "pattern": "(?i)floating|incremental"
+            "pattern": "floating|incremental"
         },
         "repositories": {
             "type": "array",
