@@ -1,10 +1,10 @@
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
 # Concrete Converter Subclass for certificate
-class CertConverter(ConverterTemplate):
+class CertConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
@@ -15,23 +15,21 @@ class CertConverter(ConverterTemplate):
         super().__init__(source, transform_data)
 
     def transform_data_item(self, cert):
-        certName = cert['name'].split('/')[-1]
-        moduleName = "cert_" + certName.replace("-", "_")
         isKeyVaultCert = False
-        certKeyVault = self._get_cert_key_vault(cert)
-        cert = {
-            "certName": certName,
-            "moduleName": moduleName,
+        cert_data = {
+            "certName": self._get_resource_name(cert),
+            "moduleName": self._get_cert_module_name(cert),
             "certificateType": "ServerSSLCertificate",
         }
+        certKeyVault = self._get_cert_key_vault(cert)
         if certKeyVault:
-            cert["certificateKeyVaultProperties"] = certKeyVault
+            cert_data["certificateKeyVaultProperties"] = certKeyVault
             isKeyVaultCert = True
         else:
-            cert["value"] = "*"
+            cert_data["value"] = "*"
             isKeyVaultCert = False
-        cert["isKeyVaultCert"] = isKeyVaultCert
-        return cert        
+        cert_data["isKeyVaultCert"] = isKeyVaultCert
+        return cert_data        
 
     def get_template_name(self):
         return "cert.bicep"

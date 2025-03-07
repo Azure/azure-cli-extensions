@@ -1,10 +1,10 @@
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
 # Concrete Converter Subclass for Container App
-class AppConverter(ConverterTemplate):
+class AppConverter(BaseConverter):
     
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 
@@ -14,10 +14,8 @@ class AppConverter(ConverterTemplate):
         super().__init__(source, transform_data)
 
     def transform_data_item(self, app):
-        appName = app['name'].split('/')[-1]
-        envName = app['name'].split('/')[0]
-        asa_deployments = self.wrapper_data.get_deployments_by_app(app['name'])
-        moduleName = appName.replace("-", "_")
+        envName = self._get_parent_resource_name(app)
+        asa_deployments = self.wrapper_data.get_deployments_by_app(app)
         serviceBinds = self._get_service_bind(app, envName)
         deployments = self._get_deployments(asa_deployments)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
@@ -26,50 +24,28 @@ class AppConverter(ConverterTemplate):
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
         identity = app.get('identity')
-        storages = self.wrapper_data.get_storages()
-        # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
         volumeMounts = []
         volumes = []
         if 'properties' in app and 'customPersistentDisks' in app['properties']:
             disks = app['properties']['customPersistentDisks']
-            storage_map = {
-                storage['name'].split('/')[-1]: storage['properties']['accountName'] 
-                for storage in storages
-            }
             for disk_props in disks:
-                # print(f"Disk props: {disk_props}")
-                storage_id = disk_props.get('storageId', '')
-                storage_name = self._get_resource_name(storage_id) if storage_id else ''
-                # print("Storage name: ", storage_name)
-                mountOptions = self.DEFAULT_MOUNT_OPTIONS
-                if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
-                    len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
-                    mountOptions = ""
-                    for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
-                        mountOptions += ("," if mountOptions != "" else "") + option  
-                account_name = storage_map.get(storage_name, '')
-                mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
-                readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
-                share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
-                access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
-                storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
-                # print("Mount options: ", mountOptions)
+                volume_name = self._get_storage_name(disk_props)
                 volumeMounts.append({
-                    "volumeName": storage_name,
-                    "mountPath": mount_path,
+                    "volumeName": volume_name,
+                    "mountPath": self._get_storage_mount_path(disk_props),
                 })
                 volumes.append({
-                    "volumeName": storage_name,
-                    "storageName": storage_unique_name,
-                    "mountOptions": mountOptions,
+                    "volumeName": volume_name,
+                    "storageName": self._get_storage_unique_name(disk_props),
+                    "mountOptions": self._get_mount_options(disk_props),
                 })
         # print("Volume mounts: ", volumeMounts)
         # print("Volumes: ", volumes)
         return {
-            "containerAppName": appName,
-            "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
-            "targetPort": "targetPortFor_"+appName.replace("-", "_"),
-            "moduleName": moduleName,
+            "containerAppName": self._get_resource_name(app),
+            "paramContainerAppImageName": self._get_param_name_of_container_image(app),
+            "paramTargetPort": self._get_param_name_of_target_port(app),
+            "moduleName": self._get_app_module_name(app),
             "ingress": ingress,
             "isPublic": isPublic,
             "minReplicas": 1,
@@ -86,9 +62,6 @@ class AppConverter(ConverterTemplate):
     def get_template_name(self):
         return "app.bicep"
     
-    def get_app_name(input_string):
-        return input_string.split('/')[-1]
-
     def _get_service_bind(self, app, envName):
         service_bind = []
         addon = app['properties'].get('addonConfigs')
@@ -130,7 +103,6 @@ class AppConverter(ConverterTemplate):
     def _get_deployments(self, asa_deployments):
         deployments = []
         for deployment in asa_deployments:
-            deployment_name = deployment['name'].split('/')[-1]
             env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
             liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
             readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
@@ -142,7 +114,7 @@ class AppConverter(ConverterTemplate):
             scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
             capacity = deployment.get('sku', {}).get('capacity')
             deployment = {
-                "name": deployment_name,
+                "name": self._get_resource_name(deployment),
                 "env": self._convert_env(env),
                 "livenessProbe": self._convert_probe(liveness_probe, tier),
                 "readinessProbe": self._convert_probe(readiness_probe, tier),

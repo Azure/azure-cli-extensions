@@ -1,43 +1,25 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 # Concrete Converter Subclass for paramter
-class ParamConverter(ConverterTemplate):
+class ParamConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            self.apps = self.wrapper_data.get_apps()
-            self.storages = self.wrapper_data.get_storages()
-            storage_map = {
-                    storage['name'].split('/')[-1]: storage['properties']['accountName'] 
-                    for storage in self.storages
-                }        
+            apps = self.wrapper_data.get_apps()
             storage_configs = []
             apps_data = []
-            for app in self.apps:
-                appName = app['name'].split('/')[-1]
+            for app in apps:
                 apps_data.append({
-                    "appName": appName,
-                    "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
-                    "targetPort": "targetPortFor_"+appName.replace("-", "_"),
+                    "appName": self._get_resource_name(app),
+                    "paramContainerAppImageName": self._get_param_name_of_container_image(app),
+                    "paramTargetPort": self._get_param_name_of_target_port(app),
                 })
                 if 'properties' in app and 'customPersistentDisks' in app['properties']:
                     disks = app['properties']['customPersistentDisks']
                     for disk_props in disks:
-                        # Get the account name from storage map using storageId
-                        storage_id = disk_props.get('storageId', '')
-                        storage_name = self._get_resource_name(storage_id) if storage_id else ''
-                        app_name = app['name'].split('/')[-1]
-                        account_name = storage_map.get(storage_name, '')
-                        share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
-                        readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
-                        access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
-                        mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')     
-                        storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
-                        containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
-                        # print("storage_unique_name:", storage_unique_name)
                         storage_config = {
-                            'containerAppEnvStorageAccountKey': containerAppEnvStorageAccountKey,
-                            'accountName': account_name,
+                            'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
+                            'accountName': self._get_storage_account_name(disk_props),
                         }
                         storage_configs.append(storage_config)
             return {

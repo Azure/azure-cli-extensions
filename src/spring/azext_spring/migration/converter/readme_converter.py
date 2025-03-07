@@ -1,7 +1,7 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 # Concrete Converter Subclass for Read Me
-class ReadMeConverter(ConverterTemplate):
+class ReadMeConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():

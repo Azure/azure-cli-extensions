@@ -1,10 +1,10 @@
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-class GatewayConverter(ConverterTemplate):
+class GatewayConverter(BaseConverter):
     DEFAULT_NAME = "default"
 
     def __init__(self, source, client, resource_group, service):
@@ -53,7 +53,7 @@ class GatewayConverter(ConverterTemplate):
         name_counter = {}
         if routes:
             for route in routes:
-                base_name = route['name'].split('/')[-1]
+                base_name = self._get_resource_name(route)
                 aca_uri = self._get_uri_from_route(route)
                 if route.get('properties', {}).get('routes') is not None:
                     for r in route['properties']['routes']:
@@ -86,7 +86,8 @@ class GatewayConverter(ConverterTemplate):
             for f in r.get('filters'):
                 if 'cors' in f.lower():
                     logger.warning(f"Mismatch: The cors filter '{f}' of route '{route_name}' is not supported in gateway for Spring in Azure Container Apps, refer to migration doc for further steps.")
-                filters.append(f)
+                else:
+                    filters.append(f)
         return filters
 
     def _check_features(self, scg_properties):

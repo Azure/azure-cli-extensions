@@ -1,7 +1,7 @@
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 # Concrete Converter Subclass for Config Server
-class ACSConverter(ConverterTemplate):
+class ACSConverter(BaseConverter):
 
     CONFIGURATION_KEY_PREFIX = "spring.cloud.config.server.git"
     KEY_URI = ".uri"
