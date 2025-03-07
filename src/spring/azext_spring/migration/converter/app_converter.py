@@ -48,8 +48,8 @@ class AppConverter(BaseConverter):
         # print("Volumes: ", volumes)
         return {
             "containerAppName": appName,
-            "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
-            "targetPort": "targetPortFor_"+appName.replace("-", "_"),
+            "paramContainerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
+            "paramTargetPort": "targetPortFor_"+appName.replace("-", "_"),
             "moduleName": moduleName,
             "ingress": ingress,
             "isPublic": isPublic,

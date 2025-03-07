@@ -8,11 +8,11 @@ param maxNodes int
 param vnetSubnetId string
 {%- endif %}
 {%- for app in data.apps %}
-param {{app.containerAppImageName}} string
-param {{app.targetPort}} int
+param {{app.paramContainerAppImageName}} string
+param {{app.paramTargetPort}} int
 {%- endfor %}
 {%- for storage in data.storages %}
-param {{storage.containerAppEnvStorageAccountKey}} string
+param {{storage.paramContainerAppEnvStorageAccountKey}} string
 {%- endfor %}
 
 module containerAppEnv 'environment.bicep' = { 
@@ -26,7 +26,7 @@ module containerAppEnv 'environment.bicep' = {
     vnetSubnetId: vnetSubnetId
     {%- endif %}
     {%- for storage in data.storages %}
-    {{storage.containerAppEnvStorageAccountKey}}: {{storage.containerAppEnvStorageAccountKey}}
+    {{storage.paramContainerAppEnvStorageAccountKey}}: {{storage.paramContainerAppEnvStorageAccountKey}}
     {%- endfor %}
   }
 }
@@ -46,8 +46,8 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
     workloadProfileName: workloadProfileName
-    {{item.containerAppImageName}}: {{item.containerAppImageName}}
-    {{item.targetPort}}: {{item.targetPort}}
+    {{item.paramContainerAppImageName}}: {{item.paramContainerAppImageName}}
+    {{item.paramTargetPort}}: {{item.paramTargetPort}}
   }
 }
 {%- endfor %}

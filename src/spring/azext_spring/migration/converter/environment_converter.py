@@ -63,11 +63,11 @@ class EnvironmentConverter(BaseConverter):
                     # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
                     storage_unique_name = self._get_storage_unique_name(disk_props)
                     containerAppEnvStorageName = (app_name + "_" + storage_name).replace("-", "_")
-                    containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
+                    paramContainerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
                     # print("storage_unique_name:", storage_unique_name)
                     storage_config = {
                         'containerAppEnvStorageName': containerAppEnvStorageName,
-                        'containerAppEnvStorageAccountKey': containerAppEnvStorageAccountKey,
+                        'paramContainerAppEnvStorageAccountKey': paramContainerAppEnvStorageAccountKey,
                         'storageName': storage_unique_name,
                         'shareName': share_name,
                         'accessMode': access_mode,
