@@ -1,5 +1,4 @@
 # --------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
@@ -34,74 +33,202 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestScenarioTriggerSchedule, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
-    
-    @ResourceGroupPreparer(**rg_params)
-    @LoadTestResourcePreparer(**load_params)
-    def test_create_trigger_schedule(self, rg, load):
-        self.kwargs.update({
-            "trigger_id": "test-trigger-id",
-            "description": "Test trigger schedule",
-            "display_name": "Test Trigger",
-            "start_date_time": "2025-03-31T23:59:59Z",
-            "recurrence_type": "Daily",
-            "recurrence_interval": 1,
-            "test_ids": "test-id-1"
-        })
 
-        checks = [
-            JMESPathCheck("description", self.kwargs["description"]),
-            JMESPathCheck("displayName", self.kwargs["display_name"]),
-            JMESPathCheck("startDateTime", self.kwargs["start_date_time"]),
-            JMESPathCheck("recurrence.frequency", self.kwargs["recurrence_type"]),
-            JMESPathCheck("recurrence.interval", self.kwargs["recurrence_interval"]),
-            JMESPathCheck("testIds[0]", self.kwargs["test_ids"]),
+    def create_trigger_schedule(self, trigger_id, description, display_name, start_date_time, test_ids, recurrence_type=None, recurrence_interval=None, recurrence_week_days=None, recurrence_dates_in_month=None, recurrence_index=None, recurrence_cron_expression=None):
+        cmd = [
+            'az load trigger schedule create',
+            '--name {load_test_resource}',
+            '--resource-group {resource_group}',
+            f'--trigger-id {trigger_id}',
+            f'--description "{description}"',
+            f'--display-name "{display_name}"',
+            f'--start-date-time {start_date_time}',
+            f'--test-ids {test_ids}'
         ]
+        if recurrence_type:
+            cmd.append(f'--recurrence-type {recurrence_type}')
+        if recurrence_interval:
+            cmd.append(f'--recurrence-interval {recurrence_interval}')
+        if recurrence_week_days:
+            cmd.append(f'--recurrence-week-days {recurrence_week_days}')
+        if recurrence_dates_in_month:
+            cmd.append(f'--recurrence-dates-in-month {recurrence_dates_in_month}')
+        if recurrence_index:
+            cmd.append(f'--recurrence-index {recurrence_index}')
+        if recurrence_cron_expression:
+            cmd.append(f'--recurrence-cron-exp "{recurrence_cron_expression}"')
+
+        self.cmd(' '.join(cmd))
+
+    def verify_trigger_schedule(self, trigger_id, description, display_name, start_date_time, test_ids, recurrence_type=None, recurrence_interval=None, recurrence_week_days=None, recurrence_dates_in_month=None, recurrence_index=None, recurrence_cron_expression=None):
+        checks = [
+            JMESPathCheck("description", description),
+            JMESPathCheck("displayName", display_name),
+            JMESPathCheck("startDateTime", start_date_time),
+            JMESPathCheck("testIds[0]", test_ids),
+        ]
+        if recurrence_type:
+            checks.append(JMESPathCheck("recurrence.frequency", recurrence_type))
+        if recurrence_interval:
+            checks.append(JMESPathCheck("recurrence.interval", recurrence_interval))
+        if recurrence_week_days:
+            week_days = recurrence_week_days.split()
+            if recurrence_type == "Weekly":
+                for i, day in enumerate(week_days):
+                    checks.append(JMESPathCheck(f"recurrence.daysOfWeek[{i}]", day))
+            else:
+                for i, day in enumerate(week_days):
+                    checks.append(JMESPathCheck(f"recurrence.weekDaysInMonth[{i}]", day))
+        if recurrence_dates_in_month:
+            dates_in_month = recurrence_dates_in_month.split()
+            for i, date in enumerate(dates_in_month):
+                checks.append(JMESPathCheck(f"recurrence.datesInMonth[{i}]", int(date)))
+        if recurrence_index:
+            checks.append(JMESPathCheck("recurrence.index", recurrence_index))
+        if recurrence_cron_expression:
+            checks.append(JMESPathCheck("recurrence.cronExpression", recurrence_cron_expression))
 
         self.cmd(
-            'az load trigger schedule create '
+            'az load trigger schedule show '
             '--name {load_test_resource} '
             '--resource-group {resource_group} '
-            '--trigger-id {trigger_id} '
-            '--description "{description}" '
-            '--display-name "{display_name}" '
-            '--start-date-time {start_date_time} '
-            '--recurrence-type {recurrence_type} '
-            '--recurrence-interval {recurrence_interval} '
-            '--test-ids {test_ids}',
-            checks=checks,
+            f'--trigger-id {trigger_id}',
+            checks=checks
+        )
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_create_and_verify_trigger_schedules(self, rg, load):
+        # Test Daily Recurrence
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id-daily",
+            description="Test trigger schedule daily",
+            display_name="Test Trigger Daily",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-daily"
+        )
+        self.verify_trigger_schedule(
+            trigger_id="test-trigger-id-daily",
+            description="Test trigger schedule daily",
+            display_name="Test Trigger Daily",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-daily"
+        )
+
+        # Test Weekly Recurrence
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id-weekly",
+            description="Test trigger schedule weekly",
+            display_name="Test Trigger Weekly",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Weekly",
+            recurrence_interval=1,
+            recurrence_week_days="Monday Tuesday",
+            test_ids="test-id-weekly"
+        )
+        self.verify_trigger_schedule(
+            trigger_id="test-trigger-id-weekly",
+            description="Test trigger schedule weekly",
+            display_name="Test Trigger Weekly",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Weekly",
+            recurrence_interval=1,
+            recurrence_week_days="Monday Tuesday",
+            test_ids="test-id-weekly"
+        )
+
+        # Test Monthly By Dates Recurrence
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id-monthly-dates",
+            description="Test trigger schedule monthly by dates",
+            display_name="Test Trigger Monthly By Dates",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="MonthlyByDates",
+            recurrence_interval=1,
+            recurrence_dates_in_month="1 15",
+            test_ids="test-id-monthly-dates"
+        )
+        self.verify_trigger_schedule(
+            trigger_id="test-trigger-id-monthly-dates",
+            description="Test trigger schedule monthly by dates",
+            display_name="Test Trigger Monthly By Dates",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="MonthlyByDates",
+            recurrence_interval=1,
+            recurrence_dates_in_month="1 15",
+            test_ids="test-id-monthly-dates"
+        )
+
+        # Test Monthly By Days Recurrence
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id-monthly-days",
+            description="Test trigger schedule monthly by days",
+            display_name="Test Trigger Monthly By Days",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="MonthlyByDays",
+            recurrence_interval=1,
+            recurrence_week_days="Monday",
+            recurrence_index=1,
+            test_ids="test-id-monthly-days"
+        )
+        self.verify_trigger_schedule(
+            trigger_id="test-trigger-id-monthly-days",
+            description="Test trigger schedule monthly by days",
+            display_name="Test Trigger Monthly By Days",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="MonthlyByDays",
+            recurrence_interval=1,
+            recurrence_week_days="Monday",
+            recurrence_index=1,
+            test_ids="test-id-monthly-days"
+        )
+
+        # Test Cron Recurrence
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id-cron",
+            description="Test trigger schedule cron",
+            display_name="Test Trigger Cron",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Cron",
+            recurrence_cron_expression="0 0 12 * *",
+            test_ids="test-id-cron"
+        )
+        self.verify_trigger_schedule(
+            trigger_id="test-trigger-id-cron",
+            description="Test trigger schedule cron",
+            display_name="Test Trigger Cron",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Cron",
+            recurrence_cron_expression="0 0 12 * *",
+            test_ids="test-id-cron"
         )
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_update_trigger_schedule(self, rg, load):
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id",
+            description="Initial description",
+            display_name="Initial Display Name",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-update"
+        )
+
         self.kwargs.update({
             "trigger_id": "test-trigger-id",
             "description": "Updated test trigger schedule",
             "display_name": "Updated Test Trigger",
             "start_date_time": "2025-04-01T00:00:00Z",
-            "recurrence_type": "Daily",
+            "recurrence_type": "Weekly",
             "recurrence_interval": 2,
             "recurrence_week_days": "Monday",
-            "test_ids": "test-id-1"
-        })
-
-        # Create initial trigger schedule
-        self.cmd(
-            'az load trigger schedule create '
-            '--name {load_test_resource} '
-            '--resource-group {resource_group} '
-            '--trigger-id {trigger_id} '
-            '--description "Initial description" '
-            '--display-name "Initial Display Name" '
-            '--start-date-time "2025-03-31T23:59:59Z" '
-            '--recurrence-type {recurrence_type} '
-            '--recurrence-interval 1 '
-            '--test-ids {test_ids}'
-        )
-
-        self.kwargs.update({
-            "recurrence_type": "Weekly",
-            "recurrence_week_days": "Monday",
+            "test_ids": "test-id-update"
         })
 
         checks = [
@@ -132,29 +259,24 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_list_trigger_schedules(self, rg, load):
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id",
+            description="Test trigger schedule",
+            display_name="Test Trigger",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-list"
+        )
+
         self.kwargs.update({
-            "trigger_id": "test-trigger-id",
             "description": "Test trigger schedule",
             "display_name": "Test Trigger",
             "start_date_time": "2025-03-31T23:59:59Z",
             "recurrence_type": "Daily",
             "recurrence_interval": 1,
-            "test_ids": "test-id-1"
+            "test_ids": "test-id-list"
         })
-
-        # Create a trigger schedule
-        self.cmd(
-            'az load trigger schedule create '
-            '--name {load_test_resource} '
-            '--resource-group {resource_group} '
-            '--trigger-id {trigger_id} '
-            '--description "{description}" '
-            '--display-name "{display_name}" '
-            '--start-date-time {start_date_time} '
-            '--recurrence-type {recurrence_type} '
-            '--recurrence-interval {recurrence_interval} '
-            '--test-ids {test_ids}'
-        )
 
         checks = [
             JMESPathCheck("length(@)", 1),
@@ -176,29 +298,20 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_delete_trigger_schedule(self, rg, load):
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id",
+            description="Test trigger schedule",
+            display_name="Test Trigger",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-delete"
+        )
+
         self.kwargs.update({
-            "trigger_id": "test-trigger-id",
-            "description": "Test trigger schedule",
-            "display_name": "Test Trigger",
-            "start_date_time": "2025-03-31T23:59:59Z",
-            "recurrence_type": "Daily",
-            "recurrence_interval": 1,
-            "test_ids": "test-id-1"
+            "trigger_id": "test-trigger-id"
         })
 
-        # Create a trigger schedule
-        self.cmd(
-            'az load trigger schedule create '
-            '--name {load_test_resource} '
-            '--resource-group {resource_group} '
-            '--trigger-id {trigger_id} '
-            '--description "{description}" '
-            '--display-name "{display_name}" '
-            '--start-date-time {start_date_time} '
-            '--recurrence-type {recurrence_type} '
-            '--recurrence-interval {recurrence_interval} '
-            '--test-ids {test_ids}'
-        )
 
         # Delete the trigger schedule
         self.cmd(
@@ -223,29 +336,19 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_pause_trigger_schedule(self, rg, load):
-        self.kwargs.update({
-            "trigger_id": "test-trigger-id",
-            "description": "Test trigger schedule",
-            "display_name": "Test Trigger",
-            "start_date_time": "2025-03-31T23:59:59Z",
-            "recurrence_type": "Daily",
-            "recurrence_interval": 1,
-            "test_ids": "test-id-1"
-        })
-
-        # Create a trigger schedule
-        self.cmd(
-            'az load trigger schedule create '
-            '--name {load_test_resource} '
-            '--resource-group {resource_group} '
-            '--trigger-id {trigger_id} '
-            '--description "{description}" '
-            '--display-name "{display_name}" '
-            '--start-date-time {start_date_time} '
-            '--recurrence-type {recurrence_type} '
-            '--recurrence-interval {recurrence_interval} '
-            '--test-ids {test_ids}'
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id",
+            description="Test trigger schedule",
+            display_name="Test Trigger",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-pause"
         )
+
+        self.kwargs.update({
+            "trigger_id": "test-trigger-id"
+        })
 
         # Pause the trigger schedule
         self.cmd(
@@ -270,29 +373,19 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_enable_trigger_schedule(self, rg, load):
-        self.kwargs.update({
-            "trigger_id": "test-trigger-id",
-            "description": "Test trigger schedule",
-            "display_name": "Test Trigger",
-            "start_date_time": "2025-03-31T23:59:59Z",
-            "recurrence_type": "Daily",
-            "recurrence_interval": 1,
-            "test_ids": "test-id-1"
-        })
-
-        # Create a trigger schedule
-        self.cmd(
-            'az load trigger schedule create '
-            '--name {load_test_resource} '
-            '--resource-group {resource_group} '
-            '--trigger-id {trigger_id} '
-            '--description "{description}" '
-            '--display-name "{display_name}" '
-            '--start-date-time {start_date_time} '
-            '--recurrence-type {recurrence_type} '
-            '--recurrence-interval {recurrence_interval} '
-            '--test-ids {test_ids}'
+        self.create_trigger_schedule(
+            trigger_id="test-trigger-id",
+            description="Test trigger schedule",
+            display_name="Test Trigger",
+            start_date_time="2025-03-31T23:59:59Z",
+            recurrence_type="Daily",
+            recurrence_interval=1,
+            test_ids="test-id-enable"
         )
+
+        self.kwargs.update({
+            "trigger_id": "test-trigger-id"
+        })
 
         # Pause the trigger schedule
         self.cmd(

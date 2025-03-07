@@ -65,13 +65,13 @@ def get_recurrence_body(
     elif recurrence_type == enums.Frequency.MONTHLY_BY_DATES:
         return models.MonthlyRecurrenceByDates(
             interval=recurrence_interval,
-            days_of_month=recurrence_dates_in_month,
+            dates_in_month=recurrence_dates_in_month,
             recurrence_end=recurrence_end_body
         )
     elif recurrence_type == enums.Frequency.MONTHLY_BY_DAYS:
-        return models.MonthlyRecurrenceByDay(
+        return models.MonthlyRecurrenceByWeekDays(
             interval=recurrence_interval,
-            days_of_week=recurrence_week_days,
+            week_days_in_month=recurrence_week_days,
             index=recurrence_index,
             recurrence_end=recurrence_end_body
         )
