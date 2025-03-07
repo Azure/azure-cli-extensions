@@ -53,24 +53,17 @@ class EnvironmentConverter(BaseConverter):
             if 'properties' in app and 'customPersistentDisks' in app['properties']:
                 disks = app['properties']['customPersistentDisks']
                 for disk_props in disks:
-                    # Get the account name from storage map using storageId
                     storage_name = self._get_storage_name(disk_props)
-                    account_name = self._get_storage_account_name(disk_props)
-                    share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
                     app_name = app['name'].split('/')[-1]
-                    readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
-                    access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
                     # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
-                    storage_unique_name = self._get_storage_unique_name(disk_props)
                     containerAppEnvStorageName = (app_name + "_" + storage_name).replace("-", "_")
-                    # print("storage_unique_name:", storage_unique_name)
                     storage_config = {
                         'containerAppEnvStorageName': containerAppEnvStorageName,
                         'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
-                        'storageName': storage_unique_name,
-                        'shareName': share_name,
-                        'accessMode': access_mode,
-                        'accountName': account_name,
+                        'storageName': self._get_storage_unique_name(disk_props),
+                        'shareName': self._get_storage_share_name(disk_props),
+                        'accessMode': self._get_storage_access_mode(disk_props),
+                        'accountName': self._get_storage_account_name(disk_props),
                     }
                     storage_configs.append(storage_config)
         # print("storage_configs:", storage_configs)

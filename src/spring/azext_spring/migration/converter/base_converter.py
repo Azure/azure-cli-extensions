@@ -60,6 +60,16 @@ class BaseConverter(ConverterTemplate):
         storage_id = disk_props.get('storageId', '')
         return self._get_resource_name(storage_id) if storage_id else ''
 
+    def _get_storage_mount_path(self, disk_props):
+        return disk_props.get('customPersistentDiskProperties').get('mountPath')
+
+    def _get_storage_share_name(self, disk_props):
+        return disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
+
+    def _get_storage_access_mode(self, disk_props):
+        readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
+        return 'ReadOnly' if readOnly else 'ReadWrite'
+
     def _get_storage_account_name(self, disk_props):
         storages = self.wrapper_data.get_storages()
         storage_map = {
@@ -72,14 +82,23 @@ class BaseConverter(ConverterTemplate):
     def _get_storage_unique_name(self, disk_props):
         storage_name = self._get_storage_name(disk_props)
         account_name = self._get_storage_account_name(disk_props)
-        share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
-        mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
-        readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
-        access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
+        share_name = self._get_storage_share_name(disk_props)
+        mount_path = self._get_storage_mount_path(disk_props)
+        access_mode = self._get_storage_access_mode(disk_props)
         storage_unique_name = f"{storage_name}|{account_name}|{share_name}|{mount_path}|{access_mode}"
         hash_value = hashlib.md5(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
         result = f"{storage_name}{hash_value}"
         return result[:32]  # Ensure total length is no more than 32
+
+    def _get_mount_options(self, disk_props):
+        mountOptions = self.DEFAULT_MOUNT_OPTIONS
+        if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
+            len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
+            mountOptions = ""
+            for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
+                mountOptions += ("," if mountOptions != "" else "") + option
+        # print("Mount options: ", mountOptions)
+        return mountOptions
 
     # get param name of paramContainerAppImageName
     def _get_param_name_of_container_image(self, app):

@@ -32,17 +32,15 @@ class AppConverter(BaseConverter):
         if 'properties' in app and 'customPersistentDisks' in app['properties']:
             disks = app['properties']['customPersistentDisks']
             for disk_props in disks:
-                storage_name = self._get_storage_name(disk_props)
-                mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
-                storage_unique_name = self._get_storage_unique_name(disk_props)
+                volume_name = self._get_storage_name(disk_props)
                 volumeMounts.append({
-                    "volumeName": storage_name,
-                    "mountPath": mount_path,
+                    "volumeName": volume_name,
+                    "mountPath": self._get_storage_mount_path(disk_props),
                 })
                 volumes.append({
-                    "volumeName": storage_name,
-                    "storageName": storage_unique_name,
-                    "mountOptions": self.get_mount_options(disk_props),
+                    "volumeName": volume_name,
+                    "storageName": self._get_storage_unique_name(disk_props),
+                    "mountOptions": self._get_mount_options(disk_props),
                 })
         # print("Volume mounts: ", volumeMounts)
         # print("Volumes: ", volumes)
@@ -63,16 +61,6 @@ class AppConverter(BaseConverter):
             "volumeMounts": volumeMounts,
             "volumes": volumes,
         }        
-
-    def get_mount_options(self, disk_props):
-        mountOptions = self.DEFAULT_MOUNT_OPTIONS
-        if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
-            len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
-            mountOptions = ""
-            for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
-                mountOptions += ("," if mountOptions != "" else "") + option
-        # print("Mount options: ", mountOptions)
-        return mountOptions
 
     def get_template_name(self):
         return "app.bicep"
