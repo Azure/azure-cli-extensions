@@ -4,7 +4,7 @@ class LiveViewConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            live_view = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews')[0]
+            # live_view = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews')[0]
             name = "admin"
             configurations = []
             replicas = 1

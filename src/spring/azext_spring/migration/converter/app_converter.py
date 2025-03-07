@@ -14,9 +14,8 @@ class AppConverter(BaseConverter):
         super().__init__(source, transform_data)
 
     def transform_data_item(self, app):
-        appName = app['name'].split('/')[-1]
-        envName = app['name'].split('/')[0]
-        asa_deployments = self.wrapper_data.get_deployments_by_app(app['name'])
+        envName = self._get_parent_resource_name(app)
+        asa_deployments = self.wrapper_data.get_deployments_by_app(app)
         serviceBinds = self._get_service_bind(app, envName)
         deployments = self._get_deployments(asa_deployments)
         blueDeployment = deployments[0] if len(deployments) > 0 else {}
@@ -43,7 +42,7 @@ class AppConverter(BaseConverter):
         # print("Volume mounts: ", volumeMounts)
         # print("Volumes: ", volumes)
         return {
-            "containerAppName": appName,
+            "containerAppName": self._get_resource_name(app),
             "paramContainerAppImageName": self._get_param_name_of_container_image(app),
             "paramTargetPort": self._get_param_name_of_target_port(app),
             "moduleName": self._get_app_module_name(app),
@@ -63,9 +62,6 @@ class AppConverter(BaseConverter):
     def get_template_name(self):
         return "app.bicep"
     
-    def get_app_name(input_string):
-        return input_string.split('/')[-1]
-
     def _get_service_bind(self, app, envName):
         service_bind = []
         addon = app['properties'].get('addonConfigs')
@@ -107,7 +103,6 @@ class AppConverter(BaseConverter):
     def _get_deployments(self, asa_deployments):
         deployments = []
         for deployment in asa_deployments:
-            deployment_name = deployment['name'].split('/')[-1]
             env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
             liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
             readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
@@ -119,7 +114,7 @@ class AppConverter(BaseConverter):
             scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
             capacity = deployment.get('sku', {}).get('capacity')
             deployment = {
-                "name": deployment_name,
+                "name": self._get_resource_name(deployment),
                 "env": self._convert_env(env),
                 "livenessProbe": self._convert_probe(liveness_probe, tier),
                 "readinessProbe": self._convert_probe(readiness_probe, tier),

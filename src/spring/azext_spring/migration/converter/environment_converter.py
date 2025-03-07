@@ -6,7 +6,7 @@ class EnvironmentConverter(BaseConverter):
     def __init__(self, source):
         def transform_data():
             asa_service = self.wrapper_data.get_asa_service()
-            name = asa_service['name'].split('/')[-1]
+            name = self._get_resource_name(asa_service)
             apps = self.wrapper_data.get_apps()
             certs = self.wrapper_data.get_certificates()
             data = {
@@ -69,5 +69,5 @@ class EnvironmentConverter(BaseConverter):
     # get resource name of containerAppEnvStorageName
     def _get_resource_name_of_storage(self, app, disk_props):
         storage_name = self._get_storage_name(disk_props)
-        app_name = app['name'].split('/')[-1]
+        app_name = self._get_resource_name(app)
         return (app_name + "_" + storage_name).replace("-", "_")

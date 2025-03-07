@@ -5,13 +5,12 @@ class ParamConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            self.apps = self.wrapper_data.get_apps()
+            apps = self.wrapper_data.get_apps()
             storage_configs = []
             apps_data = []
-            for app in self.apps:
-                appName = app['name'].split('/')[-1]
+            for app in apps:
                 apps_data.append({
-                    "appName": appName,
+                    "appName": self._get_resource_name(app),
                     "paramContainerAppImageName": self._get_param_name_of_container_image(app),
                     "paramTargetPort": self._get_param_name_of_target_port(app),
                 })

@@ -5,22 +5,22 @@ class MainConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            apps = self.wrapper_data.get_apps()
             asa_certs = self.wrapper_data.get_certificates()
             certs = []
-            for item in asa_certs:
-                certName = item['name'].split('/')[-1]
+            for cert in asa_certs:
+                certName = self._get_resource_name(cert)
                 templateName = f"{certName}_cert.bicep"
                 certData = {
                     "certName": certName,
-                    "moduleName": self._get_cert_module_name(item),
+                    "moduleName": self._get_cert_module_name(cert),
                     "templateName": templateName,
                 }
                 certs.append(certData)
             storage_configs = []
             apps_data = []
+            apps = self.wrapper_data.get_apps()
             for app in apps:
-                appName = app['name'].split('/')[-1]
+                appName = self._get_resource_name(app)
                 templateName = f"{appName}_app.bicep"
                 appData = {
                     "appName": appName,

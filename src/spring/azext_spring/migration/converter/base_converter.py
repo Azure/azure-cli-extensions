@@ -42,11 +42,19 @@ class ConverterTemplate(ABC):
 # Base Converter Class
 # The BaseConverter class provides common utility methods that can be used by all concrete converter classes
 class BaseConverter(ConverterTemplate):
+
+# common
+    def _get_resource_name(self, resource):
+        return resource['name'].split('/')[-1]
+
+    def _get_parent_resource_name(self, resource):
+        return resource['name'].split('/')[0]
+
     # Extracts the resource name from a resource ID string in Azure ARM template format
     # Format: [resourceId('Microsoft.AppPlatform/Spring/<ResourceType>', '<parent_resource_name>', '<resource_name>')]
     # Example input: [resourceId('Microsoft.AppPlatform/Spring/storages', 'sample-service', 'storage1')]
     # Returns: 'storage1'
-    def _get_resource_name(self, resource_id):
+    def _get_name_from_resource_id(self, resource_id):
         # Extract content between square brackets
         content = resource_id.strip('[]').strip('resourceId()')
         # Split by comma and get the last parameter
@@ -56,9 +64,10 @@ class BaseConverter(ConverterTemplate):
         # print(f"Resource name: {result}")
         return result
 
+# storage
     def _get_storage_name(self, disk_props):
         storage_id = disk_props.get('storageId', '')
-        return self._get_resource_name(storage_id) if storage_id else ''
+        return self._get_name_from_resource_id(storage_id) if storage_id else ''
 
     def _get_storage_mount_path(self, disk_props):
         return disk_props.get('customPersistentDiskProperties').get('mountPath')
@@ -73,7 +82,7 @@ class BaseConverter(ConverterTemplate):
     def _get_storage_account_name(self, disk_props):
         storages = self.wrapper_data.get_storages()
         storage_map = {
-            storage['name'].split('/')[-1]: storage['properties']['accountName'] 
+            self._get_resource_name(storage): storage['properties']['accountName'] 
             for storage in storages
         }
         storage_name = self._get_storage_name(disk_props)
@@ -102,22 +111,22 @@ class BaseConverter(ConverterTemplate):
 
 # module name
     def _get_app_module_name(self, app):
-        appName = app['name'].split('/')[-1]
+        appName = self._get_resource_name(app)
         return appName.replace("-", "_")
 
     def _get_cert_module_name(self, cert):
-        certName = cert['name'].split('/')[-1]
+        certName = self._get_resource_name(cert)
         return "cert_" + certName.replace("-", "_")
 
 # param name
     # get param name of paramContainerAppImageName
     def _get_param_name_of_container_image(self, app):
-        appName = app['name'].split('/')[-1]
+        appName = self._get_resource_name(app)
         return "containerImageOf_"+appName.replace("-", "_")
 
     # get param name of paramTargetPort
     def _get_param_name_of_target_port(self, app):
-        appName = app['name'].split('/')[-1]
+        appName = self._get_resource_name(app)
         return "targetPortOf_"+appName.replace("-", "_")
     
     # get param name of paramContainerAppEnvStorageAccountKey
@@ -165,9 +174,9 @@ class SourceDataWrapper:
     def get_deployments(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
         
-    def get_deployments_by_app(self, app_name):
+    def get_deployments_by_app(self, app):
         deployments = self.get_deployments()
-        return [deployment for deployment in deployments if deployment['name'].startswith(f"{app_name}/")]
+        return [deployment for deployment in deployments if deployment['name'].startswith(f"{app['name']}/")]
 
     def is_enterprise_tier(self):
         return self.get_asa_service()['sku']['tier'] == 'Enterprise'

@@ -53,7 +53,7 @@ class GatewayConverter(BaseConverter):
         name_counter = {}
         if routes:
             for route in routes:
-                base_name = route['name'].split('/')[-1]
+                base_name = self._get_resource_name(route)
                 aca_uri = self._get_uri_from_route(route)
                 if route.get('properties', {}).get('routes') is not None:
                     for r in route['properties']['routes']:

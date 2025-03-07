@@ -15,22 +15,21 @@ class CertConverter(BaseConverter):
         super().__init__(source, transform_data)
 
     def transform_data_item(self, cert):
-        certName = cert['name'].split('/')[-1]
         isKeyVaultCert = False
-        cert = {
-            "certName": certName,
+        cert_data = {
+            "certName": self._get_resource_name(cert),
             "moduleName": self._get_cert_module_name(cert),
             "certificateType": "ServerSSLCertificate",
         }
         certKeyVault = self._get_cert_key_vault(cert)
         if certKeyVault:
-            cert["certificateKeyVaultProperties"] = certKeyVault
+            cert_data["certificateKeyVaultProperties"] = certKeyVault
             isKeyVaultCert = True
         else:
-            cert["value"] = "*"
+            cert_data["value"] = "*"
             isKeyVaultCert = False
-        cert["isKeyVaultCert"] = isKeyVaultCert
-        return cert        
+        cert_data["isKeyVaultCert"] = isKeyVaultCert
+        return cert_data        
 
     def get_template_name(self):
         return "cert.bicep"
