@@ -2,6 +2,23 @@
 
 Release History
 ===============
+
+
+1.6.0
+++++++
+* Add support for engine reference identity using CLI. Engine reference identity can be set using `--engine-ref-id-type` and `--engine-ref-ids` argument in 'az load test create' and 'az load test update' commands. Engine reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Engine` will also be honoured.
+
+
+1.5.0
+++++++
+* Add support for Locust based load tests.
+
+
+1.4.3
+++++++
+* Updated the vendored_sdks to include 2024-12-01-preview data plane API version.
+
+
 1.4.2
 ++++++
 * Update minimum required version of azure-cli-core to 2.66.0. This is needed to use `from azure.cli.core.util import run_az_cmd`, which is used in download-files command for high-scale load tests.

@@ -9,6 +9,22 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+Pending
++++++++
+* Vendor new SDK and bump API version to 2024-10-02-preview.
+
+13.0.0b8
++++++++
+* `az aks create/update``: Update recording rule group create logic for managed prometheus addon
+
+13.0.0b7
++++++++
+* Add `--max-unavailable` to the `az aks nodepool add/update/upgrade` commands.
+
+13.0.0b6
++++++++
+* `az aks create/update`: Update parameter description of `--custom-ca-certificates`.
+
 13.0.0b5
 +++++++
 * `az aks create/az aks nodepool add`: Emit error message when using `--asg-ids` alone without `--allowed-host-ports`.
@@ -24,9 +40,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 13.0.0b2
 +++++++
 * `az aks create/update`: Update advanced container networking service (acns) with 2024-09-02-preview API version enablement.
-
-Pending
-+++++++
 * Vendor new SDK and bump API version to 2024-09-02-preview.
 
 13.0.0b1

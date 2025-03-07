@@ -92,7 +92,7 @@ test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file.",
+    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file. If `testType: Locust`: path to the Locust test script.",
 )
 
 test_type = CLIArgumentType(
@@ -279,7 +279,7 @@ server_metric_id = CLIArgumentType(
     validator=validators.validate_metric_id,
     options_list=["--metric-id"],
     type=str,
-    help="Fully qualified ID of the server metric. Refer https://docs.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition",
+    help="Fully qualified ID of the server metric. Refer https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition",
 )
 
 server_metric_name = CLIArgumentType(
@@ -390,6 +390,23 @@ regionwise_engines = CLIArgumentType(
     validator=validators.validate_regionwise_engines,
     nargs="+",
     help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
+)
+
+engine_ref_id_type = CLIArgumentType(
+    options_list=["--engine-ref-id-type"],
+    type=str,
+    completer=get_generic_completion_list(
+        utils.get_enum_values(models.EngineIdentityType)
+    ),
+    choices=utils.get_enum_values(models.EngineIdentityType),
+    help="Type of identity to be configured for the engine.",
+)
+
+engine_ref_ids = CLIArgumentType(
+    options_list=["--engine-ref-ids"],
+    nargs="+",
+    validator=validators.validate_engine_ref_ids,
+    help="Space separated list of fully qualified resource IDs of the managed identities to be configured on the engine. Required only for user assigned identities. ",
 )
 
 response_time_aggregate = CLIArgumentType(

@@ -7,6 +7,8 @@ import uuid
 
 from azext_load.data_plane.utils.constants import LoadTestConfigKeys
 from azext_load.data_plane.utils import validators
+from azext_load.data_plane.utils.models import EngineIdentityType
+from azure.mgmt.core.tools import is_valid_resource_id
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
@@ -137,3 +139,43 @@ def yaml_parse_loadtest_configuration(cmd, data):
     if data.get(LoadTestConfigKeys.SPLIT_CSV) is not None:
         load_test_configuration["splitAllCSVs"] = _yaml_parse_splitcsv(data=data)
     return load_test_configuration
+
+
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
+def yaml_parse_engine_identities(data):
+    engine_identities = []
+    reference_type = None
+    reference_identities = data.get(LoadTestConfigKeys.REFERENCE_IDENTITIES)
+    for identity in reference_identities:
+        if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
+            curr_ref_type = identity.get(LoadTestConfigKeys.TYPE)
+            curr_ref_value = identity.get(LoadTestConfigKeys.VALUE)
+            if reference_type and curr_ref_type != reference_type:
+                raise InvalidArgumentValueError(
+                    "Engine identity type should be either None, SystemAssigned, or UserAssigned. A combination of identity types are not supported."
+                )
+            if curr_ref_type != EngineIdentityType.UserAssigned:
+                if curr_ref_value:
+                    raise InvalidArgumentValueError(
+                        "Reference identity value should be provided only for UserAssigned identity type."
+                    )
+            else:
+                if not is_valid_resource_id(curr_ref_value):
+                    raise InvalidArgumentValueError(
+                        "%s is not a valid resource id" % curr_ref_value
+                    )
+            engine_identities.append(curr_ref_value)
+            reference_type = curr_ref_type
+    return reference_type, engine_identities
+
+
+def update_engine_reference_identity(new_body, data):
+    if data.get(LoadTestConfigKeys.REFERENCE_IDENTITIES):
+        for identity in data[LoadTestConfigKeys.REFERENCE_IDENTITIES]:
+            if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
+                new_body["engineBuiltinIdentityType"], new_body["engineBuiltinIdentityIds"] = yaml_parse_engine_identities(data=data)
+                if new_body["engineBuiltinIdentityType"] in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]:
+                    new_body.pop("engineBuiltinIdentityIds")
+                break
+# pylint: enable=line-too-long
