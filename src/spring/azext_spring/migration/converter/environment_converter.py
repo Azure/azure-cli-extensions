@@ -53,12 +53,9 @@ class EnvironmentConverter(BaseConverter):
             if 'properties' in app and 'customPersistentDisks' in app['properties']:
                 disks = app['properties']['customPersistentDisks']
                 for disk_props in disks:
-                    storage_name = self._get_storage_name(disk_props)
-                    app_name = app['name'].split('/')[-1]
                     # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
-                    containerAppEnvStorageName = (app_name + "_" + storage_name).replace("-", "_")
                     storage_config = {
-                        'containerAppEnvStorageName': containerAppEnvStorageName,
+                        'containerAppEnvStorageName': self._get_resource_name_of_storage(app, disk_props),
                         'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
                         'storageName': self._get_storage_unique_name(disk_props),
                         'shareName': self._get_storage_share_name(disk_props),
@@ -68,3 +65,9 @@ class EnvironmentConverter(BaseConverter):
                     storage_configs.append(storage_config)
         # print("storage_configs:", storage_configs)
         return storage_configs
+
+    # get resource name of containerAppEnvStorageName
+    def _get_resource_name_of_storage(self, app, disk_props):
+        storage_name = self._get_storage_name(disk_props)
+        app_name = app['name'].split('/')[-1]
+        return (app_name + "_" + storage_name).replace("-", "_")
