@@ -2,7 +2,7 @@
 Release History
 ===============
 1.2.1
-* Remove restore validations from 'azure cosmosdb restore' command
+* 'az cosmosdb restore': Remove restore validations which would cause timeouts for large restore
 
 +++++++
 1.2.0
