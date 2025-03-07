@@ -4045,21 +4045,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             agentpool_details = {}
             from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
-            (
-                is_extension_installed,
-                is_azureDisk_enabled,
-                is_elasticSan_enabled,
-                is_ephemeralDisk_localssd_enabled,
-                is_ephemeralDisk_nvme_enabled,
-                current_core_value,
-                existing_ephemeral_disk_volume_type,
-                existing_perf_tier,
-            ) = get_extension_installed_and_cluster_configs(
-                self.cmd,
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-                mc.agent_pool_profiles,
-            )
+            
+            try:
+                (
+                    is_extension_installed,
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                    current_core_value,
+                    existing_ephemeral_disk_volume_type,
+                    existing_perf_tier,
+                ) = get_extension_installed_and_cluster_configs(
+                    self.cmd,
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    mc.agent_pool_profiles,
+                )
+            except UnknownError as e:
+                logger.error(f"\nError fetching installed extension and cluster config: {e}")
+                return mc
+            except Exception as ex:
+                logger.error(f"\Exception fetching installed extension and cluster config: {ex}")
+                return mc
 
             vm_cache_generated = self.context.get_intermediate(
                 "vm_cache_generated",
