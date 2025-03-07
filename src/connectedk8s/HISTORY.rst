@@ -7,6 +7,7 @@ Release History
 ++++++
 * Added support for discovering additional k8s distributions and Infrastructure.
 * Updated Connect command help to indicate the kubeconfig prerequisite.
+* Fixed the issue where the 'connectedk8s proxy' command would fail with newer versions of the Azure CLI.
 
 1.10.6
 ++++++
