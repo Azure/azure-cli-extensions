@@ -55,7 +55,7 @@ class EnvironmentConverter(BaseConverter):
                 for disk_props in disks:
                     # Get the account name from storage map using storageId
                     storage_name = self._get_storage_name(disk_props)
-                    account_name = self._get_account_name(disk_props)
+                    account_name = self._get_storage_account_name(disk_props)
                     share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
                     app_name = app['name'].split('/')[-1]
                     readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)

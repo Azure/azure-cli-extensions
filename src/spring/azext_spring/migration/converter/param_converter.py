@@ -20,7 +20,7 @@ class ParamConverter(BaseConverter):
                     for disk_props in disks:
                         storage_config = {
                             'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
-                            'accountName': self._get_account_name(disk_props),
+                            'accountName': self._get_storage_account_name(disk_props),
                         }
                         storage_configs.append(storage_config)
             return {
