@@ -1030,13 +1030,11 @@ def cli_cosmosdb_restore(cmd,
     if restore_timestamp_datetime_utc > current_dateTime:
         raise CLIError("Restore timestamp {} should be less than current timestamp {}".format(restore_timestamp_datetime_utc, current_dateTime))
 
-    is_source_restorable_account_deleted = False
     for account in restorable_database_accounts_list:
         if account.account_name == account_name:
             if account.deletion_time is not None:
                 if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
                     target_restorable_account = account
-                    is_source_restorable_account_deleted = True
                     break
             else:
                 if restore_timestamp_datetime_utc >= account.creation_time:
