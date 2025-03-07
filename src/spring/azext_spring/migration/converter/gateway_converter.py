@@ -86,7 +86,8 @@ class GatewayConverter(BaseConverter):
             for f in r.get('filters'):
                 if 'cors' in f.lower():
                     logger.warning(f"Mismatch: The cors filter '{f}' of route '{route_name}' is not supported in gateway for Spring in Azure Container Apps, refer to migration doc for further steps.")
-                filters.append(f)
+                else:
+                    filters.append(f)
         return filters
 
     def _check_features(self, scg_properties):
