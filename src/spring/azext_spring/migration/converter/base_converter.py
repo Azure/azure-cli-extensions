@@ -53,7 +53,19 @@ class ConverterTemplate(ABC):
         # print(f"Resource name: {result}")
         return result
 
-    def _get_storage_unique_name(self, storage_name, account_name, share_name, mount_path, access_mode):
+    def _get_storage_unique_name(self, disk_props):
+        storages = self.wrapper_data.get_storages()
+        storage_map = {
+            storage['name'].split('/')[-1]: storage['properties']['accountName'] 
+            for storage in storages
+        }
+        storage_id = disk_props.get('storageId', '')
+        storage_name = self._get_resource_name(storage_id) if storage_id else ''
+        account_name = storage_map.get(storage_name, '')
+        share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
+        mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
+        readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
+        access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
         storage_unique_name = f"{storage_name}|{account_name}|{share_name}|{mount_path}|{access_mode}"
         hash_value = hashlib.md5(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
         result = f"{storage_name}{hash_value}"

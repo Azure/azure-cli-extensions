@@ -5,7 +5,7 @@ class EnvironmentConverter(ConverterTemplate):
 
     def __init__(self, source):
         def transform_data():
-            asa_service = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
+            asa_service = self.wrapper_data.get_asa_service()
             name = asa_service['name'].split('/')[-1]
             apps = self.wrapper_data.get_apps()
             storages = self.wrapper_data.get_storages()
@@ -69,9 +69,8 @@ class EnvironmentConverter(ConverterTemplate):
                     app_name = app['name'].split('/')[-1]
                     readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
                     access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
-                    mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
                     # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
-                    storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
+                    storage_unique_name = self._get_storage_unique_name(disk_props)
                     containerAppEnvStorageName = (app_name + "_" + storage_name).replace("-", "_")
                     containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
                     # print("storage_unique_name:", storage_unique_name)

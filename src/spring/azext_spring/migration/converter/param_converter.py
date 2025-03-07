@@ -26,13 +26,8 @@ class ParamConverter(ConverterTemplate):
                         # Get the account name from storage map using storageId
                         storage_id = disk_props.get('storageId', '')
                         storage_name = self._get_resource_name(storage_id) if storage_id else ''
-                        app_name = app['name'].split('/')[-1]
                         account_name = storage_map.get(storage_name, '')
-                        share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
-                        readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
-                        access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
-                        mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')     
-                        storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
+                        storage_unique_name = self._get_storage_unique_name(disk_props)
                         containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
                         # print("storage_unique_name:", storage_unique_name)
                         storage_config = {
