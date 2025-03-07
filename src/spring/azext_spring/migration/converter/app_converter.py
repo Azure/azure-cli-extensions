@@ -32,10 +32,7 @@ class AppConverter(ConverterTemplate):
         if 'properties' in app and 'customPersistentDisks' in app['properties']:
             disks = app['properties']['customPersistentDisks']
             for disk_props in disks:
-                # print(f"Disk props: {disk_props}")
-                storage_id = disk_props.get('storageId', '')
-                storage_name = self._get_resource_name(storage_id) if storage_id else ''
-                # print("Storage name: ", storage_name)
+                storage_name = self._get_storage_name(disk_props)
                 mountOptions = self.DEFAULT_MOUNT_OPTIONS
                 if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
                     len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:

@@ -62,8 +62,7 @@ class EnvironmentConverter(ConverterTemplate):
                 disks = app['properties']['customPersistentDisks']
                 for disk_props in disks:
                     # Get the account name from storage map using storageId
-                    storage_id = disk_props.get('storageId', '')
-                    storage_name = self._get_resource_name(storage_id) if storage_id else ''
+                    storage_name = self._get_storage_name(disk_props)
                     account_name = storage_map.get(storage_name, '')
                     share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
                     app_name = app['name'].split('/')[-1]
