@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "k8s-runtime load-balancer",
+    "k8s-runtime bfd-profile",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage load balancers of Arc Kubernetes clusters
+    """Manage Bfd Profile
     """
     pass
 
