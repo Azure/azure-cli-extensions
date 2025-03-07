@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.1.1
+++++++
+Adde a breaking change warning message for Build 2025 and `--associate-public-ip` parameter.
+
 2.0.3
 ++++++
 Added new long parameter functionality in `vm repair run` cmd `parameters` parameter. When using the prefix `++`, the entire key=value string will be sent to the running script, not just the value.
