@@ -56,7 +56,7 @@ from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingR
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False):  
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None):  
     """  
     This function creates a repair VM.  
       
@@ -75,19 +75,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - distro: The Linux distribution to use for the repair VM. Default is 'ubuntu'.  
     - yes: If True, confirmation prompts will be skipped. Default is False.  
     - encrypt_recovery_key: The Bitlocker recovery key to use for encrypting the VM. Default is an empty string.  
-    - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard. 
+    - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard.
+    - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS. 
     """  
     
-    # A warning about a future breaking change.  
-    logger.warning('After the November 2024 release, if the image of the source Windows VM is not found, the \'az vm repair create\' command will default to use a 2022-Datacenter image for the repair VM.')  
-      
     # Logging all the command parameters, except the sensitive data.
     # Mask sensitive information
     masked_repair_password = '****' if repair_password else None
     masked_repair_username = '****' if repair_username else None
     masked_repair_encrypt_recovery_key = '****' if encrypt_recovery_key else None
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s', 
-                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch)  
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s', 
+                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type)  
   
     # Initializing a command helper object.  
     command = command_helper(logger, cmd, 'vm repair create')  
@@ -205,8 +203,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('Creating resource group for repair VM and its resources...')  
             _call_az_command(create_resource_group_command)  
 
+        # Check if user is changing the Repair VM os disk type
+        if os_disk_type:
+            create_repair_vm_command += ' --storage-sku {os_disk_type} '.format(os_disk_type=os_disk_type)
 
-                # Check if the source VM uses managed disks.  
+        # Check if the source VM uses managed disks.  
         # If it does, the repair VM will also be created with managed disks.  
         if is_managed:  
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')  
@@ -218,7 +219,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # The command includes the resource group name, copy disk name, target disk name, SKU, location, and OS type.  
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
                 .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)  
-  
             # If the Hyper-V generation for the disk is available, append it to the copy disk command.  
             if hyperV_generation:  
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)  
@@ -233,11 +233,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if source_vm.zones:  
                 zone = source_vm.zones[0]  
                 copy_disk_command += ' --zone {zone}'.format(zone=zone)  
-  
+    
             # Execute the command to create a copy of the OS disk of the source VM.  
             logger.info('Copying OS disk of source VM...')  
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')  
-
 
             # Depending on the operating system of the source VM and whether it's encrypted, different steps are taken.  
             # If the source VM is not a Linux machine, create the repair VM.  
