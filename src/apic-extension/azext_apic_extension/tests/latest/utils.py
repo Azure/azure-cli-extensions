@@ -460,3 +460,45 @@ class ApimServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             template = 'To create an API Center service is required. Please add ' \
                        'decorator @{} in front of this preparer.'
             raise CliTestError(template.format(ApicServicePreparer.__name__))    
+
+
+class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+    def __init__(self, name_prefix='clianalysisconfig', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name', random_name_length=24):
+        super(ApiAnalysisPreparer, self).__init__(name_prefix, random_name_length)
+        self.cli_ctx = get_dummy_cli()
+        self.parameter_name = parameter_name
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.api_service_parameter_name = api_service_parameter_name
+        self.key = parameter_name
+
+    def create_resource(self, name, **kwargs):
+        group = self._get_resource_group(**kwargs)
+        service = self._get_apic_service(**kwargs)
+
+        template = 'az apic api-analysis create -g {} -n {} -c {}'
+        cmd = template.format(group, service, name)
+        print(cmd)
+        self.live_only_execute(self.cli_ctx, cmd)
+
+        self.test_class_instance.kwargs[self.key] = name
+        return {self.parameter_name: name}
+
+    def remove_resource(self, name, **kwargs):
+        # ResourceGroupPreparer will delete everything
+        pass
+
+    def _get_resource_group(self, **kwargs):
+        try:
+            return kwargs.get(self.resource_group_parameter_name)
+        except KeyError:
+            template = 'To create an API Analysis configuration, a resource group is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ResourceGroupPreparer.__name__))
+
+    def _get_apic_service(self, **kwargs):
+        try:
+            return kwargs.get(self.api_service_parameter_name)
+        except KeyError:
+            template = 'To create an API Analysis configuration, an API Center service is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ApicServicePreparer.__name__))
