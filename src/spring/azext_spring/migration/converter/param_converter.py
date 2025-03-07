@@ -6,11 +6,6 @@ class ParamConverter(ConverterTemplate):
     def __init__(self, source):
         def transform_data():
             self.apps = self.wrapper_data.get_apps()
-            self.storages = self.wrapper_data.get_storages()
-            storage_map = {
-                    storage['name'].split('/')[-1]: storage['properties']['accountName'] 
-                    for storage in self.storages
-                }        
             storage_configs = []
             apps_data = []
             for app in self.apps:
@@ -24,8 +19,7 @@ class ParamConverter(ConverterTemplate):
                     disks = app['properties']['customPersistentDisks']
                     for disk_props in disks:
                         # Get the account name from storage map using storageId
-                        storage_name = self._get_storage_name(disk_props)
-                        account_name = storage_map.get(storage_name, '')
+                        account_name = self._get_account_name(disk_props)
                         storage_unique_name = self._get_storage_unique_name(disk_props)
                         containerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
                         # print("storage_unique_name:", storage_unique_name)

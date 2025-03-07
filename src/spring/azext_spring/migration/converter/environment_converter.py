@@ -8,12 +8,11 @@ class EnvironmentConverter(ConverterTemplate):
             asa_service = self.wrapper_data.get_asa_service()
             name = asa_service['name'].split('/')[-1]
             apps = self.wrapper_data.get_apps()
-            storages = self.wrapper_data.get_storages()
             certs = self.wrapper_data.get_certificates()
             data = {
                 "containerAppEnvName": name,
                 "containerAppLogAnalyticsName": f"log-{name}",
-                "storages": self._get_app_storage_configs(apps, storages),
+                "storages": self._get_app_storage_configs(apps),
             }
             if self._need_identity(certs):
                 data["identity"] = {
@@ -47,15 +46,8 @@ class EnvironmentConverter(ConverterTemplate):
             return True
         return False
 
-    def _get_app_storage_configs(self, apps, storages):
+    def _get_app_storage_configs(self, apps):
         storage_configs = []
-        
-        # Create a mapping of storage IDs to account names
-        storage_map = {
-            storage['name'].split('/')[-1]: storage['properties']['accountName'] 
-            for storage in storages
-        }
-        # print("storage_map:", storage_map)
         for app in apps:
             # Check if app has properties and customPersistentDiskProperties
             if 'properties' in app and 'customPersistentDisks' in app['properties']:
@@ -63,7 +55,7 @@ class EnvironmentConverter(ConverterTemplate):
                 for disk_props in disks:
                     # Get the account name from storage map using storageId
                     storage_name = self._get_storage_name(disk_props)
-                    account_name = storage_map.get(storage_name, '')
+                    account_name = self._get_account_name(disk_props)
                     share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
                     app_name = app['name'].split('/')[-1]
                     readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
