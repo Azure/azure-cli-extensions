@@ -81,6 +81,21 @@ class BaseConverter(ConverterTemplate):
         result = f"{storage_name}{hash_value}"
         return result[:32]  # Ensure total length is no more than 32
 
+    # get param name of paramContainerAppImageName
+    def _get_param_name_of_container_image(self, app):
+        appName = app['name'].split('/')[-1]
+        return "containerImageOf_"+appName.replace("-", "_")
+
+    # get param name of paramTargetPort
+    def _get_param_name_of_target_port(self, app):
+        appName = app['name'].split('/')[-1]
+        return "targetPortOf_"+appName.replace("-", "_")
+    
+    # get param name of paramContainerAppEnvStorageAccountKey
+    def _get_param_name_of_storage_account_key(self, disk_props):
+        storage_unique_name = self._get_storage_unique_name(disk_props)
+        return "containerAppEnvStorageAccountKeyOf_" + storage_unique_name
+
 class SourceDataWrapper:
     def __init__(self, source):
         self.source = source

@@ -28,18 +28,14 @@ class MainConverter(BaseConverter):
                     "appName": appName,
                     "moduleName": moduleName,
                     "templateName": templateName,
-                    "paramContainerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
-                    "paramTargetPort": "targetPortFor_"+appName.replace("-", "_"),
+                    "paramContainerAppImageName": self._get_param_name_of_container_image(app),
+                    "paramTargetPort": self._get_param_name_of_target_port(app),
                 }
                 if 'properties' in app and 'customPersistentDisks' in app['properties']:
                     disks = app['properties']['customPersistentDisks']
                     for disk_props in disks:
-                        # Get the account name from storage map using storageId
-                        storage_unique_name = self._get_storage_unique_name(disk_props)
-                        # print("storage_unique_name:", storage_unique_name)
-                        paramContainerAppEnvStorageAccountKey = "containerAppEnvStorageAccountKey_" + storage_unique_name
                         storage_config = {
-                            'paramContainerAppEnvStorageAccountKey': paramContainerAppEnvStorageAccountKey,
+                            'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
                         }
                         storage_configs.append(storage_config)
 
