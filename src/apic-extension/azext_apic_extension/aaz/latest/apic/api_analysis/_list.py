@@ -215,9 +215,39 @@ class List(AAZCommand):
                 serialized_name="analyzerType",
                 flags={"required": True},
             )
+            properties.description = AAZStrType()
+            properties.filter = AAZObjectType()
             properties.state = AAZStrType(
                 flags={"read_only": True},
             )
+            properties.title = AAZStrType(
+                flags={"required": True},
+            )
+
+            filter = cls._schema_on_200.value.Element.properties.filter
+            filter.api_definitions = AAZListType(
+                serialized_name="apiDefinitions",
+                flags={"required": True},
+            )
+            filter.api_versions = AAZListType(
+                serialized_name="apiVersions",
+                flags={"required": True},
+            )
+            filter.apis = AAZListType(
+                flags={"required": True},
+            )
+
+            api_definitions = cls._schema_on_200.value.Element.properties.filter.api_definitions
+            api_definitions.Element = AAZFreeFormDictType()
+            _ListHelper._build_schema_analyzer_filter_condition_read(api_definitions.Element)
+
+            api_versions = cls._schema_on_200.value.Element.properties.filter.api_versions
+            api_versions.Element = AAZFreeFormDictType()
+            _ListHelper._build_schema_analyzer_filter_condition_read(api_versions.Element)
+
+            apis = cls._schema_on_200.value.Element.properties.filter.apis
+            apis.Element = AAZFreeFormDictType()
+            _ListHelper._build_schema_analyzer_filter_condition_read(apis.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -244,6 +274,16 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_analyzer_filter_condition_read = None
+
+    @classmethod
+    def _build_schema_analyzer_filter_condition_read(cls, _schema):
+        if cls._schema_analyzer_filter_condition_read is not None:
+            return
+
+        cls._schema_analyzer_filter_condition_read = _schema_analyzer_filter_condition_read = AAZFreeFormDictType()
+
 
 
 __all__ = ["List"]
