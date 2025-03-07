@@ -2,7 +2,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_load.tests.latest.constants import LoadTestConstants
+from azext_load.tests.latest.constants import LoadTestTriggerConstants
 from azext_load.tests.latest.preparers import LoadTestResourcePreparer
 from azure.cli.testsdk import (
     JMESPathCheck,
@@ -101,134 +101,134 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     def test_create_and_verify_trigger_schedules(self, rg, load):
         # Test Daily Recurrence
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id-daily",
-            description="Test trigger schedule daily",
-            display_name="Test Trigger Daily",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-daily"
+            trigger_id=LoadTestTriggerConstants.DAILY_TRIGGER_ID,
+            description=LoadTestTriggerConstants.DAILY_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.DAILY_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.DAILY_RECURRENCE_INTERVAL,
+            test_ids=LoadTestTriggerConstants.DAILY_TEST_IDS
         )
         self.verify_trigger_schedule(
-            trigger_id="test-trigger-id-daily",
-            description="Test trigger schedule daily",
-            display_name="Test Trigger Daily",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-daily"
+            trigger_id=LoadTestTriggerConstants.DAILY_TRIGGER_ID,
+            description=LoadTestTriggerConstants.DAILY_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.DAILY_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.DAILY_RECURRENCE_INTERVAL,
+            test_ids=LoadTestTriggerConstants.DAILY_TEST_IDS
         )
 
         # Test Weekly Recurrence
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id-weekly",
-            description="Test trigger schedule weekly",
-            display_name="Test Trigger Weekly",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Weekly",
-            recurrence_interval=1,
-            recurrence_week_days="Monday Tuesday",
-            test_ids="test-id-weekly"
+            trigger_id=LoadTestTriggerConstants.WEEKLY_TRIGGER_ID,
+            description=LoadTestTriggerConstants.WEEKLY_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.WEEKLY_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.WEEKLY_RECURRENCE_INTERVAL,
+            recurrence_week_days=LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS,
+            test_ids=LoadTestTriggerConstants.WEEKLY_TEST_IDS
         )
         self.verify_trigger_schedule(
-            trigger_id="test-trigger-id-weekly",
-            description="Test trigger schedule weekly",
-            display_name="Test Trigger Weekly",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Weekly",
-            recurrence_interval=1,
-            recurrence_week_days="Monday Tuesday",
-            test_ids="test-id-weekly"
+            trigger_id=LoadTestTriggerConstants.WEEKLY_TRIGGER_ID,
+            description=LoadTestTriggerConstants.WEEKLY_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.WEEKLY_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.WEEKLY_RECURRENCE_INTERVAL,
+            recurrence_week_days=LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS,
+            test_ids=LoadTestTriggerConstants.WEEKLY_TEST_IDS
         )
 
         # Test Monthly By Dates Recurrence
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id-monthly-dates",
-            description="Test trigger schedule monthly by dates",
-            display_name="Test Trigger Monthly By Dates",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="MonthlyByDates",
-            recurrence_interval=1,
-            recurrence_dates_in_month="1 15",
-            test_ids="test-id-monthly-dates"
+            trigger_id=LoadTestTriggerConstants.MONTHLY_DATES_TRIGGER_ID,
+            description=LoadTestTriggerConstants.MONTHLY_DATES_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.MONTHLY_DATES_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL,
+            recurrence_dates_in_month=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH,
+            test_ids=LoadTestTriggerConstants.MONTHLY_DATES_TEST_IDS
         )
         self.verify_trigger_schedule(
-            trigger_id="test-trigger-id-monthly-dates",
-            description="Test trigger schedule monthly by dates",
-            display_name="Test Trigger Monthly By Dates",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="MonthlyByDates",
-            recurrence_interval=1,
-            recurrence_dates_in_month="1 15",
-            test_ids="test-id-monthly-dates"
+            trigger_id=LoadTestTriggerConstants.MONTHLY_DATES_TRIGGER_ID,
+            description=LoadTestTriggerConstants.MONTHLY_DATES_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.MONTHLY_DATES_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL,
+            recurrence_dates_in_month=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH,
+            test_ids=LoadTestTriggerConstants.MONTHLY_DATES_TEST_IDS
         )
 
         # Test Monthly By Days Recurrence
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id-monthly-days",
-            description="Test trigger schedule monthly by days",
-            display_name="Test Trigger Monthly By Days",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="MonthlyByDays",
-            recurrence_interval=1,
-            recurrence_week_days="Monday",
-            recurrence_index=1,
-            test_ids="test-id-monthly-days"
+            trigger_id=LoadTestTriggerConstants.MONTHLY_DAYS_TRIGGER_ID,
+            description=LoadTestTriggerConstants.MONTHLY_DAYS_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.MONTHLY_DAYS_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INTERVAL,
+            recurrence_week_days=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS,
+            recurrence_index=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INDEX,
+            test_ids=LoadTestTriggerConstants.MONTHLY_DAYS_TEST_IDS
         )
         self.verify_trigger_schedule(
-            trigger_id="test-trigger-id-monthly-days",
-            description="Test trigger schedule monthly by days",
-            display_name="Test Trigger Monthly By Days",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="MonthlyByDays",
-            recurrence_interval=1,
-            recurrence_week_days="Monday",
-            recurrence_index=1,
-            test_ids="test-id-monthly-days"
+            trigger_id=LoadTestTriggerConstants.MONTHLY_DAYS_TRIGGER_ID,
+            description=LoadTestTriggerConstants.MONTHLY_DAYS_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.MONTHLY_DAYS_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INTERVAL,
+            recurrence_week_days=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS,
+            recurrence_index=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INDEX,
+            test_ids=LoadTestTriggerConstants.MONTHLY_DAYS_TEST_IDS
         )
 
         # Test Cron Recurrence
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id-cron",
-            description="Test trigger schedule cron",
-            display_name="Test Trigger Cron",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Cron",
-            recurrence_cron_expression="0 0 12 * *",
-            test_ids="test-id-cron"
+            trigger_id=LoadTestTriggerConstants.CRON_TRIGGER_ID,
+            description=LoadTestTriggerConstants.CRON_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.CRON_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.CRON_RECURRENCE_TYPE,
+            recurrence_cron_expression=LoadTestTriggerConstants.CRON_RECURRENCE_CRON_EXPRESSION,
+            test_ids=LoadTestTriggerConstants.CRON_TEST_IDS
         )
         self.verify_trigger_schedule(
-            trigger_id="test-trigger-id-cron",
-            description="Test trigger schedule cron",
-            display_name="Test Trigger Cron",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Cron",
-            recurrence_cron_expression="0 0 12 * *",
-            test_ids="test-id-cron"
+            trigger_id=LoadTestTriggerConstants.CRON_TRIGGER_ID,
+            description=LoadTestTriggerConstants.CRON_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.CRON_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.CRON_RECURRENCE_TYPE,
+            recurrence_cron_expression=LoadTestTriggerConstants.CRON_RECURRENCE_CRON_EXPRESSION,
+            test_ids=LoadTestTriggerConstants.CRON_TEST_IDS
         )
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_update_trigger_schedule(self, rg, load):
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id",
-            description="Initial description",
-            display_name="Initial Display Name",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-update"
+            trigger_id=LoadTestTriggerConstants.UPDATE_TRIGGER_ID,
+            description=LoadTestTriggerConstants.UPDATE_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.UPDATE_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            test_ids=LoadTestTriggerConstants.UPDATE_TEST_IDS
         )
 
         self.kwargs.update({
-            "trigger_id": "test-trigger-id",
+            "trigger_id": LoadTestTriggerConstants.UPDATE_TRIGGER_ID,
             "description": "Updated test trigger schedule",
             "display_name": "Updated Test Trigger",
             "start_date_time": "2025-04-01T00:00:00Z",
             "recurrence_type": "Weekly",
             "recurrence_interval": 2,
             "recurrence_week_days": "Monday",
-            "test_ids": "test-id-update"
+            "test_ids": LoadTestTriggerConstants.UPDATE_TEST_IDS
         })
 
         checks = [
@@ -260,22 +260,22 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @LoadTestResourcePreparer(**load_params)
     def test_list_trigger_schedules(self, rg, load):
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id",
-            description="Test trigger schedule",
-            display_name="Test Trigger",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-list"
+            trigger_id=LoadTestTriggerConstants.LIST_TRIGGER_ID,
+            description=LoadTestTriggerConstants.LIST_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.LIST_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            test_ids=LoadTestTriggerConstants.LIST_TEST_IDS
         )
 
         self.kwargs.update({
-            "description": "Test trigger schedule",
-            "display_name": "Test Trigger",
-            "start_date_time": "2025-03-31T23:59:59Z",
-            "recurrence_type": "Daily",
-            "recurrence_interval": 1,
-            "test_ids": "test-id-list"
+            "description": LoadTestTriggerConstants.LIST_DESCRIPTION,
+            "display_name": LoadTestTriggerConstants.LIST_DISPLAY_NAME,
+            "start_date_time": LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            "recurrence_type": LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            "recurrence_interval": LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            "test_ids": LoadTestTriggerConstants.LIST_TEST_IDS
         })
 
         checks = [
@@ -299,19 +299,18 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @LoadTestResourcePreparer(**load_params)
     def test_delete_trigger_schedule(self, rg, load):
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id",
-            description="Test trigger schedule",
-            display_name="Test Trigger",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-delete"
+            trigger_id=LoadTestTriggerConstants.DELETE_TRIGGER_ID,
+            description=LoadTestTriggerConstants.DELETE_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.DELETE_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            test_ids=LoadTestTriggerConstants.DELETE_TEST_IDS
         )
 
         self.kwargs.update({
-            "trigger_id": "test-trigger-id"
+            "trigger_id": LoadTestTriggerConstants.DELETE_TRIGGER_ID
         })
-
 
         # Delete the trigger schedule
         self.cmd(
@@ -337,17 +336,17 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @LoadTestResourcePreparer(**load_params)
     def test_pause_trigger_schedule(self, rg, load):
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id",
-            description="Test trigger schedule",
-            display_name="Test Trigger",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-pause"
+            trigger_id=LoadTestTriggerConstants.PAUSE_TRIGGER_ID,
+            description=LoadTestTriggerConstants.PAUSE_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.PAUSE_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            test_ids=LoadTestTriggerConstants.PAUSE_TEST_IDS
         )
 
         self.kwargs.update({
-            "trigger_id": "test-trigger-id"
+            "trigger_id": LoadTestTriggerConstants.PAUSE_TRIGGER_ID
         })
 
         # Pause the trigger schedule
@@ -374,17 +373,17 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @LoadTestResourcePreparer(**load_params)
     def test_enable_trigger_schedule(self, rg, load):
         self.create_trigger_schedule(
-            trigger_id="test-trigger-id",
-            description="Test trigger schedule",
-            display_name="Test Trigger",
-            start_date_time="2025-03-31T23:59:59Z",
-            recurrence_type="Daily",
-            recurrence_interval=1,
-            test_ids="test-id-enable"
+            trigger_id=LoadTestTriggerConstants.ENABLE_TRIGGER_ID,
+            description=LoadTestTriggerConstants.ENABLE_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.ENABLE_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            test_ids=LoadTestTriggerConstants.ENABLE_TEST_IDS
         )
 
         self.kwargs.update({
-            "trigger_id": "test-trigger-id"
+            "trigger_id": LoadTestTriggerConstants.ENABLE_TRIGGER_ID
         })
 
         # Pause the trigger schedule
