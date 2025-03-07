@@ -614,9 +614,15 @@ class CreateApiAnalysisConfig(DefaultWorkspaceParameter, CreateApiAnalysis):
     def _build_arguments_schema(cls, *args, **kwargs):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.filter._registered = False
         args_schema.analyzer_type._registered = False
         return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        # set default analyzer type
+        args.analyzer_type = "spectral"
 
 
 class DeleteApiAnalysisConfig(DefaultWorkspaceParameter, DeleteApiAnalysis):
@@ -723,6 +729,12 @@ class UpdateAPIAnalysisConfig(DefaultWorkspaceParameter, UpdateAPIAnalysis):
     def _build_arguments_schema(cls, *args, **kwargs):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.filter._registered = False
         args_schema.analyzer_type._registered = False
         return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        # set default analyzer type
+        args.analyzer_type = "spectral"
