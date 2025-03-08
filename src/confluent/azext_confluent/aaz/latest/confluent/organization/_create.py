@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization create",
 )
 class Create(AAZCommand):
-    """Create Organization resource
+    """Create Organization resource.
     """
 
     _aaz_info = {
@@ -176,7 +176,7 @@ class Create(AAZCommand):
             help="Email address",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^\S+@\S+\.\S+$",
+                pattern="^\\S+@\\S+\\.\\S+$",
             ),
         )
         user_detail.first_name = AAZStrArg(

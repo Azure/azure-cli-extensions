@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment schema-registry-cluster list",
 )
 class List(AAZCommand):
-    """List schema registry clusters
+    """List schema registry clusters.
     """
 
     _aaz_info = {

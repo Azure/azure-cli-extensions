@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization list-service-accounts",
 )
 class ListServiceAccounts(AAZCommand):
-    """Organization service accounts details
+    """Organization service accounts details.
     """
 
     _aaz_info = {

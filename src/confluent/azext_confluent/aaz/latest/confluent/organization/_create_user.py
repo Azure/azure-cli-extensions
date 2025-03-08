@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization create-user",
 )
 class CreateUser(AAZCommand):
-    """Invite user to the organization
+    """Invite user to the organization.
     """
 
     _aaz_info = {
