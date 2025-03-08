@@ -13,13 +13,13 @@ import os
 import uuid
 import knack.log
 
-from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-from .._storage import create_container, upload_blob
-
+from ..vendored_sdks.azure_quantum_python.workspace import Workspace
+from ..vendored_sdks.azure_quantum_python.storage import upload_blob
+from ..vendored_sdks.azure_storage_blob import ContainerClient
 from .._client_factory import cf_jobs
 from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
@@ -324,15 +324,19 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
         storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
-    container_name = "quantum-job-" + job_id
-    connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
-    connection_string = connection_string_dict["connectionString"]
-    container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
+
+    resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
+    workspace = Workspace(resource_id=resource_id, location=location)
+
+    knack_logger.warning("Getting Azure credential token...")
+    container_uri = workspace.get_container_uri(job_id=job_id)
+    container_client = ContainerClient.from_container_url(container_uri)
 
     knack_logger.warning("Uploading input data...")
     try:
-        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, False)
+        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
+        logger.debug("  - blob uri: %s", blob_uri)
     except Exception as e:
         # Unexplained behavior:
         #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
@@ -342,9 +346,6 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         if isinstance(e, UnicodeDecodeError):
             error_msg += f"\nReason: {e.reason}"
         raise AzureResponseError(error_msg) from e
-
-    start_of_blob_name = blob_uri.find(blob_name)
-    container_uri = blob_uri[0:start_of_blob_name - 1]
 
     # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
     if job_params is None:
