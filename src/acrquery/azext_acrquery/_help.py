@@ -5,12 +5,6 @@
 
 from knack.help_files import helps
 
-
-helps['acr'] = """
-    type: group
-    short-summary: KQL querying against ACR content.
-"""
-
 helps['acr query'] = """
     type: command
     short-summary: Query the content in an ACR using Kusto Query Language.
