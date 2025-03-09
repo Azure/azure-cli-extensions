@@ -11,6 +11,7 @@ from jinja2 import Template
 
 logger = get_logger(__name__)
 
+
 # Abstract Base Class for Converter
 # The converter is a template class that defines the structure of the conversion process
 # The responsibility of the converter is to convert the source data into the output data
@@ -21,7 +22,7 @@ class ConverterTemplate(ABC):
 
     def convert(self):
         outputs = {}
-        outputs[self.get_template_name()] =self.generate_output(self.data)
+        outputs[self.get_template_name()] = self.generate_output(self.data)
         return outputs
 
     def convert_many(self):
@@ -29,7 +30,7 @@ class ConverterTemplate(ABC):
         for item in self.data:
             name = item['name'].split('/')[-1]
             data = self.transform_data_item(item)
-            outputs[name+"_"+self.get_template_name()] = self.generate_output(data)
+            outputs[name + "_" + self.get_template_name()] = self.generate_output(data)
         return outputs
 
     @abstractmethod
@@ -43,11 +44,12 @@ class ConverterTemplate(ABC):
             template = Template(file.read())
         return template.render(data=data)
 
+
 # Base Converter Class
 # The BaseConverter class provides common utility methods that can be used by all concrete converter classes
 class BaseConverter(ConverterTemplate):
 
-# common
+    # common
     def _get_resource_name(self, resource):
         return resource['name'].split('/')[-1]
 
@@ -86,7 +88,7 @@ class BaseConverter(ConverterTemplate):
     def _get_storage_account_name(self, disk_props):
         storages = self.wrapper_data.get_storages()
         storage_map = {
-            self._get_resource_name(storage): storage['properties']['accountName'] 
+            self._get_resource_name(storage): storage['properties']['accountName']
             for storage in storages
         }
         storage_name = self._get_storage_name(disk_props)
@@ -105,8 +107,8 @@ class BaseConverter(ConverterTemplate):
 
     def _get_mount_options(self, disk_props):
         mountOptions = self.DEFAULT_MOUNT_OPTIONS
-        if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
-            len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
+        if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None \
+                and len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
             mountOptions = ""
             for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
                 mountOptions += ("," if mountOptions != "" else "") + option
@@ -126,17 +128,18 @@ class BaseConverter(ConverterTemplate):
     # get param name of paramContainerAppImageName
     def _get_param_name_of_container_image(self, app):
         appName = self._get_resource_name(app)
-        return "containerImageOf_"+appName.replace("-", "_")
+        return "containerImageOf_" + appName.replace("-", "_")
 
     # get param name of paramTargetPort
     def _get_param_name_of_target_port(self, app):
         appName = self._get_resource_name(app)
-        return "targetPortOf_"+appName.replace("-", "_")
-    
+        return "targetPortOf_" + appName.replace("-", "_")
+
     # get param name of paramContainerAppEnvStorageAccountKey
     def _get_param_name_of_storage_account_key(self, disk_props):
         storage_unique_name = self._get_storage_unique_name(disk_props)
         return "containerAppEnvStorageAccountKeyOf_" + storage_unique_name
+
 
 class SourceDataWrapper:
     def __init__(self, source):
@@ -144,7 +147,7 @@ class SourceDataWrapper:
 
     def get_resources_by_type(self, resource_type):
         return [resource for resource in self.source['resources'] if resource['type'] == resource_type]
-    
+
     def is_support_feature(self, feature):
         return any(resource['type'] == feature for resource in self.source['resources'])
 
@@ -153,48 +156,48 @@ class SourceDataWrapper:
 
     def is_support_ssoconfigserver(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/configServers')
-    
+
     def is_support_acs(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/configurationServices')
-    
+
     def is_support_eureka(self):
         return self.is_support_serviceregistry() or not self.is_enterprise_tier()
-    
+
     def is_support_serviceregistry(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/serviceRegistries')
 
     def is_support_sba(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/applicationLiveViews')
-    
+
     def is_support_gateway(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/gateways/routeConfigs')
-    
+
     def get_asa_service(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
-    
+
     def get_apps(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-    
+
     def get_deployments(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/deployments')
-        
+
     def get_deployments_by_app(self, app):
         deployments = self.get_deployments()
         return [deployment for deployment in deployments if deployment['name'].startswith(f"{app['name']}/")]
 
     def get_blue_deployment_by_app(self, app):
         deployments = self.get_deployments_by_app(app)
-        deployments = [deployment for deployment in deployments if deployment['properties']['active'] == True]
+        deployments = [deployment for deployment in deployments if deployment['properties']['active'] is True]
         return deployments[0] if deployments else {}
 
     def get_green_deployment_by_app(self, app):
         deployments = self.get_deployments_by_app(app)
-        deployments = [deployment for deployment in deployments if deployment['properties']['active'] == False]
+        deployments = [deployment for deployment in deployments if deployment['properties']['active'] is False]
         return deployments[0] if deployments else {}
-    
+
     def get_green_deployments(self):
         deployments = self.get_deployments()
-        deployments = [deployment for deployment in deployments if deployment['properties']['active'] == False]
+        deployments = [deployment for deployment in deployments if deployment['properties']['active'] is False]
         return deployments if deployments else []
 
     def is_support_blue_green_deployment(self, app):
@@ -208,22 +211,22 @@ class SourceDataWrapper:
         if networkProfile is None:
             return False
         return networkProfile.get('appSubnetId') is not None
-    
+
     def get_certificates(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring/certificates')
 
     def get_keyvault_certificates(self):
         return self.get_certificates_by_type("KeyVaultCertificate")
-    
+
     def get_content_certificates(self):
         return self.get_certificates_by_type("ContentCertificate")
-    
+
     def get_certificates_by_type(self, type):
         certs = []
         for cert in self.get_certificates():
             if cert['properties'].get('type') == type:
                 certs.append(cert)
         return certs
-    
+
     def get_storages(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')

@@ -7,6 +7,7 @@ from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
+
 # Concrete Converter Subclass for certificate
 class CertConverter(BaseConverter):
 
@@ -33,11 +34,11 @@ class CertConverter(BaseConverter):
             cert_data["value"] = "*"
             isKeyVaultCert = False
         cert_data["isKeyVaultCert"] = isKeyVaultCert
-        return cert_data        
+        return cert_data
 
     def get_template_name(self):
         return "cert.bicep"
-    
+
     def _get_cert_key_vault(self, cert):
         certKeyVault = None
         if cert['properties'].get('type') == "KeyVaultCertificate":

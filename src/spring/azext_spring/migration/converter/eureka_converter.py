@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
 
+
 class EurekaConverter(BaseConverter):
 
     def __init__(self, source):
@@ -21,5 +22,3 @@ class EurekaConverter(BaseConverter):
 
     def get_template_name(self):
         return "eureka.bicep"
-    
-

@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
 
+
 # Concrete Converter Subclass for Config Server
 class ACSConverter(BaseConverter):
 
@@ -21,7 +22,7 @@ class ACSConverter(BaseConverter):
     def __init__(self, source):
         def transform_data():
             acs = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configurationServices')[0]
-            name = f"config"
+            name = "config"
             configurations, params = self._get_configurations_and_params(acs)
             replicas = 2
             return {
@@ -45,7 +46,7 @@ class ACSConverter(BaseConverter):
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, default_repo.get('uri'))
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_LABEL, default_repo.get('label'))
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_SEARCH_PATHS, default_repo.get('searchPaths'))
-            self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_USERNAME, default_repo.get('username'),  configurations, params)
+            self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_USERNAME, default_repo.get('username'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_PASSWORD, default_repo.get('password'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_PRIVATE_KEY, default_repo.get('privateKey'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY, default_repo.get('hostKey'), configurations, params)

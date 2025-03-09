@@ -64,7 +64,7 @@ def export_asa_arm_template(cmd, resource_group, service):
 
     ExportTemplateRequest = cmd.get_models('ExportTemplateRequest')
     export_template_request = ExportTemplateRequest(resources=resources, options=options)
-    
+
     rcf = _resource_client_factory(cmd.cli_ctx)
 
     if cmd.supported_api_version(min_api='2019-08-01'):

@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
 
+
 class LiveViewConverter(BaseConverter):
 
     def __init__(self, source):
@@ -21,5 +22,3 @@ class LiveViewConverter(BaseConverter):
 
     def get_template_name(self):
         return "spring_boot_admin.bicep"
-    
-
