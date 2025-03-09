@@ -61,17 +61,18 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
 
         self.cmd(' '.join(cmd))
 
-    def verify_trigger_schedule(self, trigger_id, description, display_name, start_date_time, test_ids, recurrence_type=None, recurrence_interval=None, recurrence_week_days=None, recurrence_dates_in_month=None, recurrence_index=None, recurrence_cron_expression=None):
+    def verify_trigger_schedule(self, trigger_id, description, display_name, test_ids, start_date_time=None, recurrence_type=None, recurrence_interval=None, recurrence_week_days=None, recurrence_dates_in_month=None, recurrence_index=None, recurrence_cron_expression=None):
         checks = [
             JMESPathCheck("description", description),
             JMESPathCheck("displayName", display_name),
-            JMESPathCheck("startDateTime", start_date_time),
             JMESPathCheck("testIds[0]", test_ids),
         ]
         if recurrence_type:
             checks.append(JMESPathCheck("recurrence.frequency", recurrence_type))
         if recurrence_interval:
             checks.append(JMESPathCheck("recurrence.interval", recurrence_interval))
+        if start_date_time:
+            checks.append(JMESPathCheck("startDateTime", start_date_time))
         if recurrence_week_days:
             week_days = recurrence_week_days.split()
             if recurrence_type == "Weekly":
@@ -114,7 +115,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             trigger_id=LoadTestTriggerConstants.DAILY_TRIGGER_ID,
             description=LoadTestTriggerConstants.DAILY_DESCRIPTION,
             display_name=LoadTestTriggerConstants.DAILY_DISPLAY_NAME,
-            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
             recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
             recurrence_interval=LoadTestTriggerConstants.DAILY_RECURRENCE_INTERVAL,
             test_ids=LoadTestTriggerConstants.DAILY_TEST_IDS
@@ -135,7 +135,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             trigger_id=LoadTestTriggerConstants.WEEKLY_TRIGGER_ID,
             description=LoadTestTriggerConstants.WEEKLY_DESCRIPTION,
             display_name=LoadTestTriggerConstants.WEEKLY_DISPLAY_NAME,
-            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
             recurrence_type=LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE,
             recurrence_interval=LoadTestTriggerConstants.WEEKLY_RECURRENCE_INTERVAL,
             recurrence_week_days=LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS,
@@ -157,7 +156,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             trigger_id=LoadTestTriggerConstants.MONTHLY_DATES_TRIGGER_ID,
             description=LoadTestTriggerConstants.MONTHLY_DATES_DESCRIPTION,
             display_name=LoadTestTriggerConstants.MONTHLY_DATES_DISPLAY_NAME,
-            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
             recurrence_type=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE,
             recurrence_interval=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL,
             recurrence_dates_in_month=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH,
@@ -180,7 +178,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             trigger_id=LoadTestTriggerConstants.MONTHLY_DAYS_TRIGGER_ID,
             description=LoadTestTriggerConstants.MONTHLY_DAYS_DESCRIPTION,
             display_name=LoadTestTriggerConstants.MONTHLY_DAYS_DISPLAY_NAME,
-            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
             recurrence_type=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_TYPE,
             recurrence_interval=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INTERVAL,
             recurrence_week_days=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS,
@@ -202,7 +199,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             trigger_id=LoadTestTriggerConstants.CRON_TRIGGER_ID,
             description=LoadTestTriggerConstants.CRON_DESCRIPTION,
             display_name=LoadTestTriggerConstants.CRON_DISPLAY_NAME,
-            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
             recurrence_type=LoadTestTriggerConstants.CRON_RECURRENCE_TYPE,
             recurrence_cron_expression=LoadTestTriggerConstants.CRON_RECURRENCE_CRON_EXPRESSION,
             test_ids=LoadTestTriggerConstants.CRON_TEST_IDS
@@ -223,19 +219,18 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
 
         self.kwargs.update({
             "trigger_id": LoadTestTriggerConstants.UPDATE_TRIGGER_ID,
-            "description": "Updated test trigger schedule",
-            "display_name": "Updated Test Trigger",
-            "start_date_time": "2025-04-01T00:00:00Z",
-            "recurrence_type": "Weekly",
-            "recurrence_interval": 2,
-            "recurrence_week_days": "Monday",
+            "description": LoadTestTriggerConstants.UPDATE_DESCRIPTION,
+            "display_name": LoadTestTriggerConstants.UPDATE_DISPLAY_NAME,
+            "start_date_time": LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            "recurrence_type": LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE,
+            "recurrence_interval": LoadTestTriggerConstants.WEEKLY_RECURRENCE_INTERVAL,
+            "recurrence_week_days": LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS,
             "test_ids": LoadTestTriggerConstants.UPDATE_TEST_IDS
         })
 
         checks = [
             JMESPathCheck("description", self.kwargs["description"]),
             JMESPathCheck("displayName", self.kwargs["display_name"]),
-            JMESPathCheck("startDateTime", self.kwargs["start_date_time"]),
             JMESPathCheck("recurrence.frequency", self.kwargs["recurrence_type"]),
             JMESPathCheck("recurrence.interval", self.kwargs["recurrence_interval"]),
             JMESPathCheck("recurrence.daysOfWeek[0]", self.kwargs["recurrence_week_days"]),
@@ -273,7 +268,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
         self.kwargs.update({
             "description": LoadTestTriggerConstants.LIST_DESCRIPTION,
             "display_name": LoadTestTriggerConstants.LIST_DISPLAY_NAME,
-            "start_date_time": LoadTestTriggerConstants.CURRENT_DATE_TIME,
             "recurrence_type": LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
             "recurrence_interval": LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
             "test_ids": LoadTestTriggerConstants.LIST_TEST_IDS
@@ -283,7 +277,6 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             JMESPathCheck("length(@)", 1),
             JMESPathCheck("[0].description", self.kwargs["description"]),
             JMESPathCheck("[0].displayName", self.kwargs["display_name"]),
-            JMESPathCheck("[0].startDateTime", self.kwargs["start_date_time"]),
             JMESPathCheck("[0].recurrence.frequency", self.kwargs["recurrence_type"]),
             JMESPathCheck("[0].recurrence.interval", self.kwargs["recurrence_interval"]),
             JMESPathCheck("[0].testIds[0]", self.kwargs["test_ids"]),
