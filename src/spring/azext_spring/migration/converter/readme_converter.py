@@ -1,4 +1,9 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
+
 
 # Concrete Converter Subclass for Read Me
 class ReadMeConverter(BaseConverter):
@@ -13,7 +18,7 @@ class ReadMeConverter(BaseConverter):
 
     def get_template_name(self):
         return "README.md"
-    
+
     def _transform_deployments(self, deployments):
         deployments_data = []
         for deployment in deployments:

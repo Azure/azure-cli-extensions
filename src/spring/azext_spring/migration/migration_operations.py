@@ -1,3 +1,7 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from azure.cli.command_modules.resource._client_factory import (_resource_client_factory)
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -60,7 +64,7 @@ def export_asa_arm_template(cmd, resource_group, service):
 
     ExportTemplateRequest = cmd.get_models('ExportTemplateRequest')
     export_template_request = ExportTemplateRequest(resources=resources, options=options)
-    
+
     rcf = _resource_client_factory(cmd.cli_ctx)
 
     if cmd.supported_api_version(min_api='2019-08-01'):

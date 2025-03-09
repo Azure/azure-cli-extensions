@@ -1,8 +1,12 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from knack.log import get_logger
 from .base_converter import BaseConverter
-from knack.log import get_logger
 
 logger = get_logger(__name__)
+
 
 class GatewayConverter(BaseConverter):
     DEFAULT_NAME = "default"
@@ -22,11 +26,10 @@ class GatewayConverter(BaseConverter):
             self._check_features(gateway.get('properties', {}))
             return {
                 "routes": routes,
-                "gatewayName": f"gateway",
+                "gatewayName": "gateway",
                 "configurations": configurations,
-                "replicas": replicas,
-                "routes": routes,                
-            }        
+                "replicas": replicas,        
+            }
         self.client = client
         self.resource_group = resource_group
         self.service = service

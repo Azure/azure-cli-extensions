@@ -1,7 +1,13 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
+
 # Concrete Converter Subclass for Config Server
 class ConfigServerConverter(BaseConverter):
 
@@ -19,7 +25,7 @@ class ConfigServerConverter(BaseConverter):
     def __init__(self, source):
         def transform_data():
             configServer = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers')[0]
-            name = f"config"
+            name = "config"
             configurations, params = self._get_configurations_and_params(configServer)
             replicas = 2
             return {
@@ -32,17 +38,17 @@ class ConfigServerConverter(BaseConverter):
 
     def get_template_name(self):
         return "config_server.bicep"
-    
+
     def _get_configurations_and_params(self, configServer):
         configurations = []
         params = []
-        
+
         git_property = configServer.get('properties', {}).get('configServer', {}).get('gitProperty')
         if git_property is not None:
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, git_property.get('uri'))
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_LABEL, git_property.get('label'))
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_SEARCH_PATHS, git_property.get('searchPaths'))
-            self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_USERNAME, git_property.get('username'),  configurations, params)
+            self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_USERNAME, git_property.get('username'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_PASSWORD, git_property.get('password'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_PRIVATE_KEY, git_property.get('privateKey'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY, git_property.get('hostKey'), configurations, params)

@@ -1,11 +1,16 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from knack.log import get_logger
 from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
+
 # Concrete Converter Subclass for Container App
 class AppConverter(BaseConverter):
-    
+
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 
     def __init__(self, source):
@@ -38,8 +43,6 @@ class AppConverter(BaseConverter):
                     "storageName": self._get_storage_unique_name(disk_props),
                     "mountOptions": self._get_mount_options(disk_props),
                 })
-        # print("Volume mounts: ", volumeMounts)
-        # print("Volumes: ", volumes)
         return {
             "containerAppName": self._get_resource_name(app),
             "paramContainerAppImageName": self._get_param_name_of_container_image(app),
@@ -56,11 +59,11 @@ class AppConverter(BaseConverter):
             "identity": identity,
             "volumeMounts": volumeMounts,
             "volumes": volumes,
-        }        
+        }
 
     def get_template_name(self):
         return "app.bicep"
-    
+
     def _get_service_bind(self, app):
         service_bind = []
         envName = self._get_parent_resource_name(app)
@@ -69,13 +72,13 @@ class AppConverter(BaseConverter):
         if addon is None:
             return None
 
-        if addon.get('applicationConfigurationService') is not None and addon['applicationConfigurationService'].get('resourceId') is not None \
-            or addon.get('configServer') is not None and addon['configServer'].get('resourceId') is not None:
+        if (addon.get('applicationConfigurationService') is not None and addon['applicationConfigurationService'].get('resourceId') is not None) \
+            or (addon.get('configServer') is not None and addon['configServer'].get('resourceId') is not None):
             service_bind.append({
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
             })
-        if self.wrapper_data.is_enterprise_tier() != True and self.wrapper_data.is_support_configserver():
+        if self.wrapper_data.is_enterprise_tier() is not True and self.wrapper_data.is_support_configserver():
             # standard tier enabled config server and bind all apps automatically
             service_bind.append({
                 "name": "bind-config",
@@ -86,7 +89,7 @@ class AppConverter(BaseConverter):
                 "name": "bind-eureka",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"
             })
-        if self.wrapper_data.is_enterprise_tier() != True and self.wrapper_data.is_support_eureka():
+        if self.wrapper_data.is_enterprise_tier() is not True and self.wrapper_data.is_support_eureka():
             # standard tier enabled eureka server and bind all apps automatically
             service_bind.append({
                 "name": "bind-eureka",
@@ -97,7 +100,6 @@ class AppConverter(BaseConverter):
                 "name": "bind-sba",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'admin')"
             })
-        # print(f"Service bind: {service_bind}")
         return service_bind
 
     def _transform_deployment(self, deployment):
@@ -128,7 +130,6 @@ class AppConverter(BaseConverter):
     def _convert_env(self, env):
         env_list = []
         for key, value in env.items():
-            
             env_list.append({
                 "name": key,
                 "value": value
@@ -160,16 +161,15 @@ class AppConverter(BaseConverter):
 
     # create a method _convert_probe to convert the probe from the source to the target format
     def _convert_probe(self, probe, tier):
-        # print(f"probe: {probe}")
         if probe is None:
             return None
-        if probe.get("disableProbe") == True:
-            logger.debug(f"Probe is disabled")
+        if probe.get("disableProbe") is True:
+            logger.debug("Probe is disabled")
             return None
         result = {}
         initialDelaySeconds = probe.get("initialDelaySeconds", None)
         if initialDelaySeconds is not None:
-            if initialDelaySeconds > 60: # Container 'undefined' 'Type' probe's InitialDelaySeconds must be in the range of ['0', '60'].
+            if initialDelaySeconds > 60:  # Container 'undefined' 'Type' probe's InitialDelaySeconds must be in the range of ['0', '60'].
                 initialDelaySeconds = 60
             result['initialDelaySeconds'] = initialDelaySeconds
         periodSeconds = probe.get("periodSeconds", None)
@@ -236,7 +236,7 @@ class AppConverter(BaseConverter):
             "transport": ingress.get('backendProtocol').replace("Default", "auto"),
             "sessionAffinity": ingress.get('sessionAffinity').replace("Cookie", "sticky").replace("None", "none")
         }
-    
+
     def _convert_scale(self, scale):
         return {
             "minReplicas": scale.get("minReplicas", 1),

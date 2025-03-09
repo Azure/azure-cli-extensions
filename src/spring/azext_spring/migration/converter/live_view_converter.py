@@ -1,4 +1,9 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
+
 
 class LiveViewConverter(BaseConverter):
 
@@ -17,5 +22,3 @@ class LiveViewConverter(BaseConverter):
 
     def get_template_name(self):
         return "spring_boot_admin.bicep"
-    
-

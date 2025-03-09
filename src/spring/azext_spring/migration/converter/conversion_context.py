@@ -1,6 +1,9 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 import os
 
-from abc import ABC, abstractmethod
 from knack.log import get_logger
 from .base_converter import ConverterTemplate, SourceDataWrapper
 from .environment_converter import EnvironmentConverter
@@ -17,6 +20,7 @@ from .live_view_converter import LiveViewConverter
 from .cert_converter import CertConverter
 
 logger = get_logger(__name__)
+
 
 # Context Class
 class ConversionContext:
@@ -68,7 +72,7 @@ class ConversionContext:
             if self.data_wrapper.is_support_serviceregistry():
                 converted_contents.update(self.get_converter(ServiceRegistryConverter).convert())
                 # logger.debug(f"converted_contents for Service Registry:\n{converted_contents.get(self.get_converter(ServiceRegistryConverter).get_template_name())}")
-        else: # Basic Tier or Standard Tier
+        else:  # Basic Tier or Standard Tier
             converted_contents.update(self.get_converter(EurekaConverter).convert())
             # logger.debug(f"converted_contents for Eureka:\n{converted_contents.get(self.get_converter(EurekaConverter).get_template_name())}")
 
@@ -76,7 +80,7 @@ class ConversionContext:
         apps = self.get_converter(AppConverter).convert_many()
         converted_contents.update(apps)
         # for app in apps.keys():
-        #     logger.debug(f"converted_contents for App {app}:\n{converted_contents.get(app)}")        
+        #   logger.debug(f"converted_contents for App {app}:\n{converted_contents.get(app)}")
 
         # Param Converter
         converted_contents.update(self.get_converter(ParamConverter).convert())
@@ -100,6 +104,3 @@ class ConversionContext:
             with open(output_filename, 'w', encoding='utf-8') as output_file:
                 logger.info(f"Generating the file {output_filename}...")
                 output_file.write(content)
-
-
-

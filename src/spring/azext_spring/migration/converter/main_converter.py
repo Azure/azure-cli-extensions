@@ -1,6 +1,11 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from .base_converter import BaseConverter
 
-# Concrete Converter Subclass for Read Me
+
+# Concrete Converter Subclass for main
 class MainConverter(BaseConverter):
 
     def __init__(self, source):
