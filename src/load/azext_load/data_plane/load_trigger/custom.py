@@ -70,8 +70,8 @@ def create_trigger_schedule(
         logger.debug("Created trigger schedule: %s", response)
         logger.info("Creating trigger schedule completed")
         return response
-    except Exception as e:
-        logger.error("Error occurred while creating trigger schedule: %s", str(e))
+    except Exception:
+        logger.error("Error occurred while creating schedule trigger.")
         raise
 
 
@@ -134,8 +134,8 @@ def update_trigger_schedule(
         logger.debug("Updated schedule trigger: %s", response)
         logger.info("Updating schedule trigger completed")
         return response
-    except Exception as e:
-        logger.error("Error occurred while updating schedule trigger: %s", str(e))
+    except Exception:
+        logger.error("Error occurred while updating schedule trigger.")
         raise
 
 
