@@ -89,14 +89,14 @@ helps[
     "load trigger"
 ] = """
 type: group
-short-summary: Command group to manage load trigger.
-long-summary: Command group to manage load trigger. Currently supported trigger is schedule.
+short-summary: Command group to manage trigger.
+long-summary: Command group to manage triggers. Currently the only supported trigger type is schedule.
 """ + _common_params
 
 helps[
     "load trigger schedule"
 ] = """
 type: group
-short-summary: Command group to manage load trigger schedule.
-long-summary: Command group to manage load trigger schedule with create, update, delete, list, etc.
+short-summary: Command group to manage schedule triggers.
+long-summary: Command group to manage schedule triggers.
 """ + _common_params

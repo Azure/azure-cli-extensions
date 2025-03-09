@@ -34,7 +34,7 @@ def handle_daily_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for daily recurrence.")
     if any(kwargs.values()):
-        raise InvalidArgumentValueError("Only recurrence interval should be provided for daily recurrence.")
+        raise InvalidArgumentValueError("Only recurrence interval is a valid input for daily recurrence.")
     return models.DailyRecurrence(
         interval=recurrence_interval,
         recurrence_end=recurrence_end_body
@@ -46,7 +46,7 @@ def handle_weekly_recurrence(recurrence_interval, recurrence_week_days, recurren
     if recurrence_week_days is None or len(recurrence_week_days) == 0:
         raise InvalidArgumentValueError("Recurrence week days are required for weekly recurrence.")
     if any(kwargs.values()):
-        raise InvalidArgumentValueError("Only recurrence interval and week days should be provided for weekly recurrence.")
+        raise InvalidArgumentValueError("Only recurrence interval and week days are valid inputs for weekly recurrence.")
     return models.WeeklyRecurrence(
         interval=recurrence_interval,
         days_of_week=recurrence_week_days,
@@ -57,7 +57,7 @@ def handle_hourly_recurrence(recurrence_interval, recurrence_end_body, **kwargs)
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for hourly recurrence.")
     if any(kwargs.values()):
-        raise InvalidArgumentValueError("Only recurrence interval should be provided for hourly recurrence.")
+        raise InvalidArgumentValueError("Only recurrence interval is a valid input for hourly recurrence.")
     return models.HourlyRecurrence(
         interval=recurrence_interval,
         recurrence_end=recurrence_end_body
@@ -69,7 +69,7 @@ def handle_monthly_by_dates_recurrence(recurrence_interval, recurrence_dates_in_
     if recurrence_dates_in_month is None or len(recurrence_dates_in_month) == 0:
         raise InvalidArgumentValueError("Recurrence dates in month are required for monthly by dates recurrence.")
     if any(kwargs.values()):
-        raise InvalidArgumentValueError("Only recurrence interval and dates in month should be provided for monthly by dates recurrence.")
+        raise InvalidArgumentValueError("Only recurrence interval and dates in month are valid input for monthly by dates recurrence.")
     return models.MonthlyRecurrenceByDates(
         interval=recurrence_interval,
         dates_in_month=recurrence_dates_in_month,
@@ -84,7 +84,7 @@ def handle_monthly_by_days_recurrence(recurrence_interval, recurrence_week_days,
     if recurrence_index not in range(1, 6):
         raise InvalidArgumentValueError("Recurrence index should be between 1 and 5 for monthly by days recurrence.")
     if any(kwargs.values()):
-        raise InvalidArgumentValueError("Only recurrence interval, week days, and index should be provided for monthly by days recurrence.")
+        raise InvalidArgumentValueError("Only recurrence interval, week days, and index are valid input for monthly by days recurrence.")
     return models.MonthlyRecurrenceByWeekDays(
         interval=recurrence_interval,
         week_days_in_month=recurrence_week_days,
@@ -96,7 +96,7 @@ def handle_cron_recurrence(recurrence_cron_expression, recurrence_end_body, **kw
     if recurrence_cron_expression is None:
         raise InvalidArgumentValueError("Recurrence cron expression is required for cron recurrence.")
     if any(kwargs.values()):
-        raise InvalidArgumentValueError("Only recurrence cron expression should be provided for cron recurrence.")
+        raise InvalidArgumentValueError("Only recurrence cron expression is valid input for cron recurrence.")
     return models.RecurrenceWithCron(
         cron_expression=recurrence_cron_expression,
         recurrence_end=recurrence_end_body

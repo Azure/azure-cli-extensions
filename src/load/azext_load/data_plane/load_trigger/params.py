@@ -28,7 +28,7 @@ def load_arguments(self, _):
         c.argument("recurrence_cron_expression", argtypes.recurrence_cron_expression)
         c.argument("recurrence_dates_in_month", argtypes.recurrence_dates_in_month)
         c.argument("recurrence_week_days", argtypes.recurrence_week_days)
-        c.argument("end_after_occurrence", argtypes.end_after_occurrence)
+        c.argument("end_after_occurrence", argtypes.end_after_occurrences)
         c.argument("end_after_date_time", argtypes.end_after_date_time)
         c.argument("test_ids", argtypes.test_ids)
 
@@ -43,7 +43,7 @@ def load_arguments(self, _):
         c.argument("recurrence_cron_expression", argtypes.recurrence_cron_expression)
         c.argument("recurrence_dates_in_month", argtypes.recurrence_dates_in_month)
         c.argument("recurrence_week_days", argtypes.recurrence_week_days)
-        c.argument("end_after_occurrence", argtypes.end_after_occurrence)
+        c.argument("end_after_occurrence", argtypes.end_after_occurrences)
         c.argument("end_after_date_time", argtypes.end_after_date_time)
         c.argument("test_ids", argtypes.test_ids)
 

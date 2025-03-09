@@ -439,7 +439,7 @@ recurrence_type = CLIArgumentType(
     help="Recurrence type of the load trigger schedule",
 )
 
-end_after_occurrence = CLIArgumentType(
+end_after_occurrences = CLIArgumentType(
     options_list=["--end-after-occurrence"],
     type=int,
     help="End after occurrence of the load trigger schedule",

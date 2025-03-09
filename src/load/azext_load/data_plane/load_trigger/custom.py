@@ -8,6 +8,7 @@ from azext_load.data_plane.utils.utils import (
     )
 
 from azure.core.exceptions import ResourceNotFoundError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 from azext_load.vendored_sdks.loadtesting.models import ( _models as models, _enums as enums)
 import azext_load.data_plane.load_trigger.utils as utils
@@ -33,7 +34,14 @@ def create_trigger_schedule(
     test_ids=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.info("Creating trigger schedule")
+    logger.info("Creating schedule trigger.")
+    try:
+        client.get_trigger(trigger_id)
+        msg = "Trigger schedule with id: {} already exists.".format(trigger_id)
+        logger.error(msg)
+        raise InvalidArgumentValueError(msg)
+    except ResourceNotFoundError:
+        pass
     recurrence_end_body = utils.get_recurrence_end_body(
         end_after_occurrence,
         end_after_date_time,
@@ -65,6 +73,7 @@ def create_trigger_schedule(
         return response
     except Exception as e:
         logger.error("Error occurred while creating trigger schedule: %s", str(e))
+        raise
 
 
 def update_trigger_schedule(
@@ -86,15 +95,15 @@ def update_trigger_schedule(
     test_ids=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.info("Updating trigger schedule with name")
+    logger.info("Updating schedule trigger with id: %s", trigger_id)
     existing_trigger_schedule: models.ScheduleTestsTrigger = None
     try:
         existing_trigger_schedule = client.get_trigger(trigger_id)
-    except Exception as e:
-        logger.debug("Error occurred while fetching trigger schedule: %s", str(e))
-        logger.error("Trigger schedule with id: %s not found.", trigger_id)
-        return
-    logger.debug("Existing trigger schedule: %s", existing_trigger_schedule)
+    except ResourceNotFoundError as e:
+        msg = "Schedule trigger with id: {} does not exists.".format(trigger_id)
+        logger.debug(msg)
+        raise InvalidArgumentValueError(msg)
+    logger.debug("Existing schedule trigger: %s", existing_trigger_schedule)
     recurrence_end_body = utils.get_recurrence_end_body(
         end_after_occurrence,
         end_after_date_time,
@@ -120,16 +129,15 @@ def update_trigger_schedule(
         trigger_start_date_time,
         test_ids,
     )
-    
-    logger.debug("Trigger schedule body: %s", new_trigger_body)
-    logger.debug("Trigger schedule body to be sent for update: %s", existing_trigger_schedule)
+    logger.debug("Schedule trigger body to be sent for update: %s", new_trigger_body)
     try:
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=new_trigger_body)
-        logger.debug("Updated trigger schedule: %s", response)
-        logger.info("Updating trigger schedule completed")
+        logger.debug("Updated schedule trigger: %s", response)
+        logger.info("Updating schedule trigger completed")
         return response
     except Exception as e:
-        logger.error("Error occurred while updating trigger schedule: %s", str(e))
+        logger.error("Error occurred while updating schedule trigger: %s", str(e))
+        raise
 
 def delete_trigger_schedule(
     cmd,
@@ -138,11 +146,11 @@ def delete_trigger_schedule(
     resource_group_name=None,
 ):
     logger.info(
-        "Deleting trigger schedule with name"
+        "Deleting schedule trigger with id: %s", trigger_id
     )
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     client.delete_trigger(trigger_id)
-    logger.info("Deleting trigger schedule completed.")
+    logger.info("Deleting schedule trigger completed.")
 
 
 def get_trigger_schedule(
@@ -152,11 +160,11 @@ def get_trigger_schedule(
     resource_group_name=None,
 ):
     logger.info(
-        "Getting trigger schedule with name"
+        "Getting schedule trigger with id: %s", trigger_id
     )
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     response = client.get_trigger(trigger_id)
-    logger.debug("Fetched trigger schedule: %s", response)
+    logger.debug("Fetched schedule trigger: %s", response)
     return response
 
 
@@ -167,25 +175,24 @@ def pause_trigger_schedule(
     resource_group_name=None,
 ):
     logger.info(
-        "Pausing trigger schedule with name"
+        "Pausing schedule trigger with id: %s", trigger_id
     )
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    result = None
+    existing_trigger_schedule: models.ScheduleTestsTrigger = None
     try:
-        result = client.get_trigger(trigger_id=trigger_id)
-    except Exception as e:
-        logger.debug("Error occurred while fetching trigger schedule: %s", str(e))
-        logger.error("Trigger schedule with id: %s not found.", trigger_id)
-        return
-    logger.debug("Existing trigger object: %s", result)
-    if result.state == enums.TriggerState.ACTIVE:
-        result.state = enums.TriggerState.PAUSED
-        response = client.create_or_update_trigger(trigger_id=trigger_id, body=result)
-        logger.debug("Paused trigger schedule: %s", response)
+        existing_trigger_schedule = client.get_trigger(trigger_id)
+    except ResourceNotFoundError as e:
+        msg = "Schedule trigger with id: {} does not exists.".format(trigger_id)
+        logger.debug(msg)
+        raise InvalidArgumentValueError(msg)
+    logger.debug("Existing schedule trigger object: %s", existing_trigger_schedule)
+    if existing_trigger_schedule.state == enums.TriggerState.ACTIVE:
+        existing_trigger_schedule.state = enums.TriggerState.PAUSED
+        response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
+        logger.debug("Paused schedule trigger: %s", response)
         return response
     else:
-        logger.error("Trigger schedule is not active. It is in %s state.", result.state.value)
-
+        logger.error("Schedule trigger is not active. It is in %s state.", existing_trigger_schedule.state.value)
 
 def enable_trigger_schedule(
     cmd,
@@ -194,24 +201,24 @@ def enable_trigger_schedule(
     resource_group_name=None,
 ):
     logger.info(
-        "Enabling trigger schedule with name"
+        "Enabling schedule trigger with id: %s", trigger_id
     )
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    result = None
+    existing_trigger_schedule: models.ScheduleTestsTrigger = None
     try:
-        result = client.get_trigger(trigger_id=trigger_id)
-    except Exception as e:
-        logger.debug("Error occurred while fetching trigger schedule: %s", str(e))
-        logger.error("Trigger schedule with id: %s not found.", trigger_id)
-        return
-    logger.debug("Existing trigger object: %s", result)
-    if result.state == enums.TriggerState.PAUSED:
-        result.state = enums.TriggerState.ACTIVE
-        response = client.create_or_update_trigger(trigger_id=trigger_id, body=result)
-        logger.debug("Enabled trigger schedule: %s", response)
+        existing_trigger_schedule = client.get_trigger(trigger_id)
+    except ResourceNotFoundError as e:
+        msg = "Schedule trigger with id: {} does not exists.".format(trigger_id)
+        logger.debug(msg)
+        raise InvalidArgumentValueError(msg)
+    logger.debug("Existing trigger object: %s", existing_trigger_schedule)
+    if existing_trigger_schedule.state in [enums.TriggerState.PAUSED, enums.TriggerState.DISABLED]:
+        existing_trigger_schedule.state = enums.TriggerState.ACTIVE
+        response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
+        logger.debug("Enabled schedule trigger: %s", response)
         return response
     else:
-        logger.error("Trigger schedule is not paused. It is in %s state.", result.state.value)
+        logger.error("Schedule trigger is in %s state, hence cannot be enabled.", existing_trigger_schedule.state.value)
 
 
 def list_trigger_schedules(
@@ -221,13 +228,13 @@ def list_trigger_schedules(
     trigger_states=None,
     test_ids=None,
 ):
-    logger.info("Listing trigger schedules")
+    logger.info("Listing schedule triggers.")
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     if trigger_states:
         trigger_states = ",".join(trigger_states)
     if test_ids:
         test_ids = ",".join(test_ids)
-    logger.info("Trigger states: %s", trigger_states)
+    logger.info("Schedule trigger states: %s", trigger_states)
     response = client.list_trigger(test_ids=test_ids, states=trigger_states)
-    logger.debug("Fetched list of trigger schedules: %s", response)
+    logger.debug("Fetched list of schedule triggers: %s", response)
     return response
