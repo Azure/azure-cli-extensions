@@ -10,6 +10,7 @@ from azure.cli.testsdk import (
     ScenarioTest,
 )
 from knack.log import get_logger
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 logger = get_logger(__name__)
 
@@ -413,3 +414,144 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             '--trigger-id {trigger_id}',
             checks=checks,
         )
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_create_trigger_schedule_invalid_cases(self, rg, load):
+        # Test invalid daily recurrence with extra parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_DAILY_TRIGGER_ID,
+                description=LoadTestTriggerConstants.DAILY_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.DAILY_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+                recurrence_week_days=LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS,  # Invalid parameter for daily recurrence
+                test_ids=LoadTestTriggerConstants.DAILY_TEST_IDS
+            )
+
+        # Test invalid weekly recurrence without required parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_WEEKLY_TRIGGER_ID,
+                description=LoadTestTriggerConstants.WEEKLY_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.WEEKLY_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.WEEKLY_RECURRENCE_INTERVAL,
+                test_ids=LoadTestTriggerConstants.WEEKLY_TEST_IDS
+            )
+
+        # Test invalid monthly by dates recurrence with extra parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_MONTHLY_DATES_TRIGGER_ID,
+                description=LoadTestTriggerConstants.MONTHLY_DATES_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.MONTHLY_DATES_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL,
+                recurrence_dates_in_month=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH,
+                recurrence_week_days=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS,  # Invalid parameter for monthly by dates recurrence
+                test_ids=LoadTestTriggerConstants.MONTHLY_DATES_TEST_IDS
+            )
+
+        # Test invalid monthly by days recurrence without required parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_MONTHLY_DAYS_TRIGGER_ID,
+                description=LoadTestTriggerConstants.MONTHLY_DAYS_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.MONTHLY_DAYS_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INTERVAL,
+                recurrence_week_days=LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS,
+                test_ids=LoadTestTriggerConstants.MONTHLY_DAYS_TEST_IDS
+            )
+
+        # Test invalid cron recurrence with extra parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_CRON_TRIGGER_ID,
+                description=LoadTestTriggerConstants.CRON_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.CRON_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.CRON_RECURRENCE_TYPE,
+                recurrence_cron_expression=LoadTestTriggerConstants.CRON_RECURRENCE_CRON_EXPRESSION,
+                recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,  # Invalid parameter for cron recurrence
+                test_ids=LoadTestTriggerConstants.CRON_TEST_IDS
+            )
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    def test_update_trigger_schedule_invalid_cases(self, rg, load):
+        self.create_trigger_schedule(
+            trigger_id=LoadTestTriggerConstants.INVALID_UPDATE_TRIGGER_ID,
+            description=LoadTestTriggerConstants.UPDATE_DESCRIPTION,
+            display_name=LoadTestTriggerConstants.UPDATE_DISPLAY_NAME,
+            start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+            recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+            recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+            test_ids=LoadTestTriggerConstants.UPDATE_TEST_IDS
+        )
+
+        # Test invalid update to daily recurrence with extra parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az load trigger schedule update '
+                '--name {load_test_resource} '
+                '--resource-group {resource_group} '
+                f'--trigger-id {LoadTestTriggerConstants.INVALID_UPDATE_TRIGGER_ID} '
+                f'--recurrence-type {LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE} '
+                f'--recurrence-interval {LoadTestTriggerConstants.DAILY_RECURRENCE_INTERVAL} '
+                f'--recurrence-week-days {LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS} '  # Invalid parameter for daily recurrence
+            )
+
+        # Test invalid update to weekly recurrence without required parameter (recurrence-interval)
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az load trigger schedule update '
+                '--name {load_test_resource} '
+                '--resource-group {resource_group} '
+                f'--trigger-id {LoadTestTriggerConstants.INVALID_UPDATE_TRIGGER_ID} '
+                f'--recurrence-type {LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE} '
+                f'--recurrence-week-days {LoadTestTriggerConstants.WEEKLY_RECURRENCE_DAYS} '
+            )
+
+        # Test invalid update to monthly by dates recurrence with extra parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az load trigger schedule update '
+                '--name {load_test_resource} '
+                '--resource-group {resource_group} '
+                f'--trigger-id {LoadTestTriggerConstants.INVALID_UPDATE_TRIGGER_ID} '
+                f'--recurrence-type {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE} '
+                f'--recurrence-interval {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL} '
+                f'--recurrence-week-days {LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS} '  # Invalid parameter for monthly by dates recurrence
+                f'--recurrence-dates-in-month {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH} '
+            )
+
+        # Test invalid update to monthly by days recurrence without required parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az load trigger schedule update '
+                '--name {load_test_resource} '
+                '--resource-group {resource_group} '
+                f'--trigger-id {LoadTestTriggerConstants.INVALID_UPDATE_TRIGGER_ID} '
+                f'--recurrence-type {LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_TYPE} '
+                f'--recurrence-interval {LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_INTERVAL} '
+                f'--recurrence-week-days {LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS} '
+            )
+
+        # Test invalid update to cron recurrence with extra parameters
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az load trigger schedule update '
+                '--name {load_test_resource} '
+                '--resource-group {resource_group} '
+                f'--trigger-id {LoadTestTriggerConstants.INVALID_UPDATE_TRIGGER_ID} '
+                f'--recurrence-cron-exp "{LoadTestTriggerConstants.CRON_RECURRENCE_CRON_EXPRESSION}" '
+                f'--recurrence-interval {LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE} '  # Invalid parameter for cron recurrence
+                f'--recurrence-type {LoadTestTriggerConstants.CRON_RECURRENCE_TYPE} '
+            )

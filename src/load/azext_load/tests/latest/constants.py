@@ -297,3 +297,11 @@ class LoadTestTriggerConstants(LoadConstants):
     MONTHLY_DAYS_RECURRENCE_INTERVAL = 1
     MONTHLY_DAYS_RECURRENCE_WEEK_DAYS = "Monday"
     MONTHLY_DAYS_RECURRENCE_INDEX = 1
+
+    # Constants for invalid cases
+    INVALID_DAILY_TRIGGER_ID = "invalid-daily-trigger"
+    INVALID_WEEKLY_TRIGGER_ID = "invalid-weekly-trigger"
+    INVALID_MONTHLY_DATES_TRIGGER_ID = "invalid-monthly-dates-trigger"
+    INVALID_MONTHLY_DAYS_TRIGGER_ID = "invalid-monthly-days-trigger"
+    INVALID_CRON_TRIGGER_ID = "invalid-cron-trigger"
+    INVALID_UPDATE_TRIGGER_ID = "update-invalid-trigger"
