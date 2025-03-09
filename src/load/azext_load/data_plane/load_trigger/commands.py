@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_load.data_plane.utils import validators
-from azext_load.data_plane.utils.constants import LoadCommandsConstants
 from azure.cli.core.commands import CliCommandType
 
 admin_custom_sdk = CliCommandType(

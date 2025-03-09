@@ -51,5 +51,3 @@ def load_arguments(self, _):
     with self.argument_context("load trigger schedule list") as c:
         c.argument("test_ids", argtypes.list_schedule_test_ids)
         c.argument("trigger_states", argtypes.list_schedule_states)
-    
- 

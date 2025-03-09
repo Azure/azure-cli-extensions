@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+# Disabled since logging statements were flagged as too long
+
 from datetime import datetime
 from azext_load.vendored_sdks.loadtesting.models import _models as models
 from azext_load.vendored_sdks.loadtesting.models import _enums as enums
@@ -11,6 +14,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 
 logger = get_logger(__name__)
 
+
 def parse_datetime_in_utc(value):
     try:
         parsed_date_time = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
@@ -18,17 +22,19 @@ def parse_datetime_in_utc(value):
     except ValueError:
         raise InvalidArgumentValueError("Invalid datetime format. Please provide datetime in UTC format (YYYY-MM-DDTHH:MM:SSZ).")
 
+
 def get_recurrence_end_body(end_after_occurrence, end_after_date_time, existing_recurrence_end=None):
     if end_after_occurrence is not None and end_after_date_time is not None:
         raise InvalidArgumentValueError("Specify either end_after_occurrence or end_after_date_time, not both.")
-    
+
     if end_after_occurrence is not None:
         return models.RecurrenceEnd(number_of_occurrences=end_after_occurrence)
-    
+
     if end_after_date_time is not None:
         return models.RecurrenceEnd(end_date_time=end_after_date_time)
-    
+
     return existing_recurrence_end
+
 
 def handle_daily_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
@@ -39,6 +45,7 @@ def handle_daily_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
         interval=recurrence_interval,
         recurrence_end=recurrence_end_body
     )
+
 
 def handle_weekly_recurrence(recurrence_interval, recurrence_week_days, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
@@ -53,6 +60,7 @@ def handle_weekly_recurrence(recurrence_interval, recurrence_week_days, recurren
         recurrence_end=recurrence_end_body
     )
 
+
 def handle_hourly_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for hourly recurrence.")
@@ -62,6 +70,7 @@ def handle_hourly_recurrence(recurrence_interval, recurrence_end_body, **kwargs)
         interval=recurrence_interval,
         recurrence_end=recurrence_end_body
     )
+
 
 def handle_monthly_by_dates_recurrence(recurrence_interval, recurrence_dates_in_month, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
@@ -75,6 +84,7 @@ def handle_monthly_by_dates_recurrence(recurrence_interval, recurrence_dates_in_
         dates_in_month=recurrence_dates_in_month,
         recurrence_end=recurrence_end_body
     )
+
 
 def handle_monthly_by_days_recurrence(recurrence_interval, recurrence_week_days, recurrence_index, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
@@ -92,6 +102,7 @@ def handle_monthly_by_days_recurrence(recurrence_interval, recurrence_week_days,
         recurrence_end=recurrence_end_body
     )
 
+
 def handle_cron_recurrence(recurrence_cron_expression, recurrence_end_body, **kwargs):
     if recurrence_cron_expression is None:
         raise InvalidArgumentValueError("Recurrence cron expression is required for cron recurrence.")
@@ -102,6 +113,7 @@ def handle_cron_recurrence(recurrence_cron_expression, recurrence_end_body, **kw
         recurrence_end=recurrence_end_body
     )
 
+
 recurrence_handlers = {
     enums.Frequency.DAILY: handle_daily_recurrence,
     enums.Frequency.WEEKLY: handle_weekly_recurrence,
@@ -110,6 +122,7 @@ recurrence_handlers = {
     enums.Frequency.MONTHLY_BY_DAYS: handle_monthly_by_days_recurrence,
     enums.Frequency.CRON: handle_cron_recurrence,
 }
+
 
 def get_recurrence_body(
     recurrence_type,
@@ -137,6 +150,7 @@ def get_recurrence_body(
             recurrence_end_body=recurrence_end_body
         )
     return None
+
 
 def get_recurrence_body_for_update(
     recurrence_type,
@@ -181,7 +195,8 @@ def get_recurrence_body_for_update(
         recurrence_week_days,
         recurrence_end_body
     )
-        
+
+
 def get_schedule_trigger_body_for_update(
     existing_trigger_schedule,
     recurrence_body,
@@ -200,10 +215,10 @@ def get_schedule_trigger_body_for_update(
 
     if test_ids is None:
         new_trigger_body.test_ids = existing_trigger_schedule.test_ids
-    
+
     if trigger_start_date_time is None:
         new_trigger_body.start_date_time = existing_trigger_schedule.start_date_time
-    
+
     if display_name is None:
         new_trigger_body.display_name = existing_trigger_schedule.display_name
 
@@ -212,5 +227,5 @@ def get_schedule_trigger_body_for_update(
 
     if recurrence_body is None:
         new_trigger_body.recurrence = existing_trigger_schedule.recurrence
-    
+
     return new_trigger_body

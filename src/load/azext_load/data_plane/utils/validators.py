@@ -549,6 +549,7 @@ def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids
             "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
         )
 
+
 def validate_trigger_id(namespace):
     """Validates trigger-id"""
     if not isinstance(namespace.trigger_id, str):
@@ -557,7 +558,8 @@ def validate_trigger_id(namespace):
         )
     if not re.match("^[a-z0-9_-]*$", namespace.trigger_id):
         raise InvalidArgumentValueError("Invalid trigger-id value")
-    
+
+
 def validate_recurrence_dates_in_month(namespace):
     if namespace.recurrence_dates_in_month is None:
         return
@@ -571,7 +573,8 @@ def validate_recurrence_dates_in_month(namespace):
             raise InvalidArgumentValueError(
                 f"Invalid recurrence-dates-in-month item: {item}. Expected integer between 1 and 31"
             )
-        
+
+
 def validate_schedule_test_ids(namespace):
     if namespace.test_ids is None:
         return
@@ -582,4 +585,3 @@ def validate_schedule_test_ids(namespace):
         )
     if not re.match("^[a-z0-9_-]*$", namespace.test_ids[0]):
         raise InvalidArgumentValueError("Invalid test-id value")
-

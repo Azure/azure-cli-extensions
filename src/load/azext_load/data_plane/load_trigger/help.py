@@ -22,7 +22,7 @@ examples:
         az load trigger schedule create --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id --description "Sample description" --display-name "Sample display name" --start-date-time 2023-01-01T15:16:17Z --recurrence-type Weekly --recurrence-interval 1 --recurrence-week-days Monday Tuesday Wednesday Thursday Friday --end-after-occurrence 15 --test-ids sample-test-id
     - name: Create a schedule trigger with cron expression.
       text: |
-        az load trigger schedule create --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id --description "Sample description" --display-name "Sample display name" --start-date-time 2023-01-01T15:16:17Z --recurrence-cron-expression "0 0 12 * *" --end-after-occurrence 10 --test-ids sample-test-id
+        az load trigger schedule create --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id --description "Sample description" --display-name "Sample display name" --start-date-time 2023-01-01T15:16:17Z --recurrence-cron-exp "0 0 12 * *" --end-after-occurrence 10 --test-ids sample-test-id
 """
 
 helps[
@@ -40,7 +40,6 @@ examples:
     - name: Update recurrence end date of schedule.
       text: |
         az load trigger schedule update --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id --end-after-date-time 2025-12-31T15:16:17Z
-    
 """
 
 helps[
@@ -63,7 +62,7 @@ examples:
     - name: Show schedule.
       text: |
         az load trigger schedule show --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id
-""" 
+"""
 
 helps[
     "load trigger schedule pause"
@@ -74,7 +73,7 @@ examples:
     - name: Pause schedule.
       text: |
         az load trigger schedule pause --load-test-resource sample-alt-resource --resource-group sample-rg --trigger-id sample-trigger-id
-""" 
+"""
 
 helps[
     "load trigger schedule enable"

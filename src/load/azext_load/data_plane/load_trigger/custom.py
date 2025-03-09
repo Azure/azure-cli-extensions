@@ -3,17 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_load.data_plane.utils.utils import (
-    get_admin_data_plane_client,
-    )
-
 from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
-from azext_load.vendored_sdks.loadtesting.models import ( _models as models, _enums as enums)
-import azext_load.data_plane.load_trigger.utils as utils
+from azext_load.data_plane.utils.utils import (
+    get_admin_data_plane_client)
+from azext_load.vendored_sdks.loadtesting.models import (_models as models, _enums as enums)
+from azext_load.data_plane.load_trigger import utils
 
 logger = get_logger(__name__)
+
 
 def create_trigger_schedule(
     cmd,
@@ -45,7 +44,7 @@ def create_trigger_schedule(
     recurrence_end_body = utils.get_recurrence_end_body(
         end_after_occurrence,
         end_after_date_time,
-    )    
+    )
     logger.debug("Recurrence end object: %s", recurrence_end_body)
     recurrence_body = utils.get_recurrence_body(
         recurrence_type,
@@ -60,7 +59,7 @@ def create_trigger_schedule(
     trigger_body = models.ScheduleTestsTrigger(
         test_ids=test_ids,
         recurrence=recurrence_body,
-        start_date_time= trigger_start_date_time,
+        start_date_time=trigger_start_date_time,
         state=enums.TriggerState.ACTIVE,
         display_name=display_name,
         description=description,
@@ -99,7 +98,7 @@ def update_trigger_schedule(
     existing_trigger_schedule: models.ScheduleTestsTrigger = None
     try:
         existing_trigger_schedule = client.get_trigger(trigger_id)
-    except ResourceNotFoundError as e:
+    except ResourceNotFoundError:
         msg = "Schedule trigger with id: {} does not exists.".format(trigger_id)
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
@@ -138,6 +137,7 @@ def update_trigger_schedule(
     except Exception as e:
         logger.error("Error occurred while updating schedule trigger: %s", str(e))
         raise
+
 
 def delete_trigger_schedule(
     cmd,
@@ -181,7 +181,7 @@ def pause_trigger_schedule(
     existing_trigger_schedule: models.ScheduleTestsTrigger = None
     try:
         existing_trigger_schedule = client.get_trigger(trigger_id)
-    except ResourceNotFoundError as e:
+    except ResourceNotFoundError:
         msg = "Schedule trigger with id: {} does not exists.".format(trigger_id)
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
@@ -191,8 +191,8 @@ def pause_trigger_schedule(
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
         logger.debug("Paused schedule trigger: %s", response)
         return response
-    else:
-        logger.error("Schedule trigger is not active. It is in %s state.", existing_trigger_schedule.state.value)
+    logger.error("Schedule trigger is not active. It is in %s state.", existing_trigger_schedule.state.value)
+
 
 def enable_trigger_schedule(
     cmd,
@@ -207,7 +207,7 @@ def enable_trigger_schedule(
     existing_trigger_schedule: models.ScheduleTestsTrigger = None
     try:
         existing_trigger_schedule = client.get_trigger(trigger_id)
-    except ResourceNotFoundError as e:
+    except ResourceNotFoundError:
         msg = "Schedule trigger with id: {} does not exists.".format(trigger_id)
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
@@ -217,8 +217,7 @@ def enable_trigger_schedule(
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
         logger.debug("Enabled schedule trigger: %s", response)
         return response
-    else:
-        logger.error("Schedule trigger is in %s state, hence cannot be enabled.", existing_trigger_schedule.state.value)
+    logger.error("Schedule trigger is in %s state, hence cannot be enabled.", existing_trigger_schedule.state.value)
 
 
 def list_trigger_schedules(

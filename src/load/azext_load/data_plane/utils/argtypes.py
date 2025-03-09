@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 
-from azext_load.data_plane.utils import completers, models, utils, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
     get_resource_name_completion_list,
@@ -13,8 +12,8 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
 )
 from knack.arguments import CLIArgumentType
-from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency, TriggerState 
-from datetime import datetime
+from azext_load.data_plane.utils import completers, models, utils, validators
+from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency, TriggerState
 from azext_load.data_plane.load_trigger import utils as trigger_utils
 
 quote_text = f"Use {quotes} to clear existing {{}}."
