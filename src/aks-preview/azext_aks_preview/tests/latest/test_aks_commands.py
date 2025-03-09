@@ -12619,6 +12619,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
+        api_version = 'egressgateway.kubernetes.azure.com/v1alpha1'
+        kind = 'StaticGatewayConfiguration'
+
         fd, temp_path = tempfile.mkstemp()
         self.kwargs.update({"file": temp_path})
         try:
@@ -12630,7 +12633,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             raise CliTestError(f"Failed to retrieve kubeconfig from \"az aks get-credentials\" '{e}'")
         else:
             # Create StaticGatewayConfiguration Resource
-            config.load_kube_config()
+            config.load_kube_config(config_file=temp_path)
 
             # Create a dynamic client
             dyn_client = DynamicClient(client.ApiClient())
@@ -12638,12 +12641,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             v1 = client.CoreV1Api()
             # Create namespace
             try:
-                v1.create_namespace(client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace)))
-            except Exception:
-                {}
+                v1.create_namespace(client.V1Namespace(metadata=client.V1ObjectMeta(name=istio_egress_namespace)))
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise CliTestError(f"Failed to create namespace '{istio_egress_namespace}': '{e}'")
 
-            api_version = 'egressgateway.kubernetes.azure.com/v1alpha1'
-            kind = 'StaticGatewayConfiguration'
             sgcCRD = {
                 'apiVersion': 'apiextensions.k8s.io/v1',
                 'kind': 'CustomResourceDefinition',
@@ -12676,7 +12678,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     ],
                     'names': {
                         'kind': 'StaticGatewayConfiguration',
-                        'plural': 'staticgatewayconfigurations',  # Adjusted according to rule 3
+                        'plural': 'staticgatewayconfigurations',
                         'singular': 'staticgatewayconfiguration',
                         'listKind': 'StaticGatewayConfigurationList'
                     },
@@ -12687,8 +12689,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             crd_resource = dyn_client.resources.get(api_version='apiextensions.k8s.io/v1', kind='CustomResourceDefinition')
             try:
                 created_crd = crd_resource.create(body=sgcCRD)
-            except Exception:
-                {}
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise CliTestError(f"Failed to create StaticGatewayConfiguration CRD: '{e}'")
 
             data = {
                 'apiVersion': api_version,
@@ -12711,8 +12714,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
             try:
                 created_resource = resource.create(body=data, namespace=istio_egress_namespace)
+                print(f"Created {kind} resource: {created_resource}")
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise CliTestError(f"Failed to create StaticGatewayConfiguration resource: '{e}'")
+
+            custom_object_api = client.CustomObjectsApi()
+
+            try:
+                created_sgc = custom_object_api.get_namespaced_custom_object(
+                    group="egressgateway.kubernetes.azure.com", 
+                    version="v1alpha1",
+                    namespace=istio_egress_namespace,
+                    plural="staticgatewayconfigurations",
+                    name=istio_sgc_name
+                )
+                print(f"Found {kind} resource: {created_sgc}")
             except client.rest.ApiException as e:
-                raise CliTestError(f"Failed to create StaticGatewayConfiguration resource: '{e}'")
+                raise CliTestError(f"Failed to get StaticGatewayConfiguration resource: '{e}'")
         finally:
             os.close(fd)
             os.remove(temp_path)
@@ -12749,7 +12768,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # disable the egress gateway
         update_cmd = (
             "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--istio-egressgateway-name {istio_egress_name} --istio-egressgateway-namespace {istio_egress_namespace}"
+            "--istio-egressgateway-name {istio_egress_name} --istio-egressgateway-namespace {istio_egress_namespace} --yes"
         )
         self.cmd(
             update_cmd,
@@ -12761,7 +12780,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check(
                     "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    False,
+                    None,
                 ),
                 self.check(
                     "serviceMeshProfile.istio.components.egressGateways[0].namespace",
