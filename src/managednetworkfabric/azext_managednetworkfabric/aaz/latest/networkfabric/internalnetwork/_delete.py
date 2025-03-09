@@ -22,9 +22,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -50,12 +50,18 @@ class Delete(AAZCommand):
             help="Name of the Internal Network.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.l3_isolation_domain_name = AAZStrArg(
             options=["--l3domain", "--l3-isolation-domain-name"],
             help="Name of the L3 Isolation Domain.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -85,16 +91,7 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -104,6 +101,15 @@ class Delete(AAZCommand):
                     self.ctx.args.no_wait,
                     session,
                     self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -152,16 +158,16 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        def on_204(self, session):
             pass
 
-        def on_204(self, session):
+        def on_200_201(self, session):
             pass
 
 
