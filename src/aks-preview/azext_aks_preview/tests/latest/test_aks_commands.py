@@ -28,6 +28,9 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
 
+from kubernetes import config, client
+from kubernetes.dynamic import DynamicClient
+from kubernetes.dynamic.exceptions import ResourceNotFoundError
 
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
@@ -12528,6 +12531,265 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("serviceMeshProfile.mode", "Disabled"),
+            ],
+        )
+
+        # delete the cluster
+        delete_cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+    )
+    def test_aks_azure_service_mesh_with_egress_gateway(
+        self, resource_group, resource_group_location
+    ):
+        """This test case exercises enabling and disabling an Istio egress gateway.
+
+        It creates a cluster with azure service mesh profile and Static Egress Gateway enabled. 
+        After that, we create a gateway nodepool and a staticgatewayconfiguration resource.
+        Then, we create an Istio egress gateway, and then delete it.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "revision": self._get_asm_supported_revision("westus2"), # Temporarily set to prod region to avoid using unsupported ASM revision for centraluseap
+            }
+        )
+
+        # create cluster with --enable-azure-service-mesh and --enable-static-egress-gateway
+        # Static Egress Gateway is required for Istio Egress Gateway
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/StaticEgressGatewayPreview "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-static-egress-gateway "
+            "--enable-azure-service-mesh --revision={revision} --output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check("networkProfile.staticEgressGatewayProfile.enabled", True)
+            ],
+        )
+
+        # add Gateway-mode agentpool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name=gwnp "
+            "--mode=Gateway "
+            "--node-count=2 "
+            "--gateway-prefix-size=31 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/StaticEgressGatewayPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("gatewayProfile.publicIpPrefixSize", 31),
+            ],
+        )
+
+        istio_egress_name = "istio-egress-1"
+        istio_egress_namespace = 'istio-ns-1'
+        istio_sgc_name = "istio-sgc-1"
+
+        self.kwargs.update(
+            {
+                "istio_egress_namespace": istio_egress_namespace,
+                "istio_egress_name": istio_egress_name,
+                "istio_sgc_name": istio_sgc_name
+            }
+        )
+
+        api_version = 'egressgateway.kubernetes.azure.com/v1alpha1'
+        kind = 'StaticGatewayConfiguration'
+
+        fd, temp_path = tempfile.mkstemp()
+        self.kwargs.update({"file": temp_path})
+        try:
+            self.cmd(
+                'aks get-credentials -g {resource_group} -n {name} --file "{file}"'
+            )
+            self.assertGreater(os.path.getsize(temp_path), 0)
+        except Exception as e:
+            raise CliTestError(f"Failed to retrieve kubeconfig from \"az aks get-credentials\" '{e}'")
+        else:
+            # Create StaticGatewayConfiguration Resource
+            config.load_kube_config(config_file=temp_path)
+
+            # Create a dynamic client
+            dyn_client = DynamicClient(client.ApiClient())
+
+            v1 = client.CoreV1Api()
+            # Create namespace
+            try:
+                v1.create_namespace(client.V1Namespace(metadata=client.V1ObjectMeta(name=istio_egress_namespace)))
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise CliTestError(f"Failed to create namespace '{istio_egress_namespace}': '{e}'")
+
+            sgcCRD = {
+                'apiVersion': 'apiextensions.k8s.io/v1',
+                'kind': 'CustomResourceDefinition',
+                'metadata': {
+                    'name': 'staticgatewayconfigurations.egressgateway.kubernetes.azure.com'
+                },
+                'spec': {
+                    'group': 'egressgateway.kubernetes.azure.com',
+                    'versions': [
+                        {
+                            'name': 'v1alpha1',
+                            'served': True,
+                            'storage': True,
+                            'schema': {
+                                'openAPIV3Schema': {
+                                    'type': 'object',
+                                    'properties': {
+                                        'spec': {
+                                            'type': 'object',
+                                            'properties': {
+                                                'gatewayNodepoolName': {
+                                                    'type': 'string'
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    'names': {
+                        'kind': 'StaticGatewayConfiguration',
+                        'plural': 'staticgatewayconfigurations',
+                        'singular': 'staticgatewayconfiguration',
+                        'listKind': 'StaticGatewayConfigurationList'
+                    },
+                    'scope': 'Namespaced'
+                }
+            }
+
+            crd_resource = dyn_client.resources.get(api_version='apiextensions.k8s.io/v1', kind='CustomResourceDefinition')
+            try:
+                created_crd = crd_resource.create(body=sgcCRD)
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise CliTestError(f"Failed to create StaticGatewayConfiguration CRD: '{e}'")
+
+            data = {
+                'apiVersion': api_version,
+                'kind': kind,
+                'metadata': {
+                    'name': istio_sgc_name,
+                    'namespace': istio_egress_namespace
+                },
+                'spec': {
+                    'gatewayNodepoolName': 'gwnp',
+                }
+            }
+
+            try:
+                resource = dyn_client.resources.get(api_version=api_version, kind=kind)
+            except ResourceNotFoundError:
+                time.sleep(10)
+
+            resource = dyn_client.resources.get(api_version=api_version, kind=kind)
+
+            try:
+                created_resource = resource.create(body=data, namespace=istio_egress_namespace)
+                print(f"Created {kind} resource: {created_resource}")
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise CliTestError(f"Failed to create StaticGatewayConfiguration resource: '{e}'")
+
+            custom_object_api = client.CustomObjectsApi()
+
+            try:
+                created_sgc = custom_object_api.get_namespaced_custom_object(
+                    group="egressgateway.kubernetes.azure.com", 
+                    version="v1alpha1",
+                    namespace=istio_egress_namespace,
+                    plural="staticgatewayconfigurations",
+                    name=istio_sgc_name
+                )
+                print(f"Found {kind} resource: {created_sgc}")
+            except client.rest.ApiException as e:
+                raise CliTestError(f"Failed to get StaticGatewayConfiguration resource: '{e}'")
+        finally:
+            os.close(fd)
+            os.remove(temp_path)
+
+        # enable Istio egress gateway
+        update_cmd = (
+            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+            "--istio-egressgateway-name {istio_egress_name} --istio-egressgateway-namespace {istio_egress_namespace} "
+            "--gateway-configuration-name {istio_sgc_name}"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].name",
+                    istio_egress_name,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                    True,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].namespace",
+                    istio_egress_namespace,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].gatewayConfigurationName",
+                    istio_sgc_name,
+                ),
+            ],
+        )
+
+        # disable the egress gateway
+        update_cmd = (
+            "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} "
+            "--istio-egressgateway-name {istio_egress_name} --istio-egressgateway-namespace {istio_egress_namespace} --yes"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].name",
+                    istio_egress_name,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                    None,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].namespace",
+                    istio_egress_namespace,
+                ),
+                self.check(
+                    "serviceMeshProfile.istio.components.egressGateways[0].gatewayConfigurationName",
+                    istio_sgc_name,
+                ),
             ],
         )
 
