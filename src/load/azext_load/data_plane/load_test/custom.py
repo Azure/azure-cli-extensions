@@ -48,6 +48,7 @@ def create_test(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -72,6 +73,7 @@ def create_test(
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
+    app_components, server_metrics = None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is None:
@@ -88,6 +90,7 @@ def create_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -98,7 +101,7 @@ def create_test(
         )
     else:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        yaml_test_body, app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
         test_type = (
             test_type or
             yaml.get(LoadTestConfigKeys.TEST_TYPE) or
@@ -118,6 +121,7 @@ def create_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -136,6 +140,20 @@ def create_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
+    if app_components is not None and len(app_components) > 0:
+        app_component_response = client.create_or_update_app_components(
+            test_id=test_id, body={"testId": test_id, "components": app_components}
+        )
+        logger.info(
+            "Added app components for test ID: %s and response obj is %s", test_id, app_component_response
+        )
+    if server_metrics is not None and len(server_metrics) > 0:
+        server_metric_response = client.create_or_update_server_metrics_config(
+            test_id=test_id, body={"testId": test_id, "metrics": server_metrics}
+        )
+        logger.info(
+            "Added server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
+        )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been created successfully", test_id)
@@ -156,6 +174,7 @@ def update_test(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -178,11 +197,12 @@ def update_test(
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
 
     yaml, yaml_test_body = None, None
+    app_components, server_metrics = None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        yaml_test_body, app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -194,6 +214,7 @@ def update_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -213,6 +234,7 @@ def update_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -230,6 +252,22 @@ def update_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
+    logger.info(f"Hi, Mohit {app_components} {server_metrics}")
+    if app_components is not None and len(app_components) > 0:
+        app_component_response = client.create_or_update_app_components(
+            test_id=test_id, body={"testId": test_id, "components": app_components}
+        )
+        logger.info(
+            "Updated app components for test ID: %s and response obj is %s", test_id, app_component_response
+        )
+    server_metric_response = None
+    if server_metrics is not None and len(server_metrics) > 0:
+        server_metric_response = client.create_or_update_server_metrics_config(
+            test_id=test_id, body={"testId": test_id, "metrics": server_metrics}
+        )
+        logger.info(
+            "Updated server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
+        )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been updated successfully", test_id)

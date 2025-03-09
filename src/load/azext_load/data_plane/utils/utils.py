@@ -340,9 +340,10 @@ def convert_yaml_to_test(cmd, data):
     if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
 
-    utils_yaml_config.update_engine_reference_identity(new_body, data)
+    utils_yaml_config.update_reference_identities(new_body, data)
+    app_components, server_metrics = utils_yaml_config.parse_app_comps_and_server_metrics(data=data)
     logger.debug("Converted yaml to test body: %s", new_body)
-    return new_body
+    return new_body, app_components, server_metrics
 # pylint: enable=line-too-long
 
 
@@ -360,6 +361,7 @@ def create_or_update_test_with_config(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -399,6 +401,21 @@ def create_or_update_test_with_config(
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
+    new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if metrics_reference_identity is not None:
+        new_body["metricsReferenceIdentityId"] = metrics_reference_identity
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    elif yaml_test_body.get("metricsReferenceIdentityId") is not None:
+        new_body["metricsReferenceIdentityId"] = yaml_test_body.get(
+            "metricsReferenceIdentityId"
+        )
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    else:
+        new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
+            new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("metricsReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
     if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
@@ -479,10 +496,17 @@ def create_or_update_test_with_config(
             "passFailMetrics": {
                 key: None
                 for key in existing_pass_fail_Criteria.get("passFailMetrics", {})
+            },
+            "passFailServerMetrics": {
+                key: None
+                for key in existing_pass_fail_Criteria.get("passFailServerMetrics", {})
             }
         }
         new_body["passFailCriteria"]["passFailMetrics"].update(
             yaml_pass_fail_criteria.get("passFailMetrics", {})
+        )
+        new_body["passFailCriteria"]["passFailServerMetrics"].update(
+            yaml_pass_fail_criteria.get("passFailServerMetrics", {})
         )
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
@@ -552,6 +576,7 @@ def create_or_update_test_without_config(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -585,6 +610,21 @@ def create_or_update_test_without_config(
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
+    new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if metrics_reference_identity is not None:
+        new_body["metricsReferenceIdentityId"] = metrics_reference_identity
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    elif body.get("metricsReferenceIdentityId") is not None:
+        new_body["metricsReferenceIdentityId"] = body.get(
+            "metricsReferenceIdentityId"
+        )
+        new_body["metricsReferenceIdentityType"] = body.get(
+            "metricsReferenceIdentityType", IdentityType.UserAssigned
+        )
+    if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
+            new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("metricsReferenceIdentityId")
     subnet_id = subnet_id or body.get("subnetId")
     if subnet_id:
         if subnet_id.casefold() in ["null", ""]:
