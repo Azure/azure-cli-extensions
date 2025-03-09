@@ -65,7 +65,7 @@ def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud
     return Create(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
-def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, yes=False):
+def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, yes=False):
     from .aaz.latest.vmware.private_cloud.identity_source import Delete
     from knack.prompting import prompt_y_n
     msg = 'This will delete the identity source. Are you sure?'

@@ -147,6 +147,7 @@ class CheckQuotaAvailability(AAZCommand):
             )
             _schema_on_200.quota_enabled = AAZStrType(
                 serialized_name="quotaEnabled",
+                flags={"read_only": True},
             )
 
             hosts_remaining = cls._schema_on_200.hosts_remaining
