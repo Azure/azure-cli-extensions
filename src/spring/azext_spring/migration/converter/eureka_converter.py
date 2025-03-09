@@ -1,9 +1,13 @@
-from .base_converter import ConverterTemplate
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+from .base_converter import BaseConverter
 
-class EurekaConverter(ConverterTemplate):
+class EurekaConverter(BaseConverter):
 
-    def __init__(self, input):
-        def extract_data():
+    def __init__(self, source):
+        def transform_data():
             name = "eureka"
             configurations = []
             replicas = 1
@@ -13,7 +17,7 @@ class EurekaConverter(ConverterTemplate):
                 "configurations": configurations,
                 "replicas": replicas
             }
-        super().__init__(input, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "eureka.bicep"

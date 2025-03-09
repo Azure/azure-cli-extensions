@@ -1,6 +1,6 @@
 param containerAppName string = '{{data.containerAppName}}'
-param {{data.containerAppImageName}} string
-param {{data.targetPort}} int
+param {{data.paramContainerAppImageName}} string
+param {{data.paramTargetPort}} int
 
 @description('Minimum number of replicas that will be deployed')
 @minValue(0)
@@ -36,7 +36,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
       ingress: {
         {%- if data.ingress %}
         external: {% if data.isPublic %}true{% else %}false{% endif %}
-        targetPort: {{data.targetPort}}
+        targetPort: {{data.paramTargetPort}}
         allowInsecure: false
         transport: '{{data.ingress.transport}}'
         {%- if data.ingress.sessionAffinity %}
@@ -60,7 +60,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
       containers: [
         {
           name: containerAppName
-          image: {{data.containerAppImageName}}
+          image: {{data.paramContainerAppImageName}}
           resources: {
             cpu: json('{{data.blue.cpuCore}}')
             memory: '{{data.blue.memorySize}}'
@@ -82,13 +82,13 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
               {%- if data.blue.livenessProbe.httpGet %}
               httpGet: {
                 path: '{{data.blue.livenessProbe.httpGet.path}}'
-                port: {{data.targetPort}}
+                port: {{data.paramTargetPort}}
                 scheme: '{{data.blue.livenessProbe.httpGet.scheme}}'
               } 
               {%- endif %}
               {%- if data.blue.livenessProbe.tcpSocket %}
               tcpSocket: {
-                port: {{data.targetPort}}
+                port: {{data.paramTargetPort}}
               }
               {%- endif %}
               {%- if data.blue.livenessProbe.initialDelaySeconds %}
@@ -114,13 +114,13 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
               {%- if data.blue.readinessProbe.httpGet %}
               httpGet: {
                 path: '{{data.blue.readinessProbe.httpGet.path}}'
-                port: {{data.targetPort}}
+                port: {{data.paramTargetPort}}
                 scheme: '{{data.blue.readinessProbe.httpGet.scheme}}'
               }
               {%- endif %}
               {%- if data.blue.readinessProbe.tcpSocket %}
               tcpSocket: {
-                port: {{data.targetPort}}
+                port: {{data.paramTargetPort}}
               }
               {%- endif %}
               {%- if data.blue.readinessProbe.initialDelaySeconds %}
@@ -146,13 +146,13 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
               {%- if data.blue.startupProbe.httpGet %}
               httpGet: {
                 path: '{{data.blue.startupProbe.httpGet.path}}'
-                port: {{data.targetPort}}
+                port: {{data.paramTargetPort}}
                 scheme: '{{data.blue.startupProbe.httpGet.scheme}}'
               }
               {%- endif %}
               {%- if data.blue.startupProbe.tcpSocket %}
               tcpSocket: {
-                port: {{data.targetPort}}
+                port: {{data.paramTargetPort}}
               }
               {%- endif %}
               {%- if data.blue.startupProbe.initialDelaySeconds %}

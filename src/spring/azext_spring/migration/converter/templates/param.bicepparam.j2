@@ -12,10 +12,10 @@ param vnetSubnetId
 {%- endif %}
 
 {%- for app in data.apps %}
-param {{app.containerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-param {{app.targetPort}} = 80
+param {{app.paramContainerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+param {{app.paramTargetPort}} = 80
 {%- endfor %}
 
 {%- for storage in data.storages %}
-param {{storage.containerAppEnvStorageAccountKey}} = 'fill in account key for storage "{{storage.accountName}}"'
+param {{storage.paramContainerAppEnvStorageAccountKey}} = 'fill in account key for storage "{{storage.accountName}}"'
 {%- endfor %}

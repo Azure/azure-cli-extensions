@@ -1,10 +1,14 @@
-from .base_converter import ConverterTemplate
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+from .base_converter import BaseConverter
 
-class ServiceRegistryConverter(ConverterTemplate):
+class ServiceRegistryConverter(BaseConverter):
 
-    def __init__(self, input):
-        def extract_data():
-            service_registry = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries')
+    def __init__(self, source):
+        def transform_data():
+            # service_registry = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/serviceRegistries')
             name = f"eureka"
             configurations = []
             replicas = 1
@@ -14,7 +18,7 @@ class ServiceRegistryConverter(ConverterTemplate):
                 "configurations": configurations,
                 "replicas": replicas
             }
-        super().__init__(input, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "eureka.bicep"

@@ -1,9 +1,13 @@
-from .base_converter import ConverterTemplate
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+from .base_converter import BaseConverter
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 # Concrete Converter Subclass for Config Server
-class ConfigServerConverter(ConverterTemplate):
+class ConfigServerConverter(BaseConverter):
 
     CONFIGURATION_KEY_PREFIX = "spring.cloud.config.server.git"
     KEY_URI = ".uri"
@@ -16,8 +20,8 @@ class ConfigServerConverter(ConverterTemplate):
     KEY_HOST_KEY_ALGORITHM = ".host-key-algorithm"
     KEY_PATTERN = ".pattern"
 
-    def __init__(self, input):
-        def extract_data():
+    def __init__(self, source):
+        def transform_data():
             configServer = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers')[0]
             name = f"config"
             configurations, params = self._get_configurations_and_params(configServer)
@@ -28,7 +32,7 @@ class ConfigServerConverter(ConverterTemplate):
                 "configurations": configurations,
                 "replicas": replicas
             }
-        super().__init__(input, extract_data)
+        super().__init__(source, transform_data)
 
     def get_template_name(self):
         return "config_server.bicep"

@@ -1,75 +1,54 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from knack.log import get_logger
-from .base_converter import ConverterTemplate
+from .base_converter import BaseConverter
 
 logger = get_logger(__name__)
 
 # Concrete Converter Subclass for Container App
-class AppConverter(ConverterTemplate):
+class AppConverter(BaseConverter):
     
     DEFAULT_MOUNT_OPTIONS = "uid=0,gid=0,file_mode=0777,dir_mode=0777"
 
-    def __init__(self, input):
-        def extract_data():
-            return self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/apps')
-        super().__init__(input, extract_data)
+    def __init__(self, source):
+        def transform_data():
+            return self.wrapper_data.get_apps()
+        super().__init__(source, transform_data)
 
-    def transform_data(self, app):
-        appName = app['name'].split('/')[-1]
-        envName = app['name'].split('/')[0]
-        asa_deployments = self.wrapper_data.get_deployments_by_app(app['name'])
-        moduleName = appName.replace("-", "_")
-        serviceBinds = self._get_service_bind(app, envName)
-        deployments = self._get_deployments(asa_deployments)
-        blueDeployment = deployments[0] if len(deployments) > 0 else {}
-        greenDeployment = deployments[1] if len(deployments) > 1 else {}
+    def transform_data_item(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        blueDeployment = self._transform_deployment(blueDeployment)
+        greenDeployment = self.wrapper_data.get_green_deployment_by_app(app)
+        greenDeployment = self._transform_deployment(greenDeployment)
         tier = blueDeployment.get('sku', {}).get('tier')
+        serviceBinds = self._get_service_bind(app)
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
         identity = app.get('identity')
-        storages = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
-        # print(f"App name: {appName}, Module name: {moduleName}, Ingress: {ingress}, IsPublic: {isPublic}, Identity: {identity}")
         volumeMounts = []
         volumes = []
         if 'properties' in app and 'customPersistentDisks' in app['properties']:
             disks = app['properties']['customPersistentDisks']
-            storage_map = {
-                storage['name'].split('/')[-1]: storage['properties']['accountName'] 
-                for storage in storages
-            }
             for disk_props in disks:
-                # print(f"Disk props: {disk_props}")
-                storage_id = disk_props.get('storageId', '')
-                storage_name = self._get_resource_name(storage_id) if storage_id else ''
-                # print("Storage name: ", storage_name)
-                mountOptions = self.DEFAULT_MOUNT_OPTIONS
-                if disk_props.get('customPersistentDiskProperties').get('mountOptions') is not None and \
-                    len(disk_props.get('customPersistentDiskProperties').get('mountOptions')) > 0:
-                    mountOptions = ""
-                    for option in disk_props.get('customPersistentDiskProperties').get('mountOptions'):
-                        mountOptions += ("," if mountOptions != "" else "") + option  
-                account_name = storage_map.get(storage_name, '')
-                mount_path = disk_props.get('customPersistentDiskProperties').get('mountPath')
-                readOnly = disk_props.get('customPersistentDiskProperties', False).get('readOnly', False)
-                share_name = disk_props.get('customPersistentDiskProperties', '').get('shareName', '')
-                access_mode = 'ReadOnly' if readOnly else 'ReadWrite'
-                storage_unique_name = self._get_storage_unique_name(storage_name, account_name, share_name, mount_path, access_mode)
-                # print("Mount options: ", mountOptions)
+                volume_name = self._get_storage_name(disk_props)
                 volumeMounts.append({
-                    "volumeName": storage_name,
-                    "mountPath": mount_path,
+                    "volumeName": volume_name,
+                    "mountPath": self._get_storage_mount_path(disk_props),
                 })
                 volumes.append({
-                    "volumeName": storage_name,
-                    "storageName": storage_unique_name,
-                    "mountOptions": mountOptions,
+                    "volumeName": volume_name,
+                    "storageName": self._get_storage_unique_name(disk_props),
+                    "mountOptions": self._get_mount_options(disk_props),
                 })
         # print("Volume mounts: ", volumeMounts)
         # print("Volumes: ", volumes)
         return {
-            "containerAppName": appName,
-            "containerAppImageName": "containerImageFor_"+appName.replace("-", "_"),
-            "targetPort": "targetPortFor_"+appName.replace("-", "_"),
-            "moduleName": moduleName,
+            "containerAppName": self._get_resource_name(app),
+            "paramContainerAppImageName": self._get_param_name_of_container_image(app),
+            "paramTargetPort": self._get_param_name_of_target_port(app),
+            "moduleName": self._get_app_module_name(app),
             "ingress": ingress,
             "isPublic": isPublic,
             "minReplicas": 1,
@@ -77,7 +56,7 @@ class AppConverter(ConverterTemplate):
             "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
-            "isBlueGreen": len(deployments) > 1,
+            "isBlueGreen": self.wrapper_data.is_support_blue_green_deployment(app),
             "identity": identity,
             "volumeMounts": volumeMounts,
             "volumes": volumes,
@@ -86,12 +65,10 @@ class AppConverter(ConverterTemplate):
     def get_template_name(self):
         return "app.bicep"
     
-    def get_app_name(input_string):
-        return input_string.split('/')[-1]
-
-    def _get_service_bind(self, source, envName):
+    def _get_service_bind(self, app):
         service_bind = []
-        addon = source['properties'].get('addonConfigs')
+        envName = self._get_parent_resource_name(app)
+        addon = app['properties'].get('addonConfigs')
 
         if addon is None:
             return None
@@ -127,35 +104,30 @@ class AppConverter(ConverterTemplate):
         # print(f"Service bind: {service_bind}")
         return service_bind
 
-    def _get_deployments(self, asa_deployments):
-        deployments = []
-        for deployment in asa_deployments:
-            deployment_name = deployment['name'].split('/')[-1]
-            env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
-            liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
-            readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
-            startup_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('startupProbe', {})
-            resource_requests = deployment.get('properties', {}).get('deploymentSettings', {}).get('resourceRequests', {})
-            cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
-            memorySize = resource_requests.get("memory")
-            tier = deployment.get('sku', {}).get('tier')
-            scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
-            capacity = deployment.get('sku', {}).get('capacity')
-            deployment = {
-                "name": deployment_name,
-                "env": self._convert_env(env),
-                "livenessProbe": self._convert_probe(liveness_probe, tier),
-                "readinessProbe": self._convert_probe(readiness_probe, tier),
-                "startupProbe": self._convert_probe(startup_probe, tier),
-                "cpuCore": cpuCore,
-                "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
-                "scale": self._convert_scale(scale),
-                "capacity": capacity,
-            }
-            deployments.append(deployment)
-
-        # print(f"deployments: {deployments}")
-        return deployments
+    def _transform_deployment(self, deployment):
+        if deployment is None or deployment == {}:
+            return
+        env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
+        liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
+        readiness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('readinessProbe', {})
+        startup_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('startupProbe', {})
+        resource_requests = deployment.get('properties', {}).get('deploymentSettings', {}).get('resourceRequests', {})
+        cpuCore = float(resource_requests.get("cpu").replace("250m", "0.25").replace("500m", "0.5"))
+        memorySize = resource_requests.get("memory")
+        tier = deployment.get('sku', {}).get('tier')
+        scale = deployment.get('properties', {}).get('deploymentSettings', {}).get('scale', {})
+        capacity = deployment.get('sku', {}).get('capacity')
+        return {
+            "name": self._get_resource_name(deployment),
+            "env": self._convert_env(env),
+            "livenessProbe": self._convert_probe(liveness_probe, tier),
+            "readinessProbe": self._convert_probe(readiness_probe, tier),
+            "startupProbe": self._convert_probe(startup_probe, tier),
+            "cpuCore": cpuCore,
+            "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
+            "scale": self._convert_scale(scale),
+            "capacity": capacity,
+        }
 
     def _convert_env(self, env):
         env_list = []
@@ -259,8 +231,8 @@ class AppConverter(ConverterTemplate):
             probeAction = None
         return probeAction
 
-    def _get_ingress(self, source, tier):
-        ingress = source['properties'].get('ingressSettings')
+    def _get_ingress(self, app, tier):
+        ingress = app['properties'].get('ingressSettings')
         if ingress is None:
             return None
         return {
