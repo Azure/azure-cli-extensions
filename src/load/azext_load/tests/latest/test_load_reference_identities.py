@@ -39,15 +39,16 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
     
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
-    def test_load_test_engine_mi(self):
+    def test_load_test_reference_ids(self):
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.CREATE_TEST_ID,
                 "description": LoadTestConstants.DESCRIPTION,
                 "display_name": LoadTestConstants.DISPLAY_NAME,
                 "engine_instance": LoadTestConstants.ENGINE_INSTANCE,
-                "engine_ref_id_type": LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED
-                ""
+                "engine_ref_id_type": LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED,
+                "metrics_reference_identity": LoadTestConstants.METRICS_REFERENCE_ID_COMMAND_LINE,
+                "keyvault_reference_identity": LoadTestConstants.KEYVAULT_REFERENCE_ID_COMMAND_LINE,
             }
         )
         checks = [
@@ -58,6 +59,10 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             JMESPathCheck("description", self.kwargs["description"]),
             JMESPathCheck("displayName", self.kwargs["display_name"]),
             JMESPathCheck("engineBuiltinIdentityType", self.kwargs["engine_ref_id_type"]),
+            JMESPathCheck("metricsReferenceIdentityId", self.kwargs["metrics_reference_identity"]),
+            JMESPathCheck("metricsReferenceIdentityType", "UserAssigned"),
+            JMESPathCheck("keyvaultReferenceIdentityId", self.kwargs["keyvault_reference_identity"]),
+            JMESPathCheck("keyvaultReferenceIdentityType", "UserAssigned"),
         ]
 
         # Create load test with system assigned engine mi type
@@ -69,11 +74,13 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             "--description {description} "
             "--display-name {display_name} "
             "--engine-instance {engine_instance} "
-            "--engine-ref-id-type {engine_ref_id_type}",
+            "--engine-ref-id-type {engine_ref_id_type} "
+            "--metrics-reference-id {metrics_reference_identity} "
+            "--keyvault-reference-id {keyvault_reference_identity} ",
             checks=checks,
         )
         
-        # Update load test with user assigned engine mi type using parameters
+        # checks for using commands to initialise ref-ids
         checks = [
             JMESPathCheck("testId", self.kwargs["test_id"]),
             JMESPathCheck(
@@ -81,99 +88,139 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             ),
             JMESPathCheck("description", self.kwargs["description"]),
             JMESPathCheck("displayName", self.kwargs["display_name"]),
-            JMESPathCheck("engineBuiltinIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
+            JMESPathCheck("metricsReferenceIdentityId", LoadTestConstants.METRICS_REFERENCE_ID_COMMAND_LINE),
+            JMESPathCheck("metricsReferenceIdentityType", "UserAssigned"),
+            JMESPathCheck("keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID_COMMAND_LINE),
+            JMESPathCheck("keyvaultReferenceIdentityType", "UserAssigned"),
         ]
-        response = _configure_command_jmes_checks(
+        # using commands to initialise ref-ids
+        _configure_command_jmes_checks(
             self,
             checks,
-            engine_ref_id_type=LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED,
-            engine_ref_ids=LoadTestConstants.ENGINE_REFERENCE_ID1
+            metrics_ref_id=LoadTestConstants.METRICS_REFERENCE_ID_COMMAND_LINE,
+            keyvault_ref_id=LoadTestConstants.KEYVAULT_REFERENCE_ID_COMMAND_LINE
         )
-        
-        assert response["engineBuiltinIdentityIds"] == [LoadTestConstants.ENGINE_REFERENCE_ID1]
 
-        # Update engine reference identities
-        response = _configure_command_jmes_checks(
-            self,
-            checks,
-            engine_ref_id_type=LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED,
-            engine_ref_ids=LoadTestConstants.ENGINE_REFERENCE_ID1 + " " + LoadTestConstants.ENGINE_REFERENCE_ID2
-        )
-        
-        # respose will be a list of engine reference identities
-        assert response["engineBuiltinIdentityIds"] == [LoadTestConstants.ENGINE_REFERENCE_ID1, LoadTestConstants.ENGINE_REFERENCE_ID2]
-
-        # Update engine reference identity type to None
         checks = [
             JMESPathCheck("testId", self.kwargs["test_id"]),
-            JMESPathCheck("engineBuiltinIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_NONE),
+            JMESPathCheck(
+                "loadTestConfiguration.engineInstances", self.kwargs["engine_instance"]
+            ),
+            JMESPathCheck("metricsReferenceIdentityId", LoadTestConstants.METRICS_REFERENCE_ID),
+            JMESPathCheck("metricsReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
+            JMESPathCheck("keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID_OVERRIDE),
+            JMESPathCheck("keyvaultReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
         ]
 
-        response = _configure_command_jmes_checks(
+        # use config file to update ref-ids.
+        _configure_command_jmes_checks(
             self,
             checks,
-            engine_ref_id_type=LoadTestConstants.ENGINE_REFERENCE_TYPE_NONE
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS
         )
 
-        # engineBuiltinIdentityIds should not be present in response
-        assert "engineBuiltinIdentityIds" not in response
-
-        # Update engine reference identity type to SystemAssigned using config file
-        
+        # use both config file and the command line, where command over-rides the config.
         checks = [
             JMESPathCheck("testId", self.kwargs["test_id"]),
-            JMESPathCheck("engineBuiltinIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED),
+            JMESPathCheck("metricsReferenceIdentityId", LoadTestConstants.METRICS_REFERENCE_ID_COMMAND_LINE),
+            JMESPathCheck("metricsReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
+            JMESPathCheck("keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID_COMMAND_LINE),
+            JMESPathCheck("keyvaultReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
         ]
 
         _configure_command_jmes_checks(
             self,
             checks,
-            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_SAMI_ENGINE
+            engine_ref_id_type=LoadTestConstants.ENGINE_REFERENCE_TYPE_NONE,
+            metrics_ref_id=LoadTestConstants.METRICS_REFERENCE_ID_COMMAND_LINE,
+            keyvault_ref_id=LoadTestConstants.KEYVAULT_REFERENCE_ID_COMMAND_LINE,
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS
         )
 
-        # Update engine reference identity type to UserAssigned using config file
+        # keyvault refid outside the ref-ids
         checks = [
             JMESPathCheck("testId", self.kwargs["test_id"]),
-            JMESPathCheck("engineBuiltinIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
+            JMESPathCheck("keyvaultReferenceIdentityId", LoadTestConstants.KEYVAULT_REFERENCE_ID_YAML),
+            JMESPathCheck("keyvaultReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED),
         ]
-        
-        response = _configure_command_jmes_checks(
+
+        _configure_command_jmes_checks(
             self,
             checks,
-            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_UAMI_ENGINE
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_KV_OUTSIDE_REF_ID
         )
 
-        # respose will be a list of engine reference identities
-        assert response["engineBuiltinIdentityIds"] == [LoadTestConstants.ENGINE_REFERENCE_ID1, LoadTestConstants.ENGINE_REFERENCE_ID2]
+        # when no ref ids, we default to the None, system assigned for respective identities.
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("engineBuiltinIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_NONE),
+            JMESPathCheck("metricsReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED),
+            JMESPathCheck("keyvaultReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED),
+        ]
 
-        # Invalide engine reference identity type in command taken care due to ENUM input type
-        # Invalid engine reference identities
+        _configure_command_jmes_checks(
+            self,
+            checks,
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_NO_REF_IDS
+        )
+
+        # Invalid kv-ref-id
         _configure_command_assert_exception(
             self,
-            message="Invalid engine-ref-ids value:",
-            engine_ref_id_type=LoadTestConstants.ENGINE_REFERENCE_TYPE_USERASSIGNED,
-            engine_ref_ids="invalid"
+            message="is not a valid resource id",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_INVALID_KV_REF_ID,
+        )
+
+        # Invalid metrics-ref-id
+        _configure_command_assert_exception(
+            self,
+            message="is not a valid resource id",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_INVALID_METRICS_REF_ID,
+        )
+
+        # Invalide metrics-ref-id
+        _configure_command_assert_exception(
+            self,
+            message="Invalid metrics-ref-id value",
+            metrics_ref_id="invalid",
+        )
+
+        # Invalid keyvault-ref-id
+        _configure_command_assert_exception(
+            self,
+            message="Invalid keyvault-ref-id value",
+            keyvault_ref_id="invalid",
         )
 
         # Invalid multiple engine reference identity type in config file
         _configure_command_assert_exception(
             self,
-            message="Engine identity type should be either None, SystemAssigned, or UserAssigned. A combination of identity types are not supported.",
-            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI1
+            message="Only one Metrics reference identity should be provided in the referenceIdentities array",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID
         )
 
         # Invalid engine reference identities in config file
         _configure_command_assert_exception(
             self,
-            message="is not a valid resource id",
-            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI2
+            message="Only one KeyVault reference identity should be provided in the referenceIdentities array",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID
         )
 
-def _configure_command_jmes_checks(self, checks, engine_ref_id_type=None, engine_ref_ids=None, load_test_config_file=None):
+def _configure_command_jmes_checks(self, checks, engine_ref_id_type=None, engine_ref_ids=None, metrics_ref_id=None, keyvault_ref_id=None, load_test_config_file=None):
     command = "az load test update " \
         "--test-id {test_id} " \
         "--load-test-resource {load_test_resource} " \
         "--resource-group {resource_group} "
+    if metrics_ref_id is not None:
+        self.kwargs.update({
+            "metrics_reference_identity": metrics_ref_id,
+        })
+        command += '--metrics-reference-id {metrics_reference_identity} '
+    if keyvault_ref_id is not None:
+        self.kwargs.update({
+            "keyvault_reference_identity": keyvault_ref_id,
+        })
+        command += '--keyvault-reference-id {keyvault_reference_identity} '
     if engine_ref_ids is not None:
         self.kwargs.update({
             "engine_ref_ids": engine_ref_ids,
@@ -195,11 +242,21 @@ def _configure_command_jmes_checks(self, checks, engine_ref_id_type=None, engine
     ).get_output_in_json()
     return response
 
-def _configure_command_assert_exception(self, message, engine_ref_id_type=None, engine_ref_ids=None, load_test_config_file=None):
+def _configure_command_assert_exception(self, message, engine_ref_id_type=None, engine_ref_ids=None, metrics_ref_id=None, keyvault_ref_id=None, load_test_config_file=None):
     command = "az load test update " \
         "--test-id {test_id} " \
         "--load-test-resource {load_test_resource} " \
         "--resource-group {resource_group} "
+    if metrics_ref_id is not None:
+        self.kwargs.update({
+            "metrics_reference_identity": metrics_ref_id,
+        })
+        command += '--metrics-reference-id {metrics_reference_identity} '
+    if keyvault_ref_id is not None:
+        self.kwargs.update({
+            "keyvault_reference_identity": keyvault_ref_id,
+        })
+        command += '--keyvault-reference-id {keyvault_reference_identity} '
     if engine_ref_id_type is not None:
         self.kwargs.update({
             "engine_ref_id_type": engine_ref_id_type,

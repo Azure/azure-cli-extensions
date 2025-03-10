@@ -140,22 +140,22 @@ def create_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
+    logger.info("Upload files to test %s has completed", test_id)
     if app_components is not None and len(app_components) > 0:
         app_component_response = client.create_or_update_app_components(
             test_id=test_id, body={"testId": test_id, "components": app_components}
         )
-        logger.info(
+        logger.warning(
             "Added app components for test ID: %s and response obj is %s", test_id, app_component_response
         )
     if server_metrics is not None and len(server_metrics) > 0:
         server_metric_response = client.create_or_update_server_metrics_config(
             test_id=test_id, body={"testId": test_id, "metrics": server_metrics}
         )
-        logger.info(
+        logger.warning(
             "Added server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
         )
     response = client.get_test(test_id)
-    logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been created successfully", test_id)
     return response.as_dict()
 

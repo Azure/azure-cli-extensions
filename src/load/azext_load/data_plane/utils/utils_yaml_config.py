@@ -158,6 +158,8 @@ def yaml_parse_failure_criteria(data):
     return passfail_criteria
 
 
+# pylint: disable=line-too-long
+# Disabling this because if conditions are too long
 def parse_app_comps_and_server_metrics(data):
     app_components_yaml = data.get(LoadTestConfigKeys.APP_COMPONENTS)
     app_components = {}
@@ -325,10 +327,10 @@ def update_reference_identities(new_body, data):
         if new_body["engineBuiltinIdentityType"] in [EngineIdentityType.NoneValue, EngineIdentityType.SystemAssigned]:
             new_body.pop("engineBuiltinIdentityIds")
         if keyvault_reference_identity is not None:
-            new_body["keyVaultReferenceIdentityId"] = keyvault_reference_identity
-            new_body["keyVaultReferenceIdentityType"] = EngineIdentityType.UserAssigned
+            new_body["keyvaultReferenceIdentityId"] = keyvault_reference_identity
+            new_body["keyvaultReferenceIdentityType"] = EngineIdentityType.UserAssigned
         elif key_vault_reference_type == EngineIdentityType.SystemAssigned:
-            new_body["keyVaultReferenceIdentityType"] = EngineIdentityType.SystemAssigned
+            new_body["keyvaultReferenceIdentityType"] = EngineIdentityType.SystemAssigned
         if metric_reference_identity is not None:
             new_body["metricsReferenceIdentityId"] = metric_reference_identity
             new_body["metricsReferenceIdentityType"] = EngineIdentityType.UserAssigned

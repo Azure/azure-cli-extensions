@@ -163,11 +163,25 @@ class LoadTestConstants(LoadConstants):
     ENGINE_REFERENCE_TYPE_NONE = "None"
     ENGINE_REFERENCE_ID1 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     ENGINE_REFERENCE_ID2 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi-2"
+    METRICS_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-metrics-mi"
+    METRICS_REFERENCE_ID_COMMAND_LINE = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-metrics-id-command-line"
+    KEYVAULT_REFERENCE_ID_OVERRIDE = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-over-ride-id"
+    KEYVAULT_REFERENCE_ID_YAML = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-id"
+    KEYVAULT_REFERENCE_ID_COMMAND_LINE = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-id-command-line"
     INVALID_ENGINE_REFERENCE_ID = r"/subscriptions/invalid/resource/id"
     LOAD_TEST_CONFIG_FILE_WITH_SAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-sami.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_UAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-uami.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_METRICS_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-metrics-keyvault-ref-id.yaml")
+    LOAD_TEST_CONFIG_FILE_NO_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-kv-no-ref-ids.yaml")
+    LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-kv-override-ref-ids.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI1 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi1.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI2 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi2.yaml")
+    LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-metrics-ref-ids.yaml")
+    LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-kv-ref-ids.yaml")
+    LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id-outside.yaml")
+    LOAD_TEST_CONFIG_INVALID_KV_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id.yaml")
+    LOAD_TEST_CONFIG_INVALID_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-metrics-ref-id.yaml")
+    LOAD_TEST_CONFIG_KV_OUTSIDE_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-kv-outside.yaml")
 
 
 class LoadTestRunConstants(LoadConstants):

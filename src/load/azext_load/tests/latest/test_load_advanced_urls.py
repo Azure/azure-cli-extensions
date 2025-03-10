@@ -214,7 +214,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         )
         
         # Invalid: Try create JMX test using advanced URL requests json from YAML config file
-        _configure_command_assert_exception(self, "(InvalidFileType) Invalid FileType", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_type="JMX", load_test_config_file=LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE)
+        _configure_command_assert_exception(self, "(InvalidFile)", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_type="JMX", load_test_config_file=LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE)
         
         # Invalid: Try upload advanced URL requests json config file to a test of type JMX
         _configure_command_assert_exception(self, "The URL config file cannot be uploaded", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="URL_TEST_CONFIG")
@@ -345,3 +345,4 @@ def _configure_command_assert_exception(self, message, is_create=False, is_file_
         self.cmd(command)
     except Exception as e:
         assert message in str(e)
+        

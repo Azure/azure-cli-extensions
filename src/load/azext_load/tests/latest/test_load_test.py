@@ -1274,7 +1274,7 @@ class LoadTestScenario(ScenarioTest):
                 "--keyvault-reference-id {keyvault_reference_id} ",
             )
         except Exception as e:
-            assert "(InvalidManagedIdentity)" in str(e)
+            assert "Invalid keyvault-ref-id value" in str(e)
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
@@ -1290,7 +1290,7 @@ class LoadTestScenario(ScenarioTest):
                 "--resource-group {resource_group} ",
             )
         except Exception as e:
-            assert "(InvalidManagedIdentity)" in str(e)
+            assert "Key vault reference identity should be a valid resource id" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)

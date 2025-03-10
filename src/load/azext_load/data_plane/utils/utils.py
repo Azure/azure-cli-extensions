@@ -318,6 +318,10 @@ def convert_yaml_to_test(cmd, data):
         new_body["kind"] = data[LoadTestConfigKeys.TEST_TYPE]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY in data:
+        if not is_valid_resource_id(data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]):
+            raise InvalidArgumentValueError(
+                "Key vault reference identity should be a valid resource id."
+            )
         new_body["keyvaultReferenceIdentityId"] = data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
