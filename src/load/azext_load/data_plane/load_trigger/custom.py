@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.core.exceptions import ResourceNotFoundError
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from knack.log import get_logger
 from azext_load.data_plane.utils.utils import (
     get_admin_data_plane_client)
@@ -191,7 +191,11 @@ def pause_trigger_schedule(
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
         logger.debug("Paused schedule trigger: %s", response)
         return response
-    logger.error("Schedule trigger is not active. It is in %s state.", existing_trigger_schedule.state.value)
+    if existing_trigger_schedule.state == enums.TriggerState.COMPLETED:
+        msg = "Schedule trigger with id: {} is already completed.".format(trigger_id)
+        logger.error(msg)
+        raise ValidationError(msg)
+    logger.warning("Schedule trigger is not active. It is in %s state.", existing_trigger_schedule.state.value)
 
 
 def enable_trigger_schedule(
@@ -212,12 +216,14 @@ def enable_trigger_schedule(
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
     logger.debug("Existing trigger object: %s", existing_trigger_schedule)
-    if existing_trigger_schedule.state in [enums.TriggerState.PAUSED, enums.TriggerState.DISABLED]:
+    if existing_trigger_schedule.state != enums.TriggerState.COMPLETED:
         existing_trigger_schedule.state = enums.TriggerState.ACTIVE
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
         logger.debug("Enabled schedule trigger: %s", response)
         return response
-    logger.error("Schedule trigger is in %s state, hence cannot be enabled.", existing_trigger_schedule.state.value)
+    msg = "Schedule trigger with id: {} is already completed. Cannot enable a completed schedule.".format(trigger_id)
+    logger.debug(msg)
+    raise ValidationError(msg)
 
 
 def list_trigger_schedules(

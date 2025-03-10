@@ -457,13 +457,6 @@ test_ids = CLIArgumentType(
     help="Test IDs of the load tests to be triggered by schedule. Currently we only support one test ID per schedule.",
 )
 
-state = CLIArgumentType(
-    options_list=["--state"],
-    choices=utils.get_enum_values(models.AllowedTriggerStates),
-    type=str,
-    help="State of the load trigger schedule",
-)
-
 trigger_display_name = CLIArgumentType(
     options_list=["--display-name"],
     type=str,
