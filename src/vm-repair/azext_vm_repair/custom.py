@@ -79,6 +79,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS. 
     """  
     
+    # A warning about a future breaking change.  
+    logger.warning('After the Build 2025 release, the --associate-public-ip option will be changed to just be a flag parameter instead of a boolean.')  
+      
     # Logging all the command parameters, except the sensitive data.
     # Mask sensitive information
     masked_repair_password = '****' if repair_password else None
