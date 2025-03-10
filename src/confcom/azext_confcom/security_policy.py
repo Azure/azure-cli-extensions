@@ -1274,7 +1274,15 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
                 f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
             )
 
-        exec_processes = []
+        exec_processes = case_insensitive_dict_get(
+            container_properties, config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES
+        ) or []
+
+        # add the signal section if it's not present
+        for exec_process in exec_processes:
+            if config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES not in exec_process:
+                exec_process[config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES] = []
+
         extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
         extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
 
