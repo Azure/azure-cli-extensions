@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine run-read-command",
-    is_preview=True,
 )
 class RunReadCommand(AAZCommand):
     """Run one or more read-only commands on the provided bare metal machine. The URL to storage account with the command execution results and the command exit code can be retrieved from the operation status API once available.
@@ -23,9 +22,9 @@ class RunReadCommand(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/runreadcommands", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/runreadcommands", "2025-02-01"],
         ]
     }
 
@@ -67,6 +66,9 @@ class RunReadCommand(AAZCommand):
             arg_group="BareMetalMachineRunReadCommandsParameters",
             help="The list of read-only commands to be executed directly against the target machine.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.limit_time_seconds = AAZIntArg(
             options=["--limit-time-seconds"],
@@ -178,7 +180,7 @@ class RunReadCommand(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -283,7 +285,7 @@ class _RunReadCommandHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

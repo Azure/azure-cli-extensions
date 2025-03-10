@@ -63,7 +63,11 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     GraphAPIComputeServiceResourceCreateUpdateProperties,
     MaterializedViewsBuilderServiceResourceCreateUpdateProperties,
     DedicatedGatewayType,
-    ServiceType
+    ServiceType,
+    ThroughputSettingsResource,
+    ThroughputSettingsUpdateParameters,
+    TableRoleDefinitionResource,
+    TableRoleAssignmentResource
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -1103,13 +1107,11 @@ def cli_cosmosdb_restore(cmd,
     if restore_timestamp_datetime_utc > current_dateTime:
         raise CLIError("Restore timestamp {} should be less than current timestamp {}".format(restore_timestamp_datetime_utc, current_dateTime))
 
-    is_source_restorable_account_deleted = False
     for account in restorable_database_accounts_list:
         if account.account_name == account_name:
             if account.deletion_time is not None:
                 if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
                     target_restorable_account = account
-                    is_source_restorable_account_deleted = True
                     break
             else:
                 if restore_timestamp_datetime_utc >= account.creation_time:
@@ -1118,62 +1120,6 @@ def cli_cosmosdb_restore(cmd,
 
     if target_restorable_account is None:
         raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
-
-    # Validate if source account is empty only for live account restores. For deleted account restores the api will not work
-    if not is_source_restorable_account_deleted:
-        restorable_resources = None
-        api_type = target_restorable_account.api_type.lower()
-        arm_location_normalized = target_restorable_account.location.lower().replace(" ", "")
-        source_location = location
-
-        if source_backup_location is not None:
-            source_location = source_backup_location
-
-        if api_type == "sql":
-            try:
-                restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_sql_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        elif api_type == "mongodb":
-            try:
-                restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_mongodb_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        elif "sql" in api_type and "gremlin" in api_type:
-            try:
-                restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_gremlin_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        elif "sql" in api_type and "table" in api_type:
-            try:
-                restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_table_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        else:
-            raise CLIError("Provided API Type {} is not supported for account {}".format(target_restorable_account.api_type, account_name))
-
-        if restorable_resources is None or not any(restorable_resources):
-            raise CLIError("Database account {} contains no restorable resources in location {} at given restore timestamp {}".format(target_restorable_account, source_location, restore_timestamp_datetime_utc))
 
     # Trigger restore
     locations = []
@@ -1675,21 +1621,26 @@ def cosmosdb_data_transfer_copy_job(client,
 
 def cosmosdb_copy_job(client,
                       resource_group_name,
-                      dest_account,
                       src_account,
+                      dest_account=None,
                       src_cassandra=None,
                       dest_cassandra=None,
                       src_nosql=None,
                       dest_nosql=None,
                       src_mongo=None,
                       dest_mongo=None,
+                      dest_mongo_vcore=None,
                       job_name=None,
                       worker_count=0,
                       host_copy_on_src=False,
                       mode="Offline"):
     job_create_properties = {}
-    is_cross_account = src_account != dest_account
+    if dest_account is None and dest_mongo_vcore is None:
+        raise CLIError('Invalid input: dest_account is a required parameter')
+
+    is_cross_account = False if dest_mongo_vcore is not None else src_account != dest_account
     remote_account_name = dest_account if host_copy_on_src else src_account
+    host_account_name = src_account if (dest_mongo_vcore is not None or host_copy_on_src) else dest_account
 
     source = None
     if src_cassandra is not None:
@@ -1746,6 +1697,11 @@ def cosmosdb_copy_job(client,
         else:
             destination = dest_mongo
 
+    if dest_mongo_vcore is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_mongo_vcore
+
     if destination is None:
         raise CLIError('destination component is missing')
     job_create_properties['destination'] = destination
@@ -1760,8 +1716,6 @@ def cosmosdb_copy_job(client,
 
     if job_name is None:
         job_name = _gen_guid()
-
-    host_account_name = src_account if host_copy_on_src else dest_account
 
     return client.create(resource_group_name=resource_group_name,
                          account_name=host_account_name,
@@ -2347,6 +2301,53 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
     return async_partition_retrieve_throughput_result.result()
 
 
+def cli_cosmosdb_sql_container_throughput_update(client,
+                                                 resource_group_name,
+                                                 account_name,
+                                                 database_name,
+                                                 container_name,
+                                                 throughput=None,
+                                                 max_throughput=None,
+                                                 throughput_buckets=None):
+    """Update an Azure Cosmos DB SQL container throughput"""
+    throughput_update_resource = _get_throughput_settings_update_parameters(throughput=throughput,
+                                                                            max_throughput=max_throughput,
+                                                                            throughput_buckets=throughput_buckets)
+    return client.begin_update_sql_container_throughput(resource_group_name,
+                                                        account_name,
+                                                        database_name,
+                                                        container_name,
+                                                        throughput_update_resource)
+
+
+def cli_cosmosdb_sql_container_throughput_migrate(client,
+                                                  resource_group_name,
+                                                  account_name,
+                                                  database_name,
+                                                  container_name,
+                                                  throughput_type):
+    """Migrate an Azure Cosmos DB SQL container throughput"""
+    if throughput_type == "autoscale":
+        return client.begin_migrate_sql_container_to_autoscale(resource_group_name, account_name,
+                                                               database_name, container_name)
+    return client.begin_migrate_sql_container_to_manual_throughput(resource_group_name, account_name,
+                                                                   database_name, container_name)
+
+
+def _get_throughput_settings_update_parameters(throughput=None, max_throughput=None, throughput_buckets=None):
+    throughput_resource = None
+    if throughput and max_throughput:
+        raise CLIError("Please provide max-throughput if your resource is autoscale enabled otherwise provide throughput.")
+    if throughput:
+        throughput_resource = ThroughputSettingsResource(throughput=throughput, throughput_buckets=throughput_buckets)
+    elif max_throughput:
+        throughput_resource = ThroughputSettingsResource(
+            autoscale_settings=AutoscaleSettings(max_throughput=max_throughput),
+            throughput_buckets=throughput_buckets)
+
+    return ThroughputSettingsUpdateParameters(resource=throughput_resource)
+
+
 # pylint: disable=dangerous-default-value
 def cli_begin_redistribute_sql_container_partition_throughput(client,
                                                               resource_group_name,
@@ -2749,3 +2750,114 @@ def cli_cosmosdb_table_restore(cmd,
                                             account_name,
                                             table_name,
                                             table_resource)
+
+def cli_cosmosdb_table_role_definition_exists(client,
+                                              resource_group_name,
+                                              account_name,
+                                              role_definition_id):
+    """Checks if an Azure Cosmos DB Table Role Definition exists"""
+    try:
+        client.get_table_role_definition(resource_group_name, account_name, role_definition_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+def cli_cosmosdb_table_role_definition_create(client,
+                                              resource_group_name,
+                                              account_name,
+                                              table_role_definition_body):
+    '''Creates an Azure Cosmos DB Table Role Definition '''    
+    table_role_definition_create_resource = TableRoleDefinitionResource(
+        role_name=table_role_definition_body['RoleName'],
+        type_properties_type=table_role_definition_body['Type'],
+        permissions=table_role_definition_body['Permissions'],
+        assignable_scopes=table_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_create_resource)
+   
+def cli_cosmosdb_table_role_definition_update(client,
+                                              resource_group_name,
+                                              account_name,
+                                              table_role_definition_body):
+    '''Update an existing Azure Cosmos DB Table Role Definition'''
+    logger.debug('reading Table role definition')
+    table_role_definition = client.get_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'])
+
+    if table_role_definition_body['RoleName'] != table_role_definition.role_name:
+        raise InvalidArgumentValueError('Cannot update Table Role Definition Name.')
+
+    table_role_definition_update_resource = TableRoleDefinitionResource(
+        role_name=table_role_definition_body['RoleName'],
+        type_properties_type=table_role_definition_body['Type'],
+        permissions=table_role_definition_body['Permissions'],
+        assignable_scopes=table_role_definition_body['AssignableScopes'])
+
+    return client.begin_create_update_table_role_definition( resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_update_resource)
+    
+def cli_cosmosdb_table_role_assignment_exists(client,
+                                              resource_group_name,
+                                              account_name,
+                                              role_assignment_id):
+    """Checks if an Azure Cosmos DB Table Role assignment exists"""
+    try:
+        client.get_table_role_assignment(resource_group_name, account_name,role_assignment_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+def cli_cosmosdb_table_role_assignment_create(client,
+                                            resource_group_name,
+                                            account_name,
+                                            scope,
+                                            principal_id,
+                                            role_assignment_id=None,
+                                            role_definition_name=None,
+                                            role_definition_id=None):
+    """Creates an Azure Cosmos DB Table Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+
+    table_role_assignment_create_update_parameters = TableRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_table_role_assignment(resource_group_name, account_name, role_assignment_id, table_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_table_role_assignment_update(client,
+                                            resource_group_name,
+                                            account_name,
+                                            scope,
+                                            principal_id,
+                                            role_assignment_id=None,
+                                            role_definition_name=None,
+                                            role_definition_id=None):
+    """Updates an Azure Cosmos DB Table Role Assignment"""
+
+    if role_definition_id is not None and role_definition_name is not None:
+        raise CLIError('Can only provide one out of role_definition_id and role_definition_name.')
+
+    if role_definition_id is None and role_definition_name is None:
+        raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
+        
+    if role_assignment_id is None:
+        raise CLIError('Providing role_assignment_id is required.')
+    
+    table_role_assignment = client.get_table_role_assignment(resource_group_name, account_name, role_assignment_id)
+
+    if role_assignment_id != table_role_assignment.name:
+        raise InvalidArgumentValueError('Cannot update Table Role Assignment Id.')
+
+    table_role_assignment_create_update_parameters = TableRoleAssignmentResource(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.begin_create_update_table_role_assignment(resource_group_name, account_name, role_assignment_id, table_role_assignment_create_update_parameters)

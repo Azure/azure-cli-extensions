@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.7.0b3
+++++++
+* Changed live tests to recorded tests for maintenance extension
+
+1.7.0b2
+++++++
+* Added list of allowed classifications in description for Maintenance Configuration
+
 1.7.0b1
 ++++++
 * Changed incorrect parameter name

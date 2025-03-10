@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin image-definition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --project --catalog-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.32.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project/catalogs/image/imageDefinitions?api-version=2024-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project/catalogs/image/imageDefinitions/project-sample-2","name":"project-sample-2","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2024-11-11T01:37:12.448159Z","lastModifiedBy":"afae6340-0477-417e-b571-9e7a8a752387","lastModifiedByType":"Application","lastModifiedAt":"2024-11-11T03:06:07.555336Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '824'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Nov 2024 03:27:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/eastus2euap/00000000-0000-0000-0000-000000000000
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CCDC967384C44952831F5348B14A98BA Ref B: SJC211051201019 Ref C: 2024-11-11T03:27:29Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-11-11T03:28:30.2643320Z'
+    status:
+      code: 200
+      message: OK
+version: 1

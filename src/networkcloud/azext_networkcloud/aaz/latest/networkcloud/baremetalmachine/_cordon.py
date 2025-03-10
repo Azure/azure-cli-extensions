@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine cordon",
-    is_preview=True,
 )
 class Cordon(AAZCommand):
     """Cordon the provided bare metal machine's Kubernetes node.
@@ -23,9 +22,9 @@ class Cordon(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/cordon", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/cordon", "2025-02-01"],
         ]
     }
 
@@ -152,7 +151,7 @@ class Cordon(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -243,7 +242,7 @@ class _CordonHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

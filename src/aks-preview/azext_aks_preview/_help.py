@@ -106,20 +106,6 @@ helps['aks create'] = f"""
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma-separated list of aad group object IDs that will be set as cluster admin.
-        - name: --aad-client-app-id
-          type: string
-          short-summary: The ID of an Azure Active Directory client application of type "Native". This
-                         application is for user login via kubectl.
-          long-summary: --aad-client-app-id is deprecated. See https://aka.ms/aks/aad-legacy for details.
-        - name: --aad-server-app-id
-          type: string
-          short-summary: The ID of an Azure Active Directory server application of type "Web app/API". This
-                         application represents the managed cluster's apiserver (Server application).
-          long-summary: --aad-server-app-id is deprecated. See https://aka.ms/aks/aad-legacy for details.
-        - name: --aad-server-app-secret
-          type: string
-          short-summary: The secret of an Azure Active Directory server application.
-          long-summary: --aad-server-app-secret is deprecated. See https://aka.ms/aks/aad-legacy for details.
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.
@@ -233,18 +219,15 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-advanced-network-observability
-          type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --enable-fqdn-policy
-          type: bool
-          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --enable-acns
           type: bool
-          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --advanced-networking-observability-tls-management
-          type: string
-          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
+          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs. For non-cilium clusters, acns security will be disabled by default until further notice.
+        - name: --disable-acns-observability
+          type: bool
+          short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --disable-acns-security
+          type: bool
+          short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -329,9 +312,6 @@ helps['aks create'] = f"""
           type: string
           short-summary: Restriction level on the managed node resource group.
           long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
-        - name: --uptime-sla
-          type: bool
-          short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
         - name: --sku
           type: string
           short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
@@ -535,7 +515,7 @@ helps['aks create'] = f"""
         - name: --ca-certs --custom-ca-trust-certificates
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
-          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes.
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
@@ -828,12 +808,6 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
-        - name: --uptime-sla
-          type: bool
-          short-summary: Enable a standard managed cluster service with a financially backed SLA. --uptime-sla is deprecated. Please use '--tier standard' instead.
-        - name: --no-uptime-sla
-          type: bool
-          short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
         - name: --sku
           type: string
           short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
@@ -1212,7 +1186,7 @@ helps['aks update'] = """
         - name: --ca-certs --custom-ca-trust-certificates
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
-          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes.
         - name: --safeguards-level
           type: string
           short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
@@ -1228,27 +1202,18 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-advanced-network-observability
-          type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --disable-advanced-network-observability
-          type: bool
-          short-summary: Disable advanced network observability functionalities on a cluster
-        - name: --advanced-networking-observability-tls-management
-          type: string
-          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
-        - name: --enable-fqdn-policy
-          type: bool
-          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --disable-fqdn-policy
-          type: bool
-          short-summary: Disable advanced network security FQDN functionalities on a cluster
         - name: --enable-acns
           type: bool
-          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs. For non-cilium clusters, acns security will be disabled by default until further notice.
         - name: --disable-acns
           type: bool
-          short-summary: Disable advanced network functionalities on a cluster
+          short-summary: Disable all advanced networking functionalities on a cluster.
+        - name: --disable-acns-observability
+          type: bool
+          short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --disable-acns-security
+          type: bool
+          short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1318,7 +1283,7 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
       - name: Update a AKS-managed AAD cluster with tenant ID or admin group object IDs.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
-      - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
+      - name: Migrate a AKS AAD-Integrated cluster or a non-AAD cluster to a AKS-managed AAD cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
       - name: Enable Azure Hybrid User Benefits featture for a kubernetes cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
@@ -1810,6 +1775,9 @@ helps['aks nodepool add'] = """
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
+        - name: --max-unavailable
+          type: string
+          short-summary: The maximum number or percentage of nodes that can be simultaneously unavailable during upgrade. When specified, it represents the number or percent used, eg. 1 or 5%
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -1946,6 +1914,9 @@ helps['aks nodepool upgrade'] = """
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
+        - name: --max-unavailable
+          type: string
+          short-summary: The maximum number or percentage of nodes that can be simultaneously unavailable during upgrade. When specified, it represents the number or percent used, eg. 1 or 5%
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1995,6 +1966,9 @@ helps['aks nodepool update'] = """
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
+        - name: --max-unavailable
+          type: string
+          short-summary: The maximum number or percentage of nodes that can be simultaneously unavailable during upgrade. When specified, it represents the number or percent used, eg. 1 or 5%
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.

@@ -26,7 +26,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
@@ -867,7 +867,13 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
-    object_type = "KubernetesClusterRestoreCriteria"
+    if staging_resource_group_id is None and staging_storage_account_id is None:
+        object_type = "KubernetesClusterRestoreCriteria"
+    elif staging_storage_account_id is not None and staging_resource_group_id is not None:
+        object_type = "KubernetesClusterVaultTierRestoreCriteria"
+    else:
+        raise InvalidArgumentValueError("Both --staging-resource-group-id and --staging-storage-account-id are manadatory for vaulted tier restore "
+                                        "for AzureKubernetesService. Please either provide or remove both of them.")
 
     if persistent_volume_restore_mode is None:
         persistent_volume_restore_mode = "RestoreWithVolumeData"

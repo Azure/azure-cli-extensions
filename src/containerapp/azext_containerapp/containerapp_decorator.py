@@ -29,7 +29,6 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            is_registry_msi_system, validate_container_app_name, AppType,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
-                                                           get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
                                                            clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id,
                                                            create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env,
@@ -52,7 +51,7 @@ from knack.util import CLIError
 from msrest.exceptions import DeserializationError
 
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
-from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception, get_linker_client
 from ._models import (
     RegistryCredentials as RegistryCredentialsModel,
     ContainerResources as ContainerResourcesModel,
@@ -67,9 +66,10 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
-                               infer_runtime_option)
+                               infer_runtime_option
+                               )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
-    env_has_managed_identity, create_acrpull_role_assignment_if_needed
+    env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector
 from ._validators import validate_create, validate_runtime
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
@@ -129,6 +129,9 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
     def get_argument_from_revision(self):
         return self.get_param("from_revision")
+
+    def get_argument_target_label(self):
+        return self.get_param("target_label")
 
     def validate_arguments(self):
         self.containerapp_def = None
@@ -443,13 +446,18 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                     registries_def.append(registry)
 
         if not self.get_argument_revision_suffix():
-            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
-            self.new_containerapp["properties"]["template"]["revisionSuffix"] = None
+            safe_set(self.new_containerapp, "properties", "template", "revisionSuffix", value=None)
+
+        if self.get_argument_revisions_mode():
+            safe_set(self.new_containerapp, "properties", "configuration", "activeRevisionsMode", value=self.get_argument_revisions_mode())
+
+        if self.get_argument_target_label():
+            safe_set(self.new_containerapp, "properties", "configuration", "targetLabel", value=self.get_argument_target_label())
 
     def set_up_update_containerapp_yaml(self, name, file_name):
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or \
                 self.get_argument_set_env_vars() or self.get_argument_remove_env_vars() or self.get_argument_replace_env_vars() or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or \
-                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags():
+                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags() or self.get_argument_revisions_mode() or self.get_argument_target_label():
             logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
@@ -651,6 +659,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
+    def get_argument_kind(self):
+        return self.get_param("kind")
+
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
@@ -662,6 +673,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def set_argument_no_wait(self, no_wait):
         self.set_param("no_wait", no_wait)
+
+    def get_argument_target_label(self):
+        return self.get_param("target_label")
 
     # not craete role assignment if it's env system msi
     def check_create_acrpull_role_assignment(self):
@@ -796,6 +810,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         config_def = deepcopy(ConfigurationModel)
         config_def["secrets"] = secrets_def
         config_def["activeRevisionsMode"] = self.get_argument_revisions_mode()
+        config_def["targetLabel"] = self.get_argument_target_label()
         config_def["ingress"] = ingress_def
         config_def["registries"] = [registries_def] if registries_def is not None else None
         config_def["dapr"] = dapr_def
@@ -894,6 +909,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_repo()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
+        if self.get_argument_kind() is not None:
+            safe_set(self.containerapp_def, "kind", value=self.get_argument_kind())
         self.set_up_runtime()
 
     # copy from parent
@@ -905,7 +922,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         # end preview logic
 
     def validate_create(self):
-        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(),
+                        self.get_argument_no_wait(), self.get_argument_revisions_mode(), self.get_argument_target_label(), self.get_argument_source(), self.get_argument_artifact(),
+                        self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
 
     def validate_arguments(self):
         self.parent_validate_arguments()
@@ -1042,10 +1061,12 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_repo():
             _get_registry_details(self.cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments, --repo will create Github Actions, which requires ACR registry's creds
 
-        # After get registry, backfill registry_server, registry_identity
-        self.set_argument_registry_server(app.registry_server)
-        self.set_up_system_assigned_identity_as_default_if_using_acr()
-        self.set_up_registry_identity()
+        # When the ACR not exists, it will not create acr, it will use local buildpacks or the Cloud Build
+        # So we should only backfill registry_server, registry_identity when the ACR existing
+        if app.should_create_acr is False:
+            self.set_argument_registry_server(app.registry_server)
+            self.set_up_system_assigned_identity_as_default_if_using_acr()
+            self.set_up_registry_identity()
         return app, env
 
     def post_process(self, r):
@@ -1113,10 +1134,11 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             safe_set(self.containerapp_def, "properties", "template", "serviceBinds", value=service_bindings_def_list)
 
     def set_up_create_containerapp_yaml(self, name, file_name):
+        # This list can not include anything that has a default value: transport, revisions_mode, environment_type
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_target_port() or self.get_argument_ingress() or \
-                self.get_argument_revisions_mode() or self.get_argument_secrets() or self.get_argument_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_registry_server() or \
+                self.get_argument_secrets() or self.get_argument_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_registry_server() or \
                 self.get_argument_registry_user() or self.get_argument_registry_pass() or self.get_argument_dapr_enabled() or self.get_argument_dapr_app_port() or self.get_argument_dapr_app_id() or \
-                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags():
+                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags() or self.get_argument_target_label():
             not self.get_argument_disable_warnings() and logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
 
@@ -1589,74 +1611,78 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def post_process(self, r):
         # Delete managed bindings
-        linker_client = None
-        if self.get_argument_unbind_service_bindings():
-            linker_client = get_linker_client(self.cmd)
-            for item in self.get_argument_unbind_service_bindings():
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
+        if is_cloud_supported_by_service_connector(self.cmd.cli_ctx):
+            linker_client = None
+            if self.get_argument_unbind_service_bindings():
+                linker_client = get_linker_client(self.cmd)
+                for item in self.get_argument_unbind_service_bindings():
+                    while r["properties"]["provisioningState"].lower() == "inprogress":
+                        r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                        time.sleep(1)
+                    linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
 
-        # Update managed bindings
-        if self.get_argument_service_connectors_def_list() is not None:
-            linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
-            for item in self.get_argument_service_connectors_def_list():
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
-                                                            parameters=item["parameters"],
-                                                            linker_name=item["linker_name"]).result()
+            # Update managed bindings
+            if self.get_argument_service_connectors_def_list() is not None:
+                linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
+                for item in self.get_argument_service_connectors_def_list():
+                    while r["properties"]["provisioningState"].lower() == "inprogress":
+                        r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                        time.sleep(1)
+                    linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                                parameters=item["parameters"],
+                                                                linker_name=item["linker_name"]).result()
         return r
 
     def set_up_service_bindings(self):
-        if self.get_argument_service_bindings() is not None:
-            linker_client = get_linker_client(self.cmd)
+        if self.get_argument_service_bindings() is None:
+            return
 
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
-                                                                                            self.get_argument_service_bindings(),
-                                                                                            self.get_argument_resource_group_name(),
-                                                                                            self.get_argument_name(),
-                                                                                            safe_get(self.containerapp_def, "properties", "environmentId"),
-                                                                                            self.get_argument_customized_keys())
-            self.set_argument_service_connectors_def_list(service_connectors_def_list)
-            service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
+        linker_client = get_linker_client(self.cmd)
 
-            safe_set(self.new_containerapp, "properties", "template", "serviceBinds", value=self.containerapp_def["properties"]["template"]["serviceBinds"])
+        service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
+                                                                                        self.get_argument_service_bindings(),
+                                                                                        self.get_argument_resource_group_name(),
+                                                                                        self.get_argument_name(),
+                                                                                        safe_get(self.containerapp_def, "properties", "environmentId"),
+                                                                                        self.get_argument_customized_keys())
+        self.set_argument_service_connectors_def_list(service_connectors_def_list)
+        service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
 
-            if self.new_containerapp["properties"]["template"]["serviceBinds"] is None:
-                self.new_containerapp["properties"]["template"]["serviceBinds"] = []
+        safe_set(self.new_containerapp, "properties", "template", "serviceBinds", value=self.containerapp_def["properties"]["template"]["serviceBinds"])
 
-            for item in self.new_containerapp["properties"]["template"]["serviceBinds"]:
-                for update_item in service_bindings_def_list:
-                    if update_item["name"] in item.values():
-                        item["serviceId"] = update_item["serviceId"]
-                        if update_item.get("clientType"):
-                            item["clientType"] = update_item.get("clientType")
-                        if update_item.get("customizedKeys"):
-                            item["customizedKeys"] = update_item.get("customizedKeys")
-                        service_bindings_used_map[update_item["name"]] = True
+        if self.new_containerapp["properties"]["template"]["serviceBinds"] is None:
+            self.new_containerapp["properties"]["template"]["serviceBinds"] = []
 
+        for item in self.new_containerapp["properties"]["template"]["serviceBinds"]:
             for update_item in service_bindings_def_list:
-                if service_bindings_used_map[update_item["name"]] is False:
-                    # Check if it doesn't exist in existing service linkers
+                if update_item["name"] in item.values():
+                    item["serviceId"] = update_item["serviceId"]
+                    if update_item.get("clientType"):
+                        item["clientType"] = update_item.get("clientType")
+                    if update_item.get("customizedKeys"):
+                        item["customizedKeys"] = update_item.get("customizedKeys")
+                    service_bindings_used_map[update_item["name"]] = True
+
+        for update_item in service_bindings_def_list:
+            if service_bindings_used_map[update_item["name"]] is False:
+                # Check if it doesn't exist in existing service linkers
+                if is_cloud_supported_by_service_connector(self.cmd.cli_ctx):
                     managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
                     if managed_bindings:
                         managed_bindings_list = [item.name for item in managed_bindings]
                         if update_item["name"] in managed_bindings_list:
                             raise ValidationError("Binding names across managed and dev services should be unique.")
 
-                    self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
+                self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
 
-            if service_connectors_def_list is not None:
-                for item in service_connectors_def_list:
-                    # Check if it doesn't exist in existing service bindings
-                    service_bindings_list = []
-                    for binds in self.new_containerapp["properties"]["template"]["serviceBinds"]:
-                        service_bindings_list.append(binds["name"])
-                        if item["linker_name"] in service_bindings_list:
-                            raise ValidationError("Binding names across managed and dev services should be unique.")
+        if service_connectors_def_list is not None:
+            for item in service_connectors_def_list:
+                # Check if it doesn't exist in existing service bindings
+                service_bindings_list = []
+                for binds in self.new_containerapp["properties"]["template"]["serviceBinds"]:
+                    service_bindings_list.append(binds["name"])
+                    if item["linker_name"] in service_bindings_list:
+                        raise ValidationError("Binding names across managed and dev services should be unique.")
 
     def set_up_unbind_service_bindings(self):
         if self.get_argument_unbind_service_bindings():

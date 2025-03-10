@@ -92,7 +92,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
         expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
         file_content_arr = result.get("configurationFiles").get("application.properties")
         self.assertTrue(isinstance(file_content_arr, list))
-        self.assertEquals(len(file_content_arr), 2)
+        self.assertEqual(len(file_content_arr), 2)
         self.assertTrue(r"properties-name: sample-test" in file_content_arr)
         self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
 
@@ -108,7 +108,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
         expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
         file_content_arr = result.get("configurationFiles").get("application.properties")
         self.assertTrue(isinstance(file_content_arr, list))
-        self.assertEquals(len(file_content_arr), 2)
+        self.assertEqual(len(file_content_arr), 2)
         self.assertTrue(r"properties-name: sample-test" in file_content_arr)
         self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
         self.assertIsNone(result.get("metadata"))
@@ -129,13 +129,13 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
         expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
         file_content_arr = result.get("configurationFiles").get("application.properties")
         self.assertTrue(isinstance(file_content_arr, list))
-        self.assertEquals(len(file_content_arr), 2)
+        self.assertEqual(len(file_content_arr), 2)
         self.assertTrue(r"properties-name: sample-test" in file_content_arr)
         self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
         self.assertIsNotNone(result.get("metadata"))
         metadata = result.get("metadata")
         expected_revisions = "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
-        self.assertEquals(metadata.get("gitRevisions"), expected_revisions)
+        self.assertEqual(metadata.get("gitRevisions"), expected_revisions)
 
     def test_show_configuration_files_for_acs_gen_2_with_null_metadata(self):
         response_str = r'''
@@ -151,7 +151,7 @@ class TestAcsShowConfigurationFiles(unittest.TestCase):
         expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
         file_content_arr = result.get("configurationFiles").get("application.properties")
         self.assertTrue(isinstance(file_content_arr, list))
-        self.assertEquals(len(file_content_arr), 2)
+        self.assertEqual(len(file_content_arr), 2)
         self.assertTrue(r"properties-name: sample-test" in file_content_arr)
         self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
         self.assertIsNone(result.get("metadata"))

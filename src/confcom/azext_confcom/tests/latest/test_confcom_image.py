@@ -7,13 +7,13 @@ import os
 import unittest
 import json
 import deepdiff
-import docker
 
 from azext_confcom.security_policy import (
     OutputType,
     load_policy_from_image_name,
     load_policy_from_str,
 )
+from  azext_confcom.template_util import DockerClient
 import azext_confcom.config as config
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
@@ -47,8 +47,6 @@ class PolicyGeneratingImage(unittest.TestCase):
 
     def test_image_policy(self):
         # deep diff the output policies from the regular policy.json and the single image
-        print("self.aci_policy.get_serialized_output(): ", self.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT))
-        print("self.custom_policy.get_serialized_output(): ", self.custom_policy.get_serialized_output(OutputType.PRETTY_PRINT))
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
 
@@ -99,35 +97,34 @@ class PolicyGeneratingImageInvalid(unittest.TestCase):
 
 class PolicyGeneratingImageCleanRoom(unittest.TestCase):
     def test_clean_room_policy(self):
-        client = docker.from_env()
-        original_image = (
-            "mcr.microsoft.com/aci/atlas-mount-azure-file-volume:master_20201210.2"
-        )
-        try:
-            client.images.remove(original_image)
-        except:
-            # do nothing
-            pass
+        with DockerClient() as client:
+            original_image = (
+                "mcr.microsoft.com/aci/atlas-mount-azure-file-volume:master_20201210.2"
+            )
+            try:
+                client.images.remove(original_image)
+            except:
+                # do nothing
+                pass
         regular_image = load_policy_from_image_name(original_image)
         regular_image.populate_policy_content_for_all_images(individual_image=True)
         # create and tag same image to the new name to see if docker will error out that the image is not in a remote repo
         new_repo = "mcr.microsoft.com"
         new_image_name = "aci/atlas-mount-azure-file-volume"
         new_tag = "fake-tag"
-
-        image = client.images.get(original_image)
-        try:
-            client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
-        except:
-            # do nothing
-            pass
-        image.tag(new_repo + "/" + new_image_name, tag=new_tag)
-        try:
-            client.images.remove(original_image)
-        except:
-            # do nothing
-            pass
-        client.close()
+        with DockerClient() as client:
+            image = client.images.get(original_image)
+            try:
+                client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
+            except:
+                # do nothing
+                pass
+            image.tag(new_repo + "/" + new_image_name, tag=new_tag)
+            try:
+                client.images.remove(original_image)
+            except:
+                # do nothing
+                pass
 
         policy = load_policy_from_image_name(
             new_repo + "/" + new_image_name + ":" + new_tag

@@ -7,13 +7,13 @@
 
 
 from codecs import open
-from setuptools import setup, find_packages
 
+from setuptools import find_packages, setup
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = "1.10.0"
+VERSION = "1.10.7"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -34,6 +34,7 @@ DEPENDENCIES = [
     "kubernetes==24.2.0",
     "pycryptodome==3.20.0",
     "azure-mgmt-hybridcompute==7.0.0",
+    "oras==0.2.25",
 ]
 
 with open("README.md", "r", encoding="utf-8") as f:
@@ -55,6 +56,16 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
+    extras_require={
+        "linting": [
+            "mypy>=1.13.0",
+            "ruff>=0.7.2",
+            "types-jmespath>=1.0.2",
+            "types-psutil>=6.1.0",
+            "types-pyyaml>=6.0.12",
+            "types-requests>=2.32.0",
+        ]
+    },
     package_data={
         "azext_connectedk8s": [
             "azext_metadata.json",

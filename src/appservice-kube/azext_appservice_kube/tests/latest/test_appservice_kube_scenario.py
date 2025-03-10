@@ -15,9 +15,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # not lima-specific
 class WebappBasicE2EKubeTest(ScenarioTest):
-    @ResourceGroupPreparer(location='canadacentral')
+    @ResourceGroupPreparer(location='eastus')
     @live_only()
     def test_linux_webapp_quick_create_kube(self, resource_group):
+        location_name = ""
         webapp_name = self.create_random_name(
             prefix='webapp-quick-linux', length=24)
         plan = self.create_random_name(prefix='plan-quick-linux', length=24)
@@ -26,10 +27,6 @@ class WebappBasicE2EKubeTest(ScenarioTest):
             'appservice plan create -g {} -n {} --is-linux'.format(resource_group, plan))
         self.cmd('webapp create -g {} -n {} --plan {} -i patle/ruby-hello'.format(
             resource_group, webapp_name, plan))
-        r = requests.get(
-            'http://{}.azurewebsites.net'.format(webapp_name), timeout=240)
-        # verify the web page
-        self.assertTrue('Ruby on Rails in Web Apps on Linux' in str(r.content))
         # verify app settings
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'),

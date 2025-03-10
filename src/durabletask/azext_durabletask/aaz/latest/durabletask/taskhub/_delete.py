@@ -13,27 +13,27 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "durabletask taskhub delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a Task Hub
 
-    :example: Delete a taskhub
-        az durabletask taskhub delete -g resource-grou-name -s namespace-name -n taskhub-name
+    :example: Delete a taskhub in a scheduler
+        az durabletask taskhub delete --resource-group testrg --scheduler-name testscheduler --name testtuskhub
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/namespaces/{}/taskhubs/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2024-10-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -46,22 +46,21 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.namespace_name = AAZStrArg(
-            options=["-s", "--namespace-name"],
-            help="The name of the namespace",
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+        _args_schema.scheduler_name = AAZStrArg(
+            options=["-s", "--scheduler-name"],
+            help="The name of the Scheduler",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group",
-            required=True,
-        )
-        _args_schema.task_hub_name = AAZStrArg(
-            options=["-n", "--name", "--task-hub-name"],
-            help="Task Hub name",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="The name of the TaskHub",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -72,7 +71,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TaskHubsDelete(ctx=self.ctx)()
+        yield self.TaskHubsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,17 +88,40 @@ class Delete(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [204]:
-                return self.on_204(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/namespaces/{namespaceName}/taskHubs/{taskHubName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/taskHubs/{taskHubName}",
                 **self.url_parameters
             )
 
@@ -115,11 +137,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "namespaceName", self.ctx.args.namespace_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "schedulerName", self.ctx.args.scheduler_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -127,7 +149,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.task_hub_name,
+                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -137,16 +159,16 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        def on_204(self, session):
             pass
 
-        def on_204(self, session):
+        def on_200_201(self, session):
             pass
 
 

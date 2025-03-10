@@ -16,13 +16,15 @@ import threading
 import time
 import json
 import uuid
+import re
 
 import requests
+from azure.cli.core.aaz import AAZUndefined
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
     UnrecognizedArgumentError, CLIInternalError, ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
-from msrestazure.tools import is_valid_resource_id
 from .BastionServiceConstants import BastionSku
 from .aaz.latest.network.bastion import Create as _BastionCreate
 
@@ -38,8 +40,9 @@ class BastionCreate(_BastionCreate):
         # custom arguments
         args_schema.public_ip_address = AAZResourceIdArg(
             options=["--public-ip-address"],
-            help="Name or ID of Azure Public IP. The SKU of the public IP must be Standard.",
-            required=True,
+            help="[Required for all SKUs but Developer SKU] " +
+                 "Name or Resource ID of the Public IP. The SKU of the public IP must be Standard.",
+            required=False,
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                          "/publicIPAddresses/{}",
@@ -47,17 +50,34 @@ class BastionCreate(_BastionCreate):
         )
         args_schema.vnet_name = AAZStrArg(
             options=["--vnet-name"],
-            help="Name of the virtual network. It must have a subnet called AzureBastionSubnet",
+            help="Name or Resource ID of the Virtual Network. " +
+                 "For all SKUs but Developer SKU, this virtual network must have a subnet called AzureBastionSubnet.",
             required=True,
+        )
+        args_schema.network_acls_ips = AAZStrArg(
+            options=["--network-acls-ips"],
+            arg_group="Properties",
+            help="[Supported in Developer SKU only] Network ACLs IP rules. Space-separated list of IP addresses.",
+            required=False,
         )
         # filter arguments
         args_schema.ip_configurations._registered = False
+        args_schema.virtual_network._registered = False
+        args_schema.network_acls._registered = False
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
-        subnet_id = f"/subscriptions/{self.ctx.subscription_id}/resourceGroups/{args.resource_group}" \
-                    f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}/subnets/AzureBastionSubnet"
+
+        pattern = r"^/subscriptions/[^/]+/resourceGroups/[^/]+/providers/Microsoft\.Network/virtualNetworks/[^/]+$"
+        vnet_id = ""
+        if re.match(pattern, str(args.vnet_name)):
+            vnet_id = args.vnet_name
+        else:
+            vnet_id = f"/subscriptions/{self.ctx.subscription_id}/resourceGroups/{args.resource_group}" \
+                f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}"
+
+        subnet_id = f"{vnet_id}/subnets/AzureBastionSubnet"
         args.ip_configurations = [{
             "name": "bastion_ip_config",
             "subnet": {"id": subnet_id}
@@ -65,6 +85,15 @@ class BastionCreate(_BastionCreate):
 
         if args.public_ip_address is not None:
             args.ip_configurations[0]['public_ip_address'] = {"id": args.public_ip_address}
+
+        if args.vnet_name is not None:
+            args.virtual_network = {
+                "id": vnet_id
+            }
+
+        if args.network_acls_ips != AAZUndefined:
+            addresses = str(args.network_acls_ips).split()
+            args.network_acls = [{"addressPrefix": address} for address in addresses]
 
 
 SSH_EXTENSION_NAME = "ssh"

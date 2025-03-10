@@ -824,6 +824,13 @@ helps['cosmosdb copy create'] = """
             Usage: --dest-mongo database=XX collection=XX'
             database: Database name.
             collection: Collection name.
+      - name: --dest-mongo-vcore
+        short-summary: "Destination Mongo(vCore) collection"
+        long-summary: |
+            Usage: --dest-mongo-vcore database=XX collection=XX connectionStringKeyVaultUri=XX'
+            database: Database name.
+            collection: Collection name.
+            connectionStringKeyVaultUri: Link to Azure KeyVault secret containing connection string.
 
     examples:
       - name: Copy Azure Cosmos DB API for NoSQL container in same account
@@ -838,6 +845,9 @@ helps['cosmosdb copy create'] = """
       - name: Copy Azure Cosmos DB API for MongoDB collection
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
+      - name: Copy Azure Cosmos DB API from MongoDB(RU) collection to Mongo(vCore) collection
+        text: |-
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo-vcore database=d2 collection=c2 connectionStringKeyVaultUri=<link_to_Azure_KeyVault_secret>
 """
 
 helps['cosmosdb copy list'] = """
@@ -998,6 +1008,35 @@ helps['cosmosdb sql container restore'] = """
                az cosmosdb sql container restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_container_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
 """
 
+# sql container throughput commands
+helps['cosmosdb sql container throughput'] = """
+type: group
+short-summary: Manage throughput of SQL container under an Azure Cosmos DB account.
+"""
+
+helps['cosmosdb sql container throughput show'] = """
+type: command
+short-summary: Get the throughput of the SQL container under an Azure Cosmos DB SQL database.
+"""
+
+helps['cosmosdb sql container throughput update'] = """
+type: command
+short-summary: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
+examples:
+      - name: Update the throughput of the SQL container under an Azure Cosmos DB SQL database.
+        text: |-
+               az cosmosdb sql container throughput update --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput 1000
+"""
+
+helps['cosmosdb sql container throughput migrate'] = """
+type: command
+short-summary: Migrate the throughput of the SQL container between autoscale and manually provisioned.
+examples:
+      - name: Migrate the throughput of the SQL container between autoscale and manually provisioned.
+        text: |-
+               az cosmosdb sql container throughput migrate --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --throughput-type Manual
+"""
+
 # in-account restore of a deleted mongodb database
 helps['cosmosdb mongodb database restore'] = """
     type: command
@@ -1046,4 +1085,155 @@ helps['cosmosdb table restore'] = """
       - name: Restore a deleted table within the same account.
         text: |-
                az cosmosdb table restore --resource-group resource_group --account-name database_account_name --table-name name_of_table_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+helps['cosmosdb table role'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Table role resources.
+"""
+
+helps['cosmosdb table role definition'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Table role definitions.
+"""
+
+helps['cosmosdb table role definition create'] = """
+type: command
+short-summary: Create a Table role definition under an Azure Cosmos DB account.
+examples:
+  - name: Create a Table role definition under an Azure Cosmos DB account using a JSON string.
+    text: |
+      az cosmosdb table role definition create --account-name MyAccount --resource-group MyResourceGroup --body '{
+        "Id": "be79875a-2cc4-40d5-8958-566017875b39",
+        "RoleName": "My Read Only Role",
+        "Type": "CustomRole",
+        "AssignableScopes": ["/dbs/mydb/colls/mycontainer"],
+        "Permissions": [{
+          "DataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/tables/containers/entities/read",
+            "Microsoft.DocumentDB/databaseAccounts/tables/containers/executeQuery",
+            "Microsoft.DocumentDB/databaseAccounts/tables/containers/readChangeFeed"
+          ]
+        }]
+      }'
+  - name: Create a Table role definition under an Azure Cosmos DB account using a JSON file.
+    text: az cosmosdb table role definition create --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb table role definition delete'] = """
+type: command
+short-summary: Delete a Table role definition under an Azure Cosmos DB account.
+examples:
+  - name: Delete a Table role definition under an Azure Cosmos DB account.
+    text: az cosmosdb table role definition delete --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb table role definition exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role definition exists.
+examples:
+  - name: Check if an Azure Cosmos DB role definition exists.
+    text: az cosmosdb table role definition exists --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb table role definition list'] = """
+type: command
+short-summary: List all Table role definitions under an Azure Cosmos DB account.
+examples:
+  - name: List all Table role definitions under an Azure Cosmos DB account.
+    text: az cosmosdb table role definition list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb table role definition show'] = """
+type: command
+short-summary: Show the properties of a Table role definition under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a Table role definition under an Azure Cosmos DB account.
+    text: az cosmosdb table role definition show --account-name MyAccount --resource-group MyResourceGroup --role-definition-id be79875a-2cc4-40d5-8958-566017875b39
+"""
+
+helps['cosmosdb table role definition update'] = """
+type: command
+short-summary: Update a Table role definition under an Azure Cosmos DB account.
+examples:
+  - name: Update a Table role definition under an Azure Cosmos DB account.
+    text: az cosmosdb table role definition update --account-name MyAccount --resource-group MyResourceGroup --body @role-definition.json
+"""
+
+helps['cosmosdb table role assignment'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Table role assignments.
+"""
+
+helps['cosmosdb table role assignment create'] = """
+type: command
+short-summary: Create a Table role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Create a Table role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb table role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: Create a Table role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb table role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+"""
+
+helps['cosmosdb table role assignment delete'] = """
+type: command
+short-summary: Delete a Table role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Delete a Table role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb table role assignment delete --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb table role assignment exists'] = """
+type: command
+short-summary: Check if an Azure Cosmos DB role assignment exists.
+examples:
+  - name: Check if an Azure Cosmos DB role assignment exists.
+    text: az cosmosdb table role assignment exists --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb table role assignment list'] = """
+type: command
+short-summary: List all Table role assignments under an Azure Cosmos DB account.
+examples:
+  - name: List all Table role assignments under an Azure Cosmos DB account.
+    text: az cosmosdb table role assignment list --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb table role assignment show'] = """
+type: command
+short-summary: Show the properties of a Table role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Show the properties of a Table role assignment under an Azure Cosmos DB account.
+    text: az cosmosdb table role assignment show --account-name MyAccount --resource-group MyResourceGroup --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8
+"""
+
+helps['cosmosdb table role assignment update'] = """
+type: command
+short-summary: Update a Table role assignment under an Azure Cosmos DB account.
+examples:
+  - name: Update a Table role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb table role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: update a Table role assignment under an Azure Cosmos DB account using Role Definition ID.
+    text: |
+      az cosmosdb table role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-id be79875a-2cc4-40d5-8958-566017875b39 \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
 """

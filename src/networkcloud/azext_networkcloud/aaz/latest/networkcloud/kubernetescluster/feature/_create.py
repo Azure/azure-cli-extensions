@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster feature create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster feature or update properties of the Kubernetes cluster feature if it exists.
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/features/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/features/{}", "2025-02-01"],
         ]
     }
 
@@ -46,6 +45,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.feature_name = AAZStrArg(
             options=["-n", "--name", "--feature-name"],
             help="The name of the feature.",
@@ -196,7 +203,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -205,6 +212,12 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -262,6 +275,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )

@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines,too-many-statements
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from io import IOBase
 import sys
-from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, Type, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
@@ -18,12 +18,13 @@ from azure.core.exceptions import (
     ResourceExistsError,
     ResourceNotFoundError,
     ResourceNotModifiedError,
+    StreamClosedError,
+    StreamConsumedError,
     map_error,
 )
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import AsyncHttpResponse
 from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
-from azure.core.rest import HttpRequest
+from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.core.tracing.decorator import distributed_trace
 from azure.core.tracing.decorator_async import distributed_trace_async
 from azure.core.utils import case_insensitive_dict
@@ -31,7 +32,6 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._vendor import _convert_request
 from ...operations._cassandra_clusters_operations import (
     build_create_update_request,
     build_deallocate_request,
@@ -53,7 +53,7 @@ from ...operations._cassandra_clusters_operations import (
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
 else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+    from typing import MutableMapping  # type: ignore
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -91,7 +91,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -108,7 +108,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                     headers=_headers,
                     params=_params,
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
 
             else:
@@ -124,7 +123,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
                 _request.method = "GET"
             return _request
@@ -172,7 +170,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -190,7 +188,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                     headers=_headers,
                     params=_params,
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
 
             else:
@@ -206,7 +203,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
                 _request.method = "GET"
             return _request
@@ -248,7 +244,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.ClusterResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -270,7 +266,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
         _stream = False
@@ -284,17 +279,15 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ClusterResource", pipeline_response)
+        deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> None:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    async def _delete_initial(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -306,7 +299,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
             resource_group_name=resource_group_name,
@@ -316,10 +309,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -327,11 +320,19 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
         if cls:
-            return cls(pipeline_response, None, {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
@@ -355,7 +356,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 api_version=api_version,
@@ -364,6 +365,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
@@ -391,8 +393,8 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         cluster_name: str,
         body: Union[_models.ClusterResource, IO[bytes]],
         **kwargs: Any
-    ) -> _models.ClusterResource:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -405,7 +407,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -426,10 +428,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -437,14 +439,14 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -556,10 +558,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -587,8 +590,8 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         cluster_name: str,
         body: Union[_models.ClusterResource, IO[bytes]],
         **kwargs: Any
-    ) -> _models.ClusterResource:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -601,7 +604,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -622,10 +625,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -633,14 +636,14 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
-
-        if response.status_code == 202:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -747,10 +750,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -778,8 +782,8 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         cluster_name: str,
         body: Union[_models.CommandPostBody, IO[bytes]],
         **kwargs: Any
-    ) -> _models.CommandOutput:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -792,7 +796,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.CommandOutput] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -813,10 +817,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -824,10 +828,14 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("CommandOutput", pipeline_response)
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -934,10 +942,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("CommandOutput", pipeline_response)
+            deserialized = self._deserialize("CommandOutput", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -963,10 +972,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.CommandPostBody, IO[bytes]],
+        body: Union[_models.CommandAsyncPostBody, IO[bytes]],
         **kwargs: Any
-    ) -> Optional[_models.CommandPublicResource]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -979,7 +988,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.CommandPublicResource]] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -987,7 +996,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            _json = self._serialize.body(body, "CommandPostBody")
+            _json = self._serialize.body(body, "CommandAsyncPostBody")
 
         _request = build_invoke_command_async_request(
             resource_group_name=resource_group_name,
@@ -1000,10 +1009,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -1011,19 +1020,22 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         response_headers = {}
-        if response.status_code == 200:
-            deserialized = self._deserialize("CommandPublicResource", pipeline_response)
-
         if response.status_code == 202:
             response_headers["azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("azure-AsyncOperation")
             )
             response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
             return cls(pipeline_response, deserialized, response_headers)  # type: ignore
@@ -1035,7 +1047,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: _models.CommandPostBody,
+        body: _models.CommandAsyncPostBody,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -1048,7 +1060,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
         :param body: Specification which command to run where. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CommandPostBody
+        :type body: ~azure.mgmt.cosmosdb.models.CommandAsyncPostBody
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1091,7 +1103,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.CommandPostBody, IO[bytes]],
+        body: Union[_models.CommandAsyncPostBody, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.CommandPublicResource]:
         """Invoke a command like nodetool for cassandra maintenance asynchronously.
@@ -1101,9 +1113,9 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
-        :param body: Specification which command to run where. Is either a CommandPostBody type or a
-         IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CommandPostBody or IO[bytes]
+        :param body: Specification which command to run where. Is either a CommandAsyncPostBody type or
+         a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.CommandAsyncPostBody or IO[bytes]
         :return: An instance of AsyncLROPoller that returns either CommandPublicResource or the result
          of cls(response)
         :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CommandPublicResource]
@@ -1130,10 +1142,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("CommandPublicResource", pipeline_response)
+            deserialized = self._deserialize("CommandPublicResource", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -1178,7 +1191,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListCommands] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1197,7 +1210,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                     headers=_headers,
                     params=_params,
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
 
             else:
@@ -1213,7 +1225,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
                 _request.method = "GET"
             return _request
@@ -1245,7 +1256,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace_async
     async def get_command_async(
         self, resource_group_name: str, cluster_name: str, command_id: str, **kwargs: Any
-    ) -> _models.ListCommands:
+    ) -> _models.CommandPublicResource:
         """Get details about a specified command that was run asynchronously.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1255,11 +1266,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :type cluster_name: str
         :param command_id: Managed Cassandra cluster command id. Required.
         :type command_id: str
-        :return: ListCommands or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ListCommands
+        :return: CommandPublicResource or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.CommandPublicResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1271,7 +1282,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ListCommands] = kwargs.pop("cls", None)
+        cls: ClsType[_models.CommandPublicResource] = kwargs.pop("cls", None)
 
         _request = build_get_command_async_request(
             resource_group_name=resource_group_name,
@@ -1282,7 +1293,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
         _stream = False
@@ -1296,7 +1306,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ListCommands", pipeline_response)
+        deserialized = self._deserialize("CommandPublicResource", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -1324,7 +1334,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[_models.ListBackups] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1343,7 +1353,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                     headers=_headers,
                     params=_params,
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
 
             else:
@@ -1359,7 +1368,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                _request = _convert_request(_request)
                 _request.url = self._client.format_url(_request.url)
                 _request.method = "GET"
             return _request
@@ -1405,7 +1413,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.BackupResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1428,7 +1436,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
         _stream = False
@@ -1442,17 +1449,17 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("BackupResource", pipeline_response)
+        deserialized = self._deserialize("BackupResource", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    async def _deallocate_initial(  # pylint: disable=inconsistent-return-statements
+    async def _deallocate_initial(
         self, resource_group_name: str, cluster_name: str, x_ms_force_deallocate: Optional[str] = None, **kwargs: Any
-    ) -> None:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1464,7 +1471,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_deallocate_request(
             resource_group_name=resource_group_name,
@@ -1475,10 +1482,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -1486,11 +1493,19 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
         if cls:
-            return cls(pipeline_response, None, {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_deallocate(
@@ -1522,7 +1537,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._deallocate_initial(  # type: ignore
+            raw_result = await self._deallocate_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 x_ms_force_deallocate=x_ms_force_deallocate,
@@ -1532,6 +1547,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
@@ -1553,10 +1569,8 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    async def _start_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> None:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+    async def _start_initial(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1568,7 +1582,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_start_request(
             resource_group_name=resource_group_name,
@@ -1578,10 +1592,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
@@ -1589,11 +1603,19 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
         if cls:
-            return cls(pipeline_response, None, {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_start(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
@@ -1619,7 +1641,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._start_initial(  # type: ignore
+            raw_result = await self._start_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 api_version=api_version,
@@ -1628,6 +1650,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
@@ -1664,7 +1687,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :rtype: ~azure.mgmt.cosmosdb.models.CassandraClusterPublicStatus
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1686,7 +1709,6 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             headers=_headers,
             params=_params,
         )
-        _request = _convert_request(_request)
         _request.url = self._client.format_url(_request.url)
 
         _stream = False
@@ -1700,7 +1722,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("CassandraClusterPublicStatus", pipeline_response)
+        deserialized = self._deserialize("CassandraClusterPublicStatus", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
