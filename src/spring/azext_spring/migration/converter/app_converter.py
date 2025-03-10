@@ -72,8 +72,10 @@ class AppConverter(BaseConverter):
         if addon is None:
             return None
 
-        if (addon.get('applicationConfigurationService') is not None and addon['applicationConfigurationService'].get('resourceId') is not None) \
-            or (addon.get('configServer') is not None and addon['configServer'].get('resourceId') is not None):
+        if (
+            (addon.get('applicationConfigurationService') is not None and addon['applicationConfigurationService'].get('resourceId') is not None)
+            or (addon.get('configServer') is not None and addon['configServer'].get('resourceId') is not None)
+        ):
             service_bind.append({
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
