@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2024-06-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -151,7 +151,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -192,6 +194,14 @@ class List(AAZCommand):
                 serialized_name="ipExtendedCommunityRules",
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -215,6 +225,11 @@ class List(AAZCommand):
 
             route_targets = cls._schema_on_200.value.Element.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -285,7 +300,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -321,7 +336,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -362,6 +379,14 @@ class List(AAZCommand):
                 serialized_name="ipExtendedCommunityRules",
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -385,6 +410,11 @@ class List(AAZCommand):
 
             route_targets = cls._schema_on_200.value.Element.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
