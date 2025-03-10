@@ -124,12 +124,47 @@ class AcrCsscCommandsTests(unittest.TestCase):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
 
+        # Test when version is missing
         mock_invalid_config = {
             "repositories": [
                 {
                     "repository": "docker-local",
                     "tags": ["v1"],
                 }]
+        }
+        mock_load.return_value = mock_invalid_config
+
+        with patch('os.path.exists', return_value=True), \
+             patch('os.path.isfile', return_value=True), \
+             patch('os.path.getsize', return_value=100), \
+             patch('os.access', return_value=True):
+            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+
+        # Test when repositories is empty
+        mock_invalid_config = {
+            "repositories": [],
+            "version": "v1"
+        }
+        mock_load.return_value = mock_invalid_config
+
+        with patch('os.path.exists', return_value=True), \
+             patch('os.path.isfile', return_value=True), \
+             patch('os.path.getsize', return_value=100), \
+             patch('os.access', return_value=True):
+            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+
+        # Test when same repository is repeated
+        mock_invalid_config = {
+            "repositories": [
+                {
+                    "repository": "docker-local",
+                    "tags": ["v1"],
+                },
+                {
+                    "repository": "docker-local",
+                    "tags": ["v1"],
+                }],
+            "version": "v1"
         }
         mock_load.return_value = mock_invalid_config
 
@@ -149,7 +184,8 @@ class AcrCsscCommandsTests(unittest.TestCase):
                 {
                     "repository": "docker-local",
                     "tags": ["v1-patched"],
-                }]
+                }],
+            "version": "v1"
         }
         mock_load.return_value = mock_invalid_config
 
@@ -165,6 +201,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
                     "repository": "docker-local",
                     "tags": ["v1-999"],
                 }],
+            "version": "v1"
         }
         mock_load.return_value = mock_invalid_config
 

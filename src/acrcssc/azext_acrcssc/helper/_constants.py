@@ -126,7 +126,9 @@ CONTINUOUSPATCH_CONFIG_SCHEMA_V1 = {
                     }
                 },
                 "required": ["repository", "tags"]
-            }
+            },
+            "uniqueItems": True,
+            "minItems": 1
         }
     },
     "required": ["repositories", "version"]
