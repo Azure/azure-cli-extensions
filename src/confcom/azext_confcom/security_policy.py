@@ -1298,7 +1298,8 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 )
                 or [],
-                config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts_from_config(container_properties),
+                config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts_from_config(container_properties)
+                + process_configmap(container_properties),
                 config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                 + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                 if debug_mode

@@ -684,6 +684,9 @@ def process_mounts_from_config(image_properties: dict) -> List[Dict[str, str]]:
                 config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: case_insensitive_dict_get(
                     mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY
                 ),
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS: case_insensitive_dict_get(
+                    mount, config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS
+                )
             }
         )
     return mounts
