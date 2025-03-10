@@ -185,6 +185,17 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_INVALID_REF_TYPE = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-ref-id-type.yaml")
     LOAD_TEST_INVALID_REF_TYPE2 = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-ref-id-type2.yaml")
 
+    # pf-criteria files.
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-updated-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_OLD_MODEL = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-old-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_SERVER_CRITERIA = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-updated-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_COMPLETE = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-complete-updated-model.yaml")
+    # invalid-cases
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID2 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model2.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID3 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model3.yaml")
+    LOAD_TEST_METRICS_MI = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourcegroups/cnt-integration-tests-rg/providers/microsoft.managedidentity/userassignedidentities/cnt-integration-tests-mi1-eastus"
+
 
 class LoadTestRunConstants(LoadConstants):
     # Metric constants

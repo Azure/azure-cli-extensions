@@ -87,12 +87,12 @@ def yaml_parse_failure_criteria(data):
     passfail_criteria["passFailMetrics"] = {}
     passfail_criteria["passFailServerMetrics"] = {}
     if isinstance(data[LoadTestConfigKeys.FAILURE_CRITERIA], dict):
-        pf_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA][LoadTestConfigKeys.CLIENT_METRICS_PF]
-        pf_server_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA][LoadTestConfigKeys.SERVER_METRICS_PF]
+        pf_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA].get(LoadTestConfigKeys.CLIENT_METRICS_PF)
+        pf_server_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA].get(LoadTestConfigKeys.SERVER_METRICS_PF)
     else:
-        pf_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA]
+        pf_criteria_yamlObject = data.get(LoadTestConfigKeys.FAILURE_CRITERIA)
         pf_server_criteria_yamlObject = None
-    if pf_server_criteria_yamlObject is not None:
+    if pf_criteria_yamlObject is not None:
         for items in pf_criteria_yamlObject:
             metric_id = _get_random_uuid()
             # check if item is string or dict. if string then no name is provided
