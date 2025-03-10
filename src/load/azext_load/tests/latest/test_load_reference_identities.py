@@ -16,14 +16,14 @@ import pytest
 logger = get_logger(__name__)
 
 rg_params = {
-    "name_prefix": "clitest-enginemi-",
+    "name_prefix": "clitest-ref-ids-",
     "location": "eastus",
     "key": "resource_group",
     "parameter_name": "rg",
     "random_name_length": 30,
 }
 load_params = {
-    "name_prefix": "clitest-enginemi-",
+    "name_prefix": "clitest-ref-ids-",
     "location": "eastus",
     "key": "load_test_resource",
     "parameter_name": "load",
@@ -176,6 +176,13 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             self,
             message="is not a valid resource id",
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_INVALID_METRICS_REF_ID,
+        )
+
+        # Invalid kv-id outside the ref-ids
+        _configure_command_assert_exception(
+            self,
+            message="Key vault reference identity should be a valid resource id",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS,
         )
 
         # Invalide metrics-ref-id

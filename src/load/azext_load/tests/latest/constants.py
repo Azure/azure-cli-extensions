@@ -178,10 +178,10 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI2 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi2.yaml")
     LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-metrics-ref-ids.yaml")
     LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-kv-ref-ids.yaml")
-    LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id-outside.yaml")
+    LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id-out-side.yaml")
     LOAD_TEST_CONFIG_INVALID_KV_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id.yaml")
     LOAD_TEST_CONFIG_INVALID_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-metrics-ref-id.yaml")
-    LOAD_TEST_CONFIG_KV_OUTSIDE_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-kv-outside.yaml")
+    LOAD_TEST_CONFIG_KV_OUTSIDE_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-kv-out-side.yaml")
 
 
 class LoadTestRunConstants(LoadConstants):
