@@ -32,3 +32,6 @@ def load_arguments(self: AzCommandsLoader, _):
 
     with self.argument_context("acr supply-chain workflow list") as c:
         c.argument("status", arg_type=get_enum_type(WorkflowTaskState), options_list=["--run-status"], help="Status to filter the supply-chain workflow image status.", required=False)
+
+    with self.argument_context("acr supply-chain workflow delete") as c:
+        c.argument("yes", options_list=["--yes", "-y"], help="Proceed with the deletion without user confirmation", required=False)
