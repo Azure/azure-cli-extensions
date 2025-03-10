@@ -199,18 +199,32 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             keyvault_ref_id="invalid",
         )
 
-        # Invalid multiple engine reference identity type in config file
-        _configure_command_assert_exception(
-            self,
-            message="Only one Metrics reference identity should be provided in the referenceIdentities array",
-            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID
-        )
-
-        # Invalid engine reference identities in config file
+        # Invalid multiple keyvault reference identity type in config file
         _configure_command_assert_exception(
             self,
             message="Only one KeyVault reference identity should be provided in the referenceIdentities array",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID
+        )
+
+        # Invalid multiple metrics reference identities in config file
+        _configure_command_assert_exception(
+            self,
+            message="Only one Metrics reference identity should be provided in the referenceIdentities array",
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID
+        )
+
+        # Invalid metrics type
+        _configure_command_assert_exception(
+            self,
+            message="Reference identity value should be provided only for UserAssigned identity type",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_INVALID_REF_TYPE
+        )
+
+        # Invalid metrics type2
+        _configure_command_assert_exception(
+            self,
+            message="is not a valid resource id",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_INVALID_REF_TYPE2
         )
 
 def _configure_command_jmes_checks(self, checks, engine_ref_id_type=None, engine_ref_ids=None, metrics_ref_id=None, keyvault_ref_id=None, load_test_config_file=None):
