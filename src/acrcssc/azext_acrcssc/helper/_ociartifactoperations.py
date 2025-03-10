@@ -38,6 +38,8 @@ logger = get_logger(__name__)
 def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
     logger.debug(f"Entering create_oci_artifact_continuouspatching with parameters: {registry.name} {cssc_config_file} {dryrun}")
 
+    oras_client = None
+    temp_artifact_name = None
     try:
         oras_client = _oras_client(registry)
         # we might have to handle the tag lock/unlock for the cssc config file,
@@ -66,8 +68,9 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
     except Exception as exception:
         raise AzCLIError(f"Failed to push OCI artifact to ACR: {exception}")
     finally:
-        oras_client.logout(hostname=str.lower(registry.login_server))
-        if os.path.exists(temp_artifact_name):
+        if oras_client:
+            oras_client.logout(hostname=str.lower(registry.login_server))
+        if temp_artifact_name and os.path.exists(temp_artifact_name):
             os.remove(temp_artifact_name)
 
 

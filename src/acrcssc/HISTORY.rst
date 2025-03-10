@@ -3,6 +3,14 @@
 Release History
 ===============
 
-0.1.0
+1.1.1
 ++++++
-* Initial release.
+* Release for Public Preview
+* Added `list`and `cancel-run` commands for workflows
+* `list` command provide output on the scan and patch status of the registry
+* `cancel-run` command allows to canceling all running scan and patch tasks
+
+
+1.1.0
+++++++
+* Initial release for Private Preview

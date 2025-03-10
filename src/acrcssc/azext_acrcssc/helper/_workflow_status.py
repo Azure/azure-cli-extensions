@@ -13,16 +13,18 @@ from ._constants import (
     CSSCTaskTypes,
     TaskRunStatus,
     WORKFLOW_STATUS_NOT_AVAILABLE,
-    WORKFLOW_STATUS_PATCH_NOT_AVAILABLE)
+    WORKFLOW_STATUS_PATCH_NOT_AVAILABLE
+)
+from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
+from azure.core.polling import PollingMethod
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from enum import Enum
 from msrestazure.azure_exceptions import CloudError
-from azure.cli.core.commands import LongRunningOperation
-from azure.core.polling import PollingMethod
-from azure.cli.core.commands.progress import IndeterminateProgressBar
+
 
 logger = get_logger(__name__)
 
@@ -177,6 +179,7 @@ class WorkflowTaskStatus:
         match = re.search(r'PATCHING will be skipped as (.+)\n', self.scan_logs)
         if match:
             return match.group(1)
+        return None
 
     def _get_patch_error_reason_from_tasklog(self):
         if self.patch_task is None:
@@ -215,9 +218,9 @@ class WorkflowTaskStatus:
     @staticmethod
     def _latest_task(this_task, this_log, that_task, that_log):
         if this_task is None:
-            return (that_task, that_log)
+            return that_task, that_log
         if that_task is None:
-            return (this_task, this_log)
+            return this_task, this_log
         return (this_task, this_log) if this_task.create_time > that_task.create_time else (that_task, that_log)
 
     @staticmethod
@@ -265,7 +268,7 @@ class WorkflowTaskStatus:
                 progress_indicator.update_progress()
                 if hasattr(progress_indicator, 'hook') and \
                     hasattr(progress_indicator.hook, 'active_progress') and \
-                    hasattr(progress_indicator.hook.active_progress, 'spinner'):
+                        hasattr(progress_indicator.hook.active_progress, 'spinner'):
                     progress_indicator.hook.active_progress.spinner.step(label=progress_indicator.message)
             if not hasattr(scan, 'task_log_result'):
                 logger.debug("Scan Taskrun: %s has no logs, silent failure", scan.run_id)
@@ -388,7 +391,13 @@ class WorkflowTaskStatus:
         return result
 
     @staticmethod
-    def generate_logs(cmd, client, run_id, registry_name, resource_group_name, await_task_run=True, await_task_message=None):
+    def generate_logs(cmd,
+                      client,
+                      run_id,
+                      registry_name,
+                      resource_group_name,
+                      await_task_run=True,
+                      await_task_message=None):
 
         log_file_sas = None
         error_msg = "Could not get logs for ID: {}".format(run_id)
@@ -407,18 +416,24 @@ class WorkflowTaskStatus:
                          run_id, registry_name, resource_group_name, e)
 
         if await_task_run:
-            polling_method = WorkflowLogPollingMethod(client, resource_group_name, registry_name, run_id)
-            LongRunningOperation(cmd.cli_ctx, progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message))(polling_method)
+            polling_method = WorkflowLogPollingMethod(client,
+                                                      resource_group_name,
+                                                      registry_name,
+                                                      run_id)
+            LongRunningOperation(
+                cmd.cli_ctx,
+                progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message)
+            )(polling_method)
 
         blobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
         return WorkflowTaskStatus._download_logs(blobClient.from_blob_url(log_file_sas))
 
     @staticmethod
-    def _evaluate_task_run_nonterminal_state(run_status):
+    def evaluate_task_run_nonterminal_state(run_status):
         return run_status != TaskRunStatus.Succeeded.value and run_status != TaskRunStatus.Failed.value
 
     @staticmethod
-    def _get_run_status_local(client, resource_group_name, registry_name, run_id):
+    def get_run_status_local(client, resource_group_name, registry_name, run_id):
         try:
             response = client.get(resource_group_name, registry_name, run_id)
             return response.status
@@ -500,6 +515,7 @@ class WorkflowTaskStatus:
         taskruns = acr_task_run_client.list(resource_group_name, registry_name, filter=filter_str, top=top)
         return list(taskruns)
 
+
 class WorkflowLogPollingMethod(PollingMethod):
     def __init__(self, client, resource_group_name, registry_name, run_id):
         self.client = client
@@ -512,18 +528,24 @@ class WorkflowLogPollingMethod(PollingMethod):
         pass
 
     def run(self):
-        
-        while WorkflowTaskStatus._evaluate_task_run_nonterminal_state(self.run_status):
-            self.run_status = WorkflowTaskStatus._get_run_status_local(self.client, self.resource_group_name, self.registry_name, self.run_id)
-            if WorkflowTaskStatus._evaluate_task_run_nonterminal_state(self.run_status):
+
+        while WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
+            self.run_status = WorkflowTaskStatus.get_run_status_local(self.client,
+                                                                      self.resource_group_name,
+                                                                      self.registry_name,
+                                                                      self.run_id)
+            if WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
                 logger.debug("Waiting for the task run to complete. Current status: %s", self.run_status)
                 time.sleep(2)
 
     def status(self):
-        return WorkflowTaskStatus._get_run_status_local(self.client, self.resource_group_name, self.registry_name, self.run_id)
+        return WorkflowTaskStatus.get_run_status_local(self.client,
+                                                       self.resource_group_name,
+                                                       self.registry_name,
+                                                       self.run_id)
 
     def finished(self):
-        return not WorkflowTaskStatus._evaluate_task_run_nonterminal_state(self.status())
+        return not WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.status())
 
     def done(self):
         return self.finished()
