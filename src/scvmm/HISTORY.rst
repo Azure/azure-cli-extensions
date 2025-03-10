@@ -2,6 +2,8 @@
 
 Release History
 ===============
+1.2.0
+* Add command `az scvmm create-from-machines`.
 
 1.1.2
 ++++++
