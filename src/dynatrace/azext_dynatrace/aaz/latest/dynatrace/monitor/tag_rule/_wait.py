@@ -203,7 +203,7 @@ class Wait(AAZWaitCommand):
 
             filtering_tags = cls._schema_on_200.properties.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _WaitHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             metric_rules = cls._schema_on_200.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
@@ -212,7 +212,7 @@ class Wait(AAZWaitCommand):
 
             filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _WaitHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -237,27 +237,29 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-_schema_filtering_tag_read = None
+class _WaitHelper:
+    """Helper class for Wait"""
 
+    _schema_filtering_tag_read = None
 
-def _build_schema_filtering_tag_read(_schema):
-    global _schema_filtering_tag_read
-    if _schema_filtering_tag_read is not None:
-        _schema.action = _schema_filtering_tag_read.action
-        _schema.name = _schema_filtering_tag_read.name
-        _schema.value = _schema_filtering_tag_read.value
-        return
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
 
-    _schema_filtering_tag_read = AAZObjectType()
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
 
-    filtering_tag_read = _schema_filtering_tag_read
-    filtering_tag_read.action = AAZStrType()
-    filtering_tag_read.name = AAZStrType()
-    filtering_tag_read.value = AAZStrType()
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
 
-    _schema.action = _schema_filtering_tag_read.action
-    _schema.name = _schema_filtering_tag_read.name
-    _schema.value = _schema_filtering_tag_read.value
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
 
 __all__ = ["Wait"]

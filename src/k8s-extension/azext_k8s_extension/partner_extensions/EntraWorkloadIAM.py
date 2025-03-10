@@ -47,6 +47,27 @@ def settings_dict_to_lowercase(settings):
 
     return validated_settings
 
+def settings_dict_to_lowercase(settings):
+    """
+    Create new dictionary where the keys of the known user settings are all lowercase (but leave the
+    others as they were in case they are specific settings that have to be passed to the Helm chart).
+    """
+    all_user_settings = [CONFIG_SETTINGS_USER_TRUST_DOMAIN, CONFIG_SETTINGS_USER_TENANT_ID,
+                         CONFIG_SETTINGS_USER_LOCAL_AUTHORITY, CONFIG_SETTINGS_USER_JOIN_TOKEN]
+
+    if settings is None:
+        return dict()
+
+    validated_settings = dict()
+    for key, value in settings.items():
+        if key.lower() in all_user_settings:
+            validated_settings[key.lower()] = value
+        else:
+            validated_settings[key] = value
+
+    return validated_settings
+
+
 class EntraWorkloadIAM(DefaultExtension):
 
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,

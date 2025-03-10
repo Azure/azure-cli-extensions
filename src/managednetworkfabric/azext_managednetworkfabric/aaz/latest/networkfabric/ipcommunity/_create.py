@@ -106,6 +106,9 @@ class Create(AAZCommand):
             options=["community-members"],
             help="List the community members of IP Community.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _element.sequence_number = AAZIntArg(
             options=["sequence-number"],

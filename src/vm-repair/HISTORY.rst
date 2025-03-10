@@ -1,9 +1,37 @@
 
 Release History
 ===============
+
+2.1.0
+++++++
+Added new parameter `--os-disk-type` to `vm repair create` to let users specify the repair vm's os disk storage account type. 
+
+2.0.3
+++++++
+Added new long parameter functionality in `vm repair run` cmd `parameters` parameter. When using the prefix `++`, the entire key=value string will be sent to the running script, not just the value.
+
+
+2.0.2
+++++++
+Updated parameter descriptions and examples for `az vm repair create`.
+
+2.0.1
+++++++
+Fixed 2 Unbound variable bugs in `vm repair create` and improved the code documentation.  
+
+2.0.0
+++++++
+Changed default VM image to 2022-datacenter-smalldisk for better default security. 
+
+1.1.1
+++++++
+Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
+Fixed a bug with `--associate-public-ip` where it was always creating a public IP. Now a private IP will be used if `--associate-public-ip` is not specified.
+
 1.1.0
 ++++++
-Added script for GT fixit button
+Added script for GT fixit button.
+Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
 
 1.0.10
 ++++++

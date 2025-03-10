@@ -324,7 +324,7 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
             raise azclierror.UnclassifiedUserFault(
                 "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
                 colorama.Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
-                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
+                "https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
                 "Or use --ssh-client-folder to provide folder path with ssh executables. " + colorama.Style.RESET_ALL)
 
     return ssh_path

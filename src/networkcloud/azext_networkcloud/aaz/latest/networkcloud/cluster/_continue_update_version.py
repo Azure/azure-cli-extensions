@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster continue-update-version",
-    is_preview=True,
 )
 class ContinueUpdateVersion(AAZCommand):
     """Trigger the continuation of an update for a cluster with a matching update strategy that has paused after completing a segment of the update.
@@ -23,9 +22,9 @@ class ContinueUpdateVersion(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/continueupdateversion", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/continueupdateversion", "2025-02-01"],
         ]
     }
 
@@ -152,7 +151,7 @@ class ContinueUpdateVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -243,7 +242,7 @@ class _ContinueUpdateVersionHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

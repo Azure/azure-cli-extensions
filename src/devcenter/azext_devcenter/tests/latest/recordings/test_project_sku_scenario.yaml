@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-sku list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --project
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.32.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project/listSkus?api-version=2024-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"16"},{"name":"MemoryGB","value":"64"},{"name":"OsDiskTypes","value":"ssd_1024gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_16c64gb1024ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"16"},{"name":"MemoryGB","value":"64"},{"name":"OsDiskTypes","value":"ssd_2048gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_16c64gb2048ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"16"},{"name":"MemoryGB","value":"64"},{"name":"OsDiskTypes","value":"ssd_256gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_16c64gb256ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"16"},{"name":"MemoryGB","value":"64"},{"name":"OsDiskTypes","value":"ssd_512gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_16c64gb512ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"32"},{"name":"MemoryGB","value":"128"},{"name":"OsDiskTypes","value":"ssd_1024gb"},{"name":"HibernateSupport","value":"false"}],"name":"general_i_32c128gb1024ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"32"},{"name":"MemoryGB","value":"128"},{"name":"OsDiskTypes","value":"ssd_2048gb"},{"name":"HibernateSupport","value":"false"}],"name":"general_i_32c128gb2048ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"32"},{"name":"MemoryGB","value":"128"},{"name":"OsDiskTypes","value":"ssd_512gb"},{"name":"HibernateSupport","value":"false"}],"name":"general_i_32c128gb512ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"8"},{"name":"MemoryGB","value":"32"},{"name":"OsDiskTypes","value":"ssd_1024gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_8c32gb1024ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"8"},{"name":"MemoryGB","value":"32"},{"name":"OsDiskTypes","value":"ssd_2048gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_8c32gb2048ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"8"},{"name":"MemoryGB","value":"32"},{"name":"OsDiskTypes","value":"ssd_256gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_8c32gb256ssd_v2","tier":"Standard","family":"general_i_v2"},{"resourceType":"projects/pools","locations":["AustraliaEast","BrazilSouth","CanadaCentral","CentralIndia","CentralUS","CentralUSEUAP","EastAsia","EastUS","EastUS2","GermanyWestCentral","ItalyNorth","JapanEast","KoreaCentral","NorthEurope","SouthAfricaNorth","SouthCentralUS","SoutheastAsia","SwedenCentral","SwitzerlandNorth","UKSouth","WestEurope","WestUS3"],"capabilities":[{"name":"vCPUs","value":"8"},{"name":"MemoryGB","value":"32"},{"name":"OsDiskTypes","value":"ssd_512gb"},{"name":"HibernateSupport","value":"true"}],"name":"general_i_8c32gb512ssd_v2","tier":"Standard","family":"general_i_v2"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6690'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Nov 2024 03:27:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/eastus2euap/ec964694-1652-4e07-8b7c-7a50c45cc2f2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: FE22FBF3AF2F413FBC7F8C33088456A5 Ref B: SJC211051205025 Ref C: 2024-11-11T03:27:29Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-11-11T03:28:30.0961264Z'
+    status:
+      code: 200
+      message: OK
+version: 1

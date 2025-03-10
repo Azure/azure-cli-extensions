@@ -2,6 +2,41 @@
 
 Release History
 ===============
+
+1.2.1
+++++++
+* updating genpolicy to version 3.2.0.azl3.genpolicy3
+
+1.2.0
+++++++
+* fixing metadata for uploaded fragments
+* fixing support for non-image feed names and attaching fragments to an image
+* bug fixes for image-attached fragments
+* adding ability to generate a fragment import from an image name using the remote attached fragments
+* updating stdout import statement to look more like the file output
+* adding `--omit-id` to the `acifragmentgen` command
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
+
+1.1.1
+++++++
+* updating dmverity-vhd version with bugfix for empty image layers
+
+1.1.0
+++++++
+* adding support for image-attached fragments via `acifragmentgen`
+* adding workload identity support for VN2
+* adding `--exclude-default-fragments` to disallow sidecars from policy
+* adding `--omit-id` for policy stability across multiple image registries
+* better handle broken base64 policies in templates
+* improve error handling structure
+* make some mount types in VN2 required readonly
+* prompt users if they want to overwrite their policy in VN2
+* changing where dmverity-vhd and sign1util binaries are fetched from. This includes a significant speedup in dmverity-vhd hashing
+
+1.0.1
+++++++
+* getting rid of msrestazure dependency in _validators.py
+
 1.0.0
 ++++++
 * adding support for Virtual Node

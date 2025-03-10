@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster or update the properties of the existing one.
 
     :example: Create or update Kubernetes cluster
-        az networkcloud kubernetescluster create --name "kubernetesClusterName" --resource-group "resourceGroupName" --location "location" --kubernetes-version "1.XX.Y" --extended-location name="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type=CustomLocation --aad-configuration admin-group-object-ids=["f110271b-XXXX-4163-9b99-214d91660f0e"] --admin-username "azureuser" --ssh-key-values "ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm" --initial-agent-pool-configurations "[{count:1,mode:'System',name:'systemPool-1',vmSkuName:'NC-XXXXX',agentOptions:{hugepagesCount:96,hugepagesSize:1G},upgradeSettings:{maxSurge:'10%'},adminUsername:'azureuser',ssh-key-values:['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']}]" --control-plane-node-configuration count=1 vmSkuName='NC-YYYYY' adminUsername='azureuser' ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']" --network-configuration cloud-services-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworkName" cni-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName" pod-cidrs=["10.244.0.0/16"] service-cidrs=["10.96.0.0/16"] dns-service-ip="10.96.0.10" attached-network-configuration.l2-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l2Networks/l2NetworkName',pluginType:'DPDK'}]" attached-network-configuration.l3-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',pluginType:'SRIOV',ipamEnabled:'False'}]" attached-network-configuration.trunked-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName',pluginType:'MACVLAN'}]" bgp-service-load-balancer-configuration.bgp-advertisements="[{advertiseToFabric:'True',communities:['64512:100'],ipAddressPools:['pool1'],peers:['peer1']}]" bgp-service-load-balancer-configuration.fabric-peering-enabled="True" bgp-service-load-balancer-configuration.bgp-peers="[{bfdEnabled:'False',bgpMultiHop:'False',holdTime:'P300s',keepAliveTime:'P300s',myAsn:64512,name:'peer1',peerAddress:'203.0.113.254',peerAsn:64497,peerPort:179}]" bgp-service-load-balancer-configuration.ip-address-pools="[{addresses:['198.51.102.0/24'],autoAssign:'True',name:'pool1',onlyUseHostIps:'True'}]"
+        az networkcloud kubernetescluster create --name "kubernetesClusterName" --resource-group "resourceGroupName" --location "location" --kubernetes-version "1.XX.Y" --extended-location name="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type=CustomLocation --aad-configuration admin-group-object-ids=["MicrosoftEntraGroupObjectId"] --admin-username "azureuser" --ssh-key-values "ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm" --initial-agent-pool-configurations "[{count:1,mode:'System',name:'systemPool-1',vmSkuName:'NC-XXXXX',agentOptions:{hugepagesCount:96,hugepagesSize:1G},upgradeSettings:{maxSurge:'10%'},adminUsername:'azureuser',ssh-key-values:['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']}]" --control-plane-node-configuration count=1 vmSkuName='NC-YYYYY' adminUsername='azureuser' ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']" --network-configuration cloud-services-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworkName" cni-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName" pod-cidrs=["10.244.0.0/16"] service-cidrs=["10.96.0.0/16"] dns-service-ip="10.96.0.10" attached-network-configuration.l2-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l2Networks/l2NetworkName',pluginType:'DPDK'}]" attached-network-configuration.l3-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',pluginType:'SRIOV',ipamEnabled:'False'}]" attached-network-configuration.trunked-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName',pluginType:'MACVLAN'}]" bgp-service-load-balancer-configuration.bgp-advertisements="[{advertiseToFabric:'True',communities:['64512:100'],ipAddressPools:['pool1'],peers:['peer1']}]" bgp-service-load-balancer-configuration.fabric-peering-enabled="True" bgp-service-load-balancer-configuration.bgp-peers="[{bfdEnabled:'False',bgpMultiHop:'False',holdTime:'P300s',keepAliveTime:'P300s',myAsn:64512,name:'peer1',peerAddress:'203.0.113.254',peerAsn:64497,peerPort:179}]" bgp-service-load-balancer-configuration.ip-address-pools="[{addresses:['198.51.102.0/24'],autoAssign:'True',name:'pool1',onlyUseHostIps:'True'}]"
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2025-02-01"],
         ]
     }
 
@@ -46,6 +45,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.kubernetes_cluster_name = AAZStrArg(
             options=["-n", "--name", "--kubernetes-cluster-name"],
             help="The name of the Kubernetes cluster.",
@@ -133,6 +140,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The agent pools that are created with this Kubernetes cluster for running critical system services and workloads. This data in this field is only used during creation, and the field will be empty following the creation of the Kubernetes Cluster. After creation, the management of agent pools is done using the agentPools sub-resource.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.kubernetes_version = AAZStrArg(
             options=["--kubernetes-version"],
@@ -141,7 +151,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
+            options=["--mrg", "--managed-resource-group-configuration"],
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
@@ -157,6 +167,9 @@ class Create(AAZCommand):
             options=["admin-group-object-ids"],
             help="The list of Azure Active Directory group object IDs that will have an administrative role on the Kubernetes cluster.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         admin_group_object_ids = cls._args_schema.aad_configuration.admin_group_object_ids
@@ -842,7 +855,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
@@ -851,6 +864,12 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -1128,6 +1147,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},

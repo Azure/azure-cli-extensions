@@ -11,7 +11,10 @@ disables the --identity parameter and adds the --mi-user-assigned and --mi-syste
 from azext_networkcloud.aaz.latest.networkcloud.cluster._update import Update as _Update
 from azure.cli.core.aaz import register_callback
 
+from ..common_analyticsoutputsettings import AnalyticsOutputSettings
+from ..common_commandoutputsettings import CommandOutputSettings
 from ..common_managedidentity import ManagedIdentity
+from ..common_secretarchivesettings import SecretArchiveSettings
 
 
 class Update(_Update):
@@ -25,3 +28,6 @@ class Update(_Update):
     @register_callback
     def pre_operations(self):
         ManagedIdentity.pre_operations_update(self.ctx.args)
+        CommandOutputSettings.pre_operations_update(self.ctx.args)
+        AnalyticsOutputSettings.pre_operations_update(self.ctx.args)
+        SecretArchiveSettings.pre_operations_create(self.ctx.args)

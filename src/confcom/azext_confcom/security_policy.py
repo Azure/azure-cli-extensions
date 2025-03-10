@@ -6,9 +6,8 @@
 import json
 import warnings
 import copy
-from typing import Any, List, Dict, Tuple
+from typing import Any, List, Dict, Tuple, Union
 from enum import Enum, auto
-import docker
 import deepdiff
 from knack.log import get_logger
 from tqdm import tqdm
@@ -25,7 +24,6 @@ from azext_confcom.template_util import (
     readable_diff,
     case_insensitive_dict_get,
     compare_env_vars,
-    compare_containers,
     get_values_for_params,
     process_mounts,
     process_configmap,
@@ -37,10 +35,16 @@ from azext_confcom.template_util import (
     get_diff_size,
     process_env_vars_from_yaml,
     convert_to_pod_spec,
+    get_volume_claim_templates,
     filter_non_pod_resources,
     decompose_confidential_properties,
+    process_env_vars_from_config,
+    process_mounts_from_config,
+    process_fragment_imports,
+    get_container_diff,
 )
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
+
 
 logger = get_logger()
 
@@ -62,9 +66,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         existing_rego_fragments: Any = None,
         debug_mode: bool = False,
         disable_stdio: bool = False,
-        is_vn2: bool = False
+        is_vn2: bool = False,
+        fragment_contents: Any = None,
     ) -> None:
-        self._docker_client = None
         self._rootfs_proxy = None
         self._policy_str = None
         self._policy_str_pp = None
@@ -72,6 +76,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
         self._api_version = config.API_VERSION
+        self._fragment_contents = fragment_contents
 
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
@@ -118,7 +123,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         containers = case_insensitive_dict_get(
             deserialized_config, config.ACI_FIELD_CONTAINERS
         )
-        if not containers:
+        if containers is None:
             eprint(
                 f'Field ["{config.ACI_FIELD_CONTAINERS}"] is empty or can not be found.'
             )
@@ -135,17 +140,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         self._images = container_results
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Any:
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback) -> None:
-        self.close()
-
-    def _get_docker_client(self) -> docker.client.DockerClient:
-        if not self._docker_client:
-            self._docker_client = docker.from_env()
-
-        return self._docker_client
+        return None
 
     def _get_rootfs_proxy(self) -> SecurityPolicyProxy:
         if not self._rootfs_proxy:
@@ -153,24 +152,25 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         return self._rootfs_proxy
 
-    def _close_docker_client(self) -> None:
-        if self._docker_client:
-            self._get_docker_client().close()
+    def set_fragment_contents(self, fragment_contents: List[str]) -> None:
+        self._fragment_contents = fragment_contents
 
-    def close(self) -> None:
-        self._close_docker_client()
+    def get_fragments(self) -> List[str]:
+        return self._fragments or []
 
     def get_serialized_output(
         self,
         output_type: OutputType = OutputType.DEFAULT,
         rego_boilerplate=True,
-    ) -> str:
+        omit_id: bool = False,
+        include_sidecars: bool = True,
+    ):
         # error check the output type
         if not isinstance(output_type, Enum) or output_type.value not in [item.value for item in OutputType]:
             eprint("Unknown output type for serialization.")
 
         policy_str = self._policy_serialization(
-            output_type == OutputType.PRETTY_PRINT
+            output_type == OutputType.PRETTY_PRINT, include_sidecars=include_sidecars, omit_id=omit_id
         )
 
         if rego_boilerplate:
@@ -182,10 +182,17 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         # encode to base64
         return os_util.str_to_base64(policy_str)
 
-    def _add_rego_boilerplate(self, output: str) -> str:
+    def generate_fragment(self, namespace: str, svn: str, output_type: int, omit_id: bool = False) -> str:
+        return config.CUSTOMER_REGO_FRAGMENT % (
+            namespace,
+            pretty_print_func(svn),
+            pretty_print_func(self.get_fragments()),
+            self.get_serialized_output(output_type, rego_boilerplate=False, include_sidecars=False, omit_id=omit_id),
+        )
 
+    def _add_rego_boilerplate(self, output: str) -> str:
         # determine if we're outputting for a sidecar or not
-        if self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
+        if self._images and self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
             return config.SIDECAR_REGO_POLICY % (
                 pretty_print_func(self._api_version),
                 output
@@ -243,10 +250,16 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             OutputType.PRETTY_PRINT, rego_boilerplate=False
         )
         policy_content = json.loads(policy_str)
+
+        for container in policy_content:
+            # the test sets the sidecar to have the name be the same as the ID, so we need to simulate that
+            container[config.ACI_FIELD_CONTAINERS_NAME] = container[config.ACI_FIELD_CONTAINERS_ID]
         # done this way instead of self.validate() because the input.json is
         # the source of truth
+
         return policy.validate(policy_content, sidecar_validation=True)
 
+    # pylint: disable=too-many-locals
     def validate(self, policy, sidecar_validation=False) -> Tuple[bool, Dict]:
         """Utility method: general method to compare two policies.
         One being the current object and the other is passed in as a parameter.
@@ -272,6 +285,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_ID)
             for i in policy
         ]
+        policy_names = [
+            case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_NAME)
+            for i in policy
+        ]
 
         for container in arm_containers:
             # see if the IDs match with any container in the policy
@@ -279,35 +296,34 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             id_val = case_insensitive_dict_get(container, config.ACI_FIELD_CONTAINERS_ID)
             container_name = case_insensitive_dict_get(
                 container,
-                config.ACI_FIELD_CONTAINERS_NAME
+                config.POLICY_FIELD_CONTAINERS_NAME
             )
 
-            # idx = policy_ids.index(id_val) if id_val in policy_ids else None
-            idx_arr = [i for i, item in enumerate(policy_ids) if item == id_val]
+            # container names are required for valid k8s yamls and ARM templates. So this would only happen
+            # in a future scenario where we enable diff mode for pure json files and the user does not provide
+            # a name for the container
+            if id_val is None and container_name is None:
+                raise ValueError(
+                    (
+                        "Container ID and Name cannot both be None to use diff mode. "
+                        "Try adding a name to the container and regenerate the CCE policy."
+                    )
+                )
 
-            if idx_arr == []:
+            idx_arr = [i for i, item in enumerate(policy_ids) if item == id_val]
+            idx_arr_name = [i for i, item in enumerate(policy_names) if item == container_name]
+            set_idx = set(idx_arr + idx_arr_name)
+
+            if len(set_idx) == 0:
                 reason_list[container_name] = f"{id_val} not found in policy"
                 continue
 
             temp_diff_list = []
-            for idx in idx_arr:
+            for idx in set_idx:
                 temp_diff = {}
                 matching_policy_container = policy[idx]
 
-                # copy so we can delete fields and not affect the original data
-                # structure
-                container1 = copy.deepcopy(matching_policy_container)
-                container2 = copy.deepcopy(container)
-
-                # the ID does not matter so delete them from comparison
-                container1.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
-                container2.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
-                # env vars will be compared later so delete them from this
-                # comparison
-                container1.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
-                container2.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
-
-                diff_values = compare_containers(container1, container2)
+                diff_values = get_container_diff(matching_policy_container, container)
                 # label the diff with the ID so it can be merged
                 # with the env vars and other container diffs
                 temp_diff[container_name] = diff_values
@@ -364,17 +380,16 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         output = self.get_serialized_output(output_type)
         os_util.write_str_to_file(file_path, output)
 
-    def _policy_serialization(self, pretty_print=False) -> str:
+    def _policy_serialization(self, pretty_print=False, include_sidecars: bool = True, omit_id: bool = False) -> str:
         policy = []
         regular_container_images = self.get_images()
 
-        is_sidecars = True
+        # in the case where fragments cover all the customer containers, we still need the pause container
+        is_sidecars = all(is_sidecar(image.containerImage) for image in regular_container_images)
         for image in regular_container_images:
-            is_sidecars = is_sidecars and is_sidecar(image.containerImage)
-            image_dict = image.get_policy_json()
+            image_dict = image.get_policy_json(omit_id=omit_id)
             policy.append(image_dict)
-
-        if not is_sidecars:
+        if (not is_sidecars or len(regular_container_images) == 0) and include_sidecars:
             # add in the default containers that have their hashes pre-computed
             policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:
@@ -418,6 +433,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             for image in container_images:
                 image.parse_all_parameters_and_variables(AciPolicy.all_params, AciPolicy.all_vars)
                 image_name = f"{image.base}:{image.tag}"
+
                 image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
                 # verify and populate the working directory property
@@ -501,6 +517,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                             }
                         image.set_user(user)
 
+                if self._fragment_contents and self.should_eliminate_container_covered_by_fragments(image):
+                    # these containers will get taken out later in the function
+                    # since they are covered by a fragment
+                    logger.info("Container covered by fragment: %s", image_name)
+                    continue
+
                 # populate tar location
                 if isinstance(tar_mapping, dict):
                     tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
@@ -511,18 +533,58 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
                 progress.update()
             progress.close()
-            self.close()
 
             # unload the message queue
             for message in message_queue:
                 logger.warning(message)
 
+            out_images = list(filter(lambda image: image.get_layers(), self.get_images()))
+            self.set_images(out_images)
+
+    def should_eliminate_container_covered_by_fragments(self, image):
+        for fragment_image in self._fragment_contents:
+            # we're not comparing layers to save computation time
+            fragment_image["layers"] = []
+            # TODO: make this print a warning if there is a fragment image that's close
+            # save some computation time by checking if the image tag is the same first
+            container_name = case_insensitive_dict_get(
+                fragment_image,
+                config.POLICY_FIELD_CONTAINERS_NAME
+            )
+            fragment_image_id = fragment_image.get(config.ACI_FIELD_CONTAINERS_ID)
+            if ":" not in fragment_image:
+                fragment_image_id = f"{fragment_image_id}:latest"
+            if (
+                fragment_image_id == image.base + image.tag or
+                container_name == image.get_name()
+            ):
+                image_policy = image.get_policy_json()
+
+                container_diff = get_container_diff(fragment_image, image_policy)
+
+                # if the rest of the container is good, check the env vars
+                if not container_diff:
+                    env_reason_list = compare_env_vars(
+                        fragment_image_id,
+                        case_insensitive_dict_get(
+                            fragment_image,
+                            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS,
+                        ),
+                        case_insensitive_dict_get(
+                            image_policy, config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
+                        ),
+                    )
+
+                    # if the env vars are the same, then we can eliminate the container
+                    if not env_reason_list:
+                        return True
+        return False
+
     def get_images(self) -> List[ContainerImage]:
         return self._images
 
-    def pull_image(self, image: ContainerImage) -> Any:
-        client = self._get_docker_client()
-        return client.images.pull(image.base, image.tag)
+    def set_images(self, images: List[ContainerImage]) -> None:
+        self._images = images
 
 
 # pylint: disable=R0914,
@@ -533,6 +595,10 @@ def load_policy_from_arm_template_str(
     debug_mode: bool = False,
     disable_stdio: bool = False,
     approve_wildcards: bool = False,
+    diff_mode: bool = False,
+    rego_imports: Any = None,
+    fragment_contents: Any = None,
+    exclude_default_fragments: bool = False,
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -579,6 +645,13 @@ def load_policy_from_arm_template_str(
         containers = []
         existing_containers = None
         fragments = None
+        exclude_default_fragments = False
+
+        tags = case_insensitive_dict_get(resource, config.ACI_FIELD_TEMPLATE_TAGS)
+        if tags:
+            exclude_default_fragments = case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
+            if isinstance(exclude_default_fragments, str):
+                exclude_default_fragments = exclude_default_fragments.lower() == "true"
 
         container_group_properties = case_insensitive_dict_get(
             resource, config.ACI_FIELD_TEMPLATE_PROPERTIES
@@ -600,17 +673,29 @@ def load_policy_from_arm_template_str(
         if init_container_list:
             container_list.extend(init_container_list)
 
-        existing_containers, fragments = extract_confidential_properties(
-            container_group_properties
-        )
+        try:
+            existing_containers, fragments = extract_confidential_properties(
+                container_group_properties
+            )
+        except ValueError as e:
+            if diff_mode:
+                # In diff mode, we raise an error if the base64 policy is malformed
+                eprint(f"Unable to decode existing policy. Please check the base64 encoding.\n{e}")
+            else:
+                # In non-diff mode, we ignore the error and proceed without the policy
+                existing_containers, fragments = ([], [])
 
-        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS)
+        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
         if infrastructure_svn:
             # assumes the first DEFAULT_REGO_FRAGMENT is always the
             # infrastructure fragment
             rego_fragments[0][
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
             ] = infrastructure_svn
+        if rego_imports:
+            # error check the rego imports for invalid data types
+            process_fragment_imports(rego_imports)
+            rego_fragments.extend(rego_imports)
 
         volumes = (
             case_insensitive_dict_get(
@@ -637,7 +722,7 @@ def load_policy_from_arm_template_str(
 
             if not image_name:
                 eprint(
-                    f'Field ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"] is empty or cannot be found'
+                    f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
                 )
 
             exec_processes = []
@@ -681,6 +766,7 @@ def load_policy_from_arm_template_str(
                 # fallback to default fragments if the policy is not present
                 existing_rego_fragments=fragments,
                 debug_mode=debug_mode,
+                fragment_contents=fragment_contents,
             )
         )
     return container_groups
@@ -693,6 +779,10 @@ def load_policy_from_arm_template_file(
     debug_mode: bool = False,
     disable_stdio: bool = False,
     approve_wildcards: bool = False,
+    diff_mode: bool = False,
+    rego_imports: list = None,
+    fragment_contents: list = None,
+    exclude_default_fragments: bool = False,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -700,20 +790,40 @@ def load_policy_from_arm_template_file(
     if parameter_path:
         input_parameter_json = os_util.load_str_from_file(parameter_path)
     return load_policy_from_arm_template_str(
-        input_arm_json, input_parameter_json, infrastructure_svn,
-        debug_mode=debug_mode, disable_stdio=disable_stdio, approve_wildcards=approve_wildcards,
+        input_arm_json,
+        input_parameter_json,
+        infrastructure_svn,
+        debug_mode=debug_mode,
+        disable_stdio=disable_stdio,
+        approve_wildcards=approve_wildcards,
+        rego_imports=rego_imports,
+        diff_mode=diff_mode,
+        fragment_contents=fragment_contents,
+        exclude_default_fragments=exclude_default_fragments,
     )
 
 
-def load_policy_from_file(path: str, debug_mode: bool = False) -> AciPolicy:
+def load_policy_from_file(
+    path: str,
+    debug_mode: bool = False,
+    disable_stdio: bool = False,
+    infrastructure_svn: str = None,
+    exclude_default_fragments: bool = False,
+) -> AciPolicy:
     """Utility function: generate policy object from given json file path"""
     policy_input_json = os_util.load_str_from_file(path)
 
-    return load_policy_from_str(policy_input_json, debug_mode=debug_mode, )
+    return load_policy_from_str(
+        policy_input_json,
+        debug_mode=debug_mode,
+        disable_stdio=disable_stdio,
+        infrastructure_svn=infrastructure_svn,
+        exclude_default_fragments=exclude_default_fragments,
+    )
 
 
 def load_policy_from_image_name(
-    image_names: List[str] or str, debug_mode: bool = False, disable_stdio: bool = False
+    image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -747,16 +857,29 @@ def load_policy_from_image_name(
     )
 
 
-def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
+def load_policy_from_str(
+    data: str,
+    debug_mode: bool = False,
+    disable_stdio: bool = False,
+    infrastructure_svn: str = None,
+    exclude_default_fragments: bool = False,
+) -> AciPolicy:
     """Utility function: generate policy object from given json string"""
     policy_input_json = os_util.load_json_from_str(data)
     containers = case_insensitive_dict_get(
         policy_input_json, config.ACI_FIELD_CONTAINERS
+    ) or []
+
+    version = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_VERSION
     )
+
+    if not version:
+        policy_input_json[config.ACI_FIELD_VERSION] = "1.0"
 
     rego_fragments = case_insensitive_dict_get(
         policy_input_json, config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS
-    )
+    ) or []
 
     if rego_fragments:
         if not isinstance(rego_fragments, list):
@@ -780,7 +903,7 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
 
             iss = case_insensitive_dict_get(
                 fragment, config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_ISS
-            )
+            ) or case_insensitive_dict_get(fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER)
             if not isinstance(iss, str):
                 eprint(
                     f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
@@ -791,7 +914,7 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
 
             minimum_svn = case_insensitive_dict_get(
                 fragment, config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_MINIMUM_SVN
-            )
+            ) or case_insensitive_dict_get(fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN)
             if not isinstance(minimum_svn, str):
                 eprint(
                     f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
@@ -811,13 +934,17 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
                     + "can only be a list."
                 )
 
-    if not containers:
-        eprint(f'Field ["{config.ACI_FIELD_CONTAINERS}"] is empty or can not be found.')
+    if not containers and not rego_fragments:
+        eprint(
+            f'Field ["{config.ACI_FIELD_CONTAINERS}"]' +
+            f' and field ["{config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS}"] can not both be empty.'
+        )
 
     for container in containers:
+        image_properties = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_PROPERTIES)
         image_name = case_insensitive_dict_get(
             container, config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE
-        )
+        ) or case_insensitive_dict_get(image_properties, config.ACI_FIELD_TEMPLATE_IMAGE)
 
         container_name = case_insensitive_dict_get(
             container, config.ACI_FIELD_CONTAINERS_NAME
@@ -838,9 +965,42 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
         )
         container[config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES] = []
 
+        if image_properties:
+            exec_processes = []
+            extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
+            extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
+            container[config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE] = image_name
+            container[config.ACI_FIELD_CONTAINERS_ENVS] = process_env_vars_from_config(image_properties)
+            container[config.ACI_FIELD_CONTAINERS_COMMAND] = case_insensitive_dict_get(
+                image_properties, config.ACI_FIELD_TEMPLATE_COMMAND
+            ) or []
+            container[config.ACI_FIELD_CONTAINERS_MOUNTS] = (
+                process_mounts_from_config(image_properties) +
+                process_configmap(image_properties)
+            )
+            container[config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES] = (
+                exec_processes +
+                config.DEBUG_MODE_SETTINGS.get("execProcesses")
+                if debug_mode else exec_processes
+            )
+            container[config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = not disable_stdio
+            container[config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT] = case_insensitive_dict_get(
+                image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+            )
+
+    if not exclude_default_fragments:
+        rego_fragments.extend(copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS))
+
+    if infrastructure_svn:
+        # assumes the first DEFAULT_REGO_FRAGMENT is always the
+        # infrastructure fragment
+        rego_fragments[0][
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
+        ] = infrastructure_svn
+
     return AciPolicy(
         policy_input_json,
-        rego_fragments=rego_fragments or config.DEFAULT_REGO_FRAGMENTS,
+        rego_fragments=rego_fragments,
         debug_mode=debug_mode,
     )
 
@@ -849,22 +1009,26 @@ def load_policy_from_virtual_node_yaml_file(
         virtual_node_yaml_path: str,
         debug_mode: bool = False,
         disable_stdio: bool = False,
-        approve_wildcards: bool = False
+        approve_wildcards: bool = False,
+        diff_mode: bool = False,
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
         yaml_contents_str,
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
-        approve_wildcards=approve_wildcards
+        approve_wildcards=approve_wildcards,
+        diff_mode=diff_mode,
     )
 
 
+# pylint: disable=R0912
 def load_policy_from_virtual_node_yaml_str(
         yaml_contents_str: List[str],
         debug_mode: bool = False,
         disable_stdio: bool = False,
-        approve_wildcards: bool = False
+        approve_wildcards: bool = False,
+        diff_mode: bool = False,
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -889,14 +1053,26 @@ def load_policy_from_virtual_node_yaml_str(
     yaml_contents = filter_non_pod_resources(yaml_contents)
     for yaml in yaml_contents:
         # extract existing policy and fragments for diff mode
-        metadata = case_insensitive_dict_get(yaml, "metadata")
+        metadata = case_insensitive_dict_get(yaml, config.VIRTUAL_NODE_YAML_METADATA)
         annotations = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_ANNOTATIONS)
+        labels = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_LABELS) or []
+        use_workload_identity = (
+            config.VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY in labels
+            and labels.get(config.VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY) == "true")
         existing_policy = case_insensitive_dict_get(annotations, config.VIRTUAL_NODE_YAML_POLICY)
-        if existing_policy:
-            (existing_containers, existing_fragments) = decompose_confidential_properties(existing_policy)
-
+        try:
+            if existing_policy:
+                existing_containers, existing_fragments = decompose_confidential_properties(existing_policy)
+        except ValueError as e:
+            if diff_mode:
+                # In diff mode, we raise an error if the base64 policy is malformed
+                eprint(f"Unable to decode existing policy. Please check the base64 encoding.\n{e}")
+            else:
+                # In non-diff mode, we ignore the error and proceed without the policy
+                existing_containers, existing_fragments = ([], [])
         # because there are many ways to get pod information, we normalize them so the interface is the same
         normalized_yaml = convert_to_pod_spec(yaml)
+        volume_claim_templates = get_volume_claim_templates(yaml)
 
         spec = case_insensitive_dict_get(normalized_yaml, "spec")
         if not spec:
@@ -906,17 +1082,17 @@ def load_policy_from_virtual_node_yaml_str(
         pod_security_context = case_insensitive_dict_get(spec, "securityContext") or {}
 
         policy_containers = []
-        containers = case_insensitive_dict_get(spec, "containers")
+        containers = case_insensitive_dict_get(spec, config.ACI_FIELD_TEMPLATE_CONTAINERS)
         if not containers:
             eprint("YAML file does not contain a containers field")
         # NOTE: initContainers are not treated differently in the security policy
         # but they are treated differently in the pod spec
         # e.g. lifecycle and probes are not supported in initContainers
-        init_containers = case_insensitive_dict_get(spec, "initContainers") or []
+        init_containers = case_insensitive_dict_get(spec, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS) or []
 
         for container in containers + init_containers:
             # image and name
-            image = case_insensitive_dict_get(container, "image")
+            image = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_IMAGE)
             if not image:
                 eprint("Container does not have an image field")
 
@@ -927,33 +1103,87 @@ def load_policy_from_virtual_node_yaml_str(
                 secrets_data,
                 approve_wildcards=approve_wildcards
             )
+            if use_workload_identity:
+                envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
 
             # command
-            command = case_insensitive_dict_get(container, "command") or []
+            command = case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_COMMAND) or []
             args = case_insensitive_dict_get(container, "args") or []
 
             # mounts
             mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
             volumes = case_insensitive_dict_get(spec, "volumes") or []
-            configmap_volume_names = [
-                case_insensitive_dict_get(volume, "name") if "configmap" in volume else None for volume in volumes
-            ]
+
+            # there can be implicit volumes from volumeClaimTemplates
+            # We need to add them to the list of volumes and note if they are readonly
+            for volume_claim_template in volume_claim_templates:
+                vct_metadata = case_insensitive_dict_get(volume_claim_template, config.VIRTUAL_NODE_YAML_METADATA)
+                temp_volume = {
+                    config.VIRTUAL_NODE_YAML_NAME:
+                    case_insensitive_dict_get(vct_metadata, config.VIRTUAL_NODE_YAML_NAME),
+                }
+                vct_spec = case_insensitive_dict_get(volume_claim_template, "spec")
+                if vct_spec:
+                    vct_access_modes = case_insensitive_dict_get(vct_spec, "accessModes")
+                    if vct_access_modes and config.VIRTUAL_NODE_YAML_READ_ONLY_MANY in vct_access_modes:
+                        temp_volume[config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY] = True
+
+                volumes.append(temp_volume)
+
+            # set of volume types that are read-only by default
+            read_only_types = {"configMap", "secret", "downwardAPI", "projected"}
+
             volume_mounts = case_insensitive_dict_get(container, "volumeMounts")
             if volume_mounts:
                 for mount in volume_mounts:
+                    mount_name = case_insensitive_dict_get(mount, config.VIRTUAL_NODE_YAML_NAME)
+                    mount_path = case_insensitive_dict_get(mount, "mountPath")
+
+                    # find the corresponding volume
+                    volume = next(
+                        (
+                            vol for vol in volumes if case_insensitive_dict_get(
+                                vol, config.VIRTUAL_NODE_YAML_NAME
+                            ) == mount_name
+                        ),
+                        None
+                    ) or {}
+
+                    # determine if this volume is one of the read-only types
+                    read_only_default = (
+                        any(key in read_only_types for key in volume.keys()) or
+                        volume.get(config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY)
+                    )
+
+                    if read_only_default:
+                        # log warning if readOnly is explicitly set to false for a read-only volume type
+                        if case_insensitive_dict_get(mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY) is False:
+                            logger.warning(
+                                "Volume '%s' in container '%s' is of a type that requires readOnly access (%s), "
+                                "but readOnly: false was specified. Enforcing readOnly: true for policy generation.",
+                                mount_name,
+                                case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_NAME),
+                                ', '.join(read_only_types)
+                            )
+                        mount_readonly = True
+                    else:
+                        # use the readOnly field or default to False for non-read-only volumes
+                        mount_readonly = case_insensitive_dict_get(
+                            mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY
+                        ) or False
+
                     mounts.append({
                         config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: config.ACI_FIELD_YAML_MOUNT_TYPE,
-                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: case_insensitive_dict_get(mount, "mountPath"),
-                        config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY:
-                            case_insensitive_dict_get(mount, "name") in configmap_volume_names or
-                            case_insensitive_dict_get(mount, "readOnly") or
-                            False,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: mount_path,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: mount_readonly,
                     })
 
             # container security context
-            container_security_context = case_insensitive_dict_get(container, "securityContext") or {}
+            container_security_context = case_insensitive_dict_get(
+                container, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+            ) or {}
 
-            if case_insensitive_dict_get(container_security_context, "privileged") is True:
+            if case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED) is True:
                 mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
 
             # security context
@@ -973,7 +1203,8 @@ def load_policy_from_virtual_node_yaml_str(
             policy_containers.append(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image,
-                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(container, "name") or image,
+                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(
+                        container, config.VIRTUAL_NODE_YAML_NAME) or image,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image,
                     config.ACI_FIELD_CONTAINERS_ENVS: envs,
                     config.ACI_FIELD_CONTAINERS_COMMAND: command + args,
@@ -1002,3 +1233,81 @@ def load_policy_from_virtual_node_yaml_str(
             )
         )
     return all_policies
+
+
+def load_policy_from_config_file(config_file, debug_mode: bool = False, disable_stdio: bool = False):
+    config_content = os_util.load_str_from_file(config_file)
+    return load_policy_from_config_str(config_content, debug_mode, disable_stdio)
+
+
+# Used for generating policy fragments
+def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_stdio: bool = False):
+    config_dict = os_util.load_json_from_str(config_str)
+    containers = []
+
+    rego_fragments = case_insensitive_dict_get(
+        config_dict, config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS
+    )
+
+    container_list = case_insensitive_dict_get(
+        config_dict, config.ACI_FIELD_CONTAINERS
+    )
+
+    for container in container_list:
+        container_name = case_insensitive_dict_get(
+            container, config.ACI_FIELD_CONTAINERS_NAME
+        )
+        if not container_name:
+            eprint(f'Field ["{config.ACI_FIELD_CONTAINERS_NAME}"] is empty or cannot be found')
+
+        container_properties = case_insensitive_dict_get(
+            container, config.ACI_FIELD_TEMPLATE_PROPERTIES
+        )
+
+        image_name = case_insensitive_dict_get(
+            container_properties, config.ACI_FIELD_TEMPLATE_IMAGE
+        )
+
+        if not image_name:
+            eprint(
+                f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
+            )
+
+        exec_processes = []
+        extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
+        extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
+
+        containers.append(
+            {
+                config.ACI_FIELD_CONTAINERS_ID: image_name,
+                config.ACI_FIELD_CONTAINERS_NAME: container_name,
+                config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image_name,
+                config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_config(
+                    container_properties
+                ),
+                config.ACI_FIELD_CONTAINERS_COMMAND: case_insensitive_dict_get(
+                    container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
+                )
+                or [],
+                config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts_from_config(container_properties),
+                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
+                + config.DEBUG_MODE_SETTINGS.get("execProcesses")
+                if debug_mode
+                else exec_processes,
+                config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
+                config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
+                config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
+                    container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+                ),
+            }
+        )
+
+    return AciPolicy(
+        {
+            config.ACI_FIELD_VERSION: "1.0",
+            config.ACI_FIELD_CONTAINERS: containers,
+        },
+        disable_stdio=disable_stdio,
+        rego_fragments=rego_fragments,
+        debug_mode=debug_mode,
+    )

@@ -433,8 +433,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         ):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()
-            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                # outbound_type of Automatic SKU should be ManagedNATGateway if not provided.
+            isVnetSubnetIdEmpty = self.get_vnet_subnet_id() in ["", None]
+            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and isVnetSubnetIdEmpty:
+                # outbound_type of Automatic SKU should be ManagedNATGateway if no subnet id provided.
                 outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
         # validation
@@ -709,104 +710,55 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_advanced_network_observability(self) -> Optional[bool]:
-        """Get the value of enable_advanced_network_observability
-
-        :return: bool or None
-        """
-        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
-        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
-        if enable_advanced_network_observability and disable_advanced_network_observability:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-advanced-network-observability and "
-                "--disable-advanced-network-observability at the same time."
-            )
-        if enable_advanced_network_observability is False and disable_advanced_network_observability is False:
-            return None
-        if enable_advanced_network_observability is not None:
-            return enable_advanced_network_observability
-        if disable_advanced_network_observability is not None:
-            return not disable_advanced_network_observability
-        return None
-
-    def get_advanced_networking_observability_tls_management(self) -> Union[str, None]:
-        """Obtain the value of advanced_networking_observability_tls_management.
-
-        :return str or None
-        """
-        tls_management = self.raw_param.get("advanced_networking_observability_tls_management")
-        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
-        enable_acns = self.raw_param.get("enable_acns")
-        if tls_management is not None:
-            if (
-                self.mc and
-                self.mc.network_profile is not None and
-                self.mc.network_profile.advanced_networking is not None and
-                self.mc.network_profile.advanced_networking.observability is not None and
-                self.mc.network_profile.advanced_networking.observability.enabled
-            ):
-                return tls_management
-            if enable_advanced_network_observability or enable_acns:
-                return tls_management
-            raise ArgumentUsageError(
-                "Cannot set --tls-management without enabling advanced network observability"
-                "(--enable-advanced-network-observability or --enable-acns)."
-            )
-        return tls_management
-
-    def get_enable_fqdn_policy(self) -> Optional[bool]:
-        """Get the value of enable_fqdn_policy
-
-        :return: bool or None
-        """
-        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
-        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
-        if enable_fqdn_policy and disable_fqdn_policy:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-fqdn-policy and "
-                "--disable-fqdn-policy at the same time."
-            )
-        if enable_fqdn_policy is False and disable_fqdn_policy is False:
-            return None
-        if enable_fqdn_policy is not None:
-            return enable_fqdn_policy
-        if disable_fqdn_policy is not None:
-            return not disable_fqdn_policy
-        return None
-
-    def get_enable_acns(self) -> Optional[bool]:
-        """Get the value of enable_acns
-
-        :return: bool or None
+    def get_acns_enablement(self) -> Tuple[
+        Union[bool, None],
+        Union[bool, None],
+        Union[bool, None],
+    ]:
+        """Get the enablement of acns
+        :return: Tuple of 3 elements which can be bool or None
         """
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
-        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
-        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
-        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
-        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
-
+        if enable_acns is None and disable_acns is None:
+            return None, None, None
         if enable_acns and disable_acns:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-acns and "
                 "--disable-acns at the same time."
             )
-        if enable_acns and (disable_advanced_network_observability or disable_fqdn_policy):
+        enable_acns = bool(enable_acns) if enable_acns is not None else False
+        disable_acns = bool(disable_acns) if disable_acns is not None else False
+        acns = enable_acns or not disable_acns
+        acns_observability = self.get_acns_observability()
+        acns_security = self.get_acns_security()
+        if acns and (acns_observability is False and acns_security is False):
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns and "
-                "--disable-advanced-networking-observability or --disable-fqdn-policy at the same time."
+                "Cannot disable both observability and security when enabling ACNS. "
+                "Please enable at least one of them or disable ACNS with --disable-acns."
             )
-        if disable_acns and (enable_advanced_network_observability or enable_fqdn_policy):
+        if not acns and (acns_observability is not None or acns_security is not None):
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --disable-acns and "
-                "--enable-advanced-networking-observability or --enable-fqdn-policy at the same time."
+                "--disable-acns does not use any additional acns arguments."
             )
-        if enable_acns is False and disable_acns is False:
-            return None
-        if enable_acns is not None:
-            return enable_acns
-        if disable_acns is not None:
-            return not disable_acns
+        return acns, acns_observability, acns_security
+
+    def get_acns_observability(self) -> Union[bool, None]:
+        """Get the enablement of acns observability
+
+        :return: bool or None"""
+        disable_acns_observability = self.raw_param.get("disable_acns_observability")
+        if disable_acns_observability is not None:
+            return not disable_acns_observability
+        return None
+
+    def get_acns_security(self) -> Union[bool, None]:
+        """Get the enablement of acns security
+
+        :return: bool or None"""
+        disable_acns_security = self.raw_param.get("disable_acns_security")
+        if disable_acns_security is not None:
+            return not disable_acns_security
         return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
@@ -1474,6 +1426,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     enable_apiserver_vnet_integration is None or
                     enable_apiserver_vnet_integration is False
                 )
+                and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC
             ):
                 raise RequiredArgumentMissingError(
                     '"--apiserver-subnet-id" requires "--enable-apiserver-vnet-integration".')
@@ -2435,6 +2388,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.components.egress_gateways.append(
                     self.models.IstioEgressGateway(  # pylint: disable=no-member
                         enabled=enable_egress_gateway,
+                        name="fake-name",  # TODO: temp fix when bump new SDK
                     )
                 )
                 updated = True
@@ -2590,72 +2544,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         support_plan = self.raw_param.get("k8s_support_plan")
         return support_plan
 
-    def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of uptime_sla.
-
-        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
-        the dependency on core cli to 2.47.0.
-
-        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
-        specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        uptime_sla = self.raw_param.get("uptime_sla")
-
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.sku and
-                self.mc.sku.tier is not None
-            ):
-                uptime_sla = self.mc.sku.tier == "Standard"
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if uptime_sla and self._get_no_uptime_sla(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
-                )
-
-            if uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
-                )
-
-        return uptime_sla
-
-    def _get_no_uptime_sla(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of no_uptime_sla.
-
-        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
-        the dependency on core cli to 2.47.0.
-
-        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
-        specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        no_uptime_sla = self.raw_param.get("no_uptime_sla")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if no_uptime_sla and self._get_uptime_sla(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
-                )
-
-            if no_uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
-                )
-
-        return no_uptime_sla
-
     def get_tier(self) -> str:
         """Obtain the value of tier.
 
@@ -2667,18 +2555,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if not tier:
             return ""
 
-        tierStr = tier.lower()
-        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_FREE and self._get_uptime_sla(enable_validation=False):
-            raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
-            )
-
-        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD and self._get_no_uptime_sla(enable_validation=False):
-            raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
-            )
-
-        return tierStr
+        return tier.lower()
 
     def get_k8s_support_plan(self) -> Union[str, None]:
         """Obtain the value of kubernetes_support_plan.
@@ -3017,44 +2894,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        acns = self.context.get_enable_acns()
-        if acns is not None:
-            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=acns
-                ),
-                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                        enabled=acns
-                    )
-                )
+        acns = None
+        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        if acns_enabled is not None:
+            acns = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
             )
-            tls_management = self.context.get_advanced_networking_observability_tls_management()
-            if tls_management is not None:
-                network_profile.advanced_networking.observability.tls_management = tls_management
-
-        advanced_network_observability = self.context.get_enable_advanced_network_observability()
-        if advanced_network_observability is not None:
-            if network_profile.advanced_networking is None:
-                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+            if acns_observability_enabled is not None:
+                acns.observability = self.models.AdvancedNetworkingObservability(
+                    enabled=acns_observability_enabled,
                 )
-            network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                enabled=advanced_network_observability
-            )
-            tls_management = self.context.get_advanced_networking_observability_tls_management()
-            if tls_management is not None:
-                network_profile.advanced_networking.observability.tls_management = tls_management
-
-        fqdn_policy = self.context.get_enable_fqdn_policy()
-        if fqdn_policy is not None:
-            if network_profile.advanced_networking is None:
-                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+            if acns_security_enabled is not None:
+                acns.security = self.models.AdvancedNetworkingSecurity(
+                    enabled=acns_security_enabled,
                 )
-            network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                    enabled=fqdn_policy
-                )
-            )
+            network_profile.advanced_networking = acns
 
         return mc
 
@@ -3072,6 +2926,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
+            if mc.api_server_access_profile is None:
+                # pylint: disable=no-member
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
         return mc
@@ -3364,7 +3221,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
-    def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
+    def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:  # pylint: disable=too-many-locals
         """Set up azure container storage for the Managed Cluster object
         :return: ManagedCluster
         """
@@ -3395,16 +3252,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if not mc.agent_pool_profiles:
                 raise UnknownError("Encountered an unexpected error while getting the agent pools from the cluster.")
             agentpool = mc.agent_pool_profiles[0]
-            agentpool_details = []
+            agentpool_details = {}
             pool_details = {}
-            pool_details["name"] = agentpool.name
             pool_details["vm_size"] = agentpool.vm_size
             pool_details["count"] = agentpool.count
             pool_details["os_type"] = agentpool.os_type
             pool_details["mode"] = agentpool.mode
             pool_details["node_taints"] = agentpool.node_taints
             pool_details["zoned"] = agentpool.availability_zones is not None
-            agentpool_details.append(pool_details)
+            agentpool_details[agentpool.name] = pool_details
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
             nodepool_list = agentpool.name
@@ -3418,6 +3274,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
                 CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
             )
+
+            vm_cache_generated = self.context.get_intermediate(
+                "vm_cache_generated",
+                default_value=False,
+            )
+
+            if not vm_cache_generated:
+                from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
             default_ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
             default_ephemeral_disk_nvme_perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
@@ -3521,7 +3387,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # passive Kind should always match sku.name
             mc.kind = "Base"
 
-        if self.context.get_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku.tier = "Standard"
         if tier == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku.tier = "Premium"
@@ -4107,75 +3973,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_advanced_networking_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update the advanced network observability model of network profile for the ManagedCluster object.
+    def update_acns_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update acns of network profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
-        advanced_network_observability = self.context.get_enable_advanced_network_observability()
-        if advanced_network_observability is not None:
-            if mc.network_profile.advanced_networking is None:
-                mc.network_profile.advanced_networking = self.models.AdvancedNetworking()  # pylint: disable=no-member
-            if mc.network_profile.advanced_networking.observability is None:
-                mc.network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability()  # pylint: disable=no-member
-            mc.network_profile.advanced_networking.observability.enabled = advanced_network_observability
-        tls_management = self.context.get_advanced_networking_observability_tls_management()
-        if (
-            mc.network_profile.advanced_networking is not None and
-            mc.network_profile.advanced_networking.observability is not None and
-            tls_management is not None
-        ):
-            mc.network_profile.advanced_networking.observability.tls_management = tls_management
-        return mc
-
-    def update_enable_fqdn_policy_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable fqdn policy of network profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        fqdn_policy = self.context.get_enable_fqdn_policy()
-        if fqdn_policy is not None:
-            if mc.network_profile.advanced_networking is None:
-                mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                )
-            mc.network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                    enabled=fqdn_policy
-                )
+        acns = None
+        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        if acns_enabled is not None:
+            acns = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
             )
-        return mc
-
-    def update_enable_acns_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable fqdn policy of network profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        acns = self.context.get_enable_acns()
-        if acns is not None:
-            # Override anything previously set
-            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=acns
-                ),
-                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                        enabled=acns
-                    )
+            if acns_observability_enabled is not None:
+                acns.observability = self.models.AdvancedNetworkingObservability(
+                    enabled=acns_observability_enabled,
                 )
-            )
-            tls_management = self.context.get_advanced_networking_observability_tls_management()
-            if (
-                mc.network_profile.advanced_networking is not None and
-                mc.network_profile.advanced_networking.observability is not None and
-                tls_management is not None
-            ):
-                mc.network_profile.advanced_networking.observability.tls_management = tls_management
+            if acns_security_enabled is not None:
+                acns.security = self.models.AdvancedNetworkingSecurity(
+                    enabled=acns_security_enabled,
+                )
+            mc.network_profile.advanced_networking = acns
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -4220,27 +4039,45 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     "Encounter an unexpected error while getting agent pool profiles from the cluster "
                     "in the process of updating agentpool profile."
                 )
-            pool_name = self.context.raw_param.get("storage_pool_name")
+            storagepool_name = self.context.raw_param.get("storage_pool_name")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
-            agentpool_details = []
+            agentpool_details = {}
             from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
-            (
-                is_extension_installed,
-                is_azureDisk_enabled,
-                is_elasticSan_enabled,
-                is_ephemeralDisk_localssd_enabled,
-                is_ephemeralDisk_nvme_enabled,
-                current_core_value,
-                existing_ephemeral_disk_volume_type,
-                existing_perf_tier,
-            ) = get_extension_installed_and_cluster_configs(
-                self.cmd,
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-                mc.agent_pool_profiles,
+            
+            try:
+                (
+                    is_extension_installed,
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                    current_core_value,
+                    existing_ephemeral_disk_volume_type,
+                    existing_perf_tier,
+                ) = get_extension_installed_and_cluster_configs(
+                    self.cmd,
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    mc.agent_pool_profiles,
+                )
+            except UnknownError as e:
+                logger.error(f"\nError fetching installed extension and cluster config: {e}")
+                return mc
+            except Exception as ex:
+                logger.error(f"\Exception fetching installed extension and cluster config: {ex}")
+                return mc
+
+            vm_cache_generated = self.context.get_intermediate(
+                "vm_cache_generated",
+                default_value=False,
             )
+
+            if not vm_cache_generated:
+                from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
             if enable_azure_container_storage:
                 from azext_aks_preview.azurecontainerstorage._consts import (
@@ -4250,10 +4087,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 labelled_nodepool_arr = []
                 for agentpool in mc.agent_pool_profiles:
                     pool_details = {}
+                    nodepool_name = agentpool.name
                     pool_details["vm_size"] = agentpool.vm_size
                     pool_details["count"] = agentpool.count
-                    node_name = agentpool.name
-                    pool_details["name"] = node_name
                     pool_details["os_type"] = agentpool.os_type
                     pool_details["mode"] = agentpool.mode
                     pool_details["node_taints"] = agentpool.node_taints
@@ -4262,10 +4098,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         node_labels = agentpool.node_labels
                         if node_labels is not None and \
                            node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
-                           node_name is not None:
-                            labelled_nodepool_arr.append(node_name)
+                           nodepool_name is not None:
+                            labelled_nodepool_arr.append(nodepool_name)
                         pool_details["node_labels"] = node_labels
-                    agentpool_details.append(pool_details)
+                    agentpool_details[nodepool_name] = pool_details
 
                 # Incase of a new installation, if the nodepool list is not defined
                 # then check for all the nodepools which are marked with acstor io-engine
@@ -4278,15 +4114,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         if len(labelled_nodepool_arr) > 0:
                             nodepool_list = ','.join(labelled_nodepool_arr)
                         elif len(agentpool_details) == 1:
-                            pool_detail = agentpool_details[0]
-                            nodepool_list = pool_detail.get("name")
+                            nodepool_list = ','.join(agentpool_details.keys())
 
                 from azext_aks_preview.azurecontainerstorage._validators import (
                     validate_enable_azure_container_storage_params
                 )
                 validate_enable_azure_container_storage_params(
                     enable_pool_type,
-                    pool_name,
+                    storagepool_name,
                     pool_sku,
                     pool_option,
                     pool_size,
@@ -4360,7 +4195,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
                 validate_disable_azure_container_storage_params(
                     disable_pool_type,
-                    pool_name,
+                    storagepool_name,
                     pool_sku,
                     pool_option,
                     pool_size,
@@ -5004,9 +4839,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Premium without LTS is ok (not vice versa)
         if tier == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku.tier = "Premium"
-        if self.context.get_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku.tier = "Standard"
-        if self.context.get_no_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
             mc.sku.tier = "Free"
         # backfill the tier to "Free" if it's not set
         if mc.sku.tier is None:
@@ -5417,12 +5252,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
-        # update advanced_networking_observability in network_profile
-        mc = self.update_advanced_networking_observability_in_network_profile(mc)
-        # update fqdn policy in network_profile
-        mc = self.update_enable_fqdn_policy_in_network_profile(mc)
         # update acns in network_profile
-        mc = self.update_enable_acns_in_network_profile(mc)
+        mc = self.update_acns_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator

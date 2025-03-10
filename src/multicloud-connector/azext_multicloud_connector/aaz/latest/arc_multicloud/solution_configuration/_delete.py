@@ -18,6 +18,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a SolutionConfiguration
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: SolutionConfigurations_Delete
         az arc-multicloud solution-configuration delete --connector-id  /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig
     """

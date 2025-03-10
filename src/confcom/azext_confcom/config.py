@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azext_confcom import os_util
+from azext_confcom.os_util import load_json_from_file, load_str_from_file
 
 # input json values
 ACI_FIELD_VERSION = "version"
@@ -78,13 +78,18 @@ ACI_FIELD_SUPPORTED_RESOURCES = [
     ACI_FIELD_TEMPLATE_RESOURCE_LABEL,
     ACI_FIELD_TEMPLATE_RESOURCE_PROFILE_LABEL
 ]
+ACI_FIELD_TEMPLATE_TAGS = "tags"
+ACI_FIELD_TEMPLATE_ZERO_SIDECAR = "Annotate-zero-sidecar"
 ACI_FIELD_YAML_MOUNT_TYPE = "emptyDir"
 ACI_FIELD_YAML_LIVENESS_PROBE = "livenessProbe"
 ACI_FIELD_YAML_READINESS_PROBE = "readinessProbe"
 ACI_FIELD_YAML_STARTUP_PROBE = "startupProbe"
 VIRTUAL_NODE_YAML_METADATA = "metadata"
+VIRTUAL_NODE_YAML_COMMAND = "command"
 VIRTUAL_NODE_YAML_NAME = "name"
 VIRTUAL_NODE_YAML_ANNOTATIONS = "annotations"
+VIRTUAL_NODE_YAML_LABELS = "labels"
+VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY = "azure.workload.identity/use"
 VIRTUAL_NODE_YAML_POLICY = "microsoft.containerinstance.virtualnode.ccepolicy"
 VIRTUAL_NODE_YAML_LIFECYCLE = "lifecycle"
 VIRTUAL_NODE_YAML_LIFECYCLE_POST_START = "postStart"
@@ -99,6 +104,7 @@ VIRTUAL_NODE_YAML_RESOURCES_MEMORY = "memory"
 VIRTUAL_NODE_YAML_RESOURCES_HUGEPAGES = "hugepages"
 VIRTUAL_NODE_YAML_RESOURCES_EPHEMERAL_STORAGE = "ephemeral-storage"
 VIRTUAL_NODE_YAML_SPECIAL_ENV_VAR_REGEX = "^===VIRTUALNODE2.CC.THIM.(.+)===$"
+VIRTUAL_NODE_YAML_READ_ONLY_MANY = "ReadOnlyMany"
 
 # output json values
 POLICY_FIELD_CONTAINERS = "containers"
@@ -142,11 +148,15 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256 = "seccomp_profile_sha25
 POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS = "allow_stdio_access"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS = "fragments"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED = "feed"
+POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_PATH = "path"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISS = "iss"
+POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER = "issuer"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN = "minimum_svn"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES = "includes"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION = "/mnt/configmap"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE = "emptyDir"
+REGO_CONTAINER_START = "containers := "
+REGO_FRAGMENT_START = "fragments := "
 
 
 CONFIG_FILE = "./data/internal_config.json"
@@ -154,7 +164,7 @@ CONFIG_FILE = "./data/internal_config.json"
 script_directory = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE_PATH = f"{script_directory}/{CONFIG_FILE}"
 
-_config = os_util.load_json_from_file(CONFIG_FILE_PATH)
+_config = load_json_from_file(CONFIG_FILE_PATH)
 DEFAULT_WORKING_DIR = _config["containerd"]["defaultWorkingDir"]
 
 MOUNT_SOURCE_TABLE = {}
@@ -171,6 +181,8 @@ FABRIC_ENV_RULES = _config["fabric"]["environmentVariables"]
 MANAGED_IDENTITY_ENV_RULES = _config["managedIdentity"]["environmentVariables"]
 # VN2 environment variables
 VIRTUAL_NODE_ENV_RULES = _config["default_envs_virtual_node"]["environmentVariables"]
+# VN2 environment variables for workload identities
+VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY = _config["workload_identity_virtual_node"]["environmentVariables"]
 # Enable container restart environment variable for all containers
 ENABLE_RESTART_ENV_RULE = _config["enableRestart"]["environmentVariables"]
 # default mounts image for customer containers
@@ -185,15 +197,27 @@ DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
+# reserved fragment names for existing pieces of Rego
+RESERVED_FRAGMENT_NAMES = _config["reserved_fragment_namespaces"]
+# fragment artifact type
+ARTIFACT_TYPE = "application/x-ms-ccepolicy-frag"
 # customer rego file for data to be injected
 REGO_FILE = "./data/customer_rego_policy.txt"
+REGO_FRAGMENT_FILE = "./data/customer_rego_fragment.txt"
 script_directory = os.path.dirname(os.path.realpath(__file__))
 REGO_FILE_PATH = f"{script_directory}/{REGO_FILE}"
-CUSTOMER_REGO_POLICY = os_util.load_str_from_file(REGO_FILE_PATH)
+REGO_FRAGMENT_FILE_PATH = f"{script_directory}/{REGO_FRAGMENT_FILE}"
+REGO_IMPORT_FILE_STRUCTURE = """
+{
+    "fragments": []
+}
+"""
+CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
+CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"
 SIDECAR_REGO_FILE_PATH = f"{script_directory}/{SIDECAR_REGO_FILE}"
-SIDECAR_REGO_POLICY = os_util.load_str_from_file(SIDECAR_REGO_FILE_PATH)
+SIDECAR_REGO_POLICY = load_str_from_file(SIDECAR_REGO_FILE_PATH)
 # data folder
 DATA_FOLDER = os.path.join(script_directory, "data")
 
@@ -243,3 +267,13 @@ SIGNALS = {
     "SIGSYS": 31,
     "SIGUNUSED": 31
 }
+# these algorithms are the only supported ones in https://github.com/veraison/go-cose/blob/main/algorithm.go
+SUPPORTED_ALGOS = [
+    "PS256",
+    "PS384",
+    "PS512",
+    "ES256",
+    "ES384",
+    "ES512",
+    "EdDSA",
+]

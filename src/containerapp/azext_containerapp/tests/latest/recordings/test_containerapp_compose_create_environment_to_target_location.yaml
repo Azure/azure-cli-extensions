@@ -2519,7 +2519,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_containerapp_preview000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestcontainerapppreviewy275/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"XELAKsjxptdVb49FABRyJtrU6EqgvF3M3O6oi+IFaQrUJbYAWuio6E5yFxo/gSBLwR5FImyudLWRgesZWLDs9g==","secondarySharedKey":"FSC6u0ouWD4S+CuArN/S6DLKwRdBpoq+CzriIK/DyOEGRBco8Teaoun/GxMm2b5xzxgit4Xw4rSGVB7B2QeK0A=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -2603,8 +2603,8 @@ interactions:
 - request:
     body: '{"location": "eastus", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "62606495-b68f-49ce-8f5a-b13e968f7715",
-      "sharedKey": "XELAKsjxptdVb49FABRyJtrU6EqgvF3M3O6oi+IFaQrUJbYAWuio6E5yFxo/gSBLwR5FImyudLWRgesZWLDs9g==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'

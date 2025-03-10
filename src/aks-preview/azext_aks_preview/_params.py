@@ -127,8 +127,6 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
 )
@@ -196,6 +194,7 @@ from azext_aks_preview._validators import (
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
+    validate_max_unavailable,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -417,11 +416,6 @@ app_routing_nginx_configs = [
     CONST_APP_ROUTING_NONE_NGINX
 ]
 
-tls_management_types = [
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
-]
-
 gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
@@ -563,13 +557,6 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--uptime-sla", redirect="--tier", hide=True
-            ),
-        )
-        c.argument(
             "sku", is_preview=True, arg_type=get_enum_type(sku_names)
         )
         c.argument(
@@ -589,18 +576,6 @@ def load_arguments(self, _):
         )
         c.argument("enable_aad", action="store_true")
         c.argument("enable_azure_rbac", action="store_true")
-        c.argument(
-            "aad_client_app_id",
-            deprecate_info=c.deprecate(target="--aad-client-app-id", hide=True),
-        )
-        c.argument(
-            "aad_server_app_id",
-            deprecate_info=c.deprecate(target="--aad-server-app-id", hide=True),
-        )
-        c.argument(
-            "aad_server_app_secret",
-            deprecate_info=c.deprecate(target="--aad-server-app-secret", hide=True),
-        )
         c.argument("aad_tenant_id")
         c.argument("aad_admin_group_object_ids")
         c.argument("enable_oidc_issuer", action="store_true")
@@ -837,25 +812,16 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "enable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            default=CONST_TLS_MANAGEMENT_MANAGED,
-            is_preview=True,
-        )
-        c.argument(
-            "enable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
             "enable_acns",
             action="store_true",
-            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_observability",
+            action="store_true",
+        )
+        c.argument(
+            "disable_acns_security",
+            action="store_true",
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -1069,20 +1035,6 @@ def load_arguments(self, _):
             help=(
                 "Space-separated list of key=value pairs for configuring cluster autoscaler. "
                 "Pass an empty string to clear the profile."
-            ),
-        )
-        c.argument(
-            "uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--uptime-sla", redirect="--tier", hide=True
-            ),
-        )
-        c.argument(
-            "no_uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--no-uptime-sla", redirect="--tier", hide=True
             ),
         )
         c.argument(
@@ -1334,39 +1286,20 @@ def load_arguments(self, _):
         c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
-            "enable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "disable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            is_preview=True,
-        )
-        c.argument(
-            "enable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "disable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
             "enable_acns",
             action="store_true",
-            is_preview=True,
         )
         c.argument(
             "disable_acns",
             action="store_true",
-            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_observability",
+            action="store_true",
+        )
+        c.argument(
+            "disable_acns_security",
+            action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")
@@ -1537,6 +1470,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1655,6 +1589,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1725,6 +1660,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
@@ -2269,11 +2205,6 @@ def load_arguments(self, _):
         )
         c.argument(
             "source_resource_id",
-            options_list=[
-                "--source-resource-id",
-                c.deprecate(target="-s", redirect="--source-resource-id", hide=True),
-                c.deprecate(target="-r", redirect="--source-resource-id", hide=True),
-            ],
             help="The source resource id of the binding",
         )
 

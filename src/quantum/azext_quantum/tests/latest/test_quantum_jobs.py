@@ -10,20 +10,28 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _parse_blob_url, _validate_max_poll_wait_secs, _convert_numeric_params
+from ...operations.job import (
+    _parse_blob_url,
+    _validate_max_poll_wait_secs,
+    _convert_numeric_params,
+    _construct_filter_query,
+    _construct_orderby_expression,
+    ERROR_MSG_INVALID_ORDER_ARGUMENT,
+    ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
 
+    @live_only()
     def test_jobs(self):
         # set current workspace:
         self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
@@ -48,10 +56,10 @@ class QuantumJobsScenarioTest(ScenarioTest):
         url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
         args = _parse_blob_url(url)
 
-        self.assertEquals(args['account_name'], "accountname")
-        self.assertEquals(args['container'], "containername")
-        self.assertEquals(args['blob'], "rawOutputData")
-        self.assertEquals(args['sas_token'], sas)
+        self.assertEqual(args['account_name'], "accountname")
+        self.assertEqual(args['container'], "containername")
+        self.assertEqual(args['blob'], "rawOutputData")
+        self.assertEqual(args['sas_token'], sas)
 
     def test_transform_output(self):
         # Call with a good histogram
@@ -60,12 +68,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
         table_row = table[0]
         hist_row = table_row['']
         second_char = hist_row[1]
-        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here
+        self.assertEqual(second_char, "\u2588")    # Expecting a "Full Block" character here
 
         # Give it a malformed histogram
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
+        self.assertEqual(table, json.loads(test_job_results))    # No transform should be done if input param is bad
 
         # Call with output from a failed job
         test_job_results = \
@@ -101,12 +109,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
             }'
 
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table['Status'], "Failed")
-        self.assertEquals(table['Error Code'], "InsufficientResources")
-        self.assertEquals(table['Error Message'], "Too many qubits requested")
-        self.assertEquals(table['Target'], "ionq.simulator")
-        self.assertEquals(table['Job ID'], "11111111-2222-3333-4444-555555555555")
-        self.assertEquals(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
+        self.assertEqual(table['Status'], "Failed")
+        self.assertEqual(table['Error Code'], "InsufficientResources")
+        self.assertEqual(table['Error Message'], "Too many qubits requested")
+        self.assertEqual(table['Target'], "ionq.simulator")
+        self.assertEqual(table['Job ID'], "11111111-2222-3333-4444-555555555555")
+        self.assertEqual(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
 
         # Call with missing "status", "code", "message", "target", "id", and "creationTime"
         test_job_results = \
@@ -137,21 +145,21 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         table = transform_output(json.loads(test_job_results))
         notFound = "Not found"
-        self.assertEquals(table['Status'], notFound)
-        self.assertEquals(table['Error Code'], notFound)
-        self.assertEquals(table['Error Message'], notFound)
-        self.assertEquals(table['Target'], notFound)
-        self.assertEquals(table['Job ID'], notFound)
-        self.assertEquals(table['Submission Time'], notFound)
+        self.assertEqual(table['Status'], notFound)
+        self.assertEqual(table['Error Code'], notFound)
+        self.assertEqual(table['Error Message'], notFound)
+        self.assertEqual(table['Target'], notFound)
+        self.assertEqual(table['Job ID'], notFound)
+        self.assertEqual(table['Submission Time'], notFound)
 
     def test_validate_max_poll_wait_secs(self):
         wait_secs = _validate_max_poll_wait_secs(1)
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 1.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 1.0)
 
         wait_secs = _validate_max_poll_wait_secs("60")
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 60.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 60.0)
 
         # Invalid values should raise errors
         try:
@@ -198,7 +206,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,microsoft-qc/learn-and-develop"
+        test_provider_sku_list = "rigetti/azure-quantum-credits,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
@@ -211,6 +219,25 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # Run a Qiskit pass-through job on IonQ
         results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
+
+        # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
+        results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
+        self.assertIn("rigetti", str(results))
+
+        results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
+        self.assertIn("ionq.simulator", str(results))
+
+        results = str(self.cmd("az quantum job list --top 1 -o json").get_output_in_json())
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
+
+        results = str(self.cmd("az quantum job list --skip 1 -o json").get_output_in_json())
+        self.assertIn("ionq", results)
+        self.assertTrue("rigetti" not in results)
+
+        results = str(self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json())
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
@@ -257,3 +284,96 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertFalse(results["results"][0]["success"])
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+
+    def test_job_list_param_formating(self):
+        # Validate filter query formatting for each param
+        #
+        # Should return None if params are set to None
+        job_type = None
+        item_type = None
+        provider_id = None
+        target_id = None
+        job_status = None
+        created_after = None
+        created_before = None
+        job_name = None
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query is None
+
+        job_type = "QuantumComputing"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "JobType eq 'QuantumComputing'"
+        job_type = None
+
+        item_type = "job"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ItemType eq 'job'"
+        item_type = None
+
+        provider_id = "Microsoft"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ProviderId eq 'Microsoft'"
+        provider_id = None
+
+        target_id = "Awesome.Quantum.SuperComputer"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "Target eq 'Awesome.Quantum.SuperComputer'"
+        target_id = None
+
+        job_status = "Succeeded"        
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "State eq 'Succeeded'"
+        job_status = None        
+
+        created_after = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime ge 2025-01-27"
+        created_after = None
+
+        created_before = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime le 2025-01-27"
+        created_before = None
+
+        job_name = "TestJob"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "startswith(Name, 'TestJob')"
+        job_name = None
+
+
+        # Validate orderby expression formatting
+        # Should return None if params are set to None
+        orderby = None
+        order = None
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression is None
+
+        # Test valid params
+        orderby = "Target"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target"
+
+        order = "asc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target asc"
+
+        order = "desc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target desc"
+
+        # Test orderby/order errors
+        orderby = "Target"
+        order = "foo"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == ERROR_MSG_INVALID_ORDER_ARGUMENT
+
+        orderby = ""
+        order = "desc"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except RequiredArgumentMissingError as e:
+            assert str(e) == ERROR_MSG_MISSING_ORDERBY_ARGUMENT
