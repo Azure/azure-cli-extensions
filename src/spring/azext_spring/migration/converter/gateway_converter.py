@@ -28,7 +28,7 @@ class GatewayConverter(BaseConverter):
                 "routes": routes,
                 "gatewayName": "gateway",
                 "configurations": configurations,
-                "replicas": replicas,        
+                "replicas": replicas,
             }
         self.client = client
         self.resource_group = resource_group
