@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.4
+++++++++++++++++++
+* microsoft.azuremonitor.containers.metrics: Update default region for azure monitor metrics extension in mooncake
+
 1.6.3
 ++++++++++++++++++
 * Do not attempt to register Microsoft.Monitor and Microsoft.Dashboard resource providers if they are already registered.
