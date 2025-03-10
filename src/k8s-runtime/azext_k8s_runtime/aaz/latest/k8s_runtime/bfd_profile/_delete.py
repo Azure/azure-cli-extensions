@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "k8s-runtime load-balancer delete",
+    "k8s-runtime bfd-profile delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a LoadBalancer
+    """Delete a BfdProfile
 
-    :example: Delete a load balancer
-        az k8s-runtime load-balancer delete --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
+    :example: Delete a Bfd Profile
+        az k8s-runtime bfd-profile delete --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --bfd-profile-name testprofile
     """
 
     _aaz_info = {
         "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-08-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bfdprofiles/{}", "2024-08-01"],
         ]
     }
 
@@ -45,9 +45,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.load_balancer_name = AAZStrArg(
-            options=["--load-balancer-name"],
-            help="The name of the LoadBalancer",
+        _args_schema.bfd_profile_name = AAZStrArg(
+            options=["--bfd-profile-name"],
+            help="The name of the BfdProfile",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -62,7 +62,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LoadBalancersDelete(ctx=self.ctx)()
+        self.BfdProfilesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +73,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class LoadBalancersDelete(AAZHttpOperation):
+    class BfdProfilesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,7 +89,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/loadBalancers/{loadBalancerName}",
+                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bfdProfiles/{bfdProfileName}",
                 **self.url_parameters
             )
 
@@ -105,7 +105,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadBalancerName", self.ctx.args.load_balancer_name,
+                    "bfdProfileName", self.ctx.args.bfd_profile_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
