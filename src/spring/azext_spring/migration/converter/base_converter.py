@@ -53,7 +53,7 @@ class ConverterTemplate(ABC):
 
     def generate_output(self, data):
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        template_name = self.get_template_name()
+        template_name = self.get_template_name().lower()
         with open(f"{script_dir}/templates/{template_name}.j2") as file:
             template = Template(file.read())
         return template.render(data=data)
