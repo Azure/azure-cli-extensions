@@ -67,26 +67,18 @@ class AppConverter(BaseConverter):
     def _get_service_bind(self, app):
         service_bind = []
         envName = self._get_parent_resource_name(app)
-        addon = app['properties'].get('addonConfigs')
-
-        if addon is None:
-            return None
-
-        if (
-            (addon.get('applicationConfigurationService') is not None and addon['applicationConfigurationService'].get('resourceId') is not None)
-            or (addon.get('configServer') is not None and addon['configServer'].get('resourceId') is not None)
-        ):
+        if self.wrapper_data.is_support_configserver_for_app(app):
             service_bind.append({
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
             })
-        if self.wrapper_data.is_enterprise_tier() is not True and self.wrapper_data.is_support_configserver():
+        if self.wrapper_data.is_enterprise_tier() is not True and self.wrapper_data.is_support_ossconfigserver():
             # standard tier enabled config server and bind all apps automatically
             service_bind.append({
                 "name": "bind-config",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'config')"
             })
-        if addon.get('serviceRegistry') is not None and addon['serviceRegistry'].get('resourceId') is not None:
+        if self.wrapper_data.is_support_serviceregistry_for_app(app):
             service_bind.append({
                 "name": "bind-eureka",
                 "serviceId": f"resourceId('Microsoft.App/managedEnvironments/javaComponents', '{envName}', 'eureka')"

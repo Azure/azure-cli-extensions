@@ -33,6 +33,7 @@ class MainConverter(BaseConverter):
                     "templateName": templateName,
                     "paramContainerAppImageName": self._get_param_name_of_container_image(app),
                     "paramTargetPort": self._get_param_name_of_target_port(app),
+                    "dependsOns": self._get_depends_on_list(app),
                 }
                 if 'properties' in app and 'customPersistentDisks' in app['properties']:
                     disks = app['properties']['customPersistentDisks']
@@ -58,3 +59,19 @@ class MainConverter(BaseConverter):
 
     def get_template_name(self):
         return "main.bicep"
+
+    def _get_depends_on_list(self, app):
+        service_bind = []
+        if self.wrapper_data.is_support_configserver_for_app(app):
+            service_bind.append("managedConfig")
+        if self.wrapper_data.is_enterprise_tier() is not True and self.wrapper_data.is_support_ossconfigserver():
+            # standard tier enabled config server and bind all apps automatically
+            service_bind.append("managedConfig")
+        if self.wrapper_data.is_support_serviceregistry_for_app(app):
+            service_bind.append("managedEureka")
+        if self.wrapper_data.is_enterprise_tier() is not True and self.wrapper_data.is_support_eureka():
+            # standard tier enabled eureka server and bind all apps automatically
+            service_bind.append("managedEureka")
+        if self.wrapper_data.is_support_sba():
+            service_bind.append("managedSpringBootAdmin")
+        return service_bind
