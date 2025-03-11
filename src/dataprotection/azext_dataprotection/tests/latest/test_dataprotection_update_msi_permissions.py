@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
+# WARNING: This test only works when run in the devbox.
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -21,10 +22,10 @@ def create_vault_and_policy(test):
                             ]).get_output_in_json()
 
     # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
-    # sp_list = []
-    # while backup_vault['identity']['principalId'] not in sp_list:
-    #     sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
-    #     time.sleep(10)
+    sp_list = []
+    while backup_vault['identity']['principalId'] not in sp_list:
+        sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
+        time.sleep(10)
 
     policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type "{dataSourceType}"').get_output_in_json()
     test.kwargs.update({"policy": policy_json})

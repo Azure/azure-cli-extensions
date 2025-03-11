@@ -56,7 +56,8 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
-    DEFAULT_API_VERSION = '2024-10-01'
+    # zubairabid: Modified this from 2024-10-01 to 2024-10-02-preview for dataprotection
+    DEFAULT_API_VERSION = '2024-10-02-preview'
     _PROFILE_TAG = "azure.mgmt.containerservice.ContainerServiceClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
