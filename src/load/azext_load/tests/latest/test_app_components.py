@@ -144,9 +144,9 @@ class LoadTestScenarioAppComponents(ScenarioTest):
 
         app_components = app_components_response.get("components", {})
         server_metrics = server_metric_response.get("metrics", {})
-        assert len(app_components.values()) == 3
+        assert len(app_components.values()) == 1
         # Ensure at least 2 metrics are returned, default can be of any number, but we patch 2 metrics by our self.
-        assert len(server_metrics.values()) >= 4
+        assert len(server_metrics.values()) == 2
 
         self.kwargs.update(
             {

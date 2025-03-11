@@ -399,8 +399,6 @@ def create_or_update_test_with_config(
             "keyvaultReferenceIdentityId"
         )
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
-    else:
-        new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
@@ -414,8 +412,6 @@ def create_or_update_test_with_config(
             "metricsReferenceIdentityId"
         )
         new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
-    else:
-        new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
     if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
         if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
