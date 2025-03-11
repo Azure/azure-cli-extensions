@@ -37,7 +37,7 @@ setup(
     name='load',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Load Testing Extension.',
-    # long_description=README + '\n\n' + HISTORY,
+    long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',

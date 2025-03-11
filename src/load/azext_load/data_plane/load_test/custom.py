@@ -65,14 +65,11 @@ def create_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
     body = None
-    app_components_existing, server_metrics_existing = None, None
     try:
         body = client.get_test(test_id)
     except ResourceNotFoundError:
         pass
 
-    # adding temporarily to avoid the error that the var is not getting used.
-    logger.debug(app_components_existing, server_metrics_existing)
     if body is not None:
         msg = f"Test with given test ID : {test_id} already exist."
         logger.debug(msg)
@@ -157,6 +154,7 @@ def create_test(
         )
     if server_metrics is not None and len(server_metrics) > 0:
         # only get and patch the app components if its present in the yaml.
+        server_metrics_existing = None
         try:
             server_metrics_existing = client.get_server_metrics_config(test_id)
         except Exception:

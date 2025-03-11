@@ -52,7 +52,7 @@ def load_arguments(self, _):
             "key_vault_reference_identity", argtypes.key_vault_reference_identity, help="The identity that will be used to access the key vault. Provide `null` or `None` to use the system assigned identity of the load test resource."
         )
         c.argument(
-            "metrics_reference_identity", argtypes.metrics_reference_identity, help="The identity that will be used to access the metrics. This will be defaulted to SystemAssigned if not given."
+            "metrics_reference_identity", argtypes.metrics_reference_identity, help="The identity that will be used to access the metrics. Provide `null` or `None` to use the system assigned identity of the load test resource."
         )
         c.argument("engine_instances", argtypes.engine_instances)
         c.argument("subnet_id", argtypes.subnet_id)
