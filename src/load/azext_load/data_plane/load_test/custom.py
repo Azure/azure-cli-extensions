@@ -78,7 +78,7 @@ def create_test(
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
-    app_components, server_metrics = None, None
+    app_components, add_defaults_to_app_components, server_metrics = None, None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is None:
@@ -213,10 +213,9 @@ def update_test(
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
 
     yaml, yaml_test_body = None, None
-    app_components, server_metrics = None, None
+    app_components, server_metrics, add_defaults_to_app_components = None, None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
-    add_defaults_to_app_components = None
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(cmd, yaml)

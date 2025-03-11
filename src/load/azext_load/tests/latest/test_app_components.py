@@ -40,7 +40,6 @@ class LoadTestScenarioAppComponents(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_app_components(self, rg, load):
-        # Create a Locust based Azure Load Test
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.LOCUST_LOAD_TEST_ID,
