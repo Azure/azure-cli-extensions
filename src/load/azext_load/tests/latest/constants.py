@@ -196,6 +196,15 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID3 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model3.yaml")
     LOAD_TEST_METRICS_MI = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourcegroups/cnt-integration-tests-rg/providers/microsoft.managedidentity/userassignedidentities/cnt-integration-tests-mi1-eastus"
 
+    # app-components constants
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-test1.yaml")
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS2 = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-test2.yaml")
+
+    # invalid cases
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-invalid-test.yaml")
+    LOAD_TEST_SERVER_METRICS_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-server-metrics-invalid-test.yaml")
+    LOAD_TEST_SERVER_METRICS_INVALID2 = os.path.join(TEST_RESOURCES_DIR, r"config-server-metrics-invalid-test2.yaml")
+
 
 class LoadTestRunConstants(LoadConstants):
     # Metric constants

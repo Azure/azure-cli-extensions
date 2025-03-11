@@ -27,6 +27,8 @@ class LoadTestConfigKeys:
     CLIENT_METRICS_PF = "clientMetrics"
     SERVER_METRICS_PF = "serverMetrics"
     METRIC_NAME = "metricName"
+    METRIC_NAME_SERVER_METRICS = "name"
+    METRIC_NAMESPACE_SERVER_METRICS = "namespace"
     METRIC_NAMESPACE = "metricNamespace"
     RESOURCEID = "resourceId"
     AGGREGATION = "aggregation"

@@ -252,7 +252,6 @@ def update_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
-    logger.info(f"Hi, Mohit {app_components} {server_metrics}")
     if app_components is not None and len(app_components) > 0:
         app_component_response = client.create_or_update_app_components(
             test_id=test_id, body={"testId": test_id, "components": app_components}

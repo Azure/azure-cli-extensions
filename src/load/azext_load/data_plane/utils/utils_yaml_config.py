@@ -173,8 +173,12 @@ def parse_app_comps_and_server_metrics(data):
             raise InvalidArgumentValueError("App component name should be of type dictionary")
         if app_component.get(LoadTestConfigKeys.RESOURCEID) is None:
             raise InvalidArgumentValueError("App component name is required")
+        if not is_valid_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID)):
+            raise InvalidArgumentValueError("App component name is not a valid resource id")
         app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)] = {}
         app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceId"] = app_component.get(LoadTestConfigKeys.RESOURCEID)
+        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceName"] = get_resource_name_from_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID))
+        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceType"] = get_resource_type_from_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID))
         if app_component.get(LoadTestConfigKeys.KIND) is not None:
             app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["kind"] = app_component.get(LoadTestConfigKeys.KIND)
         if app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is not None:
@@ -183,17 +187,20 @@ def parse_app_comps_and_server_metrics(data):
             for server_metric in app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS):
                 if not isinstance(server_metric, dict):
                     raise InvalidArgumentValueError("Server metric should be of type dictionary")
-                if server_metric.get(LoadTestConfigKeys.METRIC_NAME) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
+                if server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
                     raise InvalidArgumentValueError("Server metric name and aggregation are required")
-                name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE) or get_resource_type_from_resource_id(
+                name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE_SERVER_METRICS) or get_resource_type_from_resource_id(
                     app_component.get(LoadTestConfigKeys.RESOURCEID)
                 )
-                metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME)
+                metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS)
                 resource_id = app_component.get(LoadTestConfigKeys.RESOURCEID)
                 key = f"{resource_id}/{name_space}/{metric_name}"
                 server_metrics[key] = {}
                 server_metrics[key]["name"] = metric_name
-                server_metrics[key]["resourceType"] = name_space
+                server_metrics[key]["metricNamespace"] = name_space
+                server_metrics[key]["resourceType"] = get_resource_type_from_resource_id(
+                    app_component.get(LoadTestConfigKeys.RESOURCEID)
+                )
                 server_metrics[key]["resourceId"] = resource_id
                 server_metrics[key]["aggregation"] = server_metric.get(LoadTestConfigKeys.AGGREGATION)
                 server_metrics[key]["id"] = key
