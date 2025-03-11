@@ -1045,5 +1045,5 @@ def merge_existing_server_metrics(add_defaults_to_app_copmponents, existing_serv
     return server_metrics_yaml
 
 
-def is_empty_dictionary(dictionary):
+def is_not_empty_dictionary(dictionary):
     return dictionary is not None and len(dictionary) > 0
