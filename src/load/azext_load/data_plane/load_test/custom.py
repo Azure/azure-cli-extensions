@@ -157,7 +157,7 @@ def create_test(
         )
     if is_not_empty_dictionary(server_metrics):
         # only get and patch the app components if its present in the yaml.
-        add_defaults_to_app_components, server_metrics_existing = None, None
+        server_metrics_existing = None, None
         try:
             server_metrics_existing = client.get_server_metrics_config(test_id)
         except ResourceNotFoundError:

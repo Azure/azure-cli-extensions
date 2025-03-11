@@ -169,7 +169,7 @@ class LoadTestScenarioAppComponents(ScenarioTest):
                 checks=checks,
             )
         except Exception as e:
-            assert str(e) == "App component name is not a valid resource id" in str(e)
+            assert "App component name is not a valid resource id" in str(e)
 
         self.kwargs.update(
             {
@@ -192,7 +192,7 @@ class LoadTestScenarioAppComponents(ScenarioTest):
                 checks=checks,
             )
         except Exception as e:
-            assert str(e) == "Server metric name and aggregation are required" in str(e)
+            assert "Server metric name and aggregation are required" in str(e)
 
         self.kwargs.update(
             {
@@ -215,4 +215,4 @@ class LoadTestScenarioAppComponents(ScenarioTest):
                 checks=checks,
             )
         except Exception as e:
-            assert str(e) == "Server metric name and aggregation are required" in str(e)
+            assert "Server metric name and aggregation are required" in str(e)
