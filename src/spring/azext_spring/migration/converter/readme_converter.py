@@ -16,21 +16,21 @@ class ReadMeConverter(BaseConverter):
             is_support_configserver = self.wrapper_data.is_support_ossconfigserver()
             custom_domains = self.wrapper_data.get_custom_domains()
             apps = self.wrapper_data.get_apps()
-            has_apps = len(apps) > 0
             keyvault_certs = self.wrapper_data.get_keyvault_certificates()
             content_certs = self.wrapper_data.get_content_certificates()
             green_deployments = self.wrapper_data.get_green_deployments()
             should_system_assigned_identity_enabled = len(self.wrapper_data.get_keyvault_certificates()) > 0
-            auto_scale_enabled_deployments = [] #todo
-            system_assigned_identity_apps = [] #todo
+            auto_scale_enabled_deployments = []  # todo
+            system_assigned_identity_apps = []  # todo
 
             data = {
                 "isVnet": is_vnet,
                 "containerApps": container_deployments,
                 "buildResultsApps": build_results_deployments,
-                "hasApps": has_apps,
+                "hasApps": len(apps) > 0,
                 "isSupportConfigServer": is_support_configserver,
                 "customDomains": self._transform_domains(custom_domains),
+                "hasCerts": len(keyvault_certs) > 0 or len(content_certs) > 0,
                 "keyVaultCerts": keyvault_certs,
                 "contentCerts": content_certs,
                 "greenDeployments": self._transform_deployments(green_deployments),
