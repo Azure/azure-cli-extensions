@@ -16,14 +16,14 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 rg_params = {
-    "name_prefix": "clitest-pf-",
+    "name_prefix": "clitest-app-",
     "location": "eastus",
     "key": "resource_group",
     "parameter_name": "rg",
     "random_name_length": 30,
 }
 load_params = {
-    "name_prefix": "clitest-pf-",
+    "name_prefix": "clitest-app-",
     "location": "eastus",
     "key": "load_test_resource",
     "parameter_name": "load",
