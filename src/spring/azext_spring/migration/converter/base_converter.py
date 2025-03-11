@@ -23,16 +23,18 @@ class ConverterTemplate(ABC):
     def convert(self):
         outputs = {}
         self.data = self.transform_data()
-        outputs[self.get_template_name()] = self.generate_output(self.data)
+        if self.data is not None:
+            outputs[self.get_template_name()] = self.generate_output(self.data)
         return outputs
 
     def convert_many(self):
         outputs = {}
         self.data = self.transform_data()
-        for item in self.data:
-            name = item['name'].split('/')[-1]
-            data = self.transform_data_item(item)
-            outputs[name + "_" + self.get_template_name()] = self.generate_output(data)
+        if self.data is not None and isinstance(self.data, list) and len(self.data) > 0:
+            for item in self.data:
+                name = item['name'].split('/')[-1]
+                data = self.transform_data_item(item)
+                outputs[name + "_" + self.get_template_name()] = self.generate_output(data)
         return outputs
 
     @abstractmethod
