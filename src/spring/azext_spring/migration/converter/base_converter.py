@@ -21,15 +21,25 @@ class ConverterTemplate(ABC):
         self.transform_data = transform_data
 
     def convert(self):
-        outputs = {}
+        result = {}
         self.data = self.transform_data()
-        if self.data is not None:
+        if (isinstance(self.data, list)):
+            result = self._convert_many()
+            # for key in result.keys():
+            #   logger.debug(f"converted contents of {self.__class__.__name__} for {key}:\n{result.get(key)}")      
+        else:
+            result = self._convert_one()
+            # logger.debug(f"converted contents of {__class__.__name__}:\n{result.get(self.get_template_name())}")
+        return result
+
+    def _convert_one(self):
+        outputs = {}
+        if self.data is not None and isinstance(self.data, dict):
             outputs[self.get_template_name()] = self.generate_output(self.data)
         return outputs
 
-    def convert_many(self):
+    def _convert_many(self):
         outputs = {}
-        self.data = self.transform_data()
         if self.data is not None and isinstance(self.data, list) and len(self.data) > 0:
             for item in self.data:
                 name = item['name'].split('/')[-1]
