@@ -82,6 +82,8 @@ def _get_random_uuid():
     return str(uuid.uuid4())
 
 
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
 def yaml_parse_failure_criteria(data):
     passfail_criteria = {}
     passfail_criteria["passFailMetrics"] = {}

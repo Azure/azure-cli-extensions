@@ -157,12 +157,11 @@ def create_test(
         )
     if is_not_empty_dictionary(server_metrics):
         # only get and patch the app components if its present in the yaml.
-        server_metrics_existing = None
+        add_defaults_to_app_components, server_metrics_existing = None, None
         try:
             server_metrics_existing = client.get_server_metrics_config(test_id)
-        except Exception:
+        except ResourceNotFoundError:
             server_metrics_existing = {"metrics": {}}
-            pass
         server_metrics_merged = merge_existing_server_metrics(
             add_defaults_to_app_components, server_metrics, server_metrics_existing.get("metrics", {})
         )
@@ -276,9 +275,8 @@ def update_test(
         # only get and patch the app components if its present in the yaml.
         try:
             app_components_existing = client.get_app_components(test_id)
-        except Exception:
+        except ResourceNotFoundError:
             app_components_existing = {"components": {}}
-            pass
         app_components_merged = merge_existing_app_components(
             app_components, app_components_existing.get("components", {})
         )
@@ -292,9 +290,8 @@ def update_test(
         # only get and patch the app components if its present in the yaml.
         try:
             server_metrics_existing = client.get_server_metrics_config(test_id)
-        except Exception:
+        except ResourceNotFoundError:
             server_metrics_existing = {"metrics": {}}
-            pass
         server_metrics_merged = merge_existing_server_metrics(
             add_defaults_to_app_components, server_metrics_existing.get("metrics", {}), server_metrics
         )

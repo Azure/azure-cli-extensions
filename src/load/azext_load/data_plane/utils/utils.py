@@ -356,29 +356,29 @@ def parse_app_comps_and_server_metrics(data):
     app_components_yaml = data.get(LoadTestConfigKeys.APP_COMPONENTS)
     app_components = {}
     server_metrics = {}
-    add_defaults_to_app_copmponents = dict()
+    add_defaults_to_app_components = dict()
     if app_components_yaml is None:
         return None, None, None
     if not isinstance(app_components_yaml, list):
         raise InvalidArgumentValueError("App component name should be of type list")
     for app_component in app_components_yaml:
-        resource_id = app_component.get(LoadTestConfigKeys.RESOURCEID)
         if not isinstance(app_component, dict):
             raise InvalidArgumentValueError("App component name should be of type dictionary")
-        if app_component.get(LoadTestConfigKeys.RESOURCEID) is None:
+        resource_id = app_component.get(LoadTestConfigKeys.RESOURCEID)
+        if resource_id is None:
             raise InvalidArgumentValueError("App component name is required")
-        if not is_valid_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID)):
+        if not is_valid_resource_id(resource_id):
             raise InvalidArgumentValueError("App component name is not a valid resource id")
-        if add_defaults_to_app_copmponents.get(resource_id.lower()) is None:
-            add_defaults_to_app_copmponents[resource_id.lower()] = app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
+        if add_defaults_to_app_components.get(resource_id.lower()) is None:
+            add_defaults_to_app_components[resource_id.lower()] = app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
         else:
-            add_defaults_to_app_copmponents[resource_id.lower()] = add_defaults_to_app_copmponents.get(resource_id.lower()) and app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)] = {}
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceId"] = app_component.get(LoadTestConfigKeys.RESOURCEID)
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceName"] = utils_yaml_config.get_resource_name_from_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID))
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID))
+            add_defaults_to_app_components[resource_id.lower()] = add_defaults_to_app_components.get(resource_id.lower()) and app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
+        app_components[resource_id] = {}
+        app_components[resource_id]["resourceId"] = resource_id
+        app_components[resource_id]["resourceName"] = utils_yaml_config.get_resource_name_from_resource_id(resource_id)
+        app_components[resource_id]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(resource_id)
         if app_component.get(LoadTestConfigKeys.KIND) is not None:
-            app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["kind"] = app_component.get(LoadTestConfigKeys.KIND)
+            app_components[resource_id]["kind"] = app_component.get(LoadTestConfigKeys.KIND)
         if app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is not None:
             if not isinstance(app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS), list):
                 raise InvalidArgumentValueError("Server metrics should be of type list")
@@ -386,9 +386,9 @@ def parse_app_comps_and_server_metrics(data):
                 if not isinstance(server_metric, dict):
                     raise InvalidArgumentValueError("Server metric should be of type dictionary")
                 if server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
-                    raise InvalidArgumentValueError("Server metric name and aggregation are required")
+                    raise InvalidArgumentValueError(f"Server metric name and aggregation are required, invalid dictionary for{resource_id}")
                 name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE_SERVER_METRICS) or utils_yaml_config.get_resource_type_from_resource_id(
-                    app_component.get(LoadTestConfigKeys.RESOURCEID)
+                    resource_id
                 )
                 metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS)
                 key = f"{resource_id}/{name_space}/{metric_name}"
@@ -396,12 +396,12 @@ def parse_app_comps_and_server_metrics(data):
                 server_metrics[key]["name"] = metric_name
                 server_metrics[key]["metricNamespace"] = name_space
                 server_metrics[key]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(
-                    app_component.get(LoadTestConfigKeys.RESOURCEID)
+                    resource_id
                 )
                 server_metrics[key]["resourceId"] = resource_id
                 server_metrics[key]["aggregation"] = server_metric.get(LoadTestConfigKeys.AGGREGATION)
                 server_metrics[key]["id"] = key
-    return app_components, add_defaults_to_app_copmponents, server_metrics
+    return app_components, add_defaults_to_app_components, server_metrics
 
 
 # pylint: disable=too-many-branches
