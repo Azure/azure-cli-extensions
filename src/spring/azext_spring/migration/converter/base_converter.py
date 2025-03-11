@@ -154,17 +154,38 @@ class SourceDataWrapper:
     def is_support_configserver(self):
         return self.is_support_ossconfigserver() or self.is_support_acs()
 
+    def is_support_configserver_for_app(self, app):
+        return self.is_support_ossconfigserver_for_app(app) or self.is_support_acs_for_app(app)
+
     def is_support_ossconfigserver(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/configServers')
 
+    def is_support_ossconfigserver_for_app(self, app):
+        addon = app['properties'].get('addonConfigs')
+        if addon is None:
+            return False
+        return addon.get('configServer') is not None and addon['configServer'].get('resourceId') is not None
+
     def is_support_acs(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/configurationServices')
+
+    def is_support_acs_for_app(self, app):
+        addon = app['properties'].get('addonConfigs')
+        if addon is None:
+            return False
+        return addon.get('applicationConfigurationService') is not None and addon['applicationConfigurationService'].get('resourceId') is not None
 
     def is_support_eureka(self):
         return self.is_support_serviceregistry() or not self.is_enterprise_tier()
 
     def is_support_serviceregistry(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/serviceRegistries')
+
+    def is_support_serviceregistry_for_app(self, app):
+        addon = app['properties'].get('addonConfigs')
+        if addon is None:
+            return False        
+        return addon.get('serviceRegistry') is not None and addon['serviceRegistry'].get('resourceId') is not None
 
     def is_support_sba(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/applicationLiveViews')
