@@ -221,8 +221,27 @@ class SourceDataWrapper:
         deployments = [deployment for deployment in deployments if deployment['properties']['active'] is False]
         return deployments if deployments else []
 
+    def get_build_results_deployments(self):
+        deployments = []
+        deployments = self.get_deployments()
+        deployments = [deployment for deployment in deployments if deployment['properties'].get('source', {}).get('type', {}) == "BuildResult"]
+        return deployments
+
+    def get_container_deployments(self):
+        deployments = []
+        deployments = self.get_deployments()
+        deployments = [deployment for deployment in deployments if deployment['properties'].get('source', {}).get('type', {}) == "Container"]
+        return deployments
+
     def is_support_blue_green_deployment(self, app):
         return len(self.get_deployments_by_app(app)) > 1
+
+    def get_custom_domains(self):
+        return self.get_resources_by_type('Microsoft.AppPlatform/Spring/apps/domains')
+
+    def get_custom_domains_by_app(self, app):
+        domains = self.get_custom_domains(self)
+        return [domain for domain in domains if domain['name'].startswith(f"{app['name']}/")]
 
     def is_enterprise_tier(self):
         return self.get_asa_service()['sku']['tier'] == 'Enterprise'
