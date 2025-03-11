@@ -158,60 +158,6 @@ def yaml_parse_failure_criteria(data):
     return passfail_criteria
 
 
-# pylint: disable=line-too-long
-# Disabling this because if conditions are too long
-def parse_app_comps_and_server_metrics(data):
-    app_components_yaml = data.get(LoadTestConfigKeys.APP_COMPONENTS)
-    app_components = {}
-    server_metrics = {}
-    add_defaults_to_app_copmponents = dict()
-    if app_components_yaml is None:
-        return None, None, None
-    if not isinstance(app_components_yaml, list):
-        raise InvalidArgumentValueError("App component name should be of type list")
-    for app_component in app_components_yaml:
-        resource_id = app_component.get(LoadTestConfigKeys.RESOURCEID)
-        if not isinstance(app_component, dict):
-            raise InvalidArgumentValueError("App component name should be of type dictionary")
-        if app_component.get(LoadTestConfigKeys.RESOURCEID) is None:
-            raise InvalidArgumentValueError("App component name is required")
-        if not is_valid_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID)):
-            raise InvalidArgumentValueError("App component name is not a valid resource id")
-        if add_defaults_to_app_copmponents.get(resource_id.lower()) is None:
-            add_defaults_to_app_copmponents[resource_id.lower()] = app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
-        else:
-            add_defaults_to_app_copmponents[resource_id.lower()] = add_defaults_to_app_copmponents.get(resource_id.lower()) and app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)] = {}
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceId"] = app_component.get(LoadTestConfigKeys.RESOURCEID)
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceName"] = get_resource_name_from_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID))
-        app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["resourceType"] = get_resource_type_from_resource_id(app_component.get(LoadTestConfigKeys.RESOURCEID))
-        if app_component.get(LoadTestConfigKeys.KIND) is not None:
-            app_components[app_component.get(LoadTestConfigKeys.RESOURCEID)]["kind"] = app_component.get(LoadTestConfigKeys.KIND)
-        if app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is not None:
-            if not isinstance(app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS), list):
-                raise InvalidArgumentValueError("Server metrics should be of type list")
-            for server_metric in app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS):
-                if not isinstance(server_metric, dict):
-                    raise InvalidArgumentValueError("Server metric should be of type dictionary")
-                if server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
-                    raise InvalidArgumentValueError("Server metric name and aggregation are required")
-                name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE_SERVER_METRICS) or get_resource_type_from_resource_id(
-                    app_component.get(LoadTestConfigKeys.RESOURCEID)
-                )
-                metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS)
-                key = f"{resource_id}/{name_space}/{metric_name}"
-                server_metrics[key] = {}
-                server_metrics[key]["name"] = metric_name
-                server_metrics[key]["metricNamespace"] = name_space
-                server_metrics[key]["resourceType"] = get_resource_type_from_resource_id(
-                    app_component.get(LoadTestConfigKeys.RESOURCEID)
-                )
-                server_metrics[key]["resourceId"] = resource_id
-                server_metrics[key]["aggregation"] = server_metric.get(LoadTestConfigKeys.AGGREGATION)
-                server_metrics[key]["id"] = key
-    return app_components, add_defaults_to_app_copmponents, server_metrics
-
-
 def get_resource_type_from_resource_id(resource_id: str) -> str | None:
     if resource_id and len(resource_id.split("/")) > 7:
         parts = resource_id.split("/")

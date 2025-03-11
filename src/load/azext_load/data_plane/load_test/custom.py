@@ -23,6 +23,8 @@ from azext_load.data_plane.utils.utils import (
     upload_files_helper,
     merge_existing_app_components,
     merge_existing_server_metrics,
+    parse_app_comps_and_server_metrics,
+    is_empty_dictionary,
 )
 from azext_load.data_plane.utils.models import (
     AllowedTestTypes,
@@ -104,7 +106,8 @@ def create_test(
         )
     else:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body, app_components, add_defaults_to_app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
+        yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        app_components, add_defaults_to_app_components, server_metrics = parse_app_comps_and_server_metrics(data=yaml)
         test_type = (
             test_type or
             yaml.get(LoadTestConfigKeys.TEST_TYPE) or
@@ -144,7 +147,7 @@ def create_test(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
     logger.info("Upload files to test %s has completed", test_id)
-    if app_components is not None and len(app_components) > 0:
+    if is_empty_dictionary(app_components):
         # only get and patch the app components if its present in the yaml.
         app_component_response = client.create_or_update_app_components(
             test_id=test_id, body={"testId": test_id, "components": app_components}
@@ -152,7 +155,7 @@ def create_test(
         logger.warning(
             "Added app components for test ID: %s and response is %s", test_id, app_component_response
         )
-    if server_metrics is not None and len(server_metrics) > 0:
+    if is_empty_dictionary(server_metrics):
         # only get and patch the app components if its present in the yaml.
         server_metrics_existing = None
         try:
@@ -217,7 +220,8 @@ def update_test(
     add_defaults_to_app_components = None
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body, app_components, add_defaults_to_app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
+        yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        app_components, add_defaults_to_app_components, server_metrics = parse_app_comps_and_server_metrics(data=yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -268,7 +272,7 @@ def update_test(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
 
-    if app_components is not None and len(app_components) > 0:
+    if is_empty_dictionary(app_components):
         # only get and patch the app components if its present in the yaml.
         try:
             app_components_existing = client.get_app_components(test_id)
@@ -284,7 +288,7 @@ def update_test(
         logger.warning(
             "Added app components for test ID: %s and response is %s", test_id, app_component_response
         )
-    if server_metrics is not None and len(server_metrics) > 0:
+    if is_empty_dictionary(server_metrics):
         # only get and patch the app components if its present in the yaml.
         try:
             server_metrics_existing = client.get_server_metrics_config(test_id)
