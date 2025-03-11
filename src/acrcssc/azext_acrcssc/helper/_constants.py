@@ -67,6 +67,8 @@ WORKFLOW_STATUS_NOT_AVAILABLE = "---Not Available---"
 WORKFLOW_STATUS_PATCH_NOT_AVAILABLE = "---No patch image available---"
 WORKFLOW_VALIDATION_MESSAGE = "Validating configuration"
 
+ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST = f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow tasks does not exist. Run 'az acr supply-chain workflow create' command to create workflow tasks."
+ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS = f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow tasks already exists. Use 'az acr supply-chain workflow update' command to perform updates."
 ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Schedule value is invalid. "
 ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT = "Schedule format is invalid. "

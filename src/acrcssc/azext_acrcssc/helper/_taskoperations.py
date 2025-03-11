@@ -23,6 +23,8 @@ from ._constants import (
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     TMP_DRY_RUN_FILE_NAME,
     CONTINUOUS_PATCHING_WORKFLOW_NAME,
+    ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST,
+    ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME,
     CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
@@ -68,11 +70,11 @@ def create_update_continuous_patch_v1(cmd,
     cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
-            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
+            raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:
         if not cssc_tasks_exists:
-            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Use 'az acr supply-chain workflow create' command to create {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow.")
+            raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
 
         _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun, task_list)
 
@@ -158,14 +160,13 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
     if not cssc_tasks_exists:
-        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow does not exist")
-
+        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")        
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
     cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
     if not cssc_tasks_exists:
-        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
+        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
         return
 
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
@@ -190,7 +191,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
             raise AzCLIError("Failed to retrieve the configuration file from the registry.")
 
     if is_create and cssc_tasks_exists:
-        raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
+        raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
 
     file_name = None
     tmp_folder = None
@@ -285,9 +286,17 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
 def track_scan_progress(cmd, resource_group_name, registry, status):
     logger.debug("Entering track_scan_progress")
 
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    if not cssc_tasks_exists:
+        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+        return
+
     config, _ = get_oci_artifact_continuous_patch(cmd, registry)
 
-    return _retrieve_logs_for_image(cmd, registry, resource_group_name, config.schedule, status)
+    image_status = _retrieve_logs_for_image(cmd, registry, resource_group_name, config.schedule, status)
+    print(f"Listing images that have been scanned and/or patched in the last {config.schedule} days")
+    print(f"Total images: {len(image_status) if image_status else 0}")
+    return image_status
 
 
 def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workflow_status=None):

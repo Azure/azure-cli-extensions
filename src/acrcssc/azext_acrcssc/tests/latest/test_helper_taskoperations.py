@@ -251,10 +251,12 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_get_taskruns_with_filter.assert_called_once()
         mock_acr_task_run_client.begin_cancel.assert_called_once()
 
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
     @mock.patch("azext_acrcssc.helper._taskoperations.get_oci_artifact_continuous_patch")
     @mock.patch("azext_acrcssc.helper._taskoperations._retrieve_logs_for_image")
-    def test_track_scan_progress(self, mock_retrieve_logs_for_image, mock_get_oci_artifact_continuous_patch):
+    def test_track_scan_progress(self, mock_retrieve_logs_for_image, mock_get_oci_artifact_continuous_patch, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
+        mock_check_continuous_task_exists.return_value = True, []
         resource_group_name = "test_rg"
         status = "test_status"
         mock_get_oci_artifact_continuous_patch.return_value = mock.MagicMock(schedule="1d"), mock.MagicMock()
@@ -263,6 +265,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         result = track_scan_progress(self.cmd, resource_group_name, self.registry, status)
 
         # Assert that the dependencies were called with the correct arguments
+        mock_check_continuous_task_exists.assert_called_once()
         mock_get_oci_artifact_continuous_patch.assert_called_once()
         mock_retrieve_logs_for_image.assert_called_once()
         self.assertIsNotNone(result)

@@ -145,7 +145,4 @@ def list_scan_status(cmd, registry_name, resource_group_name, status, workflow_t
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
 
-    image_status = track_scan_progress(cmd, resource_group_name, registry, status)
-    print(f"Total images: {len(image_status)}")
-
-    return image_status
+    return track_scan_progress(cmd, resource_group_name, registry, status)
