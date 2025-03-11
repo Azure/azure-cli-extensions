@@ -32,7 +32,7 @@ class EnvironmentConverter(BaseConverter):
             if asa_zone_redundant is not None:
                 data["zoneRedundant"] = str(asa_zone_redundant).lower()
 
-            asa_maintenance_window = asa_service['properties'].get('maintenanceScheduleConfiguration')
+            asa_maintenance_window = asa_service['properties'].get('maintenanceScheduleConfiguration', None)
             if asa_maintenance_window:
                 aca_maintenance_window = [{
                     "weekDay": asa_maintenance_window['day'],
