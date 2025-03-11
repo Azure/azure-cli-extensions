@@ -535,13 +535,17 @@ def validate_engine_ref_ids(namespace):
 
 def validate_keyvault_identity_ref_id(namespace):
     """Validates managed identity reference id"""
-    if isinstance(namespace.key_vault_reference_identity, str) and not is_valid_resource_id(namespace.key_vault_reference_identity):
+    if isinstance(namespace.key_vault_reference_identity, str) and \
+        not namespace.key_vault_reference_identity.lower() in ["null", ""] and \
+            not is_valid_resource_id(namespace.key_vault_reference_identity):
         raise InvalidArgumentValueError(f"Invalid keyvault-ref-id value: {namespace.key_vault_reference_identity}")
 
 
 def validate_metrics_identity_ref_id(namespace):
     """Validates managed identity reference id"""
-    if isinstance(namespace.metrics_reference_identity, str) and not is_valid_resource_id(namespace.metrics_reference_identity):
+    if isinstance(namespace.metrics_reference_identity, str) and \
+        not namespace.metrics_reference_identity.lower() in ["null", ""] and \
+            not is_valid_resource_id(namespace.metrics_reference_identity):
         raise InvalidArgumentValueError(f"Invalid metrics-ref-id value: {namespace.metrics_reference_identity}")
 
 

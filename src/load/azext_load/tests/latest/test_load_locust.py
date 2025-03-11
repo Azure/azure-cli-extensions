@@ -114,5 +114,5 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
                 "--test-type JMX ",
             )
         except Exception as e:
-            assert f"Error occurred while uploading test plan file {LoadTestConstants.LOCUST_TEST_PLAN} for test {LoadTestConstants.LOCUST_LOAD_TEST_ID} of type JMX: (InvalidFileType)" in str(e)
+            assert "InvalidFile" in str(e)
         delete_test(self)

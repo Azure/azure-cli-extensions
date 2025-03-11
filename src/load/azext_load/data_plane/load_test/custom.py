@@ -21,6 +21,8 @@ from azext_load.data_plane.utils.utils import (
     load_yaml,
     upload_file_to_test,
     upload_files_helper,
+    merge_existing_app_components,
+    merge_existing_server_metrics,
 )
 from azext_load.data_plane.utils.models import (
     AllowedTestTypes,
@@ -63,10 +65,14 @@ def create_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
     body = None
+    app_components_existing, server_metrics_existing = None, None
     try:
         body = client.get_test(test_id)
     except ResourceNotFoundError:
         pass
+
+    # adding temporarily to avoid the error that the var is not getting used.
+    logger.debug(app_components_existing, server_metrics_existing)
     if body is not None:
         msg = f"Test with given test ID : {test_id} already exist."
         logger.debug(msg)
@@ -101,7 +107,7 @@ def create_test(
         )
     else:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body, app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
+        yaml_test_body, app_components, add_defaults_to_app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
         test_type = (
             test_type or
             yaml.get(LoadTestConfigKeys.TEST_TYPE) or
@@ -142,15 +148,33 @@ def create_test(
     )
     logger.info("Upload files to test %s has completed", test_id)
     if app_components is not None and len(app_components) > 0:
+        # only get and patch the app components if its present in the yaml.
+        try:
+            app_components_existing = client.get_app_components(test_id)
+        except Exception:
+            app_components_existing = {"components": {}}
+            pass
+        app_components_merged = merge_existing_app_components(
+            app_components, app_components_existing.get("components", {})
+        )
         app_component_response = client.create_or_update_app_components(
-            test_id=test_id, body={"testId": test_id, "components": app_components}
+            test_id=test_id, body={"testId": test_id, "components": app_components_merged}
         )
         logger.warning(
             "Added app components for test ID: %s and response obj is %s", test_id, app_component_response
         )
     if server_metrics is not None and len(server_metrics) > 0:
+        # only get and patch the app components if its present in the yaml.
+        try:
+            server_metrics_existing = client.get_server_metrics_config(test_id)
+        except Exception:
+            server_metrics_existing = {"metrics": {}}
+            pass
+        server_metrics_merged = merge_existing_server_metrics(
+            add_defaults_to_app_components, server_metrics, server_metrics_existing.get("metrics", {})
+        )
         server_metric_response = client.create_or_update_server_metrics_config(
-            test_id=test_id, body={"testId": test_id, "metrics": server_metrics}
+            test_id=test_id, body={"testId": test_id, "metrics": server_metrics_merged}
         )
         logger.warning(
             "Added server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
@@ -200,9 +224,10 @@ def update_test(
     app_components, server_metrics = None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
+    add_defaults_to_app_components = None
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
-        yaml_test_body, app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
+        yaml_test_body, app_components, add_defaults_to_app_components, server_metrics = convert_yaml_to_test(cmd, yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -252,20 +277,38 @@ def update_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
+
     if app_components is not None and len(app_components) > 0:
+        # only get and patch the app components if its present in the yaml.
+        try:
+            app_components_existing = client.get_app_components(test_id)
+        except Exception:
+            app_components_existing = {"components": {}}
+            pass
+        app_components_merged = merge_existing_app_components(
+            app_components, app_components_existing.get("components", {})
+        )
         app_component_response = client.create_or_update_app_components(
-            test_id=test_id, body={"testId": test_id, "components": app_components}
+            test_id=test_id, body={"testId": test_id, "components": app_components_merged}
         )
-        logger.info(
-            "Updated app components for test ID: %s and response obj is %s", test_id, app_component_response
+        logger.warning(
+            "Added app components for test ID: %s and response obj is %s", test_id, app_component_response
         )
-    server_metric_response = None
     if server_metrics is not None and len(server_metrics) > 0:
-        server_metric_response = client.create_or_update_server_metrics_config(
-            test_id=test_id, body={"testId": test_id, "metrics": server_metrics}
+        # only get and patch the app components if its present in the yaml.
+        try:
+            server_metrics_existing = client.get_server_metrics_config(test_id)
+        except Exception:
+            server_metrics_existing = {"metrics": {}}
+            pass
+        server_metrics_merged = merge_existing_server_metrics(
+            add_defaults_to_app_components, server_metrics_existing.get("metrics", {}), server_metrics
         )
-        logger.info(
-            "Updated server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
+        server_metric_response = client.create_or_update_server_metrics_config(
+            test_id=test_id, body={"testId": test_id, "metrics": server_metrics_merged}
+        )
+        logger.warning(
+            "Added server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
         )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)

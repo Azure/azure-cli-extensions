@@ -161,6 +161,7 @@ class LoadTestConstants(LoadConstants):
     ENGINE_REFERENCE_TYPE_USERASSIGNED = "UserAssigned"
     ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED = "SystemAssigned"
     ENGINE_REFERENCE_TYPE_NONE = "None"
+    MANAGED_IDENTITY_NULL = "null"
     ENGINE_REFERENCE_ID1 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     ENGINE_REFERENCE_ID2 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi-2"
     METRICS_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-metrics-mi"

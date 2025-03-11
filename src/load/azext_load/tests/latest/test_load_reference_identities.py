@@ -137,6 +137,20 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS
         )
 
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("metricsReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED),
+            JMESPathCheck("keyvaultReferenceIdentityType", LoadTestConstants.ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED),
+        ]
+
+        _configure_command_jmes_checks(
+            self,
+            checks,
+            engine_ref_id_type=LoadTestConstants.ENGINE_REFERENCE_TYPE_NONE,
+            metrics_ref_id=LoadTestConstants.MANAGED_IDENTITY_NULL,
+            keyvault_ref_id=LoadTestConstants.MANAGED_IDENTITY_NULL,
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS
+        )
         # keyvault refid outside the ref-ids
         checks = [
             JMESPathCheck("testId", self.kwargs["test_id"]),

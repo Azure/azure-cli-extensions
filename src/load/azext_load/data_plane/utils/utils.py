@@ -345,9 +345,9 @@ def convert_yaml_to_test(cmd, data):
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
 
     utils_yaml_config.update_reference_identities(new_body, data)
-    app_components, server_metrics = utils_yaml_config.parse_app_comps_and_server_metrics(data=data)
+    app_components, add_defaults_to_app_components, server_metrics = utils_yaml_config.parse_app_comps_and_server_metrics(data=data)
     logger.debug("Converted yaml to test body: %s", new_body)
-    return new_body, app_components, server_metrics
+    return new_body, app_components, add_defaults_to_app_components, server_metrics
 # pylint: enable=line-too-long
 
 
@@ -975,3 +975,22 @@ def _add_error_and_throughput_trends(trends, test_run):
     throughput = _get_metrics_from_sampler(test_run, "Total", "throughput")
     if throughput is not None:
         trends[LoadTestTrendsKeys.THROUGHPUT] = round(throughput, 2)
+
+
+def merge_existing_app_components(app_components_yaml, existing_app_components):
+    if existing_app_components is None:
+        return app_components_yaml
+    for key in existing_app_components:
+        if key not in app_components_yaml:
+            app_components_yaml[key] = None
+    return app_components_yaml
+
+
+def merge_existing_server_metrics(add_defaults_to_app_copmponents, existing_server_metrics, server_metrics_yaml):
+    if existing_server_metrics is None:
+        return server_metrics_yaml
+    for key in existing_server_metrics:
+        resourceid = existing_server_metrics.get(key).get(LoadTestConfigKeys.RESOURCEID, "").lower()
+        if key not in server_metrics_yaml and (add_defaults_to_app_copmponents.get(resourceid) is None or add_defaults_to_app_copmponents.get(resourceid) is False):
+            server_metrics_yaml[key] = None
+    return server_metrics_yaml
