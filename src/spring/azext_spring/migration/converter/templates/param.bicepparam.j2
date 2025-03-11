@@ -6,7 +6,7 @@ param minNodes = 1
 param maxNodes = 10
 
 {%- if data.isVnet == true %}
-// Provide the full resource ID of the existing subnet.
+// Provide the full resource ID of the existing subnet, the subnet must be delegated to Microsoft.App/environments
 // Example: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}
 param vnetSubnetId
 {%- endif %}
