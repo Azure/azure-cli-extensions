@@ -18,15 +18,17 @@ logger = get_logger(__name__)
 class ConverterTemplate(ABC):
     def __init__(self, source, transform_data):
         self.wrapper_data = SourceDataWrapper(source)
-        self.data = transform_data()
+        self.transform_data = transform_data
 
     def convert(self):
         outputs = {}
+        self.data = self.transform_data()
         outputs[self.get_template_name()] = self.generate_output(self.data)
         return outputs
 
     def convert_many(self):
         outputs = {}
+        self.data = self.transform_data()
         for item in self.data:
             name = item['name'].split('/')[-1]
             data = self.transform_data_item(item)
