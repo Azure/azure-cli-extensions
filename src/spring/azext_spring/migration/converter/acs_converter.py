@@ -43,7 +43,7 @@ class ACSConverter(BaseConverter):
         configurations = []
         params = []
 
-        git_repos = acs.get('properties', {}).get('settings', {}).get('gitProperty', {}).get('repositories')
+        git_repos = acs.get('properties', {}).get('settings', {}).get('gitProperty', {}).get('repositories', None)
         if git_repos is not None and len(git_repos) > 0:
             default_repo = git_repos[0]
             self._add_property_if_exists(configurations, self.CONFIGURATION_KEY_PREFIX + self.KEY_URI, default_repo.get('uri'))
