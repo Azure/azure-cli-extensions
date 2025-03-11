@@ -43,6 +43,13 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
 {%- for item in data.apps %}
 module {{ item.moduleName }} '{{ item.templateName }}' = {
   name: '{{ item.appName }}-Deployment'
+  {%- if item.dependsOns %}
+  dependsOn: [
+    {%- for dependsOn in item.dependsOns %}
+    {{ dependsOn }}
+    {%- endfor %}
+  ]
+  {%- endif %}
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
     workloadProfileName: workloadProfileName
