@@ -152,9 +152,9 @@ class SourceDataWrapper:
         return any(resource['type'] == feature for resource in self.source['resources'])
 
     def is_support_configserver(self):
-        return self.is_support_ssoconfigserver() or self.is_support_acs()
+        return self.is_support_ossconfigserver() or self.is_support_acs()
 
-    def is_support_ssoconfigserver(self):
+    def is_support_ossconfigserver(self):
         return self.is_support_feature('Microsoft.AppPlatform/Spring/configServers')
 
     def is_support_acs(self):

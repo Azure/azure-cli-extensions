@@ -55,7 +55,7 @@ class ConversionContext:
             # logger.debug(f"converted_contents for gateway:\n{converted_contents.get(self.get_converter(GatewayConverter).get_template_name())}")
 
         # Config Server and ACS Converter
-        if self.data_wrapper.is_support_ssoconfigserver():
+        if self.data_wrapper.is_support_ossconfigserver():
             converted_contents.update(self.get_converter(ConfigServerConverter).convert())
             # logger.debug(f"converted_contents for config server:\n{converted_contents.get(self.get_converter(ConfigServerConverter).get_template_name())}")
         elif self.data_wrapper.is_support_acs():
