@@ -166,7 +166,7 @@ def parse_app_comps_and_server_metrics(data):
     server_metrics = {}
     add_defaults_to_app_copmponents = dict()
     if app_components_yaml is None:
-        return None, None
+        return None, None, None
     if not isinstance(app_components_yaml, list):
         raise InvalidArgumentValueError("App component name should be of type list")
     for app_component in app_components_yaml:
