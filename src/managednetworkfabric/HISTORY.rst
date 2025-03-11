@@ -3,6 +3,10 @@
 Release History
 ===============
 
+7.1.0
+++++++
+* Bug fix: expose the 'update-admin-state' command for the 'interface' resource that was removed from the CLI by invalid post-processing logic.
+
 7.0.0
 ++++++
 * This version requires a minimum of 2.66 Azure core CLI. See release notes for more details: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/release-notes-azure-cli.md

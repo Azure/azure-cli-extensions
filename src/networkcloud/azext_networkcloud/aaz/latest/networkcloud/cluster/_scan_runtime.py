@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster scan-runtime",
-    is_preview=True,
 )
 class ScanRuntime(AAZCommand):
     """Trigger the execution of a runtime protection scan to detect and remediate detected issues, in accordance with the cluster configuration.
@@ -23,9 +22,9 @@ class ScanRuntime(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/scanruntime", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/scanruntime", "2025-02-01"],
         ]
     }
 
@@ -152,7 +151,7 @@ class ScanRuntime(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
