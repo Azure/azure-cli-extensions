@@ -5,19 +5,6 @@
 import os
 
 from knack.log import get_logger
-from .base_converter import ConverterTemplate, SourceDataWrapper
-from .environment_converter import EnvironmentConverter
-from .app_converter import AppConverter
-from .readme_converter import ReadMeConverter
-from .main_converter import MainConverter
-from .param_converter import ParamConverter
-from .gateway_converter import GatewayConverter
-from .eureka_converter import EurekaConverter
-from .service_registry_converter import ServiceRegistryConverter
-from .config_server_converter import ConfigServerConverter
-from .acs_converter import ACSConverter
-from .live_view_converter import LiveViewConverter
-from .cert_converter import CertConverter
 
 logger = get_logger(__name__)
 
@@ -25,21 +12,16 @@ logger = get_logger(__name__)
 # Context Class
 class ConversionContext:
     def __init__(self, source):
-        self.data_wrapper = SourceDataWrapper(source)
+        self.source = source
         self.converters = []
 
-    def add_converter(self, converter: ConverterTemplate):
-        self.converters.append(converter)
-
-    def get_converter(self, converter_type: type):
-        for converter in self.converters:
-            if isinstance(converter, converter_type):
-                return converter
-        raise ValueError(f"Unknown converter type: {converter_type}")
+    def register_converter(self, converter_class):
+        self.converters.append(converter_class)
 
     def run_converters(self):
         converted_contents = {}
-        for converter in self.converters:
+        for converter_class in self.converters:
+            converter = converter_class(self.source)
             items = converter.convert()
             converted_contents.update(items)
         return converted_contents
