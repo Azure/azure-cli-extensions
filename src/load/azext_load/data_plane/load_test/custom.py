@@ -149,19 +149,11 @@ def create_test(
     logger.info("Upload files to test %s has completed", test_id)
     if app_components is not None and len(app_components) > 0:
         # only get and patch the app components if its present in the yaml.
-        try:
-            app_components_existing = client.get_app_components(test_id)
-        except Exception:
-            app_components_existing = {"components": {}}
-            pass
-        app_components_merged = merge_existing_app_components(
-            app_components, app_components_existing.get("components", {})
-        )
         app_component_response = client.create_or_update_app_components(
-            test_id=test_id, body={"testId": test_id, "components": app_components_merged}
+            test_id=test_id, body={"testId": test_id, "components": app_components}
         )
         logger.warning(
-            "Added app components for test ID: %s and response obj is %s", test_id, app_component_response
+            "Added app components for test ID: %s and response is %s", test_id, app_component_response
         )
     if server_metrics is not None and len(server_metrics) > 0:
         # only get and patch the app components if its present in the yaml.
@@ -177,7 +169,7 @@ def create_test(
             test_id=test_id, body={"testId": test_id, "metrics": server_metrics_merged}
         )
         logger.warning(
-            "Added server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
+            "Added server metrics for test ID: %s and response is %s", test_id, server_metric_response
         )
     response = client.get_test(test_id)
     logger.info("Test %s has been created successfully", test_id)
@@ -292,7 +284,7 @@ def update_test(
             test_id=test_id, body={"testId": test_id, "components": app_components_merged}
         )
         logger.warning(
-            "Added app components for test ID: %s and response obj is %s", test_id, app_component_response
+            "Added app components for test ID: %s and response is %s", test_id, app_component_response
         )
     if server_metrics is not None and len(server_metrics) > 0:
         # only get and patch the app components if its present in the yaml.
@@ -308,7 +300,7 @@ def update_test(
             test_id=test_id, body={"testId": test_id, "metrics": server_metrics_merged}
         )
         logger.warning(
-            "Added server metrics for test ID: %s and response obj is %s", test_id, server_metric_response
+            "Added server metrics for test ID: %s and response is %s", test_id, server_metric_response
         )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)

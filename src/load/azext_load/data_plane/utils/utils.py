@@ -986,7 +986,7 @@ def merge_existing_server_metrics(add_defaults_to_app_copmponents, existing_serv
     if existing_server_metrics is None:
         return server_metrics_yaml
     for key in existing_server_metrics:
-        resourceid = existing_server_metrics.get(key).get(LoadTestConfigKeys.RESOURCEID, "").lower()
+        resourceid = (existing_server_metrics.get(key) or {}).get(LoadTestConfigKeys.RESOURCEID, "").lower()
         if key not in server_metrics_yaml and (add_defaults_to_app_copmponents.get(resourceid) is None or add_defaults_to_app_copmponents.get(resourceid) is False):
             server_metrics_yaml[key] = None
     return server_metrics_yaml

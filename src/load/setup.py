@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.6.0'
+VERSION = '1.7.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -28,10 +28,10 @@ CLASSIFIERS = [
 
 DEPENDENCIES = ["azure-core", "pyyaml"]
 
-# with open('README.md', 'r', encoding='utf-8') as f:
-#     README = f.read()
-# with open('HISTORY.rst', 'r', encoding='utf-8') as f:
-#     HISTORY = f.read()
+with open('README.md', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
 
 setup(
     name='load',

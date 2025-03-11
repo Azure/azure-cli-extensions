@@ -78,7 +78,7 @@ class LoadTestScenarioPassFailCriteria(ScenarioTest):
         pass_fail_server_metric = response.get("passFailCriteria", {}).get(
             "passFailServerMetrics", {}
         )
-        assert len(pass_fail_metric.values()) == 2
+        assert len(pass_fail_metric.values()) == 3
         assert len(pass_fail_server_metric.values()) == 0
 
         self.kwargs.update(
@@ -173,6 +173,27 @@ class LoadTestScenarioPassFailCriteria(ScenarioTest):
 
         assert len(pass_fail_metric.values()) == 3
         assert len(pass_fail_server_metric.values()) == 2
+
+        app_components_response = self.cmd(
+            "az load test app-component list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group}",
+            checks=[]
+        ).get_output_in_json()
+        server_metric_response = self.cmd(
+            "az load test server-metric list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group}",
+            checks=[]
+        ).get_output_in_json()
+
+        app_components = app_components_response.get("components", {})
+        server_metrics = server_metric_response.get("metrics", {})
+        assert len(app_components.values()) == 1
+        # Ensure at least 2 metrics are returned, default can be of any number, but we patch 2 metrics by our self.
+        assert len(server_metrics.values()) == 3
 
         # Invalid: test plan is locust but test type is not locust
         self.kwargs.update(

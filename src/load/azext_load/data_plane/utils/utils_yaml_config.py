@@ -87,13 +87,13 @@ def yaml_parse_failure_criteria(data):
     passfail_criteria["passFailMetrics"] = {}
     passfail_criteria["passFailServerMetrics"] = {}
     if isinstance(data[LoadTestConfigKeys.FAILURE_CRITERIA], dict):
-        pf_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA].get(LoadTestConfigKeys.CLIENT_METRICS_PF)
-        pf_server_criteria_yamlObject = data[LoadTestConfigKeys.FAILURE_CRITERIA].get(LoadTestConfigKeys.SERVER_METRICS_PF)
+        pf_criteria_yaml_object = data[LoadTestConfigKeys.FAILURE_CRITERIA].get(LoadTestConfigKeys.CLIENT_METRICS_PF)
+        pf_server_criteria_yaml_object = data[LoadTestConfigKeys.FAILURE_CRITERIA].get(LoadTestConfigKeys.SERVER_METRICS_PF)
     else:
-        pf_criteria_yamlObject = data.get(LoadTestConfigKeys.FAILURE_CRITERIA)
-        pf_server_criteria_yamlObject = None
-    if pf_criteria_yamlObject is not None:
-        for items in pf_criteria_yamlObject:
+        pf_criteria_yaml_object = data.get(LoadTestConfigKeys.FAILURE_CRITERIA)
+        pf_server_criteria_yaml_object = None
+    if pf_criteria_yaml_object is not None:
+        for items in pf_criteria_yaml_object:
             metric_id = _get_random_uuid()
             # check if item is string or dict. if string then no name is provided
             name = None
@@ -125,8 +125,8 @@ def yaml_parse_failure_criteria(data):
                 passfail_criteria["passFailMetrics"][metric_id][
                     "requestName"
                 ] = name
-    if pf_server_criteria_yamlObject is not None:
-        for items in pf_server_criteria_yamlObject:
+    if pf_server_criteria_yaml_object is not None:
+        for items in pf_server_criteria_yaml_object:
             metric_id = _get_random_uuid()
             components = items
             try:
@@ -297,7 +297,7 @@ def yaml_parse_engine_identities(data):
         else:
             if not is_valid_resource_id(curr_ref_value):
                 raise InvalidArgumentValueError(
-                    "%s is not a valid resource id" % curr_ref_value
+                    f"{curr_ref_value} is not a valid resource id"
                 )
         if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
             if engine_reference_type and curr_ref_type != engine_reference_type:
