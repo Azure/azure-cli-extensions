@@ -38,7 +38,7 @@ class ReadMeConverter(BaseConverter):
                 "shouldSystemAssignedIdentityEnabled": should_system_assigned_identity_enabled,
                 "systemAssignedIdentityApps": system_assigned_identity_apps,
             }
-            print(f"ReadMeConverter data: {data}")
+            # print(f"ReadMeConverter data: {data}")
             return data
         super().__init__(source, transform_data)
 
