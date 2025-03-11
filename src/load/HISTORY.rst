@@ -2,7 +2,9 @@
 
 Release History
 ===============
-
+1.7.0
+++++++
+* Add support for metrics reference identity using CLI. metrics reference identity can be set using `--metrics-reference-identity` argument in 'az load test create' and 'az load test update' commands. Metrics reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Metrics` will also be honoured.
 
 1.6.0
 ++++++
