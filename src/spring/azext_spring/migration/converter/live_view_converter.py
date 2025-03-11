@@ -9,15 +9,18 @@ class LiveViewConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            # live_view = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews')[0]
-            name = "admin"
-            configurations = []
-            replicas = 1
-            return {
-                "sbaName": name,
-                "configurations": configurations,
-                "replicas": replicas
-            }
+            if self.wrapper_data.is_support_sba():
+                # live_view = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/applicationLiveViews')[0]
+                name = "admin"
+                configurations = []
+                replicas = 1
+                return {
+                    "sbaName": name,
+                    "configurations": configurations,
+                    "replicas": replicas
+                }
+            else:
+                return None
         super().__init__(source, transform_data)
 
     def get_template_name(self):
