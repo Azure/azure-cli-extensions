@@ -1,6 +1,8 @@
 This README provides instructions on how to use the Bicep files generated from your Azure Spring Apps service to provision an Azure Container Apps environment, including the necessary resources and containerized applications.
 
-After deploying the Bicep files, some configurations must be updated manually by following the steps outlined in [Azure public documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview) after deploying the Bicep files.
+Due to limitations in the Azure Container Apps backends, multiple deployment rounds may be expected to successfully provision all the resources.
+
+After deploying the Bicep files, some configurations must be updated manually by following the steps outlined in [Azure public documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview).
 
 ## Prerequisites
 
@@ -109,23 +111,25 @@ You can check the deployment status either in the CLI output or in the Azure Por
     | JavaComponentOperationError | Failed to provision java component '', Java Component is invalid, reason: admission webhook \"javacomponent.kb.io\" denied the request... | Fix the properties in the error message and redeploy the bicep files. Or find more details in the logs of managed components. |    
 
 ## Post-Deployment Configuration
-
 Some properties and configurations are not included in the Bicep files and must be manually updated.
 
-{%- if data.shouldSystemAssignedIdentityEnabled %}
+{% if data.hasCerts %}
 ### **TLS certificate**
+{% if data.shouldSystemAssignedIdentityEnabled %}
 Following TLS certificates from Azure Key Vault have been migrated by the migration tool, to make sure Azure Container Apps can load that certificate, you need to assign **Key Vault Secrets User** role to the system-assigned managed identity of Azure Container Apps environment after it creates.
 {%- for cert in data.keyvault_certs %}
   - `{{cert.name}}`
 {%- endfor %}
-
+{%- endif %}
+{% if data.contentCerts %}
 Following content type certificates should be manually uploaded to Azure Container Apps environment:
 {%- for cert in data.contentCerts %}
   - `{{cert.name}}`
 {%- endfor %}
 {%- endif %}
+{%- endif %}
 
-{%- if data.customDomains %}
+{% if data.customDomains %}
 ### Custom Domain
 You have custom domains configured in Azure Spring Apps. You can follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-custom-domain) to configure the custom domain in Azure Container Apps. Please manually update custom domains of following applications: 
 {%- for domain in data.customDomains %}
@@ -133,7 +137,7 @@ You have custom domains configured in Azure Spring Apps. You can follow the step
 {%- endfor %}
 {%- endif %}
 
-{%- if data.system_assigned_identity_apps %}
+{% if data.system_assigned_identity_apps %}
 ### Managed Identity
 
 Following applications have enabled system-assigned managed identity in Azure Spring Apps, your Azure Container Apps app instance will also have enabled system-assigned managed identity, but you need to reassign the corresponding roles to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity) to understand how to use managed identity in Azure Container Apps.
@@ -142,7 +146,7 @@ Following applications have enabled system-assigned managed identity in Azure Sp
 {%- endfor %}
 {%- endif %}
 
-{%- if data.greenDeployments %}
+{% if data.greenDeployments %}
 ### Blue-green deployment
 Following applications have enabled blue-green deployments in Azure Spring Apps, the **blue** deployments have been migrated to Azure Container Apps, but you need to follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-blue-green) to configure the **green** deployment in Azure Container Apps.
 {%- for deployment in data.greenDeployments %}
@@ -150,7 +154,7 @@ Following applications have enabled blue-green deployments in Azure Spring Apps,
 {%- endfor %}
 {%- endif %}
 
-{%- if data.auto_scale_enabled_deployments %}
+{% if data.auto_scale_enabled_deployments %}
 ### Auto scale
 You have enabled auto scaling for following applications in Azure Spring Apps, you need to manually configure the different auto scaling rules in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
 {%- for deployment in data.autoScaleEnabledApps %}

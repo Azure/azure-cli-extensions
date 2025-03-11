@@ -26,7 +26,7 @@ class ConverterTemplate(ABC):
         if (isinstance(self.data, list)):
             result = self._convert_many()
             # for key in result.keys():
-            #   logger.debug(f"converted contents of {self.__class__.__name__} for {key}:\n{result.get(key)}")      
+            #   logger.debug(f"converted contents of {self.__class__.__name__} for {key}:\n{result.get(key)}")
         else:
             result = self._convert_one()
             # logger.debug(f"converted contents of {__class__.__name__}:\n{result.get(self.get_template_name())}")
@@ -68,7 +68,8 @@ class BaseConverter(ConverterTemplate):
         return resource['name'].split('/')[-1]
 
     def _get_parent_resource_name(self, resource):
-        return resource['name'].split('/')[0]
+        parts = resource['name'].split('/')
+        return parts[-2] if len(parts) > 1 else ''
 
     # Extracts the resource name from a resource ID string in Azure ARM template format
     # Format: [resourceId('Microsoft.AppPlatform/Spring/<ResourceType>', '<parent_resource_name>', '<resource_name>')]
@@ -198,7 +199,7 @@ class SourceDataWrapper:
     def is_support_serviceregistry_for_app(self, app):
         addon = app['properties'].get('addonConfigs')
         if addon is None:
-            return False        
+            return False
         return addon.get('serviceRegistry') is not None and addon['serviceRegistry'].get('resourceId') is not None
 
     def is_support_sba(self):
