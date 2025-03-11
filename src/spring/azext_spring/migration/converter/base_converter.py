@@ -18,19 +18,33 @@ logger = get_logger(__name__)
 class ConverterTemplate(ABC):
     def __init__(self, source, transform_data):
         self.wrapper_data = SourceDataWrapper(source)
-        self.data = transform_data()
+        self.transform_data = transform_data
 
     def convert(self):
+        result = {}
+        self.data = self.transform_data()
+        if (isinstance(self.data, list)):
+            result = self._convert_many()
+            # for key in result.keys():
+            #   logger.debug(f"converted contents of {self.__class__.__name__} for {key}:\n{result.get(key)}")      
+        else:
+            result = self._convert_one()
+            # logger.debug(f"converted contents of {__class__.__name__}:\n{result.get(self.get_template_name())}")
+        return result
+
+    def _convert_one(self):
         outputs = {}
-        outputs[self.get_template_name()] = self.generate_output(self.data)
+        if self.data is not None and isinstance(self.data, dict):
+            outputs[self.get_template_name()] = self.generate_output(self.data)
         return outputs
 
-    def convert_many(self):
+    def _convert_many(self):
         outputs = {}
-        for item in self.data:
-            name = item['name'].split('/')[-1]
-            data = self.transform_data_item(item)
-            outputs[name + "_" + self.get_template_name()] = self.generate_output(data)
+        if self.data is not None and isinstance(self.data, list) and len(self.data) > 0:
+            for item in self.data:
+                name = item['name'].split('/')[-1]
+                data = self.transform_data_item(item)
+                outputs[name + "_" + self.get_template_name()] = self.generate_output(data)
         return outputs
 
     @abstractmethod

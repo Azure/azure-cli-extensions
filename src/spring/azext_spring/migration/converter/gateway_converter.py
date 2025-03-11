@@ -13,23 +13,26 @@ class GatewayConverter(BaseConverter):
 
     def __init__(self, source, client, resource_group, service):
         def transform_data():
-            gateway = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways')[0]
-            routes = []
-            for gateway_route in self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
-                routes.append(gateway_route)
-            secretEnvs = self.client.gateways.list_env_secrets(self.resource_group, self.service, self.DEFAULT_NAME)
-            configurations = self._get_configurations(gateway, secretEnvs)
-            replicas = 2
-            if gateway.get('sku', {}).get('capacity') is not None:
-                replicas = min(2, gateway['sku']['capacity'])
-            routes = self._get_routes(routes)
-            self._check_features(gateway.get('properties', {}))
-            return {
-                "routes": routes,
-                "gatewayName": "gateway",
-                "configurations": configurations,
-                "replicas": replicas,
-            }
+            if self.wrapper_data.is_support_gateway():
+                gateway = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways')[0]
+                routes = []
+                for gateway_route in self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/routeConfigs'):
+                    routes.append(gateway_route)
+                secretEnvs = self.client.gateways.list_env_secrets(self.resource_group, self.service, self.DEFAULT_NAME)
+                configurations = self._get_configurations(gateway, secretEnvs)
+                replicas = 2
+                if gateway.get('sku', {}).get('capacity') is not None:
+                    replicas = min(2, gateway['sku']['capacity'])
+                routes = self._get_routes(routes)
+                self._check_features(gateway.get('properties', {}))
+                return {
+                    "routes": routes,
+                    "gatewayName": "gateway",
+                    "configurations": configurations,
+                    "replicas": replicas,
+                }
+            else:
+                return None
         self.client = client
         self.resource_group = resource_group
         self.service = service

@@ -24,16 +24,19 @@ class ConfigServerConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            configServer = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers')[0]
-            name = "config"
-            configurations, params = self._get_configurations_and_params(configServer)
-            replicas = 2
-            return {
-                "configServerName": name,
-                "params": params,
-                "configurations": configurations,
-                "replicas": replicas
-            }
+            if self.wrapper_data.is_support_ossconfigserver():
+                configServer = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/configServers')[0]
+                name = "config"
+                configurations, params = self._get_configurations_and_params(configServer)
+                replicas = 2
+                return {
+                    "configServerName": name,
+                    "params": params,
+                    "configurations": configurations,
+                    "replicas": replicas
+                }
+            else:
+                return None
         super().__init__(source, transform_data)
 
     def get_template_name(self):
