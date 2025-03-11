@@ -162,9 +162,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Adding the size to the command.  
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)  
 
-
         # Setting the availability zone for the repair VM.  
-        # If the source VM has availability zones, the first one is chosen for the repair VM.  
+        # If the source VM has availability zones, the first one is chosen for the repair VM.
         if source_vm.zones:  
             zone = source_vm.zones[0]  
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)  
@@ -271,7 +270,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # Execute the command to attach the disk.  
                 _call_az_command(attach_disk_command)  
 
-
         # Check if the source VM uses unmanaged disks.  
         # If it does, the repair VM will also be created with unmanaged disks.  
         else:  
@@ -333,7 +331,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
                 .format(g=repair_group_name, disk_name=copy_disk_name, vm_name=repair_vm_name, uri=copy_disk_id)  
             _call_az_command(attach_disk_command)  
-
 
         # Check if the Nested Hyper-V needs to be enabled.  
         # If it does, run the script to install Hyper-V and create the nested VM.  
@@ -436,6 +433,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 # This method is responsible for restoring the VM after repair  
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):  
   
+    # Initialize repair VM variables to avoid "used before assignment" errors
+    repair_vm_name = None
+    repair_resource_group = None
+    
     # Create an instance of the command helper object to facilitate logging and status tracking.  
     command = command_helper(logger, cmd, 'vm repair restore')  
   
@@ -605,8 +606,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
   
         logger.info('Running script on %s: %s', vm_string, repair_vm_name)  # Log the VM on which the script is being run  
 
-
-                # Start the timer to measure the run-time of the script  
+        # Start the timer to measure the run-time of the script  
         script_start_time = timeit.default_timer()  
   
         # Invoke the run command on the VM and capture the standard output and error  
@@ -653,7 +653,6 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
   
         # Set the overall command status to success  
         command.set_status_success()  
-
 
     except KeyboardInterrupt:
         command.error_stack_trace = traceback.format_exc()
