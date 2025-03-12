@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.2.3
+++++++++++++++++++
+* `az monitor app-insights events/metrics/query`: Add `Track1Credential` adaptor to enable track 1 sdk for unblocking users
 
 1.2.2
 ++++++++++++++++++

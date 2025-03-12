@@ -8,13 +8,23 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
     """Initialize Log Analytics data client for use with CLI."""
     from .vendored_sdks.applicationinsights import ApplicationInsightsDataClient
     from azure.cli.core._profile import Profile
+    from .util import Track1Credential
     profile = Profile(cli_ctx=cli_ctx)
-    cred, _, _ = profile.get_login_credentials(
-        resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
-        subscription_id=subscription
-    )
+    # Note: temporarily adapt track2 auth to track1 by the guidance:
+    # https://github.com/Azure/azure-cli/pull/29631#issuecomment-2716799520
+    # need to be removed after migrated by codegen
+    # cred, _, _ = profile.get_login_credentials(
+    #     resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
+    #     subscription_id=subscription
+    # )
+    # return ApplicationInsightsDataClient(
+    #     cred,
+    #     base_url=f'{cli_ctx.cloud.endpoints.app_insights_resource_id}/v1'
+    # )
+
+    cred, _, _ = profile.get_login_credentials(subscription_id=subscription)
     return ApplicationInsightsDataClient(
-        cred,
+        Track1Credential(cred, cli_ctx.cloud.endpoints.app_insights_resource_id),
         base_url=f'{cli_ctx.cloud.endpoints.app_insights_resource_id}/v1'
     )
 

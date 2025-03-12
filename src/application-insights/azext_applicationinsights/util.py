@@ -70,3 +70,25 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
     else:
         linked_write_properties = [f'{tmpl}/{roles[write_properties]}']
     return linked_read_properties, linked_write_properties
+
+
+class Track1Credential:
+
+    def __init__(self, credential, resource):
+        """Track 1 credential that can be fed into Track 1 SDK clients. Exposes signed_session protocol.
+        Note: Cross-tenant authentication is not supported.
+
+        :param credential: Track 2 credential that exposes get_token protocol
+        :param resource: AAD resource
+        """
+        self._credential = credential
+        self._resource = resource
+
+    def signed_session(self, session=None):
+        import requests
+        from azure.cli.core.auth.util import resource_to_scopes
+        session = session or requests.Session()
+        token = self._credential.get_token(*resource_to_scopes(self._resource))
+        header = "{} {}".format('Bearer', token.token)
+        session.headers['Authorization'] = header
+        return session
