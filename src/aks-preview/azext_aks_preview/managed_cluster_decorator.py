@@ -2347,7 +2347,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
         istio_egressgateway_name = self.raw_param.get("istio_egressgateway_name", None)
         istio_egressgateway_namespace = self.raw_param.get(
-            "istio_egressgateway_namespace", 
+            "istio_egressgateway_namespace",
             CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE
         )
         gateway_configuration_name = self.raw_param.get("gateway_configuration_name", None)

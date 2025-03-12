@@ -3141,6 +3141,7 @@ def aks_mesh_disable_egress_gateway(
         istio_egressgateway_namespace=istio_egressgateway_namespace,
         disable_egress_gateway=True)
 
+
 def aks_mesh_get_revisions(
         cmd,
         client,
