@@ -159,32 +159,28 @@ def yaml_parse_failure_criteria(data):
     return passfail_criteria
 
 
-def get_resource_type_from_resource_id(resource_id: str) -> str | None:
+def get_resource_type_from_resource_id(resource_id):
     if resource_id and len(resource_id.split("/")) > 7:
         parts = resource_id.split("/")
         return "{}/{}".format(parts[6], parts[7])
-    return None
 
 
-def get_resource_name_from_resource_id(resource_id: str) -> str | None:
+def get_resource_name_from_resource_id(resource_id):
     if resource_id and len(resource_id.split("/")) > 8:
         parts = resource_id.split("/")
         return parts[8]
-    return None
 
 
-def get_resource_group_from_resource_id(resource_id: str) -> str | None:
+def get_resource_group_from_resource_id(resource_id):
     if resource_id and len(resource_id.split("/")) > 4:
         parts = resource_id.split("/")
         return parts[4]
-    return None
 
 
-def get_subscription_id_from_resource_id(resource_id: str) -> str | None:
+def get_subscription_id_from_resource_id(resource_id):
     if resource_id and len(resource_id.split("/")) > 2:
         parts = resource_id.split("/")
         return parts[2]
-    return None
 
 
 def _parse_regionwise_loadtest_config(cmd, regionwise_loadtest_config):
