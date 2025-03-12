@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import unittest
 from random import randint
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
