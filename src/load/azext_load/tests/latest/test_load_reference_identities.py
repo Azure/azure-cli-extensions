@@ -241,6 +241,7 @@ class LoadTestScenarioReferenceIdentities(ScenarioTest):
             load_test_config_file=LoadTestConstants.LOAD_TEST_INVALID_REF_TYPE2
         )
 
+
 def _configure_command_jmes_checks(self, checks, engine_ref_id_type=None, engine_ref_ids=None, metrics_ref_id=None, keyvault_ref_id=None, load_test_config_file=None):
     command = "az load test update " \
         "--test-id {test_id} " \
@@ -277,6 +278,7 @@ def _configure_command_jmes_checks(self, checks, engine_ref_id_type=None, engine
     ).get_output_in_json()
     return response
 
+
 def _configure_command_assert_exception(self, message, engine_ref_id_type=None, engine_ref_ids=None, metrics_ref_id=None, keyvault_ref_id=None, load_test_config_file=None):
     command = "az load test update " \
         "--test-id {test_id} " \
@@ -307,7 +309,7 @@ def _configure_command_assert_exception(self, message, engine_ref_id_type=None, 
             "load_test_config_file": load_test_config_file,
         })
         command += '--load-test-config-file "{load_test_config_file}" '
-    
+
     with pytest.raises(Exception) as excinfo:
         self.cmd(command)
-    assert message in str(excinfo.value), f"Expected message '{message}' not found in '{str(excinfo.value)}'"
+    assert message in str(excinfo.value), "Expected message '{}' not found in '{}'".format(message, str(excinfo.value))

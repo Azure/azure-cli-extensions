@@ -386,12 +386,12 @@ def parse_app_comps_and_server_metrics(data):
                 if not isinstance(server_metric, dict):
                     raise InvalidArgumentValueError("Server metric should be of type dictionary")
                 if server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
-                    raise InvalidArgumentValueError(f"Server metric name and aggregation are required, invalid dictionary for{resource_id}")
+                    raise InvalidArgumentValueError("Server metric name and aggregation are required, invalid dictionary for{}".format(resource_id))
                 name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE_SERVER_METRICS) or utils_yaml_config.get_resource_type_from_resource_id(
                     resource_id
                 )
                 metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS)
-                key = f"{resource_id}/{name_space}/{metric_name}"
+                key = "{}/{}/{}".format(resource_id, name_space, metric_name)
                 server_metrics[key] = {}
                 server_metrics[key]["name"] = metric_name
                 server_metrics[key]["metricNamespace"] = name_space

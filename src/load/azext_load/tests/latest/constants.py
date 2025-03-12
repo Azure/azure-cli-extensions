@@ -254,3 +254,10 @@ class LoadTestRunConstants(LoadConstants):
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"
+
+
+class LoadTestFailureCriteriaKeys:
+    CONDITION_ENUM_MAP = {
+        "LessThan": "<",
+        "GreaterThan": ">"
+    }

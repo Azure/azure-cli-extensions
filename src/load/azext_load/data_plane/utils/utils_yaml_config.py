@@ -50,16 +50,15 @@ def _yaml_parse_splitcsv(data):
 
 def _validate_failure_criteria(failure_criteria):
     parts = failure_criteria.split("(")
-    logger.debug("Parts: %s", parts)
     if len(parts) != 2:
-        raise ValueError(f"Invalid failure criteria: {failure_criteria}, {parts}")
+        raise ValueError("Invalid failure criteria: {}, {}".format(failure_criteria, parts))
     _, condition_value = parts
     if (
         ")" not in condition_value
         or len(condition_value.split(")")) != 2
         or condition_value.endswith(")")
     ):
-        raise ValueError(f"Invalid failure criteria: {failure_criteria}")
+        raise ValueError("Invalid failure criteria: {}".format(failure_criteria))
 
 
 def _validate_server_failure_criteria(failure_criteria):
@@ -71,11 +70,11 @@ def _validate_server_failure_criteria(failure_criteria):
         LoadTestConfigKeys.VALUE
     ]
     if not isinstance(failure_criteria, dict):
-        raise ValueError(f"Invalid failure criteria for server metrics: {failure_criteria}")
+        raise ValueError("Invalid failure criteria for server metrics: {}".format(failure_criteria))
     if any(failure_criteria.get(key) is None for key in required_keys):
-        raise ValueError(f"Invalid failure criteria for server metrics: {failure_criteria}")
+        raise ValueError("Invalid failure criteria for server metrics: {}".format(failure_criteria))
     if failure_criteria.get(LoadTestConfigKeys.CONDITION) not in LoadTestFailureCriteriaKeys.CONDITION_ENUM_MAP:
-        raise ValueError(f"Invalid failure criteria for server metrics: {failure_criteria}")
+        raise ValueError("Invalid failure criteria for server metrics: {}".format(failure_criteria))
 
 
 def _get_random_uuid():
@@ -163,28 +162,28 @@ def yaml_parse_failure_criteria(data):
 def get_resource_type_from_resource_id(resource_id: str) -> str | None:
     if resource_id and len(resource_id.split("/")) > 7:
         parts = resource_id.split("/")
-        return f"{parts[6]}/{parts[7]}"
+        return "{}/{}".format(parts[6], parts[7])
     return None
 
 
 def get_resource_name_from_resource_id(resource_id: str) -> str | None:
     if resource_id and len(resource_id.split("/")) > 8:
         parts = resource_id.split("/")
-        return f"{parts[8]}"
+        return parts[8]
     return None
 
 
 def get_resource_group_from_resource_id(resource_id: str) -> str | None:
     if resource_id and len(resource_id.split("/")) > 4:
         parts = resource_id.split("/")
-        return f"{parts[4]}"
+        return parts[4]
     return None
 
 
 def get_subscription_id_from_resource_id(resource_id: str) -> str | None:
     if resource_id and len(resource_id.split("/")) > 2:
         parts = resource_id.split("/")
-        return f"{parts[2]}"
+        return parts[2]
     return None
 
 
@@ -245,7 +244,7 @@ def yaml_parse_engine_identities(data):
         else:
             if not is_valid_resource_id(curr_ref_value):
                 raise InvalidArgumentValueError(
-                    f"{curr_ref_value} is not a valid resource id"
+                    "{} is not a valid resource id".format(curr_ref_value)
                 )
         if identity and identity.get(LoadTestConfigKeys.KIND) == LoadTestConfigKeys.ENGINE:
             if engine_reference_type and curr_ref_type != engine_reference_type:

@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from dataclasses import dataclass
+from typing import ClassVar
 from .models import AllowedTrendsResponseTimeAggregations
 
 
@@ -93,7 +94,7 @@ class LoadTestTrendsKeys:
 
 @dataclass
 class LoadTestFailureCriteriaKeys:
-    CONDITION_ENUM_MAP = {
+    CONDITION_ENUM_MAP: ClassVar[dict[str, str]] = {
         "LessThan": "<",
         "GreaterThan": ">"
     }

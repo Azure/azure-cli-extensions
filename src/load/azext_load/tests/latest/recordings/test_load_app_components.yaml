@@ -14,18 +14,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:47 GMT
+      - Wed, 12 Mar 2025 08:10:36 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -41,7 +41,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: E80B6E27B3E94AD88B0AE3B4BFADAC05 Ref B: MAA201060515009 Ref C: 2025-03-12T05:37:46Z'
+      - 'Ref A: 4006B8A34AB74679A3C9BD3E45FF1888 Ref B: MAA201060514035 Ref C: 2025-03-12T08:10:35Z'
     status:
       code: 200
       message: OK
@@ -57,7 +57,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"error":{"code":"TestNotFound","message":"Test couldn''t find with
@@ -71,15 +71,15 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 12 Mar 2025 05:37:49 GMT
+      - Wed, 12 Mar 2025 08:10:37 GMT
       mise-correlation-id:
-      - 212a9afd-fb9f-46fc-a748-83867b687408
+      - af626206-d136-420d-8fca-2adc0ecdf622
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 20250312T053748Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0e3
+      - 20250312T081036Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004cf9
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -111,11 +111,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PATCH
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":10.0,"errorRateTimeWindowInSeconds":20},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:49.553Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:37.583Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
@@ -127,15 +127,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:49 GMT
+      - Wed, 12 Mar 2025 08:10:37 GMT
       location:
-      - https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+      - https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
       mise-correlation-id:
-      - d843e782-88dc-4bd7-8659-f11a943c782d
+      - 845ec0f3-096e-40e3-9bfb-b3053529e110
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053749Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0fv
+      - 20250312T081037Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004ck2
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -155,7 +155,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/files?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/files?api-version=2024-12-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -172,13 +172,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:49 GMT
+      - Wed, 12 Mar 2025 08:10:37 GMT
       mise-correlation-id:
-      - d450f2d7-0b9d-41d1-9fd7-df56f463c21f
+      - 4574b765-bc1b-409e-88b6-c76b190f21fb
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053749Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0gt
+      - 20250312T081037Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004cn3
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -207,10 +207,10 @@ interactions:
       content-type:
       - application/merge-patch+json
     method: PATCH
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","resourceName":"sample-app-comp1","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","resourceName":"sample-app-comp2","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T05:37:50.043Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.043Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","resourceName":"sample-app-comp1","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","resourceName":"sample-app-comp2","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T08:10:38.118Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.118Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       api-supported-versions:
       - 2022-11-01, 2023-04-01-preview, 2024-03-01-preview, 2024-05-01-preview, 2024-07-01-preview,
@@ -222,15 +222,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:50 GMT
+      - Wed, 12 Mar 2025 08:10:38 GMT
       location:
-      - https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
+      - https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
       mise-correlation-id:
-      - 11dcc96e-f49a-4008-971b-9268885b4e81
+      - fb149a40-ec52-4456-ad0b-4c1e3c18dc08
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053749Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0hq
+      - 20250312T081037Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004cpf
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -250,10 +250,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T05:37:50.073Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.073Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T08:10:38.149Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.149Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -267,13 +267,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:50 GMT
+      - Wed, 12 Mar 2025 08:10:38 GMT
       mise-correlation-id:
-      - cefcad38-42dc-41d6-ae08-26ac5d44f9e2
+      - 59ea3bd7-7c21-4804-9161-0bd00122448a
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053750Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0kd
+      - 20250312T081038Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004crh
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -311,10 +311,10 @@ interactions:
       content-type:
       - application/merge-patch+json
     method: PATCH
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T05:37:50.073Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.536Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T08:10:38.149Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.634Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -328,13 +328,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:50 GMT
+      - Wed, 12 Mar 2025 08:10:38 GMT
       mise-correlation-id:
-      - dbf1406f-6aed-43a6-a851-28c7d9539987
+      - 808d4440-dced-4abe-bbbb-d3805c0aa386
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053750Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0mg
+      - 20250312T081038Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004csy
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -354,11 +354,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":10.0,"errorRateTimeWindowInSeconds":20},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.546Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.643Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -372,13 +372,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:51 GMT
+      - Wed, 12 Mar 2025 08:10:38 GMT
       mise-correlation-id:
-      - 118f2b0d-b777-4193-9dba-c5cc9ff21c5e
+      - faf6d64a-ed3d-48f0-a29d-cc31b273a0b7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053750Z-er184d88b9bjg78phC1BOM62k000000005y000000000y0nd
+      - 20250312T081038Z-er184d88b9bb67jrhC1BOMw2r400000005s0000000004cu4
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -401,18 +401,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:53 GMT
+      - Wed, 12 Mar 2025 08:10:39 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -428,7 +428,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 46BEBAB162AA4CD49929BF268D689A81 Ref B: MAA201060515011 Ref C: 2025-03-12T05:37:52Z'
+      - 'Ref A: B7CB66F2B05E46FA8F6A12E61BCC092B Ref B: MAA201060514029 Ref C: 2025-03-12T08:10:39Z'
     status:
       code: 200
       message: OK
@@ -444,10 +444,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","resourceName":"sample-app-comp1","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","resourceName":"sample-app-comp2","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T05:37:50.043Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.043Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","resourceName":"sample-app-comp1","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","resourceName":"sample-app-comp2","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T08:10:38.118Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.118Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -461,13 +461,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:53 GMT
+      - Wed, 12 Mar 2025 08:10:40 GMT
       mise-correlation-id:
-      - 03f324b0-4095-4b39-9e7c-b580e5a29278
+      - 3ccd358c-9be2-4ad4-8f22-22fb6ddb304c
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053753Z-er184d88b9b8l58khC1BOM4t8g00000007cg00000000hurf
+      - 20250312T081040Z-er184d88b9bcpjhnhC1BOM0q4c00000005s000000000qegt
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -490,18 +490,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:54 GMT
+      - Wed, 12 Mar 2025 08:10:40 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -517,7 +517,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 7193A112128F4C4289C45684DCEA6CDE Ref B: MAA201060514009 Ref C: 2025-03-12T05:37:54Z'
+      - 'Ref A: 4906D70E827D4631901918D0661393B7 Ref B: MAA201060514047 Ref C: 2025-03-12T08:10:40Z'
     status:
       code: 200
       message: OK
@@ -533,10 +533,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T05:37:50.073Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.536Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T08:10:38.149Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.634Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -550,13 +550,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:55 GMT
+      - Wed, 12 Mar 2025 08:10:42 GMT
       mise-correlation-id:
-      - 7ee2cae8-3c84-405b-9a4e-2d254070245b
+      - 1affb06c-8a30-4306-9244-565c0842d491
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053754Z-er184d88b9b92n28hC1BOM5qa000000006g0000000000649
+      - 20250312T081041Z-er184d88b9bcpjhnhC1BOM0q4c00000005q000000000yhkt
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -579,18 +579,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:55 GMT
+      - Wed, 12 Mar 2025 08:10:42 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -606,7 +606,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: EA52574E137C43739ABA107AFDC5874D Ref B: MAA201060516035 Ref C: 2025-03-12T05:37:55Z'
+      - 'Ref A: 86A14CE2D8E34C29A5265A16DB59F5EF Ref B: MAA201060515019 Ref C: 2025-03-12T08:10:42Z'
     status:
       code: 200
       message: OK
@@ -622,11 +622,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":10.0,"errorRateTimeWindowInSeconds":20},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.546Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.643Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -640,13 +640,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:56 GMT
+      - Wed, 12 Mar 2025 08:10:43 GMT
       mise-correlation-id:
-      - a9672bc5-e0ad-4caa-bec3-a77c6698c6de
+      - da1889ea-47b8-4f7b-a52e-c41201d62ea9
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053756Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001raz
+      - 20250312T081042Z-er184d88b9bp42hfhC1BOMg3ug00000007g0000000007753
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -676,11 +676,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: PATCH
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":40.0,"errorRateTimeWindowInSeconds":30},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:56.853Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:43.846Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -694,13 +694,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:56 GMT
+      - Wed, 12 Mar 2025 08:10:43 GMT
       mise-correlation-id:
-      - 9e0fe37a-695c-4b02-bba7-b19b570d17c8
+      - 3926cbe5-932b-49b5-a1d1-e10b8eb426e0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053756Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rd0
+      - 20250312T081043Z-er184d88b9bp42hfhC1BOMg3ug00000007g000000000778h
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -720,7 +720,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/files?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/files?api-version=2024-12-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -737,13 +737,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:57 GMT
+      - Wed, 12 Mar 2025 08:10:44 GMT
       mise-correlation-id:
-      - ee9e4565-1fab-4982-90e7-f06fe4d57e99
+      - ada18c25-1429-48c8-8e29-fde9fbf8d6d7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053756Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rdr
+      - 20250312T081043Z-er184d88b9bp42hfhC1BOMg3ug00000007g00000000077a6
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -763,10 +763,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","resourceName":"sample-app-comp1","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","resourceName":"sample-app-comp2","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T05:37:50.043Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:50.043Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp1","resourceName":"sample-app-comp1","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2","resourceName":"sample-app-comp2","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T08:10:38.118Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:38.118Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -780,13 +780,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:57 GMT
+      - Wed, 12 Mar 2025 08:10:44 GMT
       mise-correlation-id:
-      - ce334844-480c-47a0-a30a-7e315c167f9d
+      - 9ef47088-50cb-46e8-9a38-e877c4900fb7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053757Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rem
+      - 20250312T081044Z-er184d88b9bp42hfhC1BOMg3ug00000007g00000000077b4
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -815,10 +815,10 @@ interactions:
       content-type:
       - application/merge-patch+json
     method: PATCH
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","resourceName":"sample-app-comp3","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T05:37:50.043Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:57.515Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","resourceName":"sample-app-comp3","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T08:10:38.118Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:44.526Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -832,13 +832,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:57 GMT
+      - Wed, 12 Mar 2025 08:10:44 GMT
       mise-correlation-id:
-      - 8f2e3b0a-6790-43bb-9306-d7e18c172d3d
+      - 33753f73-110e-4509-9f05-3a8628f43acd
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053757Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rf9
+      - 20250312T081044Z-er184d88b9bp42hfhC1BOMg3ug00000007g00000000077c0
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -858,10 +858,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T05:37:50.073Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:57.55Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"microsoft.web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"microsoft.web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"microsoft.web/serverfarms"}},"createdDateTime":"2025-03-12T08:10:38.149Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:44.561Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -871,17 +871,17 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '1575'
+      - '1576'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:57 GMT
+      - Wed, 12 Mar 2025 08:10:44 GMT
       mise-correlation-id:
-      - 3611390a-a8f3-47a0-af7f-cb027092306b
+      - 8d5d3b57-2549-4250-865d-0ac71d8a2412
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053757Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rgb
+      - 20250312T081044Z-er184d88b9bp42hfhC1BOMg3ug00000007g00000000077da
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -915,10 +915,10 @@ interactions:
       content-type:
       - application/merge-patch+json
     method: PATCH
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"}},"createdDateTime":"2025-03-12T05:37:50.073Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:58.003Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"}},"createdDateTime":"2025-03-12T08:10:38.149Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:45.096Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -932,13 +932,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:58 GMT
+      - Wed, 12 Mar 2025 08:10:45 GMT
       mise-correlation-id:
-      - fa7407a5-eba0-4fa6-afd9-e0d192ff0ae6
+      - d6b4f2a0-6c93-4f09-8353-13b7b04f5e60
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053757Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rh3
+      - 20250312T081044Z-er184d88b9bp42hfhC1BOMg3ug00000007g00000000077e4
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -958,11 +958,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":40.0,"errorRateTimeWindowInSeconds":30},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:58.012Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:45.105Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -976,13 +976,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:58 GMT
+      - Wed, 12 Mar 2025 08:10:45 GMT
       mise-correlation-id:
-      - 1971a0d6-379b-41a4-9b30-2726bc0c0d9b
+      - d1ece5a8-6cc8-44ae-a349-3e119d55bca6
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053758Z-er184d88b9bb67jrhC1BOMw2r400000005eg000000001rk4
+      - 20250312T081045Z-er184d88b9bp42hfhC1BOMg3ug00000007g00000000077f7
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1005,18 +1005,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:58 GMT
+      - Wed, 12 Mar 2025 08:10:46 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -1032,7 +1032,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: A098333E714641CF8E8AA23A0E3F3503 Ref B: MAA201060514045 Ref C: 2025-03-12T05:37:58Z'
+      - 'Ref A: 130E5778B83044079809D16B12B802FE Ref B: MAA201060515045 Ref C: 2025-03-12T08:10:45Z'
     status:
       code: 200
       message: OK
@@ -1048,10 +1048,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/app-components?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","resourceName":"sample-app-comp3","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T05:37:50.043Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:57.515Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"components":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","resourceName":"sample-app-comp3","resourceType":"Microsoft.Web/serverfarms","resourceGroup":"sample-rg","subscriptionId":"00000000-0000-0000-0000-000000000000","kind":"app"}},"testId":"loadtest-locust-case","createdDateTime":"2025-03-12T08:10:38.118Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:44.526Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -1065,13 +1065,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:37:59 GMT
+      - Wed, 12 Mar 2025 08:10:47 GMT
       mise-correlation-id:
-      - 563af813-ecf4-4065-9eed-e0bc5e7953b9
+      - f5eed963-6b03-41a1-b754-38eb1f9a9de8
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053759Z-er184d88b9b5q6fwhC1BOM7uqn00000008gg00000000rp0n
+      - 20250312T081046Z-er184d88b9bb67jrhC1BOMw2r400000005sg000000002pay
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1094,18 +1094,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:00 GMT
+      - Wed, 12 Mar 2025 08:10:47 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -1121,7 +1121,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 41DB13D42C50498E9B7EB81816C19D8E Ref B: MAA201060515029 Ref C: 2025-03-12T05:38:00Z'
+      - 'Ref A: 7F22BF370C2C4DE4852A36032FE3C0AD Ref B: MAA201060513049 Ref C: 2025-03-12T08:10:47Z'
     status:
       code: 200
       message: OK
@@ -1137,10 +1137,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case/server-metrics-config?api-version=2024-12-01-preview
   response:
     body:
-      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"}},"createdDateTime":"2025-03-12T05:37:50.073Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:58.003Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+      string: '{"testId":"loadtest-locust-case","metrics":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/CpuPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/CpuPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"CpuPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/Microsoft.Web/serverfarms/MemoryPercentage":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3/providers/microsoft.insights/metricdefinitions/MemoryPercentage","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3","metricNamespace":"Microsoft.Web/serverfarms","name":"MemoryPercentage","aggregation":"Average","resourceType":"Microsoft.Web/serverfarms"}},"createdDateTime":"2025-03-12T08:10:38.149Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:45.096Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -1154,13 +1154,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:01 GMT
+      - Wed, 12 Mar 2025 08:10:48 GMT
       mise-correlation-id:
-      - 9a069719-dbcf-4732-a7b6-357471abdab3
+      - 47f65946-5be1-43f7-9f12-1bca4fbc3ccf
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053801Z-er184d88b9bkwgr6hC1BOM2z2w00000007mg000000006zye
+      - 20250312T081048Z-er184d88b9bl9c4fhC1BOMudf800000004m000000000dx11
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1183,18 +1183,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:02 GMT
+      - Wed, 12 Mar 2025 08:10:49 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -1210,7 +1210,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 644355DC69A94E42BE15AEC8E8634582 Ref B: MAA201060516053 Ref C: 2025-03-12T05:38:01Z'
+      - 'Ref A: F7F1D6ACDCB141CF9F51CE9D43B89DB1 Ref B: MAA201060513035 Ref C: 2025-03-12T08:10:48Z'
     status:
       code: 200
       message: OK
@@ -1226,11 +1226,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":40.0,"errorRateTimeWindowInSeconds":30},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:58.012Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:45.105Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -1244,13 +1244,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:03 GMT
+      - Wed, 12 Mar 2025 08:10:50 GMT
       mise-correlation-id:
-      - 4595ea9e-8cf0-475b-92a8-0211ce0d4d0b
+      - d46e09a6-9e45-4d6a-99cf-ad296f65c2df
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053802Z-er184d88b9b669jshC1BOMv4tn00000005rg000000007sw8
+      - 20250312T081049Z-er184d88b9bmzftxhC1BOM22cw00000009ag00000000cp2s
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1273,18 +1273,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:03 GMT
+      - Wed, 12 Mar 2025 08:10:50 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -1300,7 +1300,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: D6E4ABBF14D748468D0FF46E07451EE4 Ref B: MAA201060516011 Ref C: 2025-03-12T05:38:03Z'
+      - 'Ref A: A96E9A9B6D874E03AEFB8F47C8B8326F Ref B: MAA201060515019 Ref C: 2025-03-12T08:10:50Z'
     status:
       code: 200
       message: OK
@@ -1316,11 +1316,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":40.0,"errorRateTimeWindowInSeconds":30},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:58.012Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:45.105Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -1334,13 +1334,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:04 GMT
+      - Wed, 12 Mar 2025 08:10:51 GMT
       mise-correlation-id:
-      - ad8649b4-b68d-4f8b-a577-8ab97695dc5d
+      - 2fa5b139-937e-4387-9b1b-107f705c32e8
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053804Z-er184d88b9brnhz5hC1BOMdw3000000006gg00000000uv05
+      - 20250312T081051Z-er184d88b9bkwgr6hC1BOM2z2w00000007tg00000000rt46
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1363,18 +1363,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"createdBy":"kumarmoh@microsoft.com","createdByType":"User","createdAt":"2025-03-12T05:37:11.9942961Z","lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T05:37:11.9942961Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-app-000001/providers/Microsoft.LoadTestService/loadTests/clitest-app-000002","name":"clitest-app-000002","type":"microsoft.loadtestservice/loadtests","location":"eastus","systemData":{"lastModifiedBy":"kumarmoh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-12T08:10:03.7232104Z"},"identity":{"type":"None"},"properties":{"dataPlaneURI":"1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '551'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:05 GMT
+      - Wed, 12 Mar 2025 08:10:53 GMT
       etag:
-      - '"d2048042-0000-0200-0000-67d11d9e0000"'
+      - '"d404d7d0-0000-0200-0000-67d141740000"'
       expires:
       - '-1'
       pragma:
@@ -1390,7 +1390,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 4EA0531379644C11BC98A1C60E4C0B29 Ref B: MAA201060516019 Ref C: 2025-03-12T05:38:04Z'
+      - 'Ref A: 15A62398B46D41EB9F96DB997035E90D Ref B: MAA201060513033 Ref C: 2025-03-12T08:10:53Z'
     status:
       code: 200
       message: OK
@@ -1406,11 +1406,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://3205b518-f50b-4a90-af2b-8a8f0eaf27dc.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
+    uri: https://1a1cbc72-d44b-4145-b3ca-1f205a133b4e.eastus.cnt-prod.loadtesting.azure.com/tests/loadtest-locust-case?api-version=2024-12-01-preview
   response:
     body:
       string: '{"autoStopCriteria":{"autoStopDisabled":false,"errorRate":40.0,"errorRateTimeWindowInSeconds":30},"loadTestConfiguration":{"engineInstances":1,"splitAllCSVs":false,"quickStartTest":false},"inputArtifacts":{"additionalFileInfo":[]},"kind":"JMX","publicIPDisabled":false,"metricsReferenceIdentityType":"SystemAssigned","testId":"loadtest-locust-case","description":"E2E
-        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T05:37:49.553Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T05:37:58.012Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
+        for the build pipeline (JMX)","displayName":"E2E test for app components edit","keyvaultReferenceIdentityType":"SystemAssigned","createdDateTime":"2025-03-12T08:10:37.583Z","createdBy":"kumarmoh@microsoft.com","lastModifiedDateTime":"2025-03-12T08:10:45.105Z","lastModifiedBy":"kumarmoh@microsoft.com"}'
     headers:
       accept-ranges:
       - bytes
@@ -1424,13 +1424,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 12 Mar 2025 05:38:06 GMT
+      - Wed, 12 Mar 2025 08:10:54 GMT
       mise-correlation-id:
-      - c3f85b51-8ad1-412e-8940-d0089820492f
+      - 30472156-b1e9-4dcd-bca6-84f3ffcbc3b4
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20250312T053805Z-er184d88b9bjhm2ghC1BOM161s000000083000000000qn6p
+      - 20250312T081054Z-er184d88b9bjg78phC1BOM62k000000006e0000000007u6e
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
