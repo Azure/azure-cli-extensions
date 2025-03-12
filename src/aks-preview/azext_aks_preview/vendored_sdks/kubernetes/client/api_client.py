@@ -25,7 +25,7 @@ import six
 from six.moves.urllib.parse import quote
 
 from azext_aks_preview.vendored_sdks.kubernetes.client.configuration import Configuration
-import kubernetes.client.models
+import azext_aks_preview.vendored_sdks.kubernetes.client.models
 from azext_aks_preview.vendored_sdks.kubernetes.client import rest
 from azext_aks_preview.vendored_sdks.kubernetes.client.exceptions import ApiValueError
 

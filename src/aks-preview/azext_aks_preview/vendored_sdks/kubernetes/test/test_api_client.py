@@ -5,7 +5,7 @@ import atexit
 import weakref
 import unittest
 
-import kubernetes
+import azext_aks_preview.vendored_sdks.kubernetes
 from azext_aks_preview.vendored_sdks.kubernetes.client.configuration import Configuration
 import urllib3
 
