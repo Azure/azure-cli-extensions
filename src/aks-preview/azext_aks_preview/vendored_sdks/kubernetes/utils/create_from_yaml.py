@@ -17,8 +17,8 @@ import os
 import re
 
 import yaml
-from kubernetes import client
-from kubernetes.dynamic.client import DynamicClient
+from azext_aks_preview.vendored_sdks.kubernetes import client
+from azext_aks_preview.vendored_sdks.kubernetes.dynamic.client import DynamicClient
 
 UPPER_FOLLOWED_BY_LOWER_RE = re.compile("(.)([A-Z][a-z]+)")
 LOWER_OR_NUM_FOLLOWED_BY_UPPER_RE = re.compile("([a-z0-9])([A-Z])")

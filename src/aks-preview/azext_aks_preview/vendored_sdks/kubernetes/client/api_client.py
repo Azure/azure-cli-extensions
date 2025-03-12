@@ -24,10 +24,10 @@ import tempfile
 import six
 from six.moves.urllib.parse import quote
 
-from kubernetes.client.configuration import Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.client.configuration import Configuration
 import kubernetes.client.models
-from kubernetes.client import rest
-from kubernetes.client.exceptions import ApiValueError
+from azext_aks_preview.vendored_sdks.kubernetes.client import rest
+from azext_aks_preview.vendored_sdks.kubernetes.client.exceptions import ApiValueError
 
 
 class ApiClient(object):

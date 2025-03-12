@@ -16,7 +16,7 @@ import unittest
 
 from unittest.mock import Mock, call
 
-from kubernetes import client
+from azext_aks_preview.vendored_sdks.kubernetes import client
 
 from .watch import Watch
 

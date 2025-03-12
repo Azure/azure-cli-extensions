@@ -2416,7 +2416,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 elif disable_egress_gateway:
                     raise ArgumentUsageError(
                         f'Egress gateway {istio_egressgateway_name} '
-                        'in namespace {istio_egressgateway_namespace} does not exist, cannot disable.'
+                        f'in namespace {istio_egressgateway_namespace} does not exist, cannot disable.'
                     )
 
                 updated = True

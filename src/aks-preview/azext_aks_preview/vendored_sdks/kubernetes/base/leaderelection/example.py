@@ -13,10 +13,10 @@
 # limitations under the License.
 
 import uuid
-from kubernetes import client, config
-from kubernetes.leaderelection import leaderelection
-from kubernetes.leaderelection.resourcelock.configmaplock import ConfigMapLock
-from kubernetes.leaderelection import electionconfig
+from azext_aks_preview.vendored_sdks.kubernetes import client, config
+from azext_aks_preview.vendored_sdks.kubernetes.leaderelection import leaderelection
+from azext_aks_preview.vendored_sdks.kubernetes.leaderelection.resourcelock.configmaplock import ConfigMapLock
+from azext_aks_preview.vendored_sdks.kubernetes.leaderelection import electionconfig
 
 
 # Authenticate using config file

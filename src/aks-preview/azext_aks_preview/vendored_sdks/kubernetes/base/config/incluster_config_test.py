@@ -18,7 +18,7 @@ import tempfile
 import time
 import unittest
 
-from kubernetes.client import Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.client import Configuration
 
 from .config_exception import ConfigException
 from .incluster_config import (SERVICE_HOST_ENV_NAME, SERVICE_PORT_ENV_NAME,

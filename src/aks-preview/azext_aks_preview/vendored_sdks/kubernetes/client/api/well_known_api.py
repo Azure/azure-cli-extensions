@@ -17,8 +17,8 @@ import re  # noqa: F401
 # python 2 and python 3 compatibility library
 import six
 
-from kubernetes.client.api_client import ApiClient
-from kubernetes.client.exceptions import (  # noqa: F401
+from azext_aks_preview.vendored_sdks.kubernetes.client.api_client import ApiClient
+from azext_aks_preview.vendored_sdks.kubernetes.client.exceptions import (  # noqa: F401
     ApiTypeError,
     ApiValueError
 )

@@ -16,7 +16,7 @@ import unittest
 
 from .ws_client import get_websocket_url
 from .ws_client import websocket_proxycare
-from kubernetes.client.configuration import Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.client.configuration import Configuration
 
 try:
     import urllib3

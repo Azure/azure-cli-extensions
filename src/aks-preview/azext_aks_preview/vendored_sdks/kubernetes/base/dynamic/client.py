@@ -15,8 +15,8 @@
 import six
 import json
 
-from kubernetes import watch
-from kubernetes.client.rest import ApiException
+from azext_aks_preview.vendored_sdks.kubernetes import watch
+from azext_aks_preview.vendored_sdks.kubernetes.client.rest import ApiException
 
 from .discovery import EagerDiscoverer, LazyDiscoverer
 from .exceptions import api_exception, KubernetesValidateMissing
@@ -29,7 +29,7 @@ except ImportError:
     HAS_KUBERNETES_VALIDATE = False
 
 try:
-    from kubernetes_validate.utils import VersionNotSupportedError
+    from azext_aks_preview.vendored_sdks.kubernetes_validate.utils import VersionNotSupportedError
 except ImportError:
     class VersionNotSupportedError(NotImplementedError):
         pass

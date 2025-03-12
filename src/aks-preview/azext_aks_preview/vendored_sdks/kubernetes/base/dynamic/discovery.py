@@ -24,7 +24,7 @@ from abc import abstractmethod, abstractproperty
 
 from urllib3.exceptions import ProtocolError, MaxRetryError
 
-from kubernetes import __version__
+from azext_aks_preview.vendored_sdks.kubernetes import __version__
 from .exceptions import NotFoundError, ResourceNotFoundError, ResourceNotUniqueError, ApiException, ServiceUnavailableError
 from .resource import Resource, ResourceList
 

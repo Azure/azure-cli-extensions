@@ -15,7 +15,7 @@ import re  # noqa: F401
 
 import six
 
-from kubernetes.client.configuration import Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.client.configuration import Configuration
 
 
 class V1ConfigMapNodeConfigSource(object):

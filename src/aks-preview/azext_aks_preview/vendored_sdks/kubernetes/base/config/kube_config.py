@@ -33,8 +33,8 @@ import yaml
 from requests_oauthlib import OAuth2Session
 from six import PY3
 
-from kubernetes.client import ApiClient, Configuration
-from kubernetes.config.exec_provider import ExecProvider
+from azext_aks_preview.vendored_sdks.kubernetes.client import ApiClient, Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.config.exec_provider import ExecProvider
 
 from .config_exception import ConfigException
 from .dateutil import UTC, format_rfc3339, parse_rfc3339

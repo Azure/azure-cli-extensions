@@ -24,7 +24,7 @@ import six
 from six.moves.urllib.parse import urlencode
 import urllib3
 
-from kubernetes.client.exceptions import ApiException, ApiValueError
+from azext_aks_preview.vendored_sdks.kubernetes.client.exceptions import ApiException, ApiValueError
 from requests.utils import should_bypass_proxies
 
 

@@ -4,7 +4,7 @@ import warnings
 # flake8: noqa
 
 # alias kubernetes.client.api package and print deprecation warning
-from kubernetes.client.api import *
+from azext_aks_preview.vendored_sdks.kubernetes.client.api import *
 
 warnings.filterwarnings('default', module='kubernetes.client.apis')
 warnings.warn(

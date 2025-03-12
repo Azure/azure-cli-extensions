@@ -13,7 +13,7 @@
 # limitations under the License.
 import sys
 
-from kubernetes.client.rest import ApiException, ApiValueError
+from azext_aks_preview.vendored_sdks.kubernetes.client.rest import ApiException, ApiValueError
 
 import certifi
 import collections
@@ -317,7 +317,7 @@ class PortForward:
             self.socket = self._Socket(s)
             # Data accumulated from the websocket to be sent to the python application.
             self.data = b''
-            # All data sent from kubernetes on the port error channel.
+            # All data sent from azext_aks_preview.vendored_sdks.kubernetes on the port error channel.
             self.error = None
 
         class _Socket:
