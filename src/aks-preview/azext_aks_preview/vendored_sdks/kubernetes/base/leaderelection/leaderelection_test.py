@@ -15,7 +15,7 @@
 
 from . import leaderelection
 from .leaderelectionrecord import LeaderElectionRecord
-from kubernetes.client.rest import ApiException
+from azext_aks_preview.vendored_sdks.kubernetes.client.rest import ApiException
 from . import electionconfig
 import unittest
 import threading

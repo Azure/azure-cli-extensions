@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from kubernetes.client.rest import ApiException
-from kubernetes import client, config
-from kubernetes.client.api_client import ApiClient
+from azext_aks_preview.vendored_sdks.kubernetes.client.rest import ApiException
+from azext_aks_preview.vendored_sdks.kubernetes import client, config
+from azext_aks_preview.vendored_sdks.kubernetes.client.api_client import ApiClient
 from ..leaderelectionrecord import LeaderElectionRecord
 import json
 import logging

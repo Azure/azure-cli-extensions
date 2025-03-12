@@ -16,7 +16,7 @@ import json
 import pydoc
 import sys
 
-from kubernetes import client
+from azext_aks_preview.vendored_sdks.kubernetes import client
 
 PYDOC_RETURN_LABEL = ":return:"
 PYDOC_FOLLOW_PARAM = ":param bool follow:"

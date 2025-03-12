@@ -15,8 +15,8 @@
 import os
 import unittest
 
-from kubernetes.e2e_test import base
-from kubernetes.client import api_client
+from azext_aks_preview.vendored_sdks.kubernetes.e2e_test import base
+from azext_aks_preview.vendored_sdks.kubernetes.client import api_client
 
 from . import DynamicClient
 

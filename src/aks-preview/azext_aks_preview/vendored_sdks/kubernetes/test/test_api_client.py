@@ -6,7 +6,7 @@ import weakref
 import unittest
 
 import kubernetes
-from kubernetes.client.configuration import Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.client.configuration import Configuration
 import urllib3
 
 class TestApiClient(unittest.TestCase):

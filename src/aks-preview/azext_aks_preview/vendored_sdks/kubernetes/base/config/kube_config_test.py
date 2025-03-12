@@ -27,7 +27,7 @@ from unittest import mock
 import yaml
 from six import PY3, next
 
-from kubernetes.client import Configuration
+from azext_aks_preview.vendored_sdks.kubernetes.client import Configuration
 
 from .config_exception import ConfigException
 from .dateutil import UTC, format_rfc3339, parse_rfc3339
