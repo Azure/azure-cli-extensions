@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment create",
+)
 class Create(AAZCommand):
     """Create Confluent environment.
     """

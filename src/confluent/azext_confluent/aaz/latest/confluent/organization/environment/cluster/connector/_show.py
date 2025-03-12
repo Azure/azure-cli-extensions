@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster connector show",
+)
 class Show(AAZCommand):
     """Get Confluent connector by name.
     """

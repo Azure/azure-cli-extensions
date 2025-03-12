@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization create-role-bindings",
+)
 class CreateRoleBindings(AAZCommand):
     """Organization role bindings.
     """

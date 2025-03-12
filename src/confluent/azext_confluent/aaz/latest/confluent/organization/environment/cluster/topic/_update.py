@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster topic update",
+)
 class Update(AAZCommand):
     """Update Confluent topics by name.
     """

@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "confluent organization access",
+)
 class __CMDGroup(AAZCommandGroup):
     """Manage Confluent organization access.
     """

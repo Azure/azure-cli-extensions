@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster connector list",
+)
 class List(AAZCommand):
     """List all the connectors in a cluster.
     """

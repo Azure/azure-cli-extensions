@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization access default list-invitation",
+)
 class ListInvitation(AAZCommand):
     """Organization accounts invitation details
     """

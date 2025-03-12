@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster connector update",
+)
 class Update(AAZCommand):
     """Update Confluent connector by name.
     """

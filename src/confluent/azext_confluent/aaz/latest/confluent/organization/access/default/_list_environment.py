@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization access default list-environment",
+)
 class ListEnvironment(AAZCommand):
     """Environment list of an organization
     """

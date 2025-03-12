@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-13",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}/clusters", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}/clusters", "2024-07-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.environment_id = AAZStrArg(
             options=["--environment-id"],
-            help="Confluent environment id",
+            help="Confluent environment ID.",
             required=True,
         )
         _args_schema.organization_name = AAZStrArg(
@@ -53,8 +53,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
+            help="Resource group.",
             required=True,
         )
         _args_schema.page_size = AAZIntArg(
@@ -143,7 +142,7 @@ class List(AAZCommand):
                     "pageToken", self.ctx.args.page_token,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-02-13",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -191,6 +190,7 @@ class List(AAZCommand):
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _element.type = AAZStrType()
 
             properties = cls._schema_on_200.value.Element.properties
             properties.metadata = AAZObjectType()
@@ -231,6 +231,7 @@ class List(AAZCommand):
             spec.name = AAZStrType()
             spec.network = AAZObjectType()
             _ListHelper._build_schema_sc_cluster_network_environment_entity_read(spec.network)
+            spec.package = AAZStrType()
             spec.region = AAZStrType()
             spec.zone = AAZStrType()
 

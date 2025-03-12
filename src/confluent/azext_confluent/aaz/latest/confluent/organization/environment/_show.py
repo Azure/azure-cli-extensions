@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment show",
+)
 class Show(AAZCommand):
     """Get Environment details by environment ID.
     """

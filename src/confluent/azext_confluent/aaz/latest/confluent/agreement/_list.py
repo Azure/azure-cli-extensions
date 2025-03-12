@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent agreement list",
+)
 class List(AAZCommand):
     """List Confluent marketplace agreements in the subscription.
     """

@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent agreement default create",
+)
 class Create(AAZCommand):
     """Create Confluent Marketplace agreement in the subscription.
     """

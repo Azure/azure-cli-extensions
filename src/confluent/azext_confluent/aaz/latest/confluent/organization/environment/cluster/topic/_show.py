@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster topic show",
+)
 class Show(AAZCommand):
     """Get Confluent topics by name.
     """

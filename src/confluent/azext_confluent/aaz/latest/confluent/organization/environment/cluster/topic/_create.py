@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster topic create",
+)
 class Create(AAZCommand):
     """Create Confluent topics by name.
     """

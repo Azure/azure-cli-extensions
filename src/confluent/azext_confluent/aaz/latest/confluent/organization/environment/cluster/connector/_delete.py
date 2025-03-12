@@ -11,6 +11,10 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster connector delete",
+    confirmation="Are you sure you want to perform this operation?",
+)
 class Delete(AAZCommand):
     """Delete Confluent connector by name.
     """

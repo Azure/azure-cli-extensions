@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization environment cluster topic list",
+)
 class List(AAZCommand):
     """List of all the topics in a clusters.
     """

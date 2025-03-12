@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "confluent organization access default list-cluster",
+)
 class ListCluster(AAZCommand):
     """Cluster details
     """
