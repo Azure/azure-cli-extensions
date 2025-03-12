@@ -37,7 +37,7 @@ def _perform_continuous_patch_operation(cmd,
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
 
-    validate_inputs(schedule, config)
+    validate_inputs(schedule, config, dryrun, run_immediately)
 
     if not is_create:
         validate_cssc_optional_inputs(config, schedule)
