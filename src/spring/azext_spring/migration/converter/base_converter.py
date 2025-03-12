@@ -285,3 +285,9 @@ class SourceDataWrapper:
 
     def get_storages(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring/storages')
+
+    def is_enabled_system_assigned_identity_for_app(self, app):
+        identity = app.get('identity')
+        if identity is None:
+            return False
+        return identity.get('type') == 'SystemAssigned'

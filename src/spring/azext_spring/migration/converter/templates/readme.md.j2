@@ -117,7 +117,7 @@ Some properties and configurations are not included in the Bicep files and must 
 ### **TLS certificate**
 {%- if data.shouldSystemAssignedIdentityEnabled %}
 Following TLS certificates from Azure Key Vault have been migrated by the migration tool, to make sure Azure Container Apps can load that certificate, you need to assign **Key Vault Secrets User** role to the system-assigned managed identity of Azure Container Apps environment after it creates.
-{%- for cert in data.keyvault_certs %}
+{%- for cert in data.keyVaultCerts %}
   - `{{cert.name}}`
 {%- endfor %}
 {%- endif %}
@@ -138,10 +138,10 @@ You have custom domains configured in Azure Spring Apps. You can follow the step
 {%- endfor %}
 {%- endif %}
 
-{%- if data.system_assigned_identity_apps %}
+{%- if data.systemAssignedIdentityApps %}
 ### Managed Identity
-Following applications have enabled system-assigned managed identity in Azure Spring Apps, your Azure Container Apps app instance will also have enabled system-assigned managed identity, but you need to reassign the corresponding roles to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity) to understand how to use managed identity in Azure Container Apps.
-{%- for app in data.system_assigned_identity_apps %}
+Following applications have enabled system-assigned managed identity in Azure Spring Apps, your Azure Container Apps app instance will also have enabled system-assigned managed identity, but you need to reassign the corresponding roles, which you can identify from the error message if the deployment fails, to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity) to understand how to use managed identity in Azure Container Apps.
+{%- for app in data.systemAssignedIdentityApps %}
   - `{{app.name}}`
 {%- endfor %}
 {%- endif %}
@@ -154,13 +154,8 @@ Following applications have enabled blue-green deployments in Azure Spring Apps,
 {%- endfor %}
 {%- endif %}
 
-{%- if data.auto_scale_enabled_deployments %}
 ### Auto scale
-You have enabled auto scaling for following applications in Azure Spring Apps, you need to manually configure the different auto scaling rules in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
-{%- for deployment in data.autoScaleEnabledApps %}
-  - `{{deployment.appName}}/{{deployment.name}}`
-{%- endfor %}
-{%- endif %}
+Because Azure Container Apps leverage Kubernetes Event-driven Autoscaling (KEDA) for auto-scaling, which is different from Azure Spring Apps that use Azure Monitor, the migration tools cannot transfer these settings for you. You will need to manually configure the auto-scaling settings in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
 
 ### Monitoring
 The migration has enabled logging and monitoring in Azure Container Apps. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-monitoring) for sample queries to help with troubleshooting.
