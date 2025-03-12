@@ -33,9 +33,9 @@ load_params = {
 }
 
 
-class LoadTestScenarioAdvancedUrl(ScenarioTest):
+class LoadTestScenarioLocust(ScenarioTest):
     def __init__(self, *args, **kwargs):
-        super(LoadTestScenarioAdvancedUrl, self).__init__(*args, **kwargs)
+        super(LoadTestScenarioLocust, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
     
     @ResourceGroupPreparer(**rg_params)
