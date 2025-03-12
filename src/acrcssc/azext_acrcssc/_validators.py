@@ -134,10 +134,16 @@ def _validate_schedule(schedule):
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 
 
-def validate_inputs(schedule, config_file_path=None):
+def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediately=False):
     _validate_schedule(schedule)
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
+    validate_run_type(dryrun, run_immediately)
+    
+
+def validate_run_type(dryrun, run_immediately):
+    if dryrun and run_immediately:
+        raise InvalidArgumentValueError(error_msg="The --dryrun and --run-immediately options cannot be used together. Use one or the other.")
 
 
 def validate_task_type(task_type):

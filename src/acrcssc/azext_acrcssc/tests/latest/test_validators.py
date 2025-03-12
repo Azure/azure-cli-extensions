@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest import mock
 from ..._validators import (
-    _validate_schedule, check_continuous_task_exists, validate_continuouspatch_config_v1
+    _validate_schedule, validate_run_type, check_continuous_task_exists, validate_continuouspatch_config_v1
 )
 
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
@@ -34,6 +34,26 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
         for timespan in test_cases:
             self.assertRaises(InvalidArgumentValueError, _validate_schedule, timespan)
+
+    def test_validate_run_type_valid(self):
+        test_cases = [
+            (True, False),
+            (False, True),
+            (False, False)
+        ]
+
+        for dryrun, run_immediately in test_cases:
+            with self.subTest(dryrun=dryrun, run_immediately=run_immediately):
+                validate_run_type(dryrun, run_immediately)
+
+    def test_validate_run_type_invalid(self):
+        test_cases = [
+            (True, True)
+        ]
+
+        for dryrun, run_immediately in test_cases:
+            with self.subTest(dryrun=dryrun, run_immediately=run_immediately):
+                self.assertRaises(InvalidArgumentValueError, validate_run_type, dryrun, run_immediately)
 
     @patch('azext_acrcssc._validators.cf_acr_tasks')
     def test_check_continuoustask_exists(self, mock_cf_acr_tasks):
