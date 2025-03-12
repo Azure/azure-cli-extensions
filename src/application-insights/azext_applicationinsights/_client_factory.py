@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-class _Track1Credential:
+class _Track1Credential:  # pylint: disable=too-few-public-methods
 
     def __init__(self, credential, resource):
         """Track 1 credential that can be fed into Track 1 SDK clients. Exposes signed_session protocol.
