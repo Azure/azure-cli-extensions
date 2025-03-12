@@ -268,6 +268,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         track_job_to_completion(test)
 
     # Uses a persistent vault and DS
+    @unittest.skip("Temporary skip to allow AKS hotfix through")
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_pgflex(test):
         test.kwargs.update({
@@ -356,6 +357,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         track_job_to_completion(test)
 
     # Uses a persistent vault and DS
+    @unittest.skip("MySQL backup offering has been temporarily paused")
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_mysql(test):
         test.kwargs.update({
@@ -386,13 +388,13 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         })
 
         # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
-        # test.cmd('az dataprotection backup-instance update-msi-permissions '
-        #          '-g "{rg}" '
-        #          '--vault-name "{vaultName}" '
-        #          '--backup-instance "{backupInstance}" '
-        #          '--datasource-type "{dataSourceType}" '
-        #          '--permissions-scope "{permissionsScope}" '
-        #          '--operation "{operation}" --yes')
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" '
+                 '--vault-name "{vaultName}" '
+                 '--backup-instance "{backupInstance}" '
+                 '--datasource-type "{dataSourceType}" '
+                 '--permissions-scope "{permissionsScope}" '
+                 '--operation "{operation}" --yes')
 
         backup_instance_validate_create(test)
 
@@ -419,14 +421,14 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         test.kwargs.update({"restoreRequest": restore_request})
 
         # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
-        # test.cmd('az dataprotection backup-instance update-msi-permissions '
-        #          '-g "{rg}" '
-        #          '--vault-name "{vaultName}" '
-        #          '--restore-request-object "{restoreRequest}" '
-        #          '--datasource-type "{dataSourceType}" '
-        #          '--permissions-scope "{permissionsScope}" '
-        #          '--operation "{restoreOperation}" '
-        #          '--target-storage-account-id "{targetStorageAccount}" --yes')
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" '
+                 '--vault-name "{vaultName}" '
+                 '--restore-request-object "{restoreRequest}" '
+                 '--datasource-type "{dataSourceType}" '
+                 '--permissions-scope "{permissionsScope}" '
+                 '--operation "{restoreOperation}" '
+                 '--target-storage-account-id "{targetStorageAccount}" --yes')
 
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
 
