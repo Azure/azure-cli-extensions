@@ -20,7 +20,6 @@ class ReadMeConverter(BaseConverter):
             content_certs = self.wrapper_data.get_content_certificates()
             green_deployments = self.wrapper_data.get_green_deployments()
             should_system_assigned_identity_enabled = len(self.wrapper_data.get_keyvault_certificates()) > 0
-            auto_scale_enabled_deployments = []  # todo
             system_assigned_identity_apps = []  # todo
 
             data = {
@@ -34,7 +33,6 @@ class ReadMeConverter(BaseConverter):
                 "keyVaultCerts": keyvault_certs,
                 "contentCerts": content_certs,
                 "greenDeployments": self._transform_deployments(green_deployments),
-                "autoScaleEnabledApps": auto_scale_enabled_deployments,
                 "shouldSystemAssignedIdentityEnabled": should_system_assigned_identity_enabled,
                 "systemAssignedIdentityApps": system_assigned_identity_apps,
             }
