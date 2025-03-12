@@ -323,6 +323,7 @@ def load_arguments(self, _):
         c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
+        c.argument('scale_rule_name', options_list=['--scale-rule-name', '--srn'], help="The name of the scale rule.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
         c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
 
