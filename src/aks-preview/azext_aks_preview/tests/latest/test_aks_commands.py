@@ -28,9 +28,9 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
 
-from kubernetes import config, client
-from kubernetes.dynamic import DynamicClient
-from kubernetes.dynamic.exceptions import ResourceNotFoundError
+from azext_aks_preview.vendored_sdks.kubernetes import config, client
+from azext_aks_preview.vendored_sdks.kubernetes.dynamic import DynamicClient
+from azext_aks_preview.vendored_sdks.kubernetes.dynamic.exceptions import ResourceNotFoundError
 
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
