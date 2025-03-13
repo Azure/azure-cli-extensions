@@ -258,7 +258,90 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_deidentification_job_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            _schema_on_200.customizations = AAZObjectType()
+            _schema_on_200.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_azure._core._foundations._error_read(_schema_on_200.error)
+            _schema_on_200.last_updated_at = AAZStrType(
+                serialized_name="lastUpdatedAt",
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.operation = AAZStrType()
+            _schema_on_200.source_location = AAZObjectType(
+                serialized_name="sourceLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.summary = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.target_location = AAZObjectType(
+                serialized_name="targetLocation",
+                flags={"required": True},
+            )
+
+            customizations = cls._schema_on_200.customizations
+            customizations.redaction_format = AAZStrType(
+                serialized_name="redactionFormat",
+            )
+            customizations.surrogate_locale = AAZStrType(
+                serialized_name="surrogateLocale",
+            )
+
+            source_location = cls._schema_on_200.source_location
+            source_location.extensions = AAZListType()
+            source_location.location = AAZStrType(
+                flags={"required": True},
+            )
+            source_location.prefix = AAZStrType(
+                flags={"required": True},
+            )
+
+            extensions = cls._schema_on_200.source_location.extensions
+            extensions.Element = AAZStrType()
+
+            summary = cls._schema_on_200.summary
+            summary.bytes_processed = AAZIntType(
+                serialized_name="bytesProcessed",
+                flags={"required": True},
+            )
+            summary.canceled = AAZIntType(
+                flags={"required": True},
+            )
+            summary.failed = AAZIntType(
+                flags={"required": True},
+            )
+            summary.successful = AAZIntType(
+                flags={"required": True},
+            )
+            summary.total = AAZIntType(
+                flags={"required": True},
+            )
+
+            target_location = cls._schema_on_200.target_location
+            target_location.location = AAZStrType(
+                flags={"required": True},
+            )
+            target_location.overwrite = AAZBoolType()
+            target_location.prefix = AAZStrType(
+                flags={"required": True},
+            )
 
             return cls._schema_on_200
 
@@ -272,16 +355,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_201_200,
                     self.on_error,
                     lro_options={"final-state-via": "original-uri"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [201, 200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_201_200,
                     self.on_error,
                     lro_options={"final-state-via": "original-uri"},
                     path_format_arguments=self.url_parameters,
@@ -350,25 +433,108 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_201_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_201_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_201_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_201_200(cls):
+            if cls._schema_on_201_200 is not None:
+                return cls._schema_on_201_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_deidentification_job_read(cls._schema_on_200_201)
+            cls._schema_on_201_200 = AAZObjectType()
 
-            return cls._schema_on_200_201
+            _schema_on_201_200 = cls._schema_on_201_200
+            _schema_on_201_200.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.customizations = AAZObjectType()
+            _schema_on_201_200.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_azure._core._foundations._error_read(_schema_on_201_200.error)
+            _schema_on_201_200.last_updated_at = AAZStrType(
+                serialized_name="lastUpdatedAt",
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.operation = AAZStrType()
+            _schema_on_201_200.source_location = AAZObjectType(
+                serialized_name="sourceLocation",
+                flags={"required": True},
+            )
+            _schema_on_201_200.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.summary = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.target_location = AAZObjectType(
+                serialized_name="targetLocation",
+                flags={"required": True},
+            )
+
+            customizations = cls._schema_on_201_200.customizations
+            customizations.redaction_format = AAZStrType(
+                serialized_name="redactionFormat",
+            )
+            customizations.surrogate_locale = AAZStrType(
+                serialized_name="surrogateLocale",
+            )
+
+            source_location = cls._schema_on_201_200.source_location
+            source_location.extensions = AAZListType()
+            source_location.location = AAZStrType(
+                flags={"required": True},
+            )
+            source_location.prefix = AAZStrType(
+                flags={"required": True},
+            )
+
+            extensions = cls._schema_on_201_200.source_location.extensions
+            extensions.Element = AAZStrType()
+
+            summary = cls._schema_on_201_200.summary
+            summary.bytes_processed = AAZIntType(
+                serialized_name="bytesProcessed",
+                flags={"required": True},
+            )
+            summary.canceled = AAZIntType(
+                flags={"required": True},
+            )
+            summary.failed = AAZIntType(
+                flags={"required": True},
+            )
+            summary.successful = AAZIntType(
+                flags={"required": True},
+            )
+            summary.total = AAZIntType(
+                flags={"required": True},
+            )
+
+            target_location = cls._schema_on_201_200.target_location
+            target_location.location = AAZStrType(
+                flags={"required": True},
+            )
+            target_location.overwrite = AAZBoolType()
+            target_location.prefix = AAZStrType(
+                flags={"required": True},
+            )
+
+            return cls._schema_on_201_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -421,178 +587,62 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_azure_core_foundations_error_read = None
+    _schema_azure._core._foundations._error_read = None
 
     @classmethod
-    def _build_schema_azure_core_foundations_error_read(cls, _schema):
-        if cls._schema_azure_core_foundations_error_read is not None:
-            _schema.code = cls._schema_azure_core_foundations_error_read.code
-            _schema.details = cls._schema_azure_core_foundations_error_read.details
-            _schema.innererror = cls._schema_azure_core_foundations_error_read.innererror
-            _schema.message = cls._schema_azure_core_foundations_error_read.message
-            _schema.target = cls._schema_azure_core_foundations_error_read.target
+    def _build_schema_azure._core._foundations._error_read(cls, _schema):
+        if cls._schema_azure._core._foundations._error_read is not None:
+            _schema.code = cls._schema_azure._core._foundations._error_read.code
+            _schema.details = cls._schema_azure._core._foundations._error_read.details
+            _schema.innererror = cls._schema_azure._core._foundations._error_read.innererror
+            _schema.message = cls._schema_azure._core._foundations._error_read.message
+            _schema.target = cls._schema_azure._core._foundations._error_read.target
             return
 
-        cls._schema_azure_core_foundations_error_read = _schema_azure_core_foundations_error_read = AAZObjectType(
+        cls._schema_azure._core._foundations._error_read = _schema_azure._core._foundations._error_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        azure_core_foundations_error_read = _schema_azure_core_foundations_error_read
-        azure_core_foundations_error_read.code = AAZStrType(
+        azure._core._foundations._error_read = _schema_azure._core._foundations._error_read
+        azure._core._foundations._error_read.code = AAZStrType(
             flags={"required": True},
         )
-        azure_core_foundations_error_read.details = AAZListType()
-        azure_core_foundations_error_read.innererror = AAZObjectType()
-        cls._build_schema_azure_core_foundations_inner_error_read(azure_core_foundations_error_read.innererror)
-        azure_core_foundations_error_read.message = AAZStrType(
+        azure._core._foundations._error_read.details = AAZListType()
+        azure._core._foundations._error_read.innererror = AAZObjectType()
+        cls._build_schema_azure._core._foundations._inner_error_read(azure._core._foundations._error_read.innererror)
+        azure._core._foundations._error_read.message = AAZStrType(
             flags={"required": True},
         )
-        azure_core_foundations_error_read.target = AAZStrType()
+        azure._core._foundations._error_read.target = AAZStrType()
 
-        details = _schema_azure_core_foundations_error_read.details
+        details = _schema_azure._core._foundations._error_read.details
         details.Element = AAZObjectType()
-        cls._build_schema_azure_core_foundations_error_read(details.Element)
+        cls._build_schema_azure._core._foundations._error_read(details.Element)
 
-        _schema.code = cls._schema_azure_core_foundations_error_read.code
-        _schema.details = cls._schema_azure_core_foundations_error_read.details
-        _schema.innererror = cls._schema_azure_core_foundations_error_read.innererror
-        _schema.message = cls._schema_azure_core_foundations_error_read.message
-        _schema.target = cls._schema_azure_core_foundations_error_read.target
+        _schema.code = cls._schema_azure._core._foundations._error_read.code
+        _schema.details = cls._schema_azure._core._foundations._error_read.details
+        _schema.innererror = cls._schema_azure._core._foundations._error_read.innererror
+        _schema.message = cls._schema_azure._core._foundations._error_read.message
+        _schema.target = cls._schema_azure._core._foundations._error_read.target
 
-    _schema_azure_core_foundations_inner_error_read = None
-
-    @classmethod
-    def _build_schema_azure_core_foundations_inner_error_read(cls, _schema):
-        if cls._schema_azure_core_foundations_inner_error_read is not None:
-            _schema.code = cls._schema_azure_core_foundations_inner_error_read.code
-            _schema.innererror = cls._schema_azure_core_foundations_inner_error_read.innererror
-            return
-
-        cls._schema_azure_core_foundations_inner_error_read = _schema_azure_core_foundations_inner_error_read = AAZObjectType()
-
-        azure_core_foundations_inner_error_read = _schema_azure_core_foundations_inner_error_read
-        azure_core_foundations_inner_error_read.code = AAZStrType()
-        azure_core_foundations_inner_error_read.innererror = AAZObjectType()
-        cls._build_schema_azure_core_foundations_inner_error_read(azure_core_foundations_inner_error_read.innererror)
-
-        _schema.code = cls._schema_azure_core_foundations_inner_error_read.code
-        _schema.innererror = cls._schema_azure_core_foundations_inner_error_read.innererror
-
-    _schema_deidentification_job_read = None
+    _schema_azure._core._foundations._inner_error_read = None
 
     @classmethod
-    def _build_schema_deidentification_job_read(cls, _schema):
-        if cls._schema_deidentification_job_read is not None:
-            _schema.created_at = cls._schema_deidentification_job_read.created_at
-            _schema.customizations = cls._schema_deidentification_job_read.customizations
-            _schema.error = cls._schema_deidentification_job_read.error
-            _schema.last_updated_at = cls._schema_deidentification_job_read.last_updated_at
-            _schema.name = cls._schema_deidentification_job_read.name
-            _schema.operation = cls._schema_deidentification_job_read.operation
-            _schema.source_location = cls._schema_deidentification_job_read.source_location
-            _schema.started_at = cls._schema_deidentification_job_read.started_at
-            _schema.status = cls._schema_deidentification_job_read.status
-            _schema.summary = cls._schema_deidentification_job_read.summary
-            _schema.target_location = cls._schema_deidentification_job_read.target_location
+    def _build_schema_azure._core._foundations._inner_error_read(cls, _schema):
+        if cls._schema_azure._core._foundations._inner_error_read is not None:
+            _schema.code = cls._schema_azure._core._foundations._inner_error_read.code
+            _schema.innererror = cls._schema_azure._core._foundations._inner_error_read.innererror
             return
 
-        cls._schema_deidentification_job_read = _schema_deidentification_job_read = AAZObjectType()
+        cls._schema_azure._core._foundations._inner_error_read = _schema_azure._core._foundations._inner_error_read = AAZObjectType()
 
-        deidentification_job_read = _schema_deidentification_job_read
-        deidentification_job_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-            flags={"read_only": True},
-        )
-        deidentification_job_read.customizations = AAZObjectType()
-        deidentification_job_read.error = AAZObjectType(
-            flags={"read_only": True},
-        )
-        cls._build_schema_azure_core_foundations_error_read(deidentification_job_read.error)
-        deidentification_job_read.last_updated_at = AAZStrType(
-            serialized_name="lastUpdatedAt",
-            flags={"read_only": True},
-        )
-        deidentification_job_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        deidentification_job_read.operation = AAZStrType()
-        deidentification_job_read.source_location = AAZObjectType(
-            serialized_name="sourceLocation",
-            flags={"required": True},
-        )
-        deidentification_job_read.started_at = AAZStrType(
-            serialized_name="startedAt",
-            flags={"read_only": True},
-        )
-        deidentification_job_read.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        deidentification_job_read.summary = AAZObjectType(
-            flags={"read_only": True},
-        )
-        deidentification_job_read.target_location = AAZObjectType(
-            serialized_name="targetLocation",
-            flags={"required": True},
-        )
+        azure._core._foundations._inner_error_read = _schema_azure._core._foundations._inner_error_read
+        azure._core._foundations._inner_error_read.code = AAZStrType()
+        azure._core._foundations._inner_error_read.innererror = AAZObjectType()
+        cls._build_schema_azure._core._foundations._inner_error_read(azure._core._foundations._inner_error_read.innererror)
 
-        customizations = _schema_deidentification_job_read.customizations
-        customizations.redaction_format = AAZStrType(
-            serialized_name="redactionFormat",
-        )
-        customizations.surrogate_locale = AAZStrType(
-            serialized_name="surrogateLocale",
-        )
-
-        source_location = _schema_deidentification_job_read.source_location
-        source_location.extensions = AAZListType()
-        source_location.location = AAZStrType(
-            flags={"required": True},
-        )
-        source_location.prefix = AAZStrType(
-            flags={"required": True},
-        )
-
-        extensions = _schema_deidentification_job_read.source_location.extensions
-        extensions.Element = AAZStrType()
-
-        summary = _schema_deidentification_job_read.summary
-        summary.bytes_processed = AAZIntType(
-            serialized_name="bytesProcessed",
-            flags={"required": True},
-        )
-        summary.canceled = AAZIntType(
-            flags={"required": True},
-        )
-        summary.failed = AAZIntType(
-            flags={"required": True},
-        )
-        summary.successful = AAZIntType(
-            flags={"required": True},
-        )
-        summary.total = AAZIntType(
-            flags={"required": True},
-        )
-
-        target_location = _schema_deidentification_job_read.target_location
-        target_location.location = AAZStrType(
-            flags={"required": True},
-        )
-        target_location.overwrite = AAZBoolType()
-        target_location.prefix = AAZStrType(
-            flags={"required": True},
-        )
-
-        _schema.created_at = cls._schema_deidentification_job_read.created_at
-        _schema.customizations = cls._schema_deidentification_job_read.customizations
-        _schema.error = cls._schema_deidentification_job_read.error
-        _schema.last_updated_at = cls._schema_deidentification_job_read.last_updated_at
-        _schema.name = cls._schema_deidentification_job_read.name
-        _schema.operation = cls._schema_deidentification_job_read.operation
-        _schema.source_location = cls._schema_deidentification_job_read.source_location
-        _schema.started_at = cls._schema_deidentification_job_read.started_at
-        _schema.status = cls._schema_deidentification_job_read.status
-        _schema.summary = cls._schema_deidentification_job_read.summary
-        _schema.target_location = cls._schema_deidentification_job_read.target_location
+        _schema.code = cls._schema_azure._core._foundations._inner_error_read.code
+        _schema.innererror = cls._schema_azure._core._foundations._inner_error_read.innererror
 
 
 __all__ = ["Update"]
