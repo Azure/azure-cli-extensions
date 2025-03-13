@@ -1,0 +1,8 @@
+displayName: CLI-Load-Test-Advanced-URL
+description: 'Advanced URL load test created from az load test command'
+engineInstances: 1
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - percentage(error) > 50
+  - GetCustomerDetails: avg(latency) > 200
+splitAllCSVs: false

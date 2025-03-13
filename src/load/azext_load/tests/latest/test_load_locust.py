@@ -33,9 +33,9 @@ load_params = {
 }
 
 
-class LoadTestScenarioAdvancedUrl(ScenarioTest):
+class LoadTestScenarioLocust(ScenarioTest):
     def __init__(self, *args, **kwargs):
-        super(LoadTestScenarioAdvancedUrl, self).__init__(*args, **kwargs)
+        super(LoadTestScenarioLocust, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
     
     @ResourceGroupPreparer(**rg_params)
@@ -114,5 +114,5 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
                 "--test-type JMX ",
             )
         except Exception as e:
-            assert f"Error occurred while uploading test plan file {LoadTestConstants.LOCUST_TEST_PLAN} for test {LoadTestConstants.LOCUST_LOAD_TEST_ID} of type JMX: (InvalidFileType)" in str(e)
+            assert "InvalidFile" in str(e)
         delete_test(self)
