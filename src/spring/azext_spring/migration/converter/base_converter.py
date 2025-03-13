@@ -130,6 +130,10 @@ class BaseConverter(ConverterTemplate):
         # print("Mount options: ", mountOptions)
         return mountOptions
 
+    def _get_storage_enable_subpath(self, disk_props):
+        enableSubPath = disk_props.get('customPersistentDiskProperties', False).get('enableSubPath', False)
+        return enableSubPath
+
 # module name
     def _get_app_module_name(self, app):
         appName = self._get_resource_name(app)
