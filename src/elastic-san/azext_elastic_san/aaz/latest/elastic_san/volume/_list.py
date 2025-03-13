@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2024-07-01-preview"],
         ]
     }
 
@@ -45,6 +45,11 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.soft_deleted_only = AAZStrArg(
+            options=["--soft-deleted-only"],
+            help="Optional, returns only soft deleted volumes if set to true. If set to false or if not specified, returns only active volumes.",
+            enum={"false": "false", "true": "true"},
+        )
         _args_schema.elastic_san_name = AAZStrArg(
             options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
@@ -140,7 +145,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -149,6 +154,9 @@ class List(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-access-soft-deleted-resources", self.ctx.args.soft_deleted_only,
+                ),
                 **self.serialize_header_param(
                     "Accept", "application/json",
                 ),

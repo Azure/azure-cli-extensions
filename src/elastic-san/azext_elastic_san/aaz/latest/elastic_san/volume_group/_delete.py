@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2024-07-01-preview"],
         ]
     }
 
@@ -70,6 +70,11 @@ class Delete(AAZCommand):
                 max_length=63,
                 min_length=3,
             ),
+        )
+        _args_schema.delete_type = AAZStrArg(
+            options=["--delete-type"],
+            help="Optional. Specifies that the delete operation should be a permanent delete for the soft deleted volume group. The value of deleteType can only be 'permanent'.",
+            enum={"permanent": "permanent"},
         )
         return cls._args_schema
 
@@ -163,7 +168,10 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "deleteType", self.ctx.args.delete_type,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
