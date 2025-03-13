@@ -113,7 +113,7 @@ class GatewayConverter(BaseConverter):
     def _check_custom_domains(self):
         custom_domains = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/domains')
         if custom_domains is not None and len(custom_domains) > 0:
-            logger.warning(f"Mismatch: Custom domains of gateway is not supported in Gateway for Spring of Azure Container Apps.")
+            logger.warning("Mismatch: Custom domains of gateway is not supported in Gateway for Spring of Azure Container Apps.")
 
     def get_template_name(self):
         return "gateway.bicep"

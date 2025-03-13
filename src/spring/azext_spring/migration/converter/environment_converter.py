@@ -33,7 +33,7 @@ class EnvironmentConverter(BaseConverter):
 
             asa_zone_redundant = asa_service['properties'].get('zoneRedundant', False)
             if asa_zone_redundant is not None:
-                if asa_zone_redundant == True and self.wrapper_data.is_vnet() == False:
+                if asa_zone_redundant is True and self.wrapper_data.is_vnet() is False:
                     logger.warning("Mismatch: Zone redundant is only supported in VNet environment for Azure Container Apps.")
                     data["zoneRedundant"] = str(False).lower()
                 else:
@@ -65,7 +65,7 @@ class EnvironmentConverter(BaseConverter):
             if 'properties' in app and 'customPersistentDisks' in app['properties']:
                 disks = app['properties'].get('customPersistentDisks', [])
                 for disk_props in disks:
-                    if self._get_storage_enable_subpath(disk_props) == True:
+                    if self._get_storage_enable_subpath(disk_props) is True:
                         logger.warning("Mismatch: enableSubPath of custom persistent disks is not supported in Azure Container Apps.")
                     # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
                     storage_config = {
