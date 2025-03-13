@@ -1,0 +1,214 @@
+param containerAppName string = '{{data.containerAppName}}'
+param {{data.paramContainerAppImageName}} string
+param {{data.paramTargetPort}} int
+
+@description('Minimum number of replicas that will be deployed')
+@minValue(0)
+param minReplicas int = {{data.minReplicas}}
+
+@description('Maximum number of replicas that will be deployed')
+@minValue(1)
+param maxReplicas int = {{data.maxReplicas}}
+
+param containerAppEnvId string
+param workloadProfileName string
+
+resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
+  name: containerAppName
+  location: resourceGroup().location
+  {%- if data.identity %}
+  identity: {
+    type: '{{data.identity.type}}'
+    {%- if data.identity.userAssignedIdentities %}
+    userAssignedIdentities: {
+      {%- for miResourceId in data.identity.userAssignedIdentities %}
+      '{{miResourceId}}': {}
+      {%- if not loop.last %}{%- endif %}
+      {%- endfor %}
+    }
+    {%- endif %}
+  }
+  {%- endif %}
+  properties: {
+    managedEnvironmentId: containerAppEnvId
+    workloadProfileName: workloadProfileName
+    configuration: {
+      ingress: {
+        {%- if data.ingress %}
+        external: {% if data.isPublic %}true{% else %}false{% endif %}
+        targetPort: {{data.paramTargetPort}}
+        allowInsecure: false
+        transport: '{{data.ingress.transport}}'
+        {%- if data.ingress.sessionAffinity %}
+        stickySessions: {
+          affinity: '{{data.ingress.sessionAffinity}}'
+        }
+        {%- endif %}
+        clientCertificateMode: 'Ignore'
+        traffic: [
+          {
+            latestRevision: true
+            weight: 100
+          }
+        ]
+        {%- endif %}
+      }
+      activeRevisionsMode: '{% if data.isBlueGreen %}Multiple{% else %}Single{% endif %}'
+    }
+    template: {
+      // revisionSuffix: '{{ data.blue.name }}'
+      containers: [
+        {
+          name: containerAppName
+          image: {{data.paramContainerAppImageName}}
+          resources: {
+            cpu: json('{{data.blue.cpuCore}}')
+            memory: '{{data.blue.memorySize}}'
+          }
+          env: [
+            {%- for env in data.blue.env %}
+            {
+              name: '{{ env.name }}'
+              value: '{{ env.value }}'
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          probes: [
+            {%- if data.blue.livenessProbe %}
+            {
+              {%- if data.blue.livenessProbe.periodSeconds %}
+              periodSeconds: {{data.blue.livenessProbe.periodSeconds}}
+              {%- endif %}
+              {%- if data.blue.livenessProbe.httpGet %}
+              httpGet: {
+                path: '{{data.blue.livenessProbe.httpGet.path}}'
+                port: {{data.paramTargetPort}}
+                scheme: '{{data.blue.livenessProbe.httpGet.scheme}}'
+              } 
+              {%- endif %}
+              {%- if data.blue.livenessProbe.tcpSocket %}
+              tcpSocket: {
+                port: {{data.paramTargetPort}}
+              }
+              {%- endif %}
+              {%- if data.blue.livenessProbe.initialDelaySeconds %}
+              initialDelaySeconds: {{data.blue.livenessProbe.initialDelaySeconds}}
+              {%- endif %}
+              {%- if data.blue.livenessProbe.timeoutSeconds %}
+              timeoutSeconds: {{data.blue.livenessProbe.timeoutSeconds}}
+              {%- endif %}
+              {%- if data.blue.livenessProbe.successThreshold %}
+              successThreshold: {{data.blue.livenessProbe.successThreshold}}
+              {%- endif %}
+              {%- if data.blue.livenessProbe.failureThreshold %}
+              failureThreshold: {{data.blue.livenessProbe.failureThreshold}}
+              {%- endif %}
+              type: 'Liveness'
+            }
+            {%- endif %}
+            {%- if data.blue.readinessProbe %}
+            {
+              {%- if data.blue.readinessProbe.periodSeconds %}
+              periodSeconds: {{data.blue.readinessProbe.periodSeconds}}
+              {%- endif %}
+              {%- if data.blue.readinessProbe.httpGet %}
+              httpGet: {
+                path: '{{data.blue.readinessProbe.httpGet.path}}'
+                port: {{data.paramTargetPort}}
+                scheme: '{{data.blue.readinessProbe.httpGet.scheme}}'
+              }
+              {%- endif %}
+              {%- if data.blue.readinessProbe.tcpSocket %}
+              tcpSocket: {
+                port: {{data.paramTargetPort}}
+              }
+              {%- endif %}
+              {%- if data.blue.readinessProbe.initialDelaySeconds %}
+              initialDelaySeconds: {{data.blue.readinessProbe.initialDelaySeconds}}
+              {%- endif %}
+              {%- if data.blue.readinessProbe.timeoutSeconds %}
+              timeoutSeconds: {{data.blue.readinessProbe.timeoutSeconds}}
+              {%- endif %}
+              {%- if data.blue.readinessProbe.successThreshold %}
+              successThreshold: {{data.blue.readinessProbe.successThreshold}}
+              {%- endif %}
+              {%- if data.blue.readinessProbe.failureThreshold %}
+              failureThreshold: {{data.blue.readinessProbe.failureThreshold}}
+              {%- endif %}
+              type: 'Readiness'
+            }
+            {%- endif %}
+            {%- if data.blue.startupProbe %}
+            {
+              {%- if data.blue.startupProbe.periodSeconds %}
+              periodSeconds: {{data.blue.startupProbe.periodSeconds}}
+              {%- endif %}
+              {%- if data.blue.startupProbe.httpGet %}
+              httpGet: {
+                path: '{{data.blue.startupProbe.httpGet.path}}'
+                port: {{data.paramTargetPort}}
+                scheme: '{{data.blue.startupProbe.httpGet.scheme}}'
+              }
+              {%- endif %}
+              {%- if data.blue.startupProbe.tcpSocket %}
+              tcpSocket: {
+                port: {{data.paramTargetPort}}
+              }
+              {%- endif %}
+              {%- if data.blue.startupProbe.initialDelaySeconds %}
+              initialDelaySeconds: {{data.blue.startupProbe.initialDelaySeconds}}
+              {%- endif %}
+              {%- if data.blue.startupProbe.timeoutSeconds %}
+              timeoutSeconds: {{data.blue.startupProbe.timeoutSeconds}}
+              {%- endif %}
+              {%- if data.blue.startupProbe.successThreshold %}
+              successThreshold: {{data.blue.startupProbe.successThreshold}}
+              {%- endif %}
+              {%- if data.blue.startupProbe.failureThreshold %}
+              failureThreshold: {{data.blue.startupProbe.failureThreshold}}
+              {%- endif %}
+              type: 'Startup'
+            }
+            {%- endif %}
+          ]
+          {%- if data.volumeMounts %}
+          volumeMounts: [
+            {%- for volume in data.volumeMounts %}
+            {
+              volumeName: '{{ volume.volumeName }}'
+              mountPath: '{{ volume.mountPath }}'
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          {%- endif %}
+        }
+      ]
+      {%- if data.volumes %}
+      volumes: [
+        {%- for volume in data.volumes %}
+        {
+          name: '{{ volume.volumeName }}'
+          storageName: '{{ volume.storageName }}'
+          mountOptions: '{{ volume.mountOptions }}'
+          storageType: 'AzureFile'
+        }{%- if not loop.last %}{%- endif %}
+        {%- endfor %}
+      ]
+      {%- endif %}
+      serviceBinds: [
+          {%- for bind in data.serviceBinds %}
+          {
+              name: '{{ bind.name }}'
+              serviceId: {{ bind.serviceId }}
+          }{%- if not loop.last %}{%- endif %}
+          {%- endfor %}
+      ]
+      scale: {
+        minReplicas: minReplicas
+        maxReplicas: maxReplicas
+      }
+    }
+  }
+}
+
+output containerAppFQDN string = {{data.moduleName}}.properties.configuration.ingress.fqdn

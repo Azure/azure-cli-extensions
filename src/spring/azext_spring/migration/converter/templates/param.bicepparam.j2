@@ -1,0 +1,21 @@
+using './main.bicep'
+
+param workloadProfileName = 'Dedicated'
+param workloadProfileType = 'D4'
+param minNodes = 1
+param maxNodes = 10
+
+{%- if data.isVnet == true %}
+// Provide the full resource ID of the existing subnet, the subnet must be delegated to Microsoft.App/environments
+// Example: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}
+param vnetSubnetId
+{%- endif %}
+
+{%- for app in data.apps %}
+param {{app.paramContainerAppImageName}} = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+param {{app.paramTargetPort}} = 80
+{%- endfor %}
+
+{%- for storage in data.storages %}
+param {{storage.paramContainerAppEnvStorageAccountKey}} = 'fill in account key for storage "{{storage.accountName}}"'
+{%- endfor %}
