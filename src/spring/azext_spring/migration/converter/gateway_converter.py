@@ -25,6 +25,7 @@ class GatewayConverter(BaseConverter):
                     replicas = min(2, gateway['sku']['capacity'])
                 routes = self._get_routes(routes)
                 self._check_features(gateway.get('properties', {}))
+                self._check_custom_domains()
                 return {
                     "routes": routes,
                     "gatewayName": "gateway",
@@ -42,10 +43,13 @@ class GatewayConverter(BaseConverter):
         configurations = []
         if gateway.get('properties', {}).get('environmentVariables', {}).get('properties') is not None:
             for key, value in gateway['properties']['environmentVariables']['properties'].items():
-                configurations.append({
-                    "propertyName": key,
-                    "value": value,
-                })
+                if key.startswith("spring.cloud.gateway") or key.startswith("logging"):
+                    configurations.append({
+                        "propertyName": key,
+                        "value": value,
+                    })
+                else:
+                    logger.warning(f"Mismatch: The environment variable '{key}' is not supported in gateway for Spring in Azure Container Apps, see allowed configuration list of Gateway for Spring.")
         if secretEnvs is not None:
             for key, value in secretEnvs.items():
                 configurations.append({
@@ -91,16 +95,25 @@ class GatewayConverter(BaseConverter):
         if r.get('filters'):
             for f in r.get('filters'):
                 if 'cors' in f.lower():
-                    logger.warning(f"Mismatch: The cors filter '{f}' of route '{route_name}' is not supported in gateway for Spring in Azure Container Apps, refer to migration doc for further steps.")
+                    logger.warning(f"Action Needed: The cors filter '{f}' of route '{route_name}' is not supported in Gateway for Spring in Azure Container Apps, refer to migration doc for further steps.")
                 else:
                     filters.append(f)
         return filters
 
     def _check_features(self, scg_properties):
         if scg_properties.get('ssoProperties') is not None:
-            logger.warning("Mismatch: The SSO feature is not supported of gateway for Spring in Azure Container Apps.")
-        if scg_properties.get('corsProperties', {}) is not None:
-            logger.warning("CORS configuration detected, please refer to public doc to migrate CORS feature of gateway for Spring to Azure Container Apps.")
+            logger.warning("Mismatch: The SSO feature is not supported of Gateway for Spring in Azure Container Apps.")
+        if scg_properties.get('corsProperties') is not None and scg_properties.get('corsProperties') != {}:
+            logger.warning("Action Needed: CORS configuration detected, please refer to public doc to migrate CORS feature of Gateway for Spring to Azure Container Apps.")
+        if (scg_properties.get('apiMetadataProperties') is not None and scg_properties.get('apiMetadataProperties') != {}):
+            logger.warning("Mismatch: API metadata configuration is not supported of Gateway for Spring to Azure Container Apps.")
+        if (scg_properties.get('apmTypes') is not None and len(scg_properties.get('apmTypes')) > 0) or (scg_properties.get('apms') is not None and scg_properties.get('apms') != []):
+            logger.warning("Mismatch: APM configuration is not supported of Gateway for Spring to Azure Container Apps.")
+
+    def _check_custom_domains(self):
+        custom_domains = self.wrapper_data.get_resources_by_type('Microsoft.AppPlatform/Spring/gateways/domains')
+        if custom_domains is not None and len(custom_domains) > 0:
+            logger.warning(f"Mismatch: Custom domains of gateway is not supported in Gateway for Spring of Azure Container Apps.")
 
     def get_template_name(self):
         return "gateway.bicep"

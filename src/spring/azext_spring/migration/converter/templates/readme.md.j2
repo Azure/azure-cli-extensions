@@ -123,6 +123,7 @@ Following TLS certificates from Azure Key Vault have been migrated by the migrat
 {%- endif %}
 
 {%- if data.contentCerts %}
+
 Following content type certificates should be manually uploaded to Azure Container Apps environment:
 {%- for cert in data.contentCerts %}
   - `{{cert.name}}`

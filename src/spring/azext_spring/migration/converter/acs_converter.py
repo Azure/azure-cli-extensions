@@ -2,7 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from knack.log import get_logger
 from .base_converter import BaseConverter
+
+logger = get_logger(__name__)
 
 
 # Concrete Converter Subclass for Config Server
@@ -54,6 +57,7 @@ class ACSConverter(BaseConverter):
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_PRIVATE_KEY, default_repo.get('privateKey'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY, default_repo.get('hostKey'), configurations, params)
             self._add_secret_config(self.CONFIGURATION_KEY_PREFIX + self.KEY_HOST_KEY_ALGORITHM, default_repo.get('hostKeyAlgorithm'), configurations, params)
+            self._check_patterns(default_repo)
 
             for i in range(1, len(git_repos)):
                 repo = git_repos[i]
@@ -66,6 +70,7 @@ class ACSConverter(BaseConverter):
                 self._add_secret_config(configuration_key_repo_prefix + self.KEY_PRIVATE_KEY, repo.get('privateKey'), configurations, params)
                 self._add_secret_config(configuration_key_repo_prefix + self.KEY_HOST_KEY, repo.get('hostKey'), configurations, params)
                 self._add_secret_config(configuration_key_repo_prefix + self.KEY_HOST_KEY_ALGORITHM, repo.get('hostKeyAlgorithm'), configurations, params)
+                self._check_patterns(repo)
 
         return configurations, params
 
@@ -83,3 +88,9 @@ class ACSConverter(BaseConverter):
             param_name = key.replace(".", "_").replace("-", "_")
             self._add_property_if_exists(configurations, key, param_name)
             params.append(param_name)
+
+    def _check_patterns(self, repo):
+        patterns = repo.get('patterns', [])
+        if len(patterns) > 0:
+            pattern_str = ",".join(map(str, patterns))
+            logger.info(f"The patterns '{pattern_str}' of the git repository '{repo.get('name')}' in Application Configuration Service not need in Config Server of Azure Container Apps.")

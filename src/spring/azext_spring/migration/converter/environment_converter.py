@@ -2,7 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from knack.log import get_logger
 from .base_converter import BaseConverter
+
+logger = get_logger(__name__)
 
 
 # Concrete Subclass for Container App Environment
@@ -28,9 +31,13 @@ class EnvironmentConverter(BaseConverter):
                     "internal": str(True).lower(),
                 }
 
-            asa_zone_redundant = asa_service['properties'].get('zoneRedundant')
+            asa_zone_redundant = asa_service['properties'].get('zoneRedundant', False)
             if asa_zone_redundant is not None:
-                data["zoneRedundant"] = str(asa_zone_redundant).lower()
+                if asa_zone_redundant == True and self.wrapper_data.is_vnet() == False:
+                    logger.warning("Mismatch: Zone redundant is only supported in VNet environment for Azure Container Apps.")
+                    data["zoneRedundant"] = str(False).lower()
+                else:
+                    data["zoneRedundant"] = str(asa_zone_redundant).lower()
 
             asa_maintenance_window = asa_service['properties'].get('maintenanceScheduleConfiguration', None)
             if asa_maintenance_window:
@@ -56,8 +63,10 @@ class EnvironmentConverter(BaseConverter):
         for app in apps:
             # Check if app has properties and customPersistentDiskProperties
             if 'properties' in app and 'customPersistentDisks' in app['properties']:
-                disks = app['properties']['customPersistentDisks']
+                disks = app['properties'].get('customPersistentDisks', [])
                 for disk_props in disks:
+                    if self._get_storage_enable_subpath(disk_props) == True:
+                        logger.warning("Mismatch: enableSubPath of custom persistent disks is not supported in Azure Container Apps.")
                     # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
                     storage_config = {
                         'containerAppEnvStorageName': self._get_resource_name_of_storage(app, disk_props),

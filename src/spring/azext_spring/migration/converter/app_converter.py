@@ -23,6 +23,8 @@ class AppConverter(BaseConverter):
         blueDeployment = self._transform_deployment(blueDeployment)
         greenDeployment = self.wrapper_data.get_green_deployment_by_app(app)
         greenDeployment = self._transform_deployment(greenDeployment)
+        if self.wrapper_data.is_support_blue_green_deployment(app):
+            logger.warning(f"Action Needed: you should manually deploy the deployment '{greenDeployment.get('name')}' of app '{app.get('name')}' in Azure Container Apps.")
         tier = blueDeployment.get('sku', {}).get('tier')
         serviceBinds = self._get_service_bind(app)
         ingress = self._get_ingress(app, tier)
@@ -112,11 +114,11 @@ class AppConverter(BaseConverter):
         return {
             "name": self._get_resource_name(deployment),
             "env": self._convert_env(env),
-            "livenessProbe": self._convert_probe(liveness_probe, tier),
-            "readinessProbe": self._convert_probe(readiness_probe, tier),
-            "startupProbe": self._convert_probe(startup_probe, tier),
+            "livenessProbe": self._convert_probe(liveness_probe, tier, deployment),
+            "readinessProbe": self._convert_probe(readiness_probe, tier, deployment),
+            "startupProbe": self._convert_probe(startup_probe, tier, deployment),
             "cpuCore": cpuCore,
-            "memorySize": self._get_memory_by_cpu(cpuCore) or memorySize,
+            "memorySize": self._get_memory_by_cpu(cpuCore, memorySize, deployment) or memorySize,
             "scale": self._convert_scale(scale),
             "capacity": capacity,
         }
@@ -132,7 +134,7 @@ class AppConverter(BaseConverter):
 
     # A Container App must add up to one of the following CPU - Memory combinations:
     # [cpu: 0.25, memory: 0.5Gi]; [cpu: 0.5, memory: 1.0Gi]; [cpu: 0.75, memory: 1.5Gi]; [cpu: 1.0, memory: 2.0Gi]; [cpu: 1.25, memory: 2.5Gi]; [cpu: 1.5, memory: 3.0Gi]; [cpu: 1.75, memory: 3.5Gi]; [cpu: 2.0, memory: 4.0Gi]; [cpu: 2.25, memory: 4.5Gi]; [cpu: 2.5, memory: 5.0Gi]; [cpu: 2.75, memory: 5.5Gi]; [cpu: 3, memory: 6.0Gi]; [cpu: 3.25, memory: 6.5Gi]; [cpu: 3.5, memory: 7Gi]; [cpu: 3.75, memory: 7.5Gi]; [cpu: 4, memory: 8Gi]
-    def _get_memory_by_cpu(self, cpu):
+    def _get_memory_by_cpu(self, cpu, asa_memory_size, deployment):
         cpu_memory_map = {
             0.25: "0.5Gi",
             0.5: "1.0Gi",
@@ -151,10 +153,15 @@ class AppConverter(BaseConverter):
             3.75: "7.5Gi",
             4.0: "8.0Gi"
         }
+        if cpu_memory_map.get(cpu, None) is None:
+            logger.warning(f"Mismatch: The CPU '{cpu}' and Memory '{asa_memory_size}' combination of app '{deployment.get('name')}' is not supported in Azure Container Apps.")
+        elif asa_memory_size != cpu_memory_map.get(cpu, None):
+            logger.warning(f"Mismatch: The Memory '{asa_memory_size}' of app '{deployment.get('name')}' is not supported in Azure Container Apps. Converting it to '{cpu_memory_map.get(cpu, None)}'.")
+
         return cpu_memory_map.get(cpu, None)
 
     # create a method _convert_probe to convert the probe from the source to the target format
-    def _convert_probe(self, probe, tier):
+    def _convert_probe(self, probe, tier, deployment):
         if probe is None:
             return None
         if probe.get("disableProbe") is True:
@@ -164,6 +171,7 @@ class AppConverter(BaseConverter):
         initialDelaySeconds = probe.get("initialDelaySeconds", None)
         if initialDelaySeconds is not None:
             if initialDelaySeconds > 60:  # Container 'undefined' 'Type' probe's InitialDelaySeconds must be in the range of ['0', '60'].
+                logger.warning(f"Mismatch: The initialDelaySeconds '{initialDelaySeconds}' of health probe of app '{deployment.get('name')}' must be in the range of ['0', '60'] in Azure Container Apps. Converting it to 60.")
                 initialDelaySeconds = 60
             result['initialDelaySeconds'] = initialDelaySeconds
         periodSeconds = probe.get("periodSeconds", None)
@@ -186,7 +194,7 @@ class AppConverter(BaseConverter):
             result["tcpSocket"] = tcpSocket
         execAction = self._convert_exec_probe_action(probe, tier)
         if execAction is not None:
-            logger.warning(f"Mismatch: The ExecAction {execAction} is not supported in Azure Container Apps.")
+            logger.warning(f"Mismatch: The ExecAction '{execAction}' of health probe is not supported in Azure Container Apps.")
         return None if result == {} else result
 
     def _convert_exec_probe_action(self, probe, tier):
