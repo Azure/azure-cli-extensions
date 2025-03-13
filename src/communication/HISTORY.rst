@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.12.0
+++++++
+* Add SMTP Username CRUD operations.
+
 1.11.2
 ++++++
 * Adding an error message for incorrect formats of inline attachments in Email communication send mail.
