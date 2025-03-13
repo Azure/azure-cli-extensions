@@ -31,7 +31,7 @@ class EnvironmentConverter(BaseConverter):
                     "internal": str(True).lower(),
                 }
 
-            asa_zone_redundant = asa_service['properties'].get('zoneRedundant')
+            asa_zone_redundant = asa_service['properties'].get('zoneRedundant', False)
             if asa_zone_redundant is not None:
                 if asa_zone_redundant == True and self.wrapper_data.is_vnet() == False:
                     logger.warning("Mismatch: Zone redundant is only supported in VNet environment for Azure Container Apps.")
