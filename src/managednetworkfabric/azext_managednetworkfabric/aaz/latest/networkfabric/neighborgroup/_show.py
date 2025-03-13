@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="Name of the Neighbor Group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -179,6 +182,10 @@ class Show(AAZCommand):
             properties.destination = AAZObjectType(
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.network_tap_ids = AAZListType(
                 serialized_name="networkTapIds",
                 flags={"read_only": True},
@@ -205,6 +212,11 @@ class Show(AAZCommand):
 
             ipv6_addresses = cls._schema_on_200.properties.destination.ipv6_addresses
             ipv6_addresses.Element = AAZStrType()
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             network_tap_ids = cls._schema_on_200.properties.network_tap_ids
             network_tap_ids.Element = AAZStrType()

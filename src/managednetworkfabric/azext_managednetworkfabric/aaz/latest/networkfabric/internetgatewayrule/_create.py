@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgatewayrules/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgatewayrules/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -52,30 +52,13 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="Name of the Internet Gateway rule.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="Location of Azure region",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -83,40 +66,91 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Description for underlying resource.",
+            help="Switch configuration description.",
         )
         _args_schema.rule_properties = AAZObjectArg(
             options=["--rule-properties"],
             arg_group="Properties",
-            help="Rules for the InternetGateways.",
+            help="Rules for the InternetGateways",
             required=True,
         )
 
         rule_properties = cls._args_schema.rule_properties
         rule_properties.action = AAZStrArg(
             options=["action"],
-            help="Specify action. Example: Allow.",
+            help="Specify action.",
             required=True,
             enum={"Allow": "Allow", "Deny": "Deny"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
         rule_properties.address_list = AAZListArg(
             options=["address-list"],
             help="List of Addresses to be allowed or denied.",
-            required=True,
+        )
+        rule_properties.condition = AAZStrArg(
+            options=["condition"],
+            help="Specify rule condition.",
+            enum={"And": "And", "Or": "Or"},
+        )
+        rule_properties.destination_address_list = AAZListArg(
+            options=["destination-address-list"],
+            help="List of Addresses to be allowed or denied.",
+        )
+        rule_properties.header_address_list = AAZListArg(
+            options=["header-address-list"],
+            help="List of header Name and source addresses associated with the header.",
+        )
+        rule_properties.source_address_list = AAZListArg(
+            options=["source-address-list"],
+            help="List of source IPv4 and IPv6 address to be allowed or denied.",
+        )
+
+        address_list = cls._args_schema.rule_properties.address_list
+        address_list.Element = AAZStrArg()
+
+        destination_address_list = cls._args_schema.rule_properties.destination_address_list
+        destination_address_list.Element = AAZStrArg()
+
+        header_address_list = cls._args_schema.rule_properties.header_address_list
+        header_address_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.rule_properties.header_address_list.Element
+        _element.address_list = AAZListArg(
+            options=["address-list"],
+            help="List of source remote IP to be allowed or denied.",
             fmt=AAZListArgFormat(
                 min_length=1,
             ),
         )
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Name of the header.",
+        )
 
-        address_list = cls._args_schema.rule_properties.address_list
-        address_list.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                min_length=1,
+        address_list = cls._args_schema.rule_properties.header_address_list.Element.address_list
+        address_list.Element = AAZStrArg()
+
+        source_address_list = cls._args_schema.rule_properties.source_address_list
+        source_address_list.Element = AAZStrArg()
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
             ),
         )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -200,7 +234,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -237,11 +271,36 @@ class Create(AAZCommand):
             rule_properties = _builder.get(".properties.ruleProperties")
             if rule_properties is not None:
                 rule_properties.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
-                rule_properties.set_prop("addressList", AAZListType, ".address_list", typ_kwargs={"flags": {"required": True}})
+                rule_properties.set_prop("addressList", AAZListType, ".address_list")
+                rule_properties.set_prop("condition", AAZStrType, ".condition")
+                rule_properties.set_prop("destinationAddressList", AAZListType, ".destination_address_list")
+                rule_properties.set_prop("headerAddressList", AAZListType, ".header_address_list")
+                rule_properties.set_prop("sourceAddressList", AAZListType, ".source_address_list")
 
             address_list = _builder.get(".properties.ruleProperties.addressList")
             if address_list is not None:
                 address_list.set_elements(AAZStrType, ".")
+
+            destination_address_list = _builder.get(".properties.ruleProperties.destinationAddressList")
+            if destination_address_list is not None:
+                destination_address_list.set_elements(AAZStrType, ".")
+
+            header_address_list = _builder.get(".properties.ruleProperties.headerAddressList")
+            if header_address_list is not None:
+                header_address_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ruleProperties.headerAddressList[]")
+            if _elements is not None:
+                _elements.set_prop("addressList", AAZListType, ".address_list")
+                _elements.set_prop("headerName", AAZStrType, ".header_name")
+
+            address_list = _builder.get(".properties.ruleProperties.headerAddressList[].addressList")
+            if address_list is not None:
+                address_list.set_elements(AAZStrType, ".")
+
+            source_address_list = _builder.get(".properties.ruleProperties.sourceAddressList")
+            if source_address_list is not None:
+                source_address_list.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -294,6 +353,10 @@ class Create(AAZCommand):
                 serialized_name="internetGatewayIds",
                 flags={"read_only": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -306,17 +369,51 @@ class Create(AAZCommand):
             internet_gateway_ids = cls._schema_on_200_201.properties.internet_gateway_ids
             internet_gateway_ids.Element = AAZStrType()
 
+            last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+
             rule_properties = cls._schema_on_200_201.properties.rule_properties
             rule_properties.action = AAZStrType(
                 flags={"required": True},
             )
             rule_properties.address_list = AAZListType(
                 serialized_name="addressList",
-                flags={"required": True},
+            )
+            rule_properties.condition = AAZStrType()
+            rule_properties.destination_address_list = AAZListType(
+                serialized_name="destinationAddressList",
+            )
+            rule_properties.header_address_list = AAZListType(
+                serialized_name="headerAddressList",
+            )
+            rule_properties.source_address_list = AAZListType(
+                serialized_name="sourceAddressList",
             )
 
             address_list = cls._schema_on_200_201.properties.rule_properties.address_list
             address_list.Element = AAZStrType()
+
+            destination_address_list = cls._schema_on_200_201.properties.rule_properties.destination_address_list
+            destination_address_list.Element = AAZStrType()
+
+            header_address_list = cls._schema_on_200_201.properties.rule_properties.header_address_list
+            header_address_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.rule_properties.header_address_list.Element
+            _element.address_list = AAZListType(
+                serialized_name="addressList",
+            )
+            _element.header_name = AAZStrType(
+                serialized_name="headerName",
+            )
+
+            address_list = cls._schema_on_200_201.properties.rule_properties.header_address_list.Element.address_list
+            address_list.Element = AAZStrType()
+
+            source_address_list = cls._schema_on_200_201.properties.rule_properties.source_address_list
+            source_address_list.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
