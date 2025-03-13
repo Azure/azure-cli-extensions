@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage confluent organization
+    """Manage Confluent organization.
     """
     pass
 
