@@ -49,6 +49,9 @@ examples:
     - name: Create a test with user assigned Managed Identity reference for engine.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type UserAssigned --engine-ref-ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
+    - name: Create a test with user assigned Managed Identity reference for accessing the metrics of the configured apps.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type UserAssigned --metrics-reference-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
 """
 
 helps[

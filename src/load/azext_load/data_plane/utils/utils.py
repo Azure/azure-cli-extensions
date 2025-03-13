@@ -318,6 +318,10 @@ def convert_yaml_to_test(cmd, data):
         new_body["kind"] = data[LoadTestConfigKeys.TEST_TYPE]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY in data:
+        if not is_valid_resource_id(data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]):
+            raise InvalidArgumentValueError(
+                "Key vault reference identity should be a valid resource id."
+            )
         new_body["keyvaultReferenceIdentityId"] = data[LoadTestConfigKeys.KEYVAULT_REFERENCE_IDENTITY]
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
@@ -340,10 +344,64 @@ def convert_yaml_to_test(cmd, data):
     if data.get(LoadTestConfigKeys.AUTOSTOP) is not None:
         new_body["autoStopCriteria"] = utils_yaml_config.yaml_parse_autostop_criteria(data=data)
 
-    utils_yaml_config.update_engine_reference_identity(new_body, data)
+    utils_yaml_config.update_reference_identities(new_body, data)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 # pylint: enable=line-too-long
+
+
+# pylint: disable=line-too-long
+# Disabling this because if conditions are too long
+def parse_app_comps_and_server_metrics(data):
+    app_components_yaml = data.get(LoadTestConfigKeys.APP_COMPONENTS)
+    app_components = {}
+    server_metrics = {}
+    add_defaults_to_app_components = dict()
+    if app_components_yaml is None:
+        return None, None, None
+    if not isinstance(app_components_yaml, list):
+        raise InvalidArgumentValueError("App component name should be of type list")
+    for app_component in app_components_yaml:
+        if not isinstance(app_component, dict):
+            raise InvalidArgumentValueError("App component name should be of type dictionary")
+        resource_id = app_component.get(LoadTestConfigKeys.RESOURCEID)
+        if resource_id is None:
+            raise InvalidArgumentValueError("App component name is required")
+        if not is_valid_resource_id(resource_id):
+            raise InvalidArgumentValueError("App component name is not a valid resource id")
+        if add_defaults_to_app_components.get(resource_id.lower()) is None:
+            add_defaults_to_app_components[resource_id.lower()] = app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
+        else:
+            add_defaults_to_app_components[resource_id.lower()] = add_defaults_to_app_components.get(resource_id.lower()) and app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is None
+        app_components[resource_id] = {}
+        app_components[resource_id]["resourceId"] = resource_id
+        app_components[resource_id]["resourceName"] = utils_yaml_config.get_resource_name_from_resource_id(resource_id)
+        app_components[resource_id]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(resource_id)
+        if app_component.get(LoadTestConfigKeys.KIND) is not None:
+            app_components[resource_id]["kind"] = app_component.get(LoadTestConfigKeys.KIND)
+        if app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS) is not None:
+            if not isinstance(app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS), list):
+                raise InvalidArgumentValueError("Server metrics should be of type list")
+            for server_metric in app_component.get(LoadTestConfigKeys.SERVER_METRICS_APP_COMPONENTS):
+                if not isinstance(server_metric, dict):
+                    raise InvalidArgumentValueError("Server metric should be of type dictionary")
+                if server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS) is None or server_metric.get(LoadTestConfigKeys.AGGREGATION) is None:
+                    raise InvalidArgumentValueError("Server metric name and aggregation are required, invalid dictionary for{}".format(resource_id))
+                name_space = server_metric.get(LoadTestConfigKeys.METRIC_NAMESPACE_SERVER_METRICS) or utils_yaml_config.get_resource_type_from_resource_id(
+                    resource_id
+                )
+                metric_name = server_metric.get(LoadTestConfigKeys.METRIC_NAME_SERVER_METRICS)
+                key = "{}/{}/{}".format(resource_id, name_space, metric_name)
+                server_metrics[key] = {}
+                server_metrics[key]["name"] = metric_name
+                server_metrics[key]["metricNamespace"] = name_space
+                server_metrics[key]["resourceType"] = utils_yaml_config.get_resource_type_from_resource_id(
+                    resource_id
+                )
+                server_metrics[key]["resourceId"] = resource_id
+                server_metrics[key]["aggregation"] = server_metric.get(LoadTestConfigKeys.AGGREGATION)
+                server_metrics[key]["id"] = key
+    return app_components, add_defaults_to_app_components, server_metrics
 
 
 # pylint: disable=too-many-branches
@@ -360,6 +418,7 @@ def create_or_update_test_with_config(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -393,12 +452,23 @@ def create_or_update_test_with_config(
             "keyvaultReferenceIdentityId"
         )
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
-    else:
-        new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
+    new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if metrics_reference_identity is not None:
+        new_body["metricsReferenceIdentityId"] = metrics_reference_identity
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    elif yaml_test_body.get("metricsReferenceIdentityId") is not None:
+        new_body["metricsReferenceIdentityId"] = yaml_test_body.get(
+            "metricsReferenceIdentityId"
+        )
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
+            new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("metricsReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
     if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
@@ -479,10 +549,17 @@ def create_or_update_test_with_config(
             "passFailMetrics": {
                 key: None
                 for key in existing_pass_fail_Criteria.get("passFailMetrics", {})
+            },
+            "passFailServerMetrics": {
+                key: None
+                for key in existing_pass_fail_Criteria.get("passFailServerMetrics", {})
             }
         }
         new_body["passFailCriteria"]["passFailMetrics"].update(
             yaml_pass_fail_criteria.get("passFailMetrics", {})
+        )
+        new_body["passFailCriteria"]["passFailServerMetrics"].update(
+            yaml_pass_fail_criteria.get("passFailServerMetrics", {})
         )
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
@@ -552,6 +629,7 @@ def create_or_update_test_without_config(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -585,6 +663,21 @@ def create_or_update_test_without_config(
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
+    new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+    if metrics_reference_identity is not None:
+        new_body["metricsReferenceIdentityId"] = metrics_reference_identity
+        new_body["metricsReferenceIdentityType"] = IdentityType.UserAssigned
+    elif body.get("metricsReferenceIdentityId") is not None:
+        new_body["metricsReferenceIdentityId"] = body.get(
+            "metricsReferenceIdentityId"
+        )
+        new_body["metricsReferenceIdentityType"] = body.get(
+            "metricsReferenceIdentityType", IdentityType.UserAssigned
+        )
+    if new_body["metricsReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["metricsReferenceIdentityId"].casefold() in ["null", ""]:
+            new_body["metricsReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("metricsReferenceIdentityId")
     subnet_id = subnet_id or body.get("subnetId")
     if subnet_id:
         if subnet_id.casefold() in ["null", ""]:
@@ -931,3 +1024,26 @@ def _add_error_and_throughput_trends(trends, test_run):
     throughput = _get_metrics_from_sampler(test_run, "Total", "throughput")
     if throughput is not None:
         trends[LoadTestTrendsKeys.THROUGHPUT] = round(throughput, 2)
+
+
+def merge_existing_app_components(app_components_yaml, existing_app_components):
+    if existing_app_components is None:
+        return app_components_yaml
+    for key in existing_app_components:
+        if key not in app_components_yaml:
+            app_components_yaml[key] = None
+    return app_components_yaml
+
+
+def merge_existing_server_metrics(add_defaults_to_app_copmponents, existing_server_metrics, server_metrics_yaml):
+    if existing_server_metrics is None:
+        return server_metrics_yaml
+    for key in existing_server_metrics:
+        resourceid = (existing_server_metrics.get(key) or {}).get(LoadTestConfigKeys.RESOURCEID, "").lower()
+        if key not in server_metrics_yaml and (add_defaults_to_app_copmponents.get(resourceid) is None or add_defaults_to_app_copmponents.get(resourceid) is False):
+            server_metrics_yaml[key] = None
+    return server_metrics_yaml
+
+
+def is_not_empty_dictionary(dictionary):
+    return dictionary is not None and len(dictionary) > 0

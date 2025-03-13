@@ -21,6 +21,10 @@ from azext_load.data_plane.utils.utils import (
     load_yaml,
     upload_file_to_test,
     upload_files_helper,
+    merge_existing_app_components,
+    merge_existing_server_metrics,
+    parse_app_comps_and_server_metrics,
+    is_not_empty_dictionary,
 )
 from azext_load.data_plane.utils.models import (
     AllowedTestTypes,
@@ -48,6 +52,7 @@ def create_test(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -66,12 +71,14 @@ def create_test(
         body = client.get_test(test_id)
     except ResourceNotFoundError:
         pass
+
     if body is not None:
         msg = f"Test with given test ID : {test_id} already exist."
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
+    app_components, add_defaults_to_app_components, server_metrics = None, None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is None:
@@ -88,6 +95,7 @@ def create_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -99,6 +107,7 @@ def create_test(
     else:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        app_components, add_defaults_to_app_components, server_metrics = parse_app_comps_and_server_metrics(data=yaml)
         test_type = (
             test_type or
             yaml.get(LoadTestConfigKeys.TEST_TYPE) or
@@ -118,6 +127,7 @@ def create_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -136,8 +146,32 @@ def create_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, evaluated_test_type
     )
-    response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
+    if is_not_empty_dictionary(app_components):
+        # only get and patch the app components if its present in the yaml.
+        app_component_response = client.create_or_update_app_components(
+            test_id=test_id, body={"testId": test_id, "components": app_components}
+        )
+        logger.warning(
+            "Added app components for test ID: %s and response is %s", test_id, app_component_response
+        )
+    if is_not_empty_dictionary(server_metrics):
+        # only get and patch the app components if its present in the yaml.
+        server_metrics_existing = None
+        try:
+            server_metrics_existing = client.get_server_metrics_config(test_id)
+        except ResourceNotFoundError:
+            server_metrics_existing = {"metrics": {}}
+        server_metrics_merged = merge_existing_server_metrics(
+            add_defaults_to_app_components, server_metrics, server_metrics_existing.get("metrics", {})
+        )
+        server_metric_response = client.create_or_update_server_metrics_config(
+            test_id=test_id, body={"testId": test_id, "metrics": server_metrics_merged}
+        )
+        logger.warning(
+            "Added server metrics for test ID: %s and response is %s", test_id, server_metric_response
+        )
+    response = client.get_test(test_id)
     logger.info("Test %s has been created successfully", test_id)
     return response.as_dict()
 
@@ -156,6 +190,7 @@ def update_test(
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
+    metrics_reference_identity=None,
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
@@ -178,11 +213,13 @@ def update_test(
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
 
     yaml, yaml_test_body = None, None
+    app_components, server_metrics, add_defaults_to_app_components = None, None, None
     autostop_criteria = create_autostop_criteria_from_args(
         autostop=autostop, error_rate=autostop_error_rate, time_window=autostop_error_rate_time_window)
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(cmd, yaml)
+        app_components, add_defaults_to_app_components, server_metrics = parse_app_comps_and_server_metrics(data=yaml)
         body = create_or_update_test_with_config(
             test_id,
             body,
@@ -194,6 +231,7 @@ def update_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -213,6 +251,7 @@ def update_test(
             secrets=secrets,
             certificate=certificate,
             key_vault_reference_identity=key_vault_reference_identity,
+            metrics_reference_identity=metrics_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
             disable_public_ip=disable_public_ip,
@@ -230,6 +269,37 @@ def update_test(
     upload_files_helper(
         client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait, body.get("kind")
     )
+
+    if is_not_empty_dictionary(app_components):
+        # only get and patch the app components if its present in the yaml.
+        try:
+            app_components_existing = client.get_app_components(test_id)
+        except ResourceNotFoundError:
+            app_components_existing = {"components": {}}
+        app_components_merged = merge_existing_app_components(
+            app_components, app_components_existing.get("components", {})
+        )
+        app_component_response = client.create_or_update_app_components(
+            test_id=test_id, body={"testId": test_id, "components": app_components_merged}
+        )
+        logger.warning(
+            "Added app components for test ID: %s and response is %s", test_id, app_component_response
+        )
+    if is_not_empty_dictionary(server_metrics):
+        # only get and patch the app components if its present in the yaml.
+        try:
+            server_metrics_existing = client.get_server_metrics_config(test_id)
+        except ResourceNotFoundError:
+            server_metrics_existing = {"metrics": {}}
+        server_metrics_merged = merge_existing_server_metrics(
+            add_defaults_to_app_components, server_metrics_existing.get("metrics", {}), server_metrics
+        )
+        server_metric_response = client.create_or_update_server_metrics_config(
+            test_id=test_id, body={"testId": test_id, "metrics": server_metrics_merged}
+        )
+        logger.warning(
+            "Added server metrics for test ID: %s and response is %s", test_id, server_metric_response
+        )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been updated successfully", test_id)

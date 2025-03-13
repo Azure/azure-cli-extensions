@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from dataclasses import dataclass
+from typing import ClassVar
 from .models import AllowedTrendsResponseTimeAggregations
 
 
@@ -24,12 +25,25 @@ class LoadTestConfigKeys:
     AUTOSTOP_ERROR_RATE = "errorPercentage"
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = "timeWindow"
     FAILURE_CRITERIA = "failureCriteria"
+    CLIENT_METRICS_PF = "clientMetrics"
+    SERVER_METRICS_PF = "serverMetrics"
+    METRIC_NAME = "metricName"
+    METRIC_NAME_SERVER_METRICS = "name"
+    METRIC_NAMESPACE_SERVER_METRICS = "namespace"
+    METRIC_NAMESPACE = "metricNamespace"
+    RESOURCEID = "resourceId"
+    AGGREGATION = "aggregation"
+    CONDITION = "condition"
+    APP_COMPONENTS = "appComponents"
+    SERVER_METRICS_APP_COMPONENTS = "metrics"
     REGIONAL_LOADTEST_CONFIG = "regionalLoadTestConfig"
     REGION = "region"
     QUICK_START = "quickStartTest"
     SPLIT_CSV = "splitAllCSVs"
     REFERENCE_IDENTITIES = "referenceIdentities"
     ENGINE = "Engine"
+    METRICS = "Metrics"
+    KEY_VAULT = "KeyVault"
     TYPE = "type"
     KIND = "kind"
     VALUE = "value"
@@ -75,4 +89,12 @@ class LoadTestTrendsKeys:
         AllowedTrendsResponseTimeAggregations.P99.value: "pct3ResTime",
         AllowedTrendsResponseTimeAggregations.P999.value: "pct999ResTime",
         AllowedTrendsResponseTimeAggregations.P9999.value: "pct9999ResTime",
+    }
+
+
+@dataclass
+class LoadTestFailureCriteriaKeys:
+    CONDITION_ENUM_MAP: ClassVar[dict[str, str]] = {
+        "LessThan": "<",
+        "GreaterThan": ">"
     }

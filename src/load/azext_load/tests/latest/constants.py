@@ -161,13 +161,50 @@ class LoadTestConstants(LoadConstants):
     ENGINE_REFERENCE_TYPE_USERASSIGNED = "UserAssigned"
     ENGINE_REFERENCE_TYPE_SYSTEMASSIGNED = "SystemAssigned"
     ENGINE_REFERENCE_TYPE_NONE = "None"
+    MANAGED_IDENTITY_NULL = "null"
     ENGINE_REFERENCE_ID1 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     ENGINE_REFERENCE_ID2 = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi-2"
+    METRICS_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-metrics-mi"
+    METRICS_REFERENCE_ID_COMMAND_LINE = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-metrics-id-command-line"
+    KEYVAULT_REFERENCE_ID_OVERRIDE = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-over-ride-id"
+    KEYVAULT_REFERENCE_ID_YAML = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-id"
+    KEYVAULT_REFERENCE_ID_COMMAND_LINE = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-kv-id-command-line"
     INVALID_ENGINE_REFERENCE_ID = r"/subscriptions/invalid/resource/id"
     LOAD_TEST_CONFIG_FILE_WITH_SAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-sami.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_UAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-uami.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_METRICS_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-metrics-keyvault-ref-id.yaml")
+    LOAD_TEST_CONFIG_FILE_NO_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-kv-no-ref-ids.yaml")
+    LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-kv-override-ref-ids.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI1 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi1.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI2 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi2.yaml")
+    LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-metrics-ref-ids.yaml")
+    LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-kv-ref-ids.yaml")
+    LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id-out-side.yaml")
+    LOAD_TEST_CONFIG_INVALID_KV_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id.yaml")
+    LOAD_TEST_CONFIG_INVALID_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-metrics-ref-id.yaml")
+    LOAD_TEST_CONFIG_KV_OUTSIDE_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-kv-out-side.yaml")
+    LOAD_TEST_INVALID_REF_TYPE = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-ref-id-type.yaml")
+    LOAD_TEST_INVALID_REF_TYPE2 = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-ref-id-type2.yaml")
+
+    # pf-criteria files.
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-updated-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_OLD_MODEL = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-old-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_SERVER_CRITERIA = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-updated-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_COMPLETE = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-complete-updated-model.yaml")
+    # invalid-cases
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID2 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model2.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID3 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model3.yaml")
+    LOAD_TEST_METRICS_MI = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourcegroups/cnt-integration-tests-rg/providers/microsoft.managedidentity/userassignedidentities/cnt-integration-tests-mi1-eastus"
+
+    # app-components constants
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-test1.yaml")
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS2 = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-test2.yaml")
+
+    # invalid cases
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-invalid-test.yaml")
+    LOAD_TEST_SERVER_METRICS_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-server-metrics-invalid-test.yaml")
+    LOAD_TEST_SERVER_METRICS_INVALID2 = os.path.join(TEST_RESOURCES_DIR, r"config-server-metrics-invalid-test2.yaml")
 
 
 class LoadTestRunConstants(LoadConstants):
@@ -217,3 +254,10 @@ class LoadTestRunConstants(LoadConstants):
 
     DESCRIPTION = r"Sample_testrun_description"
     DISPLAY_NAME = r"Sample_testrun_display_name"
+
+
+class LoadTestFailureCriteriaKeys:
+    CONDITION_ENUM_MAP = {
+        "LessThan": "<",
+        "GreaterThan": ">"
+    }

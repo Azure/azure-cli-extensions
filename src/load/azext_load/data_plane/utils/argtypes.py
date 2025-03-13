@@ -129,9 +129,17 @@ engine_instances = CLIArgumentType(
 )
 
 key_vault_reference_identity = CLIArgumentType(
+    validator=validators.validate_keyvault_identity_ref_id,
     options_list=["--keyvault-reference-id"],
     type=str,
     help="The identity that will be used to access the key vault.",
+)
+
+metrics_reference_identity = CLIArgumentType(
+    validator=validators.validate_metrics_identity_ref_id,
+    options_list=["--metrics-reference-id"],
+    type=str,
+    help="The identity that will be used to get the metrics of the configured apps from server pass-fail criteria.",
 )
 
 split_csv = CLIArgumentType(
