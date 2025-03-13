@@ -16,10 +16,7 @@ except ImportError:
 
 
 VERSION = '3.3.0'
-try:
-    from azext_serviceconnector_passwordless.config import VERSION
-except ImportError:
-    pass
+
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [

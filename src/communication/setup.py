@@ -10,10 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-try:
-    from azext_communication.version import VERSION
-except ImportError:
-    pass
+VERSION = '1.11.2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
