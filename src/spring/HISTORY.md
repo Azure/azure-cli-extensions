@@ -1,5 +1,9 @@
 Release History
 ===============
+1.27.0
+---
+* Add command `az spring export` which is used to generate target resources definitions to help customer migrating from Azure Spring Apps to other Azure services, such as Azure Container Apps.
+
 1.26.1
 ---
 * Fix command `az spring app update`, so that it can detect update failure and return error message.

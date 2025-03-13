@@ -1,0 +1,27 @@
+param managedEnvironments_aca_env_name string
+{%- if data.params | length > 0 %}
+// Provide the credentials in the parameters below to access the Git repositories.
+// Example: param spring_cloud_config_server_git_username string = 'username'
+{%- for param in data.params %}
+param {{param}} string = ' // please fill in the value
+{%- endfor %}
+
+{%- endif %}
+resource configServerTest 'Microsoft.App/managedEnvironments/javaComponents@2024-10-02-preview' = {
+    name: '${managedEnvironments_aca_env_name}/{{ data.configServerName }}'
+    properties: {
+        componentType: 'SpringCloudConfig'
+        configurations: [
+            {%- for config in data.configurations %}
+            {
+                propertyName: '{{ config.propertyName }}'
+                value: {% if config.value in data.params %}{{ config.value }}{% else %}'{{ config.value }}'{% endif %}
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+        ]
+        scale: {
+            minReplicas: {{ data.replicas }}
+            maxReplicas: {{ data.replicas }}
+        }
+    }
+}

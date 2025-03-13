@@ -1,0 +1,164 @@
+This README provides instructions on how to use the Bicep files generated from your Azure Spring Apps service to provision an Azure Container Apps environment, including the necessary resources and containerized applications.
+
+Due to limitations in the Azure Container Apps backends, multiple deployment rounds may be expected to successfully provision all the resources.
+
+After deploying the Bicep files, some configurations must be updated manually by following the steps outlined in [Azure public documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview).
+
+## Prerequisites
+
+Before getting started, make sure you have the following:
+
+1. **Azure Subscription**: An Azure subscription for resources of Azure Container Apps.
+
+2. **Bicep CLI**: Verify that the Bicep CLI is installed.
+
+## Steps to Deploy Azure Container Apps Using the Bicep Files
+
+### Review the Bicep Files
+
+After generating the Bicep files, the specified output directory will contain the following files and related resource definitions:
+
+- `main.bicep`: The entry point to deploy and manage Azure Container Apps resources
+- `param.bicepparam`: The parameters which  values required for the deployment.
+- `environment.bicep`: The Bicep file that contains the resource definitions for the Azure Container Apps environment.
+- `<app_name>-app.bicep`: The Bicep file that contains the resource definitions for the Azure Container Apps applications.
+- `<managed_components>.bicep`: The Bicep file that contains the resource definitions for the managed components like config server, spring cloud gateway, spring boot admin and eureka.
+
+These Bicep files enable quick deployment of the Azure Container Apps environment and applications. However you can also customize the parameters and configurations in the `param.bicepparam` file and Bicep files to suit your environment.
+
+### Customize the Bicep Files
+
+Ensure the parameter values in `param.bicepparam` are properly set to configure your Azure Container Apps.
+
+{%- if data.isVnet %}
+#### VNet configuration
+
+To migrate a custom virtual network, you must [create the VNet](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-network#create-an-azure-container-apps-environment-with-a-virtual-network) and specify the subnet ID in the `param.bicepparam` file.
+{%- endif %}
+
+{%- if data.hasApps %}
+#### Application Containerization and Deployment
+
+You can choose one of the following options:
+- **Option 1**: Leave the image URL in `param.bicepparam` unchanged to deploy the quickstart applications. You can deploy your own applications later, after the Azure Container Apps environment is created.
+- **Option 2**: Replace the image URL with your application's image and update the corresponding target ports. For more details on obtaining container images, refer to [Application containerization](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-build-overview), and learn how to [deploy them](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#deploy-an-application). If your images are hosted in private repositories in Azure Container Registry, you will need to provide the necessary credentials to Azure Container Apps. For more information, refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity-image-pull?tabs=bash&pivots=portal).
+
+For following applications that are built by Azure Spring Apps, you need to build the image and deploy to Azure Container Apps.
+{%- for app in data.buildResultsApps %}
+  - `{{app.name}}`
+{%- endfor %}
+{%- endif %}
+
+{%- if data.isSupportConfigServer %}
+#### Managed Components Configuration
+
+You need to update the GIT repoistories for the remote Git repository in the `config_server.bicep` file, such as providing the credentials.
+{%- endif %}
+
+#### Mismatch during migration
+
+During the script execution, two types of messages may appear:
+
+1. **Mismatch Message**: Sometimes, the properties in Azure Spring Apps and Azure Container Apps do not completely match. In such cases, a mismatch message will be displayed to inform the user. Here is a sample:
+
+   ```
+   "Mismatch Detected: Property 'X' in Azure Spring Apps does not match any Property in Azure Container Apps."
+   ```
+
+2. **Action Message**: Occasionally, some post actions need to be taken by the user. In these instances, the system will display a warning message. Please refer to the post-deployment configuration for further details. Here is a sample:
+
+   ```
+   "Action Needed: This service uses blue-green deployment. The green deployment needs to be done manually."
+   ```
+
+### Deploy the Bicep files using the Azure CLI:
+
+**Step 1**: If the resource group for your Azure Container Apps deployment doesn't already exist, create one using the following command:
+
+```azurecli
+az group create --name <resource-group-name> --location <location> --subscription <subscription-id>
+```
+
+**Step 2**: Deploy the Bicep files using the following command:
+
+```azurecli
+az deployment group create --resource-group <resource-group-name> --template-file main.bicep --parameters param.bicepparam --subscription <subscription-id>
+```
+
+Since there are dependencies between Azure Container Apps components, you may need to deploy the Bicep files multiple times to complete the creation of all components. Additionally, errors may occur during deployments, and you can refer to **Step 3** for solutions.
+
+**Bicep Validation Failed Message**: If there are issues with the Bicep template validation, a Bicep validation failed message will be displayed. Here is a sample:
+
+```
+Error BCP028: Identifier "xxx" is declared multiple times. Remove or rename the duplicates. [https://aka.ms/bicep/core-diagnostics#BCP028]
+```
+
+Normally, this script does not take too long to complete. However, if you find that it has been stuck for an hour or more, please do not hesitate to cancel the deployment on the portal. There might be something wrong, and canceling the operation can help speed up the process.
+
+**Step 3**: Validate the deployment:
+
+After deployment, verify that all resources, including the Azure Container Apps environment and applications, are properly provisioned.
+
+You can check the deployment status either in the CLI output or in the Azure Portal:
+
+- Navigate to the Azure Portal and open the resource group you specified.
+- Click `Settings` > `Deployments` to view all the deployment status and any errors.
+- If there is any error, check the error messages and logs to troubleshoot the issue. Check if it meets the following known issues: 
+    | Error Code | Error Message | Action |
+    |---|---|---|
+    | ManagedIdentityNoPermission | The Managed Identity 'system' does not have permission for resource... | This error typically occurs when migrating Key Vault certificates. Since the system-assigned MI for ACA is created along with the environment, you need to assign it the **Key Vault Secrets User** role in your key vault after the environment is created, then redeploy the Bicep files.​ |
+    | JavaComponentOperationError | Failed to create config map external-auth-config-map for JavaComponent '' in k8se-system namespace. | Creating a Java component immediately after the environment is set up sometimes fails due to a server-side issue. you can redeploy the Bicep files to solve this issue. |
+    | JavaComponentOperationError | Failed to provision java component '', Java Component is invalid, reason: admission webhook \"javacomponent.kb.io\" denied the request... | Fix the properties in the error message and redeploy the bicep files. Or find more details in the logs of managed components. |    
+
+## Post-Deployment Configuration
+Some properties and configurations are not included in the Bicep files and must be manually updated.
+
+{%- if data.hasCerts %}
+### **TLS certificate**
+{%- if data.shouldSystemAssignedIdentityEnabled %}
+Following TLS certificates from Azure Key Vault have been migrated by the migration tool, to make sure Azure Container Apps can load that certificate, you need to assign **Key Vault Secrets User** role to the system-assigned managed identity of Azure Container Apps environment after it creates.
+{%- for cert in data.keyVaultCerts %}
+  - `{{cert.name}}`
+{%- endfor %}
+{%- endif %}
+
+{%- if data.contentCerts %}
+
+Following content type certificates should be manually uploaded to Azure Container Apps environment:
+{%- for cert in data.contentCerts %}
+  - `{{cert.name}}`
+{%- endfor %}
+{%- endif %}
+{%- endif %}
+
+{%- if data.customDomains %}
+### Custom Domain
+You have custom domains configured in Azure Spring Apps. You can follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-custom-domain) to configure the custom domain in Azure Container Apps. Please manually update custom domains of following applications: 
+{%- for domain in data.customDomains %}
+  - `{{domain.appName}}/{{domain.name}}`
+{%- endfor %}
+{%- endif %}
+
+{%- if data.systemAssignedIdentityApps %}
+### Managed Identity
+Following applications have enabled system-assigned managed identity in Azure Spring Apps, your Azure Container Apps app instance will also have enabled system-assigned managed identity, but you need to reassign the corresponding roles, which you can identify from the error message if the deployment fails, to that managed identity. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity) to understand how to use managed identity in Azure Container Apps.
+{%- for app in data.systemAssignedIdentityApps %}
+  - `{{app.name}}`
+{%- endfor %}
+{%- endif %}
+
+{%- if data.greenDeployments %}
+### Blue-green deployment
+Following applications have enabled blue-green deployments in Azure Spring Apps, the **blue** deployments have been migrated to Azure Container Apps, but you need to follow the steps in [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-blue-green) to configure the **green** deployment in Azure Container Apps.
+{%- for deployment in data.greenDeployments %}
+  - Please manually deploy your staging deployment `{{deployment.appName}}/{{deployment.name}}`. Refer to this [doc](https://learn.microsoft.com/en-us/azure/spring-apps/basic-standard/how-to-staging-environment).
+{%- endfor %}
+{%- endif %}
+
+### Auto scale
+Because Azure Container Apps leverage Kubernetes Event-driven Autoscaling (KEDA) for auto-scaling, which is different from Azure Spring Apps that use Azure Monitor, the migration tools cannot transfer these settings for you. You will need to manually configure the auto-scaling settings in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
+
+### Monitoring
+The migration has enabled logging and monitoring in Azure Container Apps. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-monitoring) for sample queries to help with troubleshooting.
+
+Refer to the [migration documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview) for more detailed feature migration steps.
