@@ -67,13 +67,13 @@ class Publish(AAZCommand):
             required=True,
         )
         _args_schema.solution = AAZStrArg(
-            options=["--solution-template"],
+            options=["--solution-name"],
             arg_group="Body",
             help="Solution Name",
             required=True,
         )
         _args_schema.solution_version = AAZStrArg(
-            options=["--solution-template-version"],
+            options=["--solution-version"],
             arg_group="Body",
             help="Solution Version Name",
             required=True,
@@ -95,7 +95,7 @@ class Publish(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        return None
 
     class TargetsPublishSolutionVersion(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"

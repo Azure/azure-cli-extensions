@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration target-template",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is for edge Config-Manager
+    """workload-orchestration target-template helps to manage Target Templates
     """
     pass
 

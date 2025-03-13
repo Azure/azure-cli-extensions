@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration context",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is for edge Config-Manager
+    """workload-orchestration context helps to manage contexts
     """
     pass
 

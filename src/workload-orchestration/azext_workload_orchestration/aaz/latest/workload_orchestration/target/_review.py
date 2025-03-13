@@ -62,7 +62,7 @@ class Review(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.solution_template = AAZStrArg(
-            options=["--solution-template"],
+            options=["--solution-template-name"],
             arg_group="Body",
             help="Solution Template Name",
             required=True,

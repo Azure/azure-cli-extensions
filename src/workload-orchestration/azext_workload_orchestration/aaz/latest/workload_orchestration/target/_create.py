@@ -82,7 +82,7 @@ class Create(AAZCommand):
         _args_schema.solution_scope = AAZStrArg(
             options=["--solution-scope"],
             arg_group="Properties",
-            help="Scope of the target resource",
+            help="Defines the Kubernetes namespace that the app will be deployed to. If not supplied, it will default to solution template name",
         )
         _args_schema.state = AAZStrArg(
             options=["--state"],
@@ -93,7 +93,7 @@ class Create(AAZCommand):
         _args_schema.target_specification = AAZFreeFormDictArg(
             options=["--target-specification"],
             arg_group="Properties",
-            help="target spec",
+            help="Specifies that we are using Helm charts for the k8s deployment",
         )
 
         capabilities = cls._args_schema.capabilities
@@ -105,7 +105,7 @@ class Create(AAZCommand):
         _args_schema.extended_location = AAZObjectArg(
             options=["--extended-location"],
             arg_group="Resource",
-            help="The complex type of the extended location.",
+            help="Defines the custom location of the AKS cluster",
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",

@@ -61,12 +61,12 @@ class Uninstall(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.solution_instance_name = AAZStrArg(
-            options=["--solution-instance"],
+            options=["--solution-instance-name"],
             arg_group="Body",
             help="Solution Instance Name",
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template"],
+            options=["--solution-name"],
             arg_group="Body",
             help="Solution Name",
             required=True,
@@ -96,7 +96,7 @@ class Uninstall(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -167,6 +167,14 @@ class Uninstall(AAZCommand):
             _builder.set_prop("solutionName", AAZStrType, ".solution_name", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
+        
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            # self.ctx.set_var(
+            #     "instance",
+            #     data,
+            #     schema_builder=self._build_schema_on_200
+            # )
 
 
 class _UninstallHelper:

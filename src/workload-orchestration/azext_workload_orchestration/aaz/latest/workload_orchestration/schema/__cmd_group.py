@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration schema",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is for edge Config-Manager
+    """workload-orchestration schema helps to manage Schemas
     """
     pass
 

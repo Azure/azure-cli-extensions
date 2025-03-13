@@ -61,13 +61,13 @@ class RemoveRevision(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.solution = AAZStrArg(
-            options=["--solution-template"],
+            options=["--solution-name"],
             arg_group="Body",
             help="Solution Name",
             required=True,
         )
         _args_schema.solution_version = AAZStrArg(
-            options=["--solution-template-version"],
+            options=["--solution-version"],
             arg_group="Body",
             help="Solution Version Name",
             required=True,
@@ -97,7 +97,7 @@ class RemoveRevision(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -168,7 +168,14 @@ class RemoveRevision(AAZCommand):
             _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
-
+        
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            # self.ctx.set_var(
+            #     "instance",
+            #     data,
+            #     schema_builder=self._build_schema_on_200
+            # )
 
 class _RemoveRevisionHelper:
     """Helper class for RemoveRevision"""

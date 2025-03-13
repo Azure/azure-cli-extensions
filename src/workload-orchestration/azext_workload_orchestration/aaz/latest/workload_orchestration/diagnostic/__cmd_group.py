@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration diagnostic",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is for edge Config-Manager
+    """workload-orchestration diagnostic helps to manage Diagnostics
     """
     pass
 
