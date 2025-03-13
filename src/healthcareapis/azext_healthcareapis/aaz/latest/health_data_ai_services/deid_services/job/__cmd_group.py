@@ -8,4 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from ._clients import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "health-data-ai-services deid-services job",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Job
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
