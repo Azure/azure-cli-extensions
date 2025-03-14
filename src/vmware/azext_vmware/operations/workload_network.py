@@ -33,8 +33,8 @@ class DHCPRelayCreate(_DHCPCreate):
         server_addresses = args_schema.server_addresses
         server_addresses.Element = AAZStrArg()
 
-        args_schema.relay._registered = False
-        args_schema.server._registered = False
+        setattr(args_schema.relay, '_registered', False)
+        setattr(args_schema.server, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -80,8 +80,8 @@ class DHCPRelayUpdate(_DHCPUpdate):
             nullable=True,
         )
 
-        args_schema.relay._registered = False
-        args_schema.server._registered = False
+        setattr(args_schema.relay, '_registered', False)
+        setattr(args_schema.server, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -116,8 +116,8 @@ class DHCPServerCreate(_DHCPCreate):
             help="DHCP Server Address.",
         )
 
-        args_schema.relay._registered = False
-        args_schema.server._registered = False
+        setattr(args_schema.relay, '_registered', False)
+        setattr(args_schema.server, '_registered', False)
         return args_schema
 
     def pre_operations(self):
@@ -164,8 +164,8 @@ class DHCPServerUpdate(_DHCPUpdate):
             nullable=True,
         )
 
-        args_schema.relay._registered = False
-        args_schema.server._registered = False
+        setattr(args_schema.relay, '_registered', False)
+        setattr(args_schema.server, '_registered', False)
         return args_schema
 
     def pre_operations(self):

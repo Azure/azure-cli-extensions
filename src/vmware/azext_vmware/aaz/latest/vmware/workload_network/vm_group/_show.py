@@ -50,7 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -62,7 +62,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         return cls._args_schema
@@ -196,7 +196,9 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             properties.revision = AAZIntType()
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             members = cls._schema_on_200.properties.members
             members.Element = AAZStrType()
