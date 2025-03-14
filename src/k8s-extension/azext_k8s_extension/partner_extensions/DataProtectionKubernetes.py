@@ -9,7 +9,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
 
 from .DefaultExtension import DefaultExtension
-from .._client_factory import cf_storage, cf_managed_clusters
+from .._client_factory import cf_managed_clusters
 from ..vendored_sdks.models import (Extension, PatchExtension, Scope, ScopeCluster)
 
 logger = get_logger(__name__)
@@ -20,6 +20,7 @@ class DataProtectionKubernetes(DefaultExtension):
         """Constants for configuration settings
            - Tenant Id (required)
            - Backup storage location (required)
+           - Resource Requests (optional)
            - Resource Limits (optional)
         """
         self.TENANT_ID = "credentials.tenantId"
@@ -27,6 +28,8 @@ class DataProtectionKubernetes(DefaultExtension):
         self.BACKUP_STORAGE_ACCOUNT_NAME = "configuration.backupStorageLocation.config.storageAccount"
         self.BACKUP_STORAGE_ACCOUNT_RESOURCE_GROUP = "configuration.backupStorageLocation.config.resourceGroup"
         self.BACKUP_STORAGE_ACCOUNT_SUBSCRIPTION = "configuration.backupStorageLocation.config.subscriptionId"
+        self.RESOURCE_REQUEST_CPU = "resources.requests.cpu"
+        self.RESOURCE_REQUEST_MEMORY = "resources.requests.memory"
         self.RESOURCE_LIMIT_CPU = "resources.limits.cpu"
         self.RESOURCE_LIMIT_MEMORY = "resources.limits.memory"
         self.BACKUP_STORAGE_ACCOUNT_USE_AAD = "configuration.backupStorageLocation.config.useAAD"
@@ -36,6 +39,8 @@ class DataProtectionKubernetes(DefaultExtension):
         self.storage_account = "storageAccount"
         self.storage_account_resource_group = "storageAccountResourceGroup"
         self.storage_account_subscription = "storageAccountSubscriptionId"
+        self.cpu_request = "cpuRequest"
+        self.memory_request = "memoryRequest"
         self.cpu_limit = "cpuLimit"
         self.memory_limit = "memoryLimit"
         self.use_aad = "useAAD"
@@ -46,6 +51,8 @@ class DataProtectionKubernetes(DefaultExtension):
             self.storage_account.lower(): self.BACKUP_STORAGE_ACCOUNT_NAME,
             self.storage_account_resource_group.lower(): self.BACKUP_STORAGE_ACCOUNT_RESOURCE_GROUP,
             self.storage_account_subscription.lower(): self.BACKUP_STORAGE_ACCOUNT_SUBSCRIPTION,
+            self.cpu_request.lower(): self.RESOURCE_REQUEST_CPU,
+            self.memory_request.lower(): self.RESOURCE_REQUEST_MEMORY,
             self.cpu_limit.lower(): self.RESOURCE_LIMIT_CPU,
             self.memory_limit.lower(): self.RESOURCE_LIMIT_MEMORY,
             self.use_aad.lower(): self.BACKUP_STORAGE_ACCOUNT_USE_AAD,
@@ -83,7 +90,7 @@ class DataProtectionKubernetes(DefaultExtension):
         plan_publisher,
         plan_product,
     ):
-        # Current scope of DataProtection Kubernetes Backup extension is 'cluster' #TODO: add TSGs when they are in place
+        # Current scope of DataProtection extension is 'cluster' #TODO: add TSGs when they are in place
         if scope == 'namespace':
             raise InvalidArgumentValueError(f"Invalid scope '{scope}'. This extension can only be installed at 'cluster' scope.")
 
@@ -106,7 +113,7 @@ class DataProtectionKubernetes(DefaultExtension):
         configuration_settings[self.TENANT_ID] = tenant_id
 
         if configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_USE_AAD) is None:
-            logger.warning("useAAD flag is not specified. Setting it to 'true'. Please provide extension MSI Storage Blob Data Contributor role to the storage account.")
+            logger.warning("useAAD flag is not specified. Setting it to 'true'. Please provide extension MSI Storage Blob Data Contributor role on the storage account.")
             configuration_settings[self.BACKUP_STORAGE_ACCOUNT_USE_AAD] = "true"
 
         if configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI) is None:
@@ -149,18 +156,20 @@ class DataProtectionKubernetes(DefaultExtension):
             self.__validate_and_map_config(configuration_settings, validate_bsl=bsl_specified)
             if bsl_specified:
                 self.__validate_backup_storage_account(cmd.cli_ctx, resource_group_name, cluster_name, configuration_settings)
-        # this step is for brownfield migrating to AAD
+
+        # This step is for brownfield migrating to AAD
         if configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_USE_AAD) is not None and configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_USE_AAD).lower() == "true":
-            logger.warning("useAAD flag is set to true. Please provide extension MSI Storage Blob Data Contributor role to the storage account.")
+            logger.warning("useAAD flag is set to true. Please provide extension MSI Storage Blob Data Contributor role on the storage account.")
 
         if configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI) is None:
-            # SA details provided in user inputs, but did not provide SA URI.
-            logger.warning("storageAccountURI is not populated. Setting it to the storage account URI of provided storage account")
+            # SA details provided in user input, but did not provide SA URI.
             if bsl_specified:
+                logger.warning("storageAccountURI is not populated. Setting it to the storage account URI of provided storage account.")
                 configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI] = self.__get_storage_account_uri(cmd.cli_ctx, configuration_settings)
                 logger.warning(f"storageAccountURI: {configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI]}")
             # SA details not provided in user input, SA Uri not provided in user input, and also not populated in the original extension, we populate it.
             elif not bsl_specified and original_extension.configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI) is None:
+                logger.warning("storageAccountURI is not populated. Setting it to the storage account URI of the storage account provided during extension installation.")
                 configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI] = self.__get_storage_account_uri(cmd.cli_ctx, original_extension.configuration_settings)
                 logger.warning(f"storageAccountURI: {configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI]}")
 
@@ -177,7 +186,7 @@ class DataProtectionKubernetes(DefaultExtension):
         return cli_ctx.data['tenant_id']
 
     def __validate_and_map_config(self, configuration_settings, validate_bsl=True):
-        """Validate and set configuration settings for Data Protection K8sBackup extension"""
+        """Validate and set configuration settings for DataProtection extension"""
         input_configuration_settings = dict(configuration_settings.items())
         input_configuration_keys = [key.lower() for key in configuration_settings]
 
@@ -189,14 +198,14 @@ class DataProtectionKubernetes(DefaultExtension):
         for key in input_configuration_settings:
             _key = key.lower()
             if _key in self.configuration_mapping:
-                configuration_settings[self.configuration_mapping[_key]] = configuration_settings.pop(key)
+                configuration_settings[self.configuration_mapping[_key]] = configuration_settings.pop(key).strip()
             else:
                 configuration_settings.pop(key)
                 logger.warning(f"Ignoring unrecognized configuration setting: {key}")
 
     def __validate_backup_storage_account(self, cli_ctx, resource_group_name, cluster_name, configuration_settings):
         """Validations performed on the backup storage account
-           - Existance of the storage account
+           - Existence of the storage account
            - Cluster and storage account are in the same location
         """
         storage_account = self.__get_storage_account(cli_ctx, configuration_settings)
