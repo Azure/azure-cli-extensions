@@ -12678,7 +12678,12 @@ spec:
                 if not f"staticgatewayconfiguration.egressgateway.kubernetes.azure.com/{istio_sgc_name} created" in k_create_sgc_output:
                     raise CLITestError("failed to create StaticGatewayConfiguration")
             finally:
-                os.unlink(sgc_browse_path)
+                # Delete files
+                if os.path.exists(browse_path):
+                    os.remove(browse_path)
+
+                if os.path.exists(sgc_browse_path):
+                    os.remove(sgc_browse_path)
 
             # enable Istio egress gateway
             update_cmd = (
