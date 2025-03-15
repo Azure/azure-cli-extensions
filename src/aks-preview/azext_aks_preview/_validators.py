@@ -864,9 +864,9 @@ def validate_asm_egress_name(namespace):
     match = asm_egress_name_regex.match(name)
     if not match or len(name) > CONST_AZURE_SERVICE_MESH_MAX_NAME_LENGTH:
         raise InvalidArgumentValueError(
-            f"Istio egress name {name} is invalid. Name must be between 1 and {CONST_AZURE_SERVICE_MESH_MAX_NAME_LENGTH} "
-            "characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an "
-            "alphanumeric character."
+            f"Istio egress name {name} is invalid. Name must be between 1 and "
+            f"{CONST_AZURE_SERVICE_MESH_MAX_NAME_LENGTH} characters, must consist of lower case alphanumeric "
+            "characters, '-' or '.', and must start and end with an alphanumeric character."
         )
 
 
