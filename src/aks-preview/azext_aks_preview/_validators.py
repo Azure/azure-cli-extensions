@@ -34,6 +34,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODEPOOL_MODE_GATEWAY,
+    CONST_AZURE_SERVICE_MESH_MAX_NAME_LENGTH,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -856,15 +857,16 @@ def validate_azure_service_mesh_revision(namespace):
 
 
 def validate_asm_egress_name(namespace):
-    if namespace.name is None:
+    if namespace.istio_egressgateway_name is None:
         return
-    name = namespace.name
-    asm_egress_name_regex = re.compile(r'[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
-    found = asm_egress_name_regex.findall(name)
-    if not found or len(name) > 253:
+    name = namespace.istio_egressgateway_name
+    asm_egress_name_regex = re.compile(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?(.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')
+    match = asm_egress_name_regex.match(name)
+    if not match or len(name) > CONST_AZURE_SERVICE_MESH_MAX_NAME_LENGTH:
         raise InvalidArgumentValueError(
-            f"Istio egress name {name} is invalid. Name must start and end with an "
-            "alphanumeric character and cannot be greater than 253 characters."
+            f"Istio egress name {name} is invalid. Name must be between 1 and {CONST_AZURE_SERVICE_MESH_MAX_NAME_LENGTH} "
+            "characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an "
+            "alphanumeric character."
         )
 
 
