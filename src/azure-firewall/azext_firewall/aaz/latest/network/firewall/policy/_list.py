@@ -159,7 +159,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.id = AAZStrType()
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -316,7 +316,6 @@ class List(AAZCommand):
             intrusion_detection = cls._schema_on_200.value.Element.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
-            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200.value.Element.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(
@@ -514,7 +513,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.id = AAZStrType()
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -671,7 +670,6 @@ class List(AAZCommand):
             intrusion_detection = cls._schema_on_200.value.Element.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
-            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200.value.Element.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(
