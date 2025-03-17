@@ -46,6 +46,12 @@ class AppConverter(BaseConverter):
                     "mountOptions": self._get_mount_options(disk_props),
                 })
         return {
+            "isByoc": self.wrapper_data.is_support_custom_container_image_for_app(app),
+            "isPrivateImage": self.wrapper_data.is_private_custom_container_image(app),
+            "paramContainerAppImagePassword": self._get_param_name_of_container_image_password(app),
+            "containerRegistry": self._get_container_registry(app),
+            "args": self._get_args(app),
+            "commands": self._get_commands(app),
             "containerAppName": self._get_resource_name(app),
             "paramContainerAppImageName": self._get_param_name_of_container_image(app),
             "paramTargetPort": self._get_param_name_of_target_port(app),
@@ -245,3 +251,28 @@ class AppConverter(BaseConverter):
             "maxReplicas": scale.get("maxReplicas", 5),
             "rules": scale.get("rules", [])
         }
+
+    def _get_container_registry(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+            server = blueDeployment['properties']['source'].get('customContainer').get('server', '')
+            languageFramework = blueDeployment['properties']['source'].get('customContainer').get('languageFramework', '')
+            username = blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', '')
+            passwordSecretRefPerfix = server.replace(".", "")
+            passwordSecretRef = f"{passwordSecretRefPerfix}-{username}"
+            return {
+                "server": server,
+                "username": username,
+                "passwordSecretRef": passwordSecretRef,
+                "image": self._get_container_image(app),
+            }
+
+    def _get_args(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+            return blueDeployment['properties']['source'].get('customContainer').get('args', [])
+
+    def _get_commands(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+            return blueDeployment['properties']['source'].get('customContainer').get('command', [])
