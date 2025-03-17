@@ -13,9 +13,6 @@ if TYPE_CHECKING:
     from ._patch import *  # pylint: disable=unused-wildcard-import
 
 from ._container_service_fleet_mgmt_client import ContainerServiceFleetMgmtClient  # type: ignore
-from ._version import VERSION
-
-__version__ = VERSION
 
 try:
     from ._patch import __all__ as _patch_all
