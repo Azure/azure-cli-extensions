@@ -1,5 +1,11 @@
 param containerAppName string = '{{data.containerAppName}}'
+{%- if data.isByoc %}
+{%- if data.isPrivateImage %}
+param {{data.paramContainerAppImagePassword}} string
+{%- endif %}
+{%- else %}
 param {{data.paramContainerAppImageName}} string
+{%- endif %}
 param {{data.paramTargetPort}} int
 
 @description('Minimum number of replicas that will be deployed')
@@ -33,6 +39,25 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
     managedEnvironmentId: containerAppEnvId
     workloadProfileName: workloadProfileName
     configuration: {
+      {%- if data.isByoc %}
+      registries: [
+        {
+          server: '{{data.containerRegistry.server}}'
+          {%- if data.isPrivateImage %}
+          username: '{{data.containerRegistry.username}}'
+          passwordSecretRef: '{{data.containerRegistry.passwordSecretRef}}'
+          {%- endif %}
+        }
+      ]
+      {%- if data.isPrivateImage %}
+      secrets: [
+        {
+          name: '{{data.containerRegistry.passwordSecretRef}}'
+          value: {{data.paramContainerAppImagePassword}}
+        }
+      ]
+      {%- endif %}
+      {%- endif %}
       ingress: {
         {%- if data.ingress %}
         external: {% if data.isPublic %}true{% else %}false{% endif %}
@@ -60,11 +85,31 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
       containers: [
         {
           name: containerAppName
+          {%- if data.isByoc %}
+          image: '{{data.containerRegistry.image}}'
+          {%- else %}
           image: {{data.paramContainerAppImageName}}
+          {%- endif %}
           resources: {
             cpu: json('{{data.blue.cpuCore}}')
             memory: '{{data.blue.memorySize}}'
           }
+          {%- if data.args %}
+          args: [
+            {%- for arg in data.args %}
+              '{{arg}}'
+            {%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          {%- endif %}
+          {%- if data.commands %}
+          command: [
+            {%- for command in data.commands %}
+              '{{command}}'
+            {%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+          ]
+          {%- endif %}
           env: [
             {%- for env in data.blue.env %}
             {

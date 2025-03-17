@@ -134,6 +134,17 @@ class BaseConverter(ConverterTemplate):
         enableSubPath = disk_props.get('customPersistentDiskProperties', False).get('enableSubPath', False)
         return enableSubPath
 
+# app
+    def _get_container_image(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if blueDeployment is not None:
+            if self.wrapper_data.is_support_custom_container_image_for_app(app):
+                server = blueDeployment['properties']['source'].get('customContainer').get('server', '')
+                containerImage = blueDeployment['properties']['source'].get('customContainer').get('containerImage', '')
+                return f"{server}/{containerImage}"
+            else:
+                return None
+
 # module name
     def _get_app_module_name(self, app):
         appName = self._get_resource_name(app)
@@ -159,6 +170,10 @@ class BaseConverter(ConverterTemplate):
         storage_unique_name = self._get_storage_unique_name(disk_props)
         return "containerAppEnvStorageAccountKeyOf_" + storage_unique_name
 
+    # get param name of paramContainerAppImagePassword
+    def _get_param_name_of_container_image_password(self, app):
+        appName = self._get_resource_name(app)
+        return "containerImagePasswordOf_" + appName.replace("-", "_")
 
 class SourceDataWrapper:
     def __init__(self, source):
@@ -295,3 +310,24 @@ class SourceDataWrapper:
         if identity is None:
             return False
         return identity.get('type') == 'SystemAssigned'
+
+    def is_support_custom_container_image_for_deployment(self, deployment):
+        if deployment is None:
+            return False
+        return deployment['properties'].get('source') is not None and \
+            deployment['properties']['source'].get('customContainer') is not None and \
+            deployment['properties']['source'].get('type') == 'Container' and \
+            deployment['properties']['source']['customContainer'].get('containerImage') is not None
+    
+    def is_support_custom_container_image_for_app(self, app):
+        blueDeployment = self.get_blue_deployment_by_app(app)
+        if blueDeployment is None:
+            return False
+        return self.is_support_custom_container_image_for_deployment(blueDeployment)
+
+    def is_private_custom_container_image(self, app):
+        blueDeployment = self.get_blue_deployment_by_app(app)
+        if blueDeployment is None:
+            return False
+        if self.is_support_custom_container_image_for_app(app):
+            return blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', None) is not None
