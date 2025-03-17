@@ -255,9 +255,9 @@ class AppConverter(BaseConverter):
     def _get_container_registry(self, app):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
         if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
-            server = blueDeployment['properties']['source'].get('customContainer').get('server', '')
-            languageFramework = blueDeployment['properties']['source'].get('customContainer').get('languageFramework', '')
-            username = blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', '')
+            server = blueDeployment['properties']['source'].get('customContainer').get('server', None)
+            languageFramework = blueDeployment['properties']['source'].get('customContainer').get('languageFramework', None)
+            username = blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', None)
             passwordSecretRefPerfix = server.replace(".", "")
             passwordSecretRef = f"{passwordSecretRefPerfix}-{username}"
             return {

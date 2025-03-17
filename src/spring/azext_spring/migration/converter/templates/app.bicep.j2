@@ -1,6 +1,7 @@
 param containerAppName string = '{{data.containerAppName}}'
 {%- if data.isByoc %}
 {%- if data.isPrivateImage %}
+@secure()
 param {{data.paramContainerAppImagePassword}} string
 {%- endif %}
 {%- else %}

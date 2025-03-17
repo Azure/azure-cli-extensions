@@ -10,6 +10,7 @@ param vnetSubnetId string
 {%- for app in data.apps %}
 {%- if app.isByoc %}
 {%- if app.isPrivateImage %}
+@secure()
 param {{app.paramContainerAppImagePassword}} string
 {%- endif %}
 {%- else %}
@@ -18,6 +19,7 @@ param {{app.paramContainerAppImageName}} string
 param {{app.paramTargetPort}} int
 {%- endfor %}
 {%- for storage in data.storages %}
+@secure()
 param {{storage.paramContainerAppEnvStorageAccountKey}} string
 {%- endfor %}
 
