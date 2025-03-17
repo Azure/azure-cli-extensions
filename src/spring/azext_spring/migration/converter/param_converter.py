@@ -18,6 +18,10 @@ class ParamConverter(BaseConverter):
                     "appName": self._get_resource_name(app),
                     "paramContainerAppImageName": self._get_param_name_of_container_image(app),
                     "paramTargetPort": self._get_param_name_of_target_port(app),
+                    "isByoc": self.wrapper_data.is_support_custom_container_image_for_app(app),
+                    "isPrivateImage": self.wrapper_data.is_private_custom_container_image(app),
+                    "paramContainerAppImagePassword": self._get_param_name_of_container_image_password(app),
+                    "image": self._get_container_image(app),
                 })
                 if 'properties' in app and 'customPersistentDisks' in app['properties']:
                     disks = app['properties']['customPersistentDisks']
