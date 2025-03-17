@@ -8,7 +8,7 @@ upcoming
 1.1.0b4
 ++++++
 * 'az containerapp create': Support --kind {functionapp}
-* Removed preview tag for command groups az containerapp sessionpool' and 'az containerapp session code-interpreter'
+* Removed preview tag for command groups 'az containerapp sessionpool' and 'az containerapp session code-interpreter'
 
 1.1.0b3
 ++++++
