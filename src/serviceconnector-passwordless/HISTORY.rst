@@ -4,7 +4,7 @@ Release History
 ===============
 3.3.1
 ++++++
-* Add documented manual steps for Fabric SQL
+* Change Fabric SQL token endpoint for Cloud Shell compatibility.
 
 3.3.0
 ++++++
