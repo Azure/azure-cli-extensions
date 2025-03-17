@@ -16,9 +16,9 @@ Before getting started, make sure you have the following:
 
 ### Review the Bicep Files
 
-After generating the Bicep files, the specified output directory will contain the following files and related resource definitions:
+After generating the Bicep files, the specified output directory will contain:
 
-- `main.bicep`: The entry point to deploy and manage Azure Container Apps resources
+- `main.bicep`: The entry point to deploy and manage Azure Container Apps resources.
 - `param.bicepparam`: The parameters which  values required for the deployment.
 - `environment.bicep`: The Bicep file that contains the resource definitions for the Azure Container Apps environment.
 - `<app_name>-app.bicep`: The Bicep file that contains the resource definitions for the Azure Container Apps applications.
@@ -38,21 +38,20 @@ To migrate a custom virtual network, you must [create the VNet](https://learn.mi
 
 {%- if data.hasApps %}
 #### Application Containerization and Deployment
-
-You can choose one of the following options:
-- **Option 1**: Leave the image URL in `param.bicepparam` unchanged to deploy the quickstart applications. You can deploy your own applications later, after the Azure Container Apps environment is created.
-- **Option 2**: Replace the image URL with your application's image and update the corresponding target ports. For more details on obtaining container images, refer to [Application containerization](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-build-overview), and learn how to [deploy them](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#deploy-an-application). If your images are hosted in private repositories in Azure Container Registry, you will need to provide the necessary credentials to Azure Container Apps. For more information, refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity-image-pull?tabs=bash&pivots=portal).
-
 For following applications that are built by Azure Spring Apps, you need to build the image and deploy to Azure Container Apps.
 {%- for app in data.buildResultsApps %}
   - `{{app.name}}`
 {%- endfor %}
 {%- endif %}
 
+You can choose one of the following options:
+- **Option 1**: Leave the image URL in `param.bicepparam` unchanged to deploy the quickstart applications. You can deploy your own applications later, after the Azure Container Apps environment is created.
+- **Option 2**: Replace the image URL with your application's image and update the corresponding target ports. For more details on obtaining container images, refer to [Application containerization](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-build-overview), and learn how to [deploy them](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#deploy-an-application). If your images are hosted in private repositories in Azure Container Registry, you will need to provide the necessary credentials to Azure Container Apps. For more information, refer to [this doc](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity-image-pull?tabs=bash&pivots=portal).
+
 {%- if data.isSupportConfigServer %}
 #### Managed Components Configuration
 
-You need to update the GIT repoistories for the remote Git repository in the `config_server.bicep` file, such as providing the credentials.
+Update Git repository credentials in the `config_server.bicep` file if using private remote Git repositories, such as providing the credentials.
 {%- endif %}
 
 #### Mismatch during migration
@@ -156,9 +155,9 @@ Following applications have enabled blue-green deployments in Azure Spring Apps,
 {%- endif %}
 
 ### Auto scale
-Because Azure Container Apps leverage Kubernetes Event-driven Autoscaling (KEDA) for auto-scaling, which is different from Azure Spring Apps that use Azure Monitor, the migration tools cannot transfer these settings for you. You will need to manually configure the auto-scaling settings in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
+Since Azure Container Apps leverage Kubernetes Event-driven Autoscaling (KEDA) for auto-scaling, which is different from Azure Spring Apps that uses Azure Monitor, the tool cannot transfer these settings for you. You need to manually configure the auto-scaling settings in Azure Container Apps. Refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-application-overview#scale) to learn how to set up auto scaling in Azure Container Apps.
 
 ### Monitoring
 The migration has enabled logging and monitoring in Azure Container Apps. You can refer to [this doc](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-monitoring) for sample queries to help with troubleshooting.
 
-Refer to the [migration documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview) for more detailed feature migration steps.
+Refer to the [official migration documentation](https://learn.microsoft.com/en-us/azure/spring-apps/migration/migrate-to-azure-container-apps-overview) for more details on feature migration.
