@@ -13,7 +13,6 @@ import re
 import json
 from importlib import import_module
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
-from knack.log import get_logger
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
@@ -23,6 +22,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+from knack.log import get_logger
 from azext_dataprotection.manual import backupcenter_helper
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
