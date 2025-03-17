@@ -41,7 +41,10 @@ def step_create(test, checks=None):
         "az networkfabric nni create --resource-group {rg} --resource-name {name} --fabric {fabric}"
         " --nni-type {nniType} --is-management-type {isManagementType} --use-option-b {useOptionB}"
         " --layer2-configuration {layer2Configuration}"
-        " --option-b-layer3-configuration {optionBLayer3Configuration}",
+        " --option-b-layer3-configuration {optionBLayer3Configuration} --import-route-policy {importRoutePolicy}"
+        " --export-route-policy {exportRoutePolicy} --conditional-default-route-configuration {conditionalDefaultRouteConfiguration}"
+        " --egress-acl-id {egressAclId} --ingress-acl-id {ingressAclId} --micro-bfd-state {microBfdState}"
+        " --npb-static-route-configuration {npbStaticRouteConfiguration} --static-route-configuration {staticRouteConfiguration}",
         checks=checks,
     )
 
@@ -85,15 +88,29 @@ class GA_NNIScenarioTest1(ScenarioTest):
                 "optionBLayer3Configuration": CONFIG.get(
                     "NETWORK_TO_NETWORK_INTERCONNECT", "option_b_layer3_configuration"
                 ),
-                "updatedOptionBLayer3Configuration": CONFIG.get(
-                    "NETWORK_TO_NETWORK_INTERCONNECT",
-                    "updated_option_b_layer3_configuration",
-                ),
                 "importRoutePolicy": CONFIG.get(
                     "NETWORK_TO_NETWORK_INTERCONNECT", "import_route_policy"
                 ),
                 "exportRoutePolicy": CONFIG.get(
                     "NETWORK_TO_NETWORK_INTERCONNECT", "export_route_policy"
+                ),
+                "conditionalDefaultRouteConfiguration": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "cdr_conf"
+                ),
+                "egressAclId": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "egress_acl_id"
+                ),
+                "ingressAclId": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "ingress_acl_id"
+                ),
+                "microBfdState": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "micro_bfd_state"
+                ),
+                "npbStaticRouteConfiguration": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "npb_static_route_configuration"
+                ),
+                "staticRouteConfiguration": CONFIG.get(
+                    "NETWORK_TO_NETWORK_INTERCONNECT", "static_route_configuration"
                 ),
             }
         )

@@ -40,10 +40,9 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3domain} --resource-name {name} --vlan-id {vlan_id}"
+        "az networkfabric internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3Domain} --resource-name {name} --vlan-id {vlanId}"
         " --mtu {mtu} --connected-ipv4-subnets {connectedIpv4Subnets}"
-        " --static-route-configuration {staticRouteConf} --bgp-configuration {bgpConf}"
-        " --import-route-policy {importRoutePolicy}",
+        " --static-route-configuration {staticRouteConf} --bgp-configuration {bgpConf}",
         checks=checks,
     )
 
@@ -53,7 +52,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork update --resource-group {rg} --resource-name {name} --l3domain {l3domain} "
+        "az networkfabric internalnetwork update --resource-group {rg} --resource-name {name} --l3domain {l3Domain} "
         " --connected-ipv4-subnets {updatedConnectedIpv4Subnets}  --static-route-configuration {updatedStaticRouteConf}"
         " --bgp-configuration {updatedBgpConf}",
         checks=checks,
@@ -65,7 +64,7 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}"
+        "az networkfabric internalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}"
     )
 
 
@@ -74,7 +73,7 @@ def step_list_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork list --resource-group {rg} --l3domain {l3domain}"
+        "az networkfabric internalnetwork list --resource-group {rg} --l3domain {l3Domain}"
     )
 
 
@@ -83,7 +82,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}"
+        "az networkfabric internalnetwork delete --resource-name {name} --l3domain {l3Domain} --resource-group {rg}"
     )
 
 
@@ -96,8 +95,8 @@ class GA_InternalNetworkScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("INTERNAL_NETWORK", "name"),
                 "rg": CONFIG.get("INTERNAL_NETWORK", "resource_group"),
-                "l3domain": CONFIG.get("INTERNAL_NETWORK", "l3domain"),
-                "vlan_id": CONFIG.get("INTERNAL_NETWORK", "vlan_id"),
+                "l3Domain": CONFIG.get("INTERNAL_NETWORK", "l3_domain"),
+                "vlanId": CONFIG.get("INTERNAL_NETWORK", "vlan_id"),
                 "mtu": CONFIG.get("INTERNAL_NETWORK", "mtu"),
                 "extension": CONFIG.get("INTERNAL_NETWORK", "extension"),
                 "isMonitoringEnabled": CONFIG.get(

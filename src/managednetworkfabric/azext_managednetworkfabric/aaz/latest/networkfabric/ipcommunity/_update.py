@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -50,22 +50,13 @@ class Update(AAZCommand):
             help="Name of the IP Community.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -74,6 +65,12 @@ class Update(AAZCommand):
             options=["--ip-community-rules"],
             arg_group="Properties",
             help="List of IP Community Rules.",
+            nullable=True,
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
         ip_community_rules = cls._args_schema.ip_community_rules
@@ -82,7 +79,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.ip_community_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
-            help="Action to be taken on the configuration. Example: Permit.",
+            help="Action to be taken on the configuration. Example: Permit | Deny.",
             required=True,
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
@@ -106,25 +103,18 @@ class Update(AAZCommand):
         _element.well_known_communities = AAZListArg(
             options=["well-known-communities"],
             help="Supported well known Community List.",
-            fmt=AAZListArgFormat(
-                unique=True,
-            ),
         )
 
         community_members = cls._args_schema.ip_community_rules.Element.community_members
-        community_members.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
+        community_members.Element = AAZStrArg()
 
         well_known_communities = cls._args_schema.ip_community_rules.Element.well_known_communities
         well_known_communities.Element = AAZStrArg(
             enum={"GShut": "GShut", "Internet": "Internet", "LocalAS": "LocalAS", "NoAdvertise": "NoAdvertise", "NoExport": "NoExport"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -208,7 +198,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -233,12 +223,12 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules")
+                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules", typ_kwargs={"nullable": True})
 
             ip_community_rules = _builder.get(".properties.ipCommunityRules")
             if ip_community_rules is not None:
@@ -318,6 +308,14 @@ class Update(AAZCommand):
                 serialized_name="ipCommunityRules",
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -347,6 +345,11 @@ class Update(AAZCommand):
 
             well_known_communities = cls._schema_on_200.properties.ip_community_rules.Element.well_known_communities
             well_known_communities.Element = AAZStrType()
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
