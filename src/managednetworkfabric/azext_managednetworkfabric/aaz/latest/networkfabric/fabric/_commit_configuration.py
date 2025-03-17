@@ -22,9 +22,9 @@ class CommitConfiguration(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/commitconfiguration", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/commitconfiguration", "2024-06-15-preview"],
         ]
     }
 
@@ -50,6 +50,9 @@ class CommitConfiguration(AAZCommand):
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -137,7 +140,7 @@ class CommitConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -168,35 +171,20 @@ class CommitConfiguration(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _CommitConfigurationHelper._build_schema_common_post_action_response_for_state_update_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            _schema_on_200.error = AAZObjectType()
+            _CommitConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
 
             return cls._schema_on_200
 
 
 class _CommitConfigurationHelper:
     """Helper class for CommitConfiguration"""
-
-    _schema_common_post_action_response_for_state_update_read = None
-
-    @classmethod
-    def _build_schema_common_post_action_response_for_state_update_read(cls, _schema):
-        if cls._schema_common_post_action_response_for_state_update_read is not None:
-            _schema.configuration_state = cls._schema_common_post_action_response_for_state_update_read.configuration_state
-            _schema.error = cls._schema_common_post_action_response_for_state_update_read.error
-            return
-
-        cls._schema_common_post_action_response_for_state_update_read = _schema_common_post_action_response_for_state_update_read = AAZObjectType()
-
-        common_post_action_response_for_state_update_read = _schema_common_post_action_response_for_state_update_read
-        common_post_action_response_for_state_update_read.configuration_state = AAZStrType(
-            serialized_name="configurationState",
-            flags={"read_only": True},
-        )
-        common_post_action_response_for_state_update_read.error = AAZObjectType()
-        cls._build_schema_error_detail_read(common_post_action_response_for_state_update_read.error)
-
-        _schema.configuration_state = cls._schema_common_post_action_response_for_state_update_read.configuration_state
-        _schema.error = cls._schema_common_post_action_response_for_state_update_read.error
 
     _schema_error_detail_read = None
 

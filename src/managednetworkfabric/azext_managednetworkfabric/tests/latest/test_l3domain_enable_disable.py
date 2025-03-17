@@ -37,7 +37,7 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {post_name} --state {state_Enable}"
+        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {postName} --state {stateEnable}"
     )
 
 
@@ -46,7 +46,7 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {post_name} --state {state_Disable}"
+        "az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {postName} --state {stateDisable}"
     )
 
 
@@ -58,9 +58,9 @@ class GA_L3DomainEnableDisableScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "rg": CONFIG.get("L3_ISOLATION_DOMAIN", "resource_group"),
-                "post_name": CONFIG.get("L3_ISOLATION_DOMAIN", "post_name"),
-                "state_Enable": CONFIG.get("L3_ISOLATION_DOMAIN", "state_Enable"),
-                "state_Disable": CONFIG.get("L3_ISOLATION_DOMAIN", "state_Disable"),
+                "postName": CONFIG.get("L3_ISOLATION_DOMAIN", "post_name"),
+                "stateEnable": CONFIG.get("L3_ISOLATION_DOMAIN", "state_enable"),
+                "stateDisable": CONFIG.get("L3_ISOLATION_DOMAIN", "state_disable"),
             }
         )
 
