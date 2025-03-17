@@ -22,9 +22,9 @@ class Replace(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2025-02-01"],
         ]
     }
 
@@ -64,7 +64,7 @@ class Replace(AAZCommand):
         _args_schema.bmc_credentials = AAZObjectArg(
             options=["--bmc-credentials"],
             arg_group="BareMetalMachineReplaceParameters",
-            help="The credentials of the baseboard management controller on this bare metal machine.",
+            help="The credentials of the baseboard management controller on this bare metal machine. The password field is expected to be an Azure Key Vault key URL. Until the cluster is converted to utilize managed identity by setting the secret archive settings, the actual password value should be provided instead.",
         )
         _args_schema.bmc_mac_address = AAZStrArg(
             options=["--bmc-mac-address"],
@@ -203,7 +203,7 @@ class Replace(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }
