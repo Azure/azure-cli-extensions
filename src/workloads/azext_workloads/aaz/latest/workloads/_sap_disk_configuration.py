@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-disk-configuration",
-    is_preview=True,
 )
 class SapDiskConfiguration(AAZCommand):
     """Show the SAP Disk Configuration Layout prod/non-prod SAP System.
@@ -23,9 +22,9 @@ class SapDiskConfiguration(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getdiskconfigurations", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getdiskconfigurations", "2024-09-01"],
         ]
     }
 
@@ -57,41 +56,47 @@ class SapDiskConfiguration(AAZCommand):
             options=["--app-location"],
             arg_group="SAPDiskConfigurations",
             help="The geo-location where the SAP resources will be created.",
+            required=True,
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
             arg_group="SAPDiskConfigurations",
             help="The database type. Eg: HANA, DB2, etc",
+            required=True,
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
         _args_schema.db_vm_sku = AAZStrArg(
             options=["--db-vm-sku"],
             arg_group="SAPDiskConfigurations",
             help="The VM SKU for database instance.",
+            required=True,
         )
         _args_schema.deployment_type = AAZStrArg(
             options=["--deployment-type"],
             arg_group="SAPDiskConfigurations",
             help="The deployment type. Eg: SingleServer/ThreeTier",
+            required=True,
             enum={"SingleServer": "SingleServer", "ThreeTier": "ThreeTier"},
         )
         _args_schema.environment = AAZStrArg(
             options=["--environment"],
             arg_group="SAPDiskConfigurations",
             help="Defines the environment type - Production/Non Production.",
+            required=True,
             enum={"NonProd": "NonProd", "Prod": "Prod"},
         )
         _args_schema.sap_product = AAZStrArg(
             options=["--sap-product"],
             arg_group="SAPDiskConfigurations",
             help="Defines the SAP Product type.",
+            required=True,
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPDiskConfigurations(ctx=self.ctx)()
+        self.SapVirtualInstancesInvokeDiskConfigurations(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -106,7 +111,7 @@ class SapDiskConfiguration(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPDiskConfigurations(AAZHttpOperation):
+    class SapVirtualInstancesInvokeDiskConfigurations(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -150,7 +155,7 @@ class SapDiskConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -173,7 +178,7 @@ class SapDiskConfiguration(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("appLocation", AAZStrType, ".app_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("databaseType", AAZStrType, ".database_type", typ_kwargs={"flags": {"required": True}})

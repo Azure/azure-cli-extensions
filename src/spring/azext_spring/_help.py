@@ -1809,3 +1809,11 @@ helps['spring private-dns-zone clean'] = """
         - name: Clean up private DNS zone with Azure Spring Apps.
           text: az spring private-dns-zone clean --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
 """
+
+helps['spring export'] = """
+    type: command
+    short-summary: Commands to export target Azure resource definitions from Azure Spring Apps.
+    examples:
+        - name: Generate corresponding bicep files and README doc to create Azure Container Apps service.
+          text: az spring export --target aca --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --output-folder output
+"""

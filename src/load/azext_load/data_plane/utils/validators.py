@@ -21,6 +21,7 @@ from .models import (
     AllowedMetricNamespaces,
     AllowedTestTypes,
     AllowedTestPlanFileExtensions,
+    EngineIdentityType,
 )
 
 logger = get_logger(__name__)
@@ -522,3 +523,50 @@ def validate_regionwise_engines(cmd, namespace):
             )
         regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
     namespace.regionwise_engines = regionwise_engines
+
+
+def validate_engine_ref_ids(namespace):
+    """Extracts multiple space-separated identities"""
+    if isinstance(namespace.engine_ref_ids, list):
+        for item in namespace.engine_ref_ids:
+            if not is_valid_resource_id(item):
+                raise InvalidArgumentValueError(f"Invalid engine-ref-ids value: {item}")
+
+
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
+def validate_keyvault_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.key_vault_reference_identity, str)
+        and not namespace.key_vault_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.key_vault_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid keyvault-ref-id value: {}".format(namespace.key_vault_reference_identity))
+
+
+def validate_metrics_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.metrics_reference_identity, str)
+        and not namespace.metrics_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.metrics_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid metrics-ref-id value: {}".format(namespace.metrics_reference_identity))
+
+
+def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids, exisiting_engine_ref_id_type=None):
+    """Validates combination of engine-ref-id-type and engine-ref-ids"""
+
+    # if engine_ref_id_type is None or SystemAssigned, then no value for engine_ref_ids is expected:
+    engine_ref_id_type = incoming_engine_ref_id_type or exisiting_engine_ref_id_type
+    if engine_ref_id_type != EngineIdentityType.UserAssigned and engine_ref_ids:
+        raise InvalidArgumentValueError(
+            "engine-ref-ids should not be provided when engine-ref-id-type is None or SystemAssigned"
+        )
+
+    # If engine_ref_id_type is UserAssigned, then engine_ref_ids is expected.
+    if incoming_engine_ref_id_type == EngineIdentityType.UserAssigned and engine_ref_ids is None:
+        raise InvalidArgumentValueError(
+            "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
+        )
