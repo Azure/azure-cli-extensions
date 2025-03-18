@@ -38,10 +38,21 @@ To migrate a custom virtual network, you must [create the VNet](https://learn.mi
 
 {%- if data.hasApps %}
 #### Application Containerization and Deployment
-For following applications that are built by Azure Spring Apps, you need to build the image and deploy to Azure Container Apps.
-{%- for app in data.buildResultsApps %}
-  - `{{app.name}}`
+
+{%- if data.buildResultsDeployments %}
+For the following applications/deployments built by Azure Spring Apps, you need to build the image and deploy it to Azure Container Apps.
+{%- for deployment in data.buildResultsDeployments %}
+  - `{{deployment.name}}`
 {%- endfor %}
+{%- endif %}
+{{ '\n' }}
+{%- if data.containerDeployments %}
+For the following applications/deployments using custom container registry, you need to provide the container registry password (if required) and target port in `param.bicepparam`.
+{%- for deployment in data.containerDeployments %}
+  - `{{deployment.name}}`
+{%- endfor %}
+{%- endif %}
+
 {%- endif %}
 
 You can choose one of the following options:
@@ -108,7 +119,8 @@ You can check the deployment status either in the CLI output or in the Azure Por
     | ManagedIdentityNoPermission | The Managed Identity 'system' does not have permission for resource... | This error typically occurs when migrating Key Vault certificates. Since the system-assigned MI for ACA is created along with the environment, you need to assign it the **Key Vault Secrets User** role in your key vault after the environment is created, then redeploy the Bicep files.​ |
     | JavaComponentOperationError | Failed to create config map external-auth-config-map for JavaComponent '' in k8se-system namespace. | Creating a Java component immediately after the environment is set up sometimes fails due to a server-side issue. you can redeploy the Bicep files to solve this issue. |
     | JavaComponentOperationError | Failed to provision java component '', Java Component is invalid, reason: admission webhook \"javacomponent.kb.io\" denied the request... | Fix the properties in the error message and redeploy the bicep files. Or find more details in the logs of managed components. |    
-
+    | InvalidCertificateValueFormat | The certificate value should be base64 string. | Manually upload certificate to Azure Container Apps environment. |    
+{{ '\n' }}
 ## Post-Deployment Configuration
 Some properties and configurations are not included in the Bicep files and must be manually updated.
 
