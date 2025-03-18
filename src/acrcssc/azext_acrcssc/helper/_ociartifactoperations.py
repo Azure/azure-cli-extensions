@@ -97,14 +97,11 @@ def get_oci_artifact_continuous_patch(cmd, registry):
     return config, file_name
 
 
-def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
-    logger.debug(f"Entering delete_oci_artifact_continuous_patch with parameters {registry} {dryrun}")
+def delete_oci_artifact_continuous_patch(cmd, registry):
+    logger.debug(f"Entering delete_oci_artifact_continuous_patch with parameters {registry}")
     resourceid = parse_resource_id(registry.id)
     subscription = resourceid[SUBSCRIPTION]
 
-    if dryrun:
-        logger.warning("Dry run flag is set, no changes will be made")
-        return
     try:
         token = _get_acr_token(registry.name, subscription)
 
@@ -115,7 +112,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
             repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}",
             username=BEARER_TOKEN_USERNAME,
             password=token,
-            yes=not dryrun)
+            yes=True)
         logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
         logger.debug(exception)

@@ -44,7 +44,6 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
-        dryrun = False
         mock_parse_resource_id.return_value = {
             "resource_group": "test_rg",
             "subscription": "test_subscription"
@@ -52,7 +51,7 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         mock_get_acr_token.return_value = "test_token"
 
         # Call the function
-        delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
+        delete_oci_artifact_continuous_patch(cmd, registry)
 
         # Assert the function calls
         mock_parse_resource_id.assert_called_once_with(registry.id)
@@ -68,26 +67,6 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         mock_logger.warning.assert_not_called()
         mock_acr_repository_delete.assert_called_once()
 
-    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
-    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
-    @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
-    def test_delete_oci_artifact_continuous_patch_dryrun(self, mock_acr_repository_delete, mock_parse_resource_id, mock_get_acr_token):
-        # Mock the necessary dependencies
-        cmd = self._setup_cmd()
-        registry = MagicMock()
-        dryrun = True
-        mock_parse_resource_id.return_value = {
-            "resource_group": "test_rg",
-            "subscription": "test_subscription"
-        }
-        mock_get_acr_token.return_value = "test_token"
-
-        # Run the function
-        delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
-
-        # Assert the function calls
-        mock_parse_resource_id.assert_called_once_with(registry.id)
-        mock_acr_repository_delete.assert_not_called()
     
     @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
     @mock.patch('azext_acrcssc.helper._ociartifactoperations.logger')
@@ -97,7 +76,6 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
-        dryrun = False
         mock_parse_resource_id.return_value = {
             "resource_group": "test_rg",
             "subscription": "test_subscription"
@@ -108,7 +86,7 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
 
         # Run the function and assert the exception
         with (self.assertRaises(Exception)):
-            delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
+            delete_oci_artifact_continuous_patch(cmd, registry)
 
         # Assert the function calls
         mock_parse_resource_id.assert_called_once_with(registry.id)

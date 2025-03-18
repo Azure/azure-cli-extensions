@@ -47,7 +47,11 @@ def _perform_continuous_patch_operation(cmd,
     # every time we perform a create or update operation, we need to validate for the number of images selected on the
     # configuration file. The way to do this is by silently running the dryrun operation. If the limit is exceeded, we
     # will not proceed with the operation.
-    dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create, remove_internal_statements=not dryrun)
+    dryrun_output = acr_cssc_dry_run(cmd,
+                                     registry=registry,
+                                     config_file_path=config,
+                                     is_create=is_create,
+                                     remove_internal_statements=not dryrun)
     if dryrun:
         print(dryrun_output)
     else:
@@ -109,7 +113,7 @@ def delete_acrcssc(cmd,
 
     user_confirmation(f"Are you sure you want to delete the workflow {CONTINUOUS_PATCHING_WORKFLOW_NAME} from registry {registry_name}?", yes=yes)
 
-    delete_continuous_patch_v1(cmd, registry, False)
+    delete_continuous_patch_v1(cmd, registry, yes=yes)
     print(f"Deleted {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow successfully from registry {registry_name}")
 
 

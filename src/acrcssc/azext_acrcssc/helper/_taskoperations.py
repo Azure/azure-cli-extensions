@@ -145,22 +145,36 @@ def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
         _trigger_task_run(cmd, registry, resource_group, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
 
 
-def delete_continuous_patch_v1(cmd, registry, dryrun):
+def delete_continuous_patch_v1(cmd, registry, yes):
     logger.debug("Entering delete_continuous_patch_v1")
     cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
-    if not dryrun and (cssc_tasks_exists or cssc_config_exists):
+
+    acr_run_client = cf_acr_runs(cmd.cli_ctx)
+    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+    running_tasks = WorkflowTaskStatus.get_taskruns_with_filter(
+        acr_run_client,
+        registry_name=registry.name,
+        resource_group_name=resource_group_name,
+        status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
+        taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
+    if len(running_tasks) > 0:
+        from knack.prompting import prompt_y_n
+        if yes or prompt_y_n("There are currently running tasks for this workflow. Do you want to cancel their execution?"):
+            _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks)
+
+    if cssc_tasks_exists:
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
         logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
         for taskname in CONTINUOUSPATCH_ALL_TASK_NAMES:
-            # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
-            _delete_task(cmd, registry, taskname, dryrun)
+            _delete_task(cmd, registry, taskname)
             logger.warning(f"Task {taskname} deleted.")
-        logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
-        delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
-
-    if not cssc_tasks_exists:
+    else:
         logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+
+    if cssc_config_exists:
+        logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
+        delete_oci_artifact_continuous_patch(cmd, registry)
 
 
 def list_continuous_patch_v1(cmd, registry):
@@ -278,10 +292,15 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
         status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
         taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
 
+    _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks)
+    logger.warning("All active running workflow tasks have been cancelled.")
+
+
+def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks):
     for task in running_tasks:
         logger.warning("Sending request to cancel task %s", task.name)
+        logger.debug("Cancel Task run, name %s run id: %s", task.name, task.run_id)
         acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
-    logger.warning("All active running workflow tasks have been cancelled.")
 
 
 def track_scan_progress(cmd, resource_group_name, registry, status):
@@ -411,31 +430,27 @@ def _update_task_schedule(acr_task_client, registry, resource_group_name, cron_e
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
 
 
-def _delete_task(cmd, registry, task_name, dryrun):
+def _delete_task(cmd, registry, task_name):
     logger.debug("Entering delete_task")
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
 
     try:
         acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
-        _delete_task_role_assignment(cmd.cli_ctx, acr_tasks_client, registry, resource_group, task_name, dryrun)
+        _delete_task_role_assignment(cmd.cli_ctx, acr_tasks_client, registry, resource_group, task_name)
 
-        if dryrun:
-            logger.debug(f"Dry run, skipping deletion of the task: {task_name}")
-            return None
         logger.debug(f"Deleting task {task_name}")
         LongRunningOperation(cmd.cli_ctx)(
             acr_tasks_client.begin_delete(
                 resource_group,
                 registry.name,
                 task_name))
+        logger.debug(f"Task {task_name} deleted successfully")
 
-    except Exception as exception:
-        raise AzCLIError(f"Failed to delete task {task_name} from registry {registry.name} : {exception}")
-
-    logger.debug(f"Task {task_name} deleted successfully")
+    except AzCLIError as exception:
+        logger.error(f"Failed to delete task {task_name} from registry {registry.name} : {exception}")
 
 
-def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_group, task_name, dryrun):
+def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_group, task_name):
     role_client = cf_authorization(cli_ctx)
     acrtask_client = cf_acr_tasks(cli_ctx)
 
@@ -455,9 +470,6 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
         )
 
         for role in assigned_roles:
-            if dryrun:
-                logger.debug(f"Dry run, skipping deletion of role assignments, task: {task_name}, role name: {role.name}")
-                return None
             logger.debug(f"Deleting role assignments of task {task_name} from the registry")
             role_client.role_assignments.delete(
                 scope=registry.id,
