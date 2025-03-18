@@ -1,0 +1,374 @@
+resources:
+- repo: self
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - 'main'
+
+pr:
+  branches:
+    include:
+      - '*'
+
+stages:
+- stage: BuildTestPublishExtension
+  displayName: "Build, Test, and Publish Extension"
+  variables:
+    TEST_PATH: $(Agent.BuildDirectory)/s/testing
+    CLI_REPO_PATH: $(Agent.BuildDirectory)/s
+    EXTENSION_NAME: "connectedk8s"
+    EXTENSION_FILE_NAME: "connectedk8s"
+    SUBSCRIPTION_ID: "15c06b1b-01d6-407b-bb21-740b8617dea3"
+    RESOURCE_GROUP: "K8sPartnerExtensionTest"
+    BASE_CLUSTER_NAME: "connectedk8s-cluster"
+  jobs:
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: BasicOnboardingTest
+      path: ./test/configurations/BasicOnboarding.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: AutoUpdateTest
+      path: ./test/configurations/AutoUpdate.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: ProxyTest
+      path: ./test/configurations/Proxy.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: GatewayTest
+      path: ./test/configurations/Gateway.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: WorkloadIdentityTest
+      path: ./test/configurations/WorkloadIdentity.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: TroubleshootTest
+      path: ./test/configurations/Troubleshoot.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: Connectedk8sProxyTest
+      path: ./test/configurations/ConnectProxy.Tests.ps1
+  - job: BuildPublishExtension
+    pool:
+      vmImage: 'ubuntu-20.04'
+    displayName: "Build and Publish the Extension Artifact"
+    variables:
+      CLI_REPO_PATH: $(Agent.BuildDirectory)/s
+      EXTENSION_NAME: "connectedk8s"
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: |
+        set -ev
+        echo "Building extension ${EXTENSION_NAME}..."
+
+        # prepare and activate virtualenv
+        pip install virtualenv
+        python3 -m venv env/
+        source env/bin/activate
+
+        # clone azure-cli
+        pip install --upgrade pip
+        pip install azdev
+
+        ls $(CLI_REPO_PATH)
+
+        azdev --version
+        azdev setup -r $(CLI_REPO_PATH) -e $(EXTENSION_NAME)
+        azdev extension build $(EXTENSION_NAME)
+      workingDirectory: $(CLI_REPO_PATH)
+      displayName: "Setup and Build Extension with azdev"
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(CLI_REPO_PATH)/dist
+
+- stage: AzureCLIOfficial
+  displayName: "Azure Official CLI Code Checks"
+  dependsOn: []
+  jobs:
+  - job: CheckLicenseHeader
+    displayName: "Check License"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.10'
+      inputs:
+        versionSpec: 3.10
+    - bash: |
+        set -ev
+
+        # prepare and activate virtualenv
+        python -m venv env/
+
+        chmod +x ./env/bin/activate
+        source ./env/bin/activate
+
+        # clone azure-cli
+        git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+        pip install --upgrade pip
+        pip install -q azdev
+
+        azdev setup -c ../azure-cli -r ./
+
+        azdev --version
+        az --version
+
+        azdev verify license
+
+  - job: IndexVerify
+    displayName: "Verify Extensions Index"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.10'
+      inputs:
+        versionSpec: 3.10
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        pip install wheel==0.30.0 requests packaging
+        export CI="ADO"
+        python ./scripts/ci/test_index.py -v
+      displayName: "Verify Extensions Index"
+
+  - job: UnitTests
+    displayName: "Unit Tests"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: '3.12'
+      - bash: pip install wheel==0.30.0
+        displayName: 'Install wheel==0.30.0'
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          pip install virtualenv
+          python -m virtualenv venv/
+          source ./venv/bin/activate
+
+          # clone azure-cli
+          git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+          pip install --upgrade pip
+          pip install azdev
+
+          azdev --version
+
+          azdev setup -c ../azure-cli -r ./ -e connectedk8s
+          current_dir=$(pwd)
+          echo "Current directory: $current_dir"
+          pip install pytest
+          cd /home/vsts/work/1/s/src/connectedk8s/azext_connectedk8s/tests/unittests
+          pytest --junitxml=test-results.xml
+          
+        displayName: 'Run UnitTests test'
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '**/test-results.xml'
+          failTaskOnFailedTests: true        
+  - job: SourceTests
+    displayName: "Integration Tests, Build Tests"
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      matrix:
+        Python39:
+          python.version: '3.9'
+        Python310:
+          python.version: '3.10'
+        Python311:
+          python.version: '3.11'
+        Python312:
+          python.version: '3.12'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python $(python.version)'
+        inputs:
+          versionSpec: '$(python.version)'
+      - bash: pip install wheel==0.30.0
+        displayName: 'Install wheel==0.30.0'
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          pip install virtualenv
+          python -m virtualenv venv/
+          source ./venv/bin/activate
+
+          # clone azure-cli
+          git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+          pip install --upgrade pip
+          pip install azdev
+
+          azdev --version
+
+          azdev setup -c ../azure-cli -r ./ -e connectedk8s
+          azdev test connectedk8s
+        displayName: 'Run integration test and build test'
+
+  - job: AzdevLinterModifiedExtensions
+    displayName: "azdev linter on Modified Extensions"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          pip install virtualenv
+          python -m virtualenv venv/
+          source ./venv/bin/activate
+
+          # clone azure-cli
+          git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+          pip install --upgrade pip
+          pip install azdev
+
+          azdev --version
+
+          azdev setup -c ../azure-cli -r ./ -e connectedk8s
+          # Installing setuptools with a version higher than 70.0.0 will not generate metadata.json
+          pip install setuptools==70.0.0
+          pip list -v
+
+          # overwrite the default AZURE_EXTENSION_DIR set by ADO
+          AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
+
+          AZURE_EXTENSION_DIR=~/.azure/cliextensions azdev linter --include-whl-extensions connectedk8s
+        displayName: "CLI Linter on Modified Extension"
+        env:
+          ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+          ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
+  - job: AzdevStyleModifiedExtensions
+    displayName: "azdev style on Modified Extensions"
+    continueOnError: true
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          python -m venv env
+          chmod +x env/bin/activate
+          source ./env/bin/activate
+
+          # clone azure-cli
+          git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+          pip install --upgrade pip
+          pip install azdev
+
+          azdev --version
+
+          azdev setup -c ../azure-cli -r ./ -e connectedk8s
+          # Installing setuptools with a version higher than 70.0.0 will not generate metadata.json
+          pip install setuptools==70.0.0
+          pip list -v
+          az --version
+
+          # overwrite the default AZURE_EXTENSION_DIR set by ADO
+          AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
+
+          AZURE_EXTENSION_DIR=~/.azure/cliextensions azdev style connectedk8s
+        displayName: "azdev style on Modified Extensions"
+        env:
+          ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+          ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
+  - job: RuffCheck
+    displayName: "Lint connectedk8s with ruff check"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          cd src/connectedk8s
+          python -m venv env
+          source ./env/bin/activate
+
+          pip install --upgrade pip
+          pip install azure-cli --editable .[linting]
+
+          ruff check
+
+        displayName: "ruff check"
+
+  - job: RuffFormat
+    displayName: "Check connected8ks formatting with ruff"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          cd src/connectedk8s
+          python -m venv env
+          source ./env/bin/activate
+
+          pip install --upgrade pip
+          pip install azure-cli --editable .[linting]
+
+          ruff format --check
+
+        displayName: "ruff format check"
+
+  - job: TypeChecking
+    displayName: "Typecheck connected8ks with mypy"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          cd src/connectedk8s
+          python -m venv env
+          source ./env/bin/activate
+
+          pip install --upgrade pip
+          pip install azure-cli --editable .[linting]
+
+          mypy
+
+        displayName: "mypy"
