@@ -160,7 +160,8 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
     if not cssc_tasks_exists:
-        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")        
+        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
