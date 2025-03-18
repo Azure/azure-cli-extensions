@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* Use stable ARM API version `2024-08-01` *
+
 1.0.4
 ++++++
 * Replace `azure-graphrbac` sdk with MS Graph sdk
