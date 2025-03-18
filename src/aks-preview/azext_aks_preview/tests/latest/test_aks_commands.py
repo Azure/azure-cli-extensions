@@ -15703,3 +15703,178 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_loadbalancer_commands(
+        self, resource_group
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        lb_name_secondary = "secondary-lb"
+        lb_name_app = "app-lb"
+        nodepool_name = "nodepool1"
+        secondary_nodepool_name = "nodepool2"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "secondary_lb": lb_name_secondary,
+                "app_lb": lb_name_app,
+                "nodepool": nodepool_name,
+                "secondary_nodepool": secondary_nodepool_name,
+            }
+        )
+
+        # Create cluster with standard load balancer
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --load-balancer-sku=standard --nodepool-name {nodepool} "
+            "--ssh-key-value={ssh_key_value} --load-balancer-backend-pool-type=nodeIP "
+        )
+        add_np_cmd = (
+            "aks nodepool add -g {resource_group} --cluster-name {name} -n {secondary_nodepool} "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        self.cmd(add_np_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ])
+
+        # Add the default kubernetes load balancer
+        self.cmd(
+            "aks loadbalancer add -g {resource_group} --cluster-name {name} --name kubernetes --primary-agent-pool-name {nodepool} --allow-service-placement true",
+            checks=[
+                self.check("name", "kubernetes"),
+                self.check("primaryAgentPoolName", "{nodepool}"),
+                self.check("allowServicePlacement", True),
+            ],
+        )
+
+        # List LoadBalancer configurations - should only have "kubernetes" by default
+        self.cmd(
+            "aks loadbalancer list -g {resource_group} --cluster-name {name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "kubernetes"),
+            ],
+        )
+
+        # Show default "kubernetes" LoadBalancer configuration
+        self.cmd(
+            "aks loadbalancer show -g {resource_group} --cluster-name {name} --name kubernetes",
+            checks=[
+                self.check("name", "kubernetes"),
+                self.exists("primaryAgentPoolName"),
+                self.check("allowServicePlacement", True),
+            ],
+        )
+
+        # Add a secondary LoadBalancer configuration
+        self.cmd(
+            "aks loadbalancer add -g {resource_group} --cluster-name {name} "
+            "--name {secondary_lb} --primary-agent-pool-name {secondary_nodepool} "
+            "--allow-service-placement true",
+            checks=[
+                self.check("name", "{secondary_lb}"),
+                self.check("primaryAgentPoolName", "{secondary_nodepool}"),
+                self.check("allowServicePlacement", True),
+                self.check("serviceLabelSelector", None),
+                self.check("serviceNamespaceSelector", None),
+                self.check("nodeSelector", None),
+            ],
+        )
+
+        # Update the secondary LoadBalance with selectors
+        self.cmd(
+            "aks loadbalancer update -g {resource_group} --cluster-name {name} "
+            "--name {secondary_lb} "
+            "--service-label-selector app=frontend,tier=web "
+            "--service-namespace-selector environment=production "
+            "--node-selector disk=ssd",
+            checks=[
+                self.check("name", "{secondary_lb}"),
+                self.check("primaryAgentPoolName", "{secondary_nodepool}"),
+                self.check("allowServicePlacement", True),
+                self.exists("serviceLabelSelector.matchLabels"),
+                self.check("contains(serviceLabelSelector.matchLabels, 'app=frontend')", True),
+                self.check("contains(serviceLabelSelector.matchLabels, 'tier=web')", True),
+                self.exists("serviceNamespaceSelector.matchLabels"),
+                self.check("contains(serviceNamespaceSelector.matchLabels, 'environment=production')", True),
+                self.exists("nodeSelector.matchLabels"),
+                self.check("contains(nodeSelector.matchLabels, 'disk=ssd')", True),
+            ],
+        )
+
+        # List all LoadBalancer configurations - should now have 2
+        self.cmd(
+            "aks loadbalancer list -g {resource_group} --cluster-name {name}",
+            checks=[
+                self.check("length(@)", 2),
+                self.exists("[?name=='kubernetes']"),
+                self.exists("[?name=='{secondary_lb}']"),
+            ],
+        )
+
+        # Delete a LoadBalancer configuration
+        self.cmd(
+            "aks loadbalancer delete -g {resource_group} --cluster-name {name} --name {secondary_lb}",
+            checks=[self.is_empty()],
+        )
+
+        # List LoadBalancer configurations - should now have 1
+        self.cmd(
+            "aks loadbalancer list -g {resource_group} --cluster-name {name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.exists("[?name=='kubernetes']"),
+                self.not_exists("[?name=='{secondary_lb}']"),
+            ],
+        )
+
+        # Delete the cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_get_upgrades(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            "ssh_key_value": self.generate_ssh_keys(),
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        get_upgrades_cmd = 'aks get-upgrades --resource-group={resource_group} --name={name} -o json'
+        upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
+        assert len(upgrades['controlPlaneProfile']['componentsByReleases']) > 0
+
+        get_nodepool_upgrades_cmd = 'aks nodepool get-upgrades --resource-group={resource_group} --cluster-name={name} --name=nodepool1 -o json'
+        nodepool_upgrades = self.cmd(get_nodepool_upgrades_cmd).get_output_in_json()
+        assert len(nodepool_upgrades['componentsByReleases']) > 0
+
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty()
+        ])
