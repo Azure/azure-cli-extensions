@@ -26,28 +26,27 @@ from .models import (
 
 logger = get_logger(__name__)
 
+def _validate_id(namespace, id_name):
+    """Validates a generic ID"""
+    id_value = getattr(namespace, id_name, None)
+    if id_value is None:
+        raise InvalidArgumentValueError(f"{id_name} is required.")
+    if not isinstance(id_value, str):
+        raise InvalidArgumentValueError(
+            f"Invalid {id_name} type: {type(id_value)}. Expected a string."
+        )
+    if not re.match("^[a-z0-9_-]*$", id_value):
+        raise InvalidArgumentValueError(f"Invalid {id_name} value.")
+
 
 def validate_test_id(namespace):
     """Validates test-id"""
-    if not isinstance(namespace.test_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid test-id type: {type(namespace.test_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.test_id):
-        raise InvalidArgumentValueError("Invalid test-id value")
+    _validate_id(namespace, "test_id")
 
 
 def validate_test_run_id(namespace):
     """Validates test-run-id"""
-    if namespace.test_run_id is None:
-        namespace.test_run_id = utils.get_random_uuid()
-    if not isinstance(namespace.test_run_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid test-run-id type: {type(namespace.test_run_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.test_run_id):
-        raise InvalidArgumentValueError("Invalid test-run-id value")
-
+    _validate_id(namespace, "test_run_id")
 
 def _validate_akv_url(string, url_type="secrets|certificates|keys|storage"):
     """Validates Azure Key Vault URL"""
@@ -552,12 +551,7 @@ def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids
 
 def validate_trigger_id(namespace):
     """Validates trigger-id"""
-    if not isinstance(namespace.trigger_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid trigger-id type: {type(namespace.trigger_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.trigger_id):
-        raise InvalidArgumentValueError("Invalid trigger-id value")
+    _validate_id(namespace, "trigger_id")
 
 
 def validate_recurrence_dates_in_month(namespace):
@@ -565,23 +559,22 @@ def validate_recurrence_dates_in_month(namespace):
         return
     if not isinstance(namespace.recurrence_dates_in_month, list):
         raise InvalidArgumentValueError(
-            f"Invalid recurrence-dates-in-month type: {type(namespace.recurrence_dates_in_month)}. \
+            f"Invalid recurrence-dates type: {type(namespace.recurrence_dates_in_month)}. \
                 Expected list of integers"
         )
     for item in namespace.recurrence_dates_in_month:
         if not isinstance(item, int) or item < 1 or item > 31:
             raise InvalidArgumentValueError(
-                f"Invalid recurrence-dates-in-month item: {item}. Expected integer between 1 and 31"
+                f"Invalid recurrence-dates item: {item}. Expected integer between 1 and 31"
             )
 
 
 def validate_schedule_test_ids(namespace):
     if namespace.test_ids is None:
         return
-    if isinstance(namespace.test_ids, list) and len(namespace.test_ids) != 1:
-        raise InvalidArgumentValueError(
-            f"Invalid test-ids type: {type(namespace.test_ids)}. \
-                Expected list of test ids"
-        )
+    if not isinstance(namespace.test_ids, list):
+        raise InvalidArgumentValueError("Invalid test-ids type: {}. Expected list of test id.".format(type(namespace.test_ids)))
+    if len(namespace.test_ids) != 1:
+        raise InvalidArgumentValueError("Currently we only support one test ID per schedule.")
     if not re.match("^[a-z0-9_-]*$", namespace.test_ids[0]):
-        raise InvalidArgumentValueError("Invalid test-id value")
+        raise InvalidArgumentValueError("Invalid test-id value.")

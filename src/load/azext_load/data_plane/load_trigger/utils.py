@@ -36,7 +36,7 @@ def get_recurrence_end_body(end_after_occurrence, end_after_date_time, existing_
     return existing_recurrence_end
 
 
-def handle_daily_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
+def _handle_daily_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for daily recurrence.")
     if any(kwargs.values()):
@@ -47,7 +47,7 @@ def handle_daily_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
     )
 
 
-def handle_weekly_recurrence(recurrence_interval, recurrence_week_days, recurrence_end_body, **kwargs):
+def _handle_weekly_recurrence(recurrence_interval, recurrence_week_days, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for weekly recurrence.")
     if recurrence_week_days is None or len(recurrence_week_days) == 0:
@@ -61,7 +61,7 @@ def handle_weekly_recurrence(recurrence_interval, recurrence_week_days, recurren
     )
 
 
-def handle_hourly_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
+def _handle_hourly_recurrence(recurrence_interval, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for hourly recurrence.")
     if any(kwargs.values()):
@@ -72,7 +72,7 @@ def handle_hourly_recurrence(recurrence_interval, recurrence_end_body, **kwargs)
     )
 
 
-def handle_monthly_by_dates_recurrence(recurrence_interval, recurrence_dates_in_month, recurrence_end_body, **kwargs):
+def _handle_monthly_by_dates_recurrence(recurrence_interval, recurrence_dates_in_month, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for monthly by dates recurrence.")
     if recurrence_dates_in_month is None or len(recurrence_dates_in_month) == 0:
@@ -86,7 +86,7 @@ def handle_monthly_by_dates_recurrence(recurrence_interval, recurrence_dates_in_
     )
 
 
-def handle_monthly_by_days_recurrence(recurrence_interval, recurrence_week_days, recurrence_index, recurrence_end_body, **kwargs):
+def _handle_monthly_by_days_recurrence(recurrence_interval, recurrence_week_days, recurrence_index, recurrence_end_body, **kwargs):
     if recurrence_interval is None:
         raise InvalidArgumentValueError("Recurrence interval is required for monthly by days recurrence.")
     if recurrence_week_days is None or len(recurrence_week_days) == 0:
@@ -103,7 +103,7 @@ def handle_monthly_by_days_recurrence(recurrence_interval, recurrence_week_days,
     )
 
 
-def handle_cron_recurrence(recurrence_cron_expression, recurrence_end_body, **kwargs):
+def _handle_cron_recurrence(recurrence_cron_expression, recurrence_end_body, **kwargs):
     if recurrence_cron_expression is None:
         raise InvalidArgumentValueError("Recurrence cron expression is required for cron recurrence.")
     if any(kwargs.values()):
@@ -115,12 +115,12 @@ def handle_cron_recurrence(recurrence_cron_expression, recurrence_end_body, **kw
 
 
 recurrence_handlers = {
-    enums.Frequency.DAILY: handle_daily_recurrence,
-    enums.Frequency.WEEKLY: handle_weekly_recurrence,
-    enums.Frequency.HOURLY: handle_hourly_recurrence,
-    enums.Frequency.MONTHLY_BY_DATES: handle_monthly_by_dates_recurrence,
-    enums.Frequency.MONTHLY_BY_DAYS: handle_monthly_by_days_recurrence,
-    enums.Frequency.CRON: handle_cron_recurrence,
+    enums.Frequency.DAILY: _handle_daily_recurrence,
+    enums.Frequency.WEEKLY: _handle_weekly_recurrence,
+    enums.Frequency.HOURLY: _handle_hourly_recurrence,
+    enums.Frequency.MONTHLY_BY_DATES: _handle_monthly_by_dates_recurrence,
+    enums.Frequency.MONTHLY_BY_DAYS: _handle_monthly_by_days_recurrence,
+    enums.Frequency.CRON: _handle_cron_recurrence,
 }
 
 
@@ -195,37 +195,3 @@ def get_recurrence_body_for_update(
         recurrence_week_days,
         recurrence_end_body
     )
-
-
-def get_schedule_trigger_body_for_update(
-    existing_trigger_schedule,
-    recurrence_body,
-    display_name,
-    description,
-    trigger_start_date_time,
-    test_ids,
-):
-    new_trigger_body = models.ScheduleTestsTrigger(
-        test_ids=test_ids,
-        recurrence=recurrence_body,
-        start_date_time=trigger_start_date_time,
-        display_name=display_name,
-        description=description,
-    )
-
-    if test_ids is None:
-        new_trigger_body.test_ids = existing_trigger_schedule.test_ids
-
-    if trigger_start_date_time is None:
-        new_trigger_body.start_date_time = existing_trigger_schedule.start_date_time
-
-    if display_name is None:
-        new_trigger_body.display_name = existing_trigger_schedule.display_name
-
-    if description is None:
-        new_trigger_body.description = existing_trigger_schedule.description
-
-    if recurrence_body is None:
-        new_trigger_body.recurrence = existing_trigger_schedule.recurrence
-
-    return new_trigger_body

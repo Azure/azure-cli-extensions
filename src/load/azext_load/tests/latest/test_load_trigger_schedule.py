@@ -53,7 +53,7 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
         if recurrence_week_days:
             cmd.append(f'--recurrence-week-days {recurrence_week_days}')
         if recurrence_dates_in_month:
-            cmd.append(f'--recurrence-dates-in-month {recurrence_dates_in_month}')
+            cmd.append(f'--recurrence-dates {recurrence_dates_in_month}')
         if recurrence_index:
             cmd.append(f'--recurrence-index {recurrence_index}')
         if recurrence_cron_expression:
@@ -207,6 +207,7 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_update_trigger_schedule(self, rg, load):
+        # Create the trigger schedule with Daily recurrence
         self.create_trigger_schedule(
             trigger_id=LoadTestTriggerConstants.UPDATE_TRIGGER_ID,
             description=LoadTestTriggerConstants.UPDATE_DESCRIPTION,
@@ -237,6 +238,7 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             JMESPathCheck("testIds[0]", self.kwargs["test_ids"]),
         ]
 
+        # Update the trigger schedule to weekly recurrence
         self.cmd(
             'az load trigger schedule update '
             '--name {load_test_resource} '
@@ -251,6 +253,7 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             '--test-ids {test_ids}',
             checks=checks,
         )
+
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -408,6 +411,7 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
             checks=checks,
         )
 
+
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_create_trigger_schedule_invalid_cases(self, rg, load):
@@ -476,6 +480,56 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
                 test_ids=LoadTestTriggerConstants.CRON_TEST_IDS
             )
 
+        # Test invalid date-time format
+        with self.assertRaises(InvalidArgumentValueError):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_DAILY_TRIGGER_ID,
+                description=LoadTestTriggerConstants.DAILY_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.DAILY_DISPLAY_NAME,
+                start_date_time="2025-02-04T14:20:31",  # Invalid date-time format, not utc format
+                recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.RECURRENCE_INTERVAL_ONE,
+                test_ids=LoadTestTriggerConstants.DAILY_TEST_IDS
+            )
+
+        # Test invalid recurrence interval
+        with self.assertRaises(SystemExit):  # Use SystemExit to catch argument parser errors
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_DAILY_TRIGGER_ID,
+                description=LoadTestTriggerConstants.DAILY_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.DAILY_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.DAILY_RECURRENCE_TYPE,
+                recurrence_interval="invalid-interval",  # Invalid recurrence interval
+                test_ids=LoadTestTriggerConstants.DAILY_TEST_IDS
+            )
+
+        # Test invalid recurrence dates in month
+        with self.assertRaises(SystemExit):  # Use SystemExit to catch argument parser errors
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_MONTHLY_DATES_TRIGGER_ID,
+                description=LoadTestTriggerConstants.MONTHLY_DATES_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.MONTHLY_DATES_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL,
+                recurrence_dates_in_month="invalid-dates-in-month",  # Invalid dates in month
+                test_ids=LoadTestTriggerConstants.MONTHLY_DATES_TEST_IDS
+            )
+
+        # Test invalid recurrence week days
+        with self.assertRaises(SystemExit):
+            self.create_trigger_schedule(
+                trigger_id=LoadTestTriggerConstants.INVALID_WEEKLY_TRIGGER_ID,
+                description=LoadTestTriggerConstants.WEEKLY_DESCRIPTION,
+                display_name=LoadTestTriggerConstants.WEEKLY_DISPLAY_NAME,
+                start_date_time=LoadTestTriggerConstants.CURRENT_DATE_TIME,
+                recurrence_type=LoadTestTriggerConstants.WEEKLY_RECURRENCE_TYPE,
+                recurrence_interval=LoadTestTriggerConstants.WEEKLY_RECURRENCE_INTERVAL,
+                recurrence_week_days="invalid-week-days",  # Invalid week days
+                test_ids=LoadTestTriggerConstants.WEEKLY_TEST_IDS
+            )
+
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_update_trigger_schedule_invalid_cases(self, rg, load):
@@ -522,7 +576,7 @@ class LoadTestScenarioTriggerSchedule(ScenarioTest):
                 f'--recurrence-type {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_TYPE} '
                 f'--recurrence-interval {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_INTERVAL} '
                 f'--recurrence-week-days {LoadTestTriggerConstants.MONTHLY_DAYS_RECURRENCE_WEEK_DAYS} '  # Invalid parameter for monthly by dates recurrence
-                f'--recurrence-dates-in-month {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH} '
+                f'--recurrence-dates {LoadTestTriggerConstants.MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH} '
             )
 
         # Test invalid update to monthly by days recurrence without required parameters

@@ -69,7 +69,7 @@ def create_trigger_schedule(
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=trigger_body)
         logger.debug("Created trigger schedule: %s", response)
         logger.info("Creating trigger schedule completed")
-        return response
+        return response.as_dict()
     except Exception:
         logger.error("Error occurred while creating schedule trigger.")
         raise
@@ -120,20 +120,20 @@ def update_trigger_schedule(
         existing_trigger_schedule.recurrence
     )
     logger.debug("Recurrence object: %s", recurrence_body)
-    new_trigger_body = utils.get_schedule_trigger_body_for_update(
-        existing_trigger_schedule,
-        recurrence_body,
-        display_name,
-        description,
-        trigger_start_date_time,
-        test_ids,
+    new_trigger_body = models.ScheduleTestsTrigger(
+        test_ids=test_ids,
+        recurrence=recurrence_body,
+        start_date_time=trigger_start_date_time,
+        display_name=display_name,
+        description=description,
     )
+    new_trigger_body.state = existing_trigger_schedule.state
     logger.debug("Schedule trigger body to be sent for update: %s", new_trigger_body)
     try:
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=new_trigger_body)
         logger.debug("Updated schedule trigger: %s", response)
         logger.info("Updating schedule trigger completed")
-        return response
+        return response.as_dict()
     except Exception:
         logger.error("Error occurred while updating schedule trigger.")
         raise
@@ -165,7 +165,7 @@ def get_trigger_schedule(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     response = client.get_trigger(trigger_id)
     logger.debug("Fetched schedule trigger: %s", response)
-    return response
+    return response.as_dict()
 
 
 def pause_trigger_schedule(
@@ -190,12 +190,12 @@ def pause_trigger_schedule(
         existing_trigger_schedule.state = enums.TriggerState.PAUSED
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
         logger.debug("Paused schedule trigger: %s", response)
-        return response
+        return response.as_dict()
     if existing_trigger_schedule.state == enums.TriggerState.COMPLETED:
-        msg = "Schedule trigger with id: {} is already completed.".format(trigger_id)
+        msg = "Schedule trigger with id: {} is already completed. A completed schedule cannot be paused.".format(trigger_id)
         logger.error(msg)
         raise ValidationError(msg)
-    logger.warning("Schedule trigger is not active. It is in %s state.", existing_trigger_schedule.state.value)
+    logger.warning("Schedule trigger is not active. It is in %s state. Enable the schedule before performing pause action.", existing_trigger_schedule.state.value)
 
 
 def enable_trigger_schedule(
@@ -220,8 +220,8 @@ def enable_trigger_schedule(
         existing_trigger_schedule.state = enums.TriggerState.ACTIVE
         response = client.create_or_update_trigger(trigger_id=trigger_id, body=existing_trigger_schedule)
         logger.debug("Enabled schedule trigger: %s", response)
-        return response
-    msg = "Schedule trigger with id: {} is already completed. Cannot enable a completed schedule.".format(trigger_id)
+        return response.as_dict()
+    msg = "Schedule trigger with id: {} is already completed. A completed schedule cannot be enabled.".format(trigger_id)
     logger.debug(msg)
     raise ValidationError(msg)
 
@@ -240,6 +240,6 @@ def list_trigger_schedules(
     if test_ids:
         test_ids = ",".join(test_ids)
     logger.info("Schedule trigger states: %s", trigger_states)
-    response = client.list_trigger(test_ids=test_ids, states=trigger_states)
-    logger.debug("Fetched list of schedule triggers: %s", response)
-    return response
+    response_list = client.list_trigger(test_ids=test_ids, states=trigger_states)
+    logger.debug("Fetched list of schedule triggers: %s", response_list)
+    return [response.as_dict() for response in response_list]

@@ -482,7 +482,7 @@ recurrence_interval = CLIArgumentType(
 )
 
 recurrence_dates_in_month = CLIArgumentType(
-    options_list=["--recurrence-dates-in-month"],
+    options_list=["--recurrence-dates"],
     nargs="+",
     type=int,
     validator=validators.validate_recurrence_dates_in_month,
