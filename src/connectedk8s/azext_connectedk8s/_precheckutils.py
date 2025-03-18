@@ -138,7 +138,7 @@ def fetch_diagnostic_checks_results(
 
 
 def executing_cluster_diagnostic_checks_job(
-    cmd: CLICommand,    
+    cmd: CLICommand,
     corev1_api_instance: CoreV1Api,
     batchv1_api_instance: BatchV1Api,
     helm_client_location: str,

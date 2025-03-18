@@ -68,7 +68,7 @@ def install_client_side_proxy(
 def _download_proxy_from_MCR(
     cmd: CLICommand, dest_dir: str, proxy_name: str, operating_system: str, architecture: str
 ) -> None:
-    
+
     active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
 
     # default for public, mc, ff clouds
