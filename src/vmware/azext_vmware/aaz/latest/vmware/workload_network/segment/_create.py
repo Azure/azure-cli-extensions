@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -61,7 +61,7 @@ class Create(AAZCommand):
             help="NSX Segment identifier. Generally the same as the Segment's display name",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
 
@@ -283,7 +283,9 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             properties.revision = AAZIntType()
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZObjectType()
 
             port_vif = cls._schema_on_200_201.properties.port_vif

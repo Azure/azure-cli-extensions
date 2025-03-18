@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -61,7 +61,7 @@ class List(AAZCommand):
             help="Name of the script package in the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._@]+$",
+                pattern="^[-\\w\\._@]+$",
             ),
         )
         return cls._args_schema
@@ -198,7 +198,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.audience = AAZStrType()
+            properties.audience = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.description = AAZStrType(
                 flags={"read_only": True},
             )
@@ -221,9 +223,15 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.name = AAZStrType()
-            _element.optional = AAZStrType()
-            _element.type = AAZStrType()
-            _element.visibility = AAZStrType()
+            _element.optional = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.visibility = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

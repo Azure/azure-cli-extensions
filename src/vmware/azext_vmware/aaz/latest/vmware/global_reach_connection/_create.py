@@ -47,7 +47,7 @@ class Create(AAZCommand):
             help="Name of the global reach connection in the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -55,7 +55,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -247,6 +247,7 @@ class Create(AAZCommand):
             )
             properties.circuit_connection_status = AAZStrType(
                 serialized_name="circuitConnectionStatus",
+                flags={"read_only": True},
             )
             properties.express_route_id = AAZStrType(
                 serialized_name="expressRouteId",

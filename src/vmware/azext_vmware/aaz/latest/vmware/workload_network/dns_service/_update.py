@@ -53,7 +53,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -62,7 +62,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -441,7 +441,9 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         properties.revision = AAZIntType()
-        properties.status = AAZStrType()
+        properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
 
         fqdn_zones = _schema_workload_network_dns_service_read.properties.fqdn_zones
         fqdn_zones.Element = AAZStrType()

@@ -47,7 +47,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -56,7 +56,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -92,6 +92,10 @@ class Update(AAZCommand):
             options=["server-addresses"],
             help="DHCP Relay Addresses. Max 3.",
             nullable=True,
+            fmt=AAZListArgFormat(
+                max_length=3,
+                min_length=1,
+            ),
         )
 
         server_addresses = cls._args_schema.relay.server_addresses
