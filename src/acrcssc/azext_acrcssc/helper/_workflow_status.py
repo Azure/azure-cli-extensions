@@ -416,14 +416,20 @@ class WorkflowTaskStatus:
                          run_id, registry_name, resource_group_name, e)
 
         if await_task_run:
-            polling_method = WorkflowLogPollingMethod(client,
-                                                      resource_group_name,
-                                                      registry_name,
-                                                      run_id)
-            LongRunningOperation(
-                cmd.cli_ctx,
-                progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message)
-            )(polling_method)
+            try:
+                polling_method = WorkflowLogPollingMethod(client,
+                                                          resource_group_name,
+                                                          registry_name,
+                                                          run_id)
+                result = LongRunningOperation(
+                    cmd.cli_ctx,
+                    progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message),
+                    poller_done_interval_ms=1500  # every poller call will do a call to the API
+                )(polling_method)
+                logger.debug("Task result: %s", result)
+            except TimeoutError:
+                logger.debug("Timeout waiting for task run to complete, workflow task run ID: %s", run_id)
+                logger.debug("An attempt to retrieve the logs will be done, if there are any")
 
         blobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
         return WorkflowTaskStatus._download_logs(blobClient.from_blob_url(log_file_sas))
@@ -449,6 +455,7 @@ class WorkflowTaskStatus:
 
     @staticmethod
     def remove_internal_acr_statements(blob_content):
+        logger.debug("Removing internal ACR statements from logs, blob content size: %s", len(blob_content))
         lines = blob_content.split("\n")
         starting_identifier = "DRY RUN mode enabled"
         terminating_identifier = "Total matches found"
@@ -516,6 +523,8 @@ class WorkflowTaskStatus:
         return list(taskruns)
 
 
+# this is a polling method that will poll the taskrun status until it is done
+# or the timeout is reached. It does not download the logs nor run the task
 class WorkflowLogPollingMethod(PollingMethod):
     def __init__(self, client, resource_group_name, registry_name, run_id):
         self.client = client
@@ -523,35 +532,37 @@ class WorkflowLogPollingMethod(PollingMethod):
         self.registry_name = registry_name
         self.run_id = run_id
         self.run_status = TaskRunStatus.Running.value
+        self.start_time = time.time()
+        self.timeout = 10 * 60  # 10 minutes
 
     def initialize(self, client, initial_response, deserialization_callback):
         pass
 
-    def run(self):
+    def _timeout(self):
+        return (time.time() - self.start_time) >= self.timeout
 
-        while WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
-            self.run_status = WorkflowTaskStatus.get_run_status_local(self.client,
-                                                                      self.resource_group_name,
-                                                                      self.registry_name,
-                                                                      self.run_id)
-            if WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
-                logger.debug("Waiting for the task run to complete. Current status: %s", self.run_status)
-                time.sleep(2)
+    def run(self):
+        pass
 
     def status(self):
-        return WorkflowTaskStatus.get_run_status_local(self.client,
-                                                       self.resource_group_name,
-                                                       self.registry_name,
-                                                       self.run_id)
+        return self.run_status
 
     def finished(self):
+        if self._timeout():
+            raise TimeoutError("Timeout waiting for task run to complete")
+
+        self.run_status = WorkflowTaskStatus.get_run_status_local(self.client,
+                                                                  self.resource_group_name,
+                                                                  self.registry_name,
+                                                                  self.run_id)
+
         return not WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.status())
 
     def done(self):
         return self.finished()
 
     def result(self):
-        return self.run_status
+        return self.status()
 
     def resource(self):
         return self.status()

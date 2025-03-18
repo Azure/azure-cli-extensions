@@ -139,7 +139,7 @@ def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediate
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
     validate_run_type(dryrun, run_immediately)
-    
+
 
 def validate_run_type(dryrun, run_immediately):
     if dryrun and run_immediately:
@@ -174,7 +174,7 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
         result = re.sub(r'(?s)' + re.escape(pattern_postfix) + r'.*', pattern_postfix, result)
 
         raise InvalidArgumentValueError(error_msg=result)
-    
+
     if image_limit == 0:
         # when no matching images are found, we should relay the information to the user
         # extract everything between and including the target lines
