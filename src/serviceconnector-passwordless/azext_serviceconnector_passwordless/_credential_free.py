@@ -1016,7 +1016,7 @@ class FabricSqlHandler(SqlHandler):
         self.create_aad_user_in_sql(connection_args, query_list)
 
     def get_fabric_access_token(self):
-        return run_cli_cmd('az account get-access-token --output json --resource https://api.fabric.microsoft.com/').get('accessToken')
+        return run_cli_cmd('az account get-access-token --output json --resource https://analysis.windows.net/powerbi/api').get('accessToken')
 
     def set_user_admin(self, user_object_id, **kwargs):
         return
