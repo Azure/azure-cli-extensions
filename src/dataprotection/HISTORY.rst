@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.6
++++++
+* Updated the packaged AKS-preview SDK.
+
 1.5.5
 +++++
 * `az dataprotection backup-vault initialize-restoreconfig:` Fixed a bug when initializing a restore object for Vaulted AKS Backups.

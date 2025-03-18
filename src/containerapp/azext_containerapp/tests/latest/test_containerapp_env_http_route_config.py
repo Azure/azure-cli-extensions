@@ -94,7 +94,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
 
         route_name = "route1"
 
-        self.cmd(f"az containerapp env http-route-config create -g {resource_group} -n {env_name} -r {route_name} --yaml {http_route_config1_file_name}", checks=[
+        self.cmd(f"az containerapp env http-route-config create -g {resource_group} -n {env_name} -r {route_name} --yaml '{http_route_config1_file_name}'", checks=[
             JMESPathCheck('properties.provisioningState', "SucceededWithErrors"),
             JMESPathCheck('properties.provisioningErrors[0].message', f"error when trying to get containerapp {app1} from cluster. error ContainerApp.k8se.microsoft.com \"{app1}\" not found"),
             # Not deployed yet
@@ -124,12 +124,12 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('[0].properties.rules[0].targets[0].containerApp', app1),
         ])
 
-        self.cmd(f'containerapp create -n {app1} -g {resource_group} --environment {env_name} --yaml {containerapp_file_name}')
+        self.cmd(f'containerapp create -n {app1} -g {resource_group} --environment {env_name} --yaml "{containerapp_file_name}"')
         self.cmd(f'containerapp show -g {resource_group} -n {app1}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
         ])
 
-        self.cmd(f'containerapp create -n {app2} -g {resource_group} --environment {env_name} --yaml {containerapp_file_name}')
+        self.cmd(f'containerapp create -n {app2} -g {resource_group} --environment {env_name} --yaml "{containerapp_file_name}"')
         self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
         ])
@@ -143,7 +143,7 @@ class ContainerAppEnvHttpRouteConfigTest(ScenarioTest):
             JMESPathCheck('properties.rules[0].targets[0].containerApp', app1),
         ])
 
-        self.cmd(f"az containerapp env http-route-config update -g {resource_group} -n {env_name} -r {route_name} --yaml {http_route_config2_file_name}", checks=[
+        self.cmd(f"az containerapp env http-route-config update -g {resource_group} -n {env_name} -r {route_name} --yaml '{http_route_config2_file_name}'", checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
             # Not deployed yet
             # JMESPathCheck('properties.rules[0].description', "rule 2"),

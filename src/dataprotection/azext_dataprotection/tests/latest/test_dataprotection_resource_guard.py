@@ -48,7 +48,7 @@ class ResourceGuardScenarioTest(ScenarioTest):
             test.check('length(properties.vaultCriticalOperationExclusionList)', 2)
         ])
         test.cmd('az dataprotection resource-guard list-protected-operations -g "{rg}" -n "{resourceGuardName}" --resource-type "Microsoft.RecoveryServices/vaults"', checks=[
-            test.check('length(@)', 7)
+            test.check('length(@)', 8)
         ])
         test.cmd('az dataprotection resource-guard update -g "{rg}" -n "{resourceGuardName}" --critical-operation-exclusion-list deleteProtection', checks=[
             test.check('length(properties.vaultCriticalOperationExclusionList)', 2)
