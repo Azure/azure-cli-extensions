@@ -17,7 +17,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.core.exceptions import ResourceNotFoundError  # type: ignore
+from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.prompting import prompt, prompt_y_n
 
