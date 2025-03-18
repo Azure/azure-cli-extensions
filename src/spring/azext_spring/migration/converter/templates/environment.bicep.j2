@@ -1,0 +1,99 @@
+// Params
+param workloadProfileName string
+param workloadProfileType string
+param minNodes int
+param maxNodes int
+{%- if data.vnetConfiguration %}
+param vnetSubnetId string
+{%- endif %}
+
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: '{{data.containerAppLogAnalyticsName}}'
+  location: resourceGroup().location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+  }
+}
+
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: containerAppEnv
+  name: 'default'
+  properties: {
+    workspaceId: logAnalytics.id
+    logs: [
+      {
+        categoryGroup: 'AllLogs'
+        enabled: true
+      }
+    ]
+  }
+}
+
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
+  name: '{{data.containerAppEnvName}}'
+  location: resourceGroup().location
+  {%- if data.identity %}
+  identity: {
+    type: '{{data.identity.type}}'
+  }
+  {%- endif %}
+  properties: {
+    {%- if data.vnetConfiguration %}
+    vnetConfiguration: {
+      internal: {{ data.vnetConfiguration.internal }}
+      infrastructureSubnetId: vnetSubnetId
+    }
+    {%- endif %}
+    appLogsConfiguration: {
+      destination: 'azure-monitor'
+    }
+    zoneRedundant: {{data.zoneRedundant}}
+    workloadProfiles: [
+      {
+        name: workloadProfileName
+        workloadProfileType: workloadProfileType
+        minimumCount: minNodes
+        maximumCount: maxNodes
+      }
+    ]
+  }
+}
+
+{%- if data.scheduledEntries %}
+resource maintenanceConfig 'Microsoft.App/managedEnvironments/maintenanceConfigurations@2024-10-02-Preview' = {
+  name: 'default'
+  parent: containerAppEnv
+  location: resourceGroup().location
+  properties: {
+    scheduledEntries: [
+      {%- for entry in data.scheduledEntries %}
+        { weekDay: '{{ entry.weekDay }}', startHourUtc: {{ entry.startHourUtc }}, durationHours: {{ entry.durationHours }} }{{ "," if not loop.last }}
+      {%- endfor %}
+    ]
+  }
+}
+{%- endif %}
+
+{%- if data.storages %}
+{%- for storage in data.storages %}
+
+param {{storage.paramContainerAppEnvStorageAccountKey}} string
+resource {{storage.containerAppEnvStorageName}} 'Microsoft.App/managedEnvironments/storages@2024-08-02-preview' = {
+  parent: containerAppEnv
+  name: '{{storage.storageName}}'
+  properties: {
+    azureFile: {
+      accountName: '{{storage.accountName}}'
+      shareName: '{{storage.shareName}}'
+      accessMode: '{{storage.accessMode}}'
+      accountKey: {{storage.paramContainerAppEnvStorageAccountKey}}
+    }
+  }
+}
+{%- endfor %}
+{%- endif %}
+
+output containerAppEnvId string = containerAppEnv.id
+output containerAppEnvName string = containerAppEnv.name

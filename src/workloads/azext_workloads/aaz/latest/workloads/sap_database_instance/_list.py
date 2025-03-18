@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-database-instance list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List the Database resources associated with a Virtual Instance for SAP solutions resource.
@@ -23,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances", "2024-09-01"],
         ]
     }
 
@@ -61,7 +60,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPDatabaseInstancesList(ctx=self.ctx)()
+        self.SapDatabaseInstancesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,7 +76,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SAPDatabaseInstancesList(AAZHttpOperation):
+    class SapDatabaseInstancesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -125,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -161,7 +160,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()

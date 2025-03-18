@@ -1,0 +1,19 @@
+param managedEnvironments_aca_env_name string
+
+resource {{data.moduleName}} 'Microsoft.App/managedEnvironments/certificates@2024-10-02-preview' = {
+  name: '${managedEnvironments_aca_env_name}/{{ data.certName }}'
+  location: resourceGroup().location
+  properties: {
+    certificateType: '{{ data.certificateType }}'
+    {%- if data.certificateKeyVaultProperties %}
+    certificateKeyVaultProperties: {
+        keyVaultUrl: '{{ data.certificateKeyVaultProperties.keyVaultUrl }}'
+        identity: '{{ data.certificateKeyVaultProperties.identity }}'
+    }
+    {%- endif %}
+    {%- if data.value %}
+    value: '{{ data.value }}'
+    password: ''
+    {%- endif %}
+  }
+}

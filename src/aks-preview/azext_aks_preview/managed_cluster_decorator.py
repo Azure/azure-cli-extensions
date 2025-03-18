@@ -433,8 +433,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         ):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()
-            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                # outbound_type of Automatic SKU should be ManagedNATGateway if not provided.
+            isVnetSubnetIdEmpty = self.get_vnet_subnet_id() in ["", None]
+            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and isVnetSubnetIdEmpty:
+                # outbound_type of Automatic SKU should be ManagedNATGateway if no subnet id provided.
                 outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
         # validation
@@ -1425,6 +1426,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     enable_apiserver_vnet_integration is None or
                     enable_apiserver_vnet_integration is False
                 )
+                and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC
             ):
                 raise RequiredArgumentMissingError(
                     '"--apiserver-subnet-id" requires "--enable-apiserver-vnet-integration".')
@@ -2386,6 +2388,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.components.egress_gateways.append(
                     self.models.IstioEgressGateway(  # pylint: disable=no-member
                         enabled=enable_egress_gateway,
+                        name="fake-name",  # TODO: temp fix when bump new SDK
                     )
                 )
                 updated = True
@@ -2923,6 +2926,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
+            if mc.api_server_access_profile is None:
+                # pylint: disable=no-member
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
         return mc
@@ -4039,21 +4045,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             agentpool_details = {}
             from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
-            (
-                is_extension_installed,
-                is_azureDisk_enabled,
-                is_elasticSan_enabled,
-                is_ephemeralDisk_localssd_enabled,
-                is_ephemeralDisk_nvme_enabled,
-                current_core_value,
-                existing_ephemeral_disk_volume_type,
-                existing_perf_tier,
-            ) = get_extension_installed_and_cluster_configs(
-                self.cmd,
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-                mc.agent_pool_profiles,
-            )
+            
+            try:
+                (
+                    is_extension_installed,
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                    current_core_value,
+                    existing_ephemeral_disk_volume_type,
+                    existing_perf_tier,
+                ) = get_extension_installed_and_cluster_configs(
+                    self.cmd,
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    mc.agent_pool_profiles,
+                )
+            except UnknownError as e:
+                logger.error(f"\nError fetching installed extension and cluster config: {e}")
+                return mc
+            except Exception as ex:
+                logger.error(f"\Exception fetching installed extension and cluster config: {ex}")
+                return mc
 
             vm_cache_generated = self.context.get_intermediate(
                 "vm_cache_generated",

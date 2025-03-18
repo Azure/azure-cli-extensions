@@ -85,6 +85,7 @@ ACI_FIELD_YAML_LIVENESS_PROBE = "livenessProbe"
 ACI_FIELD_YAML_READINESS_PROBE = "readinessProbe"
 ACI_FIELD_YAML_STARTUP_PROBE = "startupProbe"
 VIRTUAL_NODE_YAML_METADATA = "metadata"
+VIRTUAL_NODE_YAML_COMMAND = "command"
 VIRTUAL_NODE_YAML_NAME = "name"
 VIRTUAL_NODE_YAML_ANNOTATIONS = "annotations"
 VIRTUAL_NODE_YAML_LABELS = "labels"
@@ -103,6 +104,7 @@ VIRTUAL_NODE_YAML_RESOURCES_MEMORY = "memory"
 VIRTUAL_NODE_YAML_RESOURCES_HUGEPAGES = "hugepages"
 VIRTUAL_NODE_YAML_RESOURCES_EPHEMERAL_STORAGE = "ephemeral-storage"
 VIRTUAL_NODE_YAML_SPECIAL_ENV_VAR_REGEX = "^===VIRTUALNODE2.CC.THIM.(.+)===$"
+VIRTUAL_NODE_YAML_READ_ONLY_MANY = "ReadOnlyMany"
 
 # output json values
 POLICY_FIELD_CONTAINERS = "containers"
@@ -198,13 +200,18 @@ DEBUG_MODE_SETTINGS = _config["debugMode"]
 # reserved fragment names for existing pieces of Rego
 RESERVED_FRAGMENT_NAMES = _config["reserved_fragment_namespaces"]
 # fragment artifact type
-ARTIFACT_TYPE = "application/x-ms-policy-frag"
+ARTIFACT_TYPE = "application/x-ms-ccepolicy-frag"
 # customer rego file for data to be injected
 REGO_FILE = "./data/customer_rego_policy.txt"
 REGO_FRAGMENT_FILE = "./data/customer_rego_fragment.txt"
 script_directory = os.path.dirname(os.path.realpath(__file__))
 REGO_FILE_PATH = f"{script_directory}/{REGO_FILE}"
 REGO_FRAGMENT_FILE_PATH = f"{script_directory}/{REGO_FRAGMENT_FILE}"
+REGO_IMPORT_FILE_STRUCTURE = """
+{
+    "fragments": []
+}
+"""
 CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
 CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file

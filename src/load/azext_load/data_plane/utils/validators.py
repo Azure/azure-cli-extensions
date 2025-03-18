@@ -10,11 +10,19 @@ from datetime import datetime
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
+from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 from . import utils
-from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
+from .models import (
+    AllowedFileTypes,
+    AllowedIntervals,
+    AllowedMetricNamespaces,
+    AllowedTestTypes,
+    AllowedTestPlanFileExtensions,
+    EngineIdentityType,
+)
 
 logger = get_logger(__name__)
 
@@ -227,9 +235,25 @@ def validate_test_plan_path(namespace):
     namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
 
     _, file_extension = os.path.splitext(namespace.test_plan)
-    if file_extension.casefold() != ".jmx":
+    if file_extension.casefold() not in utils.get_enum_values(AllowedTestPlanFileExtensions):
         raise InvalidArgumentValueError(
-            f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
+            f"Invalid test plan file extension: {file_extension}. "
+            f"Allowed values: {', '.join(AllowedTestPlanFileExtensions)} "
+            f"for {', '.join(utils.get_enum_values(AllowedTestTypes))} test types respectively"
+        )
+
+
+def validate_test_type(namespace):
+    if namespace.test_type is None:
+        return
+    if not isinstance(namespace.test_type, str):
+        raise InvalidArgumentValueError(
+            f"Invalid test-type type: {type(namespace.test_type)}"
+        )
+    allowed_test_types = utils.get_enum_values(AllowedTestTypes)
+    if namespace.test_type not in allowed_test_types:
+        raise InvalidArgumentValueError(
+            f"Invalid test-type value: {namespace.test_type}. Allowed values: {', '.join(allowed_test_types)}"
         )
 
 
@@ -463,4 +487,86 @@ def _validate_autostop_criteria_configfile(error_rate, time_window):
     if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
         raise InvalidArgumentValueError(
             "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
+        )
+
+
+def validate_regionwise_engines(cmd, namespace):
+    if namespace.regionwise_engines is None:
+        return
+    if not isinstance(namespace.regionwise_engines, list):
+        raise InvalidArgumentValueError(
+            f"Invalid regionwise-engines type: {type(namespace.regionwise_engines)}. \
+                Expected list in the format of region1=engineCount1 region2=engineCount2"
+        )
+    regionwise_engines = []
+    subscription_locations = get_subscription_locations(cmd.cli_ctx)
+    location_names = [location.name for location in subscription_locations]
+    for item in namespace.regionwise_engines:
+        if not isinstance(item, str) or "=" not in item:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item type: {type(item)}. Expected region=engineCount"
+            )
+        key, value = item.split("=", 1)
+        if not key or not value:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item: {item}. Region or engine count cannot be empty"
+            )
+        if key.strip().lower() not in location_names:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item key: {key}. Expected Azure region"
+            )
+        try:
+            value = int(value.strip())
+        except ValueError:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item value: {value}. Expected integer"
+            )
+        regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
+    namespace.regionwise_engines = regionwise_engines
+
+
+def validate_engine_ref_ids(namespace):
+    """Extracts multiple space-separated identities"""
+    if isinstance(namespace.engine_ref_ids, list):
+        for item in namespace.engine_ref_ids:
+            if not is_valid_resource_id(item):
+                raise InvalidArgumentValueError(f"Invalid engine-ref-ids value: {item}")
+
+
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
+def validate_keyvault_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.key_vault_reference_identity, str)
+        and not namespace.key_vault_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.key_vault_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid keyvault-ref-id value: {}".format(namespace.key_vault_reference_identity))
+
+
+def validate_metrics_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.metrics_reference_identity, str)
+        and not namespace.metrics_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.metrics_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid metrics-ref-id value: {}".format(namespace.metrics_reference_identity))
+
+
+def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids, exisiting_engine_ref_id_type=None):
+    """Validates combination of engine-ref-id-type and engine-ref-ids"""
+
+    # if engine_ref_id_type is None or SystemAssigned, then no value for engine_ref_ids is expected:
+    engine_ref_id_type = incoming_engine_ref_id_type or exisiting_engine_ref_id_type
+    if engine_ref_id_type != EngineIdentityType.UserAssigned and engine_ref_ids:
+        raise InvalidArgumentValueError(
+            "engine-ref-ids should not be provided when engine-ref-id-type is None or SystemAssigned"
+        )
+
+    # If engine_ref_id_type is UserAssigned, then engine_ref_ids is expected.
+    if incoming_engine_ref_id_type == EngineIdentityType.UserAssigned and engine_ref_ids is None:
+        raise InvalidArgumentValueError(
+            "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
         )
