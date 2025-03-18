@@ -13,6 +13,7 @@ import oras.client  # type: ignore[import-untyped]
 from azure.cli.core import azclierror, telemetry
 from azure.cli.core.style import Style, print_styled_text
 from knack import log
+from knack.commands import CLICommand
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._fileutils as file_utils
@@ -22,6 +23,7 @@ logger = log.get_logger(__name__)
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def install_client_side_proxy(
+    cmd: CLICommand,
     arc_proxy_folder: Optional[str], debug: bool = False
 ) -> str:
     client_operating_system = _get_client_operating_system()
@@ -48,7 +50,7 @@ def install_client_side_proxy(
                     )
 
             _download_proxy_from_MCR(
-                install_dir, proxy_name, client_operating_system, client_architecture
+                cmd, install_dir, proxy_name, client_operating_system, client_architecture
             )
             _check_proxy_installation(install_dir, proxy_name, debug)
 
@@ -64,9 +66,23 @@ def install_client_side_proxy(
 
 
 def _download_proxy_from_MCR(
-    dest_dir: str, proxy_name: str, operating_system: str, architecture: str
+    cmd: CLICommand, dest_dir: str, proxy_name: str, operating_system: str, architecture: str
 ) -> None:
-    mar_target = f"{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/arc-proxy"
+    
+    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+
+    # default for public, mc, ff clouds
+    mcr_postfix = active_directory_array[2]
+    # special cases for USSec, exclude part of suffix
+    if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
+        mcr_postfix = active_directory_array[3]
+    # special case for USNat
+    elif len(active_directory_array) == 5:
+        mcr_postfix = active_directory_array[2] + "." + active_directory_array[3] + "." + active_directory_array[4]
+
+    mcr_url = f"mcr.microsoft.{mcr_postfix}"
+
+    mar_target = f"{mcr_url}/{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/arc-proxy"
     logger.debug(
         "Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Regristy.",
         mar_target,

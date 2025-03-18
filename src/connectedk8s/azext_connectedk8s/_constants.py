@@ -63,13 +63,13 @@ Infrastructure_Enum_Values = [
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = [
-    "arccertificates.clusterconfig.azure.com",
-    "azureclusteridentityrequests.clusterconfig.azure.com",
-    "azureextensionidentities.clusterconfig.azure.com",
-    "connectedclusters.arc.azure.com",
-    "customlocationsettings.clusterconfig.azure.com",
-    "extensionconfigs.clusterconfig.azure.com",
-    "gitconfigs.clusterconfig.azure.com",
+    "arccertificates.clusterconfig.azure",
+    "azureclusteridentityrequests.clusterconfig.azure",
+    "azureextensionidentities.clusterconfig.azure",
+    "connectedclusters.arc.azure",
+    "customlocationsettings.clusterconfig.azure",
+    "extensionconfigs.clusterconfig.azure",
+    "gitconfigs.clusterconfig.azure",
 ]
 Helm_Install_Release_Userfault_Messages = [
     "forbidden",
@@ -418,7 +418,7 @@ SigningKey_CR_Snapshot = "signingkey_cr_snapshot.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = (
-    "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
+    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
 )
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = (
     "Error while installing cluster diagnostic checks helm release"
@@ -481,8 +481,8 @@ CSP_REFRESH_TIME = 300
 DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
 
 # URL constants
-CLIENT_PROXY_MCR_TARGET = "mcr.microsoft.com/azureconnectivity/proxy"
-HELM_MCR_URL = "mcr.microsoft.com/azurearck8s/helm"
+CLIENT_PROXY_MCR_TARGET = "azureconnectivity/proxy"
+HELM_MCR_URL = "azurearck8s/helm"
 HELM_VERSION = "v3.12.2"
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
 Azure_Access_Token_Variable = "AZURE_ACCESS_TOKEN"
