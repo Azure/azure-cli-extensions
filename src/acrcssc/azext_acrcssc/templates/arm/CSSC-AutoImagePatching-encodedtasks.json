@@ -81,9 +81,9 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('AcrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-image'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-image'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb382eab-e894-4461-af04-94435c366c3f'))]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb382eab-e894-4461-af04-94435c366c3f')]",
         "principalId": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-image'), '2019-06-01-preview', 'full').identity.principalId]",
         "principalType": "ServicePrincipal"
       },
@@ -133,9 +133,9 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('AcrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-workflow'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-workflow'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb382eab-e894-4461-af04-94435c366c3f'))]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb382eab-e894-4461-af04-94435c366c3f')]",
         "principalId": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-workflow'), '2019-06-01-preview', 'full').identity.principalId]",
         "principalType": "ServicePrincipal"
       },
