@@ -21,11 +21,12 @@ class AppConverter(BaseConverter):
     def transform_data_item(self, app):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
         blueDeployment = self._transform_deployment(blueDeployment)
+        maxReplicas = blueDeployment.get("capacity", 5) if blueDeployment is not None else 5
         greenDeployment = self.wrapper_data.get_green_deployment_by_app(app)
         greenDeployment = self._transform_deployment(greenDeployment)
         if self.wrapper_data.is_support_blue_green_deployment(app):
             logger.warning(f"Action Needed: you should manually deploy the deployment '{greenDeployment.get('name')}' of app '{app.get('name')}' in Azure Container Apps.")
-        tier = blueDeployment.get('sku', {}).get('tier')
+        tier = blueDeployment.get('sku', {}).get('tier') if blueDeployment is not None else 'Standard'
         serviceBinds = self._get_service_bind(app)
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
@@ -59,7 +60,7 @@ class AppConverter(BaseConverter):
             "ingress": ingress,
             "isPublic": isPublic,
             "minReplicas": 1,
-            "maxReplicas": blueDeployment.get("capacity", 5),
+            "maxReplicas": maxReplicas,
             "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
@@ -105,7 +106,7 @@ class AppConverter(BaseConverter):
         return service_bind
 
     def _transform_deployment(self, deployment):
-        if deployment is None or deployment == {}:
+        if deployment is None:
             return
         env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
         liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
@@ -254,7 +255,7 @@ class AppConverter(BaseConverter):
 
     def _get_container_registry(self, app):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
-        if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+        if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
             server = blueDeployment['properties']['source'].get('customContainer').get('server', None)
             languageFramework = blueDeployment['properties']['source'].get('customContainer').get('languageFramework', None)
             username = blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', None)
@@ -269,10 +270,10 @@ class AppConverter(BaseConverter):
 
     def _get_args(self, app):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
-        if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+        if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
             return blueDeployment['properties']['source'].get('customContainer').get('args', [])
 
     def _get_commands(self, app):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
-        if self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+        if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
             return blueDeployment['properties']['source'].get('customContainer').get('command', [])

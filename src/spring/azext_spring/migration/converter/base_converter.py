@@ -117,7 +117,7 @@ class BaseConverter(ConverterTemplate):
         access_mode = self._get_storage_access_mode(disk_props)
         storage_unique_name = f"{storage_name}|{account_name}|{share_name}|{mount_path}|{access_mode}"
         hash_value = hashlib.md5(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
-        result = f"{storage_name}{hash_value}"
+        result = f"{storage_name}{hash_value}".replace("-", "").replace("_", "")
         return result[:32]  # Ensure total length is no more than 32
 
     def _get_mount_options(self, disk_props):
@@ -133,6 +133,28 @@ class BaseConverter(ConverterTemplate):
     def _get_storage_enable_subpath(self, disk_props):
         enableSubPath = disk_props.get('customPersistentDiskProperties', False).get('enableSubPath', False)
         return enableSubPath
+
+    def _get_app_storage_configs(self):
+        storage_configs = []
+        apps = self.wrapper_data.get_apps()
+        for app in apps:
+            # Check if app has properties and customPersistentDiskProperties
+            if 'properties' in app and 'customPersistentDisks' in app['properties']:
+                disks = app['properties'].get('customPersistentDisks', [])
+                for disk_props in disks:
+                    if self._get_storage_enable_subpath(disk_props) is True:
+                        logger.warning("Mismatch: enableSubPath of custom persistent disks is not supported in Azure Container Apps.")
+                    # print("storage_name + account_name + share_name + mount_path + access_mode:", storage_name + account_name + share_name + mountPath + access_mode)
+                    storage_config = {
+                        'paramContainerAppEnvStorageAccountKey': self._get_param_name_of_storage_account_key(disk_props),
+                        'storageName': self._get_storage_unique_name(disk_props),
+                        'shareName': self._get_storage_share_name(disk_props),
+                        'accessMode': self._get_storage_access_mode(disk_props),
+                        'accountName': self._get_storage_account_name(disk_props),
+                    }
+                    if storage_config not in storage_configs:
+                        storage_configs.append(storage_config)
+        return storage_configs
 
 # app
     def _get_container_image(self, app):
@@ -243,12 +265,12 @@ class SourceDataWrapper:
     def get_blue_deployment_by_app(self, app):
         deployments = self.get_deployments_by_app(app)
         deployments = [deployment for deployment in deployments if deployment['properties']['active'] is True]
-        return deployments[0] if deployments else {}
+        return deployments[0] if deployments else None
 
     def get_green_deployment_by_app(self, app):
         deployments = self.get_deployments_by_app(app)
         deployments = [deployment for deployment in deployments if deployment['properties']['active'] is False]
-        return deployments[0] if deployments else {}
+        return deployments[0] if deployments else None
 
     def get_green_deployments(self):
         deployments = self.get_deployments()

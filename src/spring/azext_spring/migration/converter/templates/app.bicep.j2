@@ -91,10 +91,12 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
           {%- else %}
           image: {{data.paramContainerAppImageName}}
           {%- endif %}
+          {%- if data.blue %}
           resources: {
             cpu: json('{{data.blue.cpuCore}}')
             memory: '{{data.blue.memorySize}}'
           }
+          {%- endif %}
           {%- if data.args %}
           args: [
             {%- for arg in data.args %}
@@ -111,6 +113,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             {%- endfor %}
           ]
           {%- endif %}
+          {%- if data.blue %}
           env: [
             {%- for env in data.blue.env %}
             {
@@ -119,6 +122,8 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             }{%- if not loop.last %}{%- endif %}
             {%- endfor %}
           ]
+          {%- endif %}
+          {%- if data.blue %}
           probes: [
             {%- if data.blue.livenessProbe %}
             {
@@ -217,6 +222,7 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
             }
             {%- endif %}
           ]
+          {%- endif %}
           {%- if data.volumeMounts %}
           volumeMounts: [
             {%- for volume in data.volumeMounts %}
