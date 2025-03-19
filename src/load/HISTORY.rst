@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.7.0
+1.8.0
 ++++++
 * Add commands for creating and managing schedule triggers using CLI. 
 

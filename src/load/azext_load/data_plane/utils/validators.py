@@ -26,27 +26,30 @@ from .models import (
 
 logger = get_logger(__name__)
 
-def _validate_id(namespace, id_name):
+
+def _validate_id(namespace, id_name, arg_name=None):
     """Validates a generic ID"""
     id_value = getattr(namespace, id_name, None)
+    arg_name = arg_name or id_name
     if id_value is None:
-        raise InvalidArgumentValueError(f"{id_name} is required.")
+        raise InvalidArgumentValueError(f"{arg_name} is required.")
     if not isinstance(id_value, str):
         raise InvalidArgumentValueError(
-            f"Invalid {id_name} type: {type(id_value)}. Expected a string."
+            f"Invalid {arg_name} type: {type(id_value)}. Expected a string."
         )
     if not re.match("^[a-z0-9_-]*$", id_value):
-        raise InvalidArgumentValueError(f"Invalid {id_name} value.")
+        raise InvalidArgumentValueError(f"Invalid {arg_name} value.")
 
 
 def validate_test_id(namespace):
     """Validates test-id"""
-    _validate_id(namespace, "test_id")
+    _validate_id(namespace, "test_id", "test-id")
 
 
 def validate_test_run_id(namespace):
     """Validates test-run-id"""
-    _validate_id(namespace, "test_run_id")
+    _validate_id(namespace, "test_run_id", "test-run-id")
+
 
 def _validate_akv_url(string, url_type="secrets|certificates|keys|storage"):
     """Validates Azure Key Vault URL"""
@@ -573,7 +576,7 @@ def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids
 
 def validate_trigger_id(namespace):
     """Validates trigger-id"""
-    _validate_id(namespace, "trigger_id")
+    _validate_id(namespace, "trigger_id", "trigger-id")
 
 
 def validate_recurrence_dates_in_month(namespace):
