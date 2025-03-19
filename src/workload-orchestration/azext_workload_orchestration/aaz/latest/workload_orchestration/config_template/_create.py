@@ -91,6 +91,20 @@ class Create(AAZCommand):
             required=True,
             enum={"Major": "Major", "Minor": "Minor", "Patch": "Patch"},
         )
+        def normalize_update_type(value):
+            if value.lower() == "major":
+                return "Major"
+            elif value.lower() == "minor":
+                return "Minor"
+            elif value.lower() == "patch":
+                return "Patch"
+            else:
+                raise ValueError("Invalid update type: {}".format(value))
+    
+        _args_schema.update_type._fmt = AAZStrArgFormat(
+            pattern="^(Major|Minor|Patch)$",
+        )
+        _args_schema.update_type._validate = normalize_update_type
 
         _args_schema.configurations = AAZFileArg(
             options=["--config-template"],
