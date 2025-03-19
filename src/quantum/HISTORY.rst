@@ -3,14 +3,18 @@
 Release History
 ===============
 
-1.0.0b5
+1.0.0b6
 ++++++
-* [2025-03-12] Version intended to work with QDK version 1.14.0
+* [2025-03-19] Version intended to work with QDK version 1.14.0
 * `az quantum job list` has several new parameters to filter, sort, and paginate the job list, see https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list
 * The `az quantum run`, `az quantum execute`, and `az quantum job submit` commands can access workspace storage accounts using the workspace managed identity.
 * Storage blob anonymous access is disabled when new workspace storage accounts are created.
 * Service-based Resource Estimation is now fully deprecated. Please use the local Resource Estimator tool, see https://learn.microsoft.com/azure/quantum/intro-to-resource-estimation
 * GitHub Issue 30947 has been fixed, https://github.com/Azure/azure-cli/issues/30947
+
+1.0.0b5
+++++++
+* Retracted due to missing file.
 
 1.0.0b4
 ++++++
