@@ -12,25 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration configuration list",
-    is_preview=True,
+    "workload-orchestration config-template version show",
 )
-class List(AAZCommand):
-    """To list configuration for specific resource group or subscription
+class Show(AAZCommand):
+    """Get a Config Template Version Resource
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/configurations/{}/dynamicconfigurations", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/configtemplates/{}/versions/{}", "2025-01-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -43,12 +41,22 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n","--name","--configuration-name"],
-            help="The name of the Configuration",
+        _args_schema.config_template_name = AAZStrArg(
+            options=["--config-template-name"],
+            help="The name of the ConfigTemplate",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
+            ),
+        )
+        _args_schema.config_template_version_name = AAZStrArg(
+            options=["-n", "--name", "--config-template-version-name"],
+            help="The name of the ConfigTemplateVersion",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9]+\\.[0-9]+\\.[0-9]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -58,7 +66,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DynamicConfigurationsListByConfiguration(ctx=self.ctx)()
+        self.ConfigTemplateVersionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,11 +78,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class DynamicConfigurationsListByConfiguration(AAZHttpOperation):
+    class ConfigTemplateVersionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +95,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configurations/{configurationName}/dynamicConfigurations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}/versions/{configTemplateVersionName}",
                 **self.url_parameters
             )
 
@@ -104,7 +111,11 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "configTemplateName", self.ctx.args.config_template_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "configTemplateVersionName", self.ctx.args.config_template_version_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -122,7 +133,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2025-01-01-preview",
                     required=True,
                 ),
             }
@@ -155,51 +166,35 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.e_tag = AAZStrType(
+                serialized_name="eTag",
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.current_version = AAZStrType(
-                serialized_name="currentVersion",
+            properties = cls._schema_on_200.properties
+            properties.configurations = AAZStrType(
                 flags={"required": True},
-            )
-            properties.dynamic_configuration_model = AAZStrType(
-                serialized_name="dynamicConfigurationModel",
-                flags={"read_only": True},
-            )
-            properties.dynamic_configuration_type = AAZStrType(
-                serialized_name="dynamicConfigurationType",
-                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -222,8 +217,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

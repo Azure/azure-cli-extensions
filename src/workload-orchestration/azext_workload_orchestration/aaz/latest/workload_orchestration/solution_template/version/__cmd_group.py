@@ -8,5 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._config_set import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "workload-orchestration solution-template version",
+)
+class __CMDGroup(AAZCommandGroup):
+    """This is for edge Config-Manager
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

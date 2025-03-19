@@ -8,16 +8,6 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "workload-orchestration config",
-)
-class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration config helps to manage configurations
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._list import *
+from ._show import *

@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration config set",
+    "workload-orchestration configuration set",
     is_preview=True,
 )
 class ShowConfig2(AAZCommand):

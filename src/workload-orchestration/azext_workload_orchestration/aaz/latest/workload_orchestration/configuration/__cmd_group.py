@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workload-orchestration configuration",
-    is_preview=False,
 )
 class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration config-template helps to manage Configurations
+    """workload-orchestration configuration helps to manage configurations
     """
     pass
 
