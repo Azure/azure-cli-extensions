@@ -296,7 +296,7 @@ class LoadTestTriggerConstants(LoadConstants):
     
     DAILY_RECURRENCE_TYPE = "Daily"
     RECURRENCE_INTERVAL_ONE = 1
-    CURRENT_DATE_TIME = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%dT%H:%M:%SZ')
+    CURRENT_DATE_TIME = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
     
     # Constants for cron schedule
     CRON_TRIGGER_ID = "test-trigger-id-cron"
