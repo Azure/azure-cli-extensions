@@ -136,6 +136,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 container_image = UserContainerImage.from_json(c, is_vn2=is_vn2)
             else:
                 container_image = ContainerImage.from_json(c)
+            container_image.parse_all_parameters_and_variables(self.all_params, self.all_vars)
             container_results.append(container_image)
 
         self._images = container_results
@@ -431,9 +432,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             message_queue = []
             # populate regular container images(s)
             for image in container_images:
-                image.parse_all_parameters_and_variables(AciPolicy.all_params, AciPolicy.all_vars)
                 image_name = f"{image.base}:{image.tag}"
-
+                logger.info("Processing image: %s", image_name)
                 image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
                 # verify and populate the working directory property
@@ -517,6 +517,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                             }
                         image.set_user(user)
 
+                # should have all fragments before this point
                 if self._fragment_contents and self.should_eliminate_container_covered_by_fragments(image):
                     # these containers will get taken out later in the function
                     # since they are covered by a fragment
@@ -694,8 +695,8 @@ def load_policy_from_arm_template_str(
             ] = infrastructure_svn
         if rego_imports:
             # error check the rego imports for invalid data types
-            process_fragment_imports(rego_imports)
-            rego_fragments.extend(rego_imports)
+            processed_imports = process_fragment_imports(rego_imports)
+            rego_fragments.extend(processed_imports)
 
         volumes = (
             case_insensitive_dict_get(
@@ -1273,7 +1274,15 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
                 f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
             )
 
-        exec_processes = []
+        exec_processes = case_insensitive_dict_get(
+            container_properties, config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES
+        ) or []
+
+        # add the signal section if it's not present
+        for exec_process in exec_processes:
+            if config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES not in exec_process:
+                exec_process[config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES] = []
+
         extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
         extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
 
@@ -1289,7 +1298,8 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 )
                 or [],
-                config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts_from_config(container_properties),
+                config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts_from_config(container_properties)
+                + process_configmap(container_properties),
                 config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                 + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                 if debug_mode

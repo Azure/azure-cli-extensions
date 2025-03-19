@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.2.2
+++++++
+* support for pure OCI v1 schema 2 formatted images
+* adding debug logging
+* changing where parameters and variables are filled in for arm templates
+* updating documentation about fragments
+* bugfix for exec processes in fragment generation
+* bugfix for custom mount options in fragment generation
 
 1.2.1
 ++++++
