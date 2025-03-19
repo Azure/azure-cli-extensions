@@ -4073,7 +4073,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             agentpool_details = {}
             from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
-            
+
             try:
                 (
                     is_extension_installed,
@@ -4094,7 +4094,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 logger.error(f"\nError fetching installed extension and cluster config: {e}")
                 return mc
             except Exception as ex:
-                logger.error(f"\Exception fetching installed extension and cluster config: {ex}")
+                logger.error(f"\nException fetching installed extension and cluster config: {ex}")
                 return mc
 
             vm_cache_generated = self.context.get_intermediate(
