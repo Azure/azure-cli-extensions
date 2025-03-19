@@ -89,7 +89,7 @@ class RemoveVersion(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -107,7 +107,11 @@ class RemoveVersion(AAZCommand):
         @property
         def method(self):
             return "POST"
+        
+        def on_200(self, session):
+            pass
 
+        
         @property
         def error_format(self):
             return "MgmtErrorFormat"
@@ -162,6 +166,7 @@ class RemoveVersion(AAZCommand):
 
 
 class _RemoveVersionHelper:
+
     """Helper class for RemoveVersion"""
 
 

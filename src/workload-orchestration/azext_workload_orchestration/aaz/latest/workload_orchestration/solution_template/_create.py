@@ -100,11 +100,7 @@ class Create(AAZCommand):
             options=["--config-template"],
             help="Link to File containing Config expressions  for this solution version",
         )
-        _args_schema.orchestrator_type = AAZStrArg(
-            options=["--orchestrator-type"],
-            help="Orchestrator type",
-            enum={"TO": "TO"},
-        )
+    
         _args_schema.specification = AAZFreeFormDictArg(
             options=["--specification"],
             help="App components spec, use @ to load from file",
@@ -144,9 +140,8 @@ class Create(AAZCommand):
         self.post_operations()
 
     @register_callback
-    def pre_operations(self):
+    def pre_operations(self):\
         pass
-
     @register_callback
     def post_operations(self):
         pass
@@ -451,12 +446,14 @@ class Create(AAZCommand):
             properties = _builder.get(".solutionTemplateVersion.properties")
             if properties is not None:
                 properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("orchestratorType", AAZStrType, ".orchestrator_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
 
             specification = _builder.get(".solutionTemplateVersion.properties.specification")
             if specification is not None:
                 specification.set_anytype_elements(".")
+            
+            _content_value.solutionTemplateVersion.properties["orchestratorType"] = "TO"
+
             return self.serialize_content(_content_value)
 
 

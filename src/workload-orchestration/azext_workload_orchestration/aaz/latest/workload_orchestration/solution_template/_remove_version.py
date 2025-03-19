@@ -89,7 +89,7 @@ class RemoveVersion(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -103,6 +103,9 @@ class RemoveVersion(AAZCommand):
                 "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/removeVersion",
                 **self.url_parameters
             )
+        
+        def on_200(self, session):
+            pass
 
         @property
         def method(self):
