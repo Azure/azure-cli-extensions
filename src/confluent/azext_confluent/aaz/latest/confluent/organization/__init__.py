@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._create import *
 from ._create_role_binding import *
+from ._create_role_bindings import *
 from ._create_user import *
 from ._delete import *
 from ._list import *
