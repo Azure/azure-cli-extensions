@@ -235,8 +235,10 @@ def _prompt_public_ip(namespace):
     except NoTTYException:
         raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
+
 def _return_public_ip_name(namespace):
     return namespace.repair_vm_name + "PublicIP"
+
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
