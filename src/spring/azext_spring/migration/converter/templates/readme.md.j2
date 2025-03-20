@@ -120,7 +120,10 @@ You can check the deployment status either in the CLI output or in the Azure Por
     | JavaComponentOperationError | Failed to create config map external-auth-config-map for JavaComponent '' in k8se-system namespace. | Creating a Java component immediately after the environment is set up sometimes fails due to a server-side issue. you can redeploy the Bicep files to solve this issue. |
     | JavaComponentOperationError | Failed to provision java component '', Java Component is invalid, reason: admission webhook \"javacomponent.kb.io\" denied the request... | Fix the properties in the error message and redeploy the bicep files. Or find more details in the logs of managed components. |    
     | InvalidCertificateValueFormat | The certificate value should be base64 string. | Manually upload certificate to Azure Container Apps environment. |    
+    | ManagedEnvironmentSubnetDelegationError | The subnet of the environment must be delegated to the service 'Microsoft.App/environments'. | Update subnet with param `--delegations Microsoft.App/environments` to delegate subnet |    
+
 {{ '\n' }}
+
 ## Post-Deployment Configuration
 Some properties and configurations are not included in the Bicep files and must be manually updated.
 
@@ -135,7 +138,7 @@ Following TLS certificates from Azure Key Vault have been migrated by the migrat
 
 {%- if data.contentCerts %}
 
-Following content type certificates should be manually uploaded to Azure Container Apps environment:
+Please be aware that the following certificates cannot be migrated automatically due to API limitations. If necessary, you can manually upload the original certificate file to the Azure Container Apps environment:
 {%- for cert in data.contentCerts %}
   - `{{cert.name}}`
 {%- endfor %}
