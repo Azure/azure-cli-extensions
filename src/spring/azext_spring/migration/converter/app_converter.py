@@ -240,9 +240,16 @@ class AppConverter(BaseConverter):
         ingress = app['properties'].get('ingressSettings')
         if ingress is None:
             return None
+        transport = ingress.get('backendProtocol')
+        match transport:
+            case "Default":
+                transport = "auto"
+            case _:
+                transport = "auto"
+                logger.warning(f"Mismatch: The backendProtocol '{transport}' of app '{app.get('name')}' is not supported in Azure Container Apps. Converting it to 'auto'.")
         return {
             "targetPort": 8080 if tier == "Enterprise" else 1025,
-            "transport": ingress.get('backendProtocol').replace("Default", "auto"),
+            "transport": transport,
             "sessionAffinity": ingress.get('sessionAffinity').replace("Cookie", "sticky").replace("None", "none")
         }
 
