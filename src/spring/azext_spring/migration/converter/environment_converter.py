@@ -15,7 +15,7 @@ class EnvironmentConverter(BaseConverter):
         def transform_data():
             asa_service = self.wrapper_data.get_asa_service()
             name = self._get_resource_name(asa_service)
-            certs = self.wrapper_data.get_certificates()
+            certs = self.wrapper_data.get_keyvault_certificates()
             data = {
                 "containerAppEnvName": name,
                 "containerAppLogAnalyticsName": f"log-{name}",
