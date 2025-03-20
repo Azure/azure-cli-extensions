@@ -4091,9 +4091,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     mc.agent_pool_profiles,
                 )
             except UnknownError as e:
-                logger.error("\nError fetching installed extension and cluster config: %s", ex)
+                logger.error("\nError fetching installed extension and cluster config: %s", e)
                 return mc
-            except Exception as ex: # pylint: disable=broad-except
+            except Exception as ex:  # pylint: disable=broad-except
                 logger.error("Exception fetching installed extension and cluster config: %s", ex)
                 return mc
 

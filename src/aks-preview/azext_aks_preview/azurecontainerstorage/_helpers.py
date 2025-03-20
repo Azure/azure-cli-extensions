@@ -166,9 +166,9 @@ def get_extension_installed_and_cluster_configs(
         perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         resource_cpu_value = -1
     except UnknownError as e:
-        logger.error("\nError fetching k8s extension module: %s", ex)
+        logger.error("\nError fetching k8s extension module: %s", e)
         return False, False, False, False, False, -1, "", ""
-    except Exception as ex: # pylint: disable=broad-except
+    except Exception as ex:  # pylint: disable=broad-except
         logger.error("\nException occurred while fetching k8s extension module: %s", ex)
         return False, False, False, False, False, -1, "", ""
 
