@@ -212,9 +212,32 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
     }
     scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
     if not scope:
-        raise azclierror.InvalidArgumentValueError(
-            f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
-            "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
+        active_directory_graph_api_array = cmd.cli_ctx.cloud.endpoints.activeDirectoryGraphResourceId.split(".")
+        # special cases for USSec
+        if (len(active_directory_graph_api_array) == 4):
+            scope_postfix = (
+                active_directory_graph_api_array[1]
+                + "."
+                + active_directory_graph_api_array[2]
+                + "."
+                + active_directory_graph_api_array[3]
+            )
+        # special case for USNat
+        elif len(active_directory_graph_api_array) == 5:
+            scope_postfix = (
+                active_directory_graph_api_array[1]
+                + "."
+                + active_directory_graph_api_array[2]
+                + "."
+                + active_directory_graph_api_array[3]
+                + "."
+                + active_directory_graph_api_array[4]
+            )
+        else:
+            raise azclierror.InvalidArgumentValueError(
+                f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
+                "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
+        scope = f"https://pas.{scope}/CheckMyAccess/Linux/.default"
 
     scopes = [scope]
     data = _prepare_jwk_data(public_key_file)

@@ -133,8 +133,13 @@ class SshConnectivityUtilsCommandTest(unittest.TestCase):
         mock_get_proxy_dir.return_value = "/dir/proxy"
         mock_isfile.return_value = False
 
-        connectivity_utils.install_client_side_proxy(None)
+        cmd = mock.Mock()
+        cmd.cli_ctx = mock.Mock()
+        cmd.cli_ctx.cloud = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints.active_directory = "https://login.microsoftonline.com"
+        connectivity_utils.install_client_side_proxy(cmd, None)
 
         mock_dir.assert_called_once_with("/dir/proxy", "Failed to create client proxy directory \'/dir/proxy\'.")
-        mock_download.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_026973", "linux", "arm64")
+        mock_download.assert_called_once_with(cmd, "/dir/proxy", "sshProxy_linux_arm64_1_3_026973", "linux", "arm64")
         mock_check.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_026973")
