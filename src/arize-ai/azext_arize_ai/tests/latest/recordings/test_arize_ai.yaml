@@ -1,0 +1,472 @@
+git interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"marketplace": {"offerDetails": {"offerId":
+      "arize-liftr-0", "planId": "liftr-test-0", "planName": "Liftr Test 0", "publisherId":
+      "arizeai1657829589668", "termId": "gmz7xq9ge3py", "termUnit": "P1M"}, "subscriptionId":
+      "fc35d936-3b89-41f8-8110-a24b56826c37"}, "partnerProperties": {"description":
+      "Test-Description"}, "user": {"emailAddress": "aggarwalsw@microsoft.com", "firstName":
+      "Swati", "lastName": "Aggarwal", "upn": "aggarwalsw@microsoft.com"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '490'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1?api-version=2024-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","name":"Arize-test-cli-instance-1","type":"arizeai.observabilityeval/organizations","location":"eastus","systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-20T01:12:27.5564296Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-20T01:12:27.5564296Z"},"properties":{"marketplace":{"subscriptionId":"fc35d936-3b89-41f8-8110-a24b56826c37","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Accepted","user":{"firstName":"Swati","lastName":"Aggarwal","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"},"partnerProperties":{"description":"Test-Description"}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+      cache-control:
+      - no-cache
+      content-length:
+      - '1038'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:12:35 GMT
+      etag:
+      - '"0500ece0-0000-0300-0000-67db6b830000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+      mise-correlation-id:
+      - 72692476-873d-43c1-8f80-f60eb7df11aa
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=464b73e3-c6d1-4d03-a374-32a6c6b6135f/centralindia/45e12a8d-5538-45e0-bd6e-5f4e330a15ba
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 73734F176546429E9EB85131BE7022C2 Ref B: MAA201060515045 Ref C: 2025-03-20T01:12:25Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+  response:
+    body:
+      string: '{"id":"/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","name":"a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","status":"Accepted","startTime":"2025-03-20T01:12:33.2336364Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:12:35 GMT
+      etag:
+      - '"0000ff32-0000-0300-0000-67db6b810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: C1FBCF8160F64402B10BD56E543288D8 Ref B: MAA201060515045 Ref C: 2025-03-20T01:12:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+  response:
+    body:
+      string: '{"id":"/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","name":"a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","status":"Accepted","startTime":"2025-03-20T01:12:33.2336364Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:13:05 GMT
+      etag:
+      - '"0000ff32-0000-0300-0000-67db6b810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 7D80F84EA77F469FB178E058902C5BD3 Ref B: MAA201060515045 Ref C: 2025-03-20T01:13:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+  response:
+    body:
+      string: '{"id":"/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","name":"a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","status":"Accepted","startTime":"2025-03-20T01:12:33.2336364Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:13:36 GMT
+      etag:
+      - '"0000ff32-0000-0300-0000-67db6b810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: B947084BC1A4490CA0317333C1AB015E Ref B: MAA201060515045 Ref C: 2025-03-20T01:13:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+  response:
+    body:
+      string: '{"id":"/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","name":"a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","status":"Accepted","startTime":"2025-03-20T01:12:33.2336364Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:14:06 GMT
+      etag:
+      - '"0000ff32-0000-0300-0000-67db6b810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 1978A702D6AC42E88AEAD11E81A7953C Ref B: MAA201060515045 Ref C: 2025-03-20T01:14:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB?api-version=2024-10-01-preview&t=638780299561190406&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=beJ2eMraCn-1Z10mJA5cAfAAg4B70PbVe3hGqSSi9BoJyilgK7iXEOPUyxlPSZ6on0oE383DZQpaKGbfJsR8GBHbKIpbAcIAL2Z7qQf9ULWo1hVcT6eNNFkKm6HzssqBlb4L6x8V4qS_x5plGAhypsG9GvNjjNiiqU3NqKLpzDkPtKizzWQNMTnbIr5SiNq1gTKhfHhrBBlGJBX57xwlnAFFdxti20rcgzGjhSX8VN7-7jLs2tRAQcRFJzbCd0Oe30ZOcP--hTJyO20Zp3-yN47jhySzPXDO3QblcBhgkT90-8Gv-yFBam7f-xLmV2kYd44YmB3-5uz666pYn7YVwQ&h=dD9Edp7uPbyjRtQgQMrTa1mFIBNQ0O6BWDglAqYu_UY
+  response:
+    body:
+      string: '{"id":"/providers/ArizeAi.ObservabilityEval/locations/EASTUS/operationStatuses/a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","name":"a5ceb939-151b-4684-9777-a02271da8580*8DDF0B304509855FA082AD6DB6109EB264DCBF6E9A840ED257E73E11240949FB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","status":"Succeeded","startTime":"2025-03-20T01:12:33.2336364Z","endTime":"2025-03-20T01:14:34.7245294Z","error":{"code":"","message":""},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:14:36 GMT
+      etag:
+      - '"0000db33-0000-0300-0000-67db6bfb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 3D6E9CA1073E4CC5B3CBF30F02B34CB6 Ref B: MAA201060515045 Ref C: 2025-03-20T01:14:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --location --marketplace --user --partner-properties
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1?api-version=2024-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","name":"Arize-test-cli-instance-1","type":"arizeai.observabilityeval/organizations","location":"eastus","systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-20T01:12:27.5564296Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-20T01:12:27.5564296Z"},"properties":{"marketplace":{"subscriptionId":"266f0e52-4e31-4285-ccdf-952eaddd7b33","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Succeeded","user":{"firstName":"Swati","lastName":"Aggarwal","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"},"partnerProperties":{"description":"Test-Description"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:14:38 GMT
+      etag:
+      - '"06003971-0000-0300-0000-67db6bfa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: A817DF3F45F24441B11B4B4C43B1B075 Ref B: MAA201060515045 Ref C: 2025-03-20T01:14:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations?api-version=2024-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/test-cli-instance-5","name":"test-cli-instance-5","type":"arizeai.observabilityeval/organizations","location":"East
+        US","tags":{"testName":"TestValue"},"systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-02T15:08:40.258814Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-02T15:08:40.258814Z"},"properties":{"marketplace":{"subscriptionId":"4ae301a9-d510-40c6-d914-d4508c85c460","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Succeeded","user":{"firstName":"","lastName":"","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/test-arize-instance-test-1","name":"test-arize-instance-test-1","type":"arizeai.observabilityeval/organizations","location":"East
+        US","systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-19T11:50:02.1121414Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-19T11:50:02.1121414Z"},"properties":{"marketplace":{"subscriptionId":"eebf46e9-8783-4346-d318-34b7aabd6b68","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Succeeded","user":{"firstName":"","lastName":"","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","name":"Arize-test-cli-instance-1","type":"arizeai.observabilityeval/organizations","location":"eastus","systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-20T01:12:27.5564296Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-20T01:12:27.5564296Z"},"properties":{"marketplace":{"subscriptionId":"266f0e52-4e31-4285-ccdf-952eaddd7b33","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Succeeded","user":{"firstName":"Swati","lastName":"Aggarwal","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"},"partnerProperties":{"description":"Test-Description"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/arizeai.observabilityeval/organizations/test-cli-instance-123","name":"test-cli-instance-123","type":"arizeai.observabilityeval/organizations","location":"Central
+        US EUAP","tags":{},"systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-18T04:50:38.6863764Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-18T04:50:38.6863764Z"},"properties":{"marketplace":{"subscriptionId":"db05fc49-1595-4d40-d6e6-b80ec0b20970","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com","phoneNumber":""},"partnerProperties":{"description":"Test
+        description"},"singleSignOnProperties":{"type":"Saml","state":"Initial","enterpriseAppId":"0b9873df-1629-4036-9360-5f2f65c0a0d3","aadDomains":["MicrosoftCustomerLed.onmicrosoft.com"]}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/test-arize-cli-instance-test-1","name":"test-arize-cli-instance-test-1","type":"arizeai.observabilityeval/organizations","location":"centraluseuap","systemData":{"lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-19T11:17:54.8864763Z"},"properties":{"marketplace":{"subscriptionId":"ffc8a0e5-1bcb-4bff-ca39-46dff8ebb51d","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5081'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:14:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 138ffb4a-5818-4ce3-8a45-0503704db659
+      - d1a55e0d-38ea-476a-9499-96d519c1df77
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: E5167B52214D4713830E3E972E8315EE Ref B: MAA201060513049 Ref C: 2025-03-20T01:14:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arize-ai observability-eval organization show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1?api-version=2024-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/QM_clitest_qumulo2_eastus/providers/ArizeAi.ObservabilityEval/organizations/Arize-test-cli-instance-1","name":"Arize-test-cli-instance-1","type":"arizeai.observabilityeval/organizations","location":"eastus","systemData":{"createdBy":"aggarwalsw@microsoft.com","createdByType":"User","createdAt":"2025-03-20T01:12:27.5564296Z","lastModifiedBy":"aggarwalsw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-20T01:12:27.5564296Z"},"properties":{"marketplace":{"subscriptionId":"266f0e52-4e31-4285-ccdf-952eaddd7b33","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"arizeai1657829589668","offerId":"arize-liftr-0","planId":"liftr-test-0","planName":"Liftr
+        Test 0","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Succeeded","user":{"firstName":"Swati","lastName":"Aggarwal","emailAddress":"aggarwalsw@microsoft.com","upn":"aggarwalsw@microsoft.com"},"partnerProperties":{"description":"Test-Description"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Mar 2025 01:14:42 GMT
+      etag:
+      - '"06003971-0000-0300-0000-67db6bfa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 0BB3591160784F36B9CCA06DA13E2796 Ref B: MAA201060516009 Ref C: 2025-03-20T01:14:41Z'
+    status:
+      code: 200
+      message: OK
+version: 1
