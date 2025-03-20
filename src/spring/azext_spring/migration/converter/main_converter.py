@@ -10,7 +10,7 @@ class MainConverter(BaseConverter):
 
     def __init__(self, source):
         def transform_data():
-            asa_certs = self.wrapper_data.get_certificates()
+            asa_certs = self.wrapper_data.get_keyvault_certificates()
             certs = []
             for cert in asa_certs:
                 certName = self._get_resource_name(cert)
