@@ -8,22 +8,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 from azure.cli.core.aaz import has_value
-from .aaz.latest.spatial_anchors_account import Create as _SpatialAnchorsCreate
-from .aaz.latest.spatial_anchors_account.key import Renew as _SpatialAnchorsKeyRenew
 from .aaz.latest.remote_rendering_account import Create as _RemoteRenderingCreate
 from .aaz.latest.remote_rendering_account.key import Renew as _RemoteRenderingKeyRenew
 from knack.log import get_logger
 
 
 logger = get_logger(__name__)
-
-
-class SpatialAnchorsCreate(_SpatialAnchorsCreate):
-    def pre_operations(self):
-        args = self.ctx.args
-        if has_value(args.kind):
-            args.sku = args.kind
-            del args.kind
 
 
 class RemoteRenderingCreate(_RemoteRenderingCreate):
@@ -39,26 +29,6 @@ class RemoteRenderingCreate(_RemoteRenderingCreate):
             args.sku = args.kind
             del args.kind
         args.identity = {"type": "SystemAssigned"}
-
-
-class SpatialAnchorsKeyRenew(_SpatialAnchorsKeyRenew):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZArgEnum
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.key = AAZStrArg(
-            options=["--key", "-k"],
-            help="Key to be regenerated.",
-            default="primary",
-            enum={"primary": "primary", "secondary": "secondary"}
-        )
-        args_schema.serial._registered = False
-        return args_schema
-
-    def pre_operations(self):
-        args = self.ctx.args
-        if has_value(args.key):
-            args.serial = 1 if str(args.key).lower() == 'primary' else 2
 
 
 class RemoteRenderingKeyRenew(_RemoteRenderingKeyRenew):
