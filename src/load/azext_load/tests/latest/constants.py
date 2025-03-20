@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
+import os, datetime
 
 TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 
@@ -261,3 +261,91 @@ class LoadTestFailureCriteriaKeys:
         "LessThan": "<",
         "GreaterThan": ">"
     }
+
+
+class LoadTestTriggerConstants(LoadConstants):
+    # Constants for test_pause_trigger_schedule
+    PAUSE_TRIGGER_ID = "test-trigger-id-pause"
+    PAUSE_DESCRIPTION = "Trigger schedule for pause test case"
+    PAUSE_DISPLAY_NAME = "Pause Trigger"
+    PAUSE_TEST_IDS = "test-id-pause"
+
+    # Constants for test_enable_trigger_schedule
+    ENABLE_TRIGGER_ID = "test-trigger-id-enable"
+    ENABLE_DESCRIPTION = "Trigger schedule for enable test case"
+    ENABLE_DISPLAY_NAME = "Enable Trigger"
+    ENABLE_TEST_IDS = "test-id-enable"
+
+    # Constants for test_delete_trigger_schedule
+    DELETE_TRIGGER_ID = "test-trigger-id-delete"
+    DELETE_DESCRIPTION = "Trigger schedule for delete test case"
+    DELETE_DISPLAY_NAME = "Delete Trigger"
+    DELETE_TEST_IDS = "test-id-delete"
+
+    # Constants for test_list_trigger_schedule
+    LIST_TRIGGER_ID = "test-trigger-id-list"
+    LIST_DESCRIPTION = "Trigger schedule for list test case"
+    LIST_DISPLAY_NAME = "List Trigger"
+    LIST_TEST_IDS = "test-id-list"
+
+    # Constants for test_update_trigger_schedule
+    UPDATE_TRIGGER_ID = "test-trigger-id-update"
+    UPDATE_DESCRIPTION = "Trigger schedule for update test case"
+    UPDATE_DISPLAY_NAME = "Update Trigger"
+    UPDATE_TEST_IDS = "test-id-update"
+    
+    DAILY_RECURRENCE_TYPE = "Daily"
+    RECURRENCE_INTERVAL_ONE = 1
+    CURRENT_DATE_TIME = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+    
+    # Constants for cron schedule
+    CRON_TRIGGER_ID = "test-trigger-id-cron"
+    CRON_DESCRIPTION = "Trigger schedule for cron test case"
+    CRON_DISPLAY_NAME = "Cron Trigger"
+    CRON_TEST_IDS = "test-id-cron"
+    CRON_RECURRENCE_TYPE = "Cron"
+    CRON_RECURRENCE_CRON_EXPRESSION = "0 0 12 * *"
+    
+    # Constants for daily schedule
+    DAILY_TRIGGER_ID = "test-trigger-id-daily"
+    DAILY_DESCRIPTION = "Trigger schedule for daily test case"
+    DAILY_DISPLAY_NAME = "Daily Trigger"
+    DAILY_TEST_IDS = "test-id-daily"
+    DAILY_RECURRENCE_TYPE = "Daily"
+    DAILY_RECURRENCE_INTERVAL = 1
+
+    # Constants for weekly schedule
+    WEEKLY_TRIGGER_ID = "test-trigger-id-weekly"
+    WEEKLY_DESCRIPTION = "Trigger schedule for weekly test case"
+    WEEKLY_DISPLAY_NAME = "Weekly Trigger"
+    WEEKLY_TEST_IDS = "test-id-weekly"
+    WEEKLY_RECURRENCE_TYPE = "Weekly"
+    WEEKLY_RECURRENCE_INTERVAL = 1
+    WEEKLY_RECURRENCE_DAYS = "Monday"
+    
+    # Constants for monthly by dates schedule
+    MONTHLY_DATES_TRIGGER_ID = "test-trigger-id-monthly-dates"
+    MONTHLY_DATES_DESCRIPTION = "Trigger schedule for monthly by dates test case"
+    MONTHLY_DATES_DISPLAY_NAME = "Monthly By Dates Trigger"
+    MONTHLY_DATES_TEST_IDS = "test-id-monthly-dates"
+    MONTHLY_DATES_RECURRENCE_TYPE = "MonthlyByDates"
+    MONTHLY_DATES_RECURRENCE_INTERVAL = 1
+    MONTHLY_DATES_RECURRENCE_DATES_IN_MONTH = "1 15"
+
+    # Constants for monthly by days schedule
+    MONTHLY_DAYS_TRIGGER_ID = "test-trigger-id-monthly-days"
+    MONTHLY_DAYS_DESCRIPTION = "Trigger schedule for monthly by days test case"
+    MONTHLY_DAYS_DISPLAY_NAME = "Monthly By Days Trigger"
+    MONTHLY_DAYS_TEST_IDS = "test-id-monthly-days"
+    MONTHLY_DAYS_RECURRENCE_TYPE = "MonthlyByDays"
+    MONTHLY_DAYS_RECURRENCE_INTERVAL = 1
+    MONTHLY_DAYS_RECURRENCE_WEEK_DAYS = "Monday"
+    MONTHLY_DAYS_RECURRENCE_INDEX = 1
+
+    # Constants for invalid cases
+    INVALID_DAILY_TRIGGER_ID = "invalid-daily-trigger"
+    INVALID_WEEKLY_TRIGGER_ID = "invalid-weekly-trigger"
+    INVALID_MONTHLY_DATES_TRIGGER_ID = "invalid-monthly-dates-trigger"
+    INVALID_MONTHLY_DAYS_TRIGGER_ID = "invalid-monthly-days-trigger"
+    INVALID_CRON_TRIGGER_ID = "invalid-cron-trigger"
+    INVALID_UPDATE_TRIGGER_ID = "update-invalid-trigger"
