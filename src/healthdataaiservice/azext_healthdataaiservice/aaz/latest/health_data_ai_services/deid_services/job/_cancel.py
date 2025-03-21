@@ -15,11 +15,7 @@ from azure.cli.core.aaz import *
     "health-data-ai-services deid-services job cancel",
 )
 class Cancel(AAZCommand):
-    """Cancels a job that is in progress.
-
-    The job will be marked as canceled and the service will stop processing the job. The service will not delete any documents that have already been processed.
-    
-    If the job is already complete, this will have no effect.
+    """Cancels a job that is in progress. The job will be marked as canceled and the service will stop processing the job. The service will not delete any documents that have already been processed. If the job is already complete, this will have no effect.
     """
 
     _aaz_info = {
@@ -48,6 +44,7 @@ class Cancel(AAZCommand):
         _args_schema.endpoint = AAZStrArg(
             options=["--endpoint"],
             arg_group="Client",
+            help="Url of your De-identification Service.",
             required=True,
         )
 

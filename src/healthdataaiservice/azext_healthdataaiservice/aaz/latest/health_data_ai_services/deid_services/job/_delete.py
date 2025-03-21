@@ -45,6 +45,7 @@ class Delete(AAZCommand):
         _args_schema.endpoint = AAZStrArg(
             options=["--endpoint"],
             arg_group="Client",
+            help="Url of your De-identification Service.",
             required=True,
         )
 
