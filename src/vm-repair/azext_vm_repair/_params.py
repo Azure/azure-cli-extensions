@@ -35,6 +35,7 @@ def load_arguments(self, _):
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
         c.argument('yes', help='Option to skip prompt for associating public ip in no Tty mode')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
+        c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
         
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')

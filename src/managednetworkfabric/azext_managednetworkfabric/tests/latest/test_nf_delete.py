@@ -47,28 +47,10 @@ class GA_NFDelteScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": CONFIG.get("NETWORK_FABRIC", "name"),
-                "rg": CONFIG.get("NETWORK_FABRIC", "resource_group"),
-                "location": CONFIG.get("NETWORK_FABRIC", "location"),
-                "nf_sku": CONFIG.get("NETWORK_FABRIC", "nf_sku"),
-                "nfc_id": CONFIG.get("NETWORK_FABRIC", "nfc_id"),
-                "fabric_asn": CONFIG.get("NETWORK_FABRIC", "fabric_asn"),
-                "ipv4_prefix": CONFIG.get("NETWORK_FABRIC", "ipv4_prefix"),
-                "ipv6_prefix": CONFIG.get("NETWORK_FABRIC", "ipv6_prefix"),
-                "rack_count": CONFIG.get("NETWORK_FABRIC", "rack_count"),
-                "server_count_per_rack": CONFIG.get(
-                    "NETWORK_FABRIC", "server_count_per_rack"
-                ),
-                "terminalServerConf": CONFIG.get(
-                    "NETWORK_FABRIC", "terminalServerConf"
-                ),
                 "deleteNFRGName": CONFIG.get(
                     "NETWORK_FABRIC", "delete_nf_resource_group"
                 ),
                 "deleteNFName": CONFIG.get("NETWORK_FABRIC", "delete_nf_name"),
-                "managedNetworkConf": CONFIG.get(
-                    "NETWORK_FABRIC", "managedNetworkConf"
-                ),
             }
         )
 

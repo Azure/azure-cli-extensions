@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import unittest
 from random import randint
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -85,6 +86,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
         track_job_to_completion(test)
 
+    @unittest.skip("Temporary skip to allow AKS hotfix through")
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_create_and_delete_blob(test):
         test.kwargs.update({

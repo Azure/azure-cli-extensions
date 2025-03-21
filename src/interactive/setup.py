@@ -9,12 +9,7 @@ import os
 import re
 from setuptools import setup, find_packages
 
-# Version is defined in azclishell.__init__.py.
-extension_path = os.path.dirname(os.path.realpath(__file__))
-version_file_path = os.path.join(extension_path, 'azext_interactive', 'azclishell', '__init__.py')
-with open(version_file_path, 'r') as version_file:
-    VERSION = re.search(r'^VERSION\s*=\s*[\'"]([^\'"]*)[\'"]',
-                        version_file.read(), re.MULTILINE).group(1)
+VERSION = '1.0.0b1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
