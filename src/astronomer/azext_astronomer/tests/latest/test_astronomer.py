@@ -27,11 +27,11 @@ class AstronomerScenario(ScenarioTest):
                  '--partner-organization {{"organization-name":{organization_name},"workspace-name":{workspace_name},'
                  '"single-sign-on-properties":{{"aad-domains":[""MicrosoftCustomerLed.onmicrosoft.com""]}}}} --user {{"first-name":"gaurav","last-name":"bang","email-address":"gauravbang@microsoft.com"}} ',
                  checks=[self.check('name', '{astronomer_name}'),
-                         self.check('marketplace.offerDetails.offerId', "astro"),
-                         self.check('marketplace.offerDetails.planId', "astro-paygo"),
-                         self.check('partnerOrganizationProperties.organizationName', '{organization_name}'),
-                         self.check('partnerOrganizationProperties.singleSignOnProperties.aadDomains[0]', "MicrosoftCustomerLed.onmicrosoft.com"),
-                         self.check('provisioningState', 'Succeeded')])
+                         self.check('properties.marketplace.offerDetails.offerId', "astro"),
+                         self.check('properties.marketplace.offerDetails.planId', "astro-paygo"),
+                         self.check('properties.partnerOrganizationProperties.organizationName', '{organization_name}'),
+                         self.check('properties.partnerOrganizationProperties.singleSignOnProperties.aadDomains[0]', "MicrosoftCustomerLed.onmicrosoft.com"),
+                         self.check('properties.provisioningState', 'Succeeded')])
 
         self.cmd('az astronomer organization list --resource-group {rg}', self.check('type(@)', 'array'),)
         self.cmd('az astronomer organization update --resource-group {rg} --name {astronomer_name} --tags {{"key1":"value1"}}')
