@@ -123,7 +123,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # If the Hyper-V generation is 'V2', log this information and select the Linux distribution for a Gen2 VM.  
                 logger.info('Generation 2 VM detected')  
                 os_image_urn = _select_distro_linux_gen2(distro)  
-            if architecture_type == 'Arm64':  
+            elif architecture_type == 'Arm64':  
                 # If the architecture type is 'Arm64', log this information and select the Linux distribution for an Arm64 VM.  
                 logger.info('ARM64 VM detected')  
                 os_image_urn = _select_distro_linux_Arm64(distro)  
