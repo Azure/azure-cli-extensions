@@ -5,6 +5,9 @@
 
 # pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks
 
+# >>>--->  Delete the next line before submitting the PR  <---<<<
+# # pylint: disable=unused-import
+
 import os.path
 import json
 import sys
@@ -184,12 +187,13 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
+# pylint: disable=unused-argument,unused-import
 def create(cmd, resource_group_name, workspace_name, location, storage_account=None, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False):
     """
     Create a new Azure Quantum workspace.
     """
-    client = cf_workspaces(cmd.cli_ctx)
+    # client = cf_workspaces(cmd.cli_ctx)
     if not workspace_name:
         raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
     # if not storage_account:
@@ -201,7 +205,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
 
     # New MOBO code...
-    # 
+    #
     if not storage_account:
         # Call the service to create a workspace and a MOBO SA
 
@@ -234,7 +238,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         # Validate the storage account SKU tier and kind
         _validate_storage_account('tier', storage_account_sku_tier, SUPPORTED_STORAGE_SKU_TIERS)
         _validate_storage_account('kind', storage_account_kind, SUPPORTED_STORAGE_KINDS)
-        
 
         print()
         print(f">>>---> Storage account {storage_account} looks OK")
@@ -248,10 +251,9 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     quantum_workspace = {"id": None, "location": location, "name": workspace_name, "storageAccount": storage_account}
     return quantum_workspace
 
-
     # Old code, before MOBO changes...
     # quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
-    # 
+    #
     # # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     # if skip_role_assignment:
     #     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
