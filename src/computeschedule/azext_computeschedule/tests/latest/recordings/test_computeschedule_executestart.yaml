@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: '{"correlationid": "499667f7-bbd4-4403-a718-cf1a33980777", "executionParameters":
+      {"retryPolicy": {"retryCount": 2, "retryWindowInMinutes": 20}}, "resources":
+      {"ids": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-2"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - computeschedule vm-execute-start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '301'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --execution-parameters --resources --correlationid
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ComputeSchedule/locations/eastus2euap/virtualMachinesExecuteStart?api-version=2024-10-01
+  response:
+    body:
+      string: '{"description":"Start Resource request","type":"VirtualMachines","location":"eastus2euap","results":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-2","errorCode":null,"errorDetails":null,"operation":{"operationId":"babe5b40-93a9-4fdf-adf5-7fdf64a14e3e","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-2","opType":"Start","subscriptionId":"1d04e8f1-ee04-4056-b0b2-718f5bb45b04","deadline":"2025-02-19T17:01:00.9511373+00:00","deadlineType":"InitiateAt","state":"PendingScheduling","timeZone":"UTC","resourceOperationError":null,"completedAt":null,"retryPolicy":{"retryCount":2,"retryWindowInMinutes":20}}}]}'
+    headers:
+      alt-svc:
+      - h3=":30281"
+      api-supported-versions:
+      - 1.0, 2.0, 2024-06-01-preview, 2024-08-15-preview, 2024-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '797'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2025 17:01:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8C5CEFA3F9414456B3741D1F7536BC3C Ref B: BL2AA2030104011 Ref C: 2025-02-19T17:01:00Z'
+    status:
+      code: 200
+      message: OK
+version: 1

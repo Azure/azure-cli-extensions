@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: '{"correlationid": "6dee6619-17b1-4b46-8c26-8c50745e9c15", "executionParameters":
+      {"retryPolicy": {"retryCount": 4, "retryWindowInMinutes": 65}}, "resources":
+      {"ids": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-5"]},
+      "schedule": {"deadline": "2025-02-19T17:01:59.000Z", "deadlineType": "InitiateAt",
+      "timezone": "UTC"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - computeschedule vm-submit-hibernate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '404'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --schedule --execution-parameters --resources --correlationid
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ComputeSchedule/locations/eastus2euap/virtualMachinesSubmitHibernate?api-version=2024-10-01
+  response:
+    body:
+      string: '{"description":"Hibernate Resource request","type":"VirtualMachines","location":"eastus2euap","results":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-5","errorCode":null,"errorDetails":null,"operation":{"operationId":"4b374aa5-1abb-4ebd-801b-ee7a65887d54","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-5","opType":"Hibernate","subscriptionId":"1d04e8f1-ee04-4056-b0b2-718f5bb45b04","deadline":"2025-02-19T17:01:59+00:00","deadlineType":"InitiateAt","state":"PendingScheduling","timeZone":"UTC","resourceOperationError":null,"completedAt":null,"retryPolicy":{"retryCount":4,"retryWindowInMinutes":65}}}]}'
+    headers:
+      alt-svc:
+      - h3=":30375"
+      api-supported-versions:
+      - 1.0, 2.0, 2024-06-01-preview, 2024-08-15-preview, 2024-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '797'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2025 17:01:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11997'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '797'
+      x-msedge-ref:
+      - 'Ref A: 1F8D07146DB049E1A8C5C3945012085D Ref B: MNZ221060610033 Ref C: 2025-02-19T17:01:00Z'
+    status:
+      code: 200
+      message: OK
+version: 1
