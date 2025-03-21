@@ -3090,7 +3090,7 @@ helps['aks mesh enable-egress-gateway'] = """
       - name: --istio-eg-gtw-name --istio-egressgateway-name
         type: string
         short-summary: Specify the name of the Istio egress gateway.
-        long-summary: This required field specifies the name of the Istio egress gateway. Must not exceed 253 characters, and must be alphanumeric characters and hyphens only.
+        long-summary: This required field specifies the name of the Istio egress gateway. Must be between 1 and 253 characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
       - name: --istio-eg-gtw-ns --istio-egressgateway-namespace
         type: string
         short-summary: Specify the namespace of the Istio egress gateway.
@@ -3112,7 +3112,7 @@ helps['aks mesh disable-egress-gateway'] = """
       - name: --istio-eg-gtw-name --istio-egressgateway-name
         type: string
         short-summary: Specify the name of the Istio egress gateway.
-        long-summary: This required field specifies the name of the Istio egress gateway. Must not exceed 253 characters, and must be alphanumeric characters and hyphens only.
+        long-summary: This required field specifies the name of the Istio egress gateway. Must be between 1 and 253 characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
       - name: --istio-eg-gtw-ns --istio-egressgateway-namespace
         type: string
         short-summary: Specify the namespace of the Istio egress gateway.
