@@ -2396,9 +2396,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 if egress.name == istio_egressgateway_name and egress.namespace == istio_egressgateway_namespace:
                     if not egress.enabled and disable_egress_gateway:
                         raise ArgumentUsageError(
-                        f'Egress gateway {istio_egressgateway_name} '
-                        f'in namespace {istio_egressgateway_namespace} is already disabled.'
-                    )
+                            f'Egress gateway {istio_egressgateway_name} '
+                            f'in namespace {istio_egressgateway_namespace} is already disabled.'
+                        )
                     egress.enabled = enable_egress_gateway
                     # only update gateway configuration name for enabled egress gateways
                     if enable_egress_gateway:
