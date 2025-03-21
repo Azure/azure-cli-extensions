@@ -32,7 +32,7 @@ class PostCommit(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -99,10 +99,6 @@ class PostCommit(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
-
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
 
     class NetworkManagerCommitsPost(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
