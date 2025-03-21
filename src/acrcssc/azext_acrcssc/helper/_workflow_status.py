@@ -255,7 +255,13 @@ class WorkflowTaskStatus:
             concurrent.futures.wait(futures)
 
     @staticmethod
-    def from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns, progress_indicator=None):
+    def from_taskrun(cmd,
+                     taskrun_client,
+                     registry,
+                     scan_taskruns,
+                     patch_taskruns,
+                     progress_indicator=None,
+                     workflow_status_filter=None):
         WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, scan_taskruns, progress_indicator)
         all_status = {}
 
@@ -313,7 +319,33 @@ class WorkflowTaskStatus:
             for workflow_status in failed_patch_tasklog_retrieval:
                 workflow_status.patch_logs = workflow_status.patch_task.task_log_result
 
-        return [status.get_status() for status in all_status.values()]
+        return [status.get_status()
+                for status in WorkflowTaskStatus._filter_taskruns(all_status, workflow_status_filter).values()]
+
+    @staticmethod
+    def _filter_taskruns(workflows, workflow_status_filter=None):
+        if not workflows:
+            return {}
+
+        if not workflow_status_filter:
+            return workflows
+
+        # SKIPPED is a special case, because it means that the patch task does not exist,
+        # but the scan task succeeded. Another special case that is not explicit here is SUCCEEDED,
+        # which will include both scan and patch tasks that succeeded, or the scan task succeeded
+        # and the patch task is skipped
+        if workflow_status_filter == WorkflowTaskState.SKIPPED.value:
+            filtered_workflow = {key: workflow
+                                 for key, workflow in workflows.items()
+                                 if workflow.scan_status() == WorkflowTaskState.SUCCEEDED.value and
+                                 workflow.patch_status() == WorkflowTaskState.SKIPPED.value}
+            return filtered_workflow
+
+        filtered_workflow = {
+            key: workflow
+            for key, workflow in workflows.items()
+            if workflow.status() == workflow_status_filter}
+        return filtered_workflow
 
     def get_status(self):
         scan_status = self.scan_status()

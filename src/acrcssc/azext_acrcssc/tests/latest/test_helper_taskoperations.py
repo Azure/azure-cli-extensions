@@ -67,8 +67,11 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.create_oci_artifact_continuous_patch")
     @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
     @mock.patch("azext_acrcssc.helper._taskoperations._eval_trigger_run")
-    def test_update_continuous_patch_v1_schedule_update_should_not_update_config(self, mock_eval_trigger_run, mock_validate_and_deploy_template, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
+    @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
+    def test_update_continuous_patch_v1_schedule_update_should_not_update_config(self, mock_cf_acr_tasks, mock_eval_trigger_run, mock_validate_and_deploy_template, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
         # Mock the necessary dependencies
+        mock_acr_tasks_client = mock.MagicMock()
+        mock_cf_acr_tasks.return_value = mock_acr_tasks_client
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
         mock_check_continuoustask_exists.return_value = True, []
@@ -107,8 +110,14 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.create_oci_artifact_continuous_patch")
     @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
     @mock.patch("azext_acrcssc.helper._taskoperations._eval_trigger_run")
-    def test_update_continuous_patch_v1_schedule_update_run_immediately_triggers_task(self, mock_eval_trigger_run, mock_validate_and_deploy_template, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
+    @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
+    @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')
+    def test_update_continuous_patch_v1_schedule_update_run_immediately_triggers_task(self, mock_cf_authorization, mock_cf_acr_tasks, mock_eval_trigger_run, mock_validate_and_deploy_template, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
         # Mock the necessary dependencies
+        mock_acr_tasks_client = mock.MagicMock()
+        mock_cf_acr_tasks.return_value = mock_acr_tasks_client
+        mock_role_client = mock.MagicMock()
+        mock_cf_authorization.return_value = mock_role_client
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
         mock_check_continuoustask_exists.return_value = True, []
@@ -129,9 +138,10 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_config_exists")
     @mock.patch('azext_acrcssc.helper._taskoperations.delete_oci_artifact_continuous_patch')
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
+    @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_runs")
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')
-    def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_check_continuoustask_exists, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_get_taskruns_with_filter, mock_cancel_task_runs):
+    def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_cf_acr_runs, mock_check_continuoustask_exists, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_get_taskruns_with_filter, mock_cancel_task_runs):
         # Mock the necessary dependencies
         mock_check_continuoustask_exists.return_value = True, []
         mock_check_continuous_task_config_exists.return_value = True
@@ -141,6 +151,8 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_cf_acr_tasks.return_value = mock_acr_tasks_client
         mock_role_client = mock.MagicMock()
         mock_cf_authorization.return_value = mock_role_client
+        mock_acr_run_client = mock.MagicMock()
+        mock_cf_acr_runs.return_value = mock_acr_run_client
         mock_task = mock.MagicMock()
         mock_task.identity = mock.MagicMock()(principal_id='principal_id')
         mock_acr_tasks_client.get.return_value = mock_task
@@ -200,14 +212,17 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.prepare_source_location")
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_registries_tasks")
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_runs")
+    @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch("azext_acrcssc.helper._taskoperations.LongRunningOperation")
-    def test_acr_cssc_dry_run(self, mock_LongRunningOperation, mock_cf_acr_runs, mock_cf_acr_registries_tasks, mock_prepare_source_location, mock_delete_temporary_dry_run_file, mock_create_temporary_dry_run_file, mock_generate_logs):
+    def test_acr_cssc_dry_run(self, mock_LongRunningOperation, mock_cf_acr_tasks, mock_cf_acr_runs, mock_cf_acr_registries_tasks, mock_prepare_source_location, mock_delete_temporary_dry_run_file, mock_create_temporary_dry_run_file, mock_generate_logs):
         # Mock the necessary dependencies
         config_file_path = "test_config_file_path"
         mock_acr_registries_task_client = mock.MagicMock()
         mock_cf_acr_registries_tasks.return_value = mock_acr_registries_task_client
         mock_acr_run_client = mock.MagicMock()
         mock_cf_acr_runs.return_value = mock_acr_run_client
+        mock_acr_task_client = mock.MagicMock()
+        mock_cf_acr_tasks.return_value = mock_acr_task_client
         mock_LongRunningOperation.return_value.return_value.run_id = "test_run_id"
         mock_generate_logs.return_value = "mock_logs"
 
