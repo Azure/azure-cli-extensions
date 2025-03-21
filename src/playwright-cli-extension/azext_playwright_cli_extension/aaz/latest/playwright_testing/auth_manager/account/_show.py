@@ -44,7 +44,7 @@ class Show(AAZCommand):
         _args_schema.endpoint = AAZStrArg(
             options=["--endpoint"],
             arg_group="Client",
-            help="Supported Azure Playwright Service API Endpoints (protocol and hostname, for example: `https://{region}.api.playwright.microsoft.com`).",
+            help="Supported Azure Playwright Service API Endpoints.",
             required=True,
         )
 
