@@ -28,7 +28,7 @@ class TestWorkflowTaskStatus(unittest.TestCase):
     def test_image(self):
         self.assertEqual(self.workflow_task_status.image(), "repository:tag")
 
-    def test__task_status_to_workflow_status(self):
+    def test_task_status_to_workflow_status(self):
         from azext_acrcssc.helper._constants import TaskRunStatus
         task = mock.MagicMock()
         task.status = TaskRunStatus.Succeeded.value
@@ -159,11 +159,11 @@ Error: unsupported osType azurelinux specified"""
         self.assertTrue(result[0]["patch_status"] == WorkflowTaskState.SUCCEEDED.value)
 
         # Test with mixed scan and patch tasks status
-        patch_taskruns = [self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag0"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag1"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag2"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag3"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag4")]
+        patch_taskruns = [self._generate_test_taskrun(False, status=TaskRunStatus.Succeeded.value, tag="tag0"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Canceled.value, tag="tag1"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Queued.value, tag="tag2"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Running.value, tag="tag3"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Failed.value, tag="tag4")]
 
         scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[0].run_id, tag="tag0"),
                          self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[1].run_id, tag="tag1"),
@@ -192,6 +192,98 @@ Error: unsupported osType azurelinux specified"""
         self.assertTrue(all(True if workflow["scan_status"] != TaskRunStatus.Failed.value or "scan_error_reason" in workflow else False for workflow in result))
         # test that a successful patch has a patched image reference
         self.assertTrue(all(True if workflow["patch_status"] != TaskRunStatus.Succeeded.value or not workflow["last_patched_image"].startswith("---") else False for workflow in result))
+
+
+    @mock.patch('azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._get_missing_taskrun')
+    @mock.patch('azext_acrcssc.helper._workflow_status.WorkflowTaskStatus._retrieve_all_tasklogs')
+    def test_from_taskrun_with_filter(self, mock_retrieve_all_tasklogs, mock_get_missing_taskrun):
+        cmd = mock.MagicMock()
+        cmd.cli_ctx = DummyCli()
+        taskrun_client = MagicMock()
+        registry = MagicMock()
+        scan_taskruns = []
+        patch_taskruns = []
+
+        mock_retrieve_all_tasklogs.return_value = scan_taskruns
+        mock_get_missing_taskrun.return_value = None
+        
+         # Test with mixed scan and patch tasks status
+        patch_taskruns = [self._generate_test_taskrun(False, status=TaskRunStatus.Succeeded.value, tag="tag0"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Canceled.value, tag="tag1"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Queued.value, tag="tag2"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Running.value, tag="tag3"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Failed.value, tag="tag4")]
+
+        scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[0].run_id, tag="tag0"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[1].run_id, tag="tag1"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[2].run_id, tag="tag2"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[3].run_id, tag="tag3"),
+                         self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[4].run_id, tag="tag4"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag5"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag6"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag7"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag8"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag9")]
+        
+        result = WorkflowTaskStatus.from_taskrun(cmd,
+                                                 taskrun_client,
+                                                 registry,
+                                                 scan_taskruns,
+                                                 patch_taskruns,
+                                                 workflow_status_filter=WorkflowTaskState.SUCCEEDED.value)
+        self.assertTrue(len(result) > 0)
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.SUCCEEDED.value 
+                            for workflow in result))
+        self.assertTrue(all(workflow["patch_status"] == WorkflowTaskState.SUCCEEDED.value or 
+                            workflow["patch_status"] == WorkflowTaskState.SKIPPED.value
+                            for workflow in result))
+
+        result = WorkflowTaskStatus.from_taskrun(cmd,
+                                                 taskrun_client,
+                                                 registry,
+                                                 scan_taskruns,
+                                                 patch_taskruns,
+                                                 workflow_status_filter=WorkflowTaskState.FAILED.value)
+        self.assertTrue(len(result) > 0)
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.FAILED.value or 
+                            workflow["patch_status"] == WorkflowTaskState.FAILED.value 
+                            for workflow in result))
+        
+        result = WorkflowTaskStatus.from_taskrun(cmd,
+                                                 taskrun_client,
+                                                 registry,
+                                                 scan_taskruns,
+                                                 patch_taskruns,
+                                                 workflow_status_filter=WorkflowTaskState.RUNNING.value)
+        self.assertTrue(len(result) > 0)
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.RUNNING.value or
+                            workflow["patch_status"] == WorkflowTaskState.RUNNING.value or
+                            workflow["scan_status"] == WorkflowTaskState.QUEUED.value or
+                            workflow["patch_status"] == WorkflowTaskState.QUEUED.value
+                            for workflow in result))
+        
+        result = WorkflowTaskStatus.from_taskrun(cmd,
+                                                 taskrun_client,
+                                                 registry,
+                                                 scan_taskruns,
+                                                 patch_taskruns,
+                                                 workflow_status_filter=WorkflowTaskState.CANCELED.value)
+        self.assertTrue(len(result) > 0)
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.CANCELED.value or
+                            workflow["patch_status"] == WorkflowTaskState.CANCELED.value
+                            for workflow in result))
+        
+        result = WorkflowTaskStatus.from_taskrun(cmd,
+                                                 taskrun_client,
+                                                 registry,
+                                                 scan_taskruns,
+                                                 patch_taskruns,
+                                                 workflow_status_filter=WorkflowTaskState.SKIPPED.value)
+        self.assertTrue(len(result) > 0)
+        self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.SUCCEEDED.value and
+                            workflow["patch_status"] == WorkflowTaskState.SKIPPED.value
+                            for workflow in result))
+
 
     # generate a random scan or patch taskrun with the desired properties
     def _generate_test_taskrun(self, scan_task=True, status=TaskRunStatus.Succeeded.value, repository="mock-repo", tag="mock-tag", patch_taskid_in_scan=""):
