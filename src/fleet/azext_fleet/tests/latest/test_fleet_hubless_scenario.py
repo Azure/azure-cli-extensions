@@ -11,6 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(curr_dir, 'data', filename)
     return os.path.join(curr_dir, 'data', filename)
 
 
