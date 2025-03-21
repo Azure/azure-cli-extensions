@@ -178,7 +178,7 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
             _schema_on_200.id = AAZStrType(
-                flags={"required": True},
+                flags={"read_only": True},
             )
             _schema_on_200.jwt_token = AAZStrType(
                 serialized_name="jwtToken",

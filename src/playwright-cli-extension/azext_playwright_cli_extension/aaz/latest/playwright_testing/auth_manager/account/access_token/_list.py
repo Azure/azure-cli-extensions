@@ -178,7 +178,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
             _element.id = AAZStrType(
-                flags={"required": True},
+                flags={"read_only": True},
             )
             _element.jwt_token = AAZStrType(
                 serialized_name="jwtToken",

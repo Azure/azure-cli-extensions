@@ -182,7 +182,29 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_access_token_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            _schema_on_200.expiry_at = AAZStrType(
+                serialized_name="expiryAt",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.jwt_token = AAZStrType(
+                serialized_name="jwtToken",
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.state = AAZStrType(
+                flags={"read_only": True},
+            )
 
             return cls._schema_on_200
 
@@ -192,8 +214,8 @@ class Update(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+            if session.http_response.status_code in [201, 200]:
+                return self.on_201_200(session)
 
             return self.on_error(session.http_response)
 
@@ -262,25 +284,47 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_201_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_201_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_201_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_201_200(cls):
+            if cls._schema_on_201_200 is not None:
+                return cls._schema_on_201_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_access_token_read(cls._schema_on_200_201)
+            cls._schema_on_201_200 = AAZObjectType()
 
-            return cls._schema_on_200_201
+            _schema_on_201_200 = cls._schema_on_201_200
+            _schema_on_201_200.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.expiry_at = AAZStrType(
+                serialized_name="expiryAt",
+                flags={"required": True},
+            )
+            _schema_on_201_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.jwt_token = AAZStrType(
+                serialized_name="jwtToken",
+                flags={"read_only": True},
+            )
+            _schema_on_201_200.name = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_201_200.state = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            return cls._schema_on_201_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -307,51 +351,6 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_access_token_read = None
-
-    @classmethod
-    def _build_schema_access_token_read(cls, _schema):
-        if cls._schema_access_token_read is not None:
-            _schema.created_at = cls._schema_access_token_read.created_at
-            _schema.expiry_at = cls._schema_access_token_read.expiry_at
-            _schema.id = cls._schema_access_token_read.id
-            _schema.jwt_token = cls._schema_access_token_read.jwt_token
-            _schema.name = cls._schema_access_token_read.name
-            _schema.state = cls._schema_access_token_read.state
-            return
-
-        cls._schema_access_token_read = _schema_access_token_read = AAZObjectType()
-
-        access_token_read = _schema_access_token_read
-        access_token_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-            flags={"read_only": True},
-        )
-        access_token_read.expiry_at = AAZStrType(
-            serialized_name="expiryAt",
-            flags={"required": True},
-        )
-        access_token_read.id = AAZStrType(
-            flags={"required": True},
-        )
-        access_token_read.jwt_token = AAZStrType(
-            serialized_name="jwtToken",
-            flags={"read_only": True},
-        )
-        access_token_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        access_token_read.state = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        _schema.created_at = cls._schema_access_token_read.created_at
-        _schema.expiry_at = cls._schema_access_token_read.expiry_at
-        _schema.id = cls._schema_access_token_read.id
-        _schema.jwt_token = cls._schema_access_token_read.jwt_token
-        _schema.name = cls._schema_access_token_read.name
-        _schema.state = cls._schema_access_token_read.state
 
 
 __all__ = ["Update"]

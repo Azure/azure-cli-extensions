@@ -78,16 +78,6 @@ class Create(AAZCommand):
             help="The access-token expiryAt utcDateTime.",
             required=True,
         )
-        _args_schema.id = AAZUuidArg(
-            options=["--id"],
-            arg_group="Resource",
-            help="The access-token id.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)+",
-                max_length=64,
-            ),
-        )
         _args_schema.name = AAZStrArg(
             options=["--name"],
             arg_group="Resource",
@@ -124,8 +114,8 @@ class Create(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+            if session.http_response.status_code in [201, 200]:
+                return self.on_201_200(session)
 
             return self.on_error(session.http_response)
 
@@ -193,52 +183,51 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("expiryAt", AAZStrType, ".expiry_at", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_201_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_201_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_201_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_201_200(cls):
+            if cls._schema_on_201_200 is not None:
+                return cls._schema_on_201_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_201_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.created_at = AAZStrType(
+            _schema_on_201_200 = cls._schema_on_201_200
+            _schema_on_201_200.created_at = AAZStrType(
                 serialized_name="createdAt",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.expiry_at = AAZStrType(
+            _schema_on_201_200.expiry_at = AAZStrType(
                 serialized_name="expiryAt",
                 flags={"required": True},
             )
-            _schema_on_200_201.id = AAZStrType(
-                flags={"required": True},
+            _schema_on_201_200.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200_201.jwt_token = AAZStrType(
+            _schema_on_201_200.jwt_token = AAZStrType(
                 serialized_name="jwtToken",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_201_200.name = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200_201.state = AAZStrType(
+            _schema_on_201_200.state = AAZStrType(
                 flags={"read_only": True},
             )
 
-            return cls._schema_on_200_201
+            return cls._schema_on_201_200
 
 
 class _CreateHelper:
