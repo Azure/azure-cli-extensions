@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/resourceassociations/{}", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/resourceassociations/{}", "2024-07-01"],
         ]
     }
 
@@ -45,12 +45,20 @@ class Wait(AAZWaitCommand):
             help="The name of the NSP association.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,7 +67,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspAssociationsGet(ctx=self.ctx)()
+        self.NetworkSecurityPerimeterAssociationsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +82,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class NspAssociationsGet(AAZHttpOperation):
+    class NetworkSecurityPerimeterAssociationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -126,7 +134,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -163,8 +171,12 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType()
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "network perimeter link-reference list",
 )
 class List(AAZCommand):
-    """List the NSP LinkReference resources in the specified network security perimeter.
+    """List all network security perimeter link references.
 
-    :example: List NSP link reference
+    :example: List all network security perimeter link references
         az network perimeter link-reference list --perimeter-name nsp2 --resource-group rg1
     """
 
     _aaz_info = {
-        "version": "2023-08-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/linkreferences", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/linkreferences", "2024-07-01"],
         ]
     }
 
@@ -49,6 +49,10 @@ class List(AAZCommand):
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -69,7 +73,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspLinkReferencesList(ctx=self.ctx)()
+        self.NetworkSecurityPerimeterLinkReferencesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,11 +85,11 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NspLinkReferencesList(AAZHttpOperation):
+    class NetworkSecurityPerimeterLinkReferencesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -139,7 +143,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -190,7 +194,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
