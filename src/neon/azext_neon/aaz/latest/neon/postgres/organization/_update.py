@@ -60,7 +60,6 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -320,7 +319,165 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_organization_resource_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.company_details = AAZObjectType(
+                serialized_name="companyDetails",
+                flags={"required": True},
+            )
+            properties.marketplace_details = AAZObjectType(
+                serialized_name="marketplaceDetails",
+                flags={"required": True},
+            )
+            properties.partner_organization_properties = AAZObjectType(
+                serialized_name="partnerOrganizationProperties",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.user_details = AAZObjectType(
+                serialized_name="userDetails",
+                flags={"required": True},
+            )
+
+            company_details = cls._schema_on_200.properties.company_details
+            company_details.business_phone = AAZStrType(
+                serialized_name="businessPhone",
+            )
+            company_details.company_name = AAZStrType(
+                serialized_name="companyName",
+            )
+            company_details.country = AAZStrType()
+            company_details.domain = AAZStrType()
+            company_details.number_of_employees = AAZIntType(
+                serialized_name="numberOfEmployees",
+            )
+            company_details.office_address = AAZStrType(
+                serialized_name="officeAddress",
+            )
+
+            marketplace_details = cls._schema_on_200.properties.marketplace_details
+            marketplace_details.offer_details = AAZObjectType(
+                serialized_name="offerDetails",
+                flags={"required": True},
+            )
+            marketplace_details.subscription_id = AAZStrType(
+                serialized_name="subscriptionId",
+            )
+            marketplace_details.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            offer_details = cls._schema_on_200.properties.marketplace_details.offer_details
+            offer_details.offer_id = AAZStrType(
+                serialized_name="offerId",
+                flags={"required": True},
+            )
+            offer_details.plan_id = AAZStrType(
+                serialized_name="planId",
+                flags={"required": True},
+            )
+            offer_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            offer_details.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+                flags={"required": True},
+            )
+            offer_details.term_id = AAZStrType(
+                serialized_name="termId",
+            )
+            offer_details.term_unit = AAZStrType(
+                serialized_name="termUnit",
+            )
+
+            partner_organization_properties = cls._schema_on_200.properties.partner_organization_properties
+            partner_organization_properties.organization_id = AAZStrType(
+                serialized_name="organizationId",
+            )
+            partner_organization_properties.organization_name = AAZStrType(
+                serialized_name="organizationName",
+                flags={"required": True},
+            )
+            partner_organization_properties.single_sign_on_properties = AAZObjectType(
+                serialized_name="singleSignOnProperties",
+            )
+
+            single_sign_on_properties = cls._schema_on_200.properties.partner_organization_properties.single_sign_on_properties
+            single_sign_on_properties.aad_domains = AAZListType(
+                serialized_name="aadDomains",
+            )
+            single_sign_on_properties.enterprise_app_id = AAZStrType(
+                serialized_name="enterpriseAppId",
+            )
+            single_sign_on_properties.single_sign_on_state = AAZStrType(
+                serialized_name="singleSignOnState",
+            )
+            single_sign_on_properties.single_sign_on_url = AAZStrType(
+                serialized_name="singleSignOnUrl",
+            )
+
+            aad_domains = cls._schema_on_200.properties.partner_organization_properties.single_sign_on_properties.aad_domains
+            aad_domains.Element = AAZStrType()
+
+            user_details = cls._schema_on_200.properties.user_details
+            user_details.email_address = AAZStrType(
+                serialized_name="emailAddress",
+            )
+            user_details.first_name = AAZStrType(
+                serialized_name="firstName",
+            )
+            user_details.last_name = AAZStrType(
+                serialized_name="lastName",
+            )
+            user_details.phone_number = AAZStrType(
+                serialized_name="phoneNumber",
+            )
+            user_details.upn = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
@@ -431,7 +588,165 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_organization_resource_read(cls._schema_on_200_201)
+
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200_201.properties
+            properties.company_details = AAZObjectType(
+                serialized_name="companyDetails",
+                flags={"required": True},
+            )
+            properties.marketplace_details = AAZObjectType(
+                serialized_name="marketplaceDetails",
+                flags={"required": True},
+            )
+            properties.partner_organization_properties = AAZObjectType(
+                serialized_name="partnerOrganizationProperties",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.user_details = AAZObjectType(
+                serialized_name="userDetails",
+                flags={"required": True},
+            )
+
+            company_details = cls._schema_on_200_201.properties.company_details
+            company_details.business_phone = AAZStrType(
+                serialized_name="businessPhone",
+            )
+            company_details.company_name = AAZStrType(
+                serialized_name="companyName",
+            )
+            company_details.country = AAZStrType()
+            company_details.domain = AAZStrType()
+            company_details.number_of_employees = AAZIntType(
+                serialized_name="numberOfEmployees",
+            )
+            company_details.office_address = AAZStrType(
+                serialized_name="officeAddress",
+            )
+
+            marketplace_details = cls._schema_on_200_201.properties.marketplace_details
+            marketplace_details.offer_details = AAZObjectType(
+                serialized_name="offerDetails",
+                flags={"required": True},
+            )
+            marketplace_details.subscription_id = AAZStrType(
+                serialized_name="subscriptionId",
+            )
+            marketplace_details.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            offer_details = cls._schema_on_200_201.properties.marketplace_details.offer_details
+            offer_details.offer_id = AAZStrType(
+                serialized_name="offerId",
+                flags={"required": True},
+            )
+            offer_details.plan_id = AAZStrType(
+                serialized_name="planId",
+                flags={"required": True},
+            )
+            offer_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            offer_details.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+                flags={"required": True},
+            )
+            offer_details.term_id = AAZStrType(
+                serialized_name="termId",
+            )
+            offer_details.term_unit = AAZStrType(
+                serialized_name="termUnit",
+            )
+
+            partner_organization_properties = cls._schema_on_200_201.properties.partner_organization_properties
+            partner_organization_properties.organization_id = AAZStrType(
+                serialized_name="organizationId",
+            )
+            partner_organization_properties.organization_name = AAZStrType(
+                serialized_name="organizationName",
+                flags={"required": True},
+            )
+            partner_organization_properties.single_sign_on_properties = AAZObjectType(
+                serialized_name="singleSignOnProperties",
+            )
+
+            single_sign_on_properties = cls._schema_on_200_201.properties.partner_organization_properties.single_sign_on_properties
+            single_sign_on_properties.aad_domains = AAZListType(
+                serialized_name="aadDomains",
+            )
+            single_sign_on_properties.enterprise_app_id = AAZStrType(
+                serialized_name="enterpriseAppId",
+            )
+            single_sign_on_properties.single_sign_on_state = AAZStrType(
+                serialized_name="singleSignOnState",
+            )
+            single_sign_on_properties.single_sign_on_url = AAZStrType(
+                serialized_name="singleSignOnUrl",
+            )
+
+            aad_domains = cls._schema_on_200_201.properties.partner_organization_properties.single_sign_on_properties.aad_domains
+            aad_domains.Element = AAZStrType()
+
+            user_details = cls._schema_on_200_201.properties.user_details
+            user_details.email_address = AAZStrType(
+                serialized_name="emailAddress",
+            )
+            user_details.first_name = AAZStrType(
+                serialized_name="firstName",
+            )
+            user_details.last_name = AAZStrType(
+                serialized_name="lastName",
+            )
+            user_details.phone_number = AAZStrType(
+                serialized_name="phoneNumber",
+            )
+            user_details.upn = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 
@@ -506,189 +821,6 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_organization_resource_read = None
-
-    @classmethod
-    def _build_schema_organization_resource_read(cls, _schema):
-        if cls._schema_organization_resource_read is not None:
-            _schema.id = cls._schema_organization_resource_read.id
-            _schema.location = cls._schema_organization_resource_read.location
-            _schema.name = cls._schema_organization_resource_read.name
-            _schema.properties = cls._schema_organization_resource_read.properties
-            _schema.system_data = cls._schema_organization_resource_read.system_data
-            _schema.tags = cls._schema_organization_resource_read.tags
-            _schema.type = cls._schema_organization_resource_read.type
-            return
-
-        cls._schema_organization_resource_read = _schema_organization_resource_read = AAZObjectType()
-
-        organization_resource_read = _schema_organization_resource_read
-        organization_resource_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        organization_resource_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        organization_resource_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        organization_resource_read.properties = AAZObjectType()
-        organization_resource_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        organization_resource_read.tags = AAZDictType()
-        organization_resource_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_organization_resource_read.properties
-        properties.company_details = AAZObjectType(
-            serialized_name="companyDetails",
-            flags={"required": True},
-        )
-        properties.marketplace_details = AAZObjectType(
-            serialized_name="marketplaceDetails",
-            flags={"required": True},
-        )
-        properties.partner_organization_properties = AAZObjectType(
-            serialized_name="partnerOrganizationProperties",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.user_details = AAZObjectType(
-            serialized_name="userDetails",
-            flags={"required": True},
-        )
-
-        company_details = _schema_organization_resource_read.properties.company_details
-        company_details.business_phone = AAZStrType(
-            serialized_name="businessPhone",
-        )
-        company_details.company_name = AAZStrType(
-            serialized_name="companyName",
-        )
-        company_details.country = AAZStrType()
-        company_details.domain = AAZStrType()
-        company_details.number_of_employees = AAZIntType(
-            serialized_name="numberOfEmployees",
-        )
-        company_details.office_address = AAZStrType(
-            serialized_name="officeAddress",
-        )
-
-        marketplace_details = _schema_organization_resource_read.properties.marketplace_details
-        marketplace_details.offer_details = AAZObjectType(
-            serialized_name="offerDetails",
-            flags={"required": True},
-        )
-        marketplace_details.subscription_id = AAZStrType(
-            serialized_name="subscriptionId",
-        )
-        marketplace_details.subscription_status = AAZStrType(
-            serialized_name="subscriptionStatus",
-        )
-
-        offer_details = _schema_organization_resource_read.properties.marketplace_details.offer_details
-        offer_details.offer_id = AAZStrType(
-            serialized_name="offerId",
-            flags={"required": True},
-        )
-        offer_details.plan_id = AAZStrType(
-            serialized_name="planId",
-            flags={"required": True},
-        )
-        offer_details.plan_name = AAZStrType(
-            serialized_name="planName",
-        )
-        offer_details.publisher_id = AAZStrType(
-            serialized_name="publisherId",
-            flags={"required": True},
-        )
-        offer_details.term_id = AAZStrType(
-            serialized_name="termId",
-        )
-        offer_details.term_unit = AAZStrType(
-            serialized_name="termUnit",
-        )
-
-        partner_organization_properties = _schema_organization_resource_read.properties.partner_organization_properties
-        partner_organization_properties.organization_id = AAZStrType(
-            serialized_name="organizationId",
-        )
-        partner_organization_properties.organization_name = AAZStrType(
-            serialized_name="organizationName",
-            flags={"required": True},
-        )
-        partner_organization_properties.single_sign_on_properties = AAZObjectType(
-            serialized_name="singleSignOnProperties",
-        )
-
-        single_sign_on_properties = _schema_organization_resource_read.properties.partner_organization_properties.single_sign_on_properties
-        single_sign_on_properties.aad_domains = AAZListType(
-            serialized_name="aadDomains",
-        )
-        single_sign_on_properties.enterprise_app_id = AAZStrType(
-            serialized_name="enterpriseAppId",
-        )
-        single_sign_on_properties.single_sign_on_state = AAZStrType(
-            serialized_name="singleSignOnState",
-        )
-        single_sign_on_properties.single_sign_on_url = AAZStrType(
-            serialized_name="singleSignOnUrl",
-        )
-
-        aad_domains = _schema_organization_resource_read.properties.partner_organization_properties.single_sign_on_properties.aad_domains
-        aad_domains.Element = AAZStrType()
-
-        user_details = _schema_organization_resource_read.properties.user_details
-        user_details.email_address = AAZStrType(
-            serialized_name="emailAddress",
-        )
-        user_details.first_name = AAZStrType(
-            serialized_name="firstName",
-        )
-        user_details.last_name = AAZStrType(
-            serialized_name="lastName",
-        )
-        user_details.phone_number = AAZStrType(
-            serialized_name="phoneNumber",
-        )
-        user_details.upn = AAZStrType()
-
-        system_data = _schema_organization_resource_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_organization_resource_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_organization_resource_read.id
-        _schema.location = cls._schema_organization_resource_read.location
-        _schema.name = cls._schema_organization_resource_read.name
-        _schema.properties = cls._schema_organization_resource_read.properties
-        _schema.system_data = cls._schema_organization_resource_read.system_data
-        _schema.tags = cls._schema_organization_resource_read.tags
-        _schema.type = cls._schema_organization_resource_read.type
 
 
 __all__ = ["Update"]
