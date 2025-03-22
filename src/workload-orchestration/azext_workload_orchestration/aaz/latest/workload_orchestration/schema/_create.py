@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-orchestration schema create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Schema Resource
@@ -55,16 +54,10 @@ class Create(AAZCommand):
             ),
         )
 
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.current_version = AAZStrArg(
-            options=["--version"],
-            arg_group="Properties",
-            required=True,
-            help="Current Version of schema",
-        )
+     
 
         # define Arg Group "Resource"
 
@@ -83,14 +76,20 @@ class Create(AAZCommand):
             help="Resource tags.",
         )
 
-        _args_schema = cls._args_schema
-        _args_schema.value = AAZFileArg(
-            options=["--schema-file"],
-            arg_group="Properties",
-            required=True,
-            help="Path to Schema File",
-        )
+        _args_schema.version = AAZStrArg(
+                options=["--version"],
+                arg_group="Body",
+                help="Version to create",
+                fmt=AAZStrArgFormat(
+                    pattern="^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+                ),
+            )
 
+        _args_schema.value = AAZFileArg(
+                options=["--schema-file"],
+                help="Path to the schema file",
+        )
+        
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
@@ -98,7 +97,8 @@ class Create(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         yield self.SchemasCreateOrUpdate(ctx=self.ctx)()
-        yield self.SchemaVersionsCreateOrUpdate(ctx=self.ctx)()
+
+        yield self.SchemasCreateVersion(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -206,9 +206,17 @@ class Create(AAZCommand):
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
+            # _builder.set_prop("schemaVersion", AAZObjectType)
+
+            # schema_version = _builder.get(".schemaVersion")
+            # if schema_version is not None:
+            #     schema_version.set_prop("properties", AAZObjectType)
+
+            # properties = _builder.get(".schemaVersion.properties")
+            # if properties is not None:
+            #     properties.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+
             properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("currentVersion", AAZStrType, ".current_version", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -260,7 +268,6 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.current_version = AAZStrType(
                 serialized_name="currentVersion",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -292,7 +299,7 @@ class Create(AAZCommand):
 
             return cls._schema_on_200_201
 
-    class SchemaVersionsCreateOrUpdate(AAZHttpOperation):
+    class SchemasCreateVersion(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -302,18 +309,18 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -322,13 +329,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/schemas/{schemaName}/versions/{schemaVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/schemas/{schemaName}/createVersion",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "POST"
 
         @property
         def error_format(self):
@@ -346,10 +353,6 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schemaVersionName", self.ctx.args.current_version,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -360,7 +363,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2025-01-01-preview",
                     required=True,
                 ),
             }
@@ -385,83 +388,80 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("schemaVersion", AAZObjectType, ".schema_version", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("version", AAZStrType, ".version")
 
-            properties = _builder.get(".properties")
+            _builder.set_prop("schemaVersion", AAZObjectType)
+            schema_version = _builder.get(".schemaVersion")
+            if schema_version is not None:
+                schema_version.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".schemaVersion.properties")
             if properties is not None:
                 properties.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
+            cls._schema_on_200 = AAZObjectType()
+            _schema_on_200 = cls._schema_on_200
+            
+            # Top-level operation status fields
+            _schema_on_200.id = AAZStrType(flags={"read_only": True})
+            _schema_on_200.name = AAZStrType(flags={"read_only": True})
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"read_only": True}
             )
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.status = AAZStrType(flags={"read_only": True})
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True}
             )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True}
             )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.provisioning_state = AAZStrType(
+            
+            # Properties container
+            _schema_on_200.properties = AAZObjectType()
+            
+            # Nested schema version properties
+            properties = cls._schema_on_200.properties
+            
+            # Schema version fields
+            properties.e_tag = AAZStrType(serialized_name="eTag", flags={"read_only": True})
+            properties.id = AAZStrType(flags={"read_only": True})
+            properties.name = AAZStrType(flags={"read_only": True})
+            properties.type = AAZStrType(flags={"read_only": True})
+            properties.properties = AAZObjectType()
+            
+            # Nested properties.properties fields
+            schema_properties = properties.properties
+            schema_properties.value = AAZStrType(flags={"required": True})
+            schema_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
+                flags={"read_only": True}
             )
-            properties.value = AAZStrType(
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200_201
-
+            
+            return cls._schema_on_200
+        
 class _CreateHelper:
     """Helper class for Create"""
+
 
 __all__ = ["Create"]

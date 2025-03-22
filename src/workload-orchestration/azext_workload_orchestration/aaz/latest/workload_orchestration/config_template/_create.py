@@ -21,7 +21,7 @@ class Create(AAZCommand):
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/configtemplates/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configtemplates/{}", "2025-01-01-preview"],
         ]
     }
 
@@ -84,27 +84,16 @@ class Create(AAZCommand):
         tags.Element = AAZStrArg()
 
         _args_schema = cls._args_schema
-        _args_schema.update_type = AAZStrArg(
-            options=["--update-type"],
-            arg_group="Body",
-            help="Update type",
-            required=True,
-            enum={"Major": "Major", "Minor": "Minor", "Patch": "Patch"},
-        )
-        def normalize_update_type(value):
-            if value.lower() == "major":
-                return "Major"
-            elif value.lower() == "minor":
-                return "Minor"
-            elif value.lower() == "patch":
-                return "Patch"
-            else:
-                raise ValueError("Invalid update type: {}".format(value))
     
-        _args_schema.update_type._fmt = AAZStrArgFormat(
-            pattern="^(Major|Minor|Patch)$",
+
+
+        _args_schema = cls._args_schema
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
+            arg_group="Body",
+            help="Version of the config template",
+            required=False
         )
-        _args_schema.update_type._validate = normalize_update_type
 
         _args_schema.configurations = AAZFileArg(
             options=["--configuration-template-file"],
@@ -401,9 +390,9 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            
             _builder.set_prop("configTemplateVersion", AAZObjectType)
-            _builder.set_prop("updateType", AAZStrType, ".update_type", typ_kwargs={"flags": {"required": True}})
-
+            _builder.set_prop("version", AAZStrType, ".version")
             config_template_version = _builder.get(".configTemplateVersion")
             if config_template_version is not None:
                 config_template_version.set_prop("properties", AAZObjectType)
@@ -430,58 +419,48 @@ class Create(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
+            
+            # Top-level operation status fields
+            _schema_on_200.id = AAZStrType(flags={"read_only": True})
+            _schema_on_200.name = AAZStrType(flags={"read_only": True})
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"read_only": True}
             )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.status = AAZStrType(flags={"read_only": True})
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True}
             )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True}
             )
+            
+            # Properties container (nested response)
             _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
             properties = cls._schema_on_200.properties
-            properties.configurations = AAZStrType(
-                flags={"required": True},
+            
+            # ConfigTemplate version fields in properties
+            properties.e_tag = AAZStrType(
+                serialized_name="eTag",
+                flags={"read_only": True}
             )
-            properties.provisioning_state = AAZStrType(
+            properties.id = AAZStrType(flags={"read_only": True})
+            properties.name = AAZStrType(flags={"read_only": True})
+            properties.type = AAZStrType(flags={"read_only": True})
+            properties.properties = AAZObjectType()
+            
+            # Nested properties.properties fields
+            config_properties = properties.properties
+            config_properties.configurations = AAZStrType(flags={"required": True})
+            config_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
+                flags={"read_only": True}
             )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
+            
             return cls._schema_on_200
-
 
 class _CreateHelper:
     """Helper class for Create"""
