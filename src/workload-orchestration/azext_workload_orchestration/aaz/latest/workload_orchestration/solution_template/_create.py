@@ -8,6 +8,7 @@
 # pylint: skip-file
 # flake8: noqa
 
+
 from azure.cli.core.aaz import *
 import time
 from knack.log import get_logger
@@ -29,6 +30,7 @@ class Create(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
+    response_data = {}
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -152,10 +154,11 @@ class Create(AAZCommand):
 
     class SolutionTemplatesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
-
+        response_data = None
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            self.__class__.response_data = self.deserialize_http_content(session)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -174,6 +177,8 @@ class Create(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
+            
+
 
             return self.on_error(session.http_response)
 
@@ -261,6 +266,7 @@ class Create(AAZCommand):
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)
+            
             self.ctx.set_var(
                 "instance",
                 data,
@@ -452,14 +458,16 @@ class Create(AAZCommand):
             if specification is not None:
                 specification.set_anytype_elements(".")
             
-            data = self.serialize_content(_content_value)            
+            data = self.serialize_content(_content_value)    
             data["solutionTemplateVersion"]["properties"]["orchestratorType"] = "TO"
+        
             return data
 
 
 
         def on_200(self, session):
-            data = self.deserialize_http_content(self.post_response_session)
+            data = self.deserialize_http_content(session)
+
             self.ctx.set_var(
                 "instance",
                 data,
@@ -475,70 +483,17 @@ class Create(AAZCommand):
 
             cls._schema_on_200 = AAZObjectType()
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
-            )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            properties = cls._schema_on_200.properties
-            properties.capabilities = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.configurations = AAZStrType(
-                flags={"required": True},
-            )
-            properties.is_deprecated = AAZBoolType(
-                serialized_name="isDeprecated",
-                flags={"read_only": True},
-            )
-            properties.orchestrator_type = AAZStrType(
-                serialized_name="orchestratorType",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.specification = AAZFreeFormDictType(
-                flags={"required": True},
-            )
+            _schema_on_200.id = AAZStrType(serialized_name="id")
+            _schema_on_200.name = AAZStrType(serialized_name="name")
+            _schema_on_200.resourceId = AAZStrType(serialized_name="resourceId")
+            _schema_on_200.status = AAZStrType(serialized_name="status")
+            _schema_on_200.startTime = AAZStrType(serialized_name="startTime")
+            _schema_on_200.endTime = AAZStrType(serialized_name="endTime")
 
-            capabilities = cls._schema_on_200.properties.capabilities
-            capabilities.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _schema_on_200.properties = AAZObjectType(serialized_name="properties")
+            _schema_on_200.properties.solutionTemplateVersionId = AAZStrType(serialized_name="solutionTemplateVersionId")
+            _schema_on_200.properties.solutionTemplateId = AAZStrType(serialized_name="solutionTemplateId")
 
             return cls._schema_on_200
 
