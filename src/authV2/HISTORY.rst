@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
+++++++
+* Update module documentation.
+
 0.1.3
 ++++++
 * BREAKING CHANGE: remove output for `az webapp auth-classic update`.
