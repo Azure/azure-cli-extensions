@@ -223,7 +223,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         properties.api_key_enabled = True
         quantum_workspace.properties = properties
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-        print() # Get ready for progress dots...
+        print()  # Get ready for progress dots...
         while not poller.done():
             # TODO: Does this need a timeout?
             print('.', end='', flush=True)    # Progress dots are not needed yet (it finishes quickly) but might be needed if create_role_assignment slows it down
