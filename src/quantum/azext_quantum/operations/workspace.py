@@ -209,10 +209,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         # Call the service to create a workspace and a MOBO SA
 
         # TODO: Rework this "fake" code when the MOBO feature is live.
-        # NOTE: This code doesn't do a role assignment.
+        # NOTE: This code doesn't create a storage account or do the role assignment.
         #       Response shows "storageAccount": null
 
-        # Create a storage account name to keep this code happy...
+        # Create a storage account name to keep this code happy (Won't do this in the live MOBO version)
         storage_account = workspace_name.translate(str.maketrans('', '', '-_')).lower()
 
         # Old pre-ARM-template code that was executed if the "--skip-role-assignment" flag was in the command line
