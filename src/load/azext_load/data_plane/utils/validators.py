@@ -21,31 +21,34 @@ from .models import (
     AllowedMetricNamespaces,
     AllowedTestTypes,
     AllowedTestPlanFileExtensions,
+    EngineIdentityType,
 )
 
 logger = get_logger(__name__)
 
 
+def _validate_id(namespace, id_name, arg_name=None):
+    """Validates a generic ID"""
+    id_value = getattr(namespace, id_name, None)
+    arg_name = arg_name or id_name
+    if id_value is None:
+        raise InvalidArgumentValueError(f"{arg_name} is required.")
+    if not isinstance(id_value, str):
+        raise InvalidArgumentValueError(
+            f"Invalid {arg_name} type: {type(id_value)}. Expected a string."
+        )
+    if not re.match("^[a-z0-9_-]*$", id_value):
+        raise InvalidArgumentValueError(f"Invalid {arg_name} value.")
+
+
 def validate_test_id(namespace):
     """Validates test-id"""
-    if not isinstance(namespace.test_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid test-id type: {type(namespace.test_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.test_id):
-        raise InvalidArgumentValueError("Invalid test-id value")
+    _validate_id(namespace, "test_id", "test-id")
 
 
 def validate_test_run_id(namespace):
     """Validates test-run-id"""
-    if namespace.test_run_id is None:
-        namespace.test_run_id = utils.get_random_uuid()
-    if not isinstance(namespace.test_run_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid test-run-id type: {type(namespace.test_run_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.test_run_id):
-        raise InvalidArgumentValueError("Invalid test-run-id value")
+    _validate_id(namespace, "test_run_id", "test-run-id")
 
 
 def _validate_akv_url(string, url_type="secrets|certificates|keys|storage"):
@@ -522,3 +525,81 @@ def validate_regionwise_engines(cmd, namespace):
             )
         regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
     namespace.regionwise_engines = regionwise_engines
+
+
+def validate_engine_ref_ids(namespace):
+    """Extracts multiple space-separated identities"""
+    if isinstance(namespace.engine_ref_ids, list):
+        for item in namespace.engine_ref_ids:
+            if not is_valid_resource_id(item):
+                raise InvalidArgumentValueError(f"Invalid engine-ref-ids value: {item}")
+
+
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
+def validate_keyvault_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.key_vault_reference_identity, str)
+        and not namespace.key_vault_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.key_vault_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid keyvault-ref-id value: {}".format(namespace.key_vault_reference_identity))
+
+
+def validate_metrics_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.metrics_reference_identity, str)
+        and not namespace.metrics_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.metrics_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid metrics-ref-id value: {}".format(namespace.metrics_reference_identity))
+
+
+def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids, exisiting_engine_ref_id_type=None):
+    """Validates combination of engine-ref-id-type and engine-ref-ids"""
+
+    # if engine_ref_id_type is None or SystemAssigned, then no value for engine_ref_ids is expected:
+    engine_ref_id_type = incoming_engine_ref_id_type or exisiting_engine_ref_id_type
+    if engine_ref_id_type != EngineIdentityType.UserAssigned and engine_ref_ids:
+        raise InvalidArgumentValueError(
+            "engine-ref-ids should not be provided when engine-ref-id-type is None or SystemAssigned"
+        )
+
+    # If engine_ref_id_type is UserAssigned, then engine_ref_ids is expected.
+    if incoming_engine_ref_id_type == EngineIdentityType.UserAssigned and engine_ref_ids is None:
+        raise InvalidArgumentValueError(
+            "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
+        )
+
+
+def validate_trigger_id(namespace):
+    """Validates trigger-id"""
+    _validate_id(namespace, "trigger_id", "trigger-id")
+
+
+def validate_recurrence_dates_in_month(namespace):
+    if namespace.recurrence_dates_in_month is None:
+        return
+    if not isinstance(namespace.recurrence_dates_in_month, list):
+        raise InvalidArgumentValueError(
+            f"Invalid recurrence-dates type: {type(namespace.recurrence_dates_in_month)}. \
+                Expected list of integers"
+        )
+    for item in namespace.recurrence_dates_in_month:
+        if not isinstance(item, int) or item < 1 or item > 31:
+            raise InvalidArgumentValueError(
+                f"Invalid recurrence-dates item: {item}. Expected integer between 1 and 31"
+            )
+
+
+def validate_schedule_test_ids(namespace):
+    if namespace.test_ids is None:
+        return
+    if not isinstance(namespace.test_ids, list):
+        raise InvalidArgumentValueError("Invalid test-ids type: {}. Expected list of test id.".format(type(namespace.test_ids)))
+    if len(namespace.test_ids) != 1:
+        raise InvalidArgumentValueError("Currently we only support one test ID per schedule.")
+    if not re.match("^[a-z0-9_-]*$", namespace.test_ids[0]):
+        raise InvalidArgumentValueError("Invalid test-id value.")

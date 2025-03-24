@@ -1,0 +1,17 @@
+version: v0.1
+testName: basicAppComponentsTest
+displayName: E2E test for app components
+description: 'E2E for the build pipeline (JMX)'
+autoStop:
+  errorPercentage: 10
+  timeWindow: 20
+appComponents:
+- resourceId: "invalid-name"
+  kind: app # Optional
+- resourceId: "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp2"
+  metrics:
+    - name: "ServiceApiHit"
+      aggregation: "Count"
+      namespace: microsoft.keyvault/vaults
+    - name: "ServiceApiLatency"
+      aggregation: "Average"

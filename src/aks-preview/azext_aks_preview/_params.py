@@ -104,6 +104,7 @@ from azext_aks_preview._consts import (
     CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+    CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
@@ -151,6 +152,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_asm_egress_name,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -194,6 +196,7 @@ from azext_aks_preview._validators import (
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
+    validate_max_unavailable,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -1469,6 +1472,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1587,6 +1591,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1657,6 +1662,7 @@ def load_arguments(self, _):
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
+        c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
@@ -2218,6 +2224,39 @@ def load_arguments(self, _):
     with self.argument_context("aks mesh disable-ingress-gateway") as c:
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
+        )
+
+    with self.argument_context("aks mesh enable-egress-gateway") as c:
+        c.argument(
+            "istio_egressgateway_name",
+            validator=validate_asm_egress_name,
+            required=True,
+            options_list=["--istio-egressgateway-name", "--istio-eg-gtw-name"]
+        )
+        c.argument(
+            "istio_egressgateway_namespace",
+            required=False,
+            default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+            options_list=["--istio-egressgateway-namespace", "--istio-eg-gtw-ns"]
+        )
+        c.argument(
+            "gateway_configuration_name",
+            required=True,
+            options_list=["--gateway-configuration-name", "--gtw-config-name"]
+        )
+
+    with self.argument_context("aks mesh disable-egress-gateway") as c:
+        c.argument(
+            "istio_egressgateway_name",
+            validator=validate_asm_egress_name,
+            required=True,
+            options_list=["--istio-egressgateway-name", "--istio-eg-gtw-name"]
+        )
+        c.argument(
+            "istio_egressgateway_namespace",
+            required=False,
+            default=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+            options_list=["--istio-egressgateway-namespace", "--istio-eg-gtw-ns"]
         )
 
     with self.argument_context("aks mesh enable") as c:

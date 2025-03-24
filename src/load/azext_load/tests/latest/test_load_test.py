@@ -1090,6 +1090,46 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Zip file containing sub-directories in the zip entry are not supported" in str(e)
         
+        # INVALID case of file with same name and different types should throw error
+        
+        # Uploading json file without file type. Default type would be ADDITIONAL_ARTIFACTS
+        self.kwargs.update(
+            {
+                "file_path": LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH,
+            }
+        )
+        checks = [
+            JMESPathCheck("fileType", "ADDITIONAL_ARTIFACTS"),
+            JMESPathCheck("fileName", LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_NAME),
+        ]
+        self.cmd(
+            "az load test file upload "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--path "{file_path}" ',
+            checks=checks,
+        )
+        # Trying to upload same file with different file type
+        # Expected to throw INVALIDFILENAMEEXCEPTION
+        self.kwargs.update(
+            {
+                "file_type": LoadTestConstants.ADVANCED_URL_FILE_TYPE,
+            }
+        )
+
+        try:
+            self.cmd(
+                "az load test file upload "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--file-type {file_type} "
+                '--path "{file_path}" '
+            )
+        except Exception as e:
+            assert "InvalidFileName" in str(e)
+        
         # INVALID case of ZIP artifact size > 50MB
         # This is commented because it requires a resource of size > 50 MB
         # storing which in GitHub is not recommended
@@ -1233,7 +1273,7 @@ class LoadTestScenario(ScenarioTest):
                 "--keyvault-reference-id {keyvault_reference_id} ",
             )
         except Exception as e:
-            assert "(InvalidManagedIdentity)" in str(e)
+            assert "Invalid keyvault-ref-id value" in str(e)
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.LOAD_TEST_KVREF_ID,
@@ -1249,7 +1289,7 @@ class LoadTestScenario(ScenarioTest):
                 "--resource-group {resource_group} ",
             )
         except Exception as e:
-            assert "(InvalidManagedIdentity)" in str(e)
+            assert "Key vault reference identity should be a valid resource id" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
