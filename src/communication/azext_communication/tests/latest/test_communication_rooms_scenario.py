@@ -496,7 +496,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
-        assert 'Invalid value for the Participants' in str(raises.exception)
+        assert 'Communication identifier 8:acs:123456c is not supported' in str(raises.exception)
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')

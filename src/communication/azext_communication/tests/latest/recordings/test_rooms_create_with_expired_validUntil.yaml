@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"validFrom": "2024-06-10T14:14:19.373669", "validUntil": "2024-06-10T11:14:19.373669",
+    body: '{"validFrom": "2025-03-24T07:57:39.617162", "validUntil": "2025-03-24T04:57:39.617162",
       "pstnDialOutEnabled": false}'
     headers:
       Accept:
@@ -14,19 +14,19 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 10 Jun 2024 13:14:19 GMT
+      - Mon, 24 Mar 2025 06:57:39 GMT
       Repeatability-Request-Id:
-      - 58955741-272b-11ef-86be-00155d7acf01
+      - 46ae5c63-087d-11f0-9c14-00155d7b1001
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.12.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
-      - 0lKxKF65FrKuhlIqEwdFs53c8x8F1I5WUk0CtDHiBVw=
+      - XUWkhsbyQ5/6DqpD91kqxB6CU7ZdHNPQM4sLkS3qbWE=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:14:19 GMT
+      - Mon, 24 Mar 2025 06:57:39 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "The request could not
@@ -34,12 +34,14 @@ interactions:
         "BadArgument", "message": "The time range end is in the past.", "target":
         "ValidUntil"}]}}'
     headers:
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:14:21 GMT
+      - Mon, 24 Mar 2025 06:57:40 GMT
       ms-cv:
-      - l4OAez4iSU+BRNY3vKXAqw.0
+      - f1CSbyWXqEmmqVt0m4ipVg.0
       request-context:
       - appId=
       strict-transport-security:
@@ -47,11 +49,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0LPxmZgAAAABQVzpTkfYDR65cgQ/qZbAtSEtCRURHRTA3MTYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250324T065740Z-16c89bd967fff8mshC1MAAgzkn0000000rt00000000065pt
       x-cache:
       - CONFIG_NOCACHE
-      x-ms-error-code:
-      - BadRequest
     status:
       code: 400
       message: Bad Request

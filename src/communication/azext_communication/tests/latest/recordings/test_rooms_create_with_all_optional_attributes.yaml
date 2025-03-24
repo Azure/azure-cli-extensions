@@ -13,11 +13,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.12.0 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:12:22 GMT
+      - Mon, 24 Mar 2025 06:55:47 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -28,31 +28,33 @@ interactions:
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-03-07, 2021-10-31-preview, 2021-11-01, 2022-06-01,
-        2022-10-01, 2023-10-01
+        2022-10-01, 2023-10-01, 2025-03-02-preview
+      connection:
+      - keep-alive
       content-length:
       - '33'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:12:23 GMT
+      - Mon, 24 Mar 2025 06:55:48 GMT
       ms-cv:
-      - 33RRBcEMqku4ubl21rwAlg.2.0
+      - 5IBOInJ5ykGRQyfgQA52lQ.2.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0uPtmZgAAAACYmKbWOVigRZedAVL7iERqSEtCRURHRTA3MTQAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250324T065547Z-16c89bd967fzhg8vhC1MAAkxd400000005k000000000hhdk
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 19ms
+      - 18ms
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2024-06-10T14:12:21.469211", "validUntil": "2024-06-10T15:12:21.469211",
-      "pstnDialOutEnabled": true, "participants": {"8:acs:9079f205-7914-4d6c-9b69-a668ecbb0cbd_00000020-a228-eca7-35f3-343a0d006e2d":
+    body: '{"validFrom": "2025-03-24T07:55:47.356964", "validUntil": "2025-03-24T08:55:47.356964",
+      "pstnDialOutEnabled": true, "participants": {"8:acs:d58d06f4-ea45-4ea1-81d0-0d47d38a52df_00000026-66d1-456b-1000-343a0d007121":
       {"role": "Presenter"}}}'
     headers:
       Accept:
@@ -66,37 +68,37 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 10 Jun 2024 13:12:25 GMT
+      - Mon, 24 Mar 2025 06:55:48 GMT
       Repeatability-Request-Id:
-      - 145aad79-272b-11ef-99f9-00155d7acf01
+      - 045f002f-087d-11f0-a137-00155d7b1001
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.12.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
-      - c+l1DSYervzAM02ufBMi4aVjJUr8UIQBscunicbfFy0=
+      - 0OKqFpos81Qlae+A2ExtAaKnTcgEusRV2MgFH4Bnkb4=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:12:25 GMT
+      - Mon, 24 Mar 2025 06:55:48 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2024-06-10T13:12:27.0546334+00:00",
-        "validFrom": "2024-06-10T14:12:21.469211+00:00", "validUntil": "2024-06-10T15:12:21.469211+00:00",
+      string: '{"id": "sanitized", "createdAt": "2025-03-24T06:55:49.2583429+00:00",
+        "validFrom": "2025-03-24T07:55:47.356964+00:00", "validUntil": "2025-03-24T08:55:47.356964+00:00",
         "pstnDialOutEnabled": true}'
     headers:
-      api-deprecated-versions:
-      - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:12:26 GMT
+      - Mon, 24 Mar 2025 06:55:49 GMT
       location:
-      - '99493376573285248'
+      - '9944298548331622'
       ms-cv:
-      - YB3xvLJbeUqO7JRHosn5nw.0
+      - 2xW+jaAbvUe0U+oL2dOPvQ.0
       repeatability-result:
       - accepted
       request-context:
@@ -106,7 +108,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0uftmZgAAAACFwB34AyDhQJq09UTMGPr/SEtCRURHRTA3MTQAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250324T065548Z-16c89bd967fbzwghhC1MAA5ffs0000000awg000000000p7h
       x-cache:
       - CONFIG_NOCACHE
     status:

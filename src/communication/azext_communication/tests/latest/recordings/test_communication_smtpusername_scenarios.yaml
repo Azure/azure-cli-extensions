@@ -1,0 +1,491 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --comm-service-name --resource-group --query
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"value": []}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:01 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3dce9a7f-219e-462b-8005-72a8b6864eb2
+      ms-cv:
+      - yeosKf0J006KRlbWznNJ3w.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/57f8940c-2cf0-46eb-b3a2-1f0903fae0e6
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5D00ADF9F46B4D7D80D3EE4E30124341 Ref B: MAA201060515045 Ref C: 2025-03-24T07:44:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e90",
+      "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "username": "TestUsername"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '158'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --comm-service-name --smtp-username --entra-application-id --tenant-id --username
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames/TestSMTPUsername?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.Communication/communicationServices/clismtpusernametest000003/smtpUsernames/TestSMTPUsername",
+        "name": "TestSMTPUsername", "type": "microsoft.communication/communicationservices/smtpusernames",
+        "systemData": {"createdBy": "sanitized", "createdByType": "User", "createdAt":
+        "2025-03-24T07:44:02.5893091Z", "lastModifiedBy": "sanitized", "lastModifiedByType":
+        "User", "lastModifiedAt": "2025-03-24T07:44:02.5893091Z"}, "properties": {"username":
+        "TestUsername", "entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e90",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '683'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d93b7aa9-3d1b-4bb4-8941-5a32617d78da
+      ms-cv:
+      - WMUzrtThrEWPq78HoV/AgA.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/68f26521-8640-457a-b9d9-74b7230c0843
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3CB5A0A3D8E349E8A563A4EA7BC4585F Ref B: MAA201060515025 Ref C: 2025-03-24T07:44:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --comm-service-name --smtp-username --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames/TestSMTPUsername?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000002/providers/microsoft.communication/communicationservices/clismtpusernametest000003/SmtpUsernames/testsmtpusername",
+        "name": "testsmtpusername", "type": "communicationservices/smtpusernames",
+        "properties": {"username": "TestUsername", "entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e90",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '436'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:06 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 512cee61-d2a3-4f4f-8d96-e6793d3ea575
+      ms-cv:
+      - bjxZPXYO8kqEc+2Y/wpXFg.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/702664a6-bc8a-4d18-a1a8-0ce263e7ba4a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 40C70FEFB85A4E549C66F6F44A969E0B Ref B: MAA201060513035 Ref C: 2025-03-24T07:44:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --comm-service-name --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000002/providers/microsoft.communication/communicationservices/clismtpusernametest000003/SmtpUsernames/testsmtpusername",
+        "name": "testsmtpusername", "type": "communicationservices/smtpusernames",
+        "properties": {"username": "TestUsername", "entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e90",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:07 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 722fc931-c43f-446a-9d56-7d21bf093e79
+      ms-cv:
+      - OmoOHgHgbkmlG+ao7FysEA.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/3668b436-aa4e-46da-94f1-bfae9c1788fc
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A1ECCF0C1EB8494A887536FD242089EB Ref B: MAA201060515023 Ref C: 2025-03-24T07:44:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --comm-service-name -g
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000002/providers/microsoft.communication/communicationservices/clismtpusernametest000003/SmtpUsernames/testsmtpusername",
+        "name": "testsmtpusername", "type": "communicationservices/smtpusernames",
+        "properties": {"username": "TestUsername", "entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e90",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:08 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f13b5c44-b85a-4f06-90ca-30230bb0cd77
+      ms-cv:
+      - QaJTFinCkkO0jWVsVnfeFw.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/d263f5fd-dfd3-4d42-9bca-4e0cd0ad8d1a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B64B38FAF58D49DFBD52D9929E19022B Ref B: MAA201060516047 Ref C: 2025-03-24T07:44:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --comm-service-name --smtp-username --entra-application-id --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames/TestSMTPUsername?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000002/providers/microsoft.communication/communicationservices/clismtpusernametest000003/SmtpUsernames/testsmtpusername",
+        "name": "testsmtpusername", "type": "communicationservices/smtpusernames",
+        "properties": {"username": "TestUsername", "entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e90",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '436'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ce1a477d-e8ec-4f74-8437-3ee07eefa683
+      ms-cv:
+      - mBP3xHJmuUOZLH7IbNMr1Q.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/cd6dadb7-7cea-4074-a431-6e56b4802592
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 69874B418DDE4539AC59700CD3C66F9D Ref B: MAA201060515021 Ref C: 2025-03-24T07:44:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e99",
+      "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "username": "TestUsername"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '158'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --comm-service-name --smtp-username --entra-application-id --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames/TestSMTPUsername?api-version=2024-09-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.Communication/communicationServices/clismtpusernametest000003/smtpUsernames/TestSMTPUsername",
+        "name": "TestSMTPUsername", "type": "microsoft.communication/communicationservices/smtpusernames",
+        "systemData": {"createdBy": "sanitized", "createdByType": "User", "createdAt":
+        "2025-03-24T07:44:11.7003661Z", "lastModifiedBy": "sanitized", "lastModifiedByType":
+        "User", "lastModifiedAt": "2025-03-24T07:44:11.7003661Z"}, "properties": {"username":
+        "TestUsername", "entraApplicationId": "735ffca9-2020-4c43-a16d-128dd4221e99",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '683'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:12 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f0295dba-3016-4df9-83bb-fba673815caa
+      ms-cv:
+      - a+hfQefFQEqTQvT6+GGurw.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/9628d50b-033f-42c1-97ac-97a865911a3d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F6E7BB6D63CB4424AA36056CFB6847F4 Ref B: MAA201060515021 Ref C: 2025-03-24T07:44:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication smtp-username delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --comm-service-name --smtp-username --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/communicationServices/sanitized/smtpUsernames/TestSMTPUsername?api-version=2024-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Mar 2025 07:44:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - dbcc4ca6-147f-4cdc-9d83-fdaaf8999e56
+      ms-cv:
+      - FOpvAfVbB0G+L8rcK7VUBw.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/0568c76f-a0e1-47d9-a638-09825d86d2a1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 6C7CEF510E85439C96EA832F2447EF3C Ref B: MAA201060516009 Ref C: 2025-03-24T07:44:13Z'
+    status:
+      code: 204
+      message: No Content
+version: 1
