@@ -197,8 +197,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     client = cf_workspaces(cmd.cli_ctx)
     if not workspace_name:
         raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
-    # if not storage_account:
-    #     raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
@@ -210,9 +208,11 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     if not storage_account:
         # Call the service to create a workspace and a MOBO SA
 
-        # TODO: Rework this "fake" code when the MOBO feature is live
-        # NOTE: This isn't doing the role assignment.
+        # TODO: Rework this "fake" code when the MOBO feature is live.
+        # NOTE: This code doesn't do a role assignment.
         #       Response shows "storageAccount": null
+
+        # Create a storage account name to keep this code happy...
         storage_account = workspace_name.translate(str.maketrans('', '', '-_')).lower()
 
         # Old pre-ARM-template code that was executed if the "--skip-role-assignment" flag was in the command line
@@ -223,7 +223,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         properties.api_key_enabled = True
         quantum_workspace.properties = properties
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+        print() # Get ready for progress dots...
         while not poller.done():
+            # TODO: Does this need a timeout?
+            print('.', end='', flush=True)    # Progress dots are not needed yet (it finishes quickly) but might be needed if create_role_assignment slows it down
             time.sleep(POLLING_TIME_DURATION)
         quantum_workspace = poller.result()
         return quantum_workspace
