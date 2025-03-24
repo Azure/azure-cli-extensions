@@ -2357,3 +2357,21 @@ helps['containerapp env http-route-config delete'] = """
       text: |
           az containerapp env http-route-config delete -g MyResourceGroup -n MyEnvironment -r configname
 """
+
+helps['containerapp env ingress show'] = """
+    type: command
+    short-summary: Show the ingress settings for the environment.
+    examples:
+    - name: Show the ingress settings for the environment.
+      text: |
+          az containerapp env ingress show -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env ingress update'] = """
+    type: command
+    short-summary: Update the ingress settings for the environment.
+    examples:
+    - name: Update the ingress settings for the environment.
+      text: |
+          az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+"""
