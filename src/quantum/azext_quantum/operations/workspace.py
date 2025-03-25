@@ -202,6 +202,23 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
+    quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+
+    # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
+    if skip_role_assignment:
+        if not storage_account:
+            raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        properties = WorkspaceResourceProperties()
+        properties.providers = quantum_workspace.providers
+        properties.api_key_enabled = True
+        quantum_workspace.properties = properties
+        poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+        while not poller.done():
+            time.sleep(POLLING_TIME_DURATION)
+        quantum_workspace = poller.result()
+        return quantum_workspace
+    # PR 8582 Note: No changes to this point, except for moving the "if not storage_account" logic
 
     # New MOBO code...
     #
@@ -217,7 +234,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         storage_account = workspace_name.translate(str.maketrans('', '', '-_')).lower()
 
         # Old pre-ARM-template code that was executed if the "--skip-role-assignment" flag was in the command line
-        quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+        # quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         properties = WorkspaceResourceProperties()
         properties.providers = quantum_workspace.providers
@@ -256,7 +273,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
                                         "will create and manage a storage account for you.")
 
     # Use the pre-MOBO ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the existing storage account
-    quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+    # quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     template_path = os.path.join(os.path.dirname(
         __file__), 'templates', 'create-workspace-and-assign-role.json')
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
