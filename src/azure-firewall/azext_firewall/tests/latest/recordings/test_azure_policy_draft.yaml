@@ -18,21 +18,23 @@ interactions:
       ParameterSetName:
       - -g -n -l --sku --idps-mode
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001288414 MB\",\r\n    \"sku\":
-        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"intrusionDetection\": {\r\n      \"mode\": \"Off\"\r\n
-        \   },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27994f9c-4084-495c-ba1d-e2d33a60e7ec\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001290321 MB\",\r\n \
+        \   \"sku\": {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"threatIntelMode\": \"Alert\",\r\n    \"intrusionDetection\": {\r\n \
+        \     \"mode\": \"Off\"\r\n    },\r\n    \"provisioningState\": \"Updating\"\
+        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"42b24348-cdd1-478b-a7cb-5db64df460e7\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/08d910cf-052b-4cb7-afac-25012956ee0a?api-version=2022-01-01&t=638575012111170327&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=u8wtvWwdSPnDF6JovPREoz-y4uXrQ4CG4RmxPIaKi_mAf3W7JEjTL7AYSbY934UTrPDsUuQNSf4ButEtBrDBAjPUAgHW_MCRsAX3oNgRzvsrwzrYZ37h2VXMxUpumJ2TWM3BDKr5HiO9kFsjH4si-SpsS0vW8nnEo6XocYSqmdciBFT5X3TduUQcV0J6o0ulRBeXykuCBS-vp9gXf-qGlenuoa47zqrZJPjZxP5cCXzGP5QNxRrrqheeY3RMFNZZLSpUuU9Galc4wobh_ZF5LzZA7_b4dVFIo5Ps-OKzx07hEe_fcDau_2BKsRxjxQHXzHbqB6LIDJOrEjFUj_TkUw&h=4gzsj2hxLwobzPD7hPmJkcMCv16i6ryOktp6f1pkB7Q
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/e295cc80-570f-4df5-a314-6217be8fff50?api-version=2022-01-01&t=638784838584448653&c=MIIHpTCCBo2gAwIBAgITfwTb1mKgWM8Wn2gZzgAEBNvWYjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjUwMTI1MTYwMTI2WhcNMjUwNzI0MTYwMTI2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM9wYuKgPsxOKsdfrjcxxZSXTa_Go36J2qbOVORHCU5cISNmprU9KM6CFd4vZVRe5LPgnvAp87EXrnG1Yr0pbHxflrIHFMxCv-r5oaRb_sb4l1d17bu3WJB-dahq_LRq030Hf0iAwEZW5mKsCU2GziVVFPfCMf6nTYAGSIsM4Bm-AI4CW9f02VK768W_siYUqU31PAOTGhWpIsyphX2c18UaS0Tp5bKYndq0JihkdJPg2goSRcqTpJs1C2jQXWRmrC0X42D8CkbDBFKIzMLM_1ZzcG1VjDEXCorAG5vf9dKMAnlmzS2ub6Fw_jkSXRDPeA3vwFXyofmUouzWi3ECMEkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQMhrqwfAcF2jImhq-p2fP9Adjn1jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABoPJBWX85erQS6tJkMVnFCWYvt1srYWVSyfVeaRQfty0LuCKcHDcNCv2MytkEOmtzKUN7fOXNksC971FR_goZJJAjS6ON5UtION2u94OvCoChI0oLCBycvWqYd5ICRkcJwF9a8sUjjM7r91bcpGHFoojVZUxQfhVy4cjMpiw7YfdWbI_bJRJo9MkFrYOH6ranSUnj4q4BszV49SldtF7Y3bu9OqBrUPR2F76764BUUrXtrHX0PiLMrtNwSH42XZA5vDjqV7z_m9036CcDO6xnWicxwsyIXSi-7dSZTNElZtBjV9Rcfuyy5M26W2GGD2JDfM9IKtQNLp14Q5fliN87s&s=Sb_YBiHRVNcd6IFzb4tmkxU-cQg5lM6Z2xenHuE69CuT7nuzzrYXSnld6kqLsHMQIc68h_9tadHIYoGzdlmZj6yxWIDGhnP_GLcElmzA_ALY5NRMqZkCaNfBWnXMnJ1ZA0mXyPadITLDdp3QoC5olT91664ix8-1vXQCqVyXrsp36R2kdflBc3jJ1yDUhB04e5KUB5uSlr_pQnc68DaP6lxP1Xpaex8QMoD1BDODjyiIKxpi9tXWd5TnM__TUeVpgYaXKSE0o3xpg5W7_yIbQrxNR3X2Bk_8bDXyr76I1Xx_dXcO09cZWSD-ILfjvnPK9GGJcOpu972SaMwsSOArvQ&h=zrtgH7XRLym1fTMezwsZh2XefixB0LlFKKW0RwlRCS4
       cache-control:
       - no-cache
       content-length:
@@ -40,7 +42,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:46:50 GMT
+      - Tue, 25 Mar 2025 07:17:37 GMT
       expires:
       - '-1'
       pragma:
@@ -51,10 +53,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/6644c632-7ddf-4c3f-998a-b3a986b80231
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1174'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: C2BFCA156360446AA328DCB136140267 Ref B: MRS211050619035 Ref C: 2024-07-25T10:46:47Z'
+      - 'Ref A: 021EA1C6C2F7443685A8D2B6350941B9 Ref B: DB3EDGE1908 Ref C: 2025-03-25T07:17:33Z'
     status:
       code: 201
       message: Created
@@ -72,53 +78,9 @@ interactions:
       ParameterSetName:
       - -g -n -l --sku --idps-mode
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/08d910cf-052b-4cb7-afac-25012956ee0a?api-version=2022-01-01&t=638575012111170327&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=u8wtvWwdSPnDF6JovPREoz-y4uXrQ4CG4RmxPIaKi_mAf3W7JEjTL7AYSbY934UTrPDsUuQNSf4ButEtBrDBAjPUAgHW_MCRsAX3oNgRzvsrwzrYZ37h2VXMxUpumJ2TWM3BDKr5HiO9kFsjH4si-SpsS0vW8nnEo6XocYSqmdciBFT5X3TduUQcV0J6o0ulRBeXykuCBS-vp9gXf-qGlenuoa47zqrZJPjZxP5cCXzGP5QNxRrrqheeY3RMFNZZLSpUuU9Galc4wobh_ZF5LzZA7_b4dVFIo5Ps-OKzx07hEe_fcDau_2BKsRxjxQHXzHbqB6LIDJOrEjFUj_TkUw&h=4gzsj2hxLwobzPD7hPmJkcMCv16i6ryOktp6f1pkB7Q
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 25 Jul 2024 10:46:50 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: C352DE54385F46D1940724C4EFA27E23 Ref B: MRS211050619035 Ref C: 2024-07-25T10:46:51Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall policy create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n -l --sku --idps-mode
-      User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/08d910cf-052b-4cb7-afac-25012956ee0a?api-version=2022-01-01&t=638575012111170327&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=u8wtvWwdSPnDF6JovPREoz-y4uXrQ4CG4RmxPIaKi_mAf3W7JEjTL7AYSbY934UTrPDsUuQNSf4ButEtBrDBAjPUAgHW_MCRsAX3oNgRzvsrwzrYZ37h2VXMxUpumJ2TWM3BDKr5HiO9kFsjH4si-SpsS0vW8nnEo6XocYSqmdciBFT5X3TduUQcV0J6o0ulRBeXykuCBS-vp9gXf-qGlenuoa47zqrZJPjZxP5cCXzGP5QNxRrrqheeY3RMFNZZLSpUuU9Galc4wobh_ZF5LzZA7_b4dVFIo5Ps-OKzx07hEe_fcDau_2BKsRxjxQHXzHbqB6LIDJOrEjFUj_TkUw&h=4gzsj2hxLwobzPD7hPmJkcMCv16i6ryOktp6f1pkB7Q
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/e295cc80-570f-4df5-a314-6217be8fff50?api-version=2022-01-01&t=638784838584448653&c=MIIHpTCCBo2gAwIBAgITfwTb1mKgWM8Wn2gZzgAEBNvWYjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjUwMTI1MTYwMTI2WhcNMjUwNzI0MTYwMTI2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM9wYuKgPsxOKsdfrjcxxZSXTa_Go36J2qbOVORHCU5cISNmprU9KM6CFd4vZVRe5LPgnvAp87EXrnG1Yr0pbHxflrIHFMxCv-r5oaRb_sb4l1d17bu3WJB-dahq_LRq030Hf0iAwEZW5mKsCU2GziVVFPfCMf6nTYAGSIsM4Bm-AI4CW9f02VK768W_siYUqU31PAOTGhWpIsyphX2c18UaS0Tp5bKYndq0JihkdJPg2goSRcqTpJs1C2jQXWRmrC0X42D8CkbDBFKIzMLM_1ZzcG1VjDEXCorAG5vf9dKMAnlmzS2ub6Fw_jkSXRDPeA3vwFXyofmUouzWi3ECMEkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQMhrqwfAcF2jImhq-p2fP9Adjn1jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABoPJBWX85erQS6tJkMVnFCWYvt1srYWVSyfVeaRQfty0LuCKcHDcNCv2MytkEOmtzKUN7fOXNksC971FR_goZJJAjS6ON5UtION2u94OvCoChI0oLCBycvWqYd5ICRkcJwF9a8sUjjM7r91bcpGHFoojVZUxQfhVy4cjMpiw7YfdWbI_bJRJo9MkFrYOH6ranSUnj4q4BszV49SldtF7Y3bu9OqBrUPR2F76764BUUrXtrHX0PiLMrtNwSH42XZA5vDjqV7z_m9036CcDO6xnWicxwsyIXSi-7dSZTNElZtBjV9Rcfuyy5M26W2GGD2JDfM9IKtQNLp14Q5fliN87s&s=Sb_YBiHRVNcd6IFzb4tmkxU-cQg5lM6Z2xenHuE69CuT7nuzzrYXSnld6kqLsHMQIc68h_9tadHIYoGzdlmZj6yxWIDGhnP_GLcElmzA_ALY5NRMqZkCaNfBWnXMnJ1ZA0mXyPadITLDdp3QoC5olT91664ix8-1vXQCqVyXrsp36R2kdflBc3jJ1yDUhB04e5KUB5uSlr_pQnc68DaP6lxP1Xpaex8QMoD1BDODjyiIKxpi9tXWd5TnM__TUeVpgYaXKSE0o3xpg5W7_yIbQrxNR3X2Bk_8bDXyr76I1Xx_dXcO09cZWSD-ILfjvnPK9GGJcOpu972SaMwsSOArvQ&h=zrtgH7XRLym1fTMezwsZh2XefixB0LlFKKW0RwlRCS4
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -130,7 +92,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:01 GMT
+      - Tue, 25 Mar 2025 07:17:38 GMT
       expires:
       - '-1'
       pragma:
@@ -141,8 +103,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/a2298bc9-204e-4a06-9ae1-ac6f5fa9cb19
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 860919C8E08E4B83BAEF057D0888DE7A Ref B: MRS211050619035 Ref C: 2024-07-25T10:47:01Z'
+      - 'Ref A: BF32FCD95E94417EAD7F2966E5BD8C59 Ref B: DB3EDGE1908 Ref C: 2025-03-25T07:17:38Z'
     status:
       code: 200
       message: OK
@@ -160,18 +126,20 @@ interactions:
       ParameterSetName:
       - -g -n -l --sku --idps-mode
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001288414 MB\",\r\n    \"sku\":
-        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"intrusionDetection\": {\r\n      \"mode\": \"Off\"\r\n
-        \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27994f9c-4084-495c-ba1d-e2d33a60e7ec\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001290321 MB\",\r\n \
+        \   \"sku\": {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"threatIntelMode\": \"Alert\",\r\n    \"intrusionDetection\": {\r\n \
+        \     \"mode\": \"Off\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\
+        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"42b24348-cdd1-478b-a7cb-5db64df460e7\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -180,9 +148,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:02 GMT
+      - Tue, 25 Mar 2025 07:17:38 GMT
       etag:
-      - '"27994f9c-4084-495c-ba1d-e2d33a60e7ec"'
+      - '"42b24348-cdd1-478b-a7cb-5db64df460e7"'
       expires:
       - '-1'
       pragma:
@@ -193,13 +161,72 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
       x-msedge-ref:
-      - 'Ref A: 63E4AE4747774E5CBA88688F7503EB38 Ref B: MRS211050619035 Ref C: 2024-07-25T10:47:02Z'
+      - 'Ref A: 7176E9DD9E9A420B91E7B8BBD90E6B6A Ref B: DB3EDGE1908 Ref C: 2025-03-25T07:17:39Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy draft create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2023-11-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001290321 MB\",\r\n \
+        \   \"sku\": {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"threatIntelMode\": \"Alert\",\r\n    \"intrusionDetection\": {\r\n \
+        \     \"mode\": \"Off\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\
+        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"42b24348-cdd1-478b-a7cb-5db64df460e7\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '647'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Mar 2025 07:18:03 GMT
+      etag:
+      - '"42b24348-cdd1-478b-a7cb-5db64df460e7"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1647BCF823AA4A1084DAAB401E088B6C Ref B: AMS231032608031 Ref C: 2025-03-25T07:17:40Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy",
+      "properties": {"intrusionDetection": {"mode": "Off"}, "threatIntelMode": "Alert"}}'
     headers:
       Accept:
       - application/json
@@ -210,30 +237,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2'
+      - '259'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Unknown\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"2c61f182-9f89-44fa-ad9b-7f558305d4d4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"intrusionDetection\": {\r\n      \"mode\": \"Off\"\r\n    }\r\n  },\r\
+        \n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"ff2b6124-1cab-4364-a8b5-05d8f0fd03e5\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '443'
+      - '499'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:04 GMT
+      - Tue, 25 Mar 2025 07:18:05 GMT
       expires:
       - '-1'
       pragma:
@@ -244,10 +273,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/f7331c67-db15-4211-be77-e1a7709fd8ab
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1169'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: C707B78F52F54355B7F74E3CEDAAD333 Ref B: MRS211050618037 Ref C: 2024-07-25T10:47:03Z'
+      - 'Ref A: CAA5051A1B4F4A288F6814B1CF2996B7 Ref B: AMS231032608031 Ref C: 2025-03-25T07:18:03Z'
     status:
       code: 201
       message: Created
@@ -265,26 +298,28 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Unknown\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"2c61f182-9f89-44fa-ad9b-7f558305d4d4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"intrusionDetection\": {\r\n      \"mode\": \"Off\"\r\n    }\r\n  },\r\
+        \n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"ff2b6124-1cab-4364-a8b5-05d8f0fd03e5\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '443'
+      - '499'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:05 GMT
+      - Tue, 25 Mar 2025 07:18:06 GMT
       etag:
-      - '"2c61f182-9f89-44fa-ad9b-7f558305d4d4"'
+      - '"ff2b6124-1cab-4364-a8b5-05d8f0fd03e5"'
       expires:
       - '-1'
       pragma:
@@ -295,8 +330,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/31825a08-e873-4c22-94d1-23d720b7ee52
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: E179002DC6B24F41AE4B5EA17F524FF0 Ref B: MRS211050618037 Ref C: 2024-07-25T10:47:04Z'
+      - 'Ref A: B540B9CE33E149289231185457E65947 Ref B: AMS231032608031 Ref C: 2025-03-25T07:18:05Z'
     status:
       code: 200
       message: OK
@@ -314,26 +353,28 @@ interactions:
       ParameterSetName:
       - -g --policy-name --threat-intel-mode --idps-mode
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Unknown\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"2c61f182-9f89-44fa-ad9b-7f558305d4d4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"intrusionDetection\": {\r\n      \"mode\": \"Off\"\r\n    }\r\n  },\r\
+        \n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"ff2b6124-1cab-4364-a8b5-05d8f0fd03e5\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '443'
+      - '499'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:06 GMT
+      - Tue, 25 Mar 2025 07:18:08 GMT
       etag:
-      - '"2c61f182-9f89-44fa-ad9b-7f558305d4d4"'
+      - '"ff2b6124-1cab-4364-a8b5-05d8f0fd03e5"'
       expires:
       - '-1'
       pragma:
@@ -344,8 +385,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/98406c56-9b97-4aff-8a51-b08b6b0c0bda
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 63B51300540F473DB03EDC07965B4256 Ref B: MRS211050315031 Ref C: 2024-07-25T10:47:05Z'
+      - 'Ref A: 4BD06366824C483F96D6AC3C7F3E5C64 Ref B: DB3EDGE1817 Ref C: 2025-03-25T07:18:07Z'
     status:
       code: 200
       message: OK
@@ -368,16 +413,17 @@ interactions:
       ParameterSetName:
       - -g --policy-name --threat-intel-mode --idps-mode
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\"\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"977bdc7a-4948-4d68-bc82-3acc7fa8e486\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"intrusionDetection\": {\r\n      \"mode\": \"Alert\"\r\n    }\r\n \
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"f8d88c2c-ca29-44c0-9730-175b18515571\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -386,7 +432,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:07 GMT
+      - Tue, 25 Mar 2025 07:18:10 GMT
       expires:
       - '-1'
       pragma:
@@ -397,10 +443,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/8da4671e-9eae-4afe-a9da-fa840ac8f945
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1176'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: B621D96EEA2A4480928CF345472F68B7 Ref B: MRS211050315031 Ref C: 2024-07-25T10:47:06Z'
+      - 'Ref A: B1E73ECAB2C646DEA80159E089BBBEED Ref B: DB3EDGE1817 Ref C: 2025-03-25T07:18:08Z'
     status:
       code: 200
       message: OK
@@ -418,16 +468,17 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id --private-ranges
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\"\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"977bdc7a-4948-4d68-bc82-3acc7fa8e486\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"intrusionDetection\": {\r\n      \"mode\": \"Alert\"\r\n    }\r\n \
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"f8d88c2c-ca29-44c0-9730-175b18515571\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -436,9 +487,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:08 GMT
+      - Tue, 25 Mar 2025 07:18:12 GMT
       etag:
-      - '"977bdc7a-4948-4d68-bc82-3acc7fa8e486"'
+      - '"f8d88c2c-ca29-44c0-9730-175b18515571"'
       expires:
       - '-1'
       pragma:
@@ -449,8 +500,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/7e473686-afcd-4276-b7b1-2b9b34760cd0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 4415B658A7DA4C22A88CA5CA8E5A56E6 Ref B: MRS211050619017 Ref C: 2024-07-25T10:47:08Z'
+      - 'Ref A: 5F194BFF4FB54AB1A0990B94E5F7A86B Ref B: DB3EDGE1715 Ref C: 2025-03-25T07:18:11Z'
     status:
       code: 200
       message: OK
@@ -476,22 +531,23 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id --private-ranges
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.204.0/24\",\r\n
-        \       \"167.221.205.101/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.204.0/24\",\r\n
-        \         \"167.221.205.101/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"95a0cdd5-5485-4956-928f-850f465d60cf\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.204.0/24\"\
+        ,\r\n        \"167.221.205.101/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          }\r\n        ],\r\n     \
+        \   \"bypassTrafficSettings\": [],\r\n        \"privateRanges\": [\r\n   \
+        \       \"167.220.204.0/24\",\r\n          \"167.221.205.101/32\"\r\n    \
+        \    ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"67886370-6a70-4722-8b8a-a56278301b65\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -500,7 +556,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:09 GMT
+      - Tue, 25 Mar 2025 07:18:14 GMT
       expires:
       - '-1'
       pragma:
@@ -511,10 +567,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/33d7c0d1-3cfd-436d-8c2c-7a230262b954
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1167'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: EF4C900AF8894105B77AA45F033814B7 Ref B: MRS211050619017 Ref C: 2024-07-25T10:47:09Z'
+      - 'Ref A: 6EB6682BEBAC4D5E93DEE0A25ADAAD8B Ref B: DB3EDGE1715 Ref C: 2025-03-25T07:18:12Z'
     status:
       code: 200
       message: OK
@@ -532,22 +592,23 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id --private-ranges
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.204.0/24\",\r\n
-        \       \"167.221.205.101/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.204.0/24\",\r\n
-        \         \"167.221.205.101/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"95a0cdd5-5485-4956-928f-850f465d60cf\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.204.0/24\"\
+        ,\r\n        \"167.221.205.101/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          }\r\n        ],\r\n     \
+        \   \"bypassTrafficSettings\": [],\r\n        \"privateRanges\": [\r\n   \
+        \       \"167.220.204.0/24\",\r\n          \"167.221.205.101/32\"\r\n    \
+        \    ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"67886370-6a70-4722-8b8a-a56278301b65\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -556,9 +617,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:10 GMT
+      - Tue, 25 Mar 2025 07:18:15 GMT
       etag:
-      - '"95a0cdd5-5485-4956-928f-850f465d60cf"'
+      - '"67886370-6a70-4722-8b8a-a56278301b65"'
       expires:
       - '-1'
       pragma:
@@ -569,8 +630,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/62201c06-c787-422d-9b2f-a6836f2b528a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 0B6DDD835E974EBF96389AFB7BBDA925 Ref B: MRS211050618049 Ref C: 2024-07-25T10:47:10Z'
+      - 'Ref A: 6334C84849F04DB994A6A452EFB43AE1 Ref B: DB3EDGE2116 Ref C: 2025-03-25T07:18:15Z'
     status:
       code: 200
       message: OK
@@ -597,23 +662,25 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id --private-ranges
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
-        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"d805665f-30cb-487b-85fd-e732cb3c615a\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          },\r\n          {\r\n   \
+        \         \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n      \
+        \    }\r\n        ],\r\n        \"bypassTrafficSettings\": [],\r\n       \
+        \ \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n          \"\
+        167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"34993851-c52a-4d65-9522-eae20d0353dd\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -622,7 +689,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:11 GMT
+      - Tue, 25 Mar 2025 07:18:17 GMT
       expires:
       - '-1'
       pragma:
@@ -633,10 +700,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/453a7c18-e379-4274-a47a-f80e6afb3bf3
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 2E88AF1C9EFA40729E841644388AD90C Ref B: MRS211050618049 Ref C: 2024-07-25T10:47:11Z'
+      - 'Ref A: 4FB131A8E7594BE58002C88E2AE363E6 Ref B: DB3EDGE2116 Ref C: 2025-03-25T07:18:16Z'
     status:
       code: 200
       message: OK
@@ -655,23 +726,25 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
-        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"d805665f-30cb-487b-85fd-e732cb3c615a\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          },\r\n          {\r\n   \
+        \         \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n      \
+        \    }\r\n        ],\r\n        \"bypassTrafficSettings\": [],\r\n       \
+        \ \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n          \"\
+        167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"34993851-c52a-4d65-9522-eae20d0353dd\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -680,9 +753,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:12 GMT
+      - Tue, 25 Mar 2025 07:18:24 GMT
       etag:
-      - '"d805665f-30cb-487b-85fd-e732cb3c615a"'
+      - '"34993851-c52a-4d65-9522-eae20d0353dd"'
       expires:
       - '-1'
       pragma:
@@ -693,8 +766,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/94c7e699-66b4-403e-b6c6-18daf4b2aca6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 56AD7B8BFE91496FA4AFB03F2E172DD4 Ref B: MRS211050315029 Ref C: 2024-07-25T10:47:12Z'
+      - 'Ref A: C12C329327E247DEA95E87F002280C96 Ref B: DB3EDGE2221 Ref C: 2025-03-25T07:18:18Z'
     status:
       code: 200
       message: OK
@@ -724,29 +801,31 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
-        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
-        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
-        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
-        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
-        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
-        \       ],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"2afae4fa-d51f-4e0d-b90d-42aab5be7dc4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          },\r\n          {\r\n   \
+        \         \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n      \
+        \    }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n         \
+        \ {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\"\
+        : \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\"\
+        ,\r\n              \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\
+        \r\n            ],\r\n            \"destinationPorts\": [\r\n            \
+        \  \"8080\",\r\n              \"9090\",\r\n              \"5432\"\r\n    \
+        \        ]\r\n          }\r\n        ],\r\n        \"privateRanges\": [\r\n\
+        \          \"167.220.208.0/24\",\r\n          \"167.221.205.102/32\"\r\n \
+        \       ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"d7bf98a2-4d2d-4e58-9a04-45f26151293e\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -755,7 +834,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:13 GMT
+      - Tue, 25 Mar 2025 07:18:26 GMT
       expires:
       - '-1'
       pragma:
@@ -766,10 +845,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/b0d0c99e-430c-43c7-b5ef-c6d05ae99aa7
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1166'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 14080B2A2AEF4B90BFF57516DDEF4C66 Ref B: MRS211050315029 Ref C: 2024-07-25T10:47:13Z'
+      - 'Ref A: 20C300CCE1584992B79DB6972024D69F Ref B: DB3EDGE2221 Ref C: 2025-03-25T07:18:25Z'
     status:
       code: 200
       message: OK
@@ -787,29 +870,31 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
-        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
-        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
-        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
-        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
-        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
-        \       ],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"2afae4fa-d51f-4e0d-b90d-42aab5be7dc4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          },\r\n          {\r\n   \
+        \         \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n      \
+        \    }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n         \
+        \ {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\"\
+        : \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\"\
+        ,\r\n              \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\
+        \r\n            ],\r\n            \"destinationPorts\": [\r\n            \
+        \  \"8080\",\r\n              \"9090\",\r\n              \"5432\"\r\n    \
+        \        ]\r\n          }\r\n        ],\r\n        \"privateRanges\": [\r\n\
+        \          \"167.220.208.0/24\",\r\n          \"167.221.205.102/32\"\r\n \
+        \       ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"d7bf98a2-4d2d-4e58-9a04-45f26151293e\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -818,9 +903,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:15 GMT
+      - Tue, 25 Mar 2025 07:18:27 GMT
       etag:
-      - '"2afae4fa-d51f-4e0d-b90d-42aab5be7dc4"'
+      - '"d7bf98a2-4d2d-4e58-9a04-45f26151293e"'
       expires:
       - '-1'
       pragma:
@@ -831,8 +916,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/bce6cf17-7a37-4c42-9610-02abecfc054e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 3CFC594DDD0846AE90431E194A3AB618 Ref B: MRS211050313051 Ref C: 2024-07-25T10:47:15Z'
+      - 'Ref A: 61E0189BF1904045AE3C58F5CEF57A3F Ref B: DB3EDGE3120 Ref C: 2025-03-25T07:18:27Z'
     status:
       code: 200
       message: OK
@@ -850,29 +939,31 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
-        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
-        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
-        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
-        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
-        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
-        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
-        \       ],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"2afae4fa-d51f-4e0d-b90d-42aab5be7dc4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"10001\"\
+        ,\r\n            \"mode\": \"Deny\"\r\n          },\r\n          {\r\n   \
+        \         \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n      \
+        \    }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n         \
+        \ {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\"\
+        : \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\"\
+        ,\r\n              \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\
+        \r\n            ],\r\n            \"destinationPorts\": [\r\n            \
+        \  \"8080\",\r\n              \"9090\",\r\n              \"5432\"\r\n    \
+        \        ]\r\n          }\r\n        ],\r\n        \"privateRanges\": [\r\n\
+        \          \"167.220.208.0/24\",\r\n          \"167.221.205.102/32\"\r\n \
+        \       ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"d7bf98a2-4d2d-4e58-9a04-45f26151293e\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -881,9 +972,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:15 GMT
+      - Tue, 25 Mar 2025 07:18:29 GMT
       etag:
-      - '"2afae4fa-d51f-4e0d-b90d-42aab5be7dc4"'
+      - '"d7bf98a2-4d2d-4e58-9a04-45f26151293e"'
       expires:
       - '-1'
       pragma:
@@ -894,8 +985,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/bb04631a-9fc3-49e2-a319-2253fe1fa559
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 1BD652CD865442EEB4252188DC140738 Ref B: MRS211050313011 Ref C: 2024-07-25T10:47:15Z'
+      - 'Ref A: 7B946B1AF54544D081769BCEDF596F00 Ref B: DB3EDGE1820 Ref C: 2025-03-25T07:18:28Z'
     status:
       code: 200
       message: OK
@@ -921,22 +1016,23 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
-        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"14296c59-9d7a-4def-b0b3-9ceff5a4d87f\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"20001\"\
+        ,\r\n            \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n    \
+        \    \"bypassTrafficSettings\": [],\r\n        \"privateRanges\": [\r\n  \
+        \        \"167.220.208.0/24\",\r\n          \"167.221.205.102/32\"\r\n   \
+        \     ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"bc119553-3a7c-4cc8-ad61-2d3daed66ed3\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -945,7 +1041,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:16 GMT
+      - Tue, 25 Mar 2025 07:18:30 GMT
       expires:
       - '-1'
       pragma:
@@ -956,10 +1052,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/59495425-0397-4152-98e0-a8ee64ffb788
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1174'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 37A77126D0614B51BF1D86399BFDF879 Ref B: MRS211050313011 Ref C: 2024-07-25T10:47:16Z'
+      - 'Ref A: 0875CC3525F74DEB8E0738093492A3BB Ref B: DB3EDGE1820 Ref C: 2025-03-25T07:18:29Z'
     status:
       code: 200
       message: OK
@@ -977,22 +1077,23 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default?api-version=2023-11-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
-        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    }\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\",\r\n
-        \ \"etag\": \"14296c59-9d7a-4def-b0b3-9ceff5a4d87f\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\"\
+        ,\r\n        \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\"\
+        : {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n      \
+        \  \"signatureOverrides\": [\r\n          {\r\n            \"id\": \"20001\"\
+        ,\r\n            \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n    \
+        \    \"bypassTrafficSettings\": [],\r\n        \"privateRanges\": [\r\n  \
+        \        \"167.220.208.0/24\",\r\n          \"167.221.205.102/32\"\r\n   \
+        \     ]\r\n      }\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/firewallPolicyDrafts/default\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts\"\
+        ,\r\n  \"etag\": \"bc119553-3a7c-4cc8-ad61-2d3daed66ed3\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1001,9 +1102,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:18 GMT
+      - Tue, 25 Mar 2025 07:18:32 GMT
       etag:
-      - '"14296c59-9d7a-4def-b0b3-9ceff5a4d87f"'
+      - '"bc119553-3a7c-4cc8-ad61-2d3daed66ed3"'
       expires:
       - '-1'
       pragma:
@@ -1014,8 +1115,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/227c0366-9008-481d-8a33-f86cdaac3e7a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 4B9576A8D5DA4B6CA871A7BE3E9CD9EB Ref B: MRS211050618033 Ref C: 2024-07-25T10:47:17Z'
+      - 'Ref A: 14619F8ADBE740428D89E1F164E1C930 Ref B: DB3EDGE1808 Ref C: 2025-03-25T07:18:31Z'
     status:
       code: 200
       message: OK
@@ -1033,18 +1138,20 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001288414 MB\",\r\n    \"sku\":
-        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"intrusionDetection\": {\r\n      \"mode\": \"Off\"\r\n
-        \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27994f9c-4084-495c-ba1d-e2d33a60e7ec\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001290321 MB\",\r\n \
+        \   \"sku\": {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"threatIntelMode\": \"Alert\",\r\n    \"intrusionDetection\": {\r\n \
+        \     \"mode\": \"Off\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\
+        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"42b24348-cdd1-478b-a7cb-5db64df460e7\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1053,9 +1160,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:18 GMT
+      - Tue, 25 Mar 2025 07:18:33 GMT
       etag:
-      - '"27994f9c-4084-495c-ba1d-e2d33a60e7ec"'
+      - '"42b24348-cdd1-478b-a7cb-5db64df460e7"'
       expires:
       - '-1'
       pragma:
@@ -1066,8 +1173,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 5C4CE34E69CE46F0BB2EBEF397850862 Ref B: MRS211050619025 Ref C: 2024-07-25T10:47:19Z'
+      - 'Ref A: F5EA4B9F45B84AD69291704EEA1C16A6 Ref B: DB3EDGE2207 Ref C: 2025-03-25T07:18:32Z'
     status:
       code: 200
       message: OK
@@ -1087,7 +1196,7 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/deploy?api-version=2023-11-01
   response:
@@ -1095,7 +1204,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/923e650a-a733-4cbb-82c0-434aed27b6d7?api-version=2023-11-01&t=638575012409529042&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=GyuqfTPDJax9UGBsTGQ4Imn88FBzLBzul3m-LxT60oiqrXSJ9yz1bMwf1xBZaz4Rx5ZsNWwpMDRPO0UHnKr7vUydAAoF5etUEVh4xpTTfjwsYCSvJef3m0xP7ojRbrA4udfO_n_aXTM4wtAt02Up0JcJ1f2MNO1koOcsIdu2YkVzIsW4_CmjdYOWa_Luf_WA20Dl2yC7dWeHJG1YAME5BZ8g8pV9QfLYckKppiiUBXmY5GR7ewa98amGdzvQvI7Iujn6LV1Ny8VmXH8S_dzDx1wejvtKhZ6_cDlTY7zw0LO4KnD8hWCwxBo9CoIZdK6vgOyIQnSWImWrH8oaEnhfLA&h=KRMfEdoGiTPpo3DVwN_uZ8ahsv5MVm_X4fa-VzBDPnc
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4f83ff51-31ea-49e2-9dc6-52f3f3353e99?api-version=2023-11-01&t=638784839165582589&c=MIIHpTCCBo2gAwIBAgITfwTb1mKgWM8Wn2gZzgAEBNvWYjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjUwMTI1MTYwMTI2WhcNMjUwNzI0MTYwMTI2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM9wYuKgPsxOKsdfrjcxxZSXTa_Go36J2qbOVORHCU5cISNmprU9KM6CFd4vZVRe5LPgnvAp87EXrnG1Yr0pbHxflrIHFMxCv-r5oaRb_sb4l1d17bu3WJB-dahq_LRq030Hf0iAwEZW5mKsCU2GziVVFPfCMf6nTYAGSIsM4Bm-AI4CW9f02VK768W_siYUqU31PAOTGhWpIsyphX2c18UaS0Tp5bKYndq0JihkdJPg2goSRcqTpJs1C2jQXWRmrC0X42D8CkbDBFKIzMLM_1ZzcG1VjDEXCorAG5vf9dKMAnlmzS2ub6Fw_jkSXRDPeA3vwFXyofmUouzWi3ECMEkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQMhrqwfAcF2jImhq-p2fP9Adjn1jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABoPJBWX85erQS6tJkMVnFCWYvt1srYWVSyfVeaRQfty0LuCKcHDcNCv2MytkEOmtzKUN7fOXNksC971FR_goZJJAjS6ON5UtION2u94OvCoChI0oLCBycvWqYd5ICRkcJwF9a8sUjjM7r91bcpGHFoojVZUxQfhVy4cjMpiw7YfdWbI_bJRJo9MkFrYOH6ranSUnj4q4BszV49SldtF7Y3bu9OqBrUPR2F76764BUUrXtrHX0PiLMrtNwSH42XZA5vDjqV7z_m9036CcDO6xnWicxwsyIXSi-7dSZTNElZtBjV9Rcfuyy5M26W2GGD2JDfM9IKtQNLp14Q5fliN87s&s=bZYE99YiVc9ruJY_aXq_4smU8o4_gdNajAM-1cth6BlqLL7WdGEXLmaxmZAryRnwpcwYJpJxN0E92J5R69gatbdV8TP--47DS4zc5RFXaco9Dvueh2iXI9GHKO2PYl04RZC6joZt6ftxybsMEZiGFOBpzUoApAiLu1lQ__S8q8KJjFrVqHnROuRUksKc3xjrBECaWWha5OYiEcdM0NraUsNbJLMdtJN3p4dx5bDZOcNz5rrhjqjEx0lmrnezwzQBqXE7iKWgnbk5h4J3NTc4eNxe4ECuMLEkLMcRGdBuABUeyRiTRzCU0yz2JLvkJ4XURNs36-WDgCclHjpbvEE13Q&h=DhoMYbkJ1y6wTSZWdVqqVDa9lTba7AVBFkqSLMaAzkc
       cache-control:
       - no-cache
       content-length:
@@ -1103,11 +1212,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:20 GMT
+      - Tue, 25 Mar 2025 07:18:35 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/923e650a-a733-4cbb-82c0-434aed27b6d7?api-version=2023-11-01&t=638575012409685284&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=elmTz-U9YJicPNrFm1rdx25ia_SBcxS7GStsHANUJSENqhCaIdN7yJolLYxeUBjwTmNkrx07gwK-WlbbyPtWXaHiWBdozn1zGQ-pgE-dPkr9DtMp4GUgB-Gh2j34gFhll9kJ9z9VaIL9FnIGW9B_RMlzEllTH9qVedWQQN8oS4y84JExSkAk1dRbHthkgS9kfKkKSHpXAv3EgLSGWc9xkUYNqfkAX-5mKJ-JmVuZ3FsC_0rrSMLejJHwkB5S6FSNGMbZAcTk87AKWUy714U3IK9eKi5a9irrNxPY6Ys-KS5KM3HcVNjKWu9XWKY4HICMUdzIpKezQ_ekK0PCWgBLcg&h=lqtADohgMmoK3DJ9q7gM8rYq7Z9fJY4jsi-p_ShxLc0
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4f83ff51-31ea-49e2-9dc6-52f3f3353e99?api-version=2023-11-01&t=638784839165582589&c=MIIHpTCCBo2gAwIBAgITfwTb1mKgWM8Wn2gZzgAEBNvWYjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjUwMTI1MTYwMTI2WhcNMjUwNzI0MTYwMTI2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM9wYuKgPsxOKsdfrjcxxZSXTa_Go36J2qbOVORHCU5cISNmprU9KM6CFd4vZVRe5LPgnvAp87EXrnG1Yr0pbHxflrIHFMxCv-r5oaRb_sb4l1d17bu3WJB-dahq_LRq030Hf0iAwEZW5mKsCU2GziVVFPfCMf6nTYAGSIsM4Bm-AI4CW9f02VK768W_siYUqU31PAOTGhWpIsyphX2c18UaS0Tp5bKYndq0JihkdJPg2goSRcqTpJs1C2jQXWRmrC0X42D8CkbDBFKIzMLM_1ZzcG1VjDEXCorAG5vf9dKMAnlmzS2ub6Fw_jkSXRDPeA3vwFXyofmUouzWi3ECMEkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQMhrqwfAcF2jImhq-p2fP9Adjn1jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABoPJBWX85erQS6tJkMVnFCWYvt1srYWVSyfVeaRQfty0LuCKcHDcNCv2MytkEOmtzKUN7fOXNksC971FR_goZJJAjS6ON5UtION2u94OvCoChI0oLCBycvWqYd5ICRkcJwF9a8sUjjM7r91bcpGHFoojVZUxQfhVy4cjMpiw7YfdWbI_bJRJo9MkFrYOH6ranSUnj4q4BszV49SldtF7Y3bu9OqBrUPR2F76764BUUrXtrHX0PiLMrtNwSH42XZA5vDjqV7z_m9036CcDO6xnWicxwsyIXSi-7dSZTNElZtBjV9Rcfuyy5M26W2GGD2JDfM9IKtQNLp14Q5fliN87s&s=bZYE99YiVc9ruJY_aXq_4smU8o4_gdNajAM-1cth6BlqLL7WdGEXLmaxmZAryRnwpcwYJpJxN0E92J5R69gatbdV8TP--47DS4zc5RFXaco9Dvueh2iXI9GHKO2PYl04RZC6joZt6ftxybsMEZiGFOBpzUoApAiLu1lQ__S8q8KJjFrVqHnROuRUksKc3xjrBECaWWha5OYiEcdM0NraUsNbJLMdtJN3p4dx5bDZOcNz5rrhjqjEx0lmrnezwzQBqXE7iKWgnbk5h4J3NTc4eNxe4ECuMLEkLMcRGdBuABUeyRiTRzCU0yz2JLvkJ4XURNs36-WDgCclHjpbvEE13Q&h=DhoMYbkJ1y6wTSZWdVqqVDa9lTba7AVBFkqSLMaAzkc
       pragma:
       - no-cache
       strict-transport-security:
@@ -1116,10 +1225,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/90e72132-d6e9-4b09-9987-5028f72c98aa
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 7A664274304E4C8EA283C87A481B9C93 Ref B: MRS211050313033 Ref C: 2024-07-25T10:47:19Z'
+      - 'Ref A: 039A932D1CAB4C7B81BABD5A48134F63 Ref B: DB3EDGE1909 Ref C: 2025-03-25T07:18:34Z'
     status:
       code: 202
       message: Accepted
@@ -1137,9 +1250,9 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/923e650a-a733-4cbb-82c0-434aed27b6d7?api-version=2023-11-01&t=638575012409529042&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=GyuqfTPDJax9UGBsTGQ4Imn88FBzLBzul3m-LxT60oiqrXSJ9yz1bMwf1xBZaz4Rx5ZsNWwpMDRPO0UHnKr7vUydAAoF5etUEVh4xpTTfjwsYCSvJef3m0xP7ojRbrA4udfO_n_aXTM4wtAt02Up0JcJ1f2MNO1koOcsIdu2YkVzIsW4_CmjdYOWa_Luf_WA20Dl2yC7dWeHJG1YAME5BZ8g8pV9QfLYckKppiiUBXmY5GR7ewa98amGdzvQvI7Iujn6LV1Ny8VmXH8S_dzDx1wejvtKhZ6_cDlTY7zw0LO4KnD8hWCwxBo9CoIZdK6vgOyIQnSWImWrH8oaEnhfLA&h=KRMfEdoGiTPpo3DVwN_uZ8ahsv5MVm_X4fa-VzBDPnc
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4f83ff51-31ea-49e2-9dc6-52f3f3353e99?api-version=2023-11-01&t=638784839165582589&c=MIIHpTCCBo2gAwIBAgITfwTb1mKgWM8Wn2gZzgAEBNvWYjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjUwMTI1MTYwMTI2WhcNMjUwNzI0MTYwMTI2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM9wYuKgPsxOKsdfrjcxxZSXTa_Go36J2qbOVORHCU5cISNmprU9KM6CFd4vZVRe5LPgnvAp87EXrnG1Yr0pbHxflrIHFMxCv-r5oaRb_sb4l1d17bu3WJB-dahq_LRq030Hf0iAwEZW5mKsCU2GziVVFPfCMf6nTYAGSIsM4Bm-AI4CW9f02VK768W_siYUqU31PAOTGhWpIsyphX2c18UaS0Tp5bKYndq0JihkdJPg2goSRcqTpJs1C2jQXWRmrC0X42D8CkbDBFKIzMLM_1ZzcG1VjDEXCorAG5vf9dKMAnlmzS2ub6Fw_jkSXRDPeA3vwFXyofmUouzWi3ECMEkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQMhrqwfAcF2jImhq-p2fP9Adjn1jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABoPJBWX85erQS6tJkMVnFCWYvt1srYWVSyfVeaRQfty0LuCKcHDcNCv2MytkEOmtzKUN7fOXNksC971FR_goZJJAjS6ON5UtION2u94OvCoChI0oLCBycvWqYd5ICRkcJwF9a8sUjjM7r91bcpGHFoojVZUxQfhVy4cjMpiw7YfdWbI_bJRJo9MkFrYOH6ranSUnj4q4BszV49SldtF7Y3bu9OqBrUPR2F76764BUUrXtrHX0PiLMrtNwSH42XZA5vDjqV7z_m9036CcDO6xnWicxwsyIXSi-7dSZTNElZtBjV9Rcfuyy5M26W2GGD2JDfM9IKtQNLp14Q5fliN87s&s=bZYE99YiVc9ruJY_aXq_4smU8o4_gdNajAM-1cth6BlqLL7WdGEXLmaxmZAryRnwpcwYJpJxN0E92J5R69gatbdV8TP--47DS4zc5RFXaco9Dvueh2iXI9GHKO2PYl04RZC6joZt6ftxybsMEZiGFOBpzUoApAiLu1lQ__S8q8KJjFrVqHnROuRUksKc3xjrBECaWWha5OYiEcdM0NraUsNbJLMdtJN3p4dx5bDZOcNz5rrhjqjEx0lmrnezwzQBqXE7iKWgnbk5h4J3NTc4eNxe4ECuMLEkLMcRGdBuABUeyRiTRzCU0yz2JLvkJ4XURNs36-WDgCclHjpbvEE13Q&h=DhoMYbkJ1y6wTSZWdVqqVDa9lTba7AVBFkqSLMaAzkc
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1151,7 +1264,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:21 GMT
+      - Tue, 25 Mar 2025 07:18:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1162,8 +1275,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/7e332556-15c8-4fdb-880f-b080feb6eb58
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 3C6048617E3C41C49A1C0A441B62A361 Ref B: MRS211050313033 Ref C: 2024-07-25T10:47:21Z'
+      - 'Ref A: CAD7F8AD311C44B997F474AA393D714A Ref B: DB3EDGE1909 Ref C: 2025-03-25T07:18:36Z'
     status:
       code: 200
       message: OK
@@ -1181,9 +1298,9 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/923e650a-a733-4cbb-82c0-434aed27b6d7?api-version=2023-11-01&t=638575012409529042&c=MIIH5zCCBs-gAwIBAgITfwMuw4EdrrnuXQZ3pQAEAy7DgTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTA5MDQxNjI0WhcNMjUwNTA0MDQxNjI0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMA8ab6_Aa9jtfZEbQhBCPjBV-o8Z0xSV__xQC-lEt8Xn3KQneUs5IqLpgkIdW_PmRmZgf9O3QtLrYQz4NkhhcPQHpvhFEyizgKuAWbtaaT-WCIlji8blwOeehO8H-pOBg5pTzxB40nWTCm6X5rEcdHeQQG9lS5k51Zs8YrHcIXzTIcEk7shCyfsQOc1YIY_qabYyds2eLX9-CYW19DTtGvBAp8IPRdgc-Nq_pE3woawRmK0Jq_8n08e2QdX2HitfXrjL2s_jF6MnJnJ9f4GQf4RE1gGz05Piq2Rh2ii29RNYSy-WCITYNBXzak9041KEz9M6SneGGXuJoHVY1VGJl0CAwEAAaOCBNQwggTQMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBTPJReXvGs99TFNdTjnUtQFkgjUGDAOBgNVHQ8BAf8EBAMCBaAwQAYDVR0RBDkwN4I1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABplggdRJywFMERBxBvU2_xPoBee_16mrzSsOO5fB9KwMH7rqDtYsS7J-1G-JprZzud5QGzhUF4cyTcTON8306PYkppL6bN4caaXnORDi21n0NlxhAkS44sxxYcX5uB8TsBog58g7G8TEDKb1zJMII26A8067ZKxS7BcCCcf0ON5gO9S72fYx0baRVOBJLFsTSemCG31wIirv8zNMtTPFuM4al280ORukXNxST214qZ84V9eNfYGO7O7LYXJWNqLAwUsyeuvfOiJZ6ByzHXRPpg6guBhLQjJfUMTJkLWd-bee5pMjfp8JIvjnZQfW-PtI8KicK6MS85JE9gp1_06zY8&s=GyuqfTPDJax9UGBsTGQ4Imn88FBzLBzul3m-LxT60oiqrXSJ9yz1bMwf1xBZaz4Rx5ZsNWwpMDRPO0UHnKr7vUydAAoF5etUEVh4xpTTfjwsYCSvJef3m0xP7ojRbrA4udfO_n_aXTM4wtAt02Up0JcJ1f2MNO1koOcsIdu2YkVzIsW4_CmjdYOWa_Luf_WA20Dl2yC7dWeHJG1YAME5BZ8g8pV9QfLYckKppiiUBXmY5GR7ewa98amGdzvQvI7Iujn6LV1Ny8VmXH8S_dzDx1wejvtKhZ6_cDlTY7zw0LO4KnD8hWCwxBo9CoIZdK6vgOyIQnSWImWrH8oaEnhfLA&h=KRMfEdoGiTPpo3DVwN_uZ8ahsv5MVm_X4fa-VzBDPnc
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4f83ff51-31ea-49e2-9dc6-52f3f3353e99?api-version=2023-11-01&t=638784839165582589&c=MIIHpTCCBo2gAwIBAgITfwTb1mKgWM8Wn2gZzgAEBNvWYjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjUwMTI1MTYwMTI2WhcNMjUwNzI0MTYwMTI2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM9wYuKgPsxOKsdfrjcxxZSXTa_Go36J2qbOVORHCU5cISNmprU9KM6CFd4vZVRe5LPgnvAp87EXrnG1Yr0pbHxflrIHFMxCv-r5oaRb_sb4l1d17bu3WJB-dahq_LRq030Hf0iAwEZW5mKsCU2GziVVFPfCMf6nTYAGSIsM4Bm-AI4CW9f02VK768W_siYUqU31PAOTGhWpIsyphX2c18UaS0Tp5bKYndq0JihkdJPg2goSRcqTpJs1C2jQXWRmrC0X42D8CkbDBFKIzMLM_1ZzcG1VjDEXCorAG5vf9dKMAnlmzS2ub6Fw_jkSXRDPeA3vwFXyofmUouzWi3ECMEkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQMhrqwfAcF2jImhq-p2fP9Adjn1jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABoPJBWX85erQS6tJkMVnFCWYvt1srYWVSyfVeaRQfty0LuCKcHDcNCv2MytkEOmtzKUN7fOXNksC971FR_goZJJAjS6ON5UtION2u94OvCoChI0oLCBycvWqYd5ICRkcJwF9a8sUjjM7r91bcpGHFoojVZUxQfhVy4cjMpiw7YfdWbI_bJRJo9MkFrYOH6ranSUnj4q4BszV49SldtF7Y3bu9OqBrUPR2F76764BUUrXtrHX0PiLMrtNwSH42XZA5vDjqV7z_m9036CcDO6xnWicxwsyIXSi-7dSZTNElZtBjV9Rcfuyy5M26W2GGD2JDfM9IKtQNLp14Q5fliN87s&s=bZYE99YiVc9ruJY_aXq_4smU8o4_gdNajAM-1cth6BlqLL7WdGEXLmaxmZAryRnwpcwYJpJxN0E92J5R69gatbdV8TP--47DS4zc5RFXaco9Dvueh2iXI9GHKO2PYl04RZC6joZt6ftxybsMEZiGFOBpzUoApAiLu1lQ__S8q8KJjFrVqHnROuRUksKc3xjrBECaWWha5OYiEcdM0NraUsNbJLMdtJN3p4dx5bDZOcNz5rrhjqjEx0lmrnezwzQBqXE7iKWgnbk5h4J3NTc4eNxe4ECuMLEkLMcRGdBuABUeyRiTRzCU0yz2JLvkJ4XURNs36-WDgCclHjpbvEE13Q&h=DhoMYbkJ1y6wTSZWdVqqVDa9lTba7AVBFkqSLMaAzkc
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1195,7 +1312,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:31 GMT
+      - Tue, 25 Mar 2025 07:18:46 GMT
       expires:
       - '-1'
       pragma:
@@ -1206,8 +1323,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/fdbf60c3-ad7c-4a39-8765-bf0bfb580104
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: FF9B2D7F119643068107FC79DEFC1005 Ref B: MRS211050313033 Ref C: 2024-07-25T10:47:31Z'
+      - 'Ref A: 9A921458351640EBB2C08A17F447C156 Ref B: DB3EDGE1909 Ref C: 2025-03-25T07:18:47Z'
     status:
       code: 200
       message: OK
@@ -1225,24 +1346,26 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001288414 MB\",\r\n    \"sku\":
-        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
-        \"Deny\",\r\n    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
-        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    },\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"08bef905-9080-47ad-9488-3c7cea9ed523\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001290321 MB\",\r\n \
+        \   \"sku\": {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"threatIntelMode\": \"Deny\",\r\n    \"snat\": {\r\n      \"privateRanges\"\
+        : [\r\n        \"167.220.208.0/24\",\r\n        \"167.221.205.102/32\"\r\n\
+        \      ]\r\n    },\r\n    \"intrusionDetection\": {\r\n      \"mode\": \"\
+        Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":\
+        \ [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\"\
+        : \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\"\
+        : [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\
+        \n          \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    },\r\n \
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"5b91bccc-ff48-456c-9bc6-f23c6f2e7f4d\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1251,9 +1374,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:32 GMT
+      - Tue, 25 Mar 2025 07:18:48 GMT
       etag:
-      - '"08bef905-9080-47ad-9488-3c7cea9ed523"'
+      - '"5b91bccc-ff48-456c-9bc6-f23c6f2e7f4d"'
       expires:
       - '-1'
       pragma:
@@ -1264,8 +1387,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 91D11191F03C4CC68E7EC797D8C79959 Ref B: MRS211050618019 Ref C: 2024-07-25T10:47:32Z'
+      - 'Ref A: 7E477159AFB7456388537C223F9CB173 Ref B: AMS231032607009 Ref C: 2025-03-25T07:18:48Z'
     status:
       code: 200
       message: OK
@@ -1283,24 +1408,26 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001288414 MB\",\r\n    \"sku\":
-        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
-        \"Deny\",\r\n    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"167.220.208.0/24\",\r\n
-        \       \"167.221.205.102/32\"\r\n      ]\r\n    },\r\n    \"intrusionDetection\":
-        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
-        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
-        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
-        [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\n
-        \         \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    },\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"08bef905-9080-47ad-9488-3c7cea9ed523\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.001290321 MB\",\r\n \
+        \   \"sku\": {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"threatIntelMode\": \"Deny\",\r\n    \"snat\": {\r\n      \"privateRanges\"\
+        : [\r\n        \"167.220.208.0/24\",\r\n        \"167.221.205.102/32\"\r\n\
+        \      ]\r\n    },\r\n    \"intrusionDetection\": {\r\n      \"mode\": \"\
+        Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":\
+        \ [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\"\
+        : \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\"\
+        : [],\r\n        \"privateRanges\": [\r\n          \"167.220.208.0/24\",\r\
+        \n          \"167.221.205.102/32\"\r\n        ]\r\n      }\r\n    },\r\n \
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"5b91bccc-ff48-456c-9bc6-f23c6f2e7f4d\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1309,9 +1436,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 10:47:33 GMT
+      - Tue, 25 Mar 2025 07:18:49 GMT
       etag:
-      - '"08bef905-9080-47ad-9488-3c7cea9ed523"'
+      - '"5b91bccc-ff48-456c-9bc6-f23c6f2e7f4d"'
       expires:
       - '-1'
       pragma:
@@ -1322,8 +1449,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 718A1AA010BC46BFB897568BE92DC7AD Ref B: MRS211050619047 Ref C: 2024-07-25T10:47:32Z'
+      - 'Ref A: A2C044AD096B4CF694D5911430C64FCC Ref B: DB3EDGE2810 Ref C: 2025-03-25T07:18:49Z'
     status:
       code: 200
       message: OK
@@ -1343,7 +1472,7 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_draft000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
@@ -1355,7 +1484,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 25 Jul 2024 10:47:38 GMT
+      - Tue, 25 Mar 2025 07:18:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1366,10 +1495,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=21229b0b-751f-48c8-aaf5-6336aa857cbe/westeurope/771fb201-477b-4c2c-9e45-408c906777a0
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14984'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
       x-msedge-ref:
-      - 'Ref A: 0DC921046D5840B4AE8376762B46106F Ref B: MRS211050619029 Ref C: 2024-07-25T10:47:33Z'
+      - 'Ref A: E8BB1263C03F47739A35ED18E4D462FC Ref B: DB3EDGE1718 Ref C: 2025-03-25T07:18:50Z'
     status:
       code: 200
       message: OK
