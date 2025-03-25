@@ -7,7 +7,7 @@ Release History
 * Update azure-rooms-communication to 1.2.0 (collaborator role)
 * Add new argument "collaborator-participants" to support collaborator role
 * Add abbreviations for role-based participant arguments
-* Update azure-core to 1.45.0
+* Update azure-core to 1.32.0
 * Update azure-identity to 1.5.0
 
 1.11.2
