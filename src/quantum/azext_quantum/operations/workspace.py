@@ -212,7 +212,8 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         # NOTE: This code doesn't create a storage account or do the role assignment.
         #       Response shows "storageAccount": null
 
-        # Create a storage account name to keep this code happy (Won't do this in the live MOBO version)
+        # Next line is a temporary work-around - Won't do this in the live MOBO version:
+        # Create a storage account name to keep the following code happy
         storage_account = workspace_name.translate(str.maketrans('', '', '-_')).lower()
 
         # Old pre-ARM-template code that was executed if the "--skip-role-assignment" flag was in the command line
