@@ -25,12 +25,12 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['azure-core >= 1.45.0',
-                'azure-communication-identity >= 1.2.0',
+DEPENDENCIES = ['azure-core >= 1.32.0',
+                'azure-communication-identity >= 1.5.0',
                 'azure-communication-phonenumbers >= 1.2.0b3',
                 'azure-communication-sms',
                 'azure-communication-chat >= 1.3.0',
-                'azure-communication-rooms >= 1.5.0',
+                'azure-communication-rooms >= 1.2.0',
                 'azure-communication-email >= 1.0.0',
                 ]
 
