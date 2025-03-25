@@ -1802,7 +1802,9 @@ def delete_connectedk8s(
         print(f"Step: {utils.get_utctimestring()}: Performing Force Delete")
         kubectl_client_location = install_kubectl_client()
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
 
         # Explicit CRD Deletion
         crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
@@ -1820,7 +1822,9 @@ def delete_connectedk8s(
         return
 
     if not release_namespace:
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
         return
 
     # Loading config map
@@ -1871,7 +1875,9 @@ def delete_connectedk8s(
                 recommendation=reco_str,
             )
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        delete_cc_resource(
+            client, resource_group_name, cluster_name, no_wait, force=force_delete
+        ).result()
     else:
         telemetry.set_exception(
             exception="Unable to delete connected cluster",
@@ -1952,15 +1958,26 @@ def delete_cc_resource(
     resource_group_name: str,
     cluster_name: str,
     no_wait: bool,
+    force: bool = False,
 ) -> LROPoller[None]:
     print(f"Step: {utils.get_utctimestring()}: Deleting ARM resource")
     try:
-        poller: LROPoller[None] = sdk_no_wait(
-            no_wait,
-            client.begin_delete,
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-        )
+        poller: LROPoller[None]
+        if force:
+            poller = sdk_no_wait(
+                no_wait,
+                client.begin_delete,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                params={"force": True},
+            )
+        else:
+            poller = sdk_no_wait(
+                no_wait,
+                client.begin_delete,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+            )
         return poller
     except Exception as e:
         utils.arm_exception_handler(

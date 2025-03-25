@@ -52,6 +52,10 @@ stages:
     parameters:
       jobName: Connectedk8sProxyTest
       path: ./test/configurations/ConnectProxy.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: ForcedDeleteTest
+      path: ./test/configurations/ForcedDelete.Tests.ps1
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-20.04'
