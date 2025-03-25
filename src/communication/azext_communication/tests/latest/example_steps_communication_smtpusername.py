@@ -73,6 +73,7 @@ def step_update(test, rg, cr, checks=None):
              '--resource-group "{rg}"',
              checks=checks)
 
+
 # EXAMPLE: /SMTP Username/delete/Delete resource
 @try_manual
 def step_delete(test, rg, cr, checks=None):
