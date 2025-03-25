@@ -5,9 +5,6 @@
 
 # pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks
 
-# >>>--->  Delete the next line and do "azdev style quantum" before submitting PR 8582  <---<<<
-# pylint: disable=unused-import
-
 import os.path
 import json
 import sys
@@ -187,8 +184,6 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
-# >>>--->  Delete the next line and do "azdev style quantum" before submitting PR 8582  <---<<<
-# pylint: disable=unused-argument
 def create(cmd, resource_group_name, workspace_name, location, storage_account=None, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False):
     """
