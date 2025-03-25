@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "workload-orchestration diagnostic",
-)
+# @register_command_group(
+#     "workload-orchestration diagnostic",
+# )
 class __CMDGroup(AAZCommandGroup):
     """workload-orchestration diagnostic helps to manage Diagnostics
     """

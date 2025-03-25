@@ -11,8 +11,6 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
-from ._delete_revision import *
-from ._deploy import *
 from ._install import *
 from ._list import *
 from ._list_untitled1 import *
@@ -22,5 +20,5 @@ from ._resolve import *
 from ._review_solution_version import *
 from ._show import *
 from ._uninstall import *
-from ._update import *
+# from ._update import *
 from ._wait import *

@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context workflow version show",
+    "workload-orchestration configuration show",
+    is_preview=False,
 )
-class Show(AAZCommand):
-    """Get a Workflow Version Resource
+class ShowConfig(AAZCommand):
+    """To get a configurations available at specified hierarchical entity
     """
 
     _aaz_info = {
-        "version": "2025-01-01-preview",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/contexts/{}/workflows/{}/versions/{}", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutions/{}", "2024-08-01-preview"],
         ]
     }
 
@@ -41,47 +42,58 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.context_name = AAZStrArg(
-            options=["--context-name"],
-            help="The name of the Context.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-                max_length=61,
-                min_length=3,
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["-n", "--name", "--version-name"],
-            help="The name of the workflowVersion.",
-            required=True,
-            id_part="child_name_2",
+        _args_schema.solution_name = AAZStrArg(
+            options=["--solution-template-name"],
+            help="The name of the Solution, This is required only to get solution configurations",
+            # required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-                max_length=61,
-                min_length=3,
+                pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.workflow_name = AAZStrArg(
-            options=["--workflow-name"],
-            help="Name of the workflow",
-            required=True,
-            id_part="child_name_1",
+
+        _args_schema = cls._args_schema
+        _args_schema.level_name = AAZStrArg(
+            options=["--target-name"],
+            help="The Target or Site name at which values needs to be set",
+
+            required = True,
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-                max_length=61,
-                min_length=3,
+                pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        #
+        # _args_schema.properties = AAZFreeFormDictArg(
+        #     options=["--properties"],
+        #     arg_group="Resource",
+        #     help="The resource-specific properties for this resource.",
+        #     nullable=True,
+        # )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.WorkflowVersionsGet(ctx=self.ctx)()
+        config_name = str(self.ctx.args.level_name)
+        if len(config_name) > 18:
+            config_name = config_name[:18] + "Config"
+        else:
+            config_name = config_name + "Config"
+        self.ctx.args.level_name = config_name
+        self.SolutionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -94,9 +106,10 @@ class Show(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        print(result["properties"]["values"])
+        pass
 
-    class WorkflowVersionsGet(AAZHttpOperation):
+    class SolutionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,13 +117,26 @@ class Show(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+            config = dict()
+            config["properties"] = dict()
+            config["properties"]["values"] = "{}"
+            # # config.config = AAZStrType()
+            # # config.config = "[]"
+            if session.http_response.status_code in [404]:
+                self.ctx.set_var(
+                    "instance",
+                    config,
+                    schema_builder=self._build_schema_on_404
+                )
+            #     return
+            else:
+                return self.on_error(session.http_response)
 
-            return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/contexts/{contextName}/workflows/{workflowName}/versions/{versionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configurations/{configName}/DynamicConfigurations/{solutionName}/versions/version1",
                 **self.url_parameters
             )
 
@@ -124,25 +150,25 @@ class Show(AAZCommand):
 
         @property
         def url_parameters(self):
+            sol_name = "common"
+            if has_value(self.ctx.args.solution_name):
+                sol_name = self.ctx.args.solution_name
+
             parameters = {
-                **self.serialize_url_param(
-                    "contextName", self.ctx.args.context_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "solutionName", sol_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "configName", self.ctx.args.level_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "workflowName", self.ctx.args.workflow_name,
                     required=True,
                 ),
             }
@@ -152,7 +178,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -178,6 +204,14 @@ class Show(AAZCommand):
         _schema_on_200 = None
 
         @classmethod
+        def _build_schema_on_404(cls):
+            cls._schema_on_200 = AAZObjectType()
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.properties = AAZFreeFormDictType()
+            return cls._schema_on_200
+
+
+        @classmethod
         def _build_schema_on_200(cls):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
@@ -185,73 +219,27 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
-            )
-            _schema_on_200.extended_location = AAZObjectType(
-                serialized_name="extendedLocation",
-            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
             )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZFreeFormDictType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            extended_location = cls._schema_on_200.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
-            )
 
-            properties = cls._schema_on_200.properties
-            properties.configuration = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.review_id = AAZStrType(
-                serialized_name="reviewId",
-                flags={"read_only": True},
-            )
-            properties.revision = AAZIntType(
-                flags={"read_only": True},
-            )
-            properties.specification = AAZFreeFormDictType()
-            properties.stage_spec = AAZListType(
-                serialized_name="stageSpec",
-                flags={"read_only": True},
-            )
-            properties.state = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            stage_spec = cls._schema_on_200.properties.stage_spec
-            stage_spec.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.stage_spec.Element
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.specification = AAZFreeFormDictType(
-                flags={"required": True},
-            )
-            _element.target_id = AAZStrType(
-                serialized_name="targetId",
-            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -273,6 +261,9 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
 
@@ -280,4 +271,4 @@ class _ShowHelper:
     """Helper class for Show"""
 
 
-__all__ = ["Show"]
+__all__ = ["ShowConfig"]

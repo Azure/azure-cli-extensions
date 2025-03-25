@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workload-orchestration target list-subscriptions",
-    is_preview=True,
+    is_preview=False,
 )
 class ListUntitled1(AAZCommand):
     """List by subscription

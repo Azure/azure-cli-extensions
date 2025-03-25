@@ -11,10 +11,10 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "workload-orchestration workflow version",
-    is_preview=True,
-)
+# @register_command_group(
+#     "workload-orchestration workflow version",
+#     is_preview=True,
+# )
 class __CMDGroup(AAZCommandGroup):
     """This is for edge Config-Manager
     """

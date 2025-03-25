@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration context site-reference",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is for edge Config-Manager
+    """Manage workload orchestration site reference context.
     """
     pass
 

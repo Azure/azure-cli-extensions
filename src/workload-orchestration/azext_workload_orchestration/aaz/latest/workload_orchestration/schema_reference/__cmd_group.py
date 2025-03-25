@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "workload-orchestration schema-reference",
-)
+# @register_command_group(
+#     "workload-orchestration schema-reference",
+# )
 class __CMDGroup(AAZCommandGroup):
     """workload-orchestration schema-reference helps to manage SchemaReference
     """

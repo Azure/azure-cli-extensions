@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration target list",
 )
 class List(AAZCommand):
-    """List by subscription
+    """List by Resource-Group
     """
 
     _aaz_info = {

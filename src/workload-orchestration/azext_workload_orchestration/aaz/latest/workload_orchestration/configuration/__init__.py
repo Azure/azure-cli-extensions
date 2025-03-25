@@ -10,3 +10,4 @@
 
 from .__cmd_group import *
 from ._config_set import *
+from ._config_show import *

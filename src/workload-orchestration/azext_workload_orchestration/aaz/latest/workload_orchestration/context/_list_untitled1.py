@@ -12,8 +12,8 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context list-untitled1",
-    is_preview=True,
+    "workload-orchestration context list",
+    is_preview=False,
 )
 class ListUntitled1(AAZCommand):
     """List by specified resource group

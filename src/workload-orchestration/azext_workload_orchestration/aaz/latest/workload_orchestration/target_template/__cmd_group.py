@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "workload-orchestration target-template",
-)
+# @register_command_group(
+#     "workload-orchestration target-template",
+# )
 class __CMDGroup(AAZCommandGroup):
     """workload-orchestration target-template helps to manage Target Templates
     """

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template list",
+    "workload-orchestration solution-template list-subscriptions",
 )
 class List(AAZCommand):
     """List by subscription

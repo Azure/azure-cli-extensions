@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workload-orchestration solution-template version",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is for edge Config-Manager
+    """Manage solution template versions in workload orchestration.
     """
     pass
 
