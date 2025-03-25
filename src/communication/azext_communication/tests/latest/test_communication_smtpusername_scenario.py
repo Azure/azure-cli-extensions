@@ -39,22 +39,27 @@ def setup_scenario(test, rg, cr):
 def cleanup_scenario(test, rg, cr):
     pass
 
+
 def get_domain_resource_count_by_communication_service(self, rg, cr):
     count = self.cmd('az communication smtp-username list --comm-service-name "{cr}" --resource-group "{rg}" --query "[].id | length(@)"').output.strip()
     return int(count)
 
+
 # Testcase: Scenario
 @try_manual
 def call_scenario(test, rg, cr):
+    # Set up the environment
     setup_scenario(test, rg, cr)
 
-    step_create(test, rg,cr, checks=[
+    # Step to create a new SMTP username resource with the expected checks
+    step_create(test, rg, cr, checks=[
         test.check("name", "{mySmtpUsername}", case_sensitive=False),
         test.check("entraApplicationId", "735ffca9-2020-4c43-a16d-128dd4221e90", case_sensitive=False),
         test.check("tenantId", "72f988bf-86f1-41af-91ab-2d7cd011db47", case_sensitive=False),
         test.check("username", "TestUsername", case_sensitive=False),
     ])
 
+    # Step to show the created SMTP username resource with the expected checks
     step_show(test, rg, cr, checks=[
         test.check("name", "{mySmtpUsername}", case_sensitive=False),
         test.check("entraApplicationId", "735ffca9-2020-4c43-a16d-128dd4221e90", case_sensitive=False),
@@ -62,18 +67,23 @@ def call_scenario(test, rg, cr):
         test.check("username", "TestUsername", case_sensitive=False),
     ])
 
+    # Expected number of resources after creation
     expected_count = 1
+    # Adjust expected count if the test input specifies an existing resource count
     if test.kwargs['existingResourceCountByCommunicationService'] is not None:
         expected_count = test.kwargs['existingResourceCountByCommunicationService'] + 1
 
+    # Step to list the resources and check the length of the list
     step_list(test, rg, cr, checks=[
         test.check('length(@)', expected_count),
     ])
 
+    # Another step to list the resources and check the length of the list with -g
     step_list2(test, rg, cr, checks=[
         test.check('length(@)', expected_count),
     ])
 
+    # Step to update the SMTP username with new values and verify the update
     step_update(test, rg, cr, checks=[
         test.check("name", "{mySmtpUsername}", case_sensitive=False),
         test.check("entraApplicationId", "735ffca9-2020-4c43-a16d-128dd4221e99", case_sensitive=False),
@@ -81,8 +91,10 @@ def call_scenario(test, rg, cr):
         test.check("username", "TestUsername", case_sensitive=False),
     ])
 
+    # Step to delete the SMTP username resource
     step_delete(test, rg, cr, checks=[])
 
+    # Clean up the environment after the test
     cleanup_scenario(test, rg, cr)
 
 # Test class for Scenario
@@ -96,27 +108,35 @@ class CommunicationSmtpUsernameScenarioTest(ScenarioTest):
         ], *args, **kwargs)
 
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id(),
+            'subscription_id': self.get_subscription_id(), # Subscription ID for the current test
         })
 
         self.kwargs.update({
-            'existingResourceCountByCommunicationService': 0,
+            'existingResourceCountByCommunicationService': 0, # Initial resource count
         })
 
         self.kwargs.update({
-            'mySmtpUsername': "TestSMTPUsername",
+            'mySmtpUsername': "TestSMTPUsername", # Name for the SMTP username resource
         })
 
+        # Generating a random name for the communication resource
         self.kwargs.update({
             'cr': self.create_random_name(prefix='clismtpusernametest'[:18], length=24),
         })
         
-    @live_only()
+    @live_only() # Test will only run in live environment
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(name_prefix='clismtpusernametest', key='cr', parameter_name='cr', resource_group_parameter_name='rg')
     def test_communication_smtpusername_scenarios(self, rg, cr):
+        # Get the initial count of domain resources
         self.kwargs['existingResourceCountByCommunicationService'] = get_domain_resource_count_by_communication_service(self, rg, cr)
+
+        # Run the test scenarios
         call_scenario(self, rg, cr)
+
+        # Calculate the test coverage for the current file
         calc_coverage(__file__)
+
+        # Raise an exception if any assertion or validation fails
         raise_if()
