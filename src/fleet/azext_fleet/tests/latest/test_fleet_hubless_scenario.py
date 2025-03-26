@@ -11,7 +11,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
-    path = os.path.join(curr_dir, 'data', filename)
     return os.path.join(curr_dir, 'data', filename)
 
 
@@ -178,6 +177,10 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet autoupgradeprofile list -g {rg} -f {fleet_name}', checks=[
             self.check('length([])', 1)
+        ])
+
+        self.cmd('fleet autoupgradeprofile generate-update-run -g {rg} -f {fleet_name} --auto-upgrade-profile-name {autoupgradeprofile_name}', checks=[
+            self.check("contains(id, 'auto-{autoupgradeprofile_name}-rapid')", True)
         ])
 
         self.cmd('fleet autoupgradeprofile delete -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} --yes')

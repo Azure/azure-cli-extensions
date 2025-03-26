@@ -95,7 +95,7 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     # auto upgrade profiles command group
-    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profiles_sdk, client_factory=cf_auto_upgrade_profiles, is_preview=True) as g:
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profiles_sdk, client_factory=cf_auto_upgrade_profiles) as g:
         g.custom_command("create", "create_auto_upgrade_profile", supports_no_wait=True)
         g.custom_show_command("show", "show_auto_upgrade_profile")
         g.custom_command("list", "list_auto_upgrade_profiles")
@@ -103,6 +103,6 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     # auto upgrade profiles operation command group
-    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profile_operations_sdk, client_factory=cf_auto_upgrade_profile_operations, is_preview=True) as g:
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profile_operations_sdk, client_factory=cf_auto_upgrade_profile_operations) as g:
         g.custom_command("generate-update-run", "generate_update_run", supports_no_wait=True)
         g.wait_command("wait")

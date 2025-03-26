@@ -118,4 +118,4 @@ Release History
 
 1.5.0
 ++++++
-* Add autoupgradeprofile GA commands 
+* Upgrade SDK version to 2025-03-01
