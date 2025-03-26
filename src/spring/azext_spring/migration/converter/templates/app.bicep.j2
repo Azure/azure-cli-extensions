@@ -41,15 +41,15 @@ resource {{data.moduleName}} 'Microsoft.App/containerApps@2024-03-01' = {
     workloadProfileName: workloadProfileName
     configuration: {
       {%- if data.isByoc %}
+      {%- if data.isPrivateImage %}
       registries: [
         {
           server: '{{data.containerRegistry.server}}'
-          {%- if data.isPrivateImage %}
           username: '{{data.containerRegistry.username}}'
           passwordSecretRef: '{{data.containerRegistry.passwordSecretRef}}'
-          {%- endif %}
         }
       ]
+      {%- endif %}
       {%- if data.isPrivateImage %}
       secrets: [
         {
