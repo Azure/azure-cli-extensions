@@ -13,37 +13,37 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 10 Jun 2024 13:40:59 GMT
+      - Tue, 25 Mar 2025 01:18:29 GMT
       Repeatability-Request-Id:
-      - 122096d6-272f-11ef-a8b2-00155d7acf01
+      - 0f265b6e-0917-11f0-9949-8c3b4abe269c
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.11.2 azsdk-python-communication-rooms/1.2.0 Python/3.9.13 (Windows-10-10.0.26100-SP0)
       x-ms-content-sha256:
       - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:40:59 GMT
+      - Tue, 25 Mar 2025 01:18:29 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2024-06-10T13:41:01.2418405+00:00",
-        "validFrom": "2024-06-10T13:41:00.7583105+00:00", "validUntil": "2024-12-07T13:41:00.7583105+00:00",
+      string: '{"id": "sanitized", "createdAt": "2025-03-25T01:18:30.7355722+00:00",
+        "validFrom": "2025-03-25T01:18:30.4883861+00:00", "validUntil": "2025-09-21T01:18:30.4883861+00:00",
         "pstnDialOutEnabled": false}'
     headers:
-      api-deprecated-versions:
-      - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:41:01 GMT
+      - Tue, 25 Mar 2025 01:18:30 GMT
       location:
-      - '99427778402047605'
+      - '9942436166756522'
       ms-cv:
-      - k91Kw4815kKNCG6foah9UA.0
+      - CkRsu4AsRkG0pn7U99f6Uw.0
       repeatability-result:
       - accepted
       request-context:
@@ -53,7 +53,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0awJnZgAAAABCJLfvbZ1ISoDUcQAyTTTPSEtCRURHRTA3MTQAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250325T011830Z-r1fff4c4b87llftchC1CO1mm9g00000001a000000000av2w
       x-cache:
       - CONFIG_NOCACHE
     status:
@@ -74,15 +74,15 @@ interactions:
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.11.2 azsdk-python-communication-rooms/1.2.0 Python/3.9.13 (Windows-10-10.0.26100-SP0)
       x-ms-content-sha256:
       - VztSYEdQgt6r3uF5baFbPI5NYeeCpmEDvnwtcY9SMtw=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:41:01 GMT
+      - Tue, 25 Mar 2025 01:18:30 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: PATCH
-    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2025-03-13
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "The request could not
@@ -90,12 +90,14 @@ interactions:
         "BadArgument", "message": "The time range end is in the past.", "target":
         "ValidUntil"}]}}'
     headers:
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:41:02 GMT
+      - Tue, 25 Mar 2025 01:18:31 GMT
       ms-cv:
-      - 8ISJLcD33Ua83q9kBFKZZA.0
+      - t4PTXFYhzkWQRaMOALRzvw.0
       request-context:
       - appId=
       strict-transport-security:
@@ -103,11 +105,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0bgJnZgAAAACoTGP3SU22Troahqen2Q4zSEtCRURHRTA3MjIAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250325T011831Z-r1fff4c4b87c4ng4hC1CO1n3wc00000001cg000000006ww2
       x-cache:
       - CONFIG_NOCACHE
-      x-ms-error-code:
-      - BadRequest
     status:
       code: 400
       message: Bad Request
