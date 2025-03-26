@@ -22,6 +22,7 @@ class ReadMeConverter(BaseConverter):
                 "containerDeployments": self.wrapper_data.get_container_deployments(),
                 "buildResultsDeployments": self.wrapper_data.get_build_results_deployments(),
                 "hasApps": len(apps) > 0,
+                "isSupportGateway": self.wrapper_data.is_support_gateway(),
                 "isSupportConfigServer": self.wrapper_data.is_support_configserver(),
                 "customDomains": self._transform_domains(custom_domains),
                 "hasCerts": len(keyvault_certs) > 0 or len(content_certs) > 0,
