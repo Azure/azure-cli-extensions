@@ -99,7 +99,8 @@ def _get_basic_quantum_workspace(location, info, storage_account):
     # Allow the system to assign the workspace identity
     qw.identity = QuantumWorkspaceIdentity()
     qw.identity.type = "SystemAssigned"
-    qw.storage_account = _get_storage_account_path(info, storage_account)
+    if storage_account:
+        qw.storage_account = _get_storage_account_path(info, storage_account)
     return qw
 
 
@@ -201,8 +202,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
-        if not storage_account:
-            raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         properties = WorkspaceResourceProperties()
         properties.providers = quantum_workspace.providers
@@ -213,11 +212,14 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
             time.sleep(POLLING_TIME_DURATION)
         quantum_workspace = poller.result()
         return quantum_workspace
-    # PR 8582 Note: No changes to this point, except for moving the "if not storage_account" logic
+
+    # Temporary flag that should be set by --legacy-storage-account
+    # legacy_storage_account = True
+    legacy_storage_account = False
 
     # New MOBO code...
     #
-    if not storage_account:
+    if not storage_account and not legacy_storage_account:
         # Call the service to create a workspace and a MOBO SA
 
         # TODO: Rework this "fake" code when the MOBO feature is live.
@@ -246,26 +248,32 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
 
     # BYO storage account code...
     #
-    # Validate the storage account (must already exist)
-    storage_account_sku = None
-    storage_account_sku_tier = None
-    storage_account_kind = None
-    storage_account_location = None
-    found_it = False
-    storage_account_list = list_storage_accounts(cmd, resource_group_name)
-    if storage_account_list:
-        for storage_account_info in storage_account_list:
-            if storage_account_info.name == storage_account:
-                storage_account_sku = storage_account_info.sku.name
-                storage_account_sku_tier = storage_account_info.sku.tier
-                storage_account_kind = storage_account_info.kind
-                storage_account_location = storage_account_info.location
-                found_it = True
-                break
-    if not found_it:
-        raise InvalidArgumentValueError(f"Storage account {storage_account} was not found.\n"
-                                        "If you omit the storage account name, the quantum service "
-                                        "will create and manage a storage account for you.")
+    # TODO: Clean up this logic 
+    #
+    if not storage_account and legacy_storage_account:
+        raise RequiredArgumentMissingError("Please specify a storage account name.")
+
+    if storage_account:
+        # Validate the storage account (must already exist)
+        storage_account_sku = None
+        storage_account_sku_tier = None
+        storage_account_kind = None
+        storage_account_location = None
+        found_it = False
+        storage_account_list = list_storage_accounts(cmd, resource_group_name)
+        if storage_account_list:
+            for storage_account_info in storage_account_list:
+                if storage_account_info.name == storage_account:
+                    storage_account_sku = storage_account_info.sku.name
+                    storage_account_sku_tier = storage_account_info.sku.tier
+                    storage_account_kind = storage_account_info.kind
+                    storage_account_location = storage_account_info.location
+                    found_it = True
+                    break
+        if not found_it:
+            raise InvalidArgumentValueError(f"Storage account {storage_account} was not found.\n"
+                                            "If you omit the storage account name, the quantum service "
+                                            "will create and manage a storage account for you.")
 
     # Use the pre-MOBO ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the existing storage account
     # quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
