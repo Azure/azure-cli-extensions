@@ -166,10 +166,10 @@ def get_extension_installed_and_cluster_configs(
         perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         resource_cpu_value = -1
     except UnknownError as e:
-        logger.error(f"\nError fetching k8s extension module: {e}")
+        logger.error("\nError fetching k8s extension module: %s", e)
         return False, False, False, False, False, -1, "", ""
-    except Exception as ex:
-        logger.error(f"\Exception occurred while fetching k8s extension module: {ex}")
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.error("\nException occurred while fetching k8s extension module: %s", ex)
         return False, False, False, False, False, -1, "", ""
 
     try:
@@ -181,8 +181,7 @@ def get_extension_installed_and_cluster_configs(
             "managedClusters",
         )
 
-        extension_type = extension.extension_type.lower()
-        is_extension_installed = extension_type == CONST_ACSTOR_K8S_EXTENSION_NAME
+        is_extension_installed = extension.extension_type.lower() == CONST_ACSTOR_K8S_EXTENSION_NAME
         config_settings = extension.configuration_settings
 
         if is_extension_installed and config_settings is not None:

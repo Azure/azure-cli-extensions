@@ -30,6 +30,8 @@
     - [allow_unencrypted_scratch](#allow_unencrypted_scratch)
     - [allow_capabilities_dropping](#allow_capabilities_dropping)
 - [Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples](#microsoft-azure-cli-confcom-acifragmentgen-extension-examples)
+  - [Types of Policy Fragments](#types-of-policy-fragments)
+  - [Examples](#examples)
 - [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples](#microsoft-azure-cli-confcom-katapolicygen-extension-examples)
 
 ## Microsoft Azure CLI 'confcom acipolicygen' Extension Examples
@@ -191,6 +193,8 @@ Use the following command to generate CCE policy for the image.
 ```bash
 az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
 ```
+
+Note that multiple images saved to the tar file is only available using the docker-archive format for tar files. OCI does not support multi-image tar files at this time.
 
 Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
 
@@ -664,6 +668,15 @@ Whether to allow capabilities to be dropped in the same manner as allow_environm
 Run `az confcom acifragmentgen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security fragments.
 
 For information on what a policy fragment is, see [policy fragments](#policy-fragments). For a full walkthrough on how to generate a policy fragment and use it in a policy, see [Create a Key and Cert for Signing](../samples/certs/README.md).
+
+### Types of Policy Fragments
+
+There are two types of policy fragments:
+
+1. Image-attached fragments: These are fragments that are attached to an image in an ORAS-compliant registry. They are used to provide additional security information about the image and are to be used for a single image. Image-attached fragments are currently in development. Note that nested image-attached fragments are *not* supported.
+2. Standalone fragments: These are fragments that are uploaded to an ORAS-compliant registry independent of a specific image and can be used for multiple images. Standalone fragments are currently not supported. Once implemented, nested standalone fragments will be supported.
+
+### Examples
 
 **Examples:**
 
