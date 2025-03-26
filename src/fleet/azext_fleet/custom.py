@@ -604,6 +604,7 @@ def delete_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
                                 no_wait=False):
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
 
+
 def generate_update_run(cmd, client, resource_group_name, fleet_name, auto_upgrade_profile_name, no_wait=False):
     return sdk_no_wait(
         no_wait,
