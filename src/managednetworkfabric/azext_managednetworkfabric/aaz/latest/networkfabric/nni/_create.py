@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -52,11 +52,17 @@ class Create(AAZCommand):
             options=["--fabric", "--fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
             help="Name of the Network to Network Interconnect.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -65,50 +71,55 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.conditional_default_route_configuration = AAZObjectArg(
+            options=["--conditional-default-route-configuration"],
+            arg_group="Properties",
+            help="Conditional Default Route Configuration properties.",
+        )
         _args_schema.egress_acl_id = AAZResourceIdArg(
             options=["--egress-acl-id"],
             arg_group="Properties",
-            help="Egress Acl ARM resource ID.",
-            nullable=True,
+            help="Egress Acl. ARM resource ID of Access Control Lists.",
         )
         _args_schema.export_route_policy = AAZObjectArg(
             options=["--export-route-policy"],
             arg_group="Properties",
-            help="Export Route Policy configuration.",
+            help="Export Route Policy information",
         )
         _args_schema.import_route_policy = AAZObjectArg(
             options=["--import-route-policy"],
             arg_group="Properties",
-            help="Import Route Policy configuration.",
+            help="Import Route Policy information.",
         )
         _args_schema.ingress_acl_id = AAZResourceIdArg(
             options=["--ingress-acl-id"],
             arg_group="Properties",
-            help="Ingress Acl ARM resource ID.",
-            nullable=True,
+            help="Ingress Acl. ARM resource ID of Access Control Lists.",
         )
         _args_schema.is_management_type = AAZStrArg(
             options=["--is-management-type"],
             arg_group="Properties",
-            help="Configuration to use NNI for Infrastructure Management. Default value is True. Example: True.",
+            help="Configuration to use NNI for Infrastructure Management. Example: True/False.",
+            default="True",
             enum={"False": "False", "True": "True"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
         _args_schema.layer2_configuration = AAZObjectArg(
             options=["--layer2-configuration"],
             arg_group="Properties",
             help="Common properties for Layer2 Configuration.",
         )
+        _args_schema.micro_bfd_state = AAZStrArg(
+            options=["--micro-bfd-state"],
+            arg_group="Properties",
+            help="Micro Bidirectional Forwarding Detection (BFD) enabled/disabled state.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
         _args_schema.nni_type = AAZStrArg(
             options=["--nni-type"],
             arg_group="Properties",
-            help="Usage type of NNI. Default value is CE. Example: CE",
+            help="Type of NNI used. Example: CE | NPB",
+            default="CE",
             enum={"CE": "CE", "NPB": "NPB"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
         _args_schema.npb_static_route_configuration = AAZObjectArg(
             options=["--npb-static-route-configuration"],
@@ -120,36 +131,55 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Common properties for Layer3Configuration.",
         )
+        _args_schema.static_route_configuration = AAZObjectArg(
+            options=["--static-route-configuration"],
+            arg_group="Properties",
+            help="Static Route Configuration.",
+        )
         _args_schema.use_option_b = AAZStrArg(
             options=["--use-option-b"],
             arg_group="Properties",
-            help="Selection of option B for NNI. Example: True",
+            help="Based on this option layer3 parameters are mandatory. Example: True/False",
             required=True,
             enum={"False": "False", "True": "True"},
         )
+
+        conditional_default_route_configuration = cls._args_schema.conditional_default_route_configuration
+        conditional_default_route_configuration.ipv4_routes = AAZListArg(
+            options=["ipv4-routes"],
+            help="List of IPv4 Routes.",
+        )
+        conditional_default_route_configuration.ipv6_routes = AAZListArg(
+            options=["ipv6-routes"],
+            help="List of IPv6 Routes.",
+        )
+
+        ipv4_routes = cls._args_schema.conditional_default_route_configuration.ipv4_routes
+        ipv4_routes.Element = AAZObjectArg()
+        cls._build_args_static_route_properties_create(ipv4_routes.Element)
+
+        ipv6_routes = cls._args_schema.conditional_default_route_configuration.ipv6_routes
+        ipv6_routes.Element = AAZObjectArg()
+        cls._build_args_static_route_properties_create(ipv6_routes.Element)
 
         export_route_policy = cls._args_schema.export_route_policy
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="Export IPv4 Route Policy Id.",
-            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="Export IPv6 Route Policy Id.",
-            nullable=True,
         )
 
         import_route_policy = cls._args_schema.import_route_policy
         import_route_policy.import_ipv4_route_policy_id = AAZResourceIdArg(
             options=["import-ipv4-route-policy-id"],
             help="Import IPv4 Route Policy Id.",
-            nullable=True,
         )
         import_route_policy.import_ipv6_route_policy_id = AAZResourceIdArg(
             options=["import-ipv6-route-policy-id"],
             help="Import IPv6 Route Policy Id.",
-            nullable=True,
         )
 
         layer2_configuration = cls._args_schema.layer2_configuration
@@ -162,7 +192,8 @@ class Create(AAZCommand):
         )
         layer2_configuration.mtu = AAZIntArg(
             options=["mtu"],
-            help="MTU of the packets between PE & CE. The value should be between 64 and 9200.",
+            help="MTU of the packets between PE & CE.",
+            default=1500,
             fmt=AAZIntArgFormat(
                 maximum=9200,
                 minimum=64,
@@ -195,11 +226,13 @@ class Create(AAZCommand):
         bfd_configuration = cls._args_schema.npb_static_route_configuration.bfd_configuration
         bfd_configuration.interval_in_milli_seconds = AAZIntArg(
             options=["interval-in-milli-seconds"],
-            help="Interval in milliseconds. Default value is 300. Example: 300.",
+            help="Interval in milliseconds. Example: 300.",
+            default=300,
         )
         bfd_configuration.multiplier = AAZIntArg(
             options=["multiplier"],
-            help="Multiplier for the Bfd Configuration. Default value is 5. Example: 5.",
+            help="Multiplier for the Bfd Configuration. Example: 5.",
+            default=5,
         )
 
         ipv4_routes = cls._args_schema.npb_static_route_configuration.ipv4_routes
@@ -211,43 +244,126 @@ class Create(AAZCommand):
         cls._build_args_static_route_properties_create(ipv6_routes.Element)
 
         option_b_layer3_configuration = cls._args_schema.option_b_layer3_configuration
+        option_b_layer3_configuration.bmp_configuration = AAZObjectArg(
+            options=["bmp-configuration"],
+            help="BGP Monitoring Protocol (BMP) Configuration.",
+        )
+        option_b_layer3_configuration.pe_loopback_ip_address = AAZListArg(
+            options=["pe-loopback-ip-address"],
+            help="Provider Edge (PE) Loopback IP Address.",
+        )
         option_b_layer3_configuration.peer_asn = AAZIntArg(
             options=["peer-asn"],
-            help="ASN of PE devices for CE/PE connectivity. The value should be between 1 to 4294967295. Example: 28.",
+            help="ASN of PE devices for CE/PE connectivity.Example : 28",
             required=True,
             fmt=AAZIntArgFormat(
                 maximum=4294967295,
                 minimum=1,
             ),
         )
+        option_b_layer3_configuration.prefix_limits = AAZListArg(
+            options=["prefix-limits"],
+            help="OptionB Layer3 prefix limit configuration.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
+        )
         option_b_layer3_configuration.primary_ipv4_prefix = AAZStrArg(
             options=["primary-ipv4-prefix"],
-            help="IPv4 Address Prefix. Example: 172.31.0.0/31.",
+            help="IPv4 Address Prefix.",
         )
         option_b_layer3_configuration.primary_ipv6_prefix = AAZStrArg(
             options=["primary-ipv6-prefix"],
-            help="IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a0/127.",
-            nullable=True,
+            help="IPv6 Address Prefix.",
         )
         option_b_layer3_configuration.secondary_ipv4_prefix = AAZStrArg(
             options=["secondary-ipv4-prefix"],
-            help="Secondary IPv4 Address Prefix. Example: 172.31.0.20/31.",
+            help="Secondary IPv4 Address Prefix.",
         )
         option_b_layer3_configuration.secondary_ipv6_prefix = AAZStrArg(
             options=["secondary-ipv6-prefix"],
-            help="Secondary IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a4/127.",
-            nullable=True,
+            help="Secondary IPv6 Address Prefix.",
         )
         option_b_layer3_configuration.vlan_id = AAZIntArg(
             options=["vlan-id"],
-            help="VLAN for CE/PE Layer 3 connectivity. The value should be between 100 to 4094. Example: 501.",
+            help="VLAN for CE/PE Layer 3 connectivity.Example : 501",
             required=True,
             fmt=AAZIntArgFormat(
                 maximum=4094,
                 minimum=100,
             ),
         )
+
+        bmp_configuration = cls._args_schema.option_b_layer3_configuration.bmp_configuration
+        bmp_configuration.configuration_state = AAZStrArg(
+            options=["configuration-state"],
+            help="BGP Monitoring Protocol (BMP) Configuration State.",
+            required=True,
+            default="Disabled",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        pe_loopback_ip_address = cls._args_schema.option_b_layer3_configuration.pe_loopback_ip_address
+        pe_loopback_ip_address.Element = AAZStrArg()
+
+        prefix_limits = cls._args_schema.option_b_layer3_configuration.prefix_limits
+        prefix_limits.Element = AAZObjectArg()
+
+        _element = cls._args_schema.option_b_layer3_configuration.prefix_limits.Element
+        _element.maximum_routes = AAZIntArg(
+            options=["maximum-routes"],
+            help="Maximum number of routes allowed.",
+        )
+
+        static_route_configuration = cls._args_schema.static_route_configuration
+        static_route_configuration.bfd_configuration = AAZObjectArg(
+            options=["bfd-configuration"],
+            help="BFD configuration properties",
+        )
+        cls._build_args_bfd_configuration_create(static_route_configuration.bfd_configuration)
+        static_route_configuration.ipv4_routes = AAZListArg(
+            options=["ipv4-routes"],
+            help="List of IPv4 Routes.",
+        )
+        static_route_configuration.ipv6_routes = AAZListArg(
+            options=["ipv6-routes"],
+            help="List of IPv6 Routes.",
+        )
+
+        ipv4_routes = cls._args_schema.static_route_configuration.ipv4_routes
+        ipv4_routes.Element = AAZObjectArg()
+        cls._build_args_static_route_properties_create(ipv4_routes.Element)
+
+        ipv6_routes = cls._args_schema.static_route_configuration.ipv6_routes
+        ipv6_routes.Element = AAZObjectArg()
+        cls._build_args_static_route_properties_create(ipv6_routes.Element)
         return cls._args_schema
+
+    _args_bfd_configuration_create = None
+
+    @classmethod
+    def _build_args_bfd_configuration_create(cls, _schema):
+        if cls._args_bfd_configuration_create is not None:
+            _schema.interval_in_milli_seconds = cls._args_bfd_configuration_create.interval_in_milli_seconds
+            _schema.multiplier = cls._args_bfd_configuration_create.multiplier
+            return
+
+        cls._args_bfd_configuration_create = AAZObjectArg()
+
+        bfd_configuration_create = cls._args_bfd_configuration_create
+        bfd_configuration_create.interval_in_milli_seconds = AAZIntArg(
+            options=["interval-in-milli-seconds"],
+            help="Interval in milliseconds. Example: 300.",
+            default=300,
+        )
+        bfd_configuration_create.multiplier = AAZIntArg(
+            options=["multiplier"],
+            help="Multiplier for the Bfd Configuration. Example: 5.",
+            default=5,
+        )
+
+        _schema.interval_in_milli_seconds = cls._args_bfd_configuration_create.interval_in_milli_seconds
+        _schema.multiplier = cls._args_bfd_configuration_create.multiplier
 
     _args_static_route_properties_create = None
 
@@ -279,11 +395,7 @@ class Create(AAZCommand):
         )
 
         next_hop = cls._args_static_route_properties_create.next_hop
-        next_hop.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
+        next_hop.Element = AAZStrArg()
 
         _schema.next_hop = cls._args_static_route_properties_create.next_hop
         _schema.prefix = cls._args_static_route_properties_create.prefix
@@ -373,7 +485,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -402,26 +514,42 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id", typ_kwargs={"nullable": True})
+                properties.set_prop("conditionalDefaultRouteConfiguration", AAZObjectType, ".conditional_default_route_configuration")
+                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id")
                 properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
                 properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
-                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id", typ_kwargs={"nullable": True})
+                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id")
                 properties.set_prop("isManagementType", AAZStrType, ".is_management_type")
                 properties.set_prop("layer2Configuration", AAZObjectType, ".layer2_configuration")
+                properties.set_prop("microBfdState", AAZStrType, ".micro_bfd_state")
                 properties.set_prop("nniType", AAZStrType, ".nni_type")
                 properties.set_prop("npbStaticRouteConfiguration", AAZObjectType, ".npb_static_route_configuration")
                 properties.set_prop("optionBLayer3Configuration", AAZObjectType, ".option_b_layer3_configuration")
+                properties.set_prop("staticRouteConfiguration", AAZObjectType, ".static_route_configuration")
                 properties.set_prop("useOptionB", AAZStrType, ".use_option_b", typ_kwargs={"flags": {"required": True}})
+
+            conditional_default_route_configuration = _builder.get(".properties.conditionalDefaultRouteConfiguration")
+            if conditional_default_route_configuration is not None:
+                conditional_default_route_configuration.set_prop("ipv4Routes", AAZListType, ".ipv4_routes")
+                conditional_default_route_configuration.set_prop("ipv6Routes", AAZListType, ".ipv6_routes")
+
+            ipv4_routes = _builder.get(".properties.conditionalDefaultRouteConfiguration.ipv4Routes")
+            if ipv4_routes is not None:
+                _CreateHelper._build_schema_static_route_properties_create(ipv4_routes.set_elements(AAZObjectType, "."))
+
+            ipv6_routes = _builder.get(".properties.conditionalDefaultRouteConfiguration.ipv6Routes")
+            if ipv6_routes is not None:
+                _CreateHelper._build_schema_static_route_properties_create(ipv6_routes.set_elements(AAZObjectType, "."))
 
             export_route_policy = _builder.get(".properties.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
 
             import_route_policy = _builder.get(".properties.importRoutePolicy")
             if import_route_policy is not None:
-                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id", typ_kwargs={"nullable": True})
-                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id", typ_kwargs={"nullable": True})
+                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id")
+                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id")
 
             layer2_configuration = _builder.get(".properties.layer2Configuration")
             if layer2_configuration is not None:
@@ -453,12 +581,45 @@ class Create(AAZCommand):
 
             option_b_layer3_configuration = _builder.get(".properties.optionBLayer3Configuration")
             if option_b_layer3_configuration is not None:
+                option_b_layer3_configuration.set_prop("bmpConfiguration", AAZObjectType, ".bmp_configuration")
+                option_b_layer3_configuration.set_prop("peLoopbackIpAddress", AAZListType, ".pe_loopback_ip_address")
                 option_b_layer3_configuration.set_prop("peerASN", AAZIntType, ".peer_asn", typ_kwargs={"flags": {"required": True}})
+                option_b_layer3_configuration.set_prop("prefixLimits", AAZListType, ".prefix_limits")
                 option_b_layer3_configuration.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
-                option_b_layer3_configuration.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix", typ_kwargs={"nullable": True})
+                option_b_layer3_configuration.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
                 option_b_layer3_configuration.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
-                option_b_layer3_configuration.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix", typ_kwargs={"nullable": True})
+                option_b_layer3_configuration.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
                 option_b_layer3_configuration.set_prop("vlanId", AAZIntType, ".vlan_id", typ_kwargs={"flags": {"required": True}})
+
+            bmp_configuration = _builder.get(".properties.optionBLayer3Configuration.bmpConfiguration")
+            if bmp_configuration is not None:
+                bmp_configuration.set_prop("configurationState", AAZStrType, ".configuration_state", typ_kwargs={"flags": {"required": True}})
+
+            pe_loopback_ip_address = _builder.get(".properties.optionBLayer3Configuration.peLoopbackIpAddress")
+            if pe_loopback_ip_address is not None:
+                pe_loopback_ip_address.set_elements(AAZStrType, ".")
+
+            prefix_limits = _builder.get(".properties.optionBLayer3Configuration.prefixLimits")
+            if prefix_limits is not None:
+                prefix_limits.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.optionBLayer3Configuration.prefixLimits[]")
+            if _elements is not None:
+                _elements.set_prop("maximumRoutes", AAZIntType, ".maximum_routes")
+
+            static_route_configuration = _builder.get(".properties.staticRouteConfiguration")
+            if static_route_configuration is not None:
+                _CreateHelper._build_schema_bfd_configuration_create(static_route_configuration.set_prop("bfdConfiguration", AAZObjectType, ".bfd_configuration"))
+                static_route_configuration.set_prop("ipv4Routes", AAZListType, ".ipv4_routes")
+                static_route_configuration.set_prop("ipv6Routes", AAZListType, ".ipv6_routes")
+
+            ipv4_routes = _builder.get(".properties.staticRouteConfiguration.ipv4Routes")
+            if ipv4_routes is not None:
+                _CreateHelper._build_schema_static_route_properties_create(ipv4_routes.set_elements(AAZObjectType, "."))
+
+            ipv6_routes = _builder.get(".properties.staticRouteConfiguration.ipv6Routes")
+            if ipv6_routes is not None:
+                _CreateHelper._build_schema_static_route_properties_create(ipv6_routes.set_elements(AAZObjectType, "."))
 
             return self.serialize_content(_content_value)
 
@@ -502,13 +663,15 @@ class Create(AAZCommand):
                 serialized_name="administrativeState",
                 flags={"read_only": True},
             )
+            properties.conditional_default_route_configuration = AAZObjectType(
+                serialized_name="conditionalDefaultRouteConfiguration",
+            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
-                nullable=True,
             )
             properties.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
@@ -518,13 +681,19 @@ class Create(AAZCommand):
             )
             properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
-                nullable=True,
             )
             properties.is_management_type = AAZStrType(
                 serialized_name="isManagementType",
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.layer2_configuration = AAZObjectType(
                 serialized_name="layer2Configuration",
+            )
+            properties.micro_bfd_state = AAZStrType(
+                serialized_name="microBfdState",
             )
             properties.nni_type = AAZStrType(
                 serialized_name="nniType",
@@ -539,29 +708,49 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.static_route_configuration = AAZObjectType(
+                serialized_name="staticRouteConfiguration",
+            )
             properties.use_option_b = AAZStrType(
                 serialized_name="useOptionB",
                 flags={"required": True},
             )
 
+            conditional_default_route_configuration = cls._schema_on_200_201.properties.conditional_default_route_configuration
+            conditional_default_route_configuration.ipv4_routes = AAZListType(
+                serialized_name="ipv4Routes",
+            )
+            conditional_default_route_configuration.ipv6_routes = AAZListType(
+                serialized_name="ipv6Routes",
+            )
+
+            ipv4_routes = cls._schema_on_200_201.properties.conditional_default_route_configuration.ipv4_routes
+            ipv4_routes.Element = AAZObjectType()
+            _CreateHelper._build_schema_static_route_properties_read(ipv4_routes.Element)
+
+            ipv6_routes = cls._schema_on_200_201.properties.conditional_default_route_configuration.ipv6_routes
+            ipv6_routes.Element = AAZObjectType()
+            _CreateHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
+
             export_route_policy = cls._schema_on_200_201.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
-                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
-                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200_201.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
-                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
-                nullable=True,
+            )
+
+            last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
 
             layer2_configuration = cls._schema_on_200_201.properties.layer2_configuration
@@ -575,22 +764,13 @@ class Create(AAZCommand):
             npb_static_route_configuration.bfd_configuration = AAZObjectType(
                 serialized_name="bfdConfiguration",
             )
+            _CreateHelper._build_schema_bfd_configuration_read(npb_static_route_configuration.bfd_configuration)
             npb_static_route_configuration.ipv4_routes = AAZListType(
                 serialized_name="ipv4Routes",
             )
             npb_static_route_configuration.ipv6_routes = AAZListType(
                 serialized_name="ipv6Routes",
             )
-
-            bfd_configuration = cls._schema_on_200_201.properties.npb_static_route_configuration.bfd_configuration
-            bfd_configuration.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            bfd_configuration.interval_in_milli_seconds = AAZIntType(
-                serialized_name="intervalInMilliSeconds",
-            )
-            bfd_configuration.multiplier = AAZIntType()
 
             ipv4_routes = cls._schema_on_200_201.properties.npb_static_route_configuration.ipv4_routes
             ipv4_routes.Element = AAZObjectType()
@@ -601,32 +781,76 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
 
             option_b_layer3_configuration = cls._schema_on_200_201.properties.option_b_layer3_configuration
+            option_b_layer3_configuration.bmp_configuration = AAZObjectType(
+                serialized_name="bmpConfiguration",
+            )
             option_b_layer3_configuration.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"read_only": True},
             )
+            option_b_layer3_configuration.pe_loopback_ip_address = AAZListType(
+                serialized_name="peLoopbackIpAddress",
+            )
             option_b_layer3_configuration.peer_asn = AAZIntType(
                 serialized_name="peerASN",
                 flags={"required": True},
+            )
+            option_b_layer3_configuration.prefix_limits = AAZListType(
+                serialized_name="prefixLimits",
             )
             option_b_layer3_configuration.primary_ipv4_prefix = AAZStrType(
                 serialized_name="primaryIpv4Prefix",
             )
             option_b_layer3_configuration.primary_ipv6_prefix = AAZStrType(
                 serialized_name="primaryIpv6Prefix",
-                nullable=True,
             )
             option_b_layer3_configuration.secondary_ipv4_prefix = AAZStrType(
                 serialized_name="secondaryIpv4Prefix",
             )
             option_b_layer3_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
-                nullable=True,
             )
             option_b_layer3_configuration.vlan_id = AAZIntType(
                 serialized_name="vlanId",
                 flags={"required": True},
             )
+
+            bmp_configuration = cls._schema_on_200_201.properties.option_b_layer3_configuration.bmp_configuration
+            bmp_configuration.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"required": True},
+            )
+
+            pe_loopback_ip_address = cls._schema_on_200_201.properties.option_b_layer3_configuration.pe_loopback_ip_address
+            pe_loopback_ip_address.Element = AAZStrType()
+
+            prefix_limits = cls._schema_on_200_201.properties.option_b_layer3_configuration.prefix_limits
+            prefix_limits.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.option_b_layer3_configuration.prefix_limits.Element
+            _element.maximum_routes = AAZIntType(
+                serialized_name="maximumRoutes",
+            )
+
+            static_route_configuration = cls._schema_on_200_201.properties.static_route_configuration
+            static_route_configuration.bfd_configuration = AAZObjectType(
+                serialized_name="bfdConfiguration",
+            )
+            _CreateHelper._build_schema_bfd_configuration_read(static_route_configuration.bfd_configuration)
+            static_route_configuration.ipv4_routes = AAZListType(
+                serialized_name="ipv4Routes",
+            )
+            static_route_configuration.ipv6_routes = AAZListType(
+                serialized_name="ipv6Routes",
+            )
+
+            ipv4_routes = cls._schema_on_200_201.properties.static_route_configuration.ipv4_routes
+            ipv4_routes.Element = AAZObjectType()
+            _CreateHelper._build_schema_static_route_properties_read(ipv4_routes.Element)
+
+            ipv6_routes = cls._schema_on_200_201.properties.static_route_configuration.ipv6_routes
+            ipv6_routes.Element = AAZObjectType()
+            _CreateHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -655,6 +879,13 @@ class _CreateHelper:
     """Helper class for Create"""
 
     @classmethod
+    def _build_schema_bfd_configuration_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("intervalInMilliSeconds", AAZIntType, ".interval_in_milli_seconds")
+        _builder.set_prop("multiplier", AAZIntType, ".multiplier")
+
+    @classmethod
     def _build_schema_static_route_properties_create(cls, _builder):
         if _builder is None:
             return
@@ -664,6 +895,32 @@ class _CreateHelper:
         next_hop = _builder.get(".nextHop")
         if next_hop is not None:
             next_hop.set_elements(AAZStrType, ".")
+
+    _schema_bfd_configuration_read = None
+
+    @classmethod
+    def _build_schema_bfd_configuration_read(cls, _schema):
+        if cls._schema_bfd_configuration_read is not None:
+            _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
+            _schema.interval_in_milli_seconds = cls._schema_bfd_configuration_read.interval_in_milli_seconds
+            _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
+            return
+
+        cls._schema_bfd_configuration_read = _schema_bfd_configuration_read = AAZObjectType()
+
+        bfd_configuration_read = _schema_bfd_configuration_read
+        bfd_configuration_read.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
+            flags={"read_only": True},
+        )
+        bfd_configuration_read.interval_in_milli_seconds = AAZIntType(
+            serialized_name="intervalInMilliSeconds",
+        )
+        bfd_configuration_read.multiplier = AAZIntType()
+
+        _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
+        _schema.interval_in_milli_seconds = cls._schema_bfd_configuration_read.interval_in_milli_seconds
+        _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
 
     _schema_static_route_properties_read = None
 

@@ -477,6 +477,31 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_add_valid_collaborator_participant(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        # create a new room
+        room = self.cmd('az communication rooms create').get_output_in_json()
+
+        # create a valid participant
+        participant_id = self.__create_user(communication_resource_info)
+
+        # add valid participant into the created room
+        self.kwargs.update({
+            'room_id': room['id'],
+            'participants_id': participant_id})
+        self.cmd('az communication rooms participant add-or-update --collaborator-participants {participants_id} --room {room_id}')
+
+        get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
+
+        assert len(get_participant) == 1
+        role = get_participant[0]['role']
+
+        # verify the type of added participant
+        assert role == 'Collaborator'
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_add_invalid_consumer_participant(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
@@ -496,7 +521,9 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
-        assert 'Invalid value for the Participants' in str(raises.exception)
+
+        expected_error = 'Communication identifier ' + participant_id + ' is not supported.'
+        assert expected_error in str(raises.exception)
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')

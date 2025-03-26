@@ -20,6 +20,9 @@ echo 0100 > $RootPath/intermediateCA/crlnumber
 # create index files
 touch $RootPath/rootCA/index.txt
 touch $RootPath/intermediateCA/index.txt
+# NOTE: needed for testing
+echo "unique_subject = no" >> $RootPath/rootCA/index.txt.attr
+echo "unique_subject = no" >> $RootPath/intermediateCA/index.txt.attr
 
 # generate root key
 openssl genrsa -out $RootPath/rootCA/private/ca.key.pem 4096

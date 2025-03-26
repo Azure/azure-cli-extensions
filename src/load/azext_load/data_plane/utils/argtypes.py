@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 
-from azext_load.data_plane.utils import completers, models, utils, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
     get_resource_name_completion_list,
@@ -13,6 +12,9 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
 )
 from knack.arguments import CLIArgumentType
+from azext_load.data_plane.utils import completers, models, utils, validators
+from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency, TriggerState
+from azext_load.data_plane.load_trigger import utils as trigger_utils
 
 quote_text = f"Use {quotes} to clear existing {{}}."
 
@@ -422,4 +424,102 @@ response_time_aggregate = CLIArgumentType(
     type=str,
     choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
     help="Specify the aggregation method for response time.",
+)
+
+trigger_id = CLIArgumentType(
+    validator=validators.validate_trigger_id,
+    options_list=["--trigger-id"],
+    type=str,
+    help="Trigger ID of the load trigger",
+)
+
+trigger_start_date_time = CLIArgumentType(
+    options_list=["--start-date-time"],
+    type=trigger_utils.parse_datetime_in_utc,
+    help="Start date time of the load trigger schedule",
+)
+
+recurrence_type = CLIArgumentType(
+    options_list=["--recurrence-type"],
+    type=str,
+    choices=utils.get_enum_values(Frequency),
+    help="Recurrence type of the load trigger schedule",
+)
+
+end_after_occurrences = CLIArgumentType(
+    options_list=["--end-after-occurrence"],
+    type=int,
+    help="End after occurrence of the load trigger schedule",
+)
+
+end_after_date_time = CLIArgumentType(
+    options_list=["--end-after-date-time"],
+    type=trigger_utils.parse_datetime_in_utc,
+    help="End after date time of the load trigger schedule",
+)
+
+test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs=1,
+    validator=validators.validate_schedule_test_ids,
+    help="Test IDs of the load tests to be triggered by schedule. Currently we only support one test ID per schedule.",
+)
+
+trigger_display_name = CLIArgumentType(
+    options_list=["--display-name"],
+    type=str,
+    help="Display name of the load trigger schedule",
+)
+
+trigger_description = CLIArgumentType(
+    options_list=["--description"],
+    type=str,
+    help="Description of the load trigger schedule",
+)
+
+recurrence_cron_expression = CLIArgumentType(
+    options_list=["--recurrence-cron-exp"],
+    type=str,
+    help="Cron expression for the recurrence type 'Cron'.",
+)
+
+recurrence_interval = CLIArgumentType(
+    options_list=["--recurrence-interval"],
+    type=int,
+    help="Interval for all recurrence type except 'Cron'.",
+)
+
+recurrence_dates_in_month = CLIArgumentType(
+    options_list=["--recurrence-dates"],
+    nargs="+",
+    type=int,
+    validator=validators.validate_recurrence_dates_in_month,
+    help="Space separated list of dates in month for the recurrence type 'Monthly'.",
+)
+
+recurrence_week_days = CLIArgumentType(
+    options_list=["--recurrence-week-days"],
+    choices=utils.get_enum_values(WeekDays),
+    nargs="*",
+    help="Week days for the recurrence type 'Weekly' and 'MonthlyByDays'.",
+)
+
+recurrence_index = CLIArgumentType(
+    options_list=["--recurrence-index"],
+    type=int,
+    choices=[1, 2, 3, 4, 5],
+    help="Index for the recurrence type 'MonthlyByDays'.",
+)
+
+list_schedule_test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs="*",
+    help="List all the schedules which are associated with the provided test ids.",
+)
+
+list_schedule_states = CLIArgumentType(
+    options_list=["--states"],
+    nargs="*",
+    choices=utils.get_enum_values(TriggerState),
+    help="List all the schedules in the resource which are in the provided states.",
 )
