@@ -146,7 +146,7 @@ jobs:
           # some module, like confcom, will change local data files, like data/rules.rego, during installation, need to reset when checkout different branch
           git checkout -f "$diff_branch"
           # always use the latest index.json and scripts from base branch
-          # git checkout "$base_branch_pre"/"$base_branch" -- scripts
+          git checkout "$base_branch_pre"/"$base_branch" -- scripts
           git checkout "$base_branch_pre"/"$base_branch" -- src/index.json 
           
           for mod in ${changed_module_list[@]}
