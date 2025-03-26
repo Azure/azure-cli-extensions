@@ -2,6 +2,11 @@
 Release History
 ===============
 
+2.1.1
+++++++
+Added a breaking change warning message for Build 2025 and `--associate-public-ip` parameter.
+
+=======
 2.1.0
 ++++++
 Added new parameter `--os-disk-type` to `vm repair create` to let users specify the repair vm's os disk storage account type. 
