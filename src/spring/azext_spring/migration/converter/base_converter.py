@@ -247,7 +247,7 @@ class SourceDataWrapper:
         return self.is_support_feature('Microsoft.AppPlatform/Spring/applicationLiveViews')
 
     def is_support_gateway(self):
-        return self.is_support_feature('Microsoft.AppPlatform/Spring/gateways/routeConfigs')
+        return self.is_support_feature('Microsoft.AppPlatform/Spring/gateways')
 
     def get_asa_service(self):
         return self.get_resources_by_type('Microsoft.AppPlatform/Spring')[0]
