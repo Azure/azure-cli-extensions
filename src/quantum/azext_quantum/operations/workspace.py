@@ -248,7 +248,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
 
     # BYO storage account code...
     #
-    # TODO: Clean up this logic 
+    # TODO: Clean up this logic
     #
     if not storage_account and legacy_storage_account:
         raise RequiredArgumentMissingError("Please specify a storage account name.")
