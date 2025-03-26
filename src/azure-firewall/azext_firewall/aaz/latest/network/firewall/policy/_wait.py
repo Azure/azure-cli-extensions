@@ -160,7 +160,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.id = AAZStrType()
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
@@ -317,7 +317,6 @@ class Wait(AAZWaitCommand):
             intrusion_detection = cls._schema_on_200.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
-            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy rule-collection-group draft show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get Rule Collection Group Draft.
@@ -42,8 +41,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.policy_name = AAZStrArg(
-            options=["--policy-name"],
+        _args_schema.firewall_policy_name = AAZStrArg(
+            options=["--firewall-policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
             id_part="name",
@@ -106,7 +105,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallPolicyName", self.ctx.args.policy_name,
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -161,9 +160,6 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200.id = AAZStrType()
             _schema_on_200.name = AAZStrType()
             _schema_on_200.properties = AAZObjectType(
@@ -177,6 +173,9 @@ class Show(AAZCommand):
             properties.priority = AAZIntType()
             properties.rule_collections = AAZListType(
                 serialized_name="ruleCollections",
+            )
+            properties.size = AAZStrType(
+                flags={"read_only": True},
             )
 
             rule_collections = cls._schema_on_200.properties.rule_collections
@@ -269,6 +268,9 @@ class _ShowHelper:
         disc_application_rule.fqdn_tags = AAZListType(
             serialized_name="fqdnTags",
         )
+        disc_application_rule.http_headers_to_insert = AAZListType(
+            serialized_name="httpHeadersToInsert",
+        )
         disc_application_rule.protocols = AAZListType()
         disc_application_rule.source_addresses = AAZListType(
             serialized_name="sourceAddresses",
@@ -294,6 +296,17 @@ class _ShowHelper:
 
         fqdn_tags = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").fqdn_tags
         fqdn_tags.Element = AAZStrType()
+
+        http_headers_to_insert = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert.Element
+        _element.header_name = AAZStrType(
+            serialized_name="headerName",
+        )
+        _element.header_value = AAZStrType(
+            serialized_name="headerValue",
+        )
 
         protocols = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").protocols
         protocols.Element = AAZObjectType()

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy rule-collection-group draft delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -27,11 +26,10 @@ class Delete(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -44,8 +42,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.policy_name = AAZStrArg(
-            options=["--policy-name"],
+        _args_schema.firewall_policy_name = AAZStrArg(
+            options=["--firewall-policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
             id_part="name",
@@ -63,7 +61,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.FirewallPolicyRuleCollectionGroupsDelete(ctx=self.ctx)()
+        self.FirewallPolicyRuleCollectionGroupDraftsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,39 +72,16 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class FirewallPolicyRuleCollectionGroupsDelete(AAZHttpOperation):
+    class FirewallPolicyRuleCollectionGroupDraftsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
@@ -129,7 +104,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallPolicyName", self.ctx.args.policy_name,
+                    "firewallPolicyName", self.ctx.args.firewall_policy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
