@@ -2430,6 +2430,87 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westcentralus"
     )
+    def test_aks_create_with_azurepolicy(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} "
+            "--enable-addons azure-policy "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                # Case-insensitive check for azurePolicy and enabled=True
+                self.assertTrue(any(k.lower() == "azurepolicy" and v.get("enabled") for k, v in result.get("addonProfiles", {}).items())),
+            ],
+        )
+        
+        list_cmd = (
+            "aks addon list --resource-group={resource_group} --name={name} -o json"
+        )
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            if addon["name"] == "azure-policy":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
+                
+        disable_cmd = (
+            "aks aks --resource-group={resource_group} --name={name} "
+            "--disable-addons azure-policy "
+        )
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                # Case-insensitive check for azurePolicy and enabled=True
+                self.assertTrue(any(k.lower() == "azurepolicy" and v.get("enabled") for k, v in result.get("addonProfiles", {}).items())),
+            ],
+        )
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            assert not addon["enabled"]
+        
+        update_cmd = (
+            "aks aks --resource-group={resource_group} --name={name} "
+            "--enable-addons azure-policy "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                # Case-insensitive check for azurePolicy and enabled=True
+                self.assertTrue(any(k.lower() == "azurepolicy" and v.get("enabled") for k, v in result.get("addonProfiles", {}).items()))
+            ],
+        )
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            if addon["name"] == "azure-policy":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westcentralus"
+    )
     def test_aks_update_with_safeguards(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
