@@ -197,6 +197,7 @@ class BaseConverter(ConverterTemplate):
         appName = self._get_resource_name(app)
         return "containerImagePasswordOf_" + appName.replace("-", "_")
 
+
 class SourceDataWrapper:
     def __init__(self, source):
         self.source = source
@@ -340,7 +341,7 @@ class SourceDataWrapper:
             deployment['properties']['source'].get('customContainer') is not None and \
             deployment['properties']['source'].get('type') == 'Container' and \
             deployment['properties']['source']['customContainer'].get('containerImage') is not None
-    
+
     def is_support_custom_container_image_for_app(self, app):
         blueDeployment = self.get_blue_deployment_by_app(app)
         if blueDeployment is None:

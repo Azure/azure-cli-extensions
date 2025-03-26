@@ -241,12 +241,11 @@ class AppConverter(BaseConverter):
         if ingress is None:
             return None
         transport = ingress.get('backendProtocol')
-        match transport:
-            case "Default":
-                transport = "auto"
-            case _:
-                transport = "auto"
-                logger.warning(f"Mismatch: The backendProtocol '{transport}' of app '{app.get('name')}' is not supported in Azure Container Apps. Converting it to 'auto'.")
+        if transport == "Default":
+            transport = "auto"
+        else:
+            transport = "auto"
+            logger.warning(f"Mismatch: The backendProtocol '{transport}' of app '{app.get('name')}' is not supported in Azure Container Apps. Converting it to 'auto'.")
         return {
             "targetPort": 8080 if tier == "Enterprise" else 1025,
             "transport": transport,
@@ -264,7 +263,6 @@ class AppConverter(BaseConverter):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
         if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
             server = blueDeployment['properties']['source'].get('customContainer').get('server', None)
-            languageFramework = blueDeployment['properties']['source'].get('customContainer').get('languageFramework', None)
             username = blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', None)
             passwordSecretRefPerfix = server.replace(".", "")
             passwordSecretRef = f"{passwordSecretRefPerfix}-{username}"
