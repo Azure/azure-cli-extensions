@@ -133,6 +133,19 @@ def extract_working_dir(container_json: Any) -> str:
     return workingDir
 
 
+def extract_entrypoint(container_json: Any) -> List[str]:
+    # parse entrypoint. can either be a list of strings or None in the case of non-VN2 policy generation
+    entrypoint = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_TEMPLATE_ENTRYPOINT
+    )
+    if not isinstance(entrypoint, list) and entrypoint is not None:
+        eprint(
+            f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+            + f'["{config.ACI_FIELD_TEMPLATE_ENTRYPOINT}"] must be list of Strings.'
+        )
+    return entrypoint
+
+
 def extract_command(container_json: Any) -> List[str]:
     # parse command
     command = case_insensitive_dict_get(
@@ -523,6 +536,7 @@ class ContainerImage:
         id_val = extract_id(container_json)
         container_name = extract_container_name(container_json)
         environment_rules = extract_env_rules(container_json=container_json)
+        entrypoint = extract_entrypoint(container_json)
         command = extract_command(container_json)
         working_dir = extract_working_dir(container_json)
         mounts = extract_mounts(container_json)
@@ -543,6 +557,7 @@ class ContainerImage:
             containerImage=container_image,
             containerName=container_name,
             environmentRules=environment_rules,
+            entrypoint=entrypoint,
             command=command,
             workingDir=working_dir,
             mounts=mounts,
@@ -568,6 +583,7 @@ class ContainerImage:
         allow_elevated: bool,
         id_val: str,
         extraEnvironmentRules: Dict,
+        entrypoint: List[str] = None,
         capabilities: Dict = copy.deepcopy(_CAPABILITIES),
         user: Dict = copy.deepcopy(_DEFAULT_USER),
         seccomp_profile_sha256: str = "",
@@ -575,7 +591,7 @@ class ContainerImage:
         allowPrivilegeEscalation: bool = True,
         execProcesses: List = None,
         signals: List = None,
-        containerName: str = ""
+        containerName: str = "",
     ) -> None:
         self.containerImage = containerImage
         self.containerName = containerName
@@ -584,6 +600,7 @@ class ContainerImage:
         else:
             self.base, self.tag = containerImage, "latest"
         self._environmentRules = environmentRules
+        self._entrypoint = entrypoint
         self._command = command
         self._workingDir = workingDir
         self._layers = []
@@ -620,6 +637,11 @@ class ContainerImage:
 
     def set_working_dir(self, workingDir: str) -> None:
         self._workingDir = workingDir
+
+    # note that entrypoint is only used for VN2 containers because of kubernetes discrepancy in naming
+    # entrypoint -> command, args -> command
+    def get_entrypoint(self) -> List[str]:
+        return self._entrypoint
 
     def get_command(self) -> List[str]:
         return self._command

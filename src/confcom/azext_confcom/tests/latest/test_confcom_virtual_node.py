@@ -271,6 +271,31 @@ spec:
           storage: 1Gi
 """
 
+    custom_yaml_command = """
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "container"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: container
+  template:
+    metadata:
+      labels:
+        app: container
+    spec:
+      containers:
+      - name: container
+        image: mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1
+        args: ["test", "values"]
+        ports:
+        - containerPort: 80
+          name: web
+"""
+
     def test_compare_policy_sources(self):
         custom_policy = load_policy_from_str(self.custom_json)
         custom_policy.populate_policy_content_for_all_images()
@@ -381,3 +406,12 @@ spec:
 
         # get the nginx mount and make sure it is readonly
         containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]
+
+    def test_custom_args(self):
+        virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_command)[0]
+        virtual_node_policy.populate_policy_content_for_all_images()
+        container_start = "containers := "
+        containers = json.loads(extract_containers_from_text(virtual_node_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        command = containers[0].get("command")
+
+        self.assertEqual(command[-2:], ["test", "values"])

@@ -446,8 +446,17 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 if (
                     isinstance(image, UserContainerImage) or individual_image
                 ) and image_info:
-                    # verify and populate the startup command
-                    if not image.get_command():
+                    # verify and populate the startup command for VN2 since "command" and "args"
+                    # can be set independent of each other. These names correspond to what we call
+                    # "entrypoint" and "command"
+                    # entrypoint should be None for everything except VN2
+                    if image.get_entrypoint() is not None:
+                        # put together the command
+                        entrypoint = image.get_entrypoint() or image_info.get("Entrypoint") or []
+                        command = entrypoint + (image.get_command() or image_info.get("Cmd") or [])
+                        image.set_command(command)
+
+                    elif not image.get_command():
                         # precondition: image_info exists. this is shown by the
                         # "and image_info" earlier
                         command = image_info.get("Cmd")
@@ -455,6 +464,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                         # since we don't have an entrypoint field,
                         # it needs to be added to the front of the command
                         # array
+                        # update: there is now an entrypoint field for VN2 use cases
                         entrypoint = image_info.get("Entrypoint")
                         if entrypoint and command:
                             command = entrypoint + command
@@ -1109,7 +1119,7 @@ def load_policy_from_virtual_node_yaml_str(
 
             # command
             command = case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_COMMAND) or []
-            args = case_insensitive_dict_get(container, "args") or []
+            args = case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_ARGS) or []
 
             # mounts
             mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
@@ -1208,7 +1218,8 @@ def load_policy_from_virtual_node_yaml_str(
                         container, config.VIRTUAL_NODE_YAML_NAME) or image,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image,
                     config.ACI_FIELD_CONTAINERS_ENVS: envs,
-                    config.ACI_FIELD_CONTAINERS_COMMAND: command + args,
+                    config.ACI_FIELD_TEMPLATE_ENTRYPOINT: command,
+                    config.ACI_FIELD_CONTAINERS_COMMAND: args,
                     config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
