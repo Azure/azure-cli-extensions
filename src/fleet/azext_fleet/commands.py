@@ -105,4 +105,3 @@ def load_command_table(self, _):
     # auto upgrade profiles operation command group
     with self.command_group("fleet autoupgradeprofile", auto_upgrade_profile_operations_sdk, client_factory=cf_auto_upgrade_profile_operations) as g:
         g.custom_command("generate-update-run", "generate_update_run", supports_no_wait=True)
-        g.wait_command("wait")
