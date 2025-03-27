@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.13.0
+++++++
+* Add SMTP Username CRUD operations.
+
 1.12.0
 ++++++
 * Update azure-rooms-communication to 1.2.0 (collaborator role)
