@@ -8,10 +8,18 @@ param maxNodes int
 param vnetSubnetId string
 {%- endif %}
 {%- for app in data.apps %}
+{%- if app.isByoc %}
+{%- if app.isPrivateImage %}
+@secure()
+param {{app.paramContainerAppImagePassword}} string
+{%- endif %}
+{%- else %}
 param {{app.paramContainerAppImageName}} string
+{%- endif %}
 param {{app.paramTargetPort}} int
 {%- endfor %}
 {%- for storage in data.storages %}
+@secure()
 param {{storage.paramContainerAppEnvStorageAccountKey}} string
 {%- endfor %}
 
@@ -31,21 +39,21 @@ module containerAppEnv 'environment.bicep' = {
   }
 }
 
-{%- for item in data.certs %}
-module {{ item.moduleName }} '{{ item.templateName }}' = {
-  name: 'cert-{{ item.certName }}-Deployment'
+{%- for cert in data.certs %}
+module {{ cert.moduleName }} '{{ cert.templateName }}' = {
+  name: 'cert-{{ cert.certName }}-Deployment'
   params: {
     managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
   }
 }
 {%- endfor %}
 
-{%- for item in data.apps %}
-module {{ item.moduleName }} '{{ item.templateName }}' = {
-  name: '{{ item.appName }}-Deployment'
-  {%- if item.dependsOns %}
+{%- for app in data.apps %}
+module {{ app.moduleName }} '{{ app.templateName }}' = {
+  name: '{{ app.appName }}-Deployment'
+  {%- if app.dependsOns %}
   dependsOn: [
-    {%- for dependsOn in item.dependsOns %}
+    {%- for dependsOn in app.dependsOns %}
     {{ dependsOn }}
     {%- endfor %}
   ]
@@ -53,8 +61,14 @@ module {{ item.moduleName }} '{{ item.templateName }}' = {
   params: {
     containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
     workloadProfileName: workloadProfileName
-    {{item.paramContainerAppImageName}}: {{item.paramContainerAppImageName}}
-    {{item.paramTargetPort}}: {{item.paramTargetPort}}
+    {%- if app.isByoc %}
+    {%- if app.isPrivateImage %}
+    {{app.paramContainerAppImagePassword}}: {{app.paramContainerAppImagePassword}}
+    {%- endif %}    
+    {%- else %}
+    {{app.paramContainerAppImageName}}: {{app.paramContainerAppImageName}}
+    {%- endif %}
+    {{app.paramTargetPort}}: {{app.paramTargetPort}}
   }
 }
 {%- endfor %}

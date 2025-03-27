@@ -21,11 +21,12 @@ class AppConverter(BaseConverter):
     def transform_data_item(self, app):
         blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
         blueDeployment = self._transform_deployment(blueDeployment)
+        maxReplicas = blueDeployment.get("capacity", 5) if blueDeployment is not None else 5
         greenDeployment = self.wrapper_data.get_green_deployment_by_app(app)
         greenDeployment = self._transform_deployment(greenDeployment)
         if self.wrapper_data.is_support_blue_green_deployment(app):
             logger.warning(f"Action Needed: you should manually deploy the deployment '{greenDeployment.get('name')}' of app '{app.get('name')}' in Azure Container Apps.")
-        tier = blueDeployment.get('sku', {}).get('tier')
+        tier = blueDeployment.get('sku', {}).get('tier') if blueDeployment is not None else 'Standard'
         serviceBinds = self._get_service_bind(app)
         ingress = self._get_ingress(app, tier)
         isPublic = app['properties'].get('public')
@@ -46,6 +47,12 @@ class AppConverter(BaseConverter):
                     "mountOptions": self._get_mount_options(disk_props),
                 })
         return {
+            "isByoc": self.wrapper_data.is_support_custom_container_image_for_app(app),
+            "isPrivateImage": self.wrapper_data.is_private_custom_container_image(app),
+            "paramContainerAppImagePassword": self._get_param_name_of_container_image_password(app),
+            "containerRegistry": self._get_container_registry(app),
+            "args": self._get_args(app),
+            "commands": self._get_commands(app),
             "containerAppName": self._get_resource_name(app),
             "paramContainerAppImageName": self._get_param_name_of_container_image(app),
             "paramTargetPort": self._get_param_name_of_target_port(app),
@@ -53,7 +60,7 @@ class AppConverter(BaseConverter):
             "ingress": ingress,
             "isPublic": isPublic,
             "minReplicas": 1,
-            "maxReplicas": blueDeployment.get("capacity", 5),
+            "maxReplicas": maxReplicas,
             "serviceBinds": serviceBinds,
             "blue": blueDeployment,
             "green": greenDeployment,
@@ -99,7 +106,7 @@ class AppConverter(BaseConverter):
         return service_bind
 
     def _transform_deployment(self, deployment):
-        if deployment is None or deployment == {}:
+        if deployment is None:
             return
         env = deployment.get('properties', {}).get('deploymentSettings', {}).get('environmentVariables', {})
         liveness_probe = deployment.get('properties', {}).get('deploymentSettings', {}).get('livenessProbe', {})
@@ -233,9 +240,15 @@ class AppConverter(BaseConverter):
         ingress = app['properties'].get('ingressSettings')
         if ingress is None:
             return None
+        transport = ingress.get('backendProtocol')
+        if transport == "Default":
+            transport = "auto"
+        else:
+            transport = "auto"
+            logger.warning(f"Mismatch: The backendProtocol '{transport}' of app '{app.get('name')}' is not supported in Azure Container Apps. Converting it to 'auto'.")
         return {
             "targetPort": 8080 if tier == "Enterprise" else 1025,
-            "transport": ingress.get('backendProtocol').replace("Default", "auto"),
+            "transport": transport,
             "sessionAffinity": ingress.get('sessionAffinity').replace("Cookie", "sticky").replace("None", "none")
         }
 
@@ -245,3 +258,27 @@ class AppConverter(BaseConverter):
             "maxReplicas": scale.get("maxReplicas", 5),
             "rules": scale.get("rules", [])
         }
+
+    def _get_container_registry(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+            server = blueDeployment['properties']['source'].get('customContainer').get('server', None)
+            username = blueDeployment['properties']['source'].get('customContainer').get('imageRegistryCredential', {}).get('username', None)
+            passwordSecretRefPerfix = server.replace(".", "")
+            passwordSecretRef = f"{passwordSecretRefPerfix}-{username}"
+            return {
+                "server": server,
+                "username": username,
+                "passwordSecretRef": passwordSecretRef,
+                "image": self._get_container_image(app),
+            }
+
+    def _get_args(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+            return blueDeployment['properties']['source'].get('customContainer').get('args', [])
+
+    def _get_commands(self, app):
+        blueDeployment = self.wrapper_data.get_blue_deployment_by_app(app)
+        if blueDeployment is not None and self.wrapper_data.is_support_custom_container_image_for_deployment(blueDeployment):
+            return blueDeployment['properties']['source'].get('customContainer').get('command', [])
