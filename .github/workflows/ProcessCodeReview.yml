@@ -1,4 +1,4 @@
-name: Auto Review PR 
+name: Auto Review PR
 
 on:
   pull_request_target:
@@ -23,11 +23,11 @@ jobs:
         run: |
           echo start review module changed
       - name: Set up Python 3.11
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566 # v3
         with:
            python-version: "3.11"
       - name: Checkout CLI extension repo
-        uses: actions/checkout@master
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0 # checkout all branches
           ref: ${{ github.event.pull_request.head.ref }}
@@ -80,7 +80,7 @@ jobs:
            python scripts/ci/codegen_cal.py --job check
            ls ${result_path}
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: review-code-output
           path: |
@@ -94,7 +94,7 @@ jobs:
       contents: read
     steps:
       - name: Download code review result
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: review-code-output
       - name: Show workdirectory after result downloaded
@@ -103,14 +103,14 @@ jobs:
            ls
       - name: Check comment file existence
         id: check_survey_comment_file
-        uses: andstor/file-existence-action@v3
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3
         with:
           files: "./aaz_survey_comment.txt"
       - name: Comment survey on the pull request
         if: steps.check_survey_comment_file.outputs.files_exists == 'true'
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         with:
            repo-token: ${{ secrets.GITHUB_TOKEN }}
            message-id: aazSurveyCommentBot
            message-path: |
-            aaz_survey_comment.txt  
+            aaz_survey_comment.txt

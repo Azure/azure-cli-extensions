@@ -24,11 +24,11 @@ jobs:
         run: |
           echo version cal job start
       - name: Set up Python 3.11
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566 # v3
         with:
            python-version: "3.11"
       - name: Checkout CLI extension repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0 # checkout all branches
           ref: ${{ github.event.pull_request.head.ref }}
@@ -93,7 +93,7 @@ jobs:
           echo ${#changed_module_list[@]}
       - name: Checkout CLI main repo
         if: ${{ env.no_changed_mod == 'false' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
            repository: Azure/azure-cli
            path: ./azure-cli
@@ -108,7 +108,7 @@ jobs:
           ls
       - name: Install azdev
         if: ${{ env.no_changed_mod == 'false' }}
-        run: | 
+        run: |
            python -m pip install --upgrade pip
            set -ev
            python -m venv env
@@ -160,14 +160,14 @@ jobs:
           ls "$result_path"
           git checkout "$base_branch_pre"/"$base_branch" -- scripts
           # use the latest index.json from base branch
-          git checkout "$base_branch_pre"/"$base_branch" -- src/index.json 
+          git checkout "$base_branch_pre"/"$base_branch" -- src/index.json
           python scripts/ci/release_version_cal.py
           ls "$result_path"
           cat "$result_path"/"$remove_labels_file"
           cat "$result_path"/"$output_file"
           # echo "commit_message=$(cat $output_file)" >> $GITHUB_ENV
       - name: Archive pr version cal output
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: version-cal-output
           path: |
@@ -198,7 +198,7 @@ jobs:
           cd ../
           ls "$result_path"
       - name: Archive pr version cal output
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: version-cal-output
           path: |
@@ -218,7 +218,7 @@ jobs:
         run: |
           echo version output job start
       - name: Download version cal result
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: version-cal-output
       - name: Show work directory after result downloaded
@@ -227,12 +227,12 @@ jobs:
           ls
       - name: Check comment file existence
         id: check_comment_file
-        uses: andstor/file-existence-action@v3
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3
         with:
           files: "./version_update.txt"
       - name: Comment on the pull request
         if: steps.check_comment_file.outputs.files_exists == 'true'
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message-id: versioncommentbot
@@ -242,7 +242,7 @@ jobs:
             Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
       - name: Check add label file existence
         id: check_add_label_file
-        uses: andstor/file-existence-action@v3
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3
         with:
           files: "./labels_added.json"
       - name: Add block release label
@@ -255,19 +255,19 @@ jobs:
           -d @labels_added.json
       - name: Check delete label file existence
         id: check_delete_label_file
-        uses: andstor/file-existence-action@v3
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3
         with:
           files: "./labels_removed.txt"
       - name: Remove block release label
         if: steps.check_delete_label_file.outputs.files_exists == 'true'
         run: |
           for del_lab in `sed 's/[^a-zA-Z0-9_ \-]//g' labels_removed.txt | sort | uniq | xargs`
-          do 
+          do
              curl -X DELETE \
              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/${del_lab}" \
              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           done
-      - uses: snnaplab/get-labels-action@v1
+      - uses: snnaplab/get-labels-action@f426df40304808ace3b5282d4f036515f7609576 # v1
       - name: Check real time labels
         if: contains(fromJSON(env.LABELS), 'release-version-block')
         run: |
