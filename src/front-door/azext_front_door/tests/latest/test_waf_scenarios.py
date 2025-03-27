@@ -11,6 +11,15 @@ from azure.core.exceptions import (HttpResponseError)
 
 
 class WafTests(WafScenarioMixin, ScenarioTest):
+    # @live_only()  # --defer seems not work with VCR.py well
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
+    def test_waf_captcha(self, resource_group):
+        blockpolicy = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --captcha-expiration-in-minutes 5 --mode prevention --sku Premium_AzureFrontDoor'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['name'], blockpolicy)
+        self.assertEqual(result['policySettings']['captchaExpirationInMinutes'], 5)
+
     @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_log_scrubbing(self, resource_group):
