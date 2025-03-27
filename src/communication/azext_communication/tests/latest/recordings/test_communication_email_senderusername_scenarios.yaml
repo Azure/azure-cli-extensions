@@ -1,0 +1,491 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --domain-name --email-service-name --resource-group --query
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames?api-version=2023-04-01
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/donotreply",
+        "name": "donotreply", "type": "emailservices/domains/senderusernames", "properties":
+        {"username": "DoNotReply", "displayName": "DoNotReply"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '369'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:40 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ddb9d6eb-ea83-425c-be4c-fdedc4fcc8d8
+      ms-cv:
+      - SQreFlPavUCk+ofGcfkAkA.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/855b65f9-2fd8-453a-b09e-67f7f0e93e0b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 88F119AC21534AA2B2D8F2105068D4C9 Ref B: MAA201060514021 Ref C: 2025-03-27T07:13:40Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"username": "clitestsenderusername000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '59'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sender-username --domain-name --email-service-name --username --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000004/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003",
+        "name": "clitestsenderusername000003", "type": "microsoft.communication/emailservices/domains/senderusernames",
+        "systemData": {"createdBy": "sanitized", "createdByType": "User", "createdAt":
+        "2025-03-27T07:13:42.5267011Z", "lastModifiedBy": "sanitized", "lastModifiedByType":
+        "User", "lastModifiedAt": "2025-03-27T07:13:42.5267011Z"}, "properties": {"username":
+        "clitestsenderusername000003", "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '659'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a52bc125-f4d2-4435-afc6-998b405c27dc
+      ms-cv:
+      - BS4Wb4pOHE2K8GlJX61bSQ.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/centralindia/c2fa8fa1-6240-40f2-9da9-e43170917ad6
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F77FE662EDEA4DB7B201BDBAA5B15001 Ref B: MAA201060516039 Ref C: 2025-03-27T07:13:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sender-username --domain-name --email-service-name --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/clitestsenderusername000003",
+        "name": "clitestsenderusername000003", "type": "emailservices/domains/senderusernames",
+        "properties": {"username": "clitestsenderusername000003", "displayName": ""}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '397'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:44 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8c59723d-6c54-43e2-80f9-4120e12ba705
+      ms-cv:
+      - Aru2pQj1HkyRN7mPyzhDLw.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/southindia/4f3988e0-dae1-417b-91c0-d0663857f4c0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8AE0D891D6284CE0BD41783AA6BBBB79 Ref B: MAA201060513053 Ref C: 2025-03-27T07:13:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --domain-name --email-service-name --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames?api-version=2023-04-01
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/donotreply",
+        "name": "donotreply", "type": "emailservices/domains/senderusernames", "properties":
+        {"username": "DoNotReply", "displayName": "DoNotReply"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/clitestsenderusername000003",
+        "name": "clitestsenderusername000003", "type": "emailservices/domains/senderusernames",
+        "properties": {"username": "clitestsenderusername000003", "displayName": ""}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '768'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:45 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2cffb706-5b8d-46ee-84c0-654f328cb954
+      ms-cv:
+      - 6QPCiTpoAE2kqqkwXodzYg.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/centralindia/eb727aa6-1219-4ae3-b89a-73ac00acdf56
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C25E06D289BA4794AB4465B1670C171F Ref B: MAA201060515011 Ref C: 2025-03-27T07:13:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --domain-name --email-service-name -g
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames?api-version=2023-04-01
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/donotreply",
+        "name": "donotreply", "type": "emailservices/domains/senderusernames", "properties":
+        {"username": "DoNotReply", "displayName": "DoNotReply"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/clitestsenderusername000003",
+        "name": "clitestsenderusername000003", "type": "emailservices/domains/senderusernames",
+        "properties": {"username": "clitestsenderusername000003", "displayName": ""}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '768'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:46 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7d198f01-9f61-4346-bc2d-61623b166fe1
+      ms-cv:
+      - 2wtB1+aE6kCr6wZKxY3RkA.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/jioindiacentral/bb682108-1f0f-4cda-b51e-7ac20e03fbfc
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 33CF23F59CCF42CCBAA744A00A01BE81 Ref B: MAA201060516033 Ref C: 2025-03-27T07:13:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sender-username --domain-name --email-service-name --display-name --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000004/providers/microsoft.communication/emailservices/clitestemail000005/domains/acs.contoso.net000006/senderusernames/clitestsenderusername000003",
+        "name": "clitestsenderusername000003", "type": "emailservices/domains/senderusernames",
+        "properties": {"username": "clitestsenderusername000003", "displayName": ""}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '397'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:47 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ea457de5-405f-47d9-bb00-2487641f2310
+      ms-cv:
+      - 39b6tcL0Z0eNVrsq+ffVMA.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/westindia/74dd8bfb-8139-4cd5-a5b4-99c660159d36
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 50A34231F3D8466A80AF358D99B8013F Ref B: MAA201060514009 Ref C: 2025-03-27T07:13:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"displayName": "newDisplayname", "username": "clitestsenderusername000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sender-username --domain-name --email-service-name --display-name --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000004/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003",
+        "name": "clitestsenderusername000003", "type": "microsoft.communication/emailservices/domains/senderusernames",
+        "systemData": {"createdBy": "sanitized", "createdByType": "User", "createdAt":
+        "2025-03-27T07:13:48.7693199Z", "lastModifiedBy": "sanitized", "lastModifiedByType":
+        "User", "lastModifiedAt": "2025-03-27T07:13:48.7693199Z"}, "properties": {"username":
+        "clitestsenderusername000003", "displayName": "newDisplayname", "provisioningState":
+        "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '692'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:49 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fb2904a5-c4a5-46bf-b7c9-3ded5d80c285
+      ms-cv:
+      - tB2Qxi+Ua0qE+HPjmdBUIQ.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/westindia/1d8f5070-5dc0-4537-a6d3-8407d9aa4f7a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 1680D56F1C854C5296609F5A60CC67B8 Ref B: MAA201060514009 Ref C: 2025-03-27T07:13:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication email domain sender-username delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --sender-username --domain-name --email-service-name --resource-group
+      User-Agent:
+      - AZURECLI/2.70.0 azsdk-python-core/1.32.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://sanitized.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sanitized/providers/Microsoft.Communication/emailServices/clitestemail000005/domains/acs.contoso.net000006/senderUsernames/clitestsenderusername000003?api-version=2023-04-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:13:51 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7ff6ab2a-9861-4323-9506-c7a9602d6102
+      ms-cv:
+      - UKx2/xI6jke0CEeXm1f/Yw.0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bad0af61-74f2-4ee5-8af9-437b897404e9/jioindiacentral/688c1052-97ac-474e-82a2-697d7e80901d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 6BBFC4C6C58F4F859DCF269F2A91E80B Ref B: MAA201060516033 Ref C: 2025-03-27T07:13:50Z'
+    status:
+      code: 200
+      message: OK
+version: 1
