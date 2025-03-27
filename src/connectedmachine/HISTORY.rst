@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.1.0b1
+1.1.1b1
 +++++	
 * Fix connectedmachine list command and set resource group as optional.
 
