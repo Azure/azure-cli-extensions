@@ -19,6 +19,9 @@ class WafTests(WafScenarioMixin, ScenarioTest):
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['captchaExpirationInMinutes'], 5)
+        cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --captcha-expiration-in-minutes 12'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['policySettings']['captchaExpirationInMinutes'], 12)
 
     @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
