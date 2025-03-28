@@ -365,11 +365,24 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        self.FirewallPolicyRuleCollectionGroupDraftsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.FirewallPolicyRuleCollectionGroupDraftsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
     def pre_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
         pass
 
     @register_callback
@@ -379,6 +392,93 @@ class Create(AAZCommand):
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
+    class FirewallPolicyRuleCollectionGroupDraftsGet(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies/{firewallPolicyName}/ruleCollectionGroups/{ruleCollectionGroupName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "firewallPolicyName", self.ctx.args.policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "ruleCollectionGroupName", self.ctx.args.rule_collection_group_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-11-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _CreateHelper._build_schema_firewall_policy_rule_collection_group_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
 
     class FirewallPolicyRuleCollectionGroupDraftsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -470,6 +570,7 @@ class Create(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
+                value=self.ctx.vars.instance,
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
@@ -594,6 +695,331 @@ class Create(AAZCommand):
 
             return cls._schema_on_200_201
 
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("name", AAZStrType, ".name")
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("priority", AAZIntType, ".priority")
+                properties.set_prop("ruleCollections", AAZListType, ".rule_collections")
+
+            rule_collections = _builder.get(".properties.ruleCollections")
+            if rule_collections is not None:
+                rule_collections.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ruleCollections[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".collection_name")
+                _elements.set_prop("priority", AAZIntType, ".priority")
+                _elements.set_const("ruleCollectionType", "FirewallPolicyFilterRuleCollection", AAZStrType, ".firewall_policy_filter_rule_collection", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("ruleCollectionType", "FirewallPolicyNatRuleCollection", AAZStrType, ".firewall_policy_nat_rule_collection", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("ruleCollectionType", "FirewallPolicyFilterRuleCollection")
+                _elements.discriminate_by("ruleCollectionType", "FirewallPolicyNatRuleCollection")
+
+            disc_firewall_policy_filter_rule_collection = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}")
+            if disc_firewall_policy_filter_rule_collection is not None:
+                disc_firewall_policy_filter_rule_collection.set_prop("action", AAZObjectType, ".firewall_policy_filter_rule_collection.action")
+                disc_firewall_policy_filter_rule_collection.set_prop("rules", AAZListType, ".firewall_policy_filter_rule_collection.rules")
+
+            action = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.action")
+            if action is not None:
+                action.set_prop("type", AAZStrType, ".type")
+
+            rules = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules")
+            if rules is not None:
+                rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_const("ruleType", "ApplicationRule", AAZStrType, ".application_rule", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("ruleType", "NatRule", AAZStrType, ".nat_rule", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("ruleType", "NetworkRule", AAZStrType, ".network_rule", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("ruleType", "ApplicationRule")
+                _elements.discriminate_by("ruleType", "NatRule")
+                _elements.discriminate_by("ruleType", "NetworkRule")
+
+            disc_application_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}")
+            if disc_application_rule is not None:
+                disc_application_rule.set_prop("destinationAddresses", AAZListType, ".application_rule.destination_addresses")
+                disc_application_rule.set_prop("fqdnTags", AAZListType, ".application_rule.fqdn_tags")
+                disc_application_rule.set_prop("protocols", AAZListType, ".application_rule.protocols")
+                disc_application_rule.set_prop("sourceAddresses", AAZListType, ".application_rule.source_addresses")
+                disc_application_rule.set_prop("sourceIpGroups", AAZListType, ".application_rule.source_ip_groups")
+                disc_application_rule.set_prop("targetFqdns", AAZListType, ".application_rule.target_fqdns")
+                disc_application_rule.set_prop("targetUrls", AAZListType, ".application_rule.target_urls")
+                disc_application_rule.set_prop("terminateTLS", AAZBoolType, ".application_rule.terminate_tls")
+                disc_application_rule.set_prop("webCategories", AAZListType, ".application_rule.web_categories")
+
+            destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            fqdn_tags = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.fqdnTags")
+            if fqdn_tags is not None:
+                fqdn_tags.set_elements(AAZStrType, ".")
+
+            protocols = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.protocols")
+            if protocols is not None:
+                protocols.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.protocols[]")
+            if _elements is not None:
+                _elements.set_prop("port", AAZIntType, ".port")
+                _elements.set_prop("protocolType", AAZStrType, ".protocol_type")
+
+            source_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            target_fqdns = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.targetFqdns")
+            if target_fqdns is not None:
+                target_fqdns.set_elements(AAZStrType, ".")
+
+            target_urls = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.targetUrls")
+            if target_urls is not None:
+                target_urls.set_elements(AAZStrType, ".")
+
+            web_categories = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.webCategories")
+            if web_categories is not None:
+                web_categories.set_elements(AAZStrType, ".")
+
+            disc_nat_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}")
+            if disc_nat_rule is not None:
+                disc_nat_rule.set_prop("destinationAddresses", AAZListType, ".nat_rule.destination_addresses")
+                disc_nat_rule.set_prop("destinationPorts", AAZListType, ".nat_rule.destination_ports")
+                disc_nat_rule.set_prop("ipProtocols", AAZListType, ".nat_rule.ip_protocols")
+                disc_nat_rule.set_prop("sourceAddresses", AAZListType, ".nat_rule.source_addresses")
+                disc_nat_rule.set_prop("sourceIpGroups", AAZListType, ".nat_rule.source_ip_groups")
+                disc_nat_rule.set_prop("translatedAddress", AAZStrType, ".nat_rule.translated_address")
+                disc_nat_rule.set_prop("translatedFqdn", AAZStrType, ".nat_rule.translated_fqdn")
+                disc_nat_rule.set_prop("translatedPort", AAZStrType, ".nat_rule.translated_port")
+
+            destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}.destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}.destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            ip_protocols = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}.ipProtocols")
+            if ip_protocols is not None:
+                ip_protocols.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}.sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}.sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            disc_network_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}")
+            if disc_network_rule is not None:
+                disc_network_rule.set_prop("destinationAddresses", AAZListType, ".network_rule.destination_addresses")
+                disc_network_rule.set_prop("destinationFqdns", AAZListType, ".network_rule.destination_fqdns")
+                disc_network_rule.set_prop("destinationIpGroups", AAZListType, ".network_rule.destination_ip_groups")
+                disc_network_rule.set_prop("destinationPorts", AAZListType, ".network_rule.destination_ports")
+                disc_network_rule.set_prop("ipProtocols", AAZListType, ".network_rule.ip_protocols")
+                disc_network_rule.set_prop("sourceAddresses", AAZListType, ".network_rule.source_addresses")
+                disc_network_rule.set_prop("sourceIpGroups", AAZListType, ".network_rule.source_ip_groups")
+
+            destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_fqdns = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.destinationFqdns")
+            if destination_fqdns is not None:
+                destination_fqdns.set_elements(AAZStrType, ".")
+
+            destination_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.destinationIpGroups")
+            if destination_ip_groups is not None:
+                destination_ip_groups.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            ip_protocols = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.ipProtocols")
+            if ip_protocols is not None:
+                ip_protocols.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NetworkRule}.sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            disc_firewall_policy_nat_rule_collection = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}")
+            if disc_firewall_policy_nat_rule_collection is not None:
+                disc_firewall_policy_nat_rule_collection.set_prop("action", AAZObjectType, ".firewall_policy_nat_rule_collection.action")
+                disc_firewall_policy_nat_rule_collection.set_prop("rules", AAZListType, ".firewall_policy_nat_rule_collection.rules")
+
+            action = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.action")
+            if action is not None:
+                action.set_prop("type", AAZStrType, ".type")
+
+            rules = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules")
+            if rules is not None:
+                rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_const("ruleType", "ApplicationRule", AAZStrType, ".application_rule", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("ruleType", "NatRule", AAZStrType, ".nat_rule", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("ruleType", "NetworkRule", AAZStrType, ".network_rule", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("ruleType", "ApplicationRule")
+                _elements.discriminate_by("ruleType", "NatRule")
+                _elements.discriminate_by("ruleType", "NetworkRule")
+
+            disc_application_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}")
+            if disc_application_rule is not None:
+                disc_application_rule.set_prop("destinationAddresses", AAZListType, ".application_rule.destination_addresses")
+                disc_application_rule.set_prop("fqdnTags", AAZListType, ".application_rule.fqdn_tags")
+                disc_application_rule.set_prop("protocols", AAZListType, ".application_rule.protocols")
+                disc_application_rule.set_prop("sourceAddresses", AAZListType, ".application_rule.source_addresses")
+                disc_application_rule.set_prop("sourceIpGroups", AAZListType, ".application_rule.source_ip_groups")
+                disc_application_rule.set_prop("targetFqdns", AAZListType, ".application_rule.target_fqdns")
+                disc_application_rule.set_prop("targetUrls", AAZListType, ".application_rule.target_urls")
+                disc_application_rule.set_prop("terminateTLS", AAZBoolType, ".application_rule.terminate_tls")
+                disc_application_rule.set_prop("webCategories", AAZListType, ".application_rule.web_categories")
+
+            destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            fqdn_tags = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.fqdnTags")
+            if fqdn_tags is not None:
+                fqdn_tags.set_elements(AAZStrType, ".")
+
+            protocols = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.protocols")
+            if protocols is not None:
+                protocols.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.protocols[]")
+            if _elements is not None:
+                _elements.set_prop("port", AAZIntType, ".port")
+                _elements.set_prop("protocolType", AAZStrType, ".protocol_type")
+
+            source_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            target_fqdns = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.targetFqdns")
+            if target_fqdns is not None:
+                target_fqdns.set_elements(AAZStrType, ".")
+
+            target_urls = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.targetUrls")
+            if target_urls is not None:
+                target_urls.set_elements(AAZStrType, ".")
+
+            web_categories = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.webCategories")
+            if web_categories is not None:
+                web_categories.set_elements(AAZStrType, ".")
+
+            disc_nat_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}")
+            if disc_nat_rule is not None:
+                disc_nat_rule.set_prop("destinationAddresses", AAZListType, ".nat_rule.destination_addresses")
+                disc_nat_rule.set_prop("destinationPorts", AAZListType, ".nat_rule.destination_ports")
+                disc_nat_rule.set_prop("ipProtocols", AAZListType, ".nat_rule.ip_protocols")
+                disc_nat_rule.set_prop("sourceAddresses", AAZListType, ".nat_rule.source_addresses")
+                disc_nat_rule.set_prop("sourceIpGroups", AAZListType, ".nat_rule.source_ip_groups")
+                disc_nat_rule.set_prop("translatedAddress", AAZStrType, ".nat_rule.translated_address")
+                disc_nat_rule.set_prop("translatedFqdn", AAZStrType, ".nat_rule.translated_fqdn")
+                disc_nat_rule.set_prop("translatedPort", AAZStrType, ".nat_rule.translated_port")
+
+            destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}.destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}.destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            ip_protocols = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}.ipProtocols")
+            if ip_protocols is not None:
+                ip_protocols.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}.sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}.sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            disc_network_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}")
+            if disc_network_rule is not None:
+                disc_network_rule.set_prop("destinationAddresses", AAZListType, ".network_rule.destination_addresses")
+                disc_network_rule.set_prop("destinationFqdns", AAZListType, ".network_rule.destination_fqdns")
+                disc_network_rule.set_prop("destinationIpGroups", AAZListType, ".network_rule.destination_ip_groups")
+                disc_network_rule.set_prop("destinationPorts", AAZListType, ".network_rule.destination_ports")
+                disc_network_rule.set_prop("ipProtocols", AAZListType, ".network_rule.ip_protocols")
+                disc_network_rule.set_prop("sourceAddresses", AAZListType, ".network_rule.source_addresses")
+                disc_network_rule.set_prop("sourceIpGroups", AAZListType, ".network_rule.source_ip_groups")
+
+            destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_fqdns = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.destinationFqdns")
+            if destination_fqdns is not None:
+                destination_fqdns.set_elements(AAZStrType, ".")
+
+            destination_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.destinationIpGroups")
+            if destination_ip_groups is not None:
+                destination_ip_groups.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            ip_protocols = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.ipProtocols")
+            if ip_protocols is not None:
+                ip_protocols.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NetworkRule}.sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            return _instance_value
+
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
+            )
 
 class _CreateHelper:
     """Helper class for Create"""
@@ -728,6 +1154,78 @@ class _CreateHelper:
         source_ip_groups = _builder.get("{ruleType:NetworkRule}.sourceIpGroups")
         if source_ip_groups is not None:
             source_ip_groups.set_elements(AAZStrType, ".")
+    
+    _schema_firewall_policy_rule_collection_group_read = None
+
+    @classmethod
+    def _build_schema_firewall_policy_rule_collection_group_read(cls, _schema):
+        if cls._schema_firewall_policy_rule_collection_group_read is not None:
+            _schema.etag = cls._schema_firewall_policy_rule_collection_group_read.etag
+            _schema.id = cls._schema_firewall_policy_rule_collection_group_read.id
+            _schema.name = cls._schema_firewall_policy_rule_collection_group_read.name
+            _schema.properties = cls._schema_firewall_policy_rule_collection_group_read.properties
+            _schema.type = cls._schema_firewall_policy_rule_collection_group_read.type
+            return
+
+        cls._schema_firewall_policy_rule_collection_group_read = _schema_firewall_policy_rule_collection_group_read = AAZObjectType()
+
+        firewall_policy_rule_collection_group_read = _schema_firewall_policy_rule_collection_group_read
+        firewall_policy_rule_collection_group_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        firewall_policy_rule_collection_group_read.id = AAZStrType()
+        firewall_policy_rule_collection_group_read.name = AAZStrType()
+        firewall_policy_rule_collection_group_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        firewall_policy_rule_collection_group_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_firewall_policy_rule_collection_group_read.properties
+        properties.priority = AAZIntType()
+        properties.rule_collections = AAZListType(
+            serialized_name="ruleCollections",
+        )
+
+        rule_collections = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections
+        rule_collections.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element
+        _element.name = AAZStrType()
+        _element.priority = AAZIntType()
+        _element.rule_collection_type = AAZStrType(
+            serialized_name="ruleCollectionType",
+            flags={"required": True},
+        )
+
+        disc_firewall_policy_filter_rule_collection = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection")
+        disc_firewall_policy_filter_rule_collection.action = AAZObjectType()
+        disc_firewall_policy_filter_rule_collection.rules = AAZListType()
+
+        action = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").action
+        action.type = AAZStrType()
+
+        rules = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").rules
+        rules.Element = AAZObjectType()
+        cls._build_schema_firewall_policy_rule_read(rules.Element)
+
+        disc_firewall_policy_nat_rule_collection = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection")
+        disc_firewall_policy_nat_rule_collection.action = AAZObjectType()
+        disc_firewall_policy_nat_rule_collection.rules = AAZListType()
+
+        action = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").action
+        action.type = AAZStrType()
+
+        rules = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").rules
+        rules.Element = AAZObjectType()
+        cls._build_schema_firewall_policy_rule_read(rules.Element)
+
+        _schema.etag = cls._schema_firewall_policy_rule_collection_group_read.etag
+        _schema.id = cls._schema_firewall_policy_rule_collection_group_read.id
+        _schema.name = cls._schema_firewall_policy_rule_collection_group_read.name
+        _schema.properties = cls._schema_firewall_policy_rule_collection_group_read.properties
+        _schema.type = cls._schema_firewall_policy_rule_collection_group_read.type
 
     _schema_firewall_policy_rule_read = None
 
@@ -942,6 +1440,5 @@ class _CreateHelper:
                     "NetworkRule",
                 )
             )
-
 
 __all__ = ["Create"]
