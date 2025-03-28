@@ -1,4 +1,3 @@
-# pylint: disable=too-many-lines,too-many-statements
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -8,7 +7,7 @@
 # --------------------------------------------------------------------------
 from io import IOBase
 import sys
-from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, Type, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
@@ -32,7 +31,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ...operations._fleet_update_strategies_operations import (
+from ...operations._auto_upgrade_profiles_operations import (
     build_create_or_update_request,
     build_delete_request,
     build_get_request,
@@ -42,19 +41,19 @@ from ...operations._fleet_update_strategies_operations import (
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
 else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+    from typing import MutableMapping  # type: ignore
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
-class FleetUpdateStrategiesOperations:
+class AutoUpgradeProfilesOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.v2024_05_02_preview.aio.ContainerServiceFleetMgmtClient`'s
-        :attr:`fleet_update_strategies` attribute.
+        :class:`~azure.mgmt.containerservicefleet.aio.ContainerServiceFleetMgmtClient`'s
+        :attr:`auto_upgrade_profiles` attribute.
     """
 
     models = _models
@@ -65,33 +64,30 @@ class FleetUpdateStrategiesOperations:
         self._config = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
-        self._api_version = input_args.pop(0) if input_args else kwargs.pop("api_version")
 
     @distributed_trace
     def list_by_fleet(
         self, resource_group_name: str, fleet_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.FleetUpdateStrategy"]:
-        """List FleetUpdateStrategy resources by Fleet.
+    ) -> AsyncIterable["_models.AutoUpgradeProfile"]:
+        """List AutoUpgradeProfile resources by Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :return: An iterator like instance of either FleetUpdateStrategy or the result of cls(response)
+        :return: An iterator like instance of either AutoUpgradeProfile or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
-        )
-        cls: ClsType[_models.FleetUpdateStrategyListResult] = kwargs.pop("cls", None)
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.AutoUpgradeProfileListResult] = kwargs.pop("cls", None)
 
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -121,7 +117,7 @@ class FleetUpdateStrategiesOperations:
                         for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
                     }
                 )
-                _next_request_params["api-version"] = self._api_version
+                _next_request_params["api-version"] = self._config.api_version
                 _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
@@ -130,7 +126,7 @@ class FleetUpdateStrategiesOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetUpdateStrategyListResult", pipeline_response)
+            deserialized = self._deserialize("AutoUpgradeProfileListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -156,22 +152,22 @@ class FleetUpdateStrategiesOperations:
 
     @distributed_trace_async
     async def get(
-        self, resource_group_name: str, fleet_name: str, update_strategy_name: str, **kwargs: Any
-    ) -> _models.FleetUpdateStrategy:
-        """Get a FleetUpdateStrategy.
+        self, resource_group_name: str, fleet_name: str, auto_upgrade_profile_name: str, **kwargs: Any
+    ) -> _models.AutoUpgradeProfile:
+        """Get a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
-        :return: FleetUpdateStrategy or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
+        :return: AutoUpgradeProfile or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -182,15 +178,13 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
-        )
-        cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.AutoUpgradeProfile] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            update_strategy_name=update_strategy_name,
+            auto_upgrade_profile_name=auto_upgrade_profile_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -210,7 +204,7 @@ class FleetUpdateStrategiesOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("FleetUpdateStrategy", pipeline_response.http_response)
+        deserialized = self._deserialize("AutoUpgradeProfile", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -221,13 +215,13 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
-        resource: Union[_models.FleetUpdateStrategy, IO[bytes]],
+        auto_upgrade_profile_name: str,
+        resource: Union[_models.AutoUpgradeProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
     ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -238,9 +232,7 @@ class FleetUpdateStrategiesOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
@@ -250,12 +242,12 @@ class FleetUpdateStrategiesOperations:
         if isinstance(resource, (IOBase, bytes)):
             _content = resource
         else:
-            _json = self._serialize.body(resource, "FleetUpdateStrategy")
+            _json = self._serialize.body(resource, "AutoUpgradeProfile")
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            update_strategy_name=update_strategy_name,
+            auto_upgrade_profile_name=auto_upgrade_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             if_none_match=if_none_match,
@@ -287,6 +279,9 @@ class FleetUpdateStrategiesOperations:
 
         response_headers = {}
         if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
@@ -301,26 +296,25 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
-        resource: _models.FleetUpdateStrategy,
+        auto_upgrade_profile_name: str,
+        resource: _models.AutoUpgradeProfile,
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetUpdateStrategy]:
-        """Create a FleetUpdateStrategy.
+    ) -> AsyncLROPoller[_models.AutoUpgradeProfile]:
+        """Create a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
         :param resource: Resource create parameters. Required.
-        :type resource:
-         ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy
+        :type resource: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -330,10 +324,10 @@ class FleetUpdateStrategiesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
+        :return: An instance of AsyncLROPoller that returns either AutoUpgradeProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -342,23 +336,23 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
+        auto_upgrade_profile_name: str,
         resource: IO[bytes],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetUpdateStrategy]:
-        """Create a FleetUpdateStrategy.
+    ) -> AsyncLROPoller[_models.AutoUpgradeProfile]:
+        """Create a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
         :param resource: Resource create parameters. Required.
         :type resource: IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
@@ -370,10 +364,10 @@ class FleetUpdateStrategiesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
+        :return: An instance of AsyncLROPoller that returns either AutoUpgradeProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -382,45 +376,42 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
-        resource: Union[_models.FleetUpdateStrategy, IO[bytes]],
+        auto_upgrade_profile_name: str,
+        resource: Union[_models.AutoUpgradeProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetUpdateStrategy]:
-        """Create a FleetUpdateStrategy.
+    ) -> AsyncLROPoller[_models.AutoUpgradeProfile]:
+        """Create a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
-        :param resource: Resource create parameters. Is either a FleetUpdateStrategy type or a
-         IO[bytes] type. Required.
-        :type resource:
-         ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy or IO[bytes]
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
+        :param resource: Resource create parameters. Is either a AutoUpgradeProfile type or a IO[bytes]
+         type. Required.
+        :type resource: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
         :param if_none_match: The request should only proceed if no entity matches this string. Default
          value is None.
         :type if_none_match: str
-        :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
+        :return: An instance of AsyncLROPoller that returns either AutoUpgradeProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
+        cls: ClsType[_models.AutoUpgradeProfile] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -428,7 +419,7 @@ class FleetUpdateStrategiesOperations:
             raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                update_strategy_name=update_strategy_name,
+                auto_upgrade_profile_name=auto_upgrade_profile_name,
                 resource=resource,
                 if_match=if_match,
                 if_none_match=if_none_match,
@@ -443,7 +434,7 @@ class FleetUpdateStrategiesOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("FleetUpdateStrategy", pipeline_response.http_response)
+            deserialized = self._deserialize("AutoUpgradeProfile", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -458,13 +449,13 @@ class FleetUpdateStrategiesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.FleetUpdateStrategy].from_continuation_token(
+            return AsyncLROPoller[_models.AutoUpgradeProfile].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.FleetUpdateStrategy](
+        return AsyncLROPoller[_models.AutoUpgradeProfile](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
@@ -472,11 +463,11 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
+        auto_upgrade_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+        error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -487,15 +478,13 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            update_strategy_name=update_strategy_name,
+            auto_upgrade_profile_name=auto_upgrade_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -512,7 +501,7 @@ class FleetUpdateStrategiesOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             try:
                 await response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
@@ -538,19 +527,19 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
+        auto_upgrade_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
-        """Delete a FleetUpdateStrategy.
+        """Delete a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -561,9 +550,7 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
@@ -572,7 +559,7 @@ class FleetUpdateStrategiesOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                update_strategy_name=update_strategy_name,
+                auto_upgrade_profile_name=auto_upgrade_profile_name,
                 if_match=if_match,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
@@ -589,8 +576,7 @@ class FleetUpdateStrategiesOperations:
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
             )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
