@@ -47,3 +47,8 @@ class Update(_Update):
             cmk_identity_type = self.ctx.args.cmk_identity_type.to_serialized_data()
             if cmk_identity_type == "SystemAssigned":
                 self.ctx.args.cmk_user_assigned_identity_id = None
+        if has_value(self.ctx.args.type):
+            identity_type = self.ctx.args.type.to_serialized_data()
+            if identity_type == "SystemAssigned" or identity_type == "None":
+                # In either scenario, passing user_assigned_identities (even an empty list) would cause a failure.
+                self.ctx.args.user_assigned_identities = None
