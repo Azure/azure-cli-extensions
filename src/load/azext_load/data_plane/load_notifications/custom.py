@@ -20,11 +20,11 @@ def create_notification_rule(
     cmd,
     load_test_resource,
     action_groups,
+    notification_rule_id,
     resource_group_name=None,
     event=None,
     display_name=None,
     test_ids=None,
-    notification_rule_id=None,
     all_tests=False,
     all_events=False,
 ):
@@ -64,10 +64,13 @@ def update_notification_rule(
     all_events=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    existing_notification_rule = client.get_notification_rule(notification_rule_id)
-    if not existing_notification_rule:
-        raise InvalidArgumentValueError("No notification rule exists with given id : %s", notification_rule_id)
     logger.info("Updating notification rule.")
+    try:
+        existing_notification_rule = client.get_notification_rule(notification_rule_id)
+    except ResourceNotFoundError:
+        msg = "Notification rule with given ID : {} does not exist.".format(notification_rule_id)
+        logger.debug(msg)
+        raise InvalidArgumentValueError(msg)
     logger.info("Existing notification rule : %s", existing_notification_rule)
     new_notification_rule = utils.get_notification_rule_update_body(
         existing_notification_rule,action_groups, add_event, remove_event, display_name, test_ids, all_tests, all_events
