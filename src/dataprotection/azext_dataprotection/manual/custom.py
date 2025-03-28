@@ -126,7 +126,8 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
                                               friendly_name=None, backup_configuration=None,
                                               secret_store_type=None, secret_store_uri=None,
-                                              snapshot_resource_group_name=None, tags=None):
+                                              snapshot_resource_group_name=None, tags=None,
+                                              use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
     manifest = helper.load_manifest(datasource_type)
 
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
@@ -180,7 +181,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         if backup_configuration is not None:
             logger.warning("--backup-configuration is not required for the given DatasourceType, and will not be used")
 
-    return {
+    backup_instance = {
         "backup_instance_name": backup_instance_name,
         "properties": {
             "data_source_info": datasource_info,
@@ -192,6 +193,12 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         },
         "tags": tags
     }
+
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+        backup_instance["identity_details"] = identity_details
+
+    return backup_instance
 
 
 def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,

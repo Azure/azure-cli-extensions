@@ -114,6 +114,8 @@ def load_arguments(self, _):
         c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
         c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
         c.argument('tags', tags_type)
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=bool, help="")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="")
 
     with self.argument_context('dataprotection backup-instance update') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")

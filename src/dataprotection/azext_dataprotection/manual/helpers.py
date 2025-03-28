@@ -234,6 +234,25 @@ def get_friendly_name(datasource_type, friendly_name, datasourceset_info, dataso
     return friendly_name
 
 
+def get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url):
+    identity_details = {}
+    
+    # We only enter this function if at least one  of the  parameters is provided, so we don't need another check for that
+    if user_assigned_identity_arm_url is not None:
+        if use_system_assigned_identity:
+            raise MutuallyExclusiveArgumentError("Cannot provide --use-system-assigned-identity as true when specifying --user-assigned-identity-arm-url."
+                                                 " Please omit --use-system-assigned-identity, or pass False")
+        else:
+            identity_details = {
+                "useSystemAssignedIdentity": False,
+                "userAssignedIdentityArmUrl": user_assigned_identity_arm_url
+            }
+    elif use_system_assigned_identity is not None:
+        identity_details["useSystemAssignedIdentity"] = True
+
+    return identity_details
+
+
 def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group):
     if vaulted_backup_containers:
         return {
