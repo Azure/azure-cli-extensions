@@ -100,3 +100,11 @@ type: group
 short-summary: Command group to manage schedule triggers.
 long-summary: Command group to manage schedule triggers.
 """ + _common_params
+
+helps[
+    "load notification-rule"
+] = """
+type: group
+short-summary: Command group to manage notification rules.
+long-summary: Command group to manage notification rules.
+""" + _common_params

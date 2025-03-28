@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
+import os, json
 import re
 from collections import OrderedDict
 from datetime import datetime
@@ -13,6 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationEr
 from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
+from azext_load.vendored_sdks.loadtesting.models import NotificationEventType, Status, PFTestResult
 
 from . import utils
 from .models import (
@@ -603,3 +604,124 @@ def validate_schedule_test_ids(namespace):
         raise InvalidArgumentValueError("Currently we only support one test ID per schedule.")
     if not re.match("^[a-z0-9_-]*$", namespace.test_ids[0]):
         raise InvalidArgumentValueError("Invalid test-id value.")
+
+
+def validate_notification_rule_id(namespace):
+    """Validates notification-rule-id"""
+    _validate_id(namespace, "notification_rule_id", "notification-rule-id")
+
+
+def _validate_notification_event(event: dict):
+    """Validates a single event"""
+    required_keys = {"event-id", "type"}
+    allowed_keys = {"event-id", "type", "status", "result"}
+
+    # Check for required keys
+    if not required_keys.issubset(event.keys()):
+        raise InvalidArgumentValueError(f"Missing required keys: {required_keys - event.keys()}")
+
+    # Check for allowed keys
+    if not set(event.keys()).issubset(allowed_keys):
+        raise InvalidArgumentValueError(f"Invalid keys present: {set(event.keys()) - allowed_keys}")
+
+    # Validate event type
+    event_type = event["type"]
+    if event_type not in [e.value for e in NotificationEventType]:
+        raise InvalidArgumentValueError(f"Invalid event type: {event_type}. Allowed values: {', '.join(e.value for e in NotificationEventType)}")
+
+    # Validate status and result for TEST_RUN_ENDED
+    if event_type == NotificationEventType.TEST_RUN_ENDED.value:
+        if "status" in event:
+            statuses = event["status"].split(",")
+            for status in statuses:
+                if status not in [e.value for e in Status]:        # Use Status in _enum file
+                    raise InvalidArgumentValueError(f"Invalid status: {event['status']}. Allowed values: {', '.join(e.value for e in Status)}")
+            event["status"] = statuses
+        if "result" in event:
+            results = event["result"].split(",")
+            for result in results:
+                if result not in [e.value for e in PFTestResult]:        # Use PFResult in _enum file
+                    raise InvalidArgumentValueError(f"Invalid result: {event['result']}. Allowed values: {', '.join(e.value for e in PFTestResult)}")
+            event["result"] = results
+    else:
+        # Ensure no extra fields for other event types
+        if "status" in event or "result" in event:
+            raise InvalidArgumentValueError(f"status and result should not be present for event type '{event_type}'")
+    
+
+def _validate_notification_event_list(event_list):
+    """Extracts and validates a list of events from the input"""
+    """ Validator function for --event argument """
+    
+    if event_list is None:
+        logger.info("No events provided.")
+        return
+
+    if not isinstance(event_list, list):
+        raise InvalidArgumentValueError("Invalid events type. Expected a list of events.")
+    
+    parsed_events = []
+    pattern = re.compile(r'([\w-]+)=([\w,]+)')  # Match key=value pairs
+
+    for event_group in event_list:
+        event_dict = {}
+
+        if isinstance(event_group, list):  # Handle list case
+            event_parts = event_group  # If already a list, use as is
+        else:
+            event_parts = [event_group]  # Convert string to list for consistency
+
+        logger.info("Raw event parts: %s", event_parts)
+
+        for part in event_parts:
+            matches = pattern.findall(part)
+            if not matches:
+                raise InvalidArgumentValueError(f"Invalid format for event: {part}")
+
+            for key, value in matches:
+                event_dict[key] = value
+        
+        _validate_notification_event(event_dict)
+        logger.info("Current event:")
+        logger.info(json.dumps(event_dict, indent=4))
+        parsed_events.append(event_dict)
+        
+    logger.info("All parsed events:")
+    logger.info(json.dumps(event_list, indent=4))
+    return parsed_events
+
+def validate_add_event(namespace):
+    """Validates events provided with --add-event option"""
+    namespace.add_event = _validate_notification_event_list(namespace.add_event)
+
+def validate_event(namespace):
+    """Validates events provided with --event option"""
+    namespace.event = _validate_notification_event_list(namespace.event)
+    
+def validate_remove_event(namespace):
+    """Validates input for --remove-event option"""
+    if namespace.remove_event is None:
+        logger.info("No event-id provided to be removed.")
+        return
+    
+    logger.info("Raw remove event list: %s", namespace.remove_event)
+    remove_event_list = []
+    pattern = re.compile(r'([\w-]+)=([\w,]+)')  # Match key=value pairs
+    for event in namespace.remove_event:
+        event_dict = {}
+        if len(event) > 1:
+            raise InvalidArgumentValueError("Invalid pattern --remove-event input {}.".format(event))
+        pair = pattern.findall(event[0])
+        if not pair:
+            raise InvalidArgumentValueError("Invalid pattern --remove-event input {}.".format(event))
+
+        for key, value in pair:
+            event_dict[key] = value
+
+        if "event-id" not in event_dict:
+            raise InvalidArgumentValueError("Invalid pattern --remove-event input {}.".format(event))
+        
+        remove_event_list.append(event_dict)      
+
+    logger.info("Parsed remove event list: %s",remove_event_list)
+    namespace.remove_event = remove_event_list

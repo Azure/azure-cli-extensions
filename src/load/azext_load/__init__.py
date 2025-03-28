@@ -19,6 +19,7 @@ class LoadCommandsLoader(AzCommandsLoader):
         from azext_load.data_plane.load_test.commands import load_test_commands
         from azext_load.data_plane.load_test_run.commands import load_test_run_commands
         from azext_load.data_plane.load_trigger.commands import load_trigger_schedule_commands
+        from azext_load.data_plane.load_notifications.commands import load_notification_commands
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -34,6 +35,7 @@ class LoadCommandsLoader(AzCommandsLoader):
         load_test_commands(self, args)
         load_test_run_commands(self, args)
         load_trigger_schedule_commands(self, args)
+        load_notification_commands(self, args)
         return self.command_table
 
     def load_arguments(self, command):
@@ -42,12 +44,14 @@ class LoadCommandsLoader(AzCommandsLoader):
         from azext_load.data_plane.load_test.params import load_arguments as load_test_arguments
         from azext_load.data_plane.load_test_run.params import load_arguments as load_test_run_arguments
         from azext_load.data_plane.load_trigger.params import load_arguments as load_trigger_schedule_arguments
+        from azext_load.data_plane.load_notifications.params import load_arguments as load_notification_arguments
 
         load_arguments(self, command)
         load_common_arguments(self, command)
         load_test_arguments(self, command)
         load_test_run_arguments(self, command)
         load_trigger_schedule_arguments(self, command)
+        load_notification_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = LoadCommandsLoader
