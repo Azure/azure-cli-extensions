@@ -11,7 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-
+* Add option `Ubuntu2204` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+ 
 13.0.0b9
 +++++++
 * Vendor new SDK and bump API version to 2024-10-02-preview.
