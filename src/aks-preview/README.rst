@@ -94,67 +94,67 @@ Released version and adopted API version
       - Out of support
     * - 0.5.49 ~ 0.5.52
       - 2021-11-01-preview
-      - Out of support, API version **Deprecated** on 2023/07/01
+      - Out of support, API version **deprecated** on 2023/07/01
     * - 0.5.53 ~ 0.5.57
       - 2022-01-02-preview
-      - Out of support, API version **Deprecated** on 2023/09/01
+      - Out of support, API version **deprecated** on 2023/09/01
     * - 0.5.58 ~ 0.5.60
       - 2022-02-02-preview
-      - Out of support, API version **Deprecated** on 2023/08/01
+      - Out of support, API version **deprecated** on 2023/08/01
     * - 0.5.61 ~ 0.5.66
       - 2022-03-02-preview
-      - Out of support, API version **Deprecated** on 2023/09/01
+      - Out of support, API version **deprecated** on 2023/09/01
     * - 0.5.67 ~ 0.5.78
       - 2022-04-02-preview
-      - Out of support, API version **Deprecated** on 2023/09/01
+      - Out of support, API version **deprecated** on 2023/09/01
     * - 0.5.79 ~ 0.5.91
       - 2022-05-02-preview
-      - Out of support, API version **Deprecated** on 2023/09/01
+      - Out of support, API version **deprecated** on 2023/09/01
     * - 0.5.92 ~ 0.5.93
       - 2022-06-02-preview
-      - Out of support, API version **Deprecated** on 2023/09/01
+      - Out of support, API version **deprecated** on 2023/09/01
     * - 0.5.94 ~ 0.5.100
       - 2022-07-02-preview
-      - Out of support, API version **Deprecated** on 2024/09/01
+      - Out of support, API version **deprecated** on 2024/09/01
     * - 0.5.101 ~ 0.5.104
       - 2022-08-02-preview
-      - Out of support, API version **Deprecated** on 2024/09/01
+      - Out of support, API version **deprecated** on 2024/09/01
     * - 0.5.105 ~ 0.5.107
       - 2022-08-03-preview
-      - Out of support, API version **Deprecated** on 2024/09/01
+      - Out of support, API version **deprecated** on 2024/09/01
     * - 0.5.108 ~ 0.5.115
       - 2022-09-02-preview
-      - Out of support, API version **Deprecated** on 2024/11/01
+      - Out of support, API version **deprecated** on 2024/11/01
     * - 0.5.116 ~ 0.5.121
       - 2022-10-02-preview
-      - Out of support, API version **Deprecated** on 2024/11/01
+      - Out of support, API version **deprecated** on 2024/11/01
     * - 0.5.122 ~ 0.5.128
       - 2022-11-02-preview
-      - Out of support, API version **Deprecated** on 2024/09/01
+      - Out of support, API version **deprecated** on 2024/09/01
     * - 0.5.129 ~ 0.5.132
       - 2023-01-02-preview
-      - Out of support, API version **Deprecated** on 2024/11/01
+      - Out of support, API version **deprecated** on 2024/11/01
     * - 0.5.133 ~ 0.5.137
       - 2023-02-02-preview
-      - Out of support, API version **Deprecated** on 2024/11/01
+      - Out of support, API version **deprecated** on 2024/11/01
     * - 0.5.138 ~ 0.5.139
       - 2023-03-02-preview
-      - Out of support, API version **Deprecated** on 2025/02/03
+      - Out of support, API version **deprecated** on 2025/02/03
     * - 0.5.140 ~ 0.5.142
       - 2023-04-02-preview
-      - Out of support, API version **Deprecated** on 2025/02/10
+      - Out of support, API version **deprecated** on 2025/02/10
     * - 0.5.143 ~ 0.5.149
       - 2023-05-02-preview
-      - Out of support, API version **Deprecated** on 2025/02/17
+      - Out of support, API version **deprecated** on 2025/02/17
     * - 0.5.150 ~ 0.5.153
       - 2023-06-02-preview
-      - Out of support, API version **Deprecated** on 2025/02/24
+      - Out of support, API version **deprecated** on 2025/02/24
     * - 0.5.154 ~ 0.5.161
       - 2023-07-02-preview
-      - Out of support, API version **Deprecated** on 2025/03/03
+      - Out of support, API version **deprecated** on 2025/03/03
     * - 0.5.162 ~ 0.5.166
       - 2023-08-02-preview
-      - Out of support, API version **Deprecated** on 2025/03/10
+      - Out of support, API version **deprecated** on 2025/03/10
     * - 0.5.167 ~ 0.5.171
       - 2023-09-02-preview
       - Plan to **retire** on 2024/12/01
