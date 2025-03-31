@@ -450,10 +450,20 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     # can be set independent of each other. These names correspond to what we call
                     # "entrypoint" and "command"
                     # entrypoint should be None for everything except VN2
-                    if image.get_entrypoint() is not None:
-                        # put together the command
-                        entrypoint = image.get_entrypoint() or image_info.get("Entrypoint") or []
-                        command = entrypoint + (image.get_command() or image_info.get("Cmd") or [])
+                    image_entrypoint = image.get_entrypoint()
+                    if image_entrypoint is not None:
+                        image_command = image.get_command()
+                        manifest_entrypoint = image_info.get("Entrypoint") or []
+                        manifest_command = image_info.get("Cmd") or []
+                        # this describes the potential options that can happen: https://unofficial-kubernetes.readthedocs.io/en/latest/concepts/configuration/container-command-args/
+                        if image_entrypoint and not image_command:
+                            command = image_entrypoint
+                        elif image_entrypoint and image_command:
+                            command = image_entrypoint + image_command
+                        elif image_command:
+                            command = manifest_entrypoint + image_command
+                        else:
+                            command = manifest_entrypoint + manifest_command
                         image.set_command(command)
 
                     elif not image.get_command():
