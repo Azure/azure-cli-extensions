@@ -607,7 +607,7 @@ def _select_distro_linux_gen2(distro):
                 os_image_urn = distro
             else:
                 logger.info('The provided URN does not contain Gen2 in it and this VM is a gen2 , dropping to default image')
-                os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+                os_image_urn = "Canonical:ubuntu-24_04-lts:server:latest"
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
             os_image_urn = "Canonical:ubuntu-24_04-lts:server:latest"
