@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "network manager update",
-)
+# @register_command(
+#     "network manager update",
+# )
 class Update(AAZCommand):
     """Update a Network Manager.
 
