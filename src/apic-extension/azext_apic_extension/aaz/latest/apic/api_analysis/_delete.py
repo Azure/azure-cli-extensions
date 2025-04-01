@@ -12,17 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic integration delete",
+    "apic api-analysis delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete specified API source.
+    """Delete deletes API analyzer configuration.
+
+    :example: Delete an API Analysis rule config
+        az apic api-analysis delete -g contoso-resources -n contoso -c spectral-openapi
     """
 
     _aaz_info = {
         "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apisources/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/analyzerconfigs/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -42,9 +46,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.integration_name = AAZStrArg(
-            options=["-i", "--integration-name"],
-            help="The name of the integration.",
+        _args_schema.analyzer_config_name = AAZStrArg(
+            options=["-c", "--config-name", "--analyzer-config-name"],
+            help="The name of the configuration.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -54,7 +58,6 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of Azure API Center resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
@@ -83,7 +86,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApiSourcesDelete(ctx=self.ctx)()
+        self.AnalyzerConfigsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -94,7 +97,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ApiSourcesDelete(AAZHttpOperation):
+    class AnalyzerConfigsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -110,7 +113,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apiSources/{apiSourceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/analyzerConfigs/{analyzerConfigName}",
                 **self.url_parameters
             )
 
@@ -126,7 +129,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiSourceName", self.ctx.args.integration_name,
+                    "analyzerConfigName", self.ctx.args.analyzer_config_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
