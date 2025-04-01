@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.9.0
+2.0.0
 ++++++
 * Add commands for creating and managing notification rules using CLI. 
 
