@@ -118,4 +118,4 @@ Release History
 
 1.5.0
 ++++++
-* Upgrade SDK version to 2025-03-01.
+* Upgrade SDK version to 2025-03-01
