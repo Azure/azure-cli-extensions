@@ -4955,12 +4955,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         nodepool_initialization_taints = self.context.get_nodepool_initialization_taints()
         if nodepool_initialization_taints is not None:
             for agent_profile in mc.agent_pool_profiles:
-                if agent_profile.mode != None and agent_profile.mode.lower() == "user":
+                if agent_profile.mode is not None and agent_profile.mode.lower() == "user":
                     agent_profile.node_initialization_taints = nodepool_initialization_taints
                     continue
                 # Filter out taints with hard effects (NoSchedule and NoExecute) for system pools
                 agent_profile.node_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
-        return mc 
+        return mc
 
     def update_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
