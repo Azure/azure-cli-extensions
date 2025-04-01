@@ -31,11 +31,12 @@ load_params = {
     "random_name_length": 30,
 }
 
+
 class LoadTestScenarioAdvancedUrl(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestScenarioAdvancedUrl, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
-    
+
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_advancedurl(self):
@@ -56,7 +57,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             "--resource-group {resource_group} ",
             checks=checks,
         )
-        
+
         # Update the load test with advanced URL requests json using file upload
         # file type not specified => file defaults to ADDITIONAL_ARTIFACTS
         self.kwargs.update(
@@ -76,7 +77,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             '--path "{test_url_config}" ',
             checks=checks,
         )
-        
+
         # Delete file, since we can't have multiple files with same name irrespective of file type
         self.kwargs.update(
             {
@@ -125,7 +126,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             if file["fileType"] == "JMX_FILE":
                 test_script_uri = urllib.parse.urlparse(file["url"]).path
         assert test_script_uri is not None
-        
+
         # Update the requests in the advanced URL test
         # assert test script is updated
         self.kwargs.update(
@@ -157,7 +158,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             if file["fileType"] == "JMX_FILE":
                 assert test_script_uri != urllib.parse.urlparse(file["url"]).path
                 test_script_uri = urllib.parse.urlparse(file["url"]).path
-        
+
         # Update the load test using load test config file
         # assert test script is updated
         self.kwargs.update(
@@ -179,7 +180,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
             checks=checks,
         ).get_output_in_json()
         assert urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path != test_script_uri
-        
+
         # Update the advanced URL test to JMX using test plan
         self.kwargs.update(
             {
@@ -213,7 +214,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         )
         
         # Invalid: Try create JMX test using advanced URL requests json from YAML config file
-        _configure_command_assert_exception(self, "(InvalidFileType) Invalid FileType", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_type="JMX", load_test_config_file=LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE)
+        _configure_command_assert_exception(self, "(InvalidFile)", is_create=True, test_id=LoadTestConstants.LOAD_TEST_ADVANCED_URL_ID, test_type="JMX", load_test_config_file=LoadTestConstants.ADVANCED_URL_LOAD_TEST_CONFIG_FILE)
         
         # Invalid: Try upload advanced URL requests json config file to a test of type JMX
         _configure_command_assert_exception(self, "The URL config file cannot be uploaded", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="URL_TEST_CONFIG")
@@ -274,7 +275,7 @@ class LoadTestScenarioAdvancedUrl(ScenarioTest):
         assert test_script_uri != urllib.parse.urlparse(response["inputArtifacts"]["testScriptFileInfo"]["url"]).path
         
         # Invalid: Try upload advanced URL requests json config file as a TEST_SCRIPT
-        # Uncomment when BUG : https://devdiv.visualstudio.com/OnlineServices/_workitems/edit/2393957 is fixed. 
+        # Uncomment when BUG : https://devdiv.visualstudio.com/OnlineServices/_workitems/edit/2393957 is fixed.
         #_configure_command_assert_exception(self, "Invalid FileType", is_file_upload=True, file_path=LoadTestConstants.ADVANCED_TEST_URL_CONFIG_FILE_PATH, file_type="TEST_SCRIPT")
         
         self.cmd(
@@ -344,3 +345,4 @@ def _configure_command_assert_exception(self, message, is_create=False, is_file_
         self.cmd(command)
     except Exception as e:
         assert message in str(e)
+        

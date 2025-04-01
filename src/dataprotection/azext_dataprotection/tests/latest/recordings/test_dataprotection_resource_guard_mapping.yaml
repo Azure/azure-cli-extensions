@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -v --type --storage-settings --soft-delete-state
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-resourceguard-000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001","name":"clitest-dpp-resourceguard-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_dataprotection_resource_guard_mapping","date":"2024-05-08T10:33:16Z","module":"azure-cli-extensions"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001","name":"clitest-dpp-resourceguard-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_dataprotection_resource_guard_mapping","date":"2025-03-11T08:40:46Z","module":"dataprotection"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '427'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:18 GMT
+      - Tue, 11 Mar 2025 08:40:47 GMT
       expires:
       - '-1'
       pragma:
@@ -38,8 +38,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: E0C8CBB5EB154228A5B6EDD1AF7596BD Ref B: AMS231020615035 Ref C: 2024-05-08T10:33:18Z'
+      - 'Ref A: 617D4E4DD8D04FC6BF46B340833E8166 Ref B: MAA201060515037 Ref C: 2025-03-11T08:40:48Z'
     status:
       code: 200
       message: OK
@@ -64,15 +66,15 @@ interactions:
       ParameterSetName:
       - -g -v --type --storage-settings --soft-delete-state
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable?api-version=2024-04-01
   response:
     body:
-      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"521120ab-81bf-4a3f-993a-62a79b54bad5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":14.0}},"secureScore":"None","bcdrSecurityLevel":"Poor","replicatedRegions":[]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable","name":"clitest-dpp-muavault-deletable","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"f3b6df46-ac3c-42c1-be87-84a6a1a9eee8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":14.0}},"secureScore":"None","bcdrSecurityLevel":"Poor","replicatedRegions":[]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable","name":"clitest-dpp-muavault-deletable","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/OTVjMGQ4NTUtMGViYi00OGY5LWJjODktYTQ1ODAzYmMwZjA5O2ExOTEyYjg4LTAzNzktNGNhZi04ZmE0LTVmYjZjZWI3NzRiMw==?api-version=2024-04-01&t=638507612024808703&c=MIIHKjCCBhKgAwIBAgITfATJ01XOFZSjauo1nQAABMnTVTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNDMwMTc0NzI5WhcNMjUwNDI1MTc0NzI5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ1mjauMCyLkARtiKVRHWyFUr6vjeEWvHpEMP7C-gT1hTYk728l8YWQ5LK8ksFMZAswu37X-LpahnkXYCM7KzDVrUHxamflRaNrzlR7IQ9Qs9o7xR_yZR9pUG-cmZWAdjUTwmAxuOBxKt9l7YGmCFuZ8tOIdkiUZbHuUyXVPe4gEZQiNIBxxXC0oJj7Eke1AflxrcUrueMoKTYl-a4lGYbZ0YvEI8kCg-V1c8ixh1FaRSj9gmQSEAZUSNlzsCQ9MaEXAX41FcmEUx0_QYjsDDidtOPBQ6I1N7azj_CR17MRcvtVi_DTeMsugTZm66jS1Fnpvj8xW7C-1CBP1gKnG24UCAwEAAaOCBBcwggQTMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSeRfK25AUs6KJIZoauo2wMz2QnbjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHqMcVAKKGk0nHnUxYFdcQg9ufuiJBfhTyDv03XIkCYOiycYbdcpEfU4nczRspzBZSv8ZN90RxmlssbdoPsnCnq0qhCCQP2myx80kl_YdjVYHStJHekK_Ijtuuc251-awxR4KjGs-FJrxabe5YDsaQctFpDQZiAPrlt39XD5JkUAu2IdoQaTsVG9V2RHXmjFgUGKhmIxfpDysatyrpmD0nSL0wIWf2U8WLdKabRjC_6Jlh_iwJ-Q91lRQpbtsIX7d8RHP9K4WSiRjlx7dn3-CoovFpkq1AoWZlhwWeaOLwaUpUM21UJw_cYQIWnCdVe6YSsOe8eV3nunt2ycixdAxgQ&s=G1dTZCz8Q1SDE5NXj4IB42frGPLretppJCWy6gkAKDqKuiZpG3wP1ucPr9_vYNaHcuu-FtjViJ8BNo4zySTxudcj_wJp9VzTEPp_qhJBXbmWNqoCke63Q_09HDKi9JF8gdanpLtiMNhM4xb5SwDH7w0a3E8VSkzRIGAkGjXrrI1zHoJisbl21obKyEfd9mEoiWrj-Cik271cpJAFtF-4FDYYSIw8S80mBpWR_mBdMiodk1zdJKSwui9yOaMX_dArRHW83uLQLz5QSSmOb0GVKQc31c69wsZydzbCy9vBzmdCJtk6WKM9NYOl0IXNZbMNV_p7BSvSG_HNMecT9hyouw&h=UCRqJ1uB2oClSg1y3Xd_rWXuOr8rI1PnMzEPZRkSn8w
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==?api-version=2024-04-01&t=638772792540632950&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=FhCHyYT0cGr_aCKmaasGQdY7AHb3FsXj2jrzkWvI0_5xVOP6V1nDE-dY2IY03dul0a8KTzkGxY2DFp2LUiPVuQ7i8Eh6Q4uslQWU_qJFhehfNDHuON3Z_AZYIHeg5jx577GoKarhCbDc3n4Xt2luT4ZHIIfJQ0pK01e3ZaS96vEYowSA6etN3IR7gu3yHvwwWfUjGQI2S6C_68wnZARLL8A2wCcwlQsE_FdNyJrhfvoLne8mzwfZwSUEV6EgbF8iQ1GAOfevprpNmQj9giCO6pKz3yY64l7IInu4D8K75u_EokJXT6tvQgAIQ9QwHf548yPL0R9yPXs2PYOU1ELkTg&h=XlevmknDCU2BN0qWm4D7u9Srts9_Q12dHwrn1ib6N5Y
       cache-control:
       - no-cache
       content-length:
@@ -80,7 +82,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:22 GMT
+      - Tue, 11 Mar 2025 08:40:54 GMT
       expires:
       - '-1'
       pragma:
@@ -92,11 +94,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-resource-system-data:
-      - '{"createdBy":"karmahajan@microsoft.com","createdByType":"User","createdAt":"2024-05-08T10:33:20.8088991Z","lastModifiedBy":"karmahajan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-08T10:33:20.8088991Z"}'
+      - '{"createdBy":"zubairabid@microsoft.com","createdByType":"User","createdAt":"2025-03-11T08:40:51.6882743Z","lastModifiedBy":"zubairabid@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-11T08:40:51.6882743Z"}'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 1BC3A0F8ED874FACA9416BA74D8866A2 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:18Z'
+      - 'Ref A: 131949988C404652A5A2EF14B94860B7 Ref B: MAA201060513035 Ref C: 2025-03-11T08:40:48Z'
     status:
       code: 201
       message: Created
@@ -114,21 +116,21 @@ interactions:
       ParameterSetName:
       - -g -v --type --storage-settings --soft-delete-state
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/OTVjMGQ4NTUtMGViYi00OGY5LWJjODktYTQ1ODAzYmMwZjA5O2ExOTEyYjg4LTAzNzktNGNhZi04ZmE0LTVmYjZjZWI3NzRiMw==?api-version=2024-04-01&t=638507612024808703&c=MIIHKjCCBhKgAwIBAgITfATJ01XOFZSjauo1nQAABMnTVTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNDMwMTc0NzI5WhcNMjUwNDI1MTc0NzI5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ1mjauMCyLkARtiKVRHWyFUr6vjeEWvHpEMP7C-gT1hTYk728l8YWQ5LK8ksFMZAswu37X-LpahnkXYCM7KzDVrUHxamflRaNrzlR7IQ9Qs9o7xR_yZR9pUG-cmZWAdjUTwmAxuOBxKt9l7YGmCFuZ8tOIdkiUZbHuUyXVPe4gEZQiNIBxxXC0oJj7Eke1AflxrcUrueMoKTYl-a4lGYbZ0YvEI8kCg-V1c8ixh1FaRSj9gmQSEAZUSNlzsCQ9MaEXAX41FcmEUx0_QYjsDDidtOPBQ6I1N7azj_CR17MRcvtVi_DTeMsugTZm66jS1Fnpvj8xW7C-1CBP1gKnG24UCAwEAAaOCBBcwggQTMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSeRfK25AUs6KJIZoauo2wMz2QnbjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHqMcVAKKGk0nHnUxYFdcQg9ufuiJBfhTyDv03XIkCYOiycYbdcpEfU4nczRspzBZSv8ZN90RxmlssbdoPsnCnq0qhCCQP2myx80kl_YdjVYHStJHekK_Ijtuuc251-awxR4KjGs-FJrxabe5YDsaQctFpDQZiAPrlt39XD5JkUAu2IdoQaTsVG9V2RHXmjFgUGKhmIxfpDysatyrpmD0nSL0wIWf2U8WLdKabRjC_6Jlh_iwJ-Q91lRQpbtsIX7d8RHP9K4WSiRjlx7dn3-CoovFpkq1AoWZlhwWeaOLwaUpUM21UJw_cYQIWnCdVe6YSsOe8eV3nunt2ycixdAxgQ&s=G1dTZCz8Q1SDE5NXj4IB42frGPLretppJCWy6gkAKDqKuiZpG3wP1ucPr9_vYNaHcuu-FtjViJ8BNo4zySTxudcj_wJp9VzTEPp_qhJBXbmWNqoCke63Q_09HDKi9JF8gdanpLtiMNhM4xb5SwDH7w0a3E8VSkzRIGAkGjXrrI1zHoJisbl21obKyEfd9mEoiWrj-Cik271cpJAFtF-4FDYYSIw8S80mBpWR_mBdMiodk1zdJKSwui9yOaMX_dArRHW83uLQLz5QSSmOb0GVKQc31c69wsZydzbCy9vBzmdCJtk6WKM9NYOl0IXNZbMNV_p7BSvSG_HNMecT9hyouw&h=UCRqJ1uB2oClSg1y3Xd_rWXuOr8rI1PnMzEPZRkSn8w
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==?api-version=2024-04-01&t=638772792540632950&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=FhCHyYT0cGr_aCKmaasGQdY7AHb3FsXj2jrzkWvI0_5xVOP6V1nDE-dY2IY03dul0a8KTzkGxY2DFp2LUiPVuQ7i8Eh6Q4uslQWU_qJFhehfNDHuON3Z_AZYIHeg5jx577GoKarhCbDc3n4Xt2luT4ZHIIfJQ0pK01e3ZaS96vEYowSA6etN3IR7gu3yHvwwWfUjGQI2S6C_68wnZARLL8A2wCcwlQsE_FdNyJrhfvoLne8mzwfZwSUEV6EgbF8iQ1GAOfevprpNmQj9giCO6pKz3yY64l7IInu4D8K75u_EokJXT6tvQgAIQ9QwHf548yPL0R9yPXs2PYOU1ELkTg&h=XlevmknDCU2BN0qWm4D7u9Srts9_Q12dHwrn1ib6N5Y
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/OTVjMGQ4NTUtMGViYi00OGY5LWJjODktYTQ1ODAzYmMwZjA5O2ExOTEyYjg4LTAzNzktNGNhZi04ZmE0LTVmYjZjZWI3NzRiMw==","name":"OTVjMGQ4NTUtMGViYi00OGY5LWJjODktYTQ1ODAzYmMwZjA5O2ExOTEyYjg4LTAzNzktNGNhZi04ZmE0LTVmYjZjZWI3NzRiMw==","status":"Succeeded","startTime":"2024-05-08T10:33:22.1453942Z","endTime":"2024-05-08T10:33:22Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==","name":"NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==","status":"Inprogress","startTime":"2025-03-11T08:40:53.5995734Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '511'
+      - '512'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:22 GMT
+      - Tue, 11 Mar 2025 08:40:54 GMT
       expires:
       - '-1'
       pragma:
@@ -142,7 +144,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '998'
       x-msedge-ref:
-      - 'Ref A: 9FA6321AEFBF4AB3B1D3F65015E22924 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:22Z'
+      - 'Ref A: 64F8DE5819BF4F0F9FE65107A49284E8 Ref B: MAA201060513035 Ref C: 2025-03-11T08:40:54Z'
     status:
       code: 200
       message: OK
@@ -160,12 +162,58 @@ interactions:
       ParameterSetName:
       - -g -v --type --storage-settings --soft-delete-state
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==?api-version=2024-04-01&t=638772792540632950&c=MIIHhzCCBm-gAwIBAgITfAaTsfGh4O3I6hzdiwAABpOx8TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUwMTIxMjM1MTA0WhcNMjUwNzIwMjM1MTA0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALmmNHNWFSsNqv7hYXt5jnZhiWu70W-4oqnLQoNqpREh9ILwf_vWrKEFwHln2pZ0QL0Vzy6iBL7CjMAu06leKSRiY0PTaudFXcPZKg28HxLbC13I3XGnANo8baTVS1tjjh4tMTcEW4gJFU3FkYBnnd4vDuWu9cFNecMYtxyNXqXZQNKsExYG5-z1LKsCG-VZFtDXtdO7NCF-883QzW9AH9kyG24yulLRWXed6gk78SiLKeQwZHq3HawlcKJbtYEh01VpjYJTMLBh5ffUnp4p0ur5_1qquFhqISg5SNMXR0wUecBNg60HNXgUgDI9p7gEknaT2t54Cqw4bTMEnn_ojsECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQZVN35DD5vQTENahTDrpGtH4dWnTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAISUbL4a-8x720Kq4kpvroZpGEG-7hA5QoY2g0mHaS7y5AbNsL93L6qnsXTjiW02I693A-UMSGrwRm7SMGJI9BSLl2mqV_L55Ks-NNghmV_58seSGsmgoDxbw1rvDjSjEslmSDXo1PLj6C9LKWc5gSplpYdTIjaahdzCArjQdPQOyacyglOlzcDDY2e83Q7Xcad3Py_xyh7Yld330DgYBpSZx6h1wPPSFsot18EGQ-0UoJBq9x2NrLQS3aUXzumEcft64ZQUCFzEOSRdVkf0DHsGGf2qH06ndu1dy7Olz9P0bmZ8LClRXa1vXj-Z2xWM71YT-rxrMSlzddBKBYy34uE&s=FhCHyYT0cGr_aCKmaasGQdY7AHb3FsXj2jrzkWvI0_5xVOP6V1nDE-dY2IY03dul0a8KTzkGxY2DFp2LUiPVuQ7i8Eh6Q4uslQWU_qJFhehfNDHuON3Z_AZYIHeg5jx577GoKarhCbDc3n4Xt2luT4ZHIIfJQ0pK01e3ZaS96vEYowSA6etN3IR7gu3yHvwwWfUjGQI2S6C_68wnZARLL8A2wCcwlQsE_FdNyJrhfvoLne8mzwfZwSUEV6EgbF8iQ1GAOfevprpNmQj9giCO6pKz3yY64l7IInu4D8K75u_EokJXT6tvQgAIQ9QwHf548yPL0R9yPXs2PYOU1ELkTg&h=XlevmknDCU2BN0qWm4D7u9Srts9_Q12dHwrn1ib6N5Y
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/operationStatus/NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==","name":"NDI3MzA5NjgtNzcyZC00YTA4LWEwM2YtNmYwOTZlYzliYTEwOzBhODc1MWVhLWRmMzEtNDcxNS1iYTc3LWU2OTcyYTg4ODFmYw==","status":"Succeeded","startTime":"2025-03-11T08:40:53.5995734Z","endTime":"2025-03-11T08:40:54Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '511'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Mar 2025 08:41:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '999'
+      x-msedge-ref:
+      - 'Ref A: 97FED03F0AE64CECB681DE8527B1393B Ref B: MAA201060513035 Ref C: 2025-03-11T08:41:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v --type --storage-settings --soft-delete-state
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable?api-version=2024-04-01
   response:
     body:
-      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"521120ab-81bf-4a3f-993a-62a79b54bad5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":14.0}},"secureScore":"None","bcdrSecurityLevel":"Poor","replicatedRegions":[]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable","name":"clitest-dpp-muavault-deletable","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"f3b6df46-ac3c-42c1-be87-84a6a1a9eee8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":14.0}},"secureScore":"None","bcdrSecurityLevel":"Poor","replicatedRegions":[]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable","name":"clitest-dpp-muavault-deletable","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       cache-control:
       - no-cache
@@ -174,7 +222,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:22 GMT
+      - Tue, 11 Mar 2025 08:41:25 GMT
       expires:
       - '-1'
       pragma:
@@ -188,7 +236,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
       x-msedge-ref:
-      - 'Ref A: 4531BFB5CAA542FA8B5D082AFC7DC224 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:22Z'
+      - 'Ref A: 7FB5675C7F844A0F8CD3F0BB4A292831 Ref B: MAA201060513035 Ref C: 2025-03-11T08:41:25Z'
     status:
       code: 200
       message: OK
@@ -206,21 +254,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-resourceguard-000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001","name":"clitest-dpp-resourceguard-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_dataprotection_resource_guard_mapping","date":"2024-05-08T10:33:16Z","module":"azure-cli-extensions"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001","name":"clitest-dpp-resourceguard-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_dataprotection_resource_guard_mapping","date":"2025-03-11T08:40:46Z","module":"dataprotection"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '427'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:23 GMT
+      - Tue, 11 Mar 2025 08:41:26 GMT
       expires:
       - '-1'
       pragma:
@@ -231,8 +279,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 901DC53C79D6434388E34290513589BE Ref B: AMS231032609037 Ref C: 2024-05-08T10:33:23Z'
+      - 'Ref A: 44DD1D8BA98D49FABB9598A7C2761CB9 Ref B: MAA201060514035 Ref C: 2025-03-11T08:41:26Z'
     status:
       code: 200
       message: OK
@@ -254,21 +304,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard?api-version=2024-04-01
   response:
     body:
-      string: '{"location":"centraluseuap","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write#stopProtectionWithRetainData","requestResourceType":"Microsoft.DataProtection/resourceGuards/stopProtectionWithRetainDataRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/write#reduceImmutabilityState","requestResourceType":"Microsoft.DataProtection/resourceGuards/reduceImmutabilityStateRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/recoveryPoints/restore/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/triggerRestoreRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","requestResourceType":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","requestResourceType":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","requestResourceType":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/write"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","name":"clitest-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+      string: '{"location":"centraluseuap","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write#stopProtectionWithRetainData","requestResourceType":"Microsoft.DataProtection/resourceGuards/stopProtectionWithRetainDataRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/write#reduceImmutabilityState","requestResourceType":"Microsoft.DataProtection/resourceGuards/reduceImmutabilityStateRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/recoveryPoints/restore/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/triggerRestoreRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/registeredIdentities/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteMABIdentityRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","requestResourceType":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","requestResourceType":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","requestResourceType":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/write"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","name":"clitest-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3965'
+      - '4146'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:25 GMT
+      - Tue, 11 Mar 2025 08:41:31 GMT
       expires:
       - '-1'
       pragma:
@@ -282,7 +332,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: F7FE786EE9EA4005AE285448F987C0B8 Ref B: AMS231022012039 Ref C: 2024-05-08T10:33:23Z'
+      - 'Ref A: 7C0F336EDEF7411CBA71EE32018ABCB2 Ref B: MAA201060513025 Ref C: 2025-03-11T08:41:26Z'
     status:
       code: 200
       message: OK
@@ -304,12 +354,12 @@ interactions:
       ParameterSetName:
       - -g -v -n --resource-guard-resource-id
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"resourceGuardResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","resourceGuardOperationDetails":[{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteBackupInstanceRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteResourceGuardProxyRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceImmutabilityStateRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceSoftDeleteSecurityRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyEncryptionSettingsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableStopProtectionRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableSuspendBackupsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyPolicy/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppTriggerRestoreRequests/default"}],"lastUpdatedTime":"2024-05-08T10:33:27.0736292Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy","name":"DppResourceGuardProxy","type":"Microsoft.DataProtection/vaults/backupResourceGuardProxies"}'
+      string: '{"properties":{"resourceGuardResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","resourceGuardOperationDetails":[{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteBackupInstanceRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteResourceGuardProxyRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceImmutabilityStateRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceSoftDeleteSecurityRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyEncryptionSettingsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableStopProtectionRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableSuspendBackupsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyPolicy/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppTriggerRestoreRequests/default"}],"lastUpdatedTime":"2025-03-11T08:41:33.9280621Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy","name":"DppResourceGuardProxy","type":"Microsoft.DataProtection/vaults/backupResourceGuardProxies"}'
     headers:
       cache-control:
       - no-cache
@@ -318,7 +368,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:26 GMT
+      - Tue, 11 Mar 2025 08:41:33 GMT
       expires:
       - '-1'
       pragma:
@@ -332,7 +382,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 0803942ED9784BC5AEB210A08F8383E5 Ref B: AMS231022012053 Ref C: 2024-05-08T10:33:26Z'
+      - 'Ref A: 977F0C1ACFD24820BE492483FA56E3C5 Ref B: MAA201060514021 Ref C: 2025-03-11T08:41:32Z'
     status:
       code: 200
       message: OK
@@ -350,12 +400,12 @@ interactions:
       ParameterSetName:
       - -g -v -n
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"resourceGuardResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","resourceGuardOperationDetails":[{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteBackupInstanceRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteResourceGuardProxyRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceImmutabilityStateRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceSoftDeleteSecurityRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyEncryptionSettingsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableStopProtectionRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableSuspendBackupsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyPolicy/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppTriggerRestoreRequests/default"}],"lastUpdatedTime":"2024-05-08T10:33:27.0736292Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy","name":"DppResourceGuardProxy","type":"Microsoft.DataProtection/vaults/backupResourceGuardProxies"}'
+      string: '{"properties":{"resourceGuardResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","resourceGuardOperationDetails":[{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteBackupInstanceRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteResourceGuardProxyRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceImmutabilityStateRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceSoftDeleteSecurityRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyEncryptionSettingsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableStopProtectionRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableSuspendBackupsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyPolicy/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppTriggerRestoreRequests/default"}],"lastUpdatedTime":"2025-03-11T08:41:33.9280621Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy","name":"DppResourceGuardProxy","type":"Microsoft.DataProtection/vaults/backupResourceGuardProxies"}'
     headers:
       cache-control:
       - no-cache
@@ -364,7 +414,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:27 GMT
+      - Tue, 11 Mar 2025 08:41:35 GMT
       expires:
       - '-1'
       pragma:
@@ -378,7 +428,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '999'
       x-msedge-ref:
-      - 'Ref A: F364877134BA49C29AFD020D3BA55F97 Ref B: AMS231020512047 Ref C: 2024-05-08T10:33:27Z'
+      - 'Ref A: 4C76109DBACD45B2B12EE376577C5F6A Ref B: MAA201060513035 Ref C: 2025-03-11T08:41:34Z'
     status:
       code: 200
       message: OK
@@ -396,12 +446,12 @@ interactions:
       ParameterSetName:
       - -g -v -n --resource-guard-operation-requests
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"resourceGuardResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","resourceGuardOperationDetails":[{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteBackupInstanceRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteResourceGuardProxyRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceImmutabilityStateRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceSoftDeleteSecurityRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyEncryptionSettingsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableStopProtectionRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableSuspendBackupsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyPolicy/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppTriggerRestoreRequests/default"}],"lastUpdatedTime":"2024-05-08T10:33:27.0736292Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy","name":"DppResourceGuardProxy","type":"Microsoft.DataProtection/vaults/backupResourceGuardProxies"}'
+      string: '{"properties":{"resourceGuardResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard","resourceGuardOperationDetails":[{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteBackupInstanceRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/deleteResourceGuardProxyRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceImmutabilityState","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceImmutabilityStateRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#reduceSoftDeleteSecurity","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppReduceSoftDeleteSecurityRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/write#modifyEncryptionSettings","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyEncryptionSettingsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/stopProtection/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableStopProtectionRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/suspendBackups/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppDisableSuspendBackupsRequests/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/write","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppModifyPolicy/default"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/restore/action","defaultResourceRequest":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/resourceGuards/clitest-resource-guard/dppTriggerRestoreRequests/default"}],"lastUpdatedTime":"2025-03-11T08:41:33.9280621Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy","name":"DppResourceGuardProxy","type":"Microsoft.DataProtection/vaults/backupResourceGuardProxies"}'
     headers:
       cache-control:
       - no-cache
@@ -410,7 +460,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:27 GMT
+      - Tue, 11 Mar 2025 08:41:36 GMT
       expires:
       - '-1'
       pragma:
@@ -424,7 +474,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '999'
       x-msedge-ref:
-      - 'Ref A: 20E5CA78244545EA8E9E9623AE4C2D0C Ref B: AMS231032609017 Ref C: 2024-05-08T10:33:28Z'
+      - 'Ref A: 4EED3CEA6ED14D08A64125E26EEF9E46 Ref B: MAA201060516047 Ref C: 2025-03-11T08:41:35Z'
     status:
       code: 200
       message: OK
@@ -446,12 +496,12 @@ interactions:
       ParameterSetName:
       - -g -v -n --resource-guard-operation-requests
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy/unlockDelete?api-version=2024-04-01
   response:
     body:
-      string: '{"unlockDeleteExpiryTime":"2024-05-08T11:03:28.7752808Z"}'
+      string: '{"unlockDeleteExpiryTime":"2025-03-11T09:11:38.1011753Z"}'
     headers:
       cache-control:
       - no-cache
@@ -460,7 +510,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:28 GMT
+      - Tue, 11 Mar 2025 08:41:38 GMT
       expires:
       - '-1'
       pragma:
@@ -471,10 +521,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 29A9D31B463549D390313249AF0467AD Ref B: AMS231032609045 Ref C: 2024-05-08T10:33:28Z'
+      - 'Ref A: 1ECC37808C97471F84B94E63D6EF37A5 Ref B: MAA201060516027 Ref C: 2025-03-11T08:41:37Z'
     status:
       code: 200
       message: OK
@@ -494,7 +546,7 @@ interactions:
       ParameterSetName:
       - -g -v -n -y
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-muavault-deletable/backupResourceGuardProxies/DppResourceGuardProxy?api-version=2024-04-01
   response:
@@ -508,7 +560,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:28 GMT
+      - Tue, 11 Mar 2025 08:41:39 GMT
       expires:
       - '-1'
       pragma:
@@ -520,9 +572,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
       x-msedge-ref:
-      - 'Ref A: 8932E51565D4471592BDE78B99228788 Ref B: AMS231022012047 Ref C: 2024-05-08T10:33:29Z'
+      - 'Ref A: DD687941880A4595875F24FDF35C8866 Ref B: MAA201060513049 Ref C: 2025-03-11T08:41:38Z'
     status:
       code: 200
       message: OK

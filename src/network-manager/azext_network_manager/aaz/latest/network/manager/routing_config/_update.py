@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}", "2024-05-01"],
         ]
     }
 
@@ -82,12 +82,12 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RoutingConfigurationsGet(ctx=self.ctx)()
+        self.NetworkManagerRoutingConfigurationsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.RoutingConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        self.NetworkManagerRoutingConfigurationsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -110,7 +110,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class RoutingConfigurationsGet(AAZHttpOperation):
+    class NetworkManagerRoutingConfigurationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -193,11 +193,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_routing_configuration_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_network_manager_routing_configuration_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class RoutingConfigurationsCreateOrUpdate(AAZHttpOperation):
+    class NetworkManagerRoutingConfigurationsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -249,7 +249,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -292,7 +292,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_routing_configuration_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_network_manager_routing_configuration_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -327,43 +327,43 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_routing_configuration_read = None
+    _schema_network_manager_routing_configuration_read = None
 
     @classmethod
-    def _build_schema_routing_configuration_read(cls, _schema):
-        if cls._schema_routing_configuration_read is not None:
-            _schema.etag = cls._schema_routing_configuration_read.etag
-            _schema.id = cls._schema_routing_configuration_read.id
-            _schema.name = cls._schema_routing_configuration_read.name
-            _schema.properties = cls._schema_routing_configuration_read.properties
-            _schema.system_data = cls._schema_routing_configuration_read.system_data
-            _schema.type = cls._schema_routing_configuration_read.type
+    def _build_schema_network_manager_routing_configuration_read(cls, _schema):
+        if cls._schema_network_manager_routing_configuration_read is not None:
+            _schema.etag = cls._schema_network_manager_routing_configuration_read.etag
+            _schema.id = cls._schema_network_manager_routing_configuration_read.id
+            _schema.name = cls._schema_network_manager_routing_configuration_read.name
+            _schema.properties = cls._schema_network_manager_routing_configuration_read.properties
+            _schema.system_data = cls._schema_network_manager_routing_configuration_read.system_data
+            _schema.type = cls._schema_network_manager_routing_configuration_read.type
             return
 
-        cls._schema_routing_configuration_read = _schema_routing_configuration_read = AAZObjectType()
+        cls._schema_network_manager_routing_configuration_read = _schema_network_manager_routing_configuration_read = AAZObjectType()
 
-        routing_configuration_read = _schema_routing_configuration_read
-        routing_configuration_read.etag = AAZStrType(
+        network_manager_routing_configuration_read = _schema_network_manager_routing_configuration_read
+        network_manager_routing_configuration_read.etag = AAZStrType(
             flags={"read_only": True},
         )
-        routing_configuration_read.id = AAZStrType(
+        network_manager_routing_configuration_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        routing_configuration_read.name = AAZStrType(
+        network_manager_routing_configuration_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        routing_configuration_read.properties = AAZObjectType(
+        network_manager_routing_configuration_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        routing_configuration_read.system_data = AAZObjectType(
+        network_manager_routing_configuration_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        routing_configuration_read.type = AAZStrType(
+        network_manager_routing_configuration_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_routing_configuration_read.properties
+        properties = _schema_network_manager_routing_configuration_read.properties
         properties.description = AAZStrType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
@@ -374,7 +374,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        system_data = _schema_routing_configuration_read.system_data
+        system_data = _schema_network_manager_routing_configuration_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -394,12 +394,12 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.etag = cls._schema_routing_configuration_read.etag
-        _schema.id = cls._schema_routing_configuration_read.id
-        _schema.name = cls._schema_routing_configuration_read.name
-        _schema.properties = cls._schema_routing_configuration_read.properties
-        _schema.system_data = cls._schema_routing_configuration_read.system_data
-        _schema.type = cls._schema_routing_configuration_read.type
+        _schema.etag = cls._schema_network_manager_routing_configuration_read.etag
+        _schema.id = cls._schema_network_manager_routing_configuration_read.id
+        _schema.name = cls._schema_network_manager_routing_configuration_read.name
+        _schema.properties = cls._schema_network_manager_routing_configuration_read.properties
+        _schema.system_data = cls._schema_network_manager_routing_configuration_read.system_data
+        _schema.type = cls._schema_network_manager_routing_configuration_read.type
 
 
 __all__ = ["Update"]

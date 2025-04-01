@@ -8,7 +8,7 @@
 # API VERSIONS -----------------------------------------
 
 SOURCE_CONTROL_API_VERSION = "2022-03-01"
-FLUXCONFIG_API_VERSION = "2024-04-01-preview"
+FLUXCONFIG_API_VERSION = "2024-11-01"
 EXTENSION_API_VERSION = "2022-07-01"
 
 # ERROR/HELP TEXT DEFINITIONS -----------------------------------------
@@ -222,6 +222,7 @@ GIT_REPO_VALID_PARAMS = {
     "known_hosts",
     "known_hosts_file",
     "local_auth_ref",
+    "provider",
 }
 
 BUCKET_REQUIRED_PARAMS = {"url", "bucket_name"}
