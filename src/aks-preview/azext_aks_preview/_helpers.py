@@ -9,7 +9,7 @@ import re
 import stat
 import sys
 import tempfile
-from typing import TypeVar
+from typing import List, TypeVar
 
 import yaml
 from azext_aks_preview._client_factory import (
@@ -374,3 +374,20 @@ def check_is_monitoring_addon_enabled(addons, instance):
     except Exception as ex:  # pylint: disable=broad-except
         logger.debug("failed to check monitoring addon enabled: %s", ex)
     return is_monitoring_addon_enabled
+
+def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
+    filtered_taints = []
+    for taint in node_initialization_taints:
+        if not taint:
+            continue
+        # Parse the taint to get the effect
+        taint_parts = taint.split(":")
+        if len(taint_parts) == 2:
+            effect = taint_parts[-1].strip()
+            # Only keep taints with soft effects (PreferNoSchedule)
+            if effect.lower() == "prefernoschedule":
+                filtered_taints.append(taint)
+        else:
+            # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
+            filtered_taints.append(taint)
+    return filtered_taints
