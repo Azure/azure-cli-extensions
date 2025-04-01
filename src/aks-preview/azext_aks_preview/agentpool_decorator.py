@@ -875,7 +875,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
         nodepool_initialization_taints = self.context.get_node_initialization_taints()
         # filter out taints with hard effects for System pools
-        if agentpool.mode == None or agentpool.mode.lower() == "system":
+        if agentpool.mode is None or agentpool.mode.lower() == "system":
             nodepool_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
         agentpool.node_initialization_taints = nodepool_initialization_taints
         return agentpool

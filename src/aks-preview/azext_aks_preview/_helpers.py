@@ -375,6 +375,7 @@ def check_is_monitoring_addon_enabled(addons, instance):
         logger.debug("failed to check monitoring addon enabled: %s", ex)
     return is_monitoring_addon_enabled
 
+
 def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
     filtered_taints = []
     for taint in node_initialization_taints:
