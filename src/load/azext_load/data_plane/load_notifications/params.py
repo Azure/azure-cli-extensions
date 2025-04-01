@@ -44,3 +44,7 @@ def load_arguments(self, _):
     # Load notification-rule show
     with self.argument_context("load notification-rule show") as c:
         c.argument("notification_rule_id", argtypes.notification_rule_id)
+
+    # Load notification-rule delete
+    with self.argument_context("load notification-rule delete") as c:
+        c.argument("notification_rule_id", argtypes.notification_rule_id)

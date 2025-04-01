@@ -33,10 +33,10 @@ examples:
         az load notification-rule update --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id --all-tests
     - name: Add a TestRunStarted event to an existing notification rule.
       text: |
-        az load notification-rule update --load-test-resource sample-alt-resource --resource-group sample-rg --add-event event-id=event1 type=TestRunStarted
+        az load notification-rule update --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id --add-event event-id=event1 type=TestRunStarted
     - name: Remove an event from an existing notification rule and update the action group list.
       text: |
-        az load notification-rule update --load-test-resource sample-alt-resource --resource-group sample-rg --remove-event event-id=event1 --action-groups /subscriptions/000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.insights/actiongroups/sample-ag
+        az load notification-rule update --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id --remove-event event-id=event1 --action-groups /subscriptions/000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.insights/actiongroups/sample-ag
 """
 
 helps[
@@ -48,6 +48,17 @@ examples:
     - name: Get a snotification rule.
       text: |
         az load notification-rule show --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id
+"""
+
+helps[
+    "load notification-rule delete"
+] = """
+type: command
+short-summary: Delete the mentioned notification rule for load test resource.
+examples:
+    - name: Delete a snotification rule.
+      text: |
+        az load notification-rule delete --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id --yes
 """
 
 helps[

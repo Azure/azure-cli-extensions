@@ -526,9 +526,9 @@ list_schedule_states = CLIArgumentType(
 
 notification_rule_test_ids = CLIArgumentType(
     options_list=["--test-ids"],
-    nargs=1,
-    validator=validators.validate_schedule_test_ids,
-    help="Test IDs of the load tests to be triggered by schedule. Currently we only support one test ID per schedule.",
+    nargs="+",
+    validator=validators.validate_notification_rule_test_ids,
+    help="Test ids for notification rule.",
 )
 
 notification_display_name = CLIArgumentType(
