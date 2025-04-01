@@ -1,0 +1,16 @@
+version: v0.1
+testName: basicAppComponentsTest
+displayName: E2E test for app components edit
+description: 'E2E for the build pipeline (JMX)'
+autoStop:
+  errorPercentage: 40
+  timeWindow: 30
+appComponents:
+- resourceId: "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/Microsoft.Web/serverfarms/sample-app-comp3"
+  kind: app
+  metrics:
+    - name: "CpuPercentage"
+      aggregation: "Average"
+    - name: "MemoryPercentage"
+      aggregation: "Average"
+      namespace: Microsoft.Web/serverfarms

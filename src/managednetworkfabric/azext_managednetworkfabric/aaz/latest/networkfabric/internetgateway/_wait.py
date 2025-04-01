@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgateways/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgateways/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Name of the Internet Gateway.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -175,8 +178,15 @@ class Wait(AAZWaitCommand):
             properties.internet_gateway_rule_id = AAZStrType(
                 serialized_name="internetGatewayRuleId",
             )
+            properties.internet_gateway_type = AAZStrType(
+                serialized_name="internetGatewayType",
+            )
             properties.ipv4_address = AAZStrType(
                 serialized_name="ipv4Address",
+                flags={"read_only": True},
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
                 flags={"read_only": True},
             )
             properties.network_fabric_controller_id = AAZStrType(
@@ -190,8 +200,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.type = AAZStrType(
-                flags={"required": True},
+            properties.type = AAZStrType()
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.system_data

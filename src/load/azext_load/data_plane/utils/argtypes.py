@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 
-from azext_load.data_plane.utils import completers, models, utils, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
     get_resource_name_completion_list,
@@ -13,6 +12,9 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
 )
 from knack.arguments import CLIArgumentType
+from azext_load.data_plane.utils import completers, models, utils, validators
+from azext_load.vendored_sdks.loadtesting.models._enums import WeekDays, Frequency, TriggerState
+from azext_load.data_plane.load_trigger import utils as trigger_utils
 
 quote_text = f"Use {quotes} to clear existing {{}}."
 
@@ -92,7 +94,15 @@ test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Path to the JMeter script.",
+    help="Reference to the test plan file. If `testType: JMX`: path to the JMeter script. If `testType: URL`: path to the requests JSON file. If `testType: Locust`: path to the Locust test script.",
+)
+
+test_type = CLIArgumentType(
+    validator=validators.validate_test_type,
+    options_list=["--test-type"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTestTypes),
+    help="Type of the load test.",
 )
 
 load_test_config_file = CLIArgumentType(
@@ -121,9 +131,17 @@ engine_instances = CLIArgumentType(
 )
 
 key_vault_reference_identity = CLIArgumentType(
+    validator=validators.validate_keyvault_identity_ref_id,
     options_list=["--keyvault-reference-id"],
     type=str,
     help="The identity that will be used to access the key vault.",
+)
+
+metrics_reference_identity = CLIArgumentType(
+    validator=validators.validate_metrics_identity_ref_id,
+    options_list=["--metrics-reference-id"],
+    type=str,
+    help="The identity that will be used to get the metrics of the configured apps from server pass-fail criteria.",
 )
 
 split_csv = CLIArgumentType(
@@ -174,6 +192,13 @@ certificate = CLIArgumentType(
     nargs="?",
     help="a single certificate in 'key[=value]' format. The certificate should be stored in Azure Key Vault in PFX format, and the certificate identifier should be provided as the value."
     + quote_text.format("certificate"),
+)
+
+test_run_debug_mode = CLIArgumentType(
+    options_list=["--debug-mode"],
+    action="store_true",
+    default=False,
+    help="Enable debug level logging for the test run.",
 )
 
 dir_path = CLIArgumentType(
@@ -227,6 +252,13 @@ test_run_results = CLIArgumentType(
     help="Download the results files zip.",
 )
 
+test_run_report = CLIArgumentType(
+    options_list=["--report"],
+    action="store_true",
+    default=False,
+    help="Download the dashboard report files zip.",
+)
+
 app_component_id = CLIArgumentType(
     validator=validators.validate_app_component_id,
     options_list=["--app-component-id"],
@@ -257,7 +289,7 @@ server_metric_id = CLIArgumentType(
     validator=validators.validate_metric_id,
     options_list=["--metric-id"],
     type=str,
-    help="Fully qualified ID of the server metric. Refer https://docs.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition",
+    help="Fully qualified ID of the server metric. Refer https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition",
 )
 
 server_metric_name = CLIArgumentType(
@@ -340,4 +372,154 @@ dimension_filters = CLIArgumentType(
         "* is supported as a wildcard for both key and value. "
         "Example: `--dimension-filters key1=value1 key2=*`, `--dimension-filters *`"
     ),
+)
+
+autostop = CLIArgumentType(
+    validator=validators.validate_autostop_enable_disable,
+    options_list=["--autostop"],
+    type=str,
+    help="Whether auto-stop should be enabled or disabled. Allowed values are enable/disable.",
+)
+
+autostop_error_rate = CLIArgumentType(
+    options_list=["--autostop-error-rate"],
+    type=float,
+    validator=validators.validate_autostop_error_rate,
+    help="Threshold percentage of errors on which test run should be automatically stopped. Allowed values are in range of [0.0,100.0]",
+)
+
+autostop_error_rate_time_window = CLIArgumentType(
+    options_list=["--autostop-time-window"],
+    type=int,
+    validator=validators.validate_autostop_error_rate_time_window,
+    help="Time window during which the error percentage should be evaluated in seconds.",
+)
+
+regionwise_engines = CLIArgumentType(
+    options_list=["--regionwise-engines"],
+    validator=validators.validate_regionwise_engines,
+    nargs="+",
+    help="Specify the engine count for each region in the format: region1=engineCount1 region2=engineCount2 .... Use region names in the format accepted by Azure Resource Manager (ARM). Ensure the regions are supported by Azure Load Testing. Multi-region load tests can only target public endpoints.",
+)
+
+engine_ref_id_type = CLIArgumentType(
+    options_list=["--engine-ref-id-type"],
+    type=str,
+    completer=get_generic_completion_list(
+        utils.get_enum_values(models.EngineIdentityType)
+    ),
+    choices=utils.get_enum_values(models.EngineIdentityType),
+    help="Type of identity to be configured for the engine.",
+)
+
+engine_ref_ids = CLIArgumentType(
+    options_list=["--engine-ref-ids"],
+    nargs="+",
+    validator=validators.validate_engine_ref_ids,
+    help="Space separated list of fully qualified resource IDs of the managed identities to be configured on the engine. Required only for user assigned identities. ",
+)
+
+response_time_aggregate = CLIArgumentType(
+    options_list=["--aggregation"],
+    type=str,
+    choices=utils.get_enum_values(models.AllowedTrendsResponseTimeAggregations),
+    help="Specify the aggregation method for response time.",
+)
+
+trigger_id = CLIArgumentType(
+    validator=validators.validate_trigger_id,
+    options_list=["--trigger-id"],
+    type=str,
+    help="Trigger ID of the load trigger",
+)
+
+trigger_start_date_time = CLIArgumentType(
+    options_list=["--start-date-time"],
+    type=trigger_utils.parse_datetime_in_utc,
+    help="Start date time of the load trigger schedule",
+)
+
+recurrence_type = CLIArgumentType(
+    options_list=["--recurrence-type"],
+    type=str,
+    choices=utils.get_enum_values(Frequency),
+    help="Recurrence type of the load trigger schedule",
+)
+
+end_after_occurrences = CLIArgumentType(
+    options_list=["--end-after-occurrence"],
+    type=int,
+    help="End after occurrence of the load trigger schedule",
+)
+
+end_after_date_time = CLIArgumentType(
+    options_list=["--end-after-date-time"],
+    type=trigger_utils.parse_datetime_in_utc,
+    help="End after date time of the load trigger schedule",
+)
+
+test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs=1,
+    validator=validators.validate_schedule_test_ids,
+    help="Test IDs of the load tests to be triggered by schedule. Currently we only support one test ID per schedule.",
+)
+
+trigger_display_name = CLIArgumentType(
+    options_list=["--display-name"],
+    type=str,
+    help="Display name of the load trigger schedule",
+)
+
+trigger_description = CLIArgumentType(
+    options_list=["--description"],
+    type=str,
+    help="Description of the load trigger schedule",
+)
+
+recurrence_cron_expression = CLIArgumentType(
+    options_list=["--recurrence-cron-exp"],
+    type=str,
+    help="Cron expression for the recurrence type 'Cron'.",
+)
+
+recurrence_interval = CLIArgumentType(
+    options_list=["--recurrence-interval"],
+    type=int,
+    help="Interval for all recurrence type except 'Cron'.",
+)
+
+recurrence_dates_in_month = CLIArgumentType(
+    options_list=["--recurrence-dates"],
+    nargs="+",
+    type=int,
+    validator=validators.validate_recurrence_dates_in_month,
+    help="Space separated list of dates in month for the recurrence type 'Monthly'.",
+)
+
+recurrence_week_days = CLIArgumentType(
+    options_list=["--recurrence-week-days"],
+    choices=utils.get_enum_values(WeekDays),
+    nargs="*",
+    help="Week days for the recurrence type 'Weekly' and 'MonthlyByDays'.",
+)
+
+recurrence_index = CLIArgumentType(
+    options_list=["--recurrence-index"],
+    type=int,
+    choices=[1, 2, 3, 4, 5],
+    help="Index for the recurrence type 'MonthlyByDays'.",
+)
+
+list_schedule_test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs="*",
+    help="List all the schedules which are associated with the provided test ids.",
+)
+
+list_schedule_states = CLIArgumentType(
+    options_list=["--states"],
+    nargs="*",
+    choices=utils.get_enum_values(TriggerState),
+    help="List all the schedules in the resource which are in the provided states.",
 )

@@ -9,6 +9,7 @@ import stat
 import platform
 from typing import List
 import requests
+from knack.log import get_logger
 from azext_confcom.errors import eprint
 from azext_confcom.config import (
     REGO_CONTAINER_START,
@@ -21,7 +22,7 @@ from azext_confcom.config import (
     ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES,
 )
 
-
+logger = get_logger(__name__)
 host_os = platform.system()
 machine = platform.machine()
 
@@ -115,6 +116,10 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             payload_path,
             "-key",
             key_path,
+            "-salt",
+            "zero",
+            "-content-type",
+            "application/unknown+rego",
             "-out",
             out_path,
         ]
@@ -124,7 +129,7 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
 
         if iss:
             arg_list.extend(["-issuer", iss])
-
+        logger.info("Signing the policy fragment: %s", out_path)
         call_cose_sign_tool(arg_list, "Error signing the policy fragment")
         return True
 
@@ -146,7 +151,7 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         policy_bin_str = str(self.policy_bin)
 
         arg_list_chain = [policy_bin_str, "check", "--in", fragment_path, "--verbose"]
-
+        logger.info("Extracting import statement from signed fragment: %s", fragment_path)
         item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
 
         stdout = item.stdout.decode("utf-8")
@@ -178,8 +183,22 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             eprint(f"The fragment file at {fragment_path} does not exist")
 
         arg_list_chain = [policy_bin_str, "check", "--in", fragment_path, "--verbose"]
-
+        logger.info("Extracting payload from signed fragment: %s", fragment_path)
         item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
 
         stdout = item.stdout.decode("utf-8")
         return stdout.split("payload:")[1]
+
+    def extract_feed_from_path(self, fragment_path: str) -> str:
+        policy_bin_str = str(self.policy_bin)
+        if not os.path.exists(fragment_path):
+            eprint(f"The fragment file at {fragment_path} does not exist")
+
+        arg_list_chain = [policy_bin_str, "check", "--in", fragment_path, "--verbose"]
+        logger.info("Extracting feed from signed fragment: %s", fragment_path)
+        item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
+
+        stdout = item.stdout.decode("utf-8")
+
+        # we want the text between the name and the next newline
+        return stdout.split("feed: ")[1].split("\n")[0]

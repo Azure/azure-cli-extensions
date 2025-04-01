@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a Neon Resource
+    """Update a Neon organization
 
     :example: Organization_Update
         az az neon postgres organization update --resource-group demoResourceGroup --name demoNeonResource --user-details "{first-name:John,last-name:Doe,email-address:johndoe@example.com,upn:johndoe,phone-number:+1234567890}" --company-details "{company-name:DemoCompany,country:USA,office-address:'123 Azure Ave, Redmond, WA',business-phone:+9876543210,domain:democompany.com,number-of-employees:1000}" --partner-organization-properties "{organization-id:org-5678,org-name:PartnerOrg,single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:app-9876,single-sign-on-url:'https://sso.partnerorg.com',aad-domains:['partnerorg.com']}}" --tags "{environment:production}"
@@ -50,7 +50,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Name of the Neon resource",
+            help="Name of the Neon organization",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -60,7 +60,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Resource Group",
+            help="Name of the resource group",
             required=True,
         )
 

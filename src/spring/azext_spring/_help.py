@@ -382,7 +382,7 @@ helps['spring app connect'] = """
 
 helps['spring app deployment'] = """
     type: group
-    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Apps. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring app deploy --deployment <staging deployment>
+    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Apps. More operations on deployments can be done on app level with parameter --deployment. e.g. `az spring app deploy --deployment <staging deployment>`
 """
 
 helps['spring app deployment list'] = """
@@ -1808,4 +1808,12 @@ helps['spring private-dns-zone clean'] = """
     examples:
         - name: Clean up private DNS zone with Azure Spring Apps.
           text: az spring private-dns-zone clean --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+"""
+
+helps['spring export'] = """
+    type: command
+    short-summary: Commands to export target Azure resource definitions from Azure Spring Apps.
+    examples:
+        - name: Generate corresponding bicep files and README doc to create Azure Container Apps service.
+          text: az spring export --target aca --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --output-folder output
 """

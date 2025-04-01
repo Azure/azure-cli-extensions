@@ -2,6 +2,29 @@
 
 Release History
 ===============
+1.2.2
+++++++
+* support for pure OCI v1 schema 2 formatted images
+* adding debug logging
+* changing where parameters and variables are filled in for arm templates
+* updating documentation about fragments
+* bugfix for exec processes in fragment generation
+* bugfix for custom mount options in fragment generation
+
+1.2.1
+++++++
+* updating genpolicy to version 3.2.0.azl3.genpolicy3
+
+1.2.0
+++++++
+* fixing metadata for uploaded fragments
+* fixing support for non-image feed names and attaching fragments to an image
+* bug fixes for image-attached fragments
+* adding ability to generate a fragment import from an image name using the remote attached fragments
+* updating stdout import statement to look more like the file output
+* adding `--omit-id` to the `acifragmentgen` command
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
+
 1.1.1
 ++++++
 * updating dmverity-vhd version with bugfix for empty image layers

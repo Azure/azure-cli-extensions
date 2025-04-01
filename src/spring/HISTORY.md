@@ -1,5 +1,17 @@
 Release History
 ===============
+1.27.1
+---
+* Support scenario of bringing your own container image for command `az spring export`.
+
+1.27.0
+---
+* Add command `az spring export` which is used to generate target resources definitions to help customer migrating from Azure Spring Apps to other Azure services, such as Azure Container Apps.
+
+1.26.1
+---
+* Fix command `az spring app update`, so that it can detect update failure and return error message.
+
 1.26.0
 ---
 * Remove `Preview` tag for config server features in Enterprise tier.
@@ -30,7 +42,7 @@ Release History
 
 1.24.1
 ---
-* Add command group `az spring private-dns-zone` to configure constumer private DNS zone with Azure Spring Apps.
+* Add command group `az spring private-dns-zone` to configure customer private DNS zone with Azure Spring Apps.
 * Add new command `az spring private-dns-zone add`,  `az spring private-dns-zone update` and `az spring private-dns-zone clean`
 
 1.24.0

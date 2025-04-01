@@ -9,45 +9,53 @@
 NF post tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+    """Env setup_scenario1"""
     pass
 
 
 def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+    """Env cleanup_scenario1"""
     pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
+    """# Testcase: scenario1"""
     setup_scenario1(test)
     step_deprovision(test)
     cleanup_scenario1(test)
 
 
 def step_deprovision(test, checks=None):
-    '''nf deprovision operation'''
+    """nf deprovision operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric deprovision --resource-name {deprovisionNFName} --resource-group {deprovisionNFRGName}')
+        "az networkfabric fabric deprovision --resource-name {deprovisionNFName} --resource-group {deprovisionNFRGName}"
+    )
 
 
 class GA_NFDeProvisionScenarioTest1(ScenarioTest):
-    ''' NFScenario test'''
+    """NFScenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            'deprovisionNFRGName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'deprovision_nf_resource_group'),
-            'deprovisionNFName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'deprovision_nf_name')
-        })
+        self.kwargs.update(
+            {
+                "deprovisionNFRGName": CONFIG.get(
+                    "NETWORK_FABRIC_PROVISION", "deprovision_nf_resource_group"
+                ),
+                "deprovisionNFName": CONFIG.get(
+                    "NETWORK_FABRIC_PROVISION", "deprovision_nf_name"
+                ),
+            }
+        )
 
     def test_GA_nf_deprovision_scenario1(self):
-        ''' test scenario for NF deprovision operation'''
+        """test scenario for NF deprovision operation"""
         call_scenario1(self)

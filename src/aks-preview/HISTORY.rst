@@ -11,6 +11,39 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+13.0.0b9
++++++++
+* Vendor new SDK and bump API version to 2024-10-02-preview.
+* Add `enable-egress-gateway` and `disable-egress-gateway` subcommands to the `az aks mesh` command.
+
+13.0.0b8
++++++++
+* `az aks create/update``: Update recording rule group create logic for managed prometheus addon
+
+13.0.0b7
++++++++
+* Add `--max-unavailable` to the `az aks nodepool add/update/upgrade` commands.
+
+13.0.0b6
++++++++
+* `az aks create/update`: Update parameter description of `--custom-ca-certificates`.
+
+13.0.0b5
++++++++
+* `az aks create/az aks nodepool add`: Emit error message when using `--asg-ids` alone without `--allowed-host-ports`.
+
+13.0.0b4
++++++++
+* `az aks nodepool upgrade`: Fix `--node-soak-duration` cannot be specified as 0
+
+13.0.0b3
++++++++
+* `az aks create`: Update outbound type selection logic for automatic cluster when customer brings BYO Vnet.
+
+13.0.0b2
++++++++
+* `az aks create/update`: Update advanced container networking service (acns) with 2024-09-02-preview API version enablement.
 * Vendor new SDK and bump API version to 2024-09-02-preview.
 
 13.0.0b1

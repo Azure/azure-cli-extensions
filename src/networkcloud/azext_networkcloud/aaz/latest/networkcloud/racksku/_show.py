@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud racksku show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the properties of the provided rack SKU.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/rackskus/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/rackskus/{}", "2025-02-01"],
         ]
     }
 
@@ -117,7 +116,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }

@@ -22,6 +22,8 @@ from azext_confcom._validators import (
     validate_fragment_path,
     validate_fragment_json,
     validate_fragment_json_policy,
+    validate_image_target,
+    validate_upload_fragment,
 )
 
 
@@ -231,6 +233,13 @@ def load_arguments(self, _):
             help="Feed for the generated policy fragment",
         )
         c.argument(
+            "image_target",
+            options_list=("--image-target"),
+            required=False,
+            help="Image target where the generated policy fragment is attached",
+            validator=validate_image_target,
+        )
+        c.argument(
             "key",
             options_list=("--key", "-k"),
             required=False,
@@ -257,6 +266,12 @@ def load_arguments(self, _):
             required=False,
             help="Path to a policy fragment to be used with --generate-import to make import statements without having access to the fragment's OCI registry",
             validator=validate_fragment_path,
+        )
+        c.argument(
+            "omit_id",
+            options_list=("--omit-id"),
+            required=False,
+            help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
         )
         c.argument(
             "generate_import",
@@ -301,6 +316,7 @@ def load_arguments(self, _):
             options_list=("--upload-fragment", "-u"),
             required=False,
             help="Upload a policy fragment to a container registry",
+            validator=validate_upload_fragment,
         )
         c.argument(
             "no_print",

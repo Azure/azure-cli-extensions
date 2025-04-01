@@ -18,6 +18,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
@@ -433,8 +434,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         ):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()
-            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                # outbound_type of Automatic SKU should be ManagedNATGateway if not provided.
+            isVnetSubnetIdEmpty = self.get_vnet_subnet_id() in ["", None]
+            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and isVnetSubnetIdEmpty:
+                # outbound_type of Automatic SKU should be ManagedNATGateway if no subnet id provided.
                 outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
         # validation
@@ -709,42 +711,38 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_acns(self) -> Union[bool, None]:
+    def get_acns_enablement(self) -> Tuple[
+        Union[bool, None],
+        Union[bool, None],
+        Union[bool, None],
+    ]:
         """Get the enablement of acns
-
-        :return: bool or None"""
+        :return: Tuple of 3 elements which can be bool or None
+        """
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
-        disable_acns_observability = self.raw_param.get("disable_acns_observability")
-        disable_acns_security = self.raw_param.get("disable_acns_security")
+        if enable_acns is None and disable_acns is None:
+            return None, None, None
         if enable_acns and disable_acns:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-acns and "
                 "--disable-acns at the same time."
             )
-        if enable_acns and disable_acns_observability and disable_acns_security:
+        enable_acns = bool(enable_acns) if enable_acns is not None else False
+        disable_acns = bool(disable_acns) if disable_acns is not None else False
+        acns = enable_acns or not disable_acns
+        acns_observability = self.get_acns_observability()
+        acns_security = self.get_acns_security()
+        if acns and (acns_observability is False and acns_security is False):
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns with "
-                "--disable-acns-observability and "
-                "--disable-acns-security at the same time."
+                "Cannot disable both observability and security when enabling ACNS. "
+                "Please enable at least one of them or disable ACNS with --disable-acns."
             )
-        if enable_acns is None and disable_acns_observability is not None:
-            raise RequiredArgumentMissingError(
-                "Cannot specify --disable-acns-observability "
-                "without --enable-acns."
+        if not acns and (acns_observability is not None or acns_security is not None):
+            raise MutuallyExclusiveArgumentError(
+                "--disable-acns does not use any additional acns arguments."
             )
-        if enable_acns is None and disable_acns_security is not None:
-            raise RequiredArgumentMissingError(
-                "Cannot specify --disable-acns-security "
-                "without --enable-acns."
-            )
-        if enable_acns is False and disable_acns is False:
-            return None
-        if enable_acns is not None:
-            return enable_acns
-        if disable_acns is not None:
-            return not disable_acns
-        return None
+        return acns, acns_observability, acns_security
 
     def get_acns_observability(self) -> Union[bool, None]:
         """Get the enablement of acns observability
@@ -1429,6 +1427,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     enable_apiserver_vnet_integration is None or
                     enable_apiserver_vnet_integration is False
                 )
+                and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC
             ):
                 raise RequiredArgumentMissingError(
                     '"--apiserver-subnet-id" requires "--enable-apiserver-vnet-integration".')
@@ -2346,6 +2345,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         updated = False
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
+        istio_egressgateway_name = self.raw_param.get("istio_egressgateway_name", None)
+        istio_egressgateway_namespace = self.raw_param.get(
+            "istio_egressgateway_namespace",
+            CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE
+        )
+        gateway_configuration_name = self.raw_param.get("gateway_configuration_name", None)
 
         # disallow disable egress gateway on a cluser with no asm enabled
         if disable_egress_gateway:
@@ -2364,10 +2369,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_egress_gateway or disable_egress_gateway:
             # if a gateway is enabled, enable the mesh
             if enable_egress_gateway:
+
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
                 if new_profile.istio is None:
                     new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
+
+                # Gateway configuration name is required for Istio egress gateway enablement
+                if not gateway_configuration_name:
+                    raise RequiredArgumentMissingError("--gateway-configuration-name is required.")
+
+            if not istio_egressgateway_name:
+                raise RequiredArgumentMissingError("--istio-egressgateway-name is required.")
 
             # ensure necessary fields
             if new_profile.istio.components is None:
@@ -2380,18 +2393,37 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # make update if the egress gateway already exists
             egress_gateway_exists = False
             for egress in new_profile.istio.components.egress_gateways:
-                egress.enabled = enable_egress_gateway
-                egress_gateway_exists = True
-                updated = True
-                break
+                if egress.name == istio_egressgateway_name and egress.namespace == istio_egressgateway_namespace:
+                    if not egress.enabled and disable_egress_gateway:
+                        raise ArgumentUsageError(
+                            f'Egress gateway {istio_egressgateway_name} '
+                            f'in namespace {istio_egressgateway_namespace} is already disabled.'
+                        )
+                    egress.enabled = enable_egress_gateway
+                    # only update gateway configuration name for enabled egress gateways
+                    if enable_egress_gateway:
+                        egress.gateway_configuration_name = gateway_configuration_name
+                    egress_gateway_exists = True
+                    updated = True
+                    break
 
             # egress gateway doesn't exist, append
             if not egress_gateway_exists:
-                new_profile.istio.components.egress_gateways.append(
-                    self.models.IstioEgressGateway(  # pylint: disable=no-member
-                        enabled=enable_egress_gateway,
+                if enable_egress_gateway:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(  # pylint: disable=no-member
+                            enabled=enable_egress_gateway,
+                            name=istio_egressgateway_name,
+                            namespace=istio_egressgateway_namespace,
+                            gateway_configuration_name=gateway_configuration_name,
+                        )
                     )
-                )
+                elif disable_egress_gateway:
+                    raise ArgumentUsageError(
+                        f'Egress gateway {istio_egressgateway_name} '
+                        f'in namespace {istio_egressgateway_namespace} does not exist, cannot disable.'
+                    )
+
                 updated = True
 
         return new_profile, updated
@@ -2895,12 +2927,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        acns = self.models.AdvancedNetworking()
-        acns_enabled = self.context.get_acns()
-        acns_observability_enabled = self.context.get_acns_observability()
-        acns_security_enabled = self.context.get_acns_security()
+        acns = None
+        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
+            )
             if acns_observability_enabled is not None:
                 acns.observability = self.models.AdvancedNetworkingObservability(
                     enabled=acns_observability_enabled,
@@ -2909,11 +2941,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
-            # Only Cilium dataplane supports ACNS security
-            if network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-                # TODO: add warning or raise error instead of silently disabling
-                if acns.security is not None:
-                    acns.security.enabled = False
             network_profile.advanced_networking = acns
 
         return mc
@@ -2932,6 +2959,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
+            if mc.api_server_access_profile is None:
+                # pylint: disable=no-member
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
         return mc
@@ -3983,12 +4013,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        acns = self.models.AdvancedNetworking()
-        acns_enabled = self.context.get_acns()
-        acns_observability_enabled = self.context.get_acns_observability()
-        acns_security_enabled = self.context.get_acns_security()
+        acns = None
+        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
+            )
             if acns_observability_enabled is not None:
                 acns.observability = self.models.AdvancedNetworkingObservability(
                     enabled=acns_observability_enabled,
@@ -3997,11 +4027,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
-            # Only Cilium dataplane supports ACNS security
-            if mc.network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-                # TODO: add warning or raise error instead of silently disabling
-                if acns.security is not None:
-                    acns.security.enabled = False
             mc.network_profile.advanced_networking = acns
         return mc
 
@@ -4053,21 +4078,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             agentpool_details = {}
             from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
-            (
-                is_extension_installed,
-                is_azureDisk_enabled,
-                is_elasticSan_enabled,
-                is_ephemeralDisk_localssd_enabled,
-                is_ephemeralDisk_nvme_enabled,
-                current_core_value,
-                existing_ephemeral_disk_volume_type,
-                existing_perf_tier,
-            ) = get_extension_installed_and_cluster_configs(
-                self.cmd,
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-                mc.agent_pool_profiles,
-            )
+
+            try:
+                (
+                    is_extension_installed,
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                    current_core_value,
+                    existing_ephemeral_disk_volume_type,
+                    existing_perf_tier,
+                ) = get_extension_installed_and_cluster_configs(
+                    self.cmd,
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    mc.agent_pool_profiles,
+                )
+            except UnknownError as e:
+                logger.error("\nError fetching installed extension and cluster config: %s", e)
+                return mc
+            except Exception as ex:  # pylint: disable=broad-except
+                logger.error("Exception fetching installed extension and cluster config: %s", ex)
+                return mc
 
             vm_cache_generated = self.context.get_intermediate(
                 "vm_cache_generated",

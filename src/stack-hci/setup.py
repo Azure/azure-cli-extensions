@@ -11,10 +11,6 @@ from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
 VERSION = '1.1.0'
-try:
-    from azext_stack_hci.manual.version import VERSION
-except ImportError:
-    pass
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -43,7 +39,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='stack_hci',
+    name='stack-hci',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools AzureStackHCIClient Extension',
     author='Microsoft Corporation',

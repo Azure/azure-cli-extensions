@@ -10,35 +10,45 @@ from datetime import datetime
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
+from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 from . import utils
-from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
+from .models import (
+    AllowedFileTypes,
+    AllowedIntervals,
+    AllowedMetricNamespaces,
+    AllowedTestTypes,
+    AllowedTestPlanFileExtensions,
+    EngineIdentityType,
+)
 
 logger = get_logger(__name__)
 
 
+def _validate_id(namespace, id_name, arg_name=None):
+    """Validates a generic ID"""
+    id_value = getattr(namespace, id_name, None)
+    arg_name = arg_name or id_name
+    if id_value is None:
+        raise InvalidArgumentValueError(f"{arg_name} is required.")
+    if not isinstance(id_value, str):
+        raise InvalidArgumentValueError(
+            f"Invalid {arg_name} type: {type(id_value)}. Expected a string."
+        )
+    if not re.match("^[a-z0-9_-]*$", id_value):
+        raise InvalidArgumentValueError(f"Invalid {arg_name} value.")
+
+
 def validate_test_id(namespace):
     """Validates test-id"""
-    if not isinstance(namespace.test_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid test-id type: {type(namespace.test_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.test_id):
-        raise InvalidArgumentValueError("Invalid test-id value")
+    _validate_id(namespace, "test_id", "test-id")
 
 
 def validate_test_run_id(namespace):
     """Validates test-run-id"""
-    if namespace.test_run_id is None:
-        namespace.test_run_id = utils.get_random_uuid()
-    if not isinstance(namespace.test_run_id, str):
-        raise InvalidArgumentValueError(
-            f"Invalid test-run-id type: {type(namespace.test_run_id)}"
-        )
-    if not re.match("^[a-z0-9_-]*$", namespace.test_run_id):
-        raise InvalidArgumentValueError("Invalid test-run-id value")
+    _validate_id(namespace, "test_run_id", "test-run-id")
 
 
 def _validate_akv_url(string, url_type="secrets|certificates|keys|storage"):
@@ -227,9 +237,25 @@ def validate_test_plan_path(namespace):
     namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
 
     _, file_extension = os.path.splitext(namespace.test_plan)
-    if file_extension.casefold() != ".jmx":
+    if file_extension.casefold() not in utils.get_enum_values(AllowedTestPlanFileExtensions):
         raise InvalidArgumentValueError(
-            f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
+            f"Invalid test plan file extension: {file_extension}. "
+            f"Allowed values: {', '.join(AllowedTestPlanFileExtensions)} "
+            f"for {', '.join(utils.get_enum_values(AllowedTestTypes))} test types respectively"
+        )
+
+
+def validate_test_type(namespace):
+    if namespace.test_type is None:
+        return
+    if not isinstance(namespace.test_type, str):
+        raise InvalidArgumentValueError(
+            f"Invalid test-type type: {type(namespace.test_type)}"
+        )
+    allowed_test_types = utils.get_enum_values(AllowedTestTypes)
+    if namespace.test_type not in allowed_test_types:
+        raise InvalidArgumentValueError(
+            f"Invalid test-type value: {namespace.test_type}. Allowed values: {', '.join(allowed_test_types)}"
         )
 
 
@@ -402,3 +428,178 @@ def validate_disable_public_ip(namespace):
         namespace.disable_public_ip = True
     else:
         namespace.disable_public_ip = False
+
+
+def validate_autostop_enable_disable(namespace):
+    if namespace.autostop is None:
+        return
+    if not isinstance(namespace.autostop, str) or namespace.autostop.casefold() not in ["enable", "disable"]:
+        raise InvalidArgumentValueError(
+            f"Invalid autostop type: {type(namespace.autostop)}. Allowed values: enable, disable"
+        )
+    if namespace.autostop.casefold() not in ["disable"]:
+        namespace.autostop = True
+    else:
+        namespace.autostop = False
+
+
+def validate_autostop_error_rate_time_window(namespace):
+    if namespace.autostop_error_rate_time_window is None:
+        return
+    if not isinstance(namespace.autostop_error_rate_time_window, int):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-time-window type: {type(namespace.autostop_error_rate_time_window)}"
+        )
+    if namespace.autostop_error_rate_time_window < 0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate time window should be greater than or equal to 0"
+        )
+
+
+def validate_autostop_error_rate(namespace):
+    if namespace.autostop_error_rate is None:
+        return
+    if not isinstance(namespace.autostop_error_rate, float):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-error-rate type: {type(namespace.autostop_error_rate)}"
+        )
+    if namespace.autostop_error_rate < 0.0 or namespace.autostop_error_rate > 100.0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate should be in range of [0.0,100.0]"
+        )
+
+
+def _validate_autostop_disable_configfile(autostop):
+    if autostop.casefold() not in ["disable"]:
+        raise InvalidArgumentValueError(
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow"
+        )
+
+
+def _validate_autostop_criteria_configfile(error_rate, time_window):
+    if error_rate is not None:
+        if isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+        if isinstance(error_rate, int) and (error_rate < 0 or error_rate > 100):
+            raise InvalidArgumentValueError(
+                "Invalid value for errorPercentage. Value should be a number between 0.0 and 100.0"
+            )
+    if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
+        raise InvalidArgumentValueError(
+            "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
+        )
+
+
+def validate_regionwise_engines(cmd, namespace):
+    if namespace.regionwise_engines is None:
+        return
+    if not isinstance(namespace.regionwise_engines, list):
+        raise InvalidArgumentValueError(
+            f"Invalid regionwise-engines type: {type(namespace.regionwise_engines)}. \
+                Expected list in the format of region1=engineCount1 region2=engineCount2"
+        )
+    regionwise_engines = []
+    subscription_locations = get_subscription_locations(cmd.cli_ctx)
+    location_names = [location.name for location in subscription_locations]
+    for item in namespace.regionwise_engines:
+        if not isinstance(item, str) or "=" not in item:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item type: {type(item)}. Expected region=engineCount"
+            )
+        key, value = item.split("=", 1)
+        if not key or not value:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item: {item}. Region or engine count cannot be empty"
+            )
+        if key.strip().lower() not in location_names:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item key: {key}. Expected Azure region"
+            )
+        try:
+            value = int(value.strip())
+        except ValueError:
+            raise InvalidArgumentValueError(
+                f"Invalid regionwise-engines item value: {value}. Expected integer"
+            )
+        regionwise_engines.append({"region": key.strip().lower(), "engineInstances": value})
+    namespace.regionwise_engines = regionwise_engines
+
+
+def validate_engine_ref_ids(namespace):
+    """Extracts multiple space-separated identities"""
+    if isinstance(namespace.engine_ref_ids, list):
+        for item in namespace.engine_ref_ids:
+            if not is_valid_resource_id(item):
+                raise InvalidArgumentValueError(f"Invalid engine-ref-ids value: {item}")
+
+
+# pylint: disable=line-too-long
+# Disabling this because dictionary key are too long
+def validate_keyvault_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.key_vault_reference_identity, str)
+        and not namespace.key_vault_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.key_vault_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid keyvault-ref-id value: {}".format(namespace.key_vault_reference_identity))
+
+
+def validate_metrics_identity_ref_id(namespace):
+    """Validates managed identity reference id"""
+    if (
+        isinstance(namespace.metrics_reference_identity, str)
+        and not namespace.metrics_reference_identity.lower() in ["null", ""]
+        and not is_valid_resource_id(namespace.metrics_reference_identity)
+    ):
+        raise InvalidArgumentValueError("Invalid metrics-ref-id value: {}".format(namespace.metrics_reference_identity))
+
+
+def validate_engine_ref_ids_and_type(incoming_engine_ref_id_type, engine_ref_ids, exisiting_engine_ref_id_type=None):
+    """Validates combination of engine-ref-id-type and engine-ref-ids"""
+
+    # if engine_ref_id_type is None or SystemAssigned, then no value for engine_ref_ids is expected:
+    engine_ref_id_type = incoming_engine_ref_id_type or exisiting_engine_ref_id_type
+    if engine_ref_id_type != EngineIdentityType.UserAssigned and engine_ref_ids:
+        raise InvalidArgumentValueError(
+            "engine-ref-ids should not be provided when engine-ref-id-type is None or SystemAssigned"
+        )
+
+    # If engine_ref_id_type is UserAssigned, then engine_ref_ids is expected.
+    if incoming_engine_ref_id_type == EngineIdentityType.UserAssigned and engine_ref_ids is None:
+        raise InvalidArgumentValueError(
+            "Atleast one engine-ref-ids should be provided when engine-ref-id-type is UserAssigned"
+        )
+
+
+def validate_trigger_id(namespace):
+    """Validates trigger-id"""
+    _validate_id(namespace, "trigger_id", "trigger-id")
+
+
+def validate_recurrence_dates_in_month(namespace):
+    if namespace.recurrence_dates_in_month is None:
+        return
+    if not isinstance(namespace.recurrence_dates_in_month, list):
+        raise InvalidArgumentValueError(
+            f"Invalid recurrence-dates type: {type(namespace.recurrence_dates_in_month)}. \
+                Expected list of integers"
+        )
+    for item in namespace.recurrence_dates_in_month:
+        if not isinstance(item, int) or item < 1 or item > 31:
+            raise InvalidArgumentValueError(
+                f"Invalid recurrence-dates item: {item}. Expected integer between 1 and 31"
+            )
+
+
+def validate_schedule_test_ids(namespace):
+    if namespace.test_ids is None:
+        return
+    if not isinstance(namespace.test_ids, list):
+        raise InvalidArgumentValueError("Invalid test-ids type: {}. Expected list of test id.".format(type(namespace.test_ids)))
+    if len(namespace.test_ids) != 1:
+        raise InvalidArgumentValueError("Currently we only support one test ID per schedule.")
+    if not re.match("^[a-z0-9_-]*$", namespace.test_ids[0]):
+        raise InvalidArgumentValueError("Invalid test-id value.")

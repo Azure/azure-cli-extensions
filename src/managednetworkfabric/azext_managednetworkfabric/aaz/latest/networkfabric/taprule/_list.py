@@ -25,12 +25,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networktaprules", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networktaprules", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules", "2024-06-15-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -52,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.NetworkTapRulesListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.NetworkTapRulesListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.NetworkTapRulesListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NetworkTapRulesListByResourceGroup(AAZHttpOperation):
+    class NetworkTapRulesListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +89,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkTapRules",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkTapRules",
                 **self.url_parameters
             )
 
@@ -103,10 +105,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -117,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -153,7 +151,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -197,6 +197,13 @@ class List(AAZCommand):
             properties.dynamic_match_configurations = AAZListType(
                 serialized_name="dynamicMatchConfigurations",
             )
+            properties.global_network_tap_rule_actions = AAZObjectType(
+                serialized_name="globalNetworkTapRuleActions",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.last_synced_time = AAZStrType(
                 serialized_name="lastSyncedTime",
                 flags={"read_only": True},
@@ -208,7 +215,7 @@ class List(AAZCommand):
                 serialized_name="networkTapId",
                 flags={"read_only": True},
             )
-            properties.polling_interval_in_seconds = AAZIntType(
+            properties.polling_interval_in_seconds = AAZFloatType(
                 serialized_name="pollingIntervalInSeconds",
             )
             properties.provisioning_state = AAZStrType(
@@ -267,6 +274,17 @@ class List(AAZCommand):
 
             vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
             vlans.Element = AAZStrType()
+
+            global_network_tap_rule_actions = cls._schema_on_200.value.Element.properties.global_network_tap_rule_actions
+            global_network_tap_rule_actions.enable_count = AAZStrType(
+                serialized_name="enableCount",
+            )
+            global_network_tap_rule_actions.truncate = AAZStrType()
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
             match_configurations.Element = AAZObjectType()
@@ -405,7 +423,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class NetworkTapRulesListBySubscription(AAZHttpOperation):
+    class NetworkTapRulesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -419,7 +437,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkTapRules",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkTapRules",
                 **self.url_parameters
             )
 
@@ -435,6 +453,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -445,7 +467,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -481,7 +503,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -525,6 +549,13 @@ class List(AAZCommand):
             properties.dynamic_match_configurations = AAZListType(
                 serialized_name="dynamicMatchConfigurations",
             )
+            properties.global_network_tap_rule_actions = AAZObjectType(
+                serialized_name="globalNetworkTapRuleActions",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.last_synced_time = AAZStrType(
                 serialized_name="lastSyncedTime",
                 flags={"read_only": True},
@@ -536,7 +567,7 @@ class List(AAZCommand):
                 serialized_name="networkTapId",
                 flags={"read_only": True},
             )
-            properties.polling_interval_in_seconds = AAZIntType(
+            properties.polling_interval_in_seconds = AAZFloatType(
                 serialized_name="pollingIntervalInSeconds",
             )
             properties.provisioning_state = AAZStrType(
@@ -595,6 +626,17 @@ class List(AAZCommand):
 
             vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
             vlans.Element = AAZStrType()
+
+            global_network_tap_rule_actions = cls._schema_on_200.value.Element.properties.global_network_tap_rule_actions
+            global_network_tap_rule_actions.enable_count = AAZStrType(
+                serialized_name="enableCount",
+            )
+            global_network_tap_rule_actions.truncate = AAZStrType()
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
             match_configurations.Element = AAZObjectType()

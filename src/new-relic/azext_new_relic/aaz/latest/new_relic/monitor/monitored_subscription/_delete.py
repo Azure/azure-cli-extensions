@@ -67,7 +67,7 @@ class Delete(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

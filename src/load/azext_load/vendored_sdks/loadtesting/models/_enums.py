@@ -48,6 +48,15 @@ class CertificateType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """If the certificate is stored in an Azure Key Vault."""
 
 
+class CreateByTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of the entity that created the test run. (E.x. User, ScheduleTrigger, etc)."""
+
+    USER = "User"
+    """Entity was created by a user."""
+    SCHEDULED_TRIGGER = "ScheduledTrigger"
+    """Entity was created by a scheduled trigger."""
+
+
 class FileStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """File status."""
 
@@ -80,6 +89,32 @@ class FileType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """If the file is a test script."""
 
 
+class Frequency(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Frequency of recurrence for a trigger."""
+
+    CRON = "Cron"
+    """Recurrence defined by a cron expression."""
+    HOURLY = "Hourly"
+    """Recurrence defined on an hourly basis, as specified by HourlyRecurrence."""
+    DAILY = "Daily"
+    """Recurrence defined on a daily basis, as specified by DailyRecurrence."""
+    WEEKLY = "Weekly"
+    """Recurrence defined on a weekly basis, as specified by WeeklyRecurrence."""
+    MONTHLY_BY_DAYS = "MonthlyByDays"
+    """Recurrence defined monthly on specific days, as specified by MonthlyRecurrenceByWeekDays."""
+    MONTHLY_BY_DATES = "MonthlyByDates"
+    """Recurrence defined monthly on specific dates, as specified by MonthlyRecurrenceByDates."""
+
+
+class ManagedIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Managed identity type."""
+
+    SYSTEM_ASSIGNED = "SystemAssigned"
+    """System-assigned managed identity."""
+    USER_ASSIGNED = "UserAssigned"
+    """User-assigned managed identity."""
+
+
 class MetricUnit(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Metric unit."""
 
@@ -101,10 +136,30 @@ class MetricUnit(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Count per second"""
 
 
+class NotificationEventType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Notification event type."""
+
+    TEST_RUN_ENDED = "TestRunEnded"
+    """Test run ended event. This event would occur when a test run reaches terminal state."""
+    TEST_RUN_STARTED = "TestRunStarted"
+    """Test run started event. This event would occur when a new test run is triggered."""
+    TRIGGER_COMPLETED = "TriggerCompleted"
+    """Trigger completed event. This event would occur when a trigger completes."""
+    TRIGGER_DISABLED = "TriggerDisabled"
+    """Trigger disabled event. This event would occur when a trigger is disabled."""
+
+
+class NotificationScopeType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Scope type of a notification rule."""
+
+    TESTS = "Tests"
+    """Notification rule is for Tests."""
+
+
 class PFAction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Action to take on failure of pass/fail criteria."""
 
-    CONTINUE_ENUM = "continue"
+    CONTINUE = "continue"
     """Test will continue to run even if pass fail metric criteria metric gets failed."""
     STOP = "stop"
     """Test run will stop if pass fail criteria metric is not passed."""
@@ -297,3 +352,42 @@ class TimeGrain(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """5 minutes, available only if test run duration is greater than 1 minute."""
     PT1H = "PT1H"
     """1 hour, available only if test run duration is greater than 1 minute."""
+
+
+class TriggerState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Current state of a trigger."""
+
+    ACTIVE = "Active"
+    """The trigger is active."""
+    PAUSED = "Paused"
+    """The trigger is paused manually."""
+    COMPLETED = "Completed"
+    """The trigger is completed."""
+    DISABLED = "Disabled"
+    """The trigger is disabled due to error."""
+
+
+class TriggerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of a trigger."""
+
+    SCHEDULE_TESTS_TRIGGER = "ScheduleTestsTrigger"
+    """Trigger is a Scheduled Trigger on a Test."""
+
+
+class WeekDays(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Defines the days of the week."""
+
+    SUNDAY = "Sunday"
+    """Refers to Sunday."""
+    MONDAY = "Monday"
+    """Refers to Monday."""
+    TUESDAY = "Tuesday"
+    """Refers to Tuesday."""
+    WEDNESDAY = "Wednesday"
+    """Refers to Wednesday."""
+    THURSDAY = "Thursday"
+    """Refers to Thursday."""
+    FRIDAY = "Friday"
+    """Refers to Friday."""
+    SATURDAY = "Saturday"
+    """Refers to Saturday."""

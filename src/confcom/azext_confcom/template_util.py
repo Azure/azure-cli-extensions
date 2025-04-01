@@ -13,11 +13,14 @@ from hashlib import sha256
 import deepdiff
 import yaml
 import docker
+from knack.log import get_logger
 from azext_confcom.errors import (
     eprint,
 )
 from azext_confcom import os_util
 from azext_confcom import config
+
+logger = get_logger(__name__)
 
 # TODO: these can be optimized to not have so many groups in the single match
 # make this global so it can be used in multiple functions
@@ -76,6 +79,12 @@ def image_has_hash(image: str) -> bool:
     return "@sha256:" in image
 
 
+def get_image_name(image: str) -> str:
+    if image_has_hash(image):
+        return image.split("@")[0]
+    return image.split(":")[0]
+
+
 def get_image_info(progress, message_queue, tar_mapping, image):
     image_info = None
     raw_image = None
@@ -95,16 +104,22 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
         # if we have a tar location, we can try to get the image info
         if tar_location:
-            with tarfile.open(tar_location) as tar:
+            with tarfile.open(tar_location) as tar_file:
                 # get all the info out of the tarfile
                 try:
+                    logger.info("using backwards compatibility tar file")
                     image_info = os_util.map_image_from_tar_backwards_compatibility(
-                        image_name, tar, tar_location
+                        image_name, tar_file, tar_location
                     )
                 except IndexError:
+                    logger.info("using docker formatted tar file")
                     image_info = os_util.map_image_from_tar(
-                        image_name, tar, tar_location
+                        image_name, tar_file, tar_location
                     )
+                except (KeyError, AttributeError):
+                    # manifest.json not found
+                    logger.info("using OCI tar file")
+                    image_info = os_util.map_image_from_tar_oci_layout_v1(image_name, tar_file, tar_location)
                 if image_info is not None:
                     tar = True
                     message_queue.append(f"{image_name} read from local tar file")
@@ -168,6 +183,7 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             f"{raw_image.attrs.get(config.ACI_FIELD_CONTAINERS_ARCHITECTURE_KEY)}. "
             f"Only {config.ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE} is supported by Confidential ACI"
         ))
+
     return image_info, tar
 
 
@@ -222,6 +238,7 @@ def process_env_vars_from_template(params: dict,
                     response = approve_wildcards or input(
                         f'Create a wildcard policy for the environment variable {name} (y/n): ')
                     if approve_wildcards or response.lower() == 'y':
+                        logger.info('Creating a wildcard policy for the environment variable %s', name)
                         env_vars.append({
                             config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
                             config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
@@ -451,6 +468,15 @@ def convert_to_pod_spec_helper(pod_dict):
     return {}
 
 
+def get_volume_claim_templates(pod_spec: dict) -> List[dict]:
+    volume_claim_templates = []
+    if "spec" in pod_spec:
+        spec = pod_spec["spec"]
+        if "volumeClaimTemplates" in spec:
+            return spec["volumeClaimTemplates"]
+    return volume_claim_templates
+
+
 def filter_non_pod_resources(resources: List[dict]) -> List[dict]:
     """
     Filter out non-pod spawning resources from a list of resources.
@@ -494,6 +520,8 @@ def process_env_vars_from_config(container) -> List[Dict[str, str]]:
 
 def process_fragment_imports(rego_imports) -> None:
     for rego_import in rego_imports:
+        if not rego_import:
+            continue
         feed = case_insensitive_dict_get(
             rego_import, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED
         )
@@ -534,6 +562,8 @@ def process_fragment_imports(rego_imports) -> None:
                 + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES}"] '
                 + "can only be a list value."
             )
+
+    return rego_imports
 
 
 def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str, str]]:
@@ -654,6 +684,9 @@ def process_mounts_from_config(image_properties: dict) -> List[Dict[str, str]]:
                 config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: case_insensitive_dict_get(
                     mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY
                 ),
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS: case_insensitive_dict_get(
+                    mount, config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS
+                )
             }
         )
     return mounts
@@ -766,10 +799,13 @@ def readable_diff(diff_dict) -> Dict[str, Any]:
             # search for the area of the ARM Template with the change i.e. "mounts" or "env_rules"
             for key in diff_dict[category]:
                 key = str(key)
-                key_name = re.search(r"'(.*?)'", key).group(1)
-                human_readable_diff[new_name].setdefault(key_name, []).append(
-                    diff_dict[category][key]
-                )
+
+                key_name_group = re.search(r"'(.*?)'", key)
+                if key_name_group is not None:
+                    key_name = key_name_group.group(1)
+                    human_readable_diff[new_name].setdefault(key_name, []).append(
+                        diff_dict[category][key]
+                    )
 
     return change_key_names(human_readable_diff)
 

@@ -9,22 +9,23 @@
 Neighbor Group tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+    """Env setup_scenario1"""
     pass
 
 
 def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+    """Env cleanup_scenario1"""
     pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
+    """# Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -36,66 +37,72 @@ def call_scenario1(test):
 
 
 def step_create(test, checks=None):
-    '''Neighbor Group create operation'''
+    """Neighbor Group create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric neighborgroup create --resource-group {rg} --location {location} --resource-name {name} --destination {destination}', checks=checks)
+        "az networkfabric neighborgroup create --resource-group {rg} --location {location} --resource-name {name} --destination {destination}",
+        checks=checks,
+    )
 
 
 def step_show(test, checks=None):
-    '''Neighbor Group show operation'''
+    """Neighbor Group show operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric neighborgroup show --resource-name {name} --resource-group {rg}')
+        "az networkfabric neighborgroup show --resource-name {name} --resource-group {rg}"
+    )
 
 
 def step_list_resource_group(test, checks=None):
-    '''Neighbor Group list by resource group operation'''
+    """Neighbor Group list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric neighborgroup list --resource-group {rg}')
+    test.cmd("az networkfabric neighborgroup list --resource-group {rg}")
 
 
 def step_list_subscription(test, checks=None):
-    '''Neighbor Group list by subscription operation'''
+    """Neighbor Group list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric neighborgroup list')
+    test.cmd("az networkfabric neighborgroup list")
 
 
 def step_update(test, checks=None):
-    '''Neighbor Group update operation'''
+    """Neighbor Group update operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric neighborgroup update --resource-group {rg} --resource-name {name} --destination {destination_Update}', checks=checks)
+        "az networkfabric neighborgroup update --resource-group {rg} --resource-name {name} --destination {destinationUpdate}",
+        checks=checks,
+    )
 
 
 def step_delete(test, checks=None):
-    '''Neighbor Group delete operation'''
+    """Neighbor Group delete operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric neighborgroup delete --resource-name {name} --resource-group {rg}')
+        "az networkfabric neighborgroup delete --resource-name {name} --resource-group {rg}"
+    )
 
 
 class GA_NeighborGroupScenarioTest1(ScenarioTest):
-    ''' Neighbor Group Scenario test'''
+    """Neighbor Group Scenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            'name': CONFIG.get('NEIGHBOR_GROUP', 'name'),
-            'rg': CONFIG.get('NEIGHBOR_GROUP', 'resource_group'),
-            'location': CONFIG.get('NEIGHBOR_GROUP', 'location'),
-            'destination': CONFIG.get('NEIGHBOR_GROUP', 'destination'),
-            'destination_Update': CONFIG.get('NEIGHBOR_GROUP', 'destination_Update')
-        })
+        self.kwargs.update(
+            {
+                "name": CONFIG.get("NEIGHBOR_GROUP", "name"),
+                "rg": CONFIG.get("NEIGHBOR_GROUP", "resource_group"),
+                "location": CONFIG.get("NEIGHBOR_GROUP", "location"),
+                "destination": CONFIG.get("NEIGHBOR_GROUP", "destination"),
+                "destinationUpdate": CONFIG.get("NEIGHBOR_GROUP", "destination_update"),
+            }
+        )
 
     def test_GA_neighborgroup_scenario1(self):
-        ''' test scenario for Neighbor Group CRUD operations'''
+        """test scenario for Neighbor Group CRUD operations"""
         call_scenario1(self)

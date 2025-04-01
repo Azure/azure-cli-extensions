@@ -34,6 +34,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODEPOOL_MODE_GATEWAY,
+    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -464,6 +465,22 @@ def validate_max_surge(namespace):
         raise CLIError("--max-surge should be an int or percentage")
 
 
+def validate_max_unavailable(namespace):
+    """validates parameters max unavailable are positive integers or percents."""
+    if namespace.max_unavailable is None:
+        return
+    int_or_percent = namespace.max_unavailable
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise CLIError("--max-unavailable must be positive")
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise CLIError("--max-unavailable should be an int or percentage")
+
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
@@ -756,12 +773,26 @@ def validate_allowed_host_ports(namespace):
 
 
 def validate_application_security_groups(namespace):
+    is_nodepool_operation = False
     if hasattr((namespace), "nodepool_asg_ids"):
+        is_nodepool_operation = True
         asg_ids = namespace.nodepool_asg_ids
+        host_ports = namespace.nodepool_allowed_host_ports
     else:
         asg_ids = namespace.asg_ids
+        host_ports = namespace.allowed_host_ports
+
     if not asg_ids:
         return
+
+    if not host_ports:
+        if is_nodepool_operation:
+            raise ArgumentUsageError(
+                '--nodepool-asg-ids must be used with --nodepool-allowed-host-ports'
+            )
+        raise ArgumentUsageError(
+            '--asg-ids must be used with --allowed-host-ports'
+        )
 
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
@@ -823,6 +854,20 @@ def validate_azure_service_mesh_revision(namespace):
     found = asm_revision_regex.findall(revision)
     if not found:
         raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
+
+
+def validate_asm_egress_name(namespace):
+    if namespace.istio_egressgateway_name is None:
+        return
+    name = namespace.istio_egressgateway_name
+    asm_egress_name_regex = re.compile(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?(.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')
+    match = asm_egress_name_regex.match(name)
+    if not match or len(name) > CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH:
+        raise InvalidArgumentValueError(
+            f"Istio egress name {name} is invalid. Name must be between 1 and "
+            f"{CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH} characters, must consist of lower case alphanumeric "
+            "characters, '-' or '.', and must start and end with an alphanumeric character."
+        )
 
 
 def validate_artifact_streaming(namespace):

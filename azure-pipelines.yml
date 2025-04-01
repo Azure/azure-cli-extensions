@@ -12,11 +12,14 @@ pr:
     include:
       - '*'
 
+variables:
+- template: ${{ variables.Pipeline.Workspace }}/.azure-pipelines/templates/variables.yml
+
 jobs:
 - job: CredScan
   displayName: "Credential Scan"
   pool:
-    name: 'pool-windows-2019'
+    name: ${{ variables.windows_pool }}
   steps:
   - task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@3
     displayName: 'Run Credential Scanner'
@@ -34,7 +37,7 @@ jobs:
 - job: PolicyCheck
   displayName: "Policy Check"
   pool:
-    name: 'pool-windows-2019'
+    name: ${{ variables.windows_pool }}
   steps:
   - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
     displayName: 'Run Policy Check'
@@ -51,7 +54,7 @@ jobs:
 - job: CheckLicenseHeader
   displayName: "Check License"
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.12'
@@ -67,7 +70,7 @@ jobs:
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.12'
@@ -84,7 +87,7 @@ jobs:
 - job: SourceTests
   displayName: "Integration Tests, Build Tests"
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   strategy:
     matrix:
       Python39:
@@ -119,7 +122,7 @@ jobs:
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   continueOnError: true
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.12'
@@ -143,7 +146,7 @@ jobs:
   displayName: "azdev linter on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.12'
@@ -164,11 +167,11 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: AzdevScanModifiedExtensions
-  displayName: "azdev scan on Modified Extensions"
+- job: AzdevScanModifiedExtensionsHigh
+  displayName: "azdev scan ( High Confidence ) on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.11'
@@ -182,22 +185,53 @@ jobs:
         git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
         declare -A secret_files
         for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
-          detected=$(azdev scan -f $FILE | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          detected=$(azdev scan -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
           if [ $detected == 'True' ]; then
-            echo "Secrets detected from "$FILE", Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix." 1>&2
+            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m\n" "$FILE"
             secret_files+=$FILE
           fi
         done
         if [ "${#secret_files[@]}" -gt 0 ]; then
           exit 1
         fi
-      displayName: "azdev scan on Modified Extensions"
+      displayName: "azdev scan ( High Confidence ) on Modified Extensions"
+
+- job: AzdevScanProModifiedExtensionsMedium
+  displayName: "azdev scan ( Medium Confidence ) on Modified Extensions"
+  dependsOn: AzdevScanModifiedExtensionsHigh
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  continueOnError: true
+  pool:
+    name: ${{ variables.ubuntu_pool }}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.11'
+      inputs:
+        versionSpec: 3.11
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
+        declare -A secret_files
+        for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
+          detected=$(azdev scan --confidence-level MEDIUM -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          if [ $detected == 'True' ]; then
+            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan --confidence-level MEDIUM'/'azdev mask --confidence-level MEDIUM' locally to fix.\033[0m\n" "$FILE"
+            secret_files+=$FILE
+          fi
+        done
+        if [ "${#secret_files[@]}" -gt 0 ]; then
+          exit 1
+        fi
+      displayName: "azdev scan ( Medium Confidence ) on Modified Extensions"
 
 #- job: IndexRefDocVerify
 #  displayName: "Verify Ref Docs"
 #  continueOnError: true
 #  pool:
-#    name: 'pool-ubuntu-2004'
+#    name: ${{ variables.ubuntu_pool }}
 #  steps:
 #  - task: UsePythonVersion@0
 #    displayName: 'Use Python 3.12'
@@ -214,7 +248,7 @@ jobs:
 - job: CheckInit
   displayName: "Check Init Files"
   pool:
-    name: 'pool-ubuntu-2004'
+    name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.x'

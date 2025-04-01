@@ -221,7 +221,7 @@ helps['aks create'] = f"""
               This flag is deprecated in favor of --network-dataplane=cilium.
         - name: --enable-acns
           type: bool
-          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.
+          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs. For non-cilium clusters, acns security will be disabled by default until further notice.
         - name: --disable-acns-observability
           type: bool
           short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
@@ -515,7 +515,7 @@ helps['aks create'] = f"""
         - name: --ca-certs --custom-ca-trust-certificates
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
-          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes.
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
@@ -1186,7 +1186,7 @@ helps['aks update'] = """
         - name: --ca-certs --custom-ca-trust-certificates
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
-          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes.
         - name: --safeguards-level
           type: string
           short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
@@ -1204,7 +1204,7 @@ helps['aks update'] = """
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
         - name: --enable-acns
           type: bool
-          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.
+          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs. For non-cilium clusters, acns security will be disabled by default until further notice.
         - name: --disable-acns
           type: bool
           short-summary: Disable all advanced networking functionalities on a cluster.
@@ -1775,6 +1775,9 @@ helps['aks nodepool add'] = """
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
+        - name: --max-unavailable
+          type: string
+          short-summary: The maximum number or percentage of nodes that can be simultaneously unavailable during upgrade. When specified, it represents the number or percent used, eg. 1 or 5%
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -1911,6 +1914,9 @@ helps['aks nodepool upgrade'] = """
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
+        - name: --max-unavailable
+          type: string
+          short-summary: The maximum number or percentage of nodes that can be simultaneously unavailable during upgrade. When specified, it represents the number or percent used, eg. 1 or 5%
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1960,6 +1966,9 @@ helps['aks nodepool update'] = """
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
+        - name: --max-unavailable
+          type: string
+          short-summary: The maximum number or percentage of nodes that can be simultaneously unavailable during upgrade. When specified, it represents the number or percent used, eg. 1 or 5%
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -3071,6 +3080,46 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh enable-egress-gateway'] = """
+    type: command
+    short-summary: Enable an Azure Service Mesh egress gateway.
+    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --istio-eg-gtw-name --istio-egressgateway-name
+        type: string
+        short-summary: Specify the name of the Istio egress gateway.
+        long-summary: This required field specifies the name of the Istio egress gateway. Must be between 1 and 253 characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+      - name: --istio-eg-gtw-ns --istio-egressgateway-namespace
+        type: string
+        short-summary: Specify the namespace of the Istio egress gateway.
+        long-summary: This optional field specifies the namespace of the Istio egress gateway. Defaults to "aks-istio-egress" if unspecified.
+      - name: --gateway-configuration-name --gtw-config-name
+        type: string
+        short-summary: Specify the name of the StaticGatewayConfiguration resource.
+        long-summary: This required field specifies the name of the StaticGatewayConfiguration resource for the Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
+    examples:
+      - name: Enable an Istio egress gateway. Static egress gateway must be enabled prior to creating an Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --istio-egressgateway-name my-istio-egress-1 --istio-egressgateway-namespace my-namespace-1 --gateway-configuration-name sgc-istio-egress-1
+"""
+
+helps['aks mesh disable-egress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh ingress gateway.
+    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --istio-eg-gtw-name --istio-egressgateway-name
+        type: string
+        short-summary: Specify the name of the Istio egress gateway.
+        long-summary: This required field specifies the name of the Istio egress gateway. Must be between 1 and 253 characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+      - name: --istio-eg-gtw-ns --istio-egressgateway-namespace
+        type: string
+        short-summary: Specify the namespace of the Istio egress gateway.
+        long-summary: This optional field specifies the namespace of the Istio egress gateway. Defaults to "aks-istio-egress" if unspecified.
+    examples:
+      - name: Disable an Istio egress gateway.
+        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --istio-egressgateway-name my-istio-egress-1 --istio-egressgateway-namespace my-namespace-1
 """
 
 helps['aks mesh get-revisions'] = """

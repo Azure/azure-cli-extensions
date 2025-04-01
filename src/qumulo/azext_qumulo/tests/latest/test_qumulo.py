@@ -13,6 +13,7 @@ from azure.cli.testsdk import *
 
 class QumuloScenario(ScenarioTest):
 
+    @live_only()
     @ResourceGroupPreparer(location='eastus')
     def test_file_system(self):
         email = self.cmd('account show').get_output_in_json()['user']['name']
@@ -28,41 +29,38 @@ class QumuloScenario(ScenarioTest):
             'subnet_id': subnet_id
         })
         self.cmd('qumulo storage file-system create -n {sys_name} -g {rg} --admin-password Password01! '
-                 '--delegated-subnet-id {subnet_id} --initial-capacity 50 '
-                 '--marketplace-details {{offerId:qumulo-saas-mpp,planId:qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M,publisherId:qumulo1584033880660}} '
-                 '--storage-sku Standard --user-details "{{email:{email}}}" '
-                 '--availability-zone 1 --tags {{tag:test}}',
+                 '--delegated-subnet-id {subnet_id} '
+                 '--marketplace-details {{offerId:qumulo-saas-mpp,planId:azure-native-qumulo-v3%%gmz7xq9ge3py%%P1M,publisherId:qumulo1584033880660}} '
+                 '--storage-sku Hot --user-details "{{email:{email}}}" '
+                 '--availability-zone 1 --tags {{ProvisionResource:55e031c5d497a3508838f44ec8767c84}}',
                  checks=[
                      self.check('name', '{sys_name}'),
-                     self.check('marketplaceDetails.planId', 'qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M'),
+                     self.check('marketplaceDetails.planId', 'azure-native-qumulo-v3'),
                      self.check('marketplaceDetails.offerId', 'qumulo-saas-mpp'),
                      self.check('marketplaceDetails.publisherId', 'qumulo1584033880660'),
                      self.check('delegatedSubnetId', '{subnet_id}'),
-                     self.check('storageSku', 'Standard'),
-                     self.check('initialCapacity', 50),
+                     self.check('storageSku', 'Hot'),
                      self.check('availabilityZone', '1'),
-                     self.check('tags.tag', 'test')
+                     self.check('tags.provisionResource', '55e031c5d497a3508838f44ec8767c84')
                  ])
         self.cmd('qumulo storage file-system show -n {sys_name} -g {rg}', checks=[
             self.check('name', '{sys_name}'),
-            self.check('marketplaceDetails.planId', 'qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M'),
+            self.check('marketplaceDetails.planId', 'azure-native-qumulo-v3'),
             self.check('marketplaceDetails.offerId', 'qumulo-saas-mpp'),
             self.check('marketplaceDetails.publisherId', 'qumulo1584033880660'),
             self.check('delegatedSubnetId', '{subnet_id}'),
-            self.check('storageSku', 'Standard'),
-            self.check('initialCapacity', 50),
+            self.check('storageSku', 'Hot'),
             self.check('availabilityZone', '1'),
-            self.check('tags.tag', 'test')
+            self.check('tags.provisionResource', '55e031c5d497a3508838f44ec8767c84')
         ])
         self.cmd('qumulo storage file-system list -g {rg}', checks=[
             self.check('[0].name', '{sys_name}'),
-            self.check('[0].marketplaceDetails.planId', 'qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M'),
+            self.check('[0].marketplaceDetails.planId', 'azure-native-qumulo-v3'),
             self.check('[0].marketplaceDetails.offerId', 'qumulo-saas-mpp'),
             self.check('[0].marketplaceDetails.publisherId', 'qumulo1584033880660'),
             self.check('[0].delegatedSubnetId', '{subnet_id}'),
-            self.check('[0].storageSku', 'Standard'),
-            self.check('[0].initialCapacity', 50),
+            self.check('[0].storageSku', 'Hot'),
             self.check('[0].availabilityZone', '1'),
-            self.check('[0].tags.tag', 'test')
+            self.check('[0].tags.provisionResource', '55e031c5d497a3508838f44ec8767c84')
         ])
         self.cmd('qumulo storage file-system delete -n {sys_name} -g {rg} -y')

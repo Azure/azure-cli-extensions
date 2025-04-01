@@ -9,22 +9,23 @@
 Network Tap tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+    """Env setup_scenario1"""
     pass
 
 
 def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+    """Env cleanup_scenario1"""
     pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
+    """# Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -37,77 +38,92 @@ def call_scenario1(test):
 
 
 def step_create(test, checks=None):
-    '''Network Tap create operation'''
+    """Network Tap create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric tap create --resource-group {rg} --location {location} --resource-name {name} --network-packet-broker-id {npbId} --polling-type {pollingType} --destinations {destinations}', checks=checks)
+        "az networkfabric tap create --resource-group {rg} --location {location} --resource-name {name} --npb-id {npbId} --polling-type {pollingType} --destinations {destinations}",
+        checks=checks,
+    )
 
 
 def step_show(test, checks=None):
-    '''Network Tap show operation'''
+    """Network Tap show operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric tap show --resource-name {name} --resource-group {rg}')
+    test.cmd("az networkfabric tap show --resource-name {name} --resource-group {rg}")
 
 
 def step_list_resource_group(test, checks=None):
-    '''Network Tap list by resource group operation'''
+    """Network Tap list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric tap list --resource-group {rg}')
+    test.cmd("az networkfabric tap list --resource-group {rg}")
 
 
 def step_list_subscription(test, checks=None):
-    '''Network Tap list by subscription operation'''
+    """Network Tap list by subscription operation"""
+    if checks is None:
+        checks = []
+    test.cmd("az networkfabric tap list")
+
+
+def step_update(test, checks=None):
+    """Network Tap Rule update operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric tap list')
+        "az networkfabric tap update --resource-name {deleteName} --resource-group {rg} --destinations {updatedDestinations} --polling-type {updatedPollingType}"
+    )
 
 
 def step_update_admin_state_Enable(test, checks=None):
-    '''Network Tap Update admin state operation'''
+    """Network Tap Update admin state operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {state_Enable}')
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable}"
+    )
 
 
 def step_update_admin_state_Disable(test, checks=None):
-    '''Network Tap Update admin state operation'''
+    """Network Tap Update admin state operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {state_Disable}')
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable}"
+    )
 
 
 def step_delete(test, checks=None):
-    '''Network Tap delete operation'''
+    """Network Tap delete operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        'az networkfabric tap delete --resource-name {name} --resource-group {rg}')
+    test.cmd("az networkfabric tap delete --resource-name {name} --resource-group {rg}")
 
 
 class GA_TapScenarioTest1(ScenarioTest):
-    ''' Network Tap Scenario test'''
+    """Network Tap Scenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            'name': CONFIG.get('NETWORK_TAP', 'name'),
-            'rg': CONFIG.get('NETWORK_TAP', 'resource_group'),
-            'location': CONFIG.get('NETWORK_TAP', 'location'),
-            'npbId': CONFIG.get('NETWORK_TAP', 'network_packet_broker_id'),
-            'pollingType': CONFIG.get('NETWORK_TAP', 'polling_type'),
-            'destinations': CONFIG.get('NETWORK_TAP', 'destinations'),
-            'state_Enable': CONFIG.get('NETWORK_TAP', 'state_Enable'),
-            'state_Disable': CONFIG.get('NETWORK_TAP', 'state_Disable')
-        })
+        self.kwargs.update(
+            {
+                "name": CONFIG.get("NETWORK_TAP", "name"),
+                "rg": CONFIG.get("NETWORK_TAP", "resource_group"),
+                "location": CONFIG.get("NETWORK_TAP", "location"),
+                "npbId": CONFIG.get("NETWORK_TAP", "network_packet_broker_id"),
+                "pollingType": CONFIG.get("NETWORK_TAP", "polling_type"),
+                "destinations": CONFIG.get("NETWORK_TAP", "destinations"),
+                "stateEnable": CONFIG.get("NETWORK_TAP", "state_enable"),
+                "stateDisable": CONFIG.get("NETWORK_TAP", "state_disable"),
+                "updatedDestinations": CONFIG.get(
+                    "NETWORK_TAP", "updated_destinations"
+                ),
+                "updatedPollingType": CONFIG.get("NETWORK_TAP", "updated_polling_type"),
+            }
+        )
 
     def test_GA_tap_scenario1(self):
-        ''' test scenario for Network Tap CRUD operations'''
+        """test scenario for Network Tap CRUD operations"""
         call_scenario1(self)

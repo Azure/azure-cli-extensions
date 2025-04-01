@@ -46,6 +46,45 @@ class ContainerAppPreviewClient(ContainerAppClient):
     api_version = PREVIEW_API_VERSION
 
 
+class LabelHistoryPreviewClient:
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, name):
+        history_list = []
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/labelhistory?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        j = r.json()
+        for route in j["value"]:
+            history_list.append(route)
+        return history_list
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, name, label):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/labelhistory/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            label,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        return r.json()
+
+
 class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
     api_version = PREVIEW_API_VERSION
     LOG_STREAM_API_VERSION = "2023-11-02-preview"
@@ -360,6 +399,94 @@ class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
         return r.json()
 
 
+class HttpRouteConfigPreviewClient:
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def create(cls, cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            http_route_config_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(http_route_config_envelope))
+        return r.json()
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            http_route_config_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(http_route_config_envelope))
+        return r.json()
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, name):
+        route_list = []
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        j = r.json()
+        for route in j["value"]:
+            route_list.append(route)
+        return route_list
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, name, http_route_config_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            http_route_config_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        return r.json()
+
+    @classmethod
+    def delete(cls, cmd, resource_group_name, name, http_route_config_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/httpRouteConfigs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            http_route_config_name,
+            cls.api_version)
+
+        send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
+        # API doesn't return JSON (it returns no content)
+        return
+
+
 class AuthPreviewClient(AuthClient):
     api_version = PREVIEW_API_VERSION
 
@@ -575,7 +702,7 @@ class ConnectedEnvCertificateClient():
         return r.json()
 
     @classmethod
-    def delete_certificate(cls, cmd, resource_group_name, name, certificate_name):
+    def delete_certificate(cls, cmd, resource_group_name, name, certificate_name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/certificates/{}?api-version={}"
@@ -587,7 +714,16 @@ class ConnectedEnvCertificateClient():
             certificate_name,
             cls.api_version)
 
-        return send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            poll_results(cmd, operation_url)
+            logger.warning('Certificate %s was successfully deleted', certificate_name)
+
+        return
 
     @classmethod
     def check_name_availability(cls, cmd, resource_group_name, name, name_availability_request):
@@ -635,7 +771,7 @@ class ConnectedEnvDaprComponentClient():
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, environment_name, name):
+    def delete(cls, cmd, resource_group_name, environment_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/daprComponents/{}?api-version={}"
@@ -647,7 +783,15 @@ class ConnectedEnvDaprComponentClient():
             name,
             cls.api_version)
 
-        send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            poll_results(cmd, operation_url)
+            logger.warning('Dapr component %s was successfully deleted', name)
+
         return
 
     @classmethod
@@ -700,7 +844,7 @@ class ConnectedEnvStorageClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope):
+    def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/storages/{}?api-version={}"
@@ -714,10 +858,17 @@ class ConnectedEnvStorageClient():
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(storage_envelope))
 
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, env_name, name):
+    def delete(cls, cmd, resource_group_name, env_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/storages/{}?api-version={}"
@@ -729,7 +880,14 @@ class ConnectedEnvStorageClient():
             name,
             cls.api_version)
 
-        send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            poll_results(cmd, operation_url)
+            logger.warning('Storage %s was successfully deleted', name)
 
         return
 

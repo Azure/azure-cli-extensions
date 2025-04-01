@@ -386,7 +386,7 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     import copy
     data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition,
                                           api_key_or_token=api_key_or_token)
-    if data["meta"]["isFolder"]:
+    if data.get("meta", {}).get("isFolder", False):
         raise ArgumentUsageError("The provided definition is a folder, not a dashboard")
 
     if "dashboard" in data:
@@ -535,7 +535,7 @@ def test_notification_channel(cmd, grafana_name, notification_channel, resource_
                                       api_key_or_token=api_key_or_token)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
                              data, api_key_or_token=api_key_or_token)
-    return response
+    return json.loads(response.content)
 
 
 def create_folder(cmd, grafana_name, title, resource_group_name=None, api_key_or_token=None, subscription=None):
@@ -555,10 +555,9 @@ def list_folders(cmd, grafana_name, resource_group_name=None, api_key_or_token=N
 
 def update_folder(cmd, grafana_name, folder, title, resource_group_name=None, api_key_or_token=None):
     f = show_folder(cmd, grafana_name, folder, resource_group_name, api_key_or_token=api_key_or_token)
-    version = f['version']
     data = {
         "title": title,
-        "version": int(version)
+        "overwrite": True
     }
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + f["uid"], data,
                              api_key_or_token=api_key_or_token)
@@ -720,6 +719,8 @@ def create_service_account_token(cmd, grafana_name, service_account, token, time
 
     if time_to_live:
         data['secondsToLive'] = _convert_duration_to_seconds(time_to_live)
+    else:
+        data['secondsToLive'] = _convert_duration_to_seconds("1d")
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post",
                              "/api/serviceaccounts/" + service_account_id + '/tokens', data)

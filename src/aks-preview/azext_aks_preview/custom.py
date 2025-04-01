@@ -1181,6 +1181,7 @@ def aks_agentpool_add(
     drain_timeout=None,
     node_soak_duration=None,
     undrainable_node_behavior=None,
+    max_unavailable=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1262,6 +1263,7 @@ def aks_agentpool_update(
     drain_timeout=None,
     node_soak_duration=None,
     undrainable_node_behavior=None,
+    max_unavailable=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1353,6 +1355,7 @@ def aks_agentpool_upgrade(cmd,
                           drain_timeout=None,
                           node_soak_duration=None,
                           undrainable_node_behavior=None,
+                          max_unavailable=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
@@ -1372,7 +1375,8 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if (max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior) and node_image_only:
+    hasUpgradeSetting = max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior or max_unavailable
+    if hasUpgradeSetting and node_image_only:
         raise MutuallyExclusiveArgumentError(
             "Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only."
             "If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first "
@@ -1433,10 +1437,12 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.max_surge = max_surge
     if drain_timeout:
         instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
-    if node_soak_duration:
+    if isinstance(node_soak_duration, int) and node_soak_duration >= 0:
         instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
     if undrainable_node_behavior:
         instance.upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
+    if max_unavailable:
+        instance.upgrade_settings.max_unavailable = max_unavailable
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
@@ -1840,11 +1846,11 @@ def aks_addon_list(cmd, client, resource_group_name, name):
         else:
             if addon_name == "virtual-node":
                 addon_key += os_type
-            enabled = bool(
-                mc.addon_profiles and
-                addon_key in mc.addon_profiles and
-                mc.addon_profiles[addon_key].enabled
-            )
+            enabled = False
+            if mc.addon_profiles:
+                matching_key = next((key for key in mc.addon_profiles if key.lower() == addon_key.lower()), None)
+                if matching_key:
+                    enabled = bool(mc.addon_profiles[matching_key].enabled)
         current_addons.append({
             "name": addon_name,
             "api_key": addon_key,
@@ -3103,13 +3109,19 @@ def aks_mesh_enable_egress_gateway(
         client,
         resource_group_name,
         name,
+        istio_egressgateway_name,
+        istio_egressgateway_namespace,
+        gateway_configuration_name,
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
-        enable_egress_gateway=True)
+        enable_egress_gateway=True,
+        istio_egressgateway_name=istio_egressgateway_name,
+        istio_egressgateway_namespace=istio_egressgateway_namespace,
+        gateway_configuration_name=gateway_configuration_name)
 
 
 def aks_mesh_disable_egress_gateway(
@@ -3117,12 +3129,16 @@ def aks_mesh_disable_egress_gateway(
         client,
         resource_group_name,
         name,
+        istio_egressgateway_name,
+        istio_egressgateway_namespace,
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        istio_egressgateway_name=istio_egressgateway_name,
+        istio_egressgateway_namespace=istio_egressgateway_namespace,
         disable_egress_gateway=True)
 
 
@@ -3249,6 +3265,9 @@ def _aks_mesh_update(
         ingress_gateway_type=None,
         enable_egress_gateway=None,
         disable_egress_gateway=None,
+        istio_egressgateway_name=None,
+        istio_egressgateway_namespace=None,
+        gateway_configuration_name=None,
         revision=None,
         yes=False,
         mesh_upgrade_command=None,
