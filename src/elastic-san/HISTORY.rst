@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.0b2
+++++++
+* Update module documentation.
+
 1.2.0b1
 ++++++
 * `az elastic-san create/update`: Support AutoScale, Add `--auto-scale-policy-enforcement`, `--capacity-unit-scale-up-limit-tib`, `--increase-capacity-unit-by-tib`, `--unused-size-tib`
