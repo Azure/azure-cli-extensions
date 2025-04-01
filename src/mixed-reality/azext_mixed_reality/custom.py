@@ -34,7 +34,7 @@ class RemoteRenderingCreate(_RemoteRenderingCreate):
 class RemoteRenderingKeyRenew(_RemoteRenderingKeyRenew):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZArgEnum
+        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.key = AAZStrArg(
             options=["--key", "-k"],
