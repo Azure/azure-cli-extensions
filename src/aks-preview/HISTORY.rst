@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-13.0.0b10
+14.0.0b1
 +++++++
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
