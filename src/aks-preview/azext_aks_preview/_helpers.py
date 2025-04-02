@@ -388,6 +388,8 @@ def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
             # Only keep taints with soft effects (PreferNoSchedule)
             if effect.lower() == "prefernoschedule":
                 filtered_taints.append(taint)
+            else:
+                logger.warning('Taint %s with hard effect will be skipped from system pool', taint)
         else:
             # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
             filtered_taints.append(taint)
