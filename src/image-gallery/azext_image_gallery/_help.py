@@ -9,6 +9,15 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
+helps['sig create'] = """
+type: command
+short-summary: Create a Shared Image Gallery.
+examples:
+  - name: Create a Shared Image Gallery.
+    text: |
+        az sig create --resource-group MyResourceGroup --gallery-name MyGallery
+"""
+
 helps['sig show-community'] = """
 type: command
 short-summary: Get a gallery that has been community (preview).
