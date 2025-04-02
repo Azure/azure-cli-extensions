@@ -2144,7 +2144,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if enable_optimized_addon_scaling and self._get_disable_optimized_addon_scaling(enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-optimized-addon-scaling and --disable-optimized-addon-scaling at the same time."
+                    "Cannot specify --enable-optimized-addon-scaling and \
+                    --disable-optimized-addon-scaling at the same time."
                 )
 
         return enable_optimized_addon_scaling
@@ -2173,7 +2174,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if disable_optimized_addon_scaling and self._get_enable_optimized_addon_scaling(enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-optimized-addon-scaling and --disable-optimized-addon-scaling at the same time."
+                    "Cannot specify --enable-optimized-addon-scaling and \
+                    --disable-optimized-addon-scaling at the same time."
                 )
 
         return disable_optimized_addon_scaling
