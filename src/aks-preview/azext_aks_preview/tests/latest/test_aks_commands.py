@@ -15118,7 +15118,9 @@ spec:
 
         # add another nodepool with user mode, without init taints for now - AP level operations are blocked for init taints
         create_ap_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name}"
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool2_name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview "
         )
         self.cmd(
             create_ap_cmd,
@@ -15167,7 +15169,9 @@ spec:
 
         # make sure user nodepool cannot be converted to system pool with hard taints present
         self.cmd(
-            'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool2_name} --mode System',
+            "aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool2_name} "
+            "--mode System "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview ",
             expect_failure=True,
         )
 
