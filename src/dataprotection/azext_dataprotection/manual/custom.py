@@ -219,13 +219,12 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
 
     # UAMI for a backup instance
     if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        print(backup_instance["properties"]["identityDetails"]["useSystemAssignedIdentity"])
         if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
             # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
             # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
-            # False. Normally not valid input - in this case we just remove the identity details bit if there was any
-            if "identityDetails" in backup_instance["properties"]:
-                del backup_instance["properties"]["identityDetails"]
-                input(backup_instance)
+            # False. Not valid input, so we don't populate identity Details
+            pass
         else:
             identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
             backup_instance["properties"]["identityDetails"] = identity_details
@@ -311,6 +310,7 @@ def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=
 def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_name, datasource_type, vault_name, operation,
                                                           permissions_scope, backup_instance=None, restore_request_object=None,
                                                           keyvault_id=None, snapshot_resource_group_id=None,
+                                                          user_assigned_identity_arm_url=None,
                                                           target_storage_account_id=None, yes=False):
     if operation == 'Backup' and backup_instance is None:
         raise RequiredArgumentMissingError("--backup-instance needs to be given when --operation is given as Backup")
@@ -334,7 +334,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
         "resource_group": resource_group_name,
         "vault_name": vault_name
     })
-    vault_principal_id = backup_vault['identity']['principalId']
+    vault_principal_id = helper.get_vault_identity(backup_vault, user_assigned_identity_arm_url)
 
     role_assignments_arr = []
 

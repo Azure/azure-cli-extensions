@@ -161,6 +161,9 @@ def load_arguments(self, _):
                    help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore')
         c.argument('target_storage_account_id', options_list=['--target-storage-account-id'], type=str,
                    help='ARM id of the target storage account. Required when assigning permissions over target storage account and the --operation is Restore')
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str,
+                   help="ARM ID of the User Assigned Managed Identity to be used for assigning permissions. Required if the vault does not have"
+                   " a System Assigned Identity associated with it, and can also be used if the vault does have one.")
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation "Backup" Expected value: '
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
