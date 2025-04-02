@@ -202,7 +202,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
             pass
         else:
             identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
-            backup_instance["identity_details"] = identity_details
+            backup_instance["properties"]["identity_details"] = identity_details
 
     return backup_instance
 

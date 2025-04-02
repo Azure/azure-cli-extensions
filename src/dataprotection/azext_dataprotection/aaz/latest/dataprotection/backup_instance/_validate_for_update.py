@@ -93,7 +93,7 @@ class ValidateForUpdate(AAZCommand):
         )
         backup_instance.identity_details = AAZObjectArg(
             options=["identity-details"],
-            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
         )
         backup_instance.object_type = AAZStrArg(
             options=["object-type"],

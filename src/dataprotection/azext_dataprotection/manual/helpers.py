@@ -253,14 +253,14 @@ def get_vault_identity(backup_vault, user_assigned_identity_arm_url):
             if user_assigned_identity_arm_url not in backup_vault["identity"]["userAssignedIdentities"]:
                 raise CLIError("Incorrect User-Assigned Managed Identity URL provided. Please check your inputs and retry.")
 
-            principalId = backup_vault["identity"]["userAssignedIdentity"][user_assigned_identity_arm_url]["principalId"]
+            principalId = backup_vault["identity"]["userAssignedIdentities"][user_assigned_identity_arm_url]["principalId"]
 
         # Else, we fetch the default System Assigned Identity if it is supported
         else:
             if "SystemAssigned" not in backup_vault["identity"]["type"]:
                 raise InvalidArgumentValueError("There is no System Assigned Identity associated with the backup vault. ")
 
-        principalId = backup_vault['identity']['principalId']
+            principalId = backup_vault['identity']['principalId']
     else:
         raise CLIError("The Backup vault does not have a System or User-Managed Identity associated with it. "
                        "Please update the vault with a System Assigned Identity, a User-Assigned Managed Identity, "
