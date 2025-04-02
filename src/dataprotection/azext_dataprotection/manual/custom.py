@@ -207,6 +207,43 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     return backup_instance
 
 
+def dataprotection_backup_instance_validate_for_update(cmd, resource_group_name, vault_name, backup_instance_name,
+                                                       vaulted_blob_container_list=None, no_wait=False,
+                                                       use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
+    backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name
+    })
+
+    # UAMI for a backup instance
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+        if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
+            # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
+            # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
+            # False. Not valid input, so we don't populate identity Details
+            pass
+        else:
+            identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
+            backup_instance["properties"]["identityDetails"] = identity_details
+
+    # Policy changes - updating the vaulted blob container list for vaulted blob backups
+    if vaulted_blob_container_list is not None:
+        backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
+            [vaulted_blob_container_list,]
+
+    backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
+
+    from azext_dataprotection.manual.aaz_operations.backup_instance import ValidateForUpdateBI
+    return ValidateForUpdateBI(cli_ctx=cmd.cli_ctx)(command_args={
+        "no_wait": no_wait,
+        "backup_instance_name": backup_instance_name,
+        "backup_instance": backup_instance["properties"],
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+    })
+
 def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
                                           vaulted_blob_container_list=None, no_wait=False,
                                           use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
@@ -219,7 +256,6 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
 
     # UAMI for a backup instance
     if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
-        print(backup_instance["properties"]["identityDetails"]["useSystemAssignedIdentity"])
         if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
             # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
             # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is

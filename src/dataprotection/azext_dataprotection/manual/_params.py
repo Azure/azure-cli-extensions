@@ -117,6 +117,16 @@ def load_arguments(self, _):
         c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
         c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
+    with self.argument_context('dataprotection backup-instance validate-for-update') as c:
+        c.argument('backup_instance_name', type=str, help="Backup instance name.")
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type)
+        c.argument('vaulted_blob_container_list', type=validate_file_or_dict, options_list=['--vaulted-blob-container-list', '--container-blob-list'],
+                   help="Enter the container list to modify a vaulted blob backup. The output for "
+                   "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
+
     with self.argument_context('dataprotection backup-instance update') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
         c.argument('resource_group_name', resource_group_name_type)

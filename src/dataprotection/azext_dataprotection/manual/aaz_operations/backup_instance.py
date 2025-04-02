@@ -15,6 +15,7 @@ from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
+    ValidateForUpdate as _ValidateForUpdate,
     Update as _Update,
     StopProtection as _StopProtection,
     SuspendBackup as _SuspendBackup,
@@ -29,6 +30,21 @@ from ..helpers import (
     convert_dict_keys_snake_to_camel, critical_operation_map,
     transform_resource_guard_operation_request
 )
+
+
+class ValidateForUpdateBI(_ValidateForUpdate):
+    
+    class BackupInstancesValidateForModifyBackup(_ValidateForUpdate.BackupInstancesValidateForModifyBackup):
+
+        @property
+        def content(self):
+            from azext_dataprotection.manual import helpers
+            backup_instance = self.ctx.args.backup_instance.to_serialized_data()
+            body = helpers.convert_dict_keys_snake_to_camel(backup_instance)
+
+            return {
+                "backupInstance": body
+            }
 
 
 class UpdateWithBI(_Update):
@@ -89,11 +105,6 @@ class UpdateWithBI(_Update):
             backup_instance,
             schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
         )
-        from pprint import pprint
-        pprint("ctx args backupinstance")
-        pprint(backup_instance)
-        pprint("ctx vars instance")
-        pprint(self.ctx.vars.instance.to_serialized_data())
 
 
 class ValidateAndCreate(_Create):
