@@ -237,7 +237,9 @@ def get_friendly_name(datasource_type, friendly_name, datasourceset_info, dataso
 def get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url):
     identity_details = {}
     
-    # We only enter this function if at least one  of the  parameters is provided, so we don't need another check for that
+    if user_assigned_identity_arm_url is None and use_system_assigned_identity is None:
+        raise RequiredArgumentMissingError("Please provide at least one of --use-system-assigned-identity or --uuser-assigned-identity-arm-url")
+
     if user_assigned_identity_arm_url is not None:
         if use_system_assigned_identity:
             raise MutuallyExclusiveArgumentError("Cannot provide --use-system-assigned-identity as true when specifying --user-assigned-identity-arm-url."
@@ -247,7 +249,7 @@ def get_identity_details(use_system_assigned_identity, user_assigned_identity_ar
                 "useSystemAssignedIdentity": False,
                 "userAssignedIdentityArmUrl": user_assigned_identity_arm_url
             }
-    elif use_system_assigned_identity is not None:
+    elif use_system_assigned_identity:
         identity_details["useSystemAssignedIdentity"] = True
 
     return identity_details

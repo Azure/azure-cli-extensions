@@ -114,8 +114,8 @@ def load_arguments(self, _):
         c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
         c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
         c.argument('tags', tags_type)
-        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=bool, help="")
-        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="")
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
     with self.argument_context('dataprotection backup-instance update') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
@@ -124,6 +124,8 @@ def load_arguments(self, _):
         c.argument('vaulted_blob_container_list', type=validate_file_or_dict, options_list=['--vaulted-blob-container-list', '--container-blob-list'],
                    help="Enter the container list to modify a vaulted blob backup. The output for "
                    "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
     with self.argument_context('dataprotection backup-instance update-policy') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
@@ -281,6 +283,8 @@ def load_arguments(self, _):
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery-as-files') as c:
         c.argument('target_blob_container_url', type=str, help="specify the blob container url to which the data will be restored.")
@@ -294,6 +298,8 @@ def load_arguments(self, _):
         c.argument('restore_location', type=str, help="specify the restore location.")
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-item-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
@@ -309,6 +315,8 @@ def load_arguments(self, _):
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
         c.argument('vaulted_blob_prefix_pattern', options_list=['--vaulted-blob-prefix-pattern', '--vaulted-blob-prefix'],
                    type=validate_file_or_dict, help="Specify the prefix pattern for vaulted blobs.")
+        c.argument('use_system_assigned_identity', options_list=['--use-system-identity, --use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
+        c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
     with self.argument_context('dataprotection backup-instance validate-for-restore') as c:
         c.argument('backup_instance_name', options_list=['--backup-instance-name', '--name', '-n'], type=str, help="Backup instance name.")

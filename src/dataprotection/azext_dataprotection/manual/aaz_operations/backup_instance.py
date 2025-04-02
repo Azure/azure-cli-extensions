@@ -89,6 +89,11 @@ class UpdateWithBI(_Update):
             backup_instance,
             schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
         )
+        from pprint import pprint
+        pprint("ctx args backupinstance")
+        pprint(backup_instance)
+        pprint("ctx vars instance")
+        pprint(self.ctx.vars.instance.to_serialized_data())
 
 
 class ValidateAndCreate(_Create):
