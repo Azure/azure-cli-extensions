@@ -370,7 +370,7 @@ class Update(AAZCommand):
         if cls._args_prefix_limit_patch_properties_update is not None:
             _schema.idle_time_expiry = cls._args_prefix_limit_patch_properties_update.idle_time_expiry
             _schema.maximum_routes = cls._args_prefix_limit_patch_properties_update.maximum_routes
-            _schema.soft_limit = cls._args_prefix_limit_patch_properties_update.soft_limit
+            _schema.threshold = cls._args_prefix_limit_patch_properties_update.threshold
             return
 
         cls._args_prefix_limit_patch_properties_update = AAZObjectArg()
@@ -384,14 +384,14 @@ class Update(AAZCommand):
             options=["maximum-routes"],
             help="Maximum routes allowed.",
         )
-        prefix_limit_patch_properties_update.soft_limit = AAZIntArg(
-            options=["soft-limit"],
+        prefix_limit_patch_properties_update.threshold = AAZIntArg(
+            options=["threshold"],
             help="Limit at which route prefixes a warning is generate.",
         )
 
         _schema.idle_time_expiry = cls._args_prefix_limit_patch_properties_update.idle_time_expiry
         _schema.maximum_routes = cls._args_prefix_limit_patch_properties_update.maximum_routes
-        _schema.soft_limit = cls._args_prefix_limit_patch_properties_update.soft_limit
+        _schema.threshold = cls._args_prefix_limit_patch_properties_update.threshold
 
     _args_static_route_patch_properties_update = None
 
@@ -931,7 +931,7 @@ class _UpdateHelper:
             return
         _builder.set_prop("idleTimeExpiry", AAZIntType, ".idle_time_expiry")
         _builder.set_prop("maximumRoutes", AAZIntType, ".maximum_routes")
-        _builder.set_prop("softLimit", AAZIntType, ".soft_limit")
+        _builder.set_prop("threshold", AAZIntType, ".threshold")
 
     @classmethod
     def _build_schema_static_route_patch_properties_update(cls, _builder):

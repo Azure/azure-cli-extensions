@@ -5,7 +5,12 @@ interactions:
       "fda0:d59c:da02:23::/127", "secondaryIpv4Prefix": "10.18.36.0/24", "secondaryIpv6Prefix":
       "fda0:d59c:da02:24::/127", "vlanId": 2091}, "peeringOption": "OptionA",
       "networkToNetworkInterconnectId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab3LabNF-5-1/providers/microsoft.managednetworkfabric/networkfabrics/nffab3-5-1/networkToNetworkInterconnects/nffab3-5-1-nni-acl-rcf",
-      "staticRouteConfiguration":{"bfdConfiguration":{"intervalInMilliSeconds":300,"multiplier":10},"ipv4Routes":[{"prefix":"10.0.0.1/24","nextHop":["10.0.0.1"]}],"ipv6Routes":[{"prefix":"2fff::/64","nextHop":["3ffe::1"]}]}}}'
+      "staticRouteConfiguration":{"bfdConfiguration":{"intervalInMilliSeconds":300,"multiplier":10},"ipv4Routes":
+      [{"prefix":"10.0.0.1/24","nextHop":["10.0.0.1"]}],"ipv6Routes":[{"prefix":"2fff::/64","nextHop":["3ffe::1"]}]}},
+      "nativeIpv4PrefixLimit": {"prefixLimits": [{"idleTimeExpiry": 71, "maximumRoutes": 15, "threshold": 138},
+      {"idleTimeExpiry": 130, "maximumRoutes": 20, "threshold": 74}]}, "nativeIpv6PrefixLimit":
+      {"prefixLimits": [{"idleTimeExpiry": 72, "maximumRoutes": 16, "threshold": 139},
+      {"idleTimeExpiry": 131, "maximumRoutes": 21, "threshold": 75}]}}'
     headers:
       Accept:
       - application/json

@@ -3,7 +3,10 @@ interactions:
     body: '{"properties": {"optionAProperties": {"mtu": 1500, "peerASN": 65048, "primaryIpv4Prefix":
       "10.18.35.0/24", "primaryIpv6Prefix": "fda0:d59c:da02:23::/127", "secondaryIpv4Prefix":
       "10.18.36.0/24", "secondaryIpv6Prefix": "fda0:d59c:da02:24::/127", "vlanId":
-      2091}, "peeringOption": "OptionA"}}'
+      2091, "nativeIpv4PrefixLimit": {"prefixLimits": [{"idleTimeExpiry": 61, "maximumRoutes": 5, "threshold": 128},
+      {"idleTimeExpiry": 120, "maximumRoutes": 10, "threshold": 64}]}, "nativeIpv6PrefixLimit":
+      {"prefixLimits": [{"idleTimeExpiry": 62, "maximumRoutes": 6, "threshold": 129},
+      {"idleTimeExpiry": 121, "maximumRoutes": 11, "threshold": 65}]}}, "peeringOption": "OptionA"}}'
     headers:
       Accept:
       - application/json

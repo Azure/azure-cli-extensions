@@ -5,7 +5,10 @@ interactions:
       "ipv4NeighborAddress": [{"address": "10.18.32.8"}], "peerASN": 65055}, "connectedIPv4Subnets":
       [{"prefix": "10.18.32.0/24"}], "importRoutePolicy": null, "mtu": 1500, "staticRouteConfiguration":
       {"ipv4Routes": [{"nextHop": ["10.18.32.8"], "prefix": "10.18.128.0/24"}]}, "vlanId":
-      2501}}'
+      2501, "nativeIpv4PrefixLimit": {"prefixLimits": [{"idleTimeExpiry": 61, "maximumRoutes": 5, "threshold": 128},
+      {"idleTimeExpiry": 120, "maximumRoutes": 10, "threshold": 64}]}, "nativeIpv6PrefixLimit":
+      {"prefixLimits": [{"idleTimeExpiry": 62, "maximumRoutes": 6, "threshold": 129},
+      {"idleTimeExpiry": 121, "maximumRoutes": 11, "threshold": 65}]}}}'
     headers:
       Accept:
       - application/json
@@ -222,7 +225,11 @@ interactions:
       "defaultRouteOriginate": "True", "ipv4ListenRangePrefixes": ["10.18.32.0/28"],
       "ipv4NeighborAddress": [{"address": "10.18.32.8"}], "peerASN": 65055}, "connectedIPv4Subnets":
       [{"prefix": "10.18.32.0/24"}], "staticRouteConfiguration": {"ipv4Routes": [{"nextHop":
-      ["10.18.32.8"], "prefix": "10.18.128.0/24"}]}}}'
+      ["10.18.32.8"], "prefix": "10.18.128.0/24"}]}, "nativeIpv4PrefixLimit": {"prefixLimits":
+      [{"idleTimeExpiry": 71, "maximumRoutes": 15, "threshold": 138},
+      {"idleTimeExpiry": 130, "maximumRoutes": 20, "threshold": 74}]}, "nativeIpv6PrefixLimit":
+      {"prefixLimits": [{"idleTimeExpiry": 72, "maximumRoutes": 16, "threshold": 139},
+      {"idleTimeExpiry": 131, "maximumRoutes": 21, "threshold": 75}]}}}'
     headers:
       Accept:
       - application/json
