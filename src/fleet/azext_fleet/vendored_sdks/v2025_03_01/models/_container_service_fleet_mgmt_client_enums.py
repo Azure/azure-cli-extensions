@@ -16,6 +16,18 @@ class ActionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     INTERNAL = "Internal"
 
 
+class AutoUpgradeLastTriggerStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """AutoUpgradeLastTriggerStatus is the status of the last AutoUpgrade trigger (attempt to
+    automatically create and start UpdateRun when there are new released versions) of an auto
+    upgrade profile.
+    """
+
+    SUCCEEDED = "Succeeded"
+    """The last AutoUpgrade trigger was succeeded."""
+    FAILED = "Failed"
+    """The last AutoUpgrade trigger failed."""
+
+
 class AutoUpgradeNodeImageSelectionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The node image upgrade type."""
 
