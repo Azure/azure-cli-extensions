@@ -19,8 +19,8 @@ logger = get_logger(__name__)
 def create_trigger_schedule(
     cmd,
     load_test_resource,
+    trigger_id,
     resource_group_name=None,
-    trigger_id=None,
     description=None,
     display_name=None,
     trigger_start_date_time=None,

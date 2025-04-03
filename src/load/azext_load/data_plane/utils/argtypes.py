@@ -523,3 +523,67 @@ list_schedule_states = CLIArgumentType(
     choices=utils.get_enum_values(TriggerState),
     help="List all the schedules in the resource which are in the provided states.",
 )
+
+notification_rule_test_ids = CLIArgumentType(
+    options_list=["--test-ids"],
+    nargs="+",
+    validator=validators.validate_notification_rule_test_ids,
+    help="Space separated list of test ids for the notification rule.",
+)
+
+notification_display_name = CLIArgumentType(
+    option_list=["--display-name"],
+    type=str,
+    help="Display name of notification rule.",
+)
+
+notification_rule_id = CLIArgumentType(
+    validator=validators.validate_notification_rule_id,
+    options_list=["--notification-rule-id", "-i"],
+    type=str,
+    help="Identifier for the notification rule.",
+)
+
+action_groups = CLIArgumentType(
+    option_list=["--action-groups"],
+    nargs="*",
+    help="Space separated list of resource ids of action groups for the notification rule.",
+)
+
+notification_rule_event = CLIArgumentType(
+    option_list=["--event"],
+    validator=validators.validate_event,
+    nargs="+",
+    action="append",
+    help="Event to be enabled on the notification rule. Expected format is --event event-id='event id' type='event type' status='a list of statuses in comma-separated format' result='a list of results in comma-separated format'. Status and result fields are valid only for event type 'TestRunEnded'.",
+)
+
+notification_rule_remove_event = CLIArgumentType(
+    option_list=["--remove-event"],
+    nargs="+",
+    validator=validators.validate_remove_event,
+    action="append",
+    help="Provide the event id of the event to be removed from the notification rule. Format should be --remove-event event-id='event id'.",
+)
+
+notification_rule_add_event = CLIArgumentType(
+    option_list=["--add-event"],
+    validator=validators.validate_add_event,
+    nargs="+",
+    action="append",
+    help="Event to be enabled on the notification rule. Expected format is --event event-id='event id' type='event type' status='a list of statuses in comma-separated format' result='a list of results in comma-separated format'. Status and result fields are valid only for event type 'TestRunEnded'.",
+)
+
+notification_all_tests = CLIArgumentType(
+    option_list=["--all-tests"],
+    action="store_true",
+    default=False,
+    help="Provide this flag if all tests should be included for the notification rule. This will override any tests provided using --test-ids."
+)
+
+notification_all_events = CLIArgumentType(
+    option_list=["--all-events"],
+    action="store_true",
+    default=False,
+    help="Provide this flag if all events should be included for the notification rule. This will override any events provided using --event."
+)
