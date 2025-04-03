@@ -113,13 +113,19 @@ def create_fleet(cmd,
 
     if enable_private_cluster:
         if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=agent_subnet_id):
-            raise CLIError("Failed to create private fleet: failed to create role assignment for private fleet. \nDo you have owner permissions on the vnet?\n"
-                "Is the Microsoft.Containerservice namespace registered? Please try registering Fleet namespace before retrying: az provider register --namespace 'Microsoft.Containerservice'")
+            raise CLIError(
+                "failed to create role assignment for Fleet RP.\nDo you have owner permissions on the vnet?\n"
+                "Is the Microsoft.Containerservice namespace registered?\n"
+                "Please try registering Fleet namespace before retrying: az provider register --namespace 'Microsoft.Containerservice'"  # pylint: disable=line-too-long
+            )
     if enable_vnet_integration:
         if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=apiserver_subnet_id):
-            raise CLIError("Failed to create private fleet: failed to create role assignment for private fleet. \nDo you have owner permissions on the vnet?\n"
-                "Is the Microsoft.Containerservice namespace registered? Please try registering Fleet namespace before retrying: az provider register --namespace 'Microsoft.Containerservice'")
-     
+            raise CLIError(
+                "failed to create role assignment for Fleet RP.\nDo you have owner permissions on the vnet?\n"
+                "Is the Microsoft.Containerservice namespace registered?\n"
+                "Please try registering Fleet namespace before retrying: az provider register --namespace 'Microsoft.Containerservice'"  # pylint: disable=line-too-long
+            )
+
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name,
