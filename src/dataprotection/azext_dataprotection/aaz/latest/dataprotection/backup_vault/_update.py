@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-01-01"],
         ]
     }
 
@@ -87,7 +87,7 @@ class Update(AAZCommand):
         _args_schema.cmk_encryption_key_uri = AAZStrArg(
             options=["--cmk-encryption-key-uri"],
             arg_group="EncryptionSettings",
-            help="The key uri of the Customer Managed Key",
+            help="The Key URI of the CMK key to be used for encryption.  To enable auto-rotation of keys, exclude the version component from the Key URI.",
             nullable=True,
         )
         _args_schema.cmk_encryption_state = AAZStrArg(
@@ -164,7 +164,7 @@ class Update(AAZCommand):
             options=["--resource-guard-operation-requests"],
             singular_options=["--operation-requests"],
             arg_group="Properties",
-            help="ResourceGuardOperationRequests on which LAC check will be performed",
+            help="Critical operation request which is protected by the resourceGuard",
             nullable=True,
         )
 
@@ -280,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -379,7 +379,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -437,7 +437,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -555,7 +555,7 @@ class _UpdateHelper:
         backup_vault_resource_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        backup_vault_resource_read.identity = AAZObjectType()
+        backup_vault_resource_read.identity = AAZIdentityObjectType()
         backup_vault_resource_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -628,6 +628,7 @@ class _UpdateHelper:
         )
         properties.resource_move_details = AAZObjectType(
             serialized_name="resourceMoveDetails",
+            flags={"read_only": True},
         )
         properties.resource_move_state = AAZStrType(
             serialized_name="resourceMoveState",

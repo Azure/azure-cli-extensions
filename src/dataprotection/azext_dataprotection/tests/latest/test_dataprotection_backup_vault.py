@@ -63,22 +63,19 @@ class BackupVaultScenarioTest(ScenarioTest):
                  ])
 
         test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{uamiVaultName}" '
-                 '--type "SystemAssigned,UserAssigned"',
+                 '-g "{rg}" -v "{uamiVaultName}" --type "SystemAssigned,UserAssigned"',
                  checks=[
                      test.check('identity.type', 'SystemAssigned,UserAssigned')
                  ]) 
 
         test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{uamiVaultName}" '
-                 '--type "SystemAssigned"',
+                 '-g "{rg}" -v "{uamiVaultName}" --type "SystemAssigned"',
                  checks=[
                      test.check('identity.type', 'SystemAssigned')
                  ]) 
 
         test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{uamiVaultName}" '
-                 '--type "None"',
+                 '-g "{rg}" -v "{uamiVaultName}" --type "None"',
                  checks=[
                      test.check('identity.type', 'None')
                  ]) 
