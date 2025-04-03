@@ -26,9 +26,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2024-07-01-preview"],
         ]
     }
 
@@ -50,12 +50,12 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.x_ms_delete_snapshots = AAZStrArg(
-            options=["--x-ms-delete-snapshots"],
+            options=["--delete-snapshots", "--x-ms-delete-snapshots"],
             help="Optional, used to delete snapshots under volume. Allowed value are only true or false. Default value is false.",
             enum={"false": "false", "true": "true"},
         )
         _args_schema.x_ms_force_delete = AAZStrArg(
-            options=["--x-ms-force-delete"],
+            options=["--force-delete", "--x-ms-force-delete"],
             help="Optional, used to delete volume if active sessions present. Allowed value are only true or false. Default value is false.",
             enum={"false": "false", "true": "true"},
         )
@@ -94,6 +94,12 @@ class Delete(AAZCommand):
                 max_length=63,
                 min_length=3,
             ),
+        )
+        _args_schema.delete_type = AAZStrArg(
+            options=["--delete-type"],
+            help="Optional. Specifies that the delete operation should be a permanent delete for the soft deleted volume. The value of deleteType can only be 'permanent'.",
+            is_preview=True,
+            enum={"permanent": "permanent"},
         )
         return cls._args_schema
 
@@ -191,7 +197,10 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "deleteType", self.ctx.args.delete_type,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }

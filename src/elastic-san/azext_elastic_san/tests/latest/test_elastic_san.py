@@ -19,7 +19,7 @@ class ElasticSanScenario(ScenarioTest):
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --public-network-access Enabled '
                  '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 '
-                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 24',
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
                          JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
@@ -71,7 +71,7 @@ class ElasticSanScenario(ScenarioTest):
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
-                 '--sku {{name:Premium_LRS,tier:Premium}}')
+                 '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         subnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16 '
                              '--subnet-name {subnet_name} '
                              '--subnet-prefix 10.0.0.0/24').get_output_in_json()["newVNet"]["subnets"][0]["id"]
@@ -134,7 +134,7 @@ class ElasticSanScenario(ScenarioTest):
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
-                 '--sku {{name:Premium_LRS,tier:Premium}}')
+                 '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16')
         subnet_id = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name} '
                              '--address-prefixes 10.0.0.0/24 '
@@ -192,7 +192,7 @@ class ElasticSanScenario(ScenarioTest):
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
-                 '--sku {{name:Premium_LRS,tier:Premium}}')
+                 '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         # 1. Create a key vault with a key in it. Key type should be RSA
         self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2 '
                  '--enable-purge-protection --retention-days 7 --enable-rbac-authorization false')
@@ -246,7 +246,7 @@ class ElasticSanScenario(ScenarioTest):
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
-                 '--sku {{name:Premium_LRS,tier:Premium}}')
+                 '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         # 1. Create a user assigned identity and grant it the access to the key vault
         uai = self.cmd('az identity create -g {rg} -n {user_assigned_identity_name}').get_output_in_json()
         self.kwargs.update({"uai_principal_id": uai["principalId"],
