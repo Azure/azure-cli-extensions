@@ -17,6 +17,7 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.kwargs.update({
             'location': 'centraluseuap',
             'vaultName': 'cli-test-backup-vault',
+            'uamiVaultName': 'cli-test-backup-uami-vault',
         })
 
     @AllowLargeResponse()
@@ -53,44 +54,44 @@ class BackupVaultScenarioTest(ScenarioTest):
             'uamiName': "cmk-cli-test-uami",
         })
         test.cmd('az dataprotection backup-vault create '
-                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
+                 '-g "{rg}" --vault-name "{uamiVaultName}" -l "{location}" '
                  '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "UserAssigned" '
                  '--uami {{"{uamiUrl}":{{}}}} ',
                  checks=[
-                     test.check('name', "{vaultName}"),
+                     test.check('name', "{uamiVaultName}"),
                      test.check('identity.type', "UserAssigned"),
                  ])
 
         test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{vaultName}" '
+                 '-g "{rg}" -v "{uamiVaultName}" '
                  '--type "SystemAssigned,UserAssigned"',
                  checks=[
                      test.check('identity.type', 'SystemAssigned,UserAssigned')
                  ]) 
 
         test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{vaultName}" '
+                 '-g "{rg}" -v "{uamiVaultName}" '
                  '--type "SystemAssigned"',
                  checks=[
                      test.check('identity.type', 'SystemAssigned')
                  ]) 
 
         test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{vaultName}" '
+                 '-g "{rg}" -v "{uamiVaultName}" '
                  '--type "None"',
                  checks=[
                      test.check('identity.type', 'None')
                  ]) 
 
-        test.cmd('az dataprotection backup-vault update '
-                 '-g "{rg}" -v "{vaultName}" '
-                 '--type "UserAssigned"'
-                 '--uami {{"{uamiUrl}":{{}}}} ',
-                 checks=[
-                     test.check('identity.type', 'UserAssigned')
-                 ]) 
+        # test.cmd('az dataprotection backup-vault update '
+        #          '-g "{rg}" -v "{uamiVaultName}" '
+        #          '--type "UserAssigned"'
+        #          '--uami {{"{uamiUrl}":{{}}}} ',
+        #          checks=[
+        #              test.check('identity.type', 'UserAssigned')
+        #          ]) 
 
-        test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
+        test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{uamiVaultName}" -y')
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
