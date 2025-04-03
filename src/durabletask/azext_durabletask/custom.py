@@ -2,18 +2,17 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
-import json
 import httpx
 from azure.cli.core.commands.client_factory import get_subscription_id
 from .aaz.latest.durabletask.scheduler import Show
 
-def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, max_items=100):
 
+def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, max_items=100):
     # Get FQDN of the scheduler
-    resource_group_name = resource_group_name
-    scheduler_name = scheduler_name
-    scheduler = Show(cli_ctx=cmd.cli_ctx)(command_args = {
+
+    scheduler = Show(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "name": scheduler_name,
         "subscription": get_subscription_id(cmd.cli_ctx)
@@ -35,8 +34,8 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
     response = client.post(endpoint, json=payload, headers=headers)
     return response.json()
 
-def get_bearer_token(cli_ctx):
 
+def get_bearer_token(cli_ctx):
     from azure.cli.core._profile import Profile
     from azure.cli.core.auth.util import resource_to_scopes
     profile = Profile(cli_ctx=cli_ctx)
