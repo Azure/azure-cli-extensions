@@ -47,6 +47,53 @@ class BackupVaultScenarioTest(ScenarioTest):
         
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
+    def test_dataprotection_backup_vault_create_with_uami_update_and_delete(test):
+        test.kwargs.update({
+            'uamiUrl': "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourcegroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cmk-cli-test-uami",
+            'uamiName': "cmk-cli-test-uami",
+        })
+        test.cmd('az dataprotection backup-vault create '
+                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
+                 '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "UserAssigned" '
+                 '--uami {{"{uamiUrl}":{{}}}} ',
+                 checks=[
+                     test.check('name', "{vaultName}"),
+                     test.check('identity.type', "UserAssigned"),
+                 ])
+
+        test.cmd('az dataprotection backup-vault update '
+                 '-g "{rg}" -v "{vaultName}" '
+                 '--type "SystemAssigned,UserAssigned"',
+                 checks=[
+                     test.check('identity.type', 'SystemAssigned,UserAssigned')
+                 ]) 
+
+        test.cmd('az dataprotection backup-vault update '
+                 '-g "{rg}" -v "{vaultName}" '
+                 '--type "SystemAssigned"',
+                 checks=[
+                     test.check('identity.type', 'SystemAssigned')
+                 ]) 
+
+        test.cmd('az dataprotection backup-vault update '
+                 '-g "{rg}" -v "{vaultName}" '
+                 '--type "None"',
+                 checks=[
+                     test.check('identity.type', 'None')
+                 ]) 
+
+        test.cmd('az dataprotection backup-vault update '
+                 '-g "{rg}" -v "{vaultName}" '
+                 '--type "UserAssigned"'
+                 '--uami {{"{uamiUrl}":{{}}}} ',
+                 checks=[
+                     test.check('identity.type', 'UserAssigned')
+                 ]) 
+
+        test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_create_with_cmk_update_and_delete(test):
         test.kwargs.update({
             'cmkKeyUri': "https://cmk-cli-test-keyvault.vault.azure.net/keys/cmk-cli-key1/24efffaddbe84838a1c39b6135edbdf5",
