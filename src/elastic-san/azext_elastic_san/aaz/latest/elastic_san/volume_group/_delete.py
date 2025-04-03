@@ -71,11 +71,6 @@ class Delete(AAZCommand):
                 min_length=3,
             ),
         )
-        _args_schema.delete_type = AAZStrArg(
-            options=["--delete-type"],
-            help="Optional. Specifies that the delete operation should be a permanent delete for the soft deleted volume group. The value of deleteType can only be 'permanent'.",
-            enum={"permanent": "permanent"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -167,9 +162,6 @@ class Delete(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "deleteType", self.ctx.args.delete_type,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2024-07-01-preview",
                     required=True,

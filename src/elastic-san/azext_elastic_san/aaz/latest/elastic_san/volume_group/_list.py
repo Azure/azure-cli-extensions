@@ -47,7 +47,8 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.soft_deleted_only = AAZStrArg(
             options=["--soft-deleted-only"],
-            help="Optional, returns only soft deleted volumes if set to true. If set to false or if not specified, returns only active volumes.",
+            help="Optional, returns only soft deleted volume groups if set to true. If set to false or if not specified, returns only active volume groups.",
+            is_preview=True,
             enum={"false": "false", "true": "true"},
         )
         _args_schema.elastic_san_name = AAZStrArg(
