@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "13.0.0b9"
+VERSION = "14.0.0b1"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",

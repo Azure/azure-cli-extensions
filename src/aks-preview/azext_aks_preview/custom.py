@@ -486,7 +486,7 @@ def aks_create(
     dns_zone_resource_ids=None,
     enable_keda=False,
     enable_vpa=False,
-    enable_addon_autoscaling=False,
+    enable_optimized_addon_scaling=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     # advanced networking
@@ -711,8 +711,8 @@ def aks_update(
     disable_azure_monitor_app_monitoring=False,
     enable_vpa=False,
     disable_vpa=False,
-    enable_addon_autoscaling=False,
-    disable_addon_autoscaling=False,
+    enable_optimized_addon_scaling=False,
+    disable_optimized_addon_scaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
     # safeguards parameters
