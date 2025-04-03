@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.3
+++++++
+* Upgrade extension version
+
 1.0.2
 ++++++
 * Create temporary storage account with minimum TLS version set to `TLS1_2`
