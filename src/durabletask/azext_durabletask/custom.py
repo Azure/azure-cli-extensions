@@ -129,7 +129,7 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
         'x-taskhub': taskhub_name
     }
 
-    payload = {"filter": {}, "pagination": {"startIndex": 0,"count": max_items}, "sort": [{"column": "LAST_UPDATED_AT", "direction": "DESCENDING_SORT"}]}
+    payload = {"filter": {}, "pagination": {"startIndex": 0, "count": max_items}, "sort": [{"column": "LAST_UPDATED_AT", "direction": "DESCENDING_SORT"}]}
 
     client = httpx.Client(http2=True)
     response = client.post(endpoint, json=payload, headers=headers)

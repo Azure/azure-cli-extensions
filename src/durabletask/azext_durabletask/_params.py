@@ -7,7 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-
+# pylint: disable=line-too-long
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('durabletask orchestration list') as c:
