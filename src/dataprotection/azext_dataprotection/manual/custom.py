@@ -244,6 +244,7 @@ def dataprotection_backup_instance_validate_for_update(cmd, resource_group_name,
         "vault_name": vault_name,
     })
 
+
 def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
                                           vaulted_blob_container_list=None, no_wait=False,
                                           use_system_assigned_identity=None, user_assigned_identity_arm_url=None):

@@ -33,7 +33,7 @@ from ..helpers import (
 
 
 class ValidateForUpdateBI(_ValidateForUpdate):
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
@@ -74,7 +74,7 @@ class ValidateForUpdateBI(_ValidateForUpdate):
             return {
                 "backupInstance": body
             }
-    
+
         # TODO zubairabid - remove after swagger fix
         def on_200(self, session):
             data = self.deserialize_http_content(session)

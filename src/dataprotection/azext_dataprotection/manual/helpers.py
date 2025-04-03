@@ -237,7 +237,7 @@ def get_friendly_name(datasource_type, friendly_name, datasourceset_info, dataso
 def get_vault_identity(backup_vault, user_assigned_identity_arm_url):
     # Tries to fetch the user-assigned identity if provided, if supported, and if it is associated with the vault.
     # Else, it tries to fetch the system-assigned identity - if supported.
-    
+
     principalId = None
 
     # Ensure that the vault has an identity associated with it at all
@@ -267,9 +267,10 @@ def get_vault_identity(backup_vault, user_assigned_identity_arm_url):
                        "or both, and then retry the command.")
     return principalId
 
+
 def get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url):
     identity_details = {}
-    
+
     if user_assigned_identity_arm_url is None and use_system_assigned_identity is None:
         raise RequiredArgumentMissingError("Please provide at least one of --use-system-assigned-identity or --uuser-assigned-identity-arm-url")
 
@@ -277,11 +278,10 @@ def get_identity_details(use_system_assigned_identity, user_assigned_identity_ar
         if use_system_assigned_identity:
             raise MutuallyExclusiveArgumentError("Cannot provide --use-system-assigned-identity as true when specifying --user-assigned-identity-arm-url."
                                                  " Please omit --use-system-assigned-identity, or pass False")
-        else:
-            identity_details = {
-                "useSystemAssignedIdentity": False,
-                "userAssignedIdentityArmUrl": user_assigned_identity_arm_url
-            }
+        identity_details = {
+            "useSystemAssignedIdentity": False,
+            "userAssignedIdentityArmUrl": user_assigned_identity_arm_url
+        }
     elif use_system_assigned_identity:
         identity_details["useSystemAssignedIdentity"] = True
 
