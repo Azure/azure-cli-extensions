@@ -85,16 +85,6 @@ class UpdateMSIPermissionsScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-dpp-updatemsipermissions-', location='centraluseuap')
-    def test_dataprotection_update_msi_permissions_oss(test):
-        test.kwargs.update({
-            'location': 'centraluseuap',
-            'vaultName': "clitest-bkp-vault",
-            'policyName': 'osspolicy',
-            'dataSourceType': 'AzureDatabaseForPostgreSQL',
-
-    @live_only()
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-updatemsipermissions-', location='centraluseuap')
     def test_dataprotection_update_msi_permissions_disk(test):
         test.kwargs.update({
             'location': 'centraluseuap',
