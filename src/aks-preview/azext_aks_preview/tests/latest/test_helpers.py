@@ -165,6 +165,20 @@ class FilterHardTaintsTestCase(unittest.TestCase):
         input_taints = ["taint1=val1:NoSchedule", "taint2=val2:NoExecute", "taint3=val3:PreferNoSchedule"]
         expected_filtered_taints = ["taint3=val3:PreferNoSchedule"]
         self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+
+    def test_filter_hard_taints_preserves_critical_addons_only_taints(self):
+        input_taints = [
+            "CriticalAddonsOnly=true:NoSchedule",  
+            "CriticalAddonsOnly=true:NoExecute",
+            "taint1=val1:NoSchedule",
+            "taint2=val2:PreferNoSchedule"
+        ]
+        expected_filtered_taints = [
+            "CriticalAddonsOnly=true:NoSchedule", 
+            "CriticalAddonsOnly=true:NoExecute", 
+            "taint2=val2:PreferNoSchedule"
+        ]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
     
     def test_filter_hard_taints_with_empty_list(self):
         input_taints = []

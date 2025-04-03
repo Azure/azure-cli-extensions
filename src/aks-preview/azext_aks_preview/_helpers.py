@@ -385,8 +385,8 @@ def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
         taint_parts = taint.split(":")
         if len(taint_parts) == 2:
             effect = taint_parts[-1].strip()
-            # Only keep taints with soft effects (PreferNoSchedule)
-            if effect.lower() == "prefernoschedule":
+            # Keep the taint if it has a soft effect (PreferNoSchedule) or if it's a CriticalAddonsOnly taint - AKS allows those on system pools
+            if effect.lower() == "prefernoschedule" or taint.lower().startswith("criticaladdonsonly"):
                 filtered_taints.append(taint)
             else:
                 logger.warning('Taint %s with hard effect will be skipped from system pool', taint)

@@ -15063,7 +15063,7 @@ spec:
             "initTaint1=value1:PreferNoSchedule,initTaint2=value2:PreferNoSchedule"
         )
         nodepool_taints2 = "taint1=value2:PreferNoSchedule"
-        nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule,initTaint2=value2:NoSchedule"
+        nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule,initTaint2=value2:NoSchedule,CriticalAddonsOnly=true:NoSchedule,CriticalAddonsOnly=true:NoExecute"
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -15146,15 +15146,23 @@ spec:
                 ),
                 self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[] | length(@)",
-                    1,
+                    3,
                 ),
                 self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
                     "initTaint1=value2:PreferNoSchedule",
                 ),
                 self.check(
+                    "agentPoolProfiles[0].nodeInitializationTaints[1]",
+                    "CriticalAddonsOnly=true:NoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[0].nodeInitializationTaints[2]",
+                    "CriticalAddonsOnly=true:NoExecute",
+                ),
+                self.check(
                     "agentPoolProfiles[1].nodeInitializationTaints[] | length(@)",
-                    2,
+                    4,
                 ),
                 self.check(
                     "agentPoolProfiles[1].nodeInitializationTaints[0]",
@@ -15163,7 +15171,15 @@ spec:
                 self.check(
                     "agentPoolProfiles[1].nodeInitializationTaints[1]",
                     "initTaint2=value2:NoSchedule",
-                )
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[2]",
+                    "CriticalAddonsOnly=true:NoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[3]",
+                    "CriticalAddonsOnly=true:NoExecute",
+                ),
             ],
         )
 
