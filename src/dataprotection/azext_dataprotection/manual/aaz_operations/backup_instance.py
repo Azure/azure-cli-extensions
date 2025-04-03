@@ -8,7 +8,7 @@
 
 from azure.cli.core.aaz import (
     AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg, AAZResourceLocationArg,
-    AAZResourceLocationArgFormat, AAZUndefined, has_value
+    AAZResourceLocationArgFormat, AAZUndefined, AAZObjectType, AAZStrType, has_value
 )
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
@@ -40,6 +40,7 @@ class ValidateForUpdateBI(_ValidateForUpdate):
 
     class BackupInstancesValidateForModifyBackup(_ValidateForUpdate.BackupInstancesValidateForModifyBackup):
 
+        # TODO zubairabid - remove after swagger fix
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
@@ -74,6 +75,7 @@ class ValidateForUpdateBI(_ValidateForUpdate):
                 "backupInstance": body
             }
     
+        # TODO zubairabid - remove after swagger fix
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
@@ -82,8 +84,10 @@ class ValidateForUpdateBI(_ValidateForUpdate):
                 schema_builder=self._build_schema_on_200
             )
 
+        # TODO zubairabid - remove after swagger fix
         _schema_on_200 = None
 
+        # TODO zubairabid - remove after swagger fix
         @classmethod
         def _build_schema_on_200(cls):
             if cls._schema_on_200 is not None:
