@@ -619,13 +619,13 @@ def _validate_notification_event(event: dict):
     # Check for required keys
     if not required_keys.issubset(event.keys()):
         raise InvalidArgumentValueError(
-            "Missing required keys: {}".format(required_keys - event.keys())
+            "Required fields {} are missing.".format(required_keys - event.keys())
         )
 
     # Check for allowed keys
     if not set(event.keys()).issubset(allowed_keys):
         raise InvalidArgumentValueError(
-            "Invalid keys present: {}".format(set(event.keys()) - allowed_keys)
+            "Invalid fields provided {}.".format(set(event.keys()) - allowed_keys)
         )
 
     # Validate event type
@@ -663,7 +663,7 @@ def _validate_notification_event(event: dict):
         # Ensure no extra fields for other event types
         if "status" in event or "result" in event:
             raise InvalidArgumentValueError(
-                "status and result should not be present for event type '{}'".format(
+                "Event type '{}' should not have status and result fields.".format(
                     event_type
                 )
             )
@@ -710,7 +710,7 @@ def _validate_notification_event_list(event_list):
             for existing_event in parsed_events
         ):
             raise InvalidArgumentValueError(
-                "Duplicate event-id : {} found in the event list.".format(
+                "Duplicate event-id: {} found in the event list.".format(
                     event_dict["event-id"]
                 )
             )
@@ -744,12 +744,12 @@ def validate_remove_event(namespace):
         event_dict = {}
         if len(event) > 1:
             raise InvalidArgumentValueError(
-                "Invalid pattern --remove-event input {}.".format(event)
+                "Invalid pattern for --remove-event {}.".format(event)
             )
         pair = pattern.findall(event[0])
         if not pair:
             raise InvalidArgumentValueError(
-                "Invalid pattern --remove-event input {}.".format(event)
+                "Invalid pattern for --remove-event {}.".format(event)
             )
 
         for key, value in pair:
@@ -757,7 +757,7 @@ def validate_remove_event(namespace):
 
         if "event-id" not in event_dict:
             raise InvalidArgumentValueError(
-                "Invalid pattern --remove-event input {}.".format(event)
+                "Invalid pattern for --remove-event {}.".format(event)
             )
 
         remove_event_list.append(event_dict)

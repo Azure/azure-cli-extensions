@@ -14,10 +14,10 @@ helps[
 type: command
 short-summary: Create a new notification rule for load test resource.
 examples:
-    - name: Create a notification rule enabled for all events.
+    - name: Create a notification rule for all events.
       text: |
         az load notification-rule create --load-test-resource sample-alt-resource --resource-group sample-rg --action-groups /subscriptions/000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.insights/actiongroups/sample-ag --notification-rule-id notification-sample-id --all-events
-    - name: Create a notification rule enabled for all tests and a TestRunEnded event.
+    - name: Create a notification rule for all tests and TestRunEnded event.
       text: |
         az load notification-rule create --load-test-resource sample-alt-resource --resource-group sample-rg --action-groups /subscriptions/000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.insights/actiongroups/sample-ag --notification-rule-id notification-sample-id --all-tests --event event-id=event1 type=TestRunEnded status=DONE,FAILED result=PASSED
 """
@@ -26,7 +26,7 @@ helps[
     "load notification-rule update"
 ] = """
 type: command
-short-summary: Update existing notification rule for load test resource.
+short-summary: Update an existing notification rule for load test resource.
 examples:
     - name: Update a notification rule enabled for all tests.
       text: |
@@ -43,9 +43,9 @@ helps[
     "load notification-rule show"
 ] = """
 type: command
-short-summary: Get the mentioned notification rule for load test resource.
+short-summary: Get the specified notification rule for load test resource.
 examples:
-    - name: Get a snotification rule.
+    - name: Get a notification rule.
       text: |
         az load notification-rule show --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id
 """
@@ -54,9 +54,9 @@ helps[
     "load notification-rule delete"
 ] = """
 type: command
-short-summary: Delete the mentioned notification rule for load test resource.
+short-summary: Delete the specified notification rule for load test resource.
 examples:
-    - name: Delete a snotification rule.
+    - name: Delete a notification rule.
       text: |
         az load notification-rule delete --load-test-resource sample-alt-resource --resource-group sample-rg --notification-rule-id notification-sample-id --yes
 """
@@ -65,12 +65,12 @@ helps[
     "load notification-rule list"
 ] = """
 type: command
-short-summary: List notification rules for load test resource.
+short-summary: List all the notification rules for load test resource.
 examples:
     - name: List all notification rules.
       text: |
         az load notification-rule list --load-test-resource sample-alt-resource --resource-group sample-rg
-    - name: List all notification rules with a specific test ids.
+    - name: List all notification rules for the specified test IDs.
       text: |
         az load notification-rule list --load-test-resource sample-alt-resource --resource-group sample-rg --test-ids sample-test-id
 """

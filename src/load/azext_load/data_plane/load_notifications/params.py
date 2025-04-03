@@ -35,7 +35,6 @@ def load_arguments(self, _):
         c.argument("remove_event", argtypes.notification_rule_remove_event)
         c.argument("action_groups", argtypes.action_groups)
         c.argument("all_tests", argtypes.notification_all_tests)
-        c.argument("all_events", argtypes.notification_all_events)
 
     # Load notification-rule list
     with self.argument_context("load notification-rule list") as c:

@@ -147,9 +147,9 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
         if test_ids:
             cmd.append(f'--test-ids {" ".join(test_ids)}')
         if all_tests is not None:
-            cmd.append('--all-tests' if all_tests else '--no-all-tests')
+            cmd.append('--all-tests')
         if all_events is not None:
-            cmd.append('--all-events' if all_events else '--no-all-events')
+            cmd.append('--all-events')
 
         self.cmd(' '.join(cmd))
     @ResourceGroupPreparer(**rg_params)
@@ -570,7 +570,7 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
                 "--resource-group {resource_group} "
                 "--test-ids test1 "
             )
-        self.assertIn("status and result should not be present for event type", str(ex.exception))
+        self.assertIn("Event type 'TestRunStarted' should not have status and result fields.", str(ex.exception))
 
         # Case 5: Invalid `--test-ids` format
         with self.assertRaises(InvalidArgumentValueError) as ex:
@@ -599,7 +599,7 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
                     {"event_id": "event1", "type": "TestRunStarted"}  # Duplicate event ID
                 ]
             )
-        self.assertIn("Duplicate event-id : event1 found in the event list.", str(ex.exception))
+        self.assertIn("Duplicate event-id: event1 found in the event list.", str(ex.exception))
 
 
     @ResourceGroupPreparer(**rg_params)
@@ -627,17 +627,6 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
             test_ids=["test1"]
         )
 
-        # Case 2: Providing both `--remove-event` and `--all-events`
-        with self.assertRaises(InvalidArgumentValueError) as ex:
-            self.update_notification_rule(
-                notification_rule_id="nri-update-invalid-test",
-                load_test_resource=load,
-                resource_group=rg,
-                remove_events=["event1"],
-                all_events=True  # Conflicting arguments
-            )
-        self.assertIn("Can't provide --remove-event along with --all-event option.", str(ex.exception))
-
         # Case 3: Invalid `--add-event` format
         with self.assertRaises(InvalidArgumentValueError) as ex:
             self.update_notification_rule(
@@ -658,7 +647,7 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
                 resource_group=rg,
                 remove_events=["event2"]  # Event ID not present in existing rule
             )
-        self.assertIn("Invalid --remove-event value. Event-id: event2 not present in existing event filters.", str(ex.exception))
+        self.assertIn("Invalid --remove-event value. Event-id: event2 does not exist existing event filters.", str(ex.exception))
 
         # Case 5: Duplicate event ids in `--add-event`
         with self.assertRaises(InvalidArgumentValueError) as ex:
@@ -671,7 +660,7 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
                     {"event_id": "event1", "type": "TestRunStarted"}
                 ]
             )
-        self.assertIn("Duplicate event-id : event1 found in the event list.", str(ex.exception))
+        self.assertIn("Duplicate event-id: event1 found in the event list.", str(ex.exception))
 
         # Case 6: Invalid `--test-ids` format
         with self.assertRaises(InvalidArgumentValueError) as ex:
@@ -703,7 +692,7 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
                 resource_group=rg,
                 remove_events=["nonexistent-event"]
             )
-        self.assertIn("Invalid --remove-event value. Event-id: nonexistent-event not present in existing event filters.", str(ex.exception))
+        self.assertIn("Invalid --remove-event value. Event-id: nonexistent-event does not exist existing event filters.", str(ex.exception))
 
         # Case 9: Adding an event with extra fields for non-`TestRunEnded` type
         with self.assertRaises(InvalidArgumentValueError) as ex:
@@ -716,4 +705,4 @@ class LoadTestScenarioNotificationRule(ScenarioTest):
                 "--resource-group {resource_group} "
                 "--test-ids test1 "
             )
-        self.assertIn("status and result should not be present for event type", str(ex.exception))
+        self.assertIn("Event type 'TestRunStarted' should not have status and result fields.", str(ex.exception))

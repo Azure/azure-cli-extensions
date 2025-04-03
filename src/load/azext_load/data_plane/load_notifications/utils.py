@@ -33,7 +33,6 @@ def get_notification_rule_create_body(
     This function creates a NotificationRule object with all the required fields for create request.
     """
     logger.debug("\nEvents provided: %s\n", event)
-    event_filters = _maps_events_to_filters(event)
     if not all_tests and test_ids is None:
         raise InvalidArgumentValueError(
             "No tests provided for notification rule. Please provide specific tests using --test-ids option or provide --all-tests flag to select all tests."
@@ -44,14 +43,17 @@ def get_notification_rule_create_body(
         logger.debug("--all-tests option selected. Ignoring values in --test-ids if provided.")
         test_ids = None
 
-    if not all_events and not event_filters:
+    if not all_events and not event:
         raise InvalidArgumentValueError(
-            "No events provided for notification rule. Please provide specific events using --events option or provide --all-events flag to select all events."
+            "No events provided for notification rule. Please provide specific events using --event option or provide --all-events flag to select all events."
         )
+
+    event_filters = None
 
     if all_events:
         logger.debug("--all-events option selected. Ignoring events provided in --event")
-        event_filters = None
+    elif event:
+        event_filters = _maps_events_to_filters(event)
 
     return TestsNotificationRule(
         display_name=display_name,
@@ -69,12 +71,7 @@ def get_notification_rule_update_body(
     display_name=None,
     test_ids=None,
     all_tests=False,
-    all_events=False,
 ):
-    if all_events and remove_event:
-        raise InvalidArgumentValueError(
-            "Can't provide --remove-event along with --all-event option."
-        )
 
     if not all_tests and not test_ids:
         # No change in existing test_ids
@@ -82,7 +79,7 @@ def get_notification_rule_update_body(
 
     # If all_tests is provided we ignore test_ids provided in command
     if all_tests:
-        logger.debug("--all-tests option selected. Ignoring values in --test-ids if provided.")
+        logger.debug("--all-tests option provided. Ignoring values in --test-ids if provided.")
         test_ids = None
 
     event_filters = existing_notification_rule.get("eventFilters", None)
@@ -91,17 +88,17 @@ def get_notification_rule_update_body(
     if remove_event:
         for event in remove_event:
             if not event["event-id"] in event_filters:
-                msg = "Invalid --remove-event value. Event-id: %s not present in existing event filters." % event.get(
+                msg = "Invalid --remove-event value. Event-id: %s does not exist existing event filters." % event.get(
                     "event-id"
                 )
                 raise InvalidArgumentValueError(msg)
             event_filters[event["event-id"]] = None
 
-    if all_events:
-        logger.debug("--all-events option selected. Ignoring events provided in --event")
-        event_filters = None
-    elif add_event:
-        event_filters = _maps_events_to_filters(add_event)
+    if add_event:
+        if event_filters is None:
+            event_filters = _maps_events_to_filters(add_event)
+        else:
+            event_filters.update(_maps_events_to_filters(add_event))
 
     if not action_groups:
         action_groups = existing_notification_rule.get("actionGroupIds", None)
@@ -126,12 +123,15 @@ def _maps_events_to_filters(events):
         if event["type"] == NotificationEventType.TEST_RUN_STARTED:
             event_filters[event["event-id"]] = TestRunStartedNotificationEventFilter()
         elif event["type"] == NotificationEventType.TEST_RUN_ENDED:
-            condition = TestRunEndedEventCondition(
-                test_run_results=event["result"], test_run_statuses=event["status"]
-            )
-            event_filters[event["event-id"]] = TestRunEndedNotificationEventFilter(
-                condition=condition
-            )
+            if event.get("result", None) is None and event.get("status", None) is None:
+                event_filters[event["event-id"]] = TestRunEndedNotificationEventFilter()
+            else:
+                condition = TestRunEndedEventCondition(
+                    test_run_results=event.get("result", None), test_run_statuses=event.get("status", None)
+                )
+                event_filters[event["event-id"]] = TestRunEndedNotificationEventFilter(
+                    condition=condition
+                )
         elif event["type"] == NotificationEventType.TRIGGER_COMPLETED:
             event_filters[event["event-id"]] = TriggerCompletedNotificationEventFilter()
         elif event["type"] == NotificationEventType.TRIGGER_DISABLED:

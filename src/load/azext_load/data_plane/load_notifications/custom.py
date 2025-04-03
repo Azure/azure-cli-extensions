@@ -58,7 +58,6 @@ def update_notification_rule(
     display_name=None,
     test_ids=None,
     all_tests=False,
-    all_events=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Updating notification rule.")
@@ -77,7 +76,6 @@ def update_notification_rule(
         display_name,
         test_ids,
         all_tests,
-        all_events
     )
     logger.info("Incoming changes in notification rule: %s", new_notification_rule)
     response = client.create_or_update_notification_rule(notification_rule_id, new_notification_rule)
