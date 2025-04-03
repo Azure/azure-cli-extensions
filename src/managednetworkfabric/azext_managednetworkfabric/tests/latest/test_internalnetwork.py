@@ -40,7 +40,8 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3Domain} --resource-name {name} --vlan-id {vlanId}"
+        "az networkfabric internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3Domain} --resource-name {name}"
+        " --vlan-id {vlanId} --native-ipv4-prefix-limit {nativeIpv4PrefixLimit} --native-ipv6-prefix-limit {nativeIpv6PrefixLimit}"
         " --mtu {mtu} --connected-ipv4-subnets {connectedIpv4Subnets}"
         " --static-route-configuration {staticRouteConf} --bgp-configuration {bgpConf}",
         checks=checks,
@@ -54,7 +55,8 @@ def step_update(test, checks=None):
     test.cmd(
         "az networkfabric internalnetwork update --resource-group {rg} --resource-name {name} --l3domain {l3Domain} "
         " --connected-ipv4-subnets {updatedConnectedIpv4Subnets}  --static-route-configuration {updatedStaticRouteConf}"
-        " --bgp-configuration {updatedBgpConf}",
+        " --bgp-configuration {updatedBgpConf}  --native-ipv4-prefix-limit {updatedNativeIpv4PrefixLimit}"
+        " --native-ipv6-prefix-limit {updatedNativeIpv6PrefixLimit}",
         checks=checks,
     )
 
@@ -119,6 +121,18 @@ class GA_InternalNetworkScenarioTest1(ScenarioTest):
                 ),
                 "exportRoutePolicy": CONFIG.get(
                     "INTERNAL_NETWORK", "export_route_policy"
+                ),
+                "nativeIpv4PrefixLimit": CONFIG.get(
+                    "INTERNAL_NETWORK", "native_ipv4_prefix_limit"
+                ),
+                "updatedNativeIpv4PrefixLimit": CONFIG.get(
+                    "INTERNAL_NETWORK", "updated_native_ipv4_prefix_limit"
+                ),
+                "nativeIpv6PrefixLimit": CONFIG.get(
+                    "INTERNAL_NETWORK", "native_ipv6_prefix_limit"
+                ),
+                "updatedNativeIpv6PrefixLimit": CONFIG.get(
+                    "INTERNAL_NETWORK", "updated_native_ipv6_prefix_limit"
                 ),
             }
         )
