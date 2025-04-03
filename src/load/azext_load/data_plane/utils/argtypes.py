@@ -555,7 +555,7 @@ notification_rule_event = CLIArgumentType(
     validator=validators.validate_event,
     nargs="+",
     action="append",
-    help="Event to be enabled on the notification rule. Expected format is --event event-id=<event id> type=<event type> status=<a list of statuses in comma-separated format> result=<a list of results in comma-separated format>. Status and result fields are valid only for event type 'TestRunEnded'.",
+    help="Event to be enabled on the notification rule. Expected format is --event event-id='event id' type='event type' status='a list of statuses in comma-separated format' result='a list of results in comma-separated format'. Status and result fields are valid only for event type 'TestRunEnded'.",
 )
 
 notification_rule_remove_event = CLIArgumentType(
@@ -563,7 +563,7 @@ notification_rule_remove_event = CLIArgumentType(
     nargs="+",
     validator=validators.validate_remove_event,
     action="append",
-    help="Provide the event id of the event to be removed from the notification rule. Format should be --remove-event event-id=<event id>.",
+    help="Provide the event id of the event to be removed from the notification rule. Format should be --remove-event event-id='event id'.",
 )
 
 notification_rule_add_event = CLIArgumentType(
@@ -571,7 +571,7 @@ notification_rule_add_event = CLIArgumentType(
     validator=validators.validate_add_event,
     nargs="+",
     action="append",
-    help="Event to be added for notification rule.",
+    help="Event to be enabled on the notification rule. Expected format is --event event-id='event id' type='event type' status='a list of statuses in comma-separated format' result='a list of results in comma-separated format'. Status and result fields are valid only for event type 'TestRunEnded'.",
 )
 
 notification_all_tests = CLIArgumentType(
