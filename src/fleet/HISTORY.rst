@@ -115,3 +115,7 @@ Release History
 1.4.0
 ++++++
 * Set autoupgradeprofile commands to preview mode
+
+1.4.1
+++++++
+* create_fleet now creates a role assignment when fleet type is private
