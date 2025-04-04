@@ -20,4 +20,3 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('scheduler_name', options_list=['--scheduler-name ', '-s'], help='The name of the scheduler.')
         c.argument('taskhub_name', options_list=['--taskhub-name', '-t'], help='The name of the taskhub.')
         c.argument('orchestration_id', options_list=['--orchestration-id', '--id'], help='The ID of the orchestration to show.')
-
