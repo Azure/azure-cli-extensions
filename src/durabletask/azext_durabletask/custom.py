@@ -135,6 +135,7 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
     response = client.post(endpoint, json=payload, headers=headers)
     return response.json()
 
+
 def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, orchestration_id):
     # Get FQDN of the scheduler
 
@@ -145,7 +146,7 @@ def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, o
     })
 
     endpoint = scheduler['properties']['endpoint']
-    endpoint += "/v1/taskhubs/orchestrations/"+orchestration_id
+    endpoint += "/v1/taskhubs/orchestrations/" + orchestration_id
     grabbed_token = f"Bearer {get_bearer_token(cmd.cli_ctx)}"
 
     headers = {
