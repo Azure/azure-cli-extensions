@@ -135,7 +135,7 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
     response = client.post(endpoint, json=payload, headers=headers)
     return response.json()
 
-def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, orchestration_id):
+def show_command(cmd, resource_group_name, scheduler_name, taskhub_name, orchestration_id):
     # Get FQDN of the scheduler
 
     scheduler = Show(cli_ctx=cmd.cli_ctx)(command_args={
