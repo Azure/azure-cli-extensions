@@ -22,6 +22,9 @@ class Create(AAZCommand):
 
     :example: Create BackupVault With MSI
         az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+
+    :example: Create BackupVault With CMK Encryption
+        az dataprotection backup-vault create -g "resourceGroupName" -v "vaultName" --location "eastasia" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --type "UserAssigned" --user-assigned-identities '{"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami":{}}' --cmk-encryption-key-uri "https://samplekvazbckp.vault.azure.net/keys/testkey/3cd5235ad6ac4c11b40a6f35444bcbe1" --cmk-encryption-state "Enabled" --cmk-identity-type "UserAssigned" --cmk-infrastructure-encryption "Enabled" --cmk-user-assigned-identity-id  "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami"
     """
 
     _aaz_info = {
@@ -79,7 +82,7 @@ class Create(AAZCommand):
         _args_schema.cmk_user_assigned_identity_id = AAZStrArg(
             options=["--cmk-uami", "--cmk-user-assigned-identity-id"],
             arg_group="EncryptionSettings",
-            help="his parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
+            help="This parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
         )
         _args_schema.cmk_identity_type = AAZStrArg(
             options=["--cmk-identity-type"],

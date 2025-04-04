@@ -87,7 +87,7 @@ class Update(AAZCommand):
         _args_schema.cmk_encryption_key_uri = AAZStrArg(
             options=["--cmk-encryption-key-uri"],
             arg_group="EncryptionSettings",
-            help="The Key URI of the CMK key to be used for encryption.  To enable auto-rotation of keys, exclude the version component from the Key URI.",
+            help="The key uri of the Customer Managed Key",
             nullable=True,
         )
         _args_schema.cmk_encryption_state = AAZStrArg(
