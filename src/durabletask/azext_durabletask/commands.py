@@ -8,4 +8,4 @@
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('durabletask orchestration') as g:
         g.custom_command('list', 'list_orchestrations')
-        g.custom_command('show', 'show_orchestration')
+        g.custom_command('show', 'show_command')
