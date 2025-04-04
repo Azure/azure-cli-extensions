@@ -28,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-01-01"],
         ]
     }
 
@@ -301,7 +301,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -327,7 +327,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("eTag", AAZStrType, ".e_tag")
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -439,7 +439,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -512,6 +512,7 @@ class Create(AAZCommand):
             )
             properties.resource_move_details = AAZObjectType(
                 serialized_name="resourceMoveDetails",
+                flags={"read_only": True},
             )
             properties.resource_move_state = AAZStrType(
                 serialized_name="resourceMoveState",
