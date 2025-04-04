@@ -9,7 +9,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from .aaz.latest.durabletask.scheduler import Show
 
 
-def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, max_items=100):
+def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, max_items=100, start_index=0):
     # Get FQDN of the scheduler
 
     scheduler = Show(cli_ctx=cmd.cli_ctx)(command_args={
@@ -28,7 +28,7 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
         'x-taskhub': taskhub_name
     }
 
-    payload = {"filter": {}, "pagination": {"startIndex": 0, "count": max_items}, "sort": [{"column": "LAST_UPDATED_AT", "direction": "DESCENDING_SORT"}]}
+    payload = {"filter": {}, "pagination": {"startIndex": start_index, "count": max_items}, "sort": [{"column": "LAST_UPDATED_AT", "direction": "DESCENDING_SORT"}]}
 
     client = httpx.Client(http2=True)
     response = client.post(endpoint, json=payload, headers=headers)
