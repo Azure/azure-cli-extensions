@@ -135,6 +135,29 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
     response = client.post(endpoint, json=payload, headers=headers)
     return response.json()
 
+def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, orchestration_id):
+    # Get FQDN of the scheduler
+
+    scheduler = Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "name": scheduler_name,
+        "subscription": get_subscription_id(cmd.cli_ctx)
+    })
+
+    endpoint = scheduler['properties']['endpoint']
+    endpoint += "/v1/taskhubs/orchestrations/"+orchestration_id
+    grabbed_token = f"Bearer {get_bearer_token(cmd.cli_ctx)}"
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': grabbed_token,
+        'x-taskhub': taskhub_name
+    }
+
+    client = httpx.Client(http2=True)
+    response = client.get(endpoint, headers=headers)
+    return response.json()
+
 
 def get_bearer_token(cli_ctx):
     from azure.cli.core._profile import Profile
