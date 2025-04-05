@@ -454,8 +454,7 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         seed_nodes=cluster_resource.properties.seed_nodes,
         cluster_type=cluster_type,
         extensions=extensions,
-        azure_connection_method =cluster_resource.properties.azure_connection_method
-    )
+        azure_connection_method=cluster_resource.properties.azure_connection_method)
 
     cluster_resource_create_update_parameters = ClusterResource(
         location=cluster_resource.location,

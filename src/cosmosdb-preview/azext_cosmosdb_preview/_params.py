@@ -185,7 +185,6 @@ def load_arguments(self, _):
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
         c.argument('azure_connection_method', options_list=['--azure-connection-method'], help="This field can be specified to create VPN based Cassandra cluster, where the datacenter is in customers vnet with limited permissions to azure.")
 
-
     # Managed Cassandra Cluster
     for scope in ['managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
