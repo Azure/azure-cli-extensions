@@ -114,8 +114,8 @@ def build_arguments_schema(args_schema):
         arg_group="Resource_scope",
         help="Use subscription for the scope of the blueprint. If --management-group is not specified, "
              "--subscription value or the default subscription will be used as the scope.")
-    args_schema.resource_scope._required = False
-    args_schema.resource_scope._registered = False
+    args_schema.resource_scope._required = False  # pylint: disable=W0212
+    args_schema.resource_scope._registered = False  # pylint: disable=W0212
     return args_schema
 
 
