@@ -27,8 +27,41 @@ def load_command_table(self, _):
         g.custom_command('create', 'swiftlet_virtual_machine_create', supports_no_wait=True)
         g.custom_command('update', 'swiftlet_virtual_machine_update', supports_no_wait=True)
         g.custom_command('delete', 'swiftlet_virtual_machine_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('list-bundle', 'swiftlet_virtual_machine_list_bundle')
-        g.custom_command('list-image', 'swiftlet_virtual_machine_list_image')
         g.custom_command('start', 'swiftlet_virtual_machine_start', supports_no_wait=True)
         g.custom_command('stop', 'swiftlet_virtual_machine_stop', supports_no_wait=True)
         g.custom_wait_command('wait', 'swiftlet_virtual_machine_show')
+
+    from azext_swiftlet.generated._client_factory import cf_virtual_machine_image
+    swiftlet_virtual_machine_image = CliCommandType(
+        operations_tmpl='azext_swiftlet.vendored_sdks.swiftlet.operations._virtual_machine_image_operations#VirtualMach'
+        'ineImageOperations.{}',
+        client_factory=cf_virtual_machine_image)
+    with self.command_group('swiftlet virtual-machine-image', swiftlet_virtual_machine_image,
+                            client_factory=cf_virtual_machine_image, is_experimental=True) as g:
+        g.custom_command('list', 'swiftlet_virtual_machine_image_list')
+        g.custom_show_command('show', 'swiftlet_virtual_machine_image_show')
+
+    from azext_swiftlet.generated._client_factory import cf_virtual_machine_bundle
+    swiftlet_virtual_machine_bundle = CliCommandType(
+        operations_tmpl='azext_swiftlet.vendored_sdks.swiftlet.operations._virtual_machine_bundle_operations#VirtualMac'
+        'hineBundleOperations.{}',
+        client_factory=cf_virtual_machine_bundle)
+    with self.command_group('swiftlet virtual-machine-bundle', swiftlet_virtual_machine_bundle,
+                            client_factory=cf_virtual_machine_bundle, is_experimental=True) as g:
+        g.custom_command('list', 'swiftlet_virtual_machine_bundle_list')
+        g.custom_show_command('show', 'swiftlet_virtual_machine_bundle_show')
+
+    from azext_swiftlet.generated._client_factory import cf_virtual_machine_snapshot
+    swiftlet_virtual_machine_snapshot = CliCommandType(
+        operations_tmpl='azext_swiftlet.vendored_sdks.swiftlet.operations._virtual_machine_snapshot_operations#VirtualM'
+        'achineSnapshotOperations.{}',
+        client_factory=cf_virtual_machine_snapshot)
+    with self.command_group('swiftlet virtual-machine-snapshot', swiftlet_virtual_machine_snapshot,
+                            client_factory=cf_virtual_machine_snapshot, is_experimental=True) as g:
+        g.custom_command('list', 'swiftlet_virtual_machine_snapshot_list')
+        g.custom_show_command('show', 'swiftlet_virtual_machine_snapshot_show')
+        g.custom_command('create', 'swiftlet_virtual_machine_snapshot_create', supports_no_wait=True)
+        g.custom_command('update', 'swiftlet_virtual_machine_snapshot_update', supports_no_wait=True)
+        g.custom_command('delete', 'swiftlet_virtual_machine_snapshot_delete', supports_no_wait=True,
+                         confirmation=True)
+        g.custom_wait_command('wait', 'swiftlet_virtual_machine_snapshot_show')
