@@ -6,123 +6,209 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class ProvisioningState(str, Enum):
-    """Provisioning state of the Account
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
     """
 
-    succeeded = "Succeeded"
-    creating = "Creating"
-    deleting = "Deleting"
-    moving = "Moving"
-    failed = "Failed"
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
 
-class InvitationStatus(str, Enum):
-    """The status of the invitation.
-    """
-
-    pending = "Pending"
-    accepted = "Accepted"
-    rejected = "Rejected"
-    withdrawn = "Withdrawn"
-
-class Kind(str, Enum):
+class DataSetKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Kind of data set.
     """
 
-    blob = "Blob"
-    container = "Container"
-    blob_folder = "BlobFolder"
-    adls_gen2_file_system = "AdlsGen2FileSystem"
-    adls_gen2_folder = "AdlsGen2Folder"
-    adls_gen2_file = "AdlsGen2File"
-    adls_gen1_folder = "AdlsGen1Folder"
-    adls_gen1_file = "AdlsGen1File"
-    kusto_cluster = "KustoCluster"
-    kusto_database = "KustoDatabase"
-    sql_db_table = "SqlDBTable"
-    sql_dw_table = "SqlDWTable"
+    BLOB = "Blob"
+    CONTAINER = "Container"
+    BLOB_FOLDER = "BlobFolder"
+    ADLS_GEN2_FILE_SYSTEM = "AdlsGen2FileSystem"
+    ADLS_GEN2_FOLDER = "AdlsGen2Folder"
+    ADLS_GEN2_FILE = "AdlsGen2File"
+    ADLS_GEN1_FOLDER = "AdlsGen1Folder"
+    ADLS_GEN1_FILE = "AdlsGen1File"
+    KUSTO_CLUSTER = "KustoCluster"
+    KUSTO_DATABASE = "KustoDatabase"
+    KUSTO_TABLE = "KustoTable"
+    SQL_DB_TABLE = "SqlDBTable"
+    SQL_DW_TABLE = "SqlDWTable"
+    SYNAPSE_WORKSPACE_SQL_POOL_TABLE = "SynapseWorkspaceSqlPoolTable"
 
-class SynchronizationKind(str, Enum):
-    schedule_based = "ScheduleBased"
-
-class ShareKind(str, Enum):
-    """Share kind.
+class DataSetMappingKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Kind of data set mapping.
     """
 
-    copy_based = "CopyBased"
-    in_place = "InPlace"
+    BLOB = "Blob"
+    CONTAINER = "Container"
+    BLOB_FOLDER = "BlobFolder"
+    ADLS_GEN2_FILE_SYSTEM = "AdlsGen2FileSystem"
+    ADLS_GEN2_FOLDER = "AdlsGen2Folder"
+    ADLS_GEN2_FILE = "AdlsGen2File"
+    KUSTO_CLUSTER = "KustoCluster"
+    KUSTO_DATABASE = "KustoDatabase"
+    KUSTO_TABLE = "KustoTable"
+    SQL_DB_TABLE = "SqlDBTable"
+    SQL_DW_TABLE = "SqlDWTable"
+    SYNAPSE_WORKSPACE_SQL_POOL_TABLE = "SynapseWorkspaceSqlPoolTable"
 
-class SynchronizationMode(str, Enum):
-    """Synchronization mode
-    """
-
-    incremental = "Incremental"
-    full_sync = "FullSync"
-
-class DataSetType(str, Enum):
-    """Type of the data set
-    """
-
-    blob = "Blob"
-    container = "Container"
-    blob_folder = "BlobFolder"
-    adls_gen2_file_system = "AdlsGen2FileSystem"
-    adls_gen2_folder = "AdlsGen2Folder"
-    adls_gen2_file = "AdlsGen2File"
-    adls_gen1_folder = "AdlsGen1Folder"
-    adls_gen1_file = "AdlsGen1File"
-    kusto_cluster = "KustoCluster"
-    kusto_database = "KustoDatabase"
-    sql_db_table = "SqlDBTable"
-    sql_dw_table = "SqlDWTable"
-
-class ShareSubscriptionStatus(str, Enum):
-    """Gets the status of share subscription
-    """
-
-    active = "Active"
-    revoked = "Revoked"
-    source_deleted = "SourceDeleted"
-    revoking = "Revoking"
-
-class Status(str, Enum):
-    """Operation state of the long running operation.
-    """
-
-    accepted = "Accepted"
-    in_progress = "InProgress"
-    transient_failure = "TransientFailure"
-    succeeded = "Succeeded"
-    failed = "Failed"
-    canceled = "Canceled"
-
-class RecurrenceInterval(str, Enum):
-    """Recurrence Interval
-    """
-
-    hour = "Hour"
-    day = "Day"
-
-class TriggerStatus(str, Enum):
-    """Gets the trigger state
-    """
-
-    active = "Active"
-    inactive = "Inactive"
-    source_synchronization_setting_deleted = "SourceSynchronizationSettingDeleted"
-
-class DataSetMappingStatus(str, Enum):
+class DataSetMappingStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Gets the status of the data set mapping.
     """
 
-    ok = "Ok"
-    broken = "Broken"
+    OK = "Ok"
+    BROKEN = "Broken"
 
-class OutputType(str, Enum):
-    """File output type
+class DataSetType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Type of data set
     """
 
-    csv = "Csv"
-    parquet = "Parquet"
+    BLOB = "Blob"
+    CONTAINER = "Container"
+    BLOB_FOLDER = "BlobFolder"
+    ADLS_GEN2_FILE_SYSTEM = "AdlsGen2FileSystem"
+    ADLS_GEN2_FOLDER = "AdlsGen2Folder"
+    ADLS_GEN2_FILE = "AdlsGen2File"
+    ADLS_GEN1_FOLDER = "AdlsGen1Folder"
+    ADLS_GEN1_FILE = "AdlsGen1File"
+    KUSTO_CLUSTER = "KustoCluster"
+    KUSTO_DATABASE = "KustoDatabase"
+    KUSTO_TABLE = "KustoTable"
+    SQL_DB_TABLE = "SqlDBTable"
+    SQL_DW_TABLE = "SqlDWTable"
+    SYNAPSE_WORKSPACE_SQL_POOL_TABLE = "SynapseWorkspaceSqlPoolTable"
+
+class InvitationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The status of the invitation.
+    """
+
+    PENDING = "Pending"
+    ACCEPTED = "Accepted"
+    REJECTED = "Rejected"
+    WITHDRAWN = "Withdrawn"
+
+class LastModifiedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that last modified the resource.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
+class OutputType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Type of output file
+    """
+
+    CSV = "Csv"
+    PARQUET = "Parquet"
+
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Provisioning state of the Account
+    """
+
+    SUCCEEDED = "Succeeded"
+    CREATING = "Creating"
+    DELETING = "Deleting"
+    MOVING = "Moving"
+    FAILED = "Failed"
+
+class RecurrenceInterval(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Recurrence Interval
+    """
+
+    HOUR = "Hour"
+    DAY = "Day"
+
+class RegistrationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Registration status
+    """
+
+    ACTIVATION_PENDING = "ActivationPending"
+    ACTIVATED = "Activated"
+    ACTIVATION_ATTEMPTS_EXHAUSTED = "ActivationAttemptsExhausted"
+
+class ShareKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Share kind.
+    """
+
+    COPY_BASED = "CopyBased"
+    IN_PLACE = "InPlace"
+
+class ShareSubscriptionStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Gets the status of share subscription
+    """
+
+    ACTIVE = "Active"
+    REVOKED = "Revoked"
+    SOURCE_DELETED = "SourceDeleted"
+    REVOKING = "Revoking"
+
+class SourceShareSynchronizationSettingKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Kind of synchronization setting on share.
+    """
+
+    SCHEDULE_BASED = "ScheduleBased"
+
+class Status(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Operation state of the long running operation.
+    """
+
+    ACCEPTED = "Accepted"
+    IN_PROGRESS = "InProgress"
+    TRANSIENT_FAILURE = "TransientFailure"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+
+class SynchronizationMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Synchronization mode
+    """
+
+    INCREMENTAL = "Incremental"
+    FULL_SYNC = "FullSync"
+
+class SynchronizationSettingKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Kind of synchronization setting.
+    """
+
+    SCHEDULE_BASED = "ScheduleBased"
+
+class TriggerKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Kind of synchronization on trigger.
+    """
+
+    SCHEDULE_BASED = "ScheduleBased"
+
+class TriggerStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Gets the trigger state
+    """
+
+    ACTIVE = "Active"
+    INACTIVE = "Inactive"
+    SOURCE_SYNCHRONIZATION_SETTING_DELETED = "SourceSynchronizationSettingDeleted"
+
+class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Identity Type
+    """
+
+    SYSTEM_ASSIGNED = "SystemAssigned"

@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","name":"ams-test-cli-monitor","type":"microsoft.workloads/monitors","location":"eastus2euap","systemData":{"createdBy":"srivastavap@microsoft.com","createdByType":"User","createdAt":"2023-04-17T08:35:45.125233Z","lastModifiedBy":"srivastavap@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T08:35:45.125233Z"},"properties":{"appLocation":"eastus","routingPreference":"RouteAll","managedResourceGroupConfiguration":{"name":"ams-test-cli-mrg"},"monitorSubnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/looptest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-rg-vnet/subnets/cli-testing-00","provisioningState":"Succeeded","logAnalyticsWorkspaceArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ams-test-cli-mrg/providers/microsoft.operationalinsights/workspaces/sapmon-laws-d7451ad7f9d221","msiArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ams-test-cli-mrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sapmon-msi-d7451ad7f9d221","storageAccountArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ams-test-cli-mrg/providers/Microsoft.Storage/storageAccounts/sapstod7451ad7f9d221"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 09:35:40 GMT
+      etag:
+      - '"08001593-0000-3400-0000-643d05da0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: '{"managementGroups": ["72f988bf-86f1-41af-91ab-2d7cd011db47", "AzGovTest5"],
+      "query": "ResourceContainers | where type contains ''management'' | project
+      id, name, type | limit 2", "options": {"$top": 100, "$skip": 0, "resultFormat":
+      "objectArray", "allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '274'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -q -m -a
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":2,"count":2,"data":[{"id":"/providers/Microsoft.Management/managementGroups/AzGovTest5","name":"AzGovTest5","type":"microsoft.management/managementgroups"},{"id":"/providers/Microsoft.Management/managementGroups/PolicyUIMG","name":"PolicyUIMG","type":"microsoft.management/managementgroups"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '347'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Apr 2021 17:36:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '13'
+      x-ms-user-quota-remaining:
+      - '13'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
+version: 1

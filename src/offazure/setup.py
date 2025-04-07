@@ -11,10 +11,6 @@ from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
 VERSION = '0.1.0'
-try:
-    from azext_offazure.manual.version import VERSION
-except ImportError:
-    pass
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -48,7 +44,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AzureMigrateV2 Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/offazure',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/offazure',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

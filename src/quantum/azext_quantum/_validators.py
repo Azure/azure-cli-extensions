@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,unused-argument
 
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo
@@ -50,7 +50,8 @@ def validate_target_info(cmd, namespace):
     target = TargetInfo(cmd, target_id)
 
     if not target.target_id:
-        raise ValueError("Missing target-id argument")
+        # raise ValueError("Missing target-id argument.  Use `az quantum target set -t MyTarget` to set a default Target ID.")
+        raise ValueError("No default Target ID has been saved.  Use `az quantum target set -t MyTarget` to set a default Target ID.")
 
 
 def validate_workspace_and_target_info(cmd, namespace):

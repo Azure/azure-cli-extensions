@@ -68,9 +68,8 @@ az confluent organization show --name "myOrganization" --resource-group "myResou
 
 ##### <a name="ExamplesOrganizationCreate">Example</a>
 ```
-az confluent organization create --location "West US" --offer-detail id="string" plan-id="string" plan-name="string" \
-publisher-id="string" term-unit="string" --user-detail email-address="contoso@microsoft.com" first-name="string" \
-last-name="string" --tags Environment="Dev" --name "myOrganization" --resource-group "myResourceGroup"
+az confluent organization create --location "West US" --tags Environment="Dev" --name "myOrganization" \
+--resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersOrganizationCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -79,8 +78,11 @@ last-name="string" --tags Environment="Dev" --name "myOrganization" --resource-g
 |**--organization-name**|string|Organization resource name|organization_name|organizationName|
 |**--tags**|dictionary|Organization resource tags|tags|tags|
 |**--location**|string|Location of Organization resource|location|location|
-|**--offer-detail**|object|Confluent offer detail|offer_detail|offerDetail|
-|**--user-detail**|object|Subscriber detail|user_detail|userDetail|
+|**--publisher-id**|string|Publisher Id|publisher_id|publisherId|
+|**--offer-id**|string|Offer Id|offer_id|id|
+|**--plan-id**|string|Offer Plan Id|plan_id|planId|
+|**--plan-name**|string|Offer Plan Name|plan_name|planName|
+|**--term-unit**|string|Offer Plan Term unit|term_unit|termUnit|
 
 #### <a name="OrganizationUpdate">Command `az confluent organization update`</a>
 

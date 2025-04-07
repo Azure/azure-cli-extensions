@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: '{"validFrom": "2025-03-27T10:25:57.193644", "validUntil": "2025-10-13T09:25:57.193644",
+      "pstnDialOutEnabled": false}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '116'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - Thu, 27 Mar 2025 09:25:57 GMT
+      Repeatability-Request-Id:
+      - 7d52dc2f-0aed-11f0-ad08-00155d7b1001
+      User-Agent:
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - zy+nrQrxTHTSbLYDzXSyXx0H+pBkIRQV2rfavglmr74=
+      x-ms-date:
+      - Thu, 27 Mar 2025 09:25:57 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
+  response:
+    body:
+      string: '{"error": {"code": "BadRequest", "message": "The request could not
+        be understood by the server due to malformed syntax.", "details": [{"code":
+        "BadArgument", "message": "The input provided could not be converted. Please
+        check the input and try again.", "target": "ValidUntil"}]}}'
+    headers:
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 09:25:57 GMT
+      ms-cv:
+      - mQ7wER8xbkKWCkiOEseQ8w.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250327T092557Z-16c89bd967fzhg8vhC1MAAkxd40000000f000000000032n5
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 400
+      message: Bad Request
+version: 1

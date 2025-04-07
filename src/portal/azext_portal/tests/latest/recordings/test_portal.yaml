@@ -1,10 +1,11 @@
 interactions:
 - request:
-    body: '{"location": "eastus", "tags": {"aKey": "aValue", "anotherKey": "anotherValue"},
-      "properties": {"lenses": {"0": {"order": 0, "parts": {"0": {"position": {"x":
-      6, "y": 2, "rowSpan": 2, "colSpan": 2}, "metadata": {"inputs": [], "type": "Extension/HubsExtension/PartType/ClockPart",
-      "settings": {}}}}}}, "metadata": {"model": {"timeRange": {"value": {"relative":
-      {"duration": 24, "timeUnit": 1}}, "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}}}'
+    body: '{"location": "eastus", "properties": {"lenses": [{"order": 0, "parts":
+      [{"metadata": {"type": "Extension/HubsExtension/PartType/MarkdownPart", "inputs":
+      [], "settings": {}}, "position": {"colSpan": 5, "rowSpan": 3, "x": 0, "y": 0}}]}],
+      "metadata": {"model": {"timeRange": {"type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange",
+      "value": {"relative": {"duration": 24, "timeUnit": 1}}}}}}, "tags": {"aKey":
+      "aValue", "anotherKey": "anotherValue"}}'
     headers:
       Accept:
       - application/json
@@ -15,45 +16,52 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '466'
+      - '459'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --location --input- --tags --name --resource-group
+      - --location --input-path --tags --name --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}'
+      string: '{"properties":{"lenses":[{"order":0,"parts":[{"position":{"x":0,"y":0,"rowSpan":3,"colSpan":5},"metadata":{"type":"Extension/HubsExtension/PartType/MarkdownPart","inputs":[],"settings":{}}}]}],"metadata":{"model":{"timeRange":{"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange","value":{"relative":{"duration":24,"timeUnit":1}}}}}},"location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002","name":"cli-test-000002","type":"Microsoft.Portal/dashboards"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '710'
+      - '627'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:25 GMT
+      - Mon, 23 Dec 2024 09:15:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=83f1c12d-bc20-4970-85d6-f2f21201065e; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=c02a9781-e5bc-48bf-bd1d-bb34aad547c4; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20241223T091514Z-r15d4dc76fdrgcq5hC1SGEz3f800000009d0000000003ggn
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-dashboard-session:
-      - 0:-1#2310549
+      - 3:-1#63264194
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: 874B61F8BA664EF296D3D62468867D46 Ref B: MAA201060515009 Ref C: 2024-12-23T09:15:11Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -75,39 +83,46 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}'
+      string: '{"properties":{"lenses":[{"order":0,"parts":[{"position":{"x":0,"y":0,"rowSpan":3,"colSpan":5},"metadata":{"type":"Extension/HubsExtension/PartType/MarkdownPart","inputs":[],"settings":{}}}]}],"metadata":{"model":{"timeRange":{"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange","value":{"relative":{"duration":24,"timeUnit":1}}}}}},"location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002","name":"cli-test-000002","type":"Microsoft.Portal/dashboards"}'
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
       - no-cache
       content-length:
-      - '710'
+      - '627'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:25 GMT
+      - Mon, 23 Dec 2024 09:15:17 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=364ac29d-a19d-4ef7-b9ae-d8ae7c54d3de; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=25440081-da6c-46f5-83c9-21c3db401761; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20241223T091517Z-1764d998495pfhvvhC1SG11p6n00000009cg000000002w0m
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: 87C1F8628C9E41719269846F2E2DEB42 Ref B: MAA201060515037 Ref C: 2024-12-23T09:15:17Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -129,39 +144,46 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}]}'
+      string: '{"value":[{"properties":{"lenses":[{"order":0,"parts":[{"position":{"x":0,"y":0,"rowSpan":3,"colSpan":5},"metadata":{"type":"Extension/HubsExtension/PartType/MarkdownPart","inputs":[],"settings":{}}}]}],"metadata":{"model":{"timeRange":{"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange","value":{"relative":{"duration":24,"timeUnit":1}}}}}},"location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002","name":"cli-test-000002","type":"Microsoft.Portal/dashboards"}]}'
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
       - no-cache
       content-length:
-      - '722'
+      - '639'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:25 GMT
+      - Mon, 23 Dec 2024 09:15:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=d2b94eb9-1c67-46fb-aadc-7cdcd6677c72; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=93efe736-633b-4778-8c66-9e31648c2b3f; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20241223T091519Z-1764d998495gh5mnhC1SG1bzhn00000009d0000000001uyy
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: 5674ACE3A94547288A5C54C2A12D3061 Ref B: MAA201060516051 Ref C: 2024-12-23T09:15:19Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -177,47 +199,52 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - portal dashboard list
+      - portal dashboard update
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group
+      - --input-path --name --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Portal/dashboards?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":1,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}},"1":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Portal/dashboards/mydashboard","name":"mydashboard","type":"Microsoft.Portal/dashboards","location":"eastus"},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":0,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Portal/dashboards/testdashboard","name":"testdashboard","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"hidden-title":"test
-        dashboard"}},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dashboards/providers/Microsoft.Portal/dashboards/testa","name":"testa","type":"Microsoft.Portal/dashboards","location":"eastus"},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":0,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Portal/dashboards/7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","name":"7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"hidden-title":"test
-        dashboard"}},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}]}'
+      string: '{"properties":{"lenses":[{"order":0,"parts":[{"position":{"x":0,"y":0,"rowSpan":3,"colSpan":5},"metadata":{"type":"Extension/HubsExtension/PartType/MarkdownPart","inputs":[],"settings":{}}}]}],"metadata":{"model":{"timeRange":{"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange","value":{"relative":{"duration":24,"timeUnit":1}}}}}},"location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002","name":"cli-test-000002","type":"Microsoft.Portal/dashboards"}'
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
       - no-cache
       content-length:
-      - '3887'
+      - '627'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:26 GMT
+      - Mon, 23 Dec 2024 09:15:19 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=1780b2bd-c6cd-48e7-901c-bd978535696a; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=fd3578f8-c3b3-48c1-9e29-f37cf0cd1d94; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20241223T091520Z-1764d998495pfhvvhC1SG11p6n00000009cg000000002w4h
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: AFC7DFBFC8F74BE9934CCF4D96508004 Ref B: MAA201060514025 Ref C: 2024-12-23T09:15:20Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -226,11 +253,12 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"lenses": {"0": {"order": 0, "parts": {"0": {"position":
-      {"x": 6, "y": 2, "rowSpan": 2, "colSpan": 2}, "metadata": {"inputs": [], "type":
-      "Extension/HubsExtension/PartType/ClockPart", "settings": {}}}}}}, "metadata":
-      {"model": {"timeRange": {"value": {"relative": {"duration": 12, "timeUnit":
-      1}}, "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}}}'
+    body: '{"location": "eastus", "properties": {"lenses": [{"order": 0, "parts":
+      [{"metadata": {"type": "Extension/HubsExtension/PartType/MarkdownPart", "inputs":
+      [], "settings": {}}, "position": {"colSpan": 5, "rowSpan": 5, "x": 0, "y": 0}}]}],
+      "metadata": {"model": {"timeRange": {"type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange",
+      "value": {"relative": {"duration": 12, "timeUnit": 1}}}}}}, "tags": {"aKey":
+      "aValue", "anotherKey": "anotherValue"}}'
     headers:
       Accept:
       - application/json
@@ -241,49 +269,56 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '386'
+      - '459'
       Content-Type:
       - application/json
       ParameterSetName:
       - --input-path --name --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":12,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}'
+      string: '{"properties":{"lenses":[{"order":0,"parts":[{"position":{"x":0,"y":0,"rowSpan":5,"colSpan":5},"metadata":{"type":"Extension/HubsExtension/PartType/MarkdownPart","inputs":[],"settings":{}}}]}],"metadata":{"model":{"timeRange":{"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange","value":{"relative":{"duration":12,"timeUnit":1}}}}}},"location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002","name":"cli-test-000002","type":"Microsoft.Portal/dashboards"}'
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
       - no-cache
       content-length:
-      - '710'
+      - '627'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:27 GMT
+      - Mon, 23 Dec 2024 09:15:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=b2d167fe-014c-4a1b-a700-dee719204b4b; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=042dba1d-796d-413a-acce-31a6c0b469ec; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20241223T091522Z-r15d4dc76fd7z829hC1SGE9ypn000000099g000000009d1s
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-dashboard-session:
-      - 0:-1#2310550
+      - 3:-1#63264195
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: 0061A1D5ADBD4EE5B0FB9AB18EAE4D53 Ref B: MAA201060514025 Ref C: 2024-12-23T09:15:20Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -307,14 +342,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group --y
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002?api-version=2022-12-01-preview
   response:
     body:
       string: 'null'
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
       - no-cache
       content-length:
@@ -322,28 +358,34 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:28 GMT
+      - Mon, 23 Dec 2024 09:15:28 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=7f645dd7-79f7-4ac8-81ef-dd59a2c9cc42; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=c319e08c-400e-44fa-9518-62af1cc5386b; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20241223T091525Z-r15d4dc76fdfw5lkhC1SGEsr840000000a6g00000000c1a2
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-dashboard-session:
-      - 0:-1#2310551
+      - 3:-1#63264197
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: 9B0FCAD25EF94AD388E1C08D50CB0BEF Ref B: MAA201060515025 Ref C: 2024-12-23T09:15:23Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -365,14 +407,15 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards?api-version=2022-12-01-preview
   response:
     body:
       string: '{"value":[]}'
     headers:
+      accept-ranges:
+      - bytes
       cache-control:
       - no-cache
       content-length:
@@ -380,24 +423,30 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:29 GMT
+      - Mon, 23 Dec 2024 09:15:28 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=3f42a1ee-b7e4-481d-a4bf-e1c935fea3d1; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=99cc3094-2b14-4b1d-8d05-26c28439bb1d; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-azure-ref:
+      - 20241223T091529Z-1764d998495hzfn6hC1SG13vsn0000000aa0000000006h1n
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: D8500F8B9DD8461CA6CB5C6E97D57C85 Ref B: MAA201060513053 Ref C: 2024-12-23T09:15:28Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:
@@ -406,12 +455,55 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "tags": {"hidden-title": "test dashboard"}, "properties":
-      {"lenses": {"0": {"order": 0, "parts": {"0": {"position": {"x": 0, "y": 0, "rowSpan":
-      4, "colSpan": 6}, "metadata": {"inputs": [{"name": "resourceType", "value":
-      "Microsoft.Resources/subscriptions/resourcegroups", "isOptional": true}, {"name":
-      "filter", "isOptional": true}, {"name": "scope", "isOptional": true}, {"name":
-      "kind", "isOptional": true}], "type": "Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard import
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --input-path --name --resource-group
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001","name":"cli_test_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_portal","date":"2024-12-23T09:15:04Z","module":"portal","DateCreated":"2024-12-23T09:15:13Z","Creator":"v-ruih@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '417'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Dec 2024 09:15:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 305CB7C0ECB4450B83077A847EF6CC72 Ref B: MAA201060514045 Ref C: 2024-12-23T09:15:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"lenses": [{"order": 0, "parts":
+      [{"metadata": {"type": "Extension/HubsExtension/PartType/MarkdownPart", "inputs":
+      [], "settings": {}}, "position": {"colSpan": 5, "rowSpan": 3, "x": 0, "y": 0}}]}],
       "metadata": {"model": {"timeRange": {"value": {"relative": {"duration": 24,
       "timeUnit": 1}}, "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}}}'
     headers:
@@ -424,46 +516,52 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '678'
+      - '401'
       Content-Type:
       - application/json
       ParameterSetName:
       - --input-path --name --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
-        azsdk-python-portal/unknown
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/7c0464ec-b1cd-4a98-a4a5-1ebe2d980260?api-version=2019-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":0,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","name":"7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"hidden-title":"test
-        dashboard"}}'
+      string: '{"properties":{"lenses":[{"order":0,"parts":[{"position":{"x":0,"y":0,"rowSpan":3,"colSpan":5},"metadata":{"type":"Extension/HubsExtension/PartType/MarkdownPart","inputs":[],"settings":{}}}]}],"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli-test-000002","name":"cli-test-000002","type":"Microsoft.Portal/dashboards"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '933'
+      - '574'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 02:50:29 GMT
+      - Mon, 23 Dec 2024 09:15:35 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       set-cookie:
-      - browserId=9a1cc8f4-5d86-4be9-a931-fcb526b59b17; domain=portal.azure.com; path=/;
-        secure; HttpOnly
+      - browserId=54d9c3ce-f541-430a-a8b3-82a455eaa9c0; domain=portal.azure.com; path=/;
+        secure; HttpOnly; SameSite=None
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20241223T091535Z-r15d4dc76fdmr2fthC1SGEgtmw0000000790000000001df1
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-dashboard-session:
-      - 0:-1#2310552
+      - 3:-1#63264198
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-ms-version:
-      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      - 14.232.2.1 (v14.232.0.1#aca9c20d30.241204-1800) Signed
+      x-msedge-ref:
+      - 'Ref A: 816213E46F5344DDB4F0AB55F983DF15 Ref B: MAA201060515035 Ref C: 2024-12-23T09:15:32Z'
       x-ua-compatible:
       - IE=edge
       x-xss-protection:

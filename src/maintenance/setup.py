@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.1.0'
-try:
-    from azext_maintenance.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '1.7.0b2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,8 +27,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_maintenance.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
@@ -44,10 +41,10 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='maintenance',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools MaintenanceClient Extension',
+    description='Microsoft Azure Command-Line Tools MaintenanceManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/maintenance',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/maintenance',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

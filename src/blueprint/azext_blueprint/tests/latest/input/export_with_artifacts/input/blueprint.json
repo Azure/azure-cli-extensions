@@ -1,0 +1,58 @@
+{
+    "properties": {
+        "description": "This blueprint sets tag policy and role assignment on the subscription, creates a ResourceGroup, and deploys a resource template and role assignment to that ResourceGroup.",
+        "targetScope": "subscription",
+        "parameters": {
+            "storageAccountType": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "storage account type.",
+                    "description": "storage account type."
+                },
+                "defaultValue": "Standard_LRS",
+                "allowedValues": [
+                    "Standard_LRS",
+                    "Standard_GRS",
+                    "Standard_ZRS",
+                    "Premium_LRS"
+                ]
+            },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "The name of the tag to provide the policy assignment.",
+                    "description": "The name of the tag to provide the policy assignment."
+                }
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "The value of the tag to provide the policy assignment.",
+                    "description": "The value of the tag to provide the policy assignment."
+                }
+            },
+            "contributors": {
+                "type": "array",
+                "metadata": {
+                    "description": "List of AAD object IDs that is assigned Contributor role at the subscription",
+                    "strongType": "PrincipalId"
+                }
+            },
+            "owners": {
+                "type": "array",
+                "metadata": {
+                    "description": "List of AAD object IDs that is assigned Owner role at the resource group",
+                    "strongType": "PrincipalId"
+                }
+            }
+        },
+        "resourceGroups": {
+            "storageRG": {
+                "metadata": {
+                    "description": "Contains the resource template deployment and a role assignment."
+                },
+                "dependsOn": []
+            }
+        }
+    }
+}

@@ -8,11 +8,12 @@ from json import loads
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
+from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
-from msrestazure.azure_exceptions import CloudError
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from .encryption_types import Encryption
 from .exceptions import AzCommandError
@@ -21,7 +22,8 @@ from .repair_utils import (
     _get_repair_resource_tag,
     _fetch_encryption_settings,
     _resolve_api_version,
-    check_extension_version
+    check_extension_version,
+    _check_existing_rg
 )
 
 # pylint: disable=line-too-long, broad-except
@@ -44,7 +46,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S.%f')
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:
@@ -70,6 +72,10 @@ def validate_create(cmd, namespace):
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
 
+    if namespace.encrypt_recovery_key:
+        if not namespace.unlock_encrypted_vm:
+            raise RequiredArgumentMissingError('Recovery password is provided in the argument, but --unlock-encrypted-vm is not passed. Rerun command adding --unlock-encrypted-vm.')
+
     if namespace.enable_nested:
         if is_linux:
             raise CLIError('Nested VM is not supported for Linux VM')
@@ -85,6 +91,9 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
+    # Prompt input for public ip usage
+    if (not namespace.associate_public_ip) and (not namespace.yes):
+        _prompt_public_ip(namespace)
 
 
 def validate_restore(cmd, namespace):
@@ -170,6 +179,20 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
+def validate_reset_nic(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+    if namespace._subscription:
+        # setting subscription Id
+        try:
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
+            logger.info('Setting the subscription...\n')
+            _call_az_command(set_sub_command)
+        except AzCommandError as azCommandError:
+            logger.error(azCommandError)
+            raise CLIError('Unexpected error occured while setting the subscription..')
+    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+
+
 def _prompt_encrypted_vm(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
@@ -201,6 +224,20 @@ def _prompt_repair_password(namespace):
         raise CLIError('Please specify the password parameter in non-interactive mode.')
 
 
+def _prompt_public_ip(namespace):
+    from knack.prompting import prompt_y_n, NoTTYException
+    try:
+        if prompt_y_n('Does repair vm requires public ip?'):
+            namespace.associate_public_ip = _return_public_ip_name(namespace)
+        else:
+            namespace.associate_public_ip = '""'
+
+    except NoTTYException:
+        raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
+
+def _return_public_ip_name(namespace):
+    return namespace.repair_vm_name + "PublicIP"
+
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
     vm_resource_type = 'virtualMachines'
@@ -210,9 +247,9 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         api_version = _resolve_api_version(rcf, classic_vm_provider, None, vm_resource_type)
         resource_client = rcf.resources
         resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
-    except CloudError as cloudError:
+    except HttpResponseError as httpError:
         # Resource does not exist or the API failed
-        logger.debug(cloudError)
+        logger.debug(httpError)
         return False
     except Exception as exception:
         # Unknown error, so return false for default resource not found error message
@@ -227,13 +264,13 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
     source_vm = None
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
-    except CloudError as cloudError:
-        logger.debug(cloudError)
-        if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
+    except HttpResponseError as httpError:
+        logger.debug(httpError)
+        if httpError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
             # Given VM is classic VM (RDFE)
             raise CLIError('The given VM \'{}\' is a classic VM. VM repair commands do not support classic VMs.'.format(vm_name))
         # Unknown Error
-        raise CLIError(cloudError.message)
+        raise CLIError(httpError.message)
 
     return source_vm
 
@@ -257,6 +294,7 @@ def _validate_disk_name(disk_name):
 
 
 def _validate_resource_group_name(rg_name):
+    from knack.prompting import prompt_y_n
     rg_pattern = r'[0-9a-zA-Z._\-()]+$'
     # if match is null or ends in period, then raise error
     if not match(rg_pattern, rg_name) or rg_name[-1] == '.':
@@ -264,26 +302,17 @@ def _validate_resource_group_name(rg_name):
 
     if len(rg_name) > 90:
         raise CLIError('Resource group name only allow up to 90 characters.')
-
-    # Check for existing dup name
-    try:
-        list_rg_command = 'az group list --query "[].name" -o json'
-        logger.info('Checking for existing resource groups with identical name within subscription...')
-        output = _call_az_command(list_rg_command)
-    except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        raise CLIError('Unexpected error occured while fetching existing resource groups.')
-    rg_list = loads(output)
-
-    if rg_name in [rg.lower() for rg in rg_list]:
-        raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))
+    if _check_existing_rg(rg_name):
+        if not prompt_y_n('Resource Group already exists. Continue to use existing resource group? If operation fails you will prompted to delete resource group'):
+            raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))
+        logger.warning("Using preexisting resource group")
 
 
 def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\' || type==\'Microsoft.Compute/virtualMachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)
@@ -353,3 +382,57 @@ def validate_vm_username(username, is_linux):
 
     if username.lower() in disallowed_user_names:
         raise CLIError("This username '{}' meets the general requirements, but is specifically disallowed. Please try a different value.".format(username))
+
+
+def validate_repair_and_restore(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+
+    logger.info('Validating repair and restore parameters...')
+
+    logger.info(namespace.vm_name + ' ' + namespace.resource_group_name)
+
+    # Check if VM exists and is not classic VM
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)
+
+    # Check repair vm name
+    namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
+    logger.info('Repair VM name: %s', namespace.repair_vm_name)
+
+    # Check copy disk name
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    if namespace.copy_disk_name:
+        _validate_disk_name(namespace.copy_disk_name)
+    else:
+        namespace.copy_disk_name = namespace.vm_name + '-DiskCopy-' + timestamp
+        logger.info('Copy disk name: %s', namespace.copy_disk_name)
+
+    # Check copy resouce group name
+    if namespace.repair_group_name:
+        if namespace.repair_group_name == namespace.resource_group_name:
+            raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
+        _validate_resource_group_name(namespace.repair_group_name)
+    else:
+        namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
+        logger.info('Repair resource group name: %s', namespace.repair_group_name)
+
+    # Check encrypted disk
+    encryption_type, _, _, _ = _fetch_encryption_settings(source_vm)
+    # Currently only supporting single pass
+    if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
+        if not namespace.unlock_encrypted_vm:
+            _prompt_encrypted_vm(namespace)
+    elif encryption_type is Encryption.DUAL:
+        logger.warning('The source VM\'s OS disk is encrypted using dual pass method.')
+        raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
+    else:
+        logger.debug('The source VM\'s OS disk is not encrypted')
+
+    validate_vm_username(namespace.repair_username, is_linux)
+    validate_vm_password(namespace.repair_password, is_linux)
+    
+    # Prompt input for public ip usage
+    namespace.associate_public_ip = False
+    # Validate repair run command
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)

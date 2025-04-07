@@ -11,42 +11,22 @@
 
 def cf_datadog_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.datadog import MicrosoftDatadogClient
+    from azext_datadog.vendored_sdks.datadog import MicrosoftDatadogClient
     return get_mgmt_service_client(cli_ctx,
                                    MicrosoftDatadogClient)
 
 
-def cf_api_key(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).api_key
-
-
-def cf_host(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).host
-
-
-def cf_linked_resource(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).linked_resource
-
-
-def cf_monitored_resource(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).monitored_resource
+def cf_marketplace_agreement(cli_ctx, *_):
+    return cf_datadog_cl(cli_ctx).marketplace_agreements
 
 
 def cf_monitor(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).monitor
-
-
-def cf_refresh_set_password(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).refresh_set_password
+    return cf_datadog_cl(cli_ctx).monitors
 
 
 def cf_tag_rule(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).tag_rule
+    return cf_datadog_cl(cli_ctx).tag_rules
 
 
 def cf_single_sign_on_configuration(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).single_sign_on_configuration
-
-
-def cf_marketplace_agreement(cli_ctx, *_):
-    return cf_datadog_cl(cli_ctx).marketplace_agreements
+    return cf_datadog_cl(cli_ctx).single_sign_on_configurations

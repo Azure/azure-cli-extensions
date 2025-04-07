@@ -36,8 +36,13 @@ class AEMCommandsLoader(AzCommandsLoader):
                                            help="The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`",
                                            completer=get_resource_name_completion_list('Microsoft.Compute/virtualMachines'), id_part='name')
 
+        proxy_arg_type = CLIArgumentType(options_list=['--proxy-uri', '-p'])
+        proxy_uri = CLIArgumentType(overrides=proxy_arg_type,
+                                    help="Set the proxy URI that should be used to access external resources e.g. the Azure API. Example: http://proxyhost:8080")
+
         with self.argument_context('vm aem') as c:
             c.argument('vm_name', existing_vm_name)
+            c.argument('proxy_uri', proxy_uri)
             c.argument('skip_storage_check', action='store_true',
                        help='Disables the test for table content')
             c.argument('skip_storage_analytics', action='store_true',
@@ -50,6 +55,8 @@ class AEMCommandsLoader(AzCommandsLoader):
                        help='Set the access of the VM identity to the individual resources, e.g. data disks instead of the complete resource group.')
             c.argument('wait_time_in_minutes', type=int,
                        help='Maximum minutes to wait for the storage metrics to be available')
+            c.argument('debug_extension', action='store_true',
+                       help='Enable debug mode on the VM Extension for SAP.')
 
 
 COMMAND_LOADER_CLS = AEMCommandsLoader

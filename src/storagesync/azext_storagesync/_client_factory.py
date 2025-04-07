@@ -6,7 +6,7 @@
 
 def cf_storagesync(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.storagesync import StorageSyncManagementClient
+    from .vendored_sdks.storagesync import MicrosoftStorageSync as StorageSyncManagementClient
     return get_mgmt_service_client(cli_ctx, StorageSyncManagementClient)
 
 

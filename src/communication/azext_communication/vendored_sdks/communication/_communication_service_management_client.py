@@ -18,21 +18,18 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import CommunicationServiceManagementClientConfiguration
-from .operations import OperationOperations
+from .operations import Operations
 from .operations import CommunicationServiceOperations
-from .operations import OperationStatusesOperations
 from . import models
 
 
 class CommunicationServiceManagementClient(object):
     """REST API for Azure Communication Services.
 
-    :ivar operation: OperationOperations operations
-    :vartype operation: communication_service_management_client.operations.OperationOperations
+    :ivar operations: Operations operations
+    :vartype operations: communication_service_management_client.operations.Operations
     :ivar communication_service: CommunicationServiceOperations operations
     :vartype communication_service: communication_service_management_client.operations.CommunicationServiceOperations
-    :ivar operation_statuses: OperationStatusesOperations operations
-    :vartype operation_statuses: communication_service_management_client.operations.OperationStatusesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -59,11 +56,9 @@ class CommunicationServiceManagementClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
         self.communication_service = CommunicationServiceOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.operation_statuses = OperationStatusesOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

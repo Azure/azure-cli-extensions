@@ -55,3 +55,16 @@ class ToolbarLexer(RegexLexer):
             (r'.', Operator),
         ]
     }
+
+
+class ScenarioLexer(RegexLexer):
+    """ Lexer for the recommended scenarios """
+    # The purpose of this lexer is to tokenize and apply syntax highlighting to a text based on a set of regular expressions.
+    tokens = {
+        'root': [
+            # (r' .', Number) matches any single character followed by a space and assigns it the token type Number.
+            (r' .', Number),
+            # (r'.', Number) matches any single character and assigns it the token type Number
+            (r'.', Number),
+        ]
+    }

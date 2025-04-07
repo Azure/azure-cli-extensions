@@ -12,18 +12,27 @@
 from knack.help_files import helps
 
 
+helps['kusto'] = '''
+    type: group
+    short-summary: Manage Kusto
+'''
+
 helps['kusto cluster'] = """
     type: group
-    short-summary: kusto cluster
+    short-summary: Manage cluster with kusto
 """
 
 helps['kusto cluster list'] = """
     type: command
-    short-summary: "Lists all Kusto clusters within a subscription."
+    short-summary: "Lists all Kusto clusters within a resource group. And Lists all Kusto clusters within a \
+subscription."
     examples:
       - name: KustoClustersListByResourceGroup
         text: |-
                az kusto cluster list --resource-group "kustorptest"
+      - name: KustoClustersList
+        text: |-
+               az kusto cluster list
 """
 
 helps['kusto cluster show'] = """
@@ -32,12 +41,12 @@ helps['kusto cluster show'] = """
     examples:
       - name: KustoClustersGet
         text: |-
-               az kusto cluster show --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster show --name "kustoCluster" --resource-group "kustorptest"
 """
 
 helps['kusto cluster create'] = """
     type: command
-    short-summary: "Create or update a Kusto cluster."
+    short-summary: "Create a Kusto cluster."
     parameters:
       - name: --sku
         short-summary: "The SKU of the cluster."
@@ -77,16 +86,25 @@ helps['kusto cluster create'] = """
         long-summary: |
             Usage: --key-vault-properties key-name=XX key-version=XX key-vault-uri=XX user-identity=XX
 
-            key-name: Required. The name of the key vault key.
+            key-name: The name of the key vault key.
             key-version: The version of the key vault key.
-            key-vault-uri: Required. The Uri of the key vault.
+            key-vault-uri: The Uri of the key vault.
             user-identity: The user assigned identity (ARM resource id) that has access to the key.
+      - name: --accepted-audiences
+        short-summary: "The cluster's accepted audiences."
+        long-summary: |
+            Usage: --accepted-audiences value=XX
+
+            value: GUID or valid URL representing an accepted audience.
+
+            Multiple actions can be specified by using more than one --accepted-audiences argument.
     examples:
       - name: KustoClustersCreateOrUpdate
         text: |-
-               az kusto cluster create --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location \
-"westus" --enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_L8s" \
-capacity=2 tier="Standard" --resource-group "kustorptest"
+               az kusto cluster create --name "kustoCluster" --type "SystemAssigned" --location "westus" \
+--allowed-ip-range-list "0.0.0.0/0" --enable-auto-stop true --enable-double-encryption false --enable-purge true \
+--enable-streaming-ingest true --public-ip-type "DualStack" --public-network-access "Enabled" --sku \
+name="Standard_L8s" capacity=2 tier="Standard" --resource-group "kustorptest"
 """
 
 helps['kusto cluster update'] = """
@@ -131,16 +149,25 @@ helps['kusto cluster update'] = """
         long-summary: |
             Usage: --key-vault-properties key-name=XX key-version=XX key-vault-uri=XX user-identity=XX
 
-            key-name: Required. The name of the key vault key.
+            key-name: The name of the key vault key.
             key-version: The version of the key vault key.
-            key-vault-uri: Required. The Uri of the key vault.
+            key-vault-uri: The Uri of the key vault.
             user-identity: The user assigned identity (ARM resource id) that has access to the key.
+      - name: --accepted-audiences
+        short-summary: "The cluster's accepted audiences."
+        long-summary: |
+            Usage: --accepted-audiences value=XX
+
+            value: GUID or valid URL representing an accepted audience.
+
+            Multiple actions can be specified by using more than one --accepted-audiences argument.
     examples:
       - name: KustoClustersUpdate
         text: |-
-               az kusto cluster update --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location \
-"westus" --enable-purge true --enable-streaming-ingest true --engine-type "V2" --key-vault-properties \
-key-name="keyName" key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-group "kustorptest"
+               az kusto cluster update --name "kustoCluster2" --type "SystemAssigned" --location "westus" \
+--enable-auto-stop true --enable-purge true --enable-streaming-ingest true --engine-type "V3" --key-vault-properties \
+key-name="keyName" key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --public-ip-type "IPv4" \
+--restrict-outbound-network-access "Disabled" --resource-group "kustorptest"
 """
 
 helps['kusto cluster delete'] = """
@@ -149,7 +176,7 @@ helps['kusto cluster delete'] = """
     examples:
       - name: KustoClustersDelete
         text: |-
-               az kusto cluster delete --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster delete --name "kustoCluster2" --resource-group "kustorptest"
 """
 
 helps['kusto cluster add-language-extension'] = """
@@ -167,8 +194,8 @@ helps['kusto cluster add-language-extension'] = """
     examples:
       - name: KustoClusterAddLanguageExtensions
         text: |-
-               az kusto cluster add-language-extension --name "kustoclusterrptest4" --value \
-language-extension-name="PYTHON" --value language-extension-name="R" --resource-group "kustorptest"
+               az kusto cluster add-language-extension --name "kustoCluster" --value language-extension-name="PYTHON" \
+--value language-extension-name="R" --resource-group "kustorptest"
 """
 
 helps['kusto cluster detach-follower-database'] = """
@@ -177,9 +204,9 @@ helps['kusto cluster detach-follower-database'] = """
     examples:
       - name: KustoClusterDetachFollowerDatabases
         text: |-
-               az kusto cluster detach-follower-database --name "kustoclusterrptest4" --attached-database-configuration\
--name "myAttachedDatabaseConfiguration" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/reso\
-urceGroups/kustorptest/providers/Microsoft.Kusto/clusters/leader4" --resource-group "kustorptest"
+               az kusto cluster detach-follower-database --name "kustoCluster" --attached-database-configuration-name \
+"attachedDatabaseConfigurationsTest" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourc\
+eGroups/kustorptest/providers/Microsoft.Kusto/clusters/kustoCluster2" --resource-group "kustorptest"
 """
 
 helps['kusto cluster diagnose-virtual-network'] = """
@@ -189,7 +216,7 @@ on."
     examples:
       - name: KustoClusterDiagnoseVirtualNetwork
         text: |-
-               az kusto cluster diagnose-virtual-network --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster diagnose-virtual-network --name "kustoCluster" --resource-group "kustorptest"
 """
 
 helps['kusto cluster list-follower-database'] = """
@@ -198,7 +225,7 @@ helps['kusto cluster list-follower-database'] = """
     examples:
       - name: KustoClusterListFollowerDatabases
         text: |-
-               az kusto cluster list-follower-database --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster list-follower-database --name "kustoCluster" --resource-group "kustorptest"
 """
 
 helps['kusto cluster list-language-extension'] = """
@@ -207,16 +234,30 @@ helps['kusto cluster list-language-extension'] = """
     examples:
       - name: KustoClusterListLanguageExtensions
         text: |-
-               az kusto cluster list-language-extension --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster list-language-extension --name "kustoCluster" --resource-group "kustorptest"
+"""
+
+helps['kusto cluster list-outbound-network-dependency-endpoint'] = """
+    type: command
+    short-summary: "Gets the network endpoints of all outbound dependencies of a Kusto cluster."
+    examples:
+      - name: Get Kusto cluster outbound network dependencies
+        text: |-
+               az kusto cluster list-outbound-network-dependency-endpoint --name "kustoCluster" --resource-group \
+"kustorptest"
 """
 
 helps['kusto cluster list-sku'] = """
     type: command
-    short-summary: "Lists eligible SKUs for Kusto resource provider."
+    short-summary: "Returns the SKUs available for the provided resource. And Lists eligible SKUs for Kusto resource \
+provider."
     examples:
       - name: KustoClustersListResourceSkus
         text: |-
-               az kusto cluster list-sku --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster list-sku --name "kustoCluster" --resource-group "kustorptest"
+      - name: KustoClustersListSkus
+        text: |-
+               az kusto cluster list-sku
 """
 
 helps['kusto cluster remove-language-extension'] = """
@@ -234,8 +275,8 @@ helps['kusto cluster remove-language-extension'] = """
     examples:
       - name: KustoClusterRemoveLanguageExtensions
         text: |-
-               az kusto cluster remove-language-extension --name "kustoclusterrptest4" --value \
-language-extension-name="PYTHON" --value language-extension-name="R" --resource-group "kustorptest"
+               az kusto cluster remove-language-extension --name "kustoCluster" --value language-extension-name="PYTHON\
+" --value language-extension-name="R" --resource-group "kustorptest"
 """
 
 helps['kusto cluster start'] = """
@@ -244,7 +285,7 @@ helps['kusto cluster start'] = """
     examples:
       - name: KustoClustersStart
         text: |-
-               az kusto cluster start --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster start --name "kustoCluster2" --resource-group "kustorptest"
 """
 
 helps['kusto cluster stop'] = """
@@ -253,7 +294,7 @@ helps['kusto cluster stop'] = """
     examples:
       - name: KustoClustersStop
         text: |-
-               az kusto cluster stop --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster stop --name "kustoCluster2" --resource-group "kustorptest"
 """
 
 helps['kusto cluster wait'] = """
@@ -262,18 +303,18 @@ helps['kusto cluster wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the kusto cluster is successfully created.
         text: |-
-               az kusto cluster wait --name "kustoclusterrptest4" --resource-group "kustorptest" --created
+               az kusto cluster wait --name "kustoCluster" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto cluster is successfully updated.
         text: |-
-               az kusto cluster wait --name "kustoclusterrptest4" --resource-group "kustorptest" --updated
+               az kusto cluster wait --name "kustoCluster" --resource-group "kustorptest" --updated
       - name: Pause executing next line of CLI script until the kusto cluster is successfully deleted.
         text: |-
-               az kusto cluster wait --name "kustoclusterrptest4" --resource-group "kustorptest" --deleted
+               az kusto cluster wait --name "kustoCluster" --resource-group "kustorptest" --deleted
 """
 
 helps['kusto cluster-principal-assignment'] = """
     type: group
-    short-summary: kusto cluster-principal-assignment
+    short-summary: Manage cluster principal assignment with kusto
 """
 
 helps['kusto cluster-principal-assignment list'] = """
@@ -282,8 +323,7 @@ helps['kusto cluster-principal-assignment list'] = """
     examples:
       - name: KustoPrincipalAssignmentsList
         text: |-
-               az kusto cluster-principal-assignment list --cluster-name "kustoclusterrptest4" --resource-group \
-"kustorptest"
+               az kusto cluster-principal-assignment list --cluster-name "kustoCluster" --resource-group "kustorptest"
 """
 
 helps['kusto cluster-principal-assignment show'] = """
@@ -292,8 +332,8 @@ helps['kusto cluster-principal-assignment show'] = """
     examples:
       - name: KustoClusterPrincipalAssignmentsGet
         text: |-
-               az kusto cluster-principal-assignment show --cluster-name "kustoclusterrptest4" \
---principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
+               az kusto cluster-principal-assignment show --cluster-name "kustoCluster" --principal-assignment-name \
+"kustoprincipal1" --resource-group "kustorptest"
 """
 
 helps['kusto cluster-principal-assignment create'] = """
@@ -302,14 +342,14 @@ helps['kusto cluster-principal-assignment create'] = """
     examples:
       - name: KustoClusterPrincipalAssignmentsCreateOrUpdate
         text: |-
-               az kusto cluster-principal-assignment create --cluster-name "kustoclusterrptest4" --principal-id \
+               az kusto cluster-principal-assignment create --cluster-name "kustoCluster" --principal-id \
 "87654321-1234-1234-1234-123456789123" --principal-type "App" --role "AllDatabasesAdmin" --tenant-id \
 "12345678-1234-1234-1234-123456789123" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
 """
 
 helps['kusto cluster-principal-assignment update'] = """
     type: command
-    short-summary: "Create a Kusto cluster principalAssignment."
+    short-summary: "Update a Kusto cluster principalAssignment."
 """
 
 helps['kusto cluster-principal-assignment delete'] = """
@@ -318,8 +358,8 @@ helps['kusto cluster-principal-assignment delete'] = """
     examples:
       - name: KustoClusterPrincipalAssignmentsDelete
         text: |-
-               az kusto cluster-principal-assignment delete --cluster-name "kustoclusterrptest4" \
---principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
+               az kusto cluster-principal-assignment delete --cluster-name "kustoCluster" --principal-assignment-name \
+"kustoprincipal1" --resource-group "kustorptest"
 """
 
 helps['kusto cluster-principal-assignment wait'] = """
@@ -330,23 +370,23 @@ met.
       - name: Pause executing next line of CLI script until the kusto cluster-principal-assignment is successfully \
 created.
         text: |-
-               az kusto cluster-principal-assignment wait --cluster-name "kustoclusterrptest4" \
---principal-assignment-name "kustoprincipal1" --resource-group "kustorptest" --created
+               az kusto cluster-principal-assignment wait --cluster-name "kustoCluster" --principal-assignment-name \
+"kustoprincipal1" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto cluster-principal-assignment is successfully \
 updated.
         text: |-
-               az kusto cluster-principal-assignment wait --cluster-name "kustoclusterrptest4" \
---principal-assignment-name "kustoprincipal1" --resource-group "kustorptest" --updated
+               az kusto cluster-principal-assignment wait --cluster-name "kustoCluster" --principal-assignment-name \
+"kustoprincipal1" --resource-group "kustorptest" --updated
       - name: Pause executing next line of CLI script until the kusto cluster-principal-assignment is successfully \
 deleted.
         text: |-
-               az kusto cluster-principal-assignment wait --cluster-name "kustoclusterrptest4" \
---principal-assignment-name "kustoprincipal1" --resource-group "kustorptest" --deleted
+               az kusto cluster-principal-assignment wait --cluster-name "kustoCluster" --principal-assignment-name \
+"kustoprincipal1" --resource-group "kustorptest" --deleted
 """
 
 helps['kusto database'] = """
     type: group
-    short-summary: kusto database
+    short-summary: Manage database with kusto
 """
 
 helps['kusto database list'] = """
@@ -355,7 +395,7 @@ helps['kusto database list'] = """
     examples:
       - name: KustoDatabasesListByCluster
         text: |-
-               az kusto database list --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto database list --cluster-name "kustoCluster" --resource-group "kustorptest"
 """
 
 helps['kusto database show'] = """
@@ -364,13 +404,13 @@ helps['kusto database show'] = """
     examples:
       - name: KustoDatabasesGet
         text: |-
-               az kusto database show --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---resource-group "kustorptest"
+               az kusto database show --cluster-name "kustoCluster" --database-name "KustoDatabase8" --resource-group \
+"kustorptest"
 """
 
 helps['kusto database create'] = """
     type: command
-    short-summary: "Creates or updates a database."
+    short-summary: "Create a database."
     parameters:
       - name: --read-write-database
         short-summary: "Class representing a read write database."
@@ -391,11 +431,10 @@ TimeSpan.
             location: Resource location.
             kind: Required. Kind of the database
     examples:
-      - name: KustoDatabasesCreateOrUpdate
+      - name: Kusto ReadWrite database create or update
         text: |-
-               az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---parameters "{\\"location\\":\\"westus\\",\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group \
-"kustorptest"
+               az kusto database create --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
+--read-write-database location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database update'] = """
@@ -423,8 +462,8 @@ TimeSpan.
     examples:
       - name: KustoDatabasesUpdate
         text: |-
-               az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---parameters "{\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+               az kusto database update --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
+--read-write-database hot-cache-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database delete'] = """
@@ -433,7 +472,7 @@ helps['kusto database delete'] = """
     examples:
       - name: KustoDatabasesDelete
         text: |-
-               az kusto database delete --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
+               az kusto database delete --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
 --resource-group "kustorptest"
 """
 
@@ -457,8 +496,8 @@ helps['kusto database add-principal'] = """
     examples:
       - name: KustoDatabaseAddPrincipals
         text: |-
-               az kusto database add-principal --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---value name="Some User" type="User" app-id="" email="user@microsoft.com" fqn="aaduser=some_guid" role="Admin" --value \
+               az kusto database add-principal --cluster-name "kustoCluster" --database-name "KustoDatabase8" --value \
+name="Some User" type="User" app-id="" email="user@microsoft.com" fqn="aaduser=some_guid" role="Admin" --value \
 name="Kusto" type="Group" app-id="" email="kusto@microsoft.com" fqn="aadgroup=some_guid" role="Viewer" --value \
 name="SomeApp" type="App" app-id="some_guid_app_id" email="" fqn="aadapp=some_guid_app_id" role="Admin" \
 --resource-group "kustorptest"
@@ -470,7 +509,7 @@ helps['kusto database list-principal'] = """
     examples:
       - name: KustoDatabaseListPrincipals
         text: |-
-               az kusto database list-principal --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
+               az kusto database list-principal --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
 --resource-group "kustorptest"
 """
 
@@ -494,11 +533,11 @@ helps['kusto database remove-principal'] = """
     examples:
       - name: KustoDatabaseRemovePrincipals
         text: |-
-               az kusto database remove-principal --cluster-name "kustoclusterrptest4" --database-name \
-"KustoDatabase8" --value name="Some User" type="User" app-id="" email="user@microsoft.com" fqn="aaduser=some_guid" \
-role="Admin" --value name="Kusto" type="Group" app-id="" email="kusto@microsoft.com" fqn="aadgroup=some_guid" \
-role="Viewer" --value name="SomeApp" type="App" app-id="some_guid_app_id" email="" fqn="aadapp=some_guid_app_id" \
-role="Admin" --resource-group "kustorptest"
+               az kusto database remove-principal --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
+--value name="Some User" type="User" app-id="" email="user@microsoft.com" fqn="aaduser=some_guid" role="Admin" --value \
+name="Kusto" type="Group" app-id="" email="kusto@microsoft.com" fqn="aadgroup=some_guid" role="Viewer" --value \
+name="SomeApp" type="App" app-id="some_guid_app_id" email="" fqn="aadapp=some_guid_app_id" role="Admin" \
+--resource-group "kustorptest"
 """
 
 helps['kusto database wait'] = """
@@ -507,21 +546,205 @@ helps['kusto database wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the kusto database is successfully created.
         text: |-
-               az kusto database wait --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---resource-group "kustorptest" --created
+               az kusto database wait --cluster-name "kustoCluster" --database-name "KustoDatabase8" --resource-group \
+"kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto database is successfully updated.
         text: |-
-               az kusto database wait --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---resource-group "kustorptest" --updated
+               az kusto database wait --cluster-name "kustoCluster" --database-name "KustoDatabase8" --resource-group \
+"kustorptest" --updated
       - name: Pause executing next line of CLI script until the kusto database is successfully deleted.
         text: |-
-               az kusto database wait --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---resource-group "kustorptest" --deleted
+               az kusto database wait --cluster-name "kustoCluster" --database-name "KustoDatabase8" --resource-group \
+"kustorptest" --deleted
+"""
+
+helps['kusto attached-database-configuration'] = """
+    type: group
+    short-summary: Manage attached database configuration with kusto
+"""
+
+helps['kusto attached-database-configuration list'] = """
+    type: command
+    short-summary: "Returns the list of attached database configurations of the given Kusto cluster."
+    examples:
+      - name: KustoAttachedDatabaseConfigurationsListByCluster
+        text: |-
+               az kusto attached-database-configuration list --cluster-name "kustoCluster2" --resource-group \
+"kustorptest"
+"""
+
+helps['kusto attached-database-configuration show'] = """
+    type: command
+    short-summary: "Returns an attached database configuration."
+    examples:
+      - name: AttachedDatabaseConfigurationsGet
+        text: |-
+               az kusto attached-database-configuration show --name "attachedDatabaseConfigurationsTest" \
+--cluster-name "kustoCluster2" --resource-group "kustorptest"
+"""
+
+helps['kusto attached-database-configuration create'] = """
+    type: command
+    short-summary: "Create an attached database configuration."
+    parameters:
+      - name: --table-level --table-level-sharing-properties
+        short-summary: "Table level sharing specifications"
+        long-summary: |
+            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
+external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
+materialized-views-to-exclude=XX
+
+            tables-to-include: List of tables to include in the follower database
+            tables-to-exclude: List of tables to exclude from the follower database
+            external-tables-to-include: List of external tables to include in the follower database
+            external-tables-to-exclude: List of external tables exclude from the follower database
+            materialized-views-to-include: List of materialized views to include in the follower database
+            materialized-views-to-exclude: List of materialized views exclude from the follower database
+    examples:
+      - name: AttachedDatabaseConfigurationsCreateOrUpdate
+        text: |-
+               az kusto attached-database-configuration create --name "attachedDatabaseConfigurationsTest" \
+--cluster-name "kustoCluster2" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456\
+789098/resourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/kustoCluster2" --database-name "kustodatabase" \
+--default-principals-modification-kind "Union" --table-level-sharing-properties external-tables-to-exclude="ExternalTab\
+le2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" \
+materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1" \
+--resource-group "kustorptest"
+"""
+
+helps['kusto attached-database-configuration update'] = """
+    type: command
+    short-summary: "Update an attached database configuration."
+    parameters:
+      - name: --table-level --table-level-sharing-properties
+        short-summary: "Table level sharing specifications"
+        long-summary: |
+            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
+external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
+materialized-views-to-exclude=XX
+
+            tables-to-include: List of tables to include in the follower database
+            tables-to-exclude: List of tables to exclude from the follower database
+            external-tables-to-include: List of external tables to include in the follower database
+            external-tables-to-exclude: List of external tables exclude from the follower database
+            materialized-views-to-include: List of materialized views to include in the follower database
+            materialized-views-to-exclude: List of materialized views exclude from the follower database
+"""
+
+helps['kusto attached-database-configuration delete'] = """
+    type: command
+    short-summary: "Deletes the attached database configuration with the given name."
+    examples:
+      - name: AttachedDatabaseConfigurationsDelete
+        text: |-
+               az kusto attached-database-configuration delete --name "attachedDatabaseConfigurationsTest" \
+--cluster-name "kustoCluster" --resource-group "kustorptest"
+"""
+
+helps['kusto attached-database-configuration wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the kusto attached-database-configuration is \
+met.
+    examples:
+      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+created.
+        text: |-
+               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurationsTest" \
+--cluster-name "kustoCluster2" --resource-group "kustorptest" --created
+      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+updated.
+        text: |-
+               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurationsTest" \
+--cluster-name "kustoCluster2" --resource-group "kustorptest" --updated
+      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+deleted.
+        text: |-
+               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurationsTest" \
+--cluster-name "kustoCluster2" --resource-group "kustorptest" --deleted
+"""
+
+helps['kusto managed-private-endpoint'] = """
+    type: group
+    short-summary: Manage managed private endpoint with kusto
+"""
+
+helps['kusto managed-private-endpoint list'] = """
+    type: command
+    short-summary: "Returns the list of managed private endpoints."
+    examples:
+      - name: KustoManagedPrivateEndpointsList
+        text: |-
+               az kusto managed-private-endpoint list --cluster-name "kustoCluster" --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint show'] = """
+    type: command
+    short-summary: "Gets a managed private endpoint."
+    examples:
+      - name: KustoManagedPrivateEndpointsGet
+        text: |-
+               az kusto managed-private-endpoint show --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint create'] = """
+    type: command
+    short-summary: "Creates a managed private endpoint."
+    examples:
+      - name: KustoManagedPrivateEndpointsCreateOrUpdate
+        text: |-
+               az kusto managed-private-endpoint create --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --group-id "blob" --private-link-resource-id "/subscriptions/12345678-1234-1234-1234-12345\
+6789098/resourceGroups/kustorptest/providers/Microsoft.Storage/storageAccounts/storageAccountTest" --request-message \
+"Please Approve." --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint update'] = """
+    type: command
+    short-summary: "Updates a managed private endpoint."
+    examples:
+      - name: KustoManagedPrivateEndpointsUpdate
+        text: |-
+               az kusto managed-private-endpoint update --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --group-id "blob" --private-link-resource-id "/subscriptions/12345678-1234-1234-1234-12345\
+6789098/resourceGroups/kustorptest/providers/Microsoft.Storage/storageAccounts/storageAccountTest" --request-message \
+"Please Approve Managed Private Endpoint Request." --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint delete'] = """
+    type: command
+    short-summary: "Deletes a managed private endpoint."
+    examples:
+      - name: ManagedPrivateEndpointsDelete
+        text: |-
+               az kusto managed-private-endpoint delete --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the kusto managed-private-endpoint is met.
+    examples:
+      - name: Pause executing next line of CLI script until the kusto managed-private-endpoint is successfully \
+created.
+        text: |-
+               az kusto managed-private-endpoint wait --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --resource-group "kustorptest" --created
+      - name: Pause executing next line of CLI script until the kusto managed-private-endpoint is successfully \
+updated.
+        text: |-
+               az kusto managed-private-endpoint wait --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --resource-group "kustorptest" --updated
+      - name: Pause executing next line of CLI script until the kusto managed-private-endpoint is successfully \
+deleted.
+        text: |-
+               az kusto managed-private-endpoint wait --cluster-name "kustoCluster" --name \
+"managedPrivateEndpointTest" --resource-group "kustorptest" --deleted
 """
 
 helps['kusto database-principal-assignment'] = """
     type: group
-    short-summary: kusto database-principal-assignment
+    short-summary: Manage database principal assignment with kusto
 """
 
 helps['kusto database-principal-assignment list'] = """
@@ -530,7 +753,7 @@ helps['kusto database-principal-assignment list'] = """
     examples:
       - name: KustoPrincipalAssignmentsList
         text: |-
-               az kusto database-principal-assignment list --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment list --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --resource-group "kustorptest"
 """
 
@@ -540,7 +763,7 @@ helps['kusto database-principal-assignment show'] = """
     examples:
       - name: KustoDatabasePrincipalAssignmentsGet
         text: |-
-               az kusto database-principal-assignment show --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment show --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
 """
 
@@ -550,7 +773,7 @@ helps['kusto database-principal-assignment create'] = """
     examples:
       - name: KustoDatabasePrincipalAssignmentsCreateOrUpdate
         text: |-
-               az kusto database-principal-assignment create --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment create --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --principal-id "87654321-1234-1234-1234-123456789123" --principal-type "App" --role "Admin" \
 --tenant-id "12345678-1234-1234-1234-123456789123" --principal-assignment-name "kustoprincipal1" --resource-group \
 "kustorptest"
@@ -558,7 +781,7 @@ helps['kusto database-principal-assignment create'] = """
 
 helps['kusto database-principal-assignment update'] = """
     type: command
-    short-summary: "Creates a Kusto cluster database principalAssignment."
+    short-summary: "Update a Kusto cluster database principalAssignment."
 """
 
 helps['kusto database-principal-assignment delete'] = """
@@ -567,7 +790,7 @@ helps['kusto database-principal-assignment delete'] = """
     examples:
       - name: KustoDatabasePrincipalAssignmentsDelete
         text: |-
-               az kusto database-principal-assignment delete --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment delete --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest"
 """
 
@@ -579,97 +802,213 @@ met.
       - name: Pause executing next line of CLI script until the kusto database-principal-assignment is successfully \
 created.
         text: |-
-               az kusto database-principal-assignment wait --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment wait --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto database-principal-assignment is successfully \
 updated.
         text: |-
-               az kusto database-principal-assignment wait --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment wait --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest" --updated
       - name: Pause executing next line of CLI script until the kusto database-principal-assignment is successfully \
 deleted.
         text: |-
-               az kusto database-principal-assignment wait --cluster-name "kustoclusterrptest4" --database-name \
+               az kusto database-principal-assignment wait --cluster-name "kustoCluster" --database-name \
 "Kustodatabase8" --principal-assignment-name "kustoprincipal1" --resource-group "kustorptest" --deleted
 """
 
-helps['kusto attached-database-configuration'] = """
+helps['kusto script'] = """
     type: group
-    short-summary: kusto attached-database-configuration
+    short-summary: Manage script with kusto
 """
 
-helps['kusto attached-database-configuration list'] = """
+helps['kusto script list'] = """
     type: command
-    short-summary: "Returns the list of attached database configurations of the given Kusto cluster."
+    short-summary: "Returns the list of database scripts for given database."
     examples:
-      - name: KustoAttachedDatabaseConfigurationsListByCluster
+      - name: KustoScriptsList
         text: |-
-               az kusto attached-database-configuration list --cluster-name "kustoclusterrptest4" --resource-group \
+               az kusto script list --cluster-name "kustoCluster" --database-name "Kustodatabase8" --resource-group \
 "kustorptest"
 """
 
-helps['kusto attached-database-configuration show'] = """
+helps['kusto script show'] = """
     type: command
-    short-summary: "Returns an attached database configuration."
+    short-summary: "Gets a Kusto cluster database script."
     examples:
-      - name: AttachedDatabaseConfigurationsGet
+      - name: KustoScriptsGet
         text: |-
-               az kusto attached-database-configuration show --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto script show --cluster-name "kustoCluster" --database-name "Kustodatabase8" --resource-group \
+"kustorptest" --name "kustoScript"
 """
 
-helps['kusto attached-database-configuration create'] = """
+helps['kusto script create'] = """
     type: command
-    short-summary: "Creates or updates an attached database configuration."
+    short-summary: "Creates a Kusto database script."
     examples:
-      - name: AttachedDatabaseConfigurationsCreateOrUpdate
+      - name: KustoScriptsCreateOrUpdate
         text: |-
-               az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
-sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --resource-group "kustorptest"
+               az kusto script create --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
+--continue-on-errors true --force-update-tag "2bcf3c21-ffd1-4444-b9dd-e52e00ee53fe" --script-url \
+"https://mysa.blob.core.windows.net/container/script.txt" --script-url-sas-token "?sv=2019-02-02&st=2019-04-29T22%3A18%\
+3A26Z&se=2019-04-30T02%3A23%3A26Z&sr=b&sp=rw&sip=168.1.5.60-168.1.5.70&spr=https&sig=********************************" \
+--resource-group "kustorptest" --name "kustoScript"
 """
 
-helps['kusto attached-database-configuration update'] = """
+helps['kusto script update'] = """
     type: command
-    short-summary: "Creates or updates an attached database configuration."
-"""
-
-helps['kusto attached-database-configuration delete'] = """
-    type: command
-    short-summary: "Deletes the attached database configuration with the given name."
+    short-summary: "Updates a database script."
     examples:
-      - name: AttachedDatabaseConfigurationsDelete
+      - name: KustoScriptsUpdate
         text: |-
-               az kusto attached-database-configuration delete --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto script update --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
+--continue-on-errors true --force-update-tag "2bcf3c21-ffd1-4444-b9dd-e52e00ee53fe" --script-url \
+"https://mysa.blob.core.windows.net/container/script.txt" --script-url-sas-token "?sv=2019-02-02&st=2019-04-29T22%3A18%\
+3A26Z&se=2019-04-30T02%3A23%3A26Z&sr=b&sp=rw&sip=168.1.5.60-168.1.5.70&spr=https&sig=********************************" \
+--resource-group "kustorptest" --name "kustoScript"
 """
 
-helps['kusto attached-database-configuration wait'] = """
+helps['kusto script delete'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the kusto attached-database-configuration is \
-met.
+    short-summary: "Deletes a Kusto principalAssignment."
     examples:
-      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+      - name: KustoScriptsDelete
+        text: |-
+               az kusto script delete --cluster-name "kustoCluster" --database-name "KustoDatabase8" --resource-group \
+"kustorptest" --name "kustoScript"
+"""
+
+helps['kusto script wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the kusto script is met.
+    examples:
+      - name: Pause executing next line of CLI script until the kusto script is successfully created.
+        text: |-
+               az kusto script wait --cluster-name "kustoCluster" --database-name "Kustodatabase8" --resource-group \
+"kustorptest" --name "kustoScript" --created
+      - name: Pause executing next line of CLI script until the kusto script is successfully updated.
+        text: |-
+               az kusto script wait --cluster-name "kustoCluster" --database-name "Kustodatabase8" --resource-group \
+"kustorptest" --name "kustoScript" --updated
+      - name: Pause executing next line of CLI script until the kusto script is successfully deleted.
+        text: |-
+               az kusto script wait --cluster-name "kustoCluster" --database-name "Kustodatabase8" --resource-group \
+"kustorptest" --name "kustoScript" --deleted
+"""
+
+helps['kusto private-endpoint-connection'] = """
+    type: group
+    short-summary: Manage private endpoint connection with kusto
+"""
+
+helps['kusto private-endpoint-connection list'] = """
+    type: command
+    short-summary: "Returns the list of private endpoint connections."
+    examples:
+      - name: KustoPrivateEndpointConnectionsList
+        text: |-
+               az kusto private-endpoint-connection list --cluster-name "kustoCluster" --resource-group "kustorptest"
+"""
+
+helps['kusto private-endpoint-connection show'] = """
+    type: command
+    short-summary: "Gets a private endpoint connection."
+    examples:
+      - name: Gets private endpoint connection.
+        text: |-
+               az kusto private-endpoint-connection show --cluster-name "kustoCluster" --name "privateEndpointTest" \
+--resource-group "kustorptest"
+"""
+
+helps['kusto private-endpoint-connection create'] = """
+    type: command
+    short-summary: "Approve or reject a private endpoint connection with a given name."
+    parameters:
+      - name: --connection-state --private-link-service-connection-state
+        short-summary: "Connection State of the Private Endpoint Connection."
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX
+
+            status: The private link service connection status.
+            description: The private link service connection description.
+    examples:
+      - name: Approve or reject a private endpoint connection with a given name.
+        text: |-
+               az kusto private-endpoint-connection create --cluster-name "kustoclusterrptest4" \
+--private-link-service-connection-state description="Approved by johndoe@contoso.com" status="Approved" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest"
+"""
+
+helps['kusto private-endpoint-connection update'] = """
+    type: command
+    short-summary: "Approve or reject a private endpoint connection with a given name."
+    parameters:
+      - name: --connection-state --private-link-service-connection-state
+        short-summary: "Connection State of the Private Endpoint Connection."
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX
+
+            status: The private link service connection status.
+            description: The private link service connection description.
+"""
+
+helps['kusto private-endpoint-connection delete'] = """
+    type: command
+    short-summary: "Deletes a private endpoint connection with a given name."
+    examples:
+      - name: Deletes a private endpoint connection with a given name.
+        text: |-
+               az kusto private-endpoint-connection delete --cluster-name "kustoCluster" --name "privateEndpointTest" \
+--resource-group "kustorptest"
+"""
+
+helps['kusto private-endpoint-connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the kusto private-endpoint-connection is met.
+    examples:
+      - name: Pause executing next line of CLI script until the kusto private-endpoint-connection is successfully \
 created.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest" --created
-      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+               az kusto private-endpoint-connection wait --cluster-name "kustoCluster" --name "privateEndpointTest" \
+--resource-group "kustorptest" --created
+      - name: Pause executing next line of CLI script until the kusto private-endpoint-connection is successfully \
 updated.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest" --updated
-      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+               az kusto private-endpoint-connection wait --cluster-name "kustoCluster" --name "privateEndpointTest" \
+--resource-group "kustorptest" --updated
+      - name: Pause executing next line of CLI script until the kusto private-endpoint-connection is successfully \
 deleted.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest" --deleted
+               az kusto private-endpoint-connection wait --cluster-name "kustoCluster" --name "privateEndpointTest" \
+--resource-group "kustorptest" --deleted
+"""
+
+helps['kusto private-link-resource'] = """
+    type: group
+    short-summary: Manage private link resource with kusto
+"""
+
+helps['kusto private-link-resource list'] = """
+    type: command
+    short-summary: "Returns the list of private link resources."
+    examples:
+      - name: Gets private endpoint connections.
+        text: |-
+               az kusto private-link-resource list --cluster-name "kustoCluster" --resource-group "kustorptest"
+"""
+
+helps['kusto private-link-resource show'] = """
+    type: command
+    short-summary: "Gets a private link resource."
+    examples:
+      - name: Gets private endpoint connection.
+        text: |-
+               az kusto private-link-resource show --cluster-name "kustoCluster" --name "cluster" --resource-group \
+"kustorptest"
 """
 
 helps['kusto data-connection'] = """
     type: group
-    short-summary: kusto data-connection
+    short-summary: Manage data connection with kusto
 """
 
 helps['kusto data-connection list'] = """
@@ -678,7 +1017,7 @@ helps['kusto data-connection list'] = """
     examples:
       - name: KustoDatabasesListByCluster
         text: |-
-               az kusto data-connection list --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
+               az kusto data-connection list --cluster-name "kustoCluster" --database-name "KustoDatabase8" \
 --resource-group "kustorptest"
 """
 
@@ -686,52 +1025,86 @@ helps['kusto data-connection show'] = """
     type: command
     short-summary: "Returns a data connection."
     examples:
+      - name: KustoDataConnectionsEventGridGet
+        text: |-
+               az kusto data-connection show --cluster-name "kustoCluster" --name "dataConnectionTest" --database-name \
+"KustoDatabase8" --resource-group "kustorptest"
       - name: KustoDataConnectionsGet
         text: |-
-               az kusto data-connection show --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
---database-name "KustoDatabase8" --resource-group "kustorptest"
+               az kusto data-connection show --cluster-name "kustoCluster" --name "dataConnectionTest" --database-name \
+"KustoDatabase8" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection event-grid'] = """
     type: group
-    short-summary: kusto data-connection sub group event-grid
+    short-summary: Manage data connection with kusto sub group event-grid
 """
 
 helps['kusto data-connection event-grid create'] = """
     type: command
-    short-summary: "Creates or updates a data connection."
+    short-summary: "Create a data connection."
+    examples:
+      - name: KustoDataConnectionsEventGridCreateOrUpdate
+        text: |-
+               az kusto data-connection event-grid create --cluster-name "kustoCluster" --name "dataConnectionTest" \
+--database-name "KustoDatabase8" --location "westus" --blob-storage-event-type "Microsoft.Storage.BlobCreated" \
+--consumer-group "$Default" --data-format "JSON" --database-routing "Single" --event-grid-resource-id \
+"/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.Storage/storageAcco\
+unts/teststorageaccount/providers/Microsoft.EventGrid/eventSubscriptions/eventSubscriptionTest" \
+--event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
+soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest2" --ignore-first-record false \
+--managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/provider\
+s/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" --mapping-rule-name "TestMapping" \
+--storage-account-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers\
+/Microsoft.Storage/storageAccounts/teststorageaccount" --table-name "TestTable" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection event-hub'] = """
     type: group
-    short-summary: kusto data-connection sub group event-hub
+    short-summary: Manage data connection with kusto sub group event-hub
 """
 
 helps['kusto data-connection event-hub create'] = """
     type: command
-    short-summary: "Creates or updates a data connection."
+    short-summary: "Create a data connection."
     examples:
       - name: KustoDataConnectionsCreateOrUpdate
         text: |-
-               az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" --name \
-"DataConnections8" --database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" \
---event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
-soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+               az kusto data-connection event-hub create --cluster-name "kustoCluster" --name "dataConnectionTest" \
+--database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
+"/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
+/eventhubTestns1/eventhubs/eventhubTest1" --managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456\
+789098/resourceGroups/kustorptest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" \
+--resource-group "kustorptest"
 """
 
 helps['kusto data-connection iot-hub'] = """
     type: group
-    short-summary: kusto data-connection sub group iot-hub
+    short-summary: Manage data connection with kusto sub group iot-hub
 """
 
 helps['kusto data-connection iot-hub create'] = """
     type: command
-    short-summary: "Creates or updates a data connection."
+    short-summary: "Create a data connection."
 """
 
 helps['kusto data-connection event-grid update'] = """
     type: command
     short-summary: "Updates a data connection."
+    examples:
+      - name: KustoDataConnectionsEventGridUpdate
+        text: |-
+               az kusto data-connection event-grid update --cluster-name "kustoCluster" --name "dataConnectionTest" \
+--database-name "KustoDatabase8" --location "westus" --blob-storage-event-type "Microsoft.Storage.BlobCreated" \
+--consumer-group "$Default" --data-format "JSON" --database-routing "Single" --event-grid-resource-id \
+"/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.Storage/storageAcco\
+unts/teststorageaccount/providers/Microsoft.EventGrid/eventSubscriptions/eventSubscriptionTest" \
+--event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
+soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest2" --ignore-first-record false \
+--managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/provider\
+s/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" --mapping-rule-name "TestMapping" \
+--storage-account-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers\
+/Microsoft.Storage/storageAccounts/teststorageaccount" --table-name "TestTable" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection event-hub update'] = """
@@ -740,10 +1113,12 @@ helps['kusto data-connection event-hub update'] = """
     examples:
       - name: KustoDataConnectionsUpdate
         text: |-
-               az kusto data-connection event-hub update --cluster-name "kustoclusterrptest4" --name \
-"DataConnections8" --database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" \
---event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
-soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+               az kusto data-connection event-hub update --cluster-name "kustoCluster" --name "dataConnectionTest" \
+--database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
+"/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
+/eventhubTestns1/eventhubs/eventhubTest1" --managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456\
+789098/resourceGroups/kustorptest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" \
+--resource-group "kustorptest"
 """
 
 helps['kusto data-connection iot-hub update'] = """
@@ -757,13 +1132,18 @@ helps['kusto data-connection delete'] = """
     examples:
       - name: KustoDataConnectionsDelete
         text: |-
-               az kusto data-connection delete --cluster-name "kustoclusterrptest4" --name "kustoeventhubconnection1" \
+               az kusto data-connection delete --cluster-name "kustoCluster" --name "dataConnectionTest" \
 --database-name "KustoDatabase8" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection event-grid data-connection-validation'] = """
     type: command
     short-summary: "Checks that the data connection parameters are valid."
+    examples:
+      - name: KustoDataConnectionEventGridValidation
+        text: |-
+               az kusto data-connection event-grid data-connection-validation --cluster-name "kustoCluster" \
+--database-name "KustoDatabase8" --name "dataConnectionTest" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection event-hub data-connection-validation'] = """
@@ -772,10 +1152,8 @@ helps['kusto data-connection event-hub data-connection-validation'] = """
     examples:
       - name: KustoDataConnectionValidation
         text: |-
-               az kusto data-connection event-hub data-connection-validation --cluster-name "kustoclusterrptest4" \
---database-name "KustoDatabase8" --name "DataConnections8" --consumer-group "testConsumerGroup1" \
---event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
-soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+               az kusto data-connection event-hub data-connection-validation --cluster-name "kustoCluster" \
+--database-name "KustoDatabase8" --name "dataConnectionTest" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection iot-hub data-connection-validation'] = """
@@ -789,10 +1167,40 @@ helps['kusto data-connection wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the kusto data-connection is successfully created.
         text: |-
-               az kusto data-connection wait --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
---database-name "KustoDatabase8" --resource-group "kustorptest" --created
+               az kusto data-connection wait --cluster-name "kustoCluster" --name "dataConnectionTest" --database-name \
+"KustoDatabase8" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto data-connection is successfully deleted.
         text: |-
-               az kusto data-connection wait --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
---database-name "KustoDatabase8" --resource-group "kustorptest" --deleted
+               az kusto data-connection wait --cluster-name "kustoCluster" --name "dataConnectionTest" --database-name \
+"KustoDatabase8" --resource-group "kustorptest" --deleted
+"""
+
+helps['kusto operation-result'] = """
+    type: group
+    short-summary: Manage operation result with kusto
+"""
+
+helps['kusto operation-result show'] = """
+    type: command
+    short-summary: "Returns operation results."
+    examples:
+      - name: KustoOperationResultsGet
+        text: |-
+               az kusto operation-result show --operation-id "30972f1b-b61d-4fd8-bd34-3dcfa24670f3" --location \
+"westus"
+"""
+
+helps['kusto operation-result-location'] = """
+    type: group
+    short-summary: Manage operation result location with kusto
+"""
+
+helps['kusto operation-result-location show'] = """
+    type: command
+    short-summary: "Returns operation results."
+    examples:
+      - name: KustoOperationsResultsLocationGet
+        text: |-
+               az kusto operation-result-location show --operation-id "30972f1b-b61d-4fd8-bd34-3dcfa24670f3" \
+--location "westus"
 """

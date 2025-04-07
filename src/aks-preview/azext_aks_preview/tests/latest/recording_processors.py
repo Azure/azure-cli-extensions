@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure_devtools.scenario_tests import RecordingProcessor
-from azure_devtools.scenario_tests.utilities import is_text_payload
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 
 MOCK_GUID = '00000000-0000-0000-0000-000000000001'
 MOCK_SECRET = 'fake-secret'
@@ -24,7 +24,6 @@ class KeyReplacer(RecordingProcessor):
             response['body']['string'] = self._replace_string_keys(response['body']['string'])
         return response
 
-    # pylint: disable=no-self-use
     def _replace_string_keys(self, val):
         import re
         if 'secret' in val:
@@ -41,7 +40,6 @@ class KeyReplacer(RecordingProcessor):
                          .format(MOCK_GUID), val, flags=re.IGNORECASE)
         return val
 
-    # pylint: disable=no-self-use
     def _replace_byte_keys(self, val):
         import re
         if b'secret' in val:

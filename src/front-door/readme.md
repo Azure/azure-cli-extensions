@@ -11,3 +11,6 @@ Then, call it as you would any other az command:
 ```
 az network front-door -h
 ```
+
+## Known issue
+in `webapplicationfirewall.json`, change `logScrubbing x-ms-client-flatten` to false

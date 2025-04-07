@@ -1,0 +1,51 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital available-ground-station list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --capability
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations?capability=EarthObservation&api-version=2022-03-01
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/WESTUS2_0","name":"WESTUS2_0","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"Quincy","providerName":"Microsoft","longitudeDegrees":-119.88515,"latitudeDegrees":47.2393,"altitudeMeters":392.5,"releaseMode":"GA"}},{"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/SVALSAT","name":"SVALSAT","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"Svalbard","providerName":"KSAT","longitudeDegrees":15.38624,"latitudeDegrees":78.22702,"altitudeMeters":493.0,"releaseMode":"GA"}},{"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/AWARUA","name":"AWARUA","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"Awarua","providerName":"KSAT","longitudeDegrees":168.37941,"latitudeDegrees":-46.52877,"altitudeMeters":13.65,"releaseMode":"GA"}},{"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/HARTEBEESTHOEK","name":"HARTEBEESTHOEK","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"Hartebeesthoek","providerName":"KSAT","longitudeDegrees":27.70562,"latitudeDegrees":-25.88569,"altitudeMeters":1562.66,"releaseMode":"GA"}},{"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/LONG_BEACH","name":"LONG_BEACH","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"LongBeach","providerName":"KSAT","longitudeDegrees":-118.14646,"latitudeDegrees":33.82439,"altitudeMeters":392.5,"releaseMode":"GA"}},{"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/ATHENS","name":"ATHENS","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"Athens","providerName":"KSAT","longitudeDegrees":22.623284,"latitudeDegrees":37.845148,"altitudeMeters":278.0,"releaseMode":"GA"}},{"location":"swedencentral","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/availableGroundStations/MICROSOFT_SWEDEN","name":"MICROSOFT_SWEDEN","type":"Microsoft.Orbital/availableGroundStations","properties":{"city":"Gavle","providerName":"Microsoft","longitudeDegrees":60.674,"latitudeDegrees":17.142,"altitudeMeters":100.0,"releaseMode":"GA"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2603'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:41:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+version: 1

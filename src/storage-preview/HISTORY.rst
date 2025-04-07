@@ -3,8 +3,71 @@
 Release History
 ===============
 
+1.0.0b5
++++++++
+* `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021
+* `az storage account local-user` only mark some params in `create/update` as preview as the rest have been GA in main rep
+
+1.0.0b4
++++++++
+* `az storage account create/update`: Support `--enable-extended-groups`
+* `az storage account local-user create/update`: Support `--extended-group`
+* `az storage account local-user create`: Support `--is-nfsv3-enabled`
+
+1.0.0b3
++++++++
+* Remove ADAL dependencies
+
+1.0.0b2(2024-07-15)
+++++++++++++++++++
+* `az storage account local-user`: Support `--group-id` and `--allow-acl-authorization`. Support list paging and filtering
+* `az storage account task-assignment`: Support task-assignment
+
+1.0.0b1(2023-08-11)
+++++++++++++++++++
+* `az storage account migration start/show`: Support start and show storage account migration
+
+0.9.0(2023-07-19)
+++++++++++++++++++
+* [BREAKING CHANGE] `az storage file/directory`: Default action changes from trimming trailing dot in file/directory names to not trimming, support `--disallow-trailing-dot` and `--disallow-source-trailing-dot`
+
+0.8.4(2023-04-27)
+++++++++++++++++++
+* Bump azure_mgmt_storage to 2022_09_01 and remove commands supported in azure cli
+
+0.8.3(2022-05-24)
+++++++++++++++++++
+* `az storage account create/update`: Rename `--key-vault-federated-identity-client-id` to `--key-vault-federated-client-id`
+
+0.8.2(2022-04-12)
+++++++++++++++++++
+* `az storage account create`: Add `--dns-endpoint-type` to support creating accounts in an Azure DNS Zone
+
+0.8.1(2022-03-15)
+++++++++++++++++++
+* `az storage account create/update`: Support `--key-vault-federated-identity-client-id` and `--allowed-copy-scope`
+
+0.8.0(2022-01-17)
+++++++++++++++++++
+* Remove `az storage account file-service-properties` as SMB multichannel and secured SMB has been supported in main Azure CLI
+* Remove `az storage account blob-inventory-policy` as it is supported in main Azure CLI
+* `az storage account local-user`: Add support for local user
+* `az storage account create/update`: Support `--enable-sftp`, `--enable-local-user`, `--sam-account-name` and `--account-type`
+
+0.7.3(2021-05-20)
+++++++++++++++++++
+* Support soft delete for ADLS Gen2 account
+
+0.7.2(2021-04-09)
+++++++++++++++++++
+* Remove `az storage blob service-properties` as it is supported in storage-blob-preview extension and Azure CLI
+
+0.7.1(2021-04-06)
+++++++++++++++++++
+* `az storage account file-service-properties`: Add support for secured SMB
+
 0.7.0 (2020-12-28)
-++++++++++++++++
+++++++++++++++++++
 * Add support for `az storage file upload`, `az storage file upload-batch` (Track 2)
 
 0.6.1 (2020-12-15)

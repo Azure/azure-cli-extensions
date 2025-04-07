@@ -50,7 +50,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Christopher Harrison',
     author_email='chrhar@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/hack',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/hack',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

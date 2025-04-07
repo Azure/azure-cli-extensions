@@ -1,0 +1,772 @@
+interactions:
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev pool list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --dev-center --project
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '212'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1359128'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: E639B302FB0F4CF5A96DBE4ECF7338D3 Ref B: SJC211051201047 Ref C: 2024-12-17T01:07:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --dev-center --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-no-hibernate\",\n
+        \     \"name\": \"pool-no-hibernate\",\n      \"location\": \"uksouth\",\n
+        \     \"osType\": \"Windows\",\n      \"hardwareProfile\": {\n        \"vCPUs\":
+        8,\n        \"skuName\": \"general_i_8c32gb256ssd_v2\",\n        \"memoryGB\":
+        32\n      },\n      \"hibernateSupport\": \"Disabled\",\n      \"storageProfile\":
+        {\n        \"osDisk\": {\n          \"diskSizeGB\": 256\n        }\n      },\n
+        \     \"imageReference\": {\n        \"name\": \"microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc\",\n
+        \       \"version\": \"1.0.0\",\n        \"operatingSystem\": \"Windows11\",\n
+        \       \"osBuildNumber\": \"win11-24H2-ent-cpc\",\n        \"publishedDate\":
+        \"2024-10-01T00:00:00+00:00\"\n      },\n      \"localAdministrator\": \"Enabled\",\n
+        \     \"healthStatus\": \"Healthy\",\n      \"displayName\": \"pool-no-hibernate\"\n
+        \   },\n    {\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate\",\n
+        \     \"name\": \"pool-hibernate\",\n      \"location\": \"australiaeast\",\n
+        \     \"osType\": \"Windows\",\n      \"hardwareProfile\": {\n        \"vCPUs\":
+        16,\n        \"skuName\": \"general_i_16c64gb1024ssd_v2\",\n        \"memoryGB\":
+        64\n      },\n      \"hibernateSupport\": \"Enabled\",\n      \"storageProfile\":
+        {\n        \"osDisk\": {\n          \"diskSizeGB\": 1024\n        }\n      },\n
+        \     \"imageReference\": {\n        \"name\": \"microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc\",\n
+        \       \"version\": \"1.0.0\",\n        \"operatingSystem\": \"Windows11\",\n
+        \       \"osBuildNumber\": \"win11-24H2-ent-cpc\",\n        \"publishedDate\":
+        \"2024-10-01T00:00:00+00:00\"\n      },\n      \"localAdministrator\": \"Enabled\",\n
+        \     \"healthStatus\": \"Healthy\",\n      \"displayName\": \"pool-hibernate\"\n
+        \   }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '1843'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:07 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2024-12-17T01:07:12.5153645Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev pool show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --dev-center --project
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-proj2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '217'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '13'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.2485481'
+      x-ms-user-quota-remaining:
+      - '13'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 5C9629B9450F450C9AAB7A9A230C5588 Ref B: SJC211051205045 Ref C: 2024-12-17T01:07:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --dev-center --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-no-hibernate?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-no-hibernate\",\n
+        \ \"name\": \"pool-no-hibernate\",\n  \"location\": \"uksouth\",\n  \"osType\":
+        \"Windows\",\n  \"hardwareProfile\": {\n    \"vCPUs\": 8,\n    \"skuName\":
+        \"general_i_8c32gb256ssd_v2\",\n    \"memoryGB\": 32\n  },\n  \"hibernateSupport\":
+        \"Disabled\",\n  \"storageProfile\": {\n    \"osDisk\": {\n      \"diskSizeGB\":
+        256\n    }\n  },\n  \"imageReference\": {\n    \"name\": \"microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc\",\n
+        \   \"version\": \"1.0.0\",\n    \"operatingSystem\": \"Windows11\",\n    \"osBuildNumber\":
+        \"win11-24H2-ent-cpc\",\n    \"publishedDate\": \"2024-10-01T00:00:00+00:00\"\n
+        \ },\n  \"localAdministrator\": \"Enabled\",\n  \"healthStatus\": \"Healthy\",\n
+        \ \"displayName\": \"pool-no-hibernate\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '802'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:08 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '297'
+      x-rate-limit-reset:
+      - '2024-12-17T01:07:12.5153645Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --pool --dev-center --project
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-project","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '219'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '12'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1568135'
+      x-ms-user-quota-remaining:
+      - '12'
+      x-ms-user-quota-resets-after:
+      - 00:00:04
+      x-msedge-ref:
+      - 'Ref A: E263054A7CAD4103B40E1DEA3B5A0F30 Ref B: SJC211051201051 Ref C: 2024-12-17T01:07:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --pool --dev-center --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules/default\",\n
+        \     \"name\": \"default\",\n      \"sourceUri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate\",\n
+        \     \"sourceType\": \"Pool\",\n      \"type\": \"StopDevBox\",\n      \"frequency\":
+        \"Daily\",\n      \"time\": \"19:00\",\n      \"timeZone\": \"America/Los_Angeles\"\n
+        \   }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:09 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '296'
+      x-rate-limit-reset:
+      - '2024-12-17T01:07:12.5153645Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --dev-center --project
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-project","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '219'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '11'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.0520677'
+      x-ms-user-quota-remaining:
+      - '11'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: B2BD6E2387694091B7A97D7CBF11BE3A Ref B: SJC211051203049 Ref C: 2024-12-17T01:07:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --dev-center --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/schedules?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules/default\",\n
+        \     \"name\": \"default\",\n      \"sourceUri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate\",\n
+        \     \"sourceType\": \"Pool\",\n      \"type\": \"StopDevBox\",\n      \"frequency\":
+        \"Daily\",\n      \"time\": \"19:00\",\n      \"timeZone\": \"America/Los_Angeles\"\n
+        \   }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:10 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '296'
+      x-rate-limit-reset:
+      - '2024-12-17T01:07:11.0204927Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": " Resources |where type =~''Microsoft.devcenter/projects''\n    \n    |
+      extend devCenterArr = split(properties.devCenterId, ''/'')\n    | extend devCenterName
+      = devCenterArr[array_length(devCenterArr) -1]\n    | where devCenterName =~
+      ''amlim-dev-center-euap''\n    | take 1\n    | extend devCenterUri = properties.devCenterUri\n    |
+      project name,devCenterUri ", "options": {"allowPartialScopes": true}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '408'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --pool --dev-center --project
+      User-Agent:
+      - python/3.10.7 (Windows-10-10.0.22631-SP0) AZURECLI/2.67.0
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"amlim-proj2","devCenterUri":"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '217'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '10'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1397256'
+      x-ms-user-quota-remaining:
+      - '10'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 9BDC70F5BEC747EAA8197D1715190E91 Ref B: SJC211051204023 Ref C: 2024-12-17T01:07:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --pool --dev-center --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules/default?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules/default\",\n
+        \ \"name\": \"default\",\n  \"sourceUri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate\",\n
+        \ \"sourceType\": \"Pool\",\n  \"type\": \"StopDevBox\",\n  \"frequency\":
+        \"Daily\",\n  \"time\": \"19:00\",\n  \"timeZone\": \"America/Los_Angeles\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '473'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:11 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T01:08:11.0529708Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --endpoint --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-no-hibernate\",\n
+        \     \"name\": \"pool-no-hibernate\",\n      \"location\": \"uksouth\",\n
+        \     \"osType\": \"Windows\",\n      \"hardwareProfile\": {\n        \"vCPUs\":
+        8,\n        \"skuName\": \"general_i_8c32gb256ssd_v2\",\n        \"memoryGB\":
+        32\n      },\n      \"hibernateSupport\": \"Disabled\",\n      \"storageProfile\":
+        {\n        \"osDisk\": {\n          \"diskSizeGB\": 256\n        }\n      },\n
+        \     \"imageReference\": {\n        \"name\": \"microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc\",\n
+        \       \"version\": \"1.0.0\",\n        \"operatingSystem\": \"Windows11\",\n
+        \       \"osBuildNumber\": \"win11-24H2-ent-cpc\",\n        \"publishedDate\":
+        \"2024-10-01T00:00:00+00:00\"\n      },\n      \"localAdministrator\": \"Enabled\",\n
+        \     \"healthStatus\": \"Healthy\",\n      \"displayName\": \"pool-no-hibernate\"\n
+        \   },\n    {\n      \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate\",\n
+        \     \"name\": \"pool-hibernate\",\n      \"location\": \"australiaeast\",\n
+        \     \"osType\": \"Windows\",\n      \"hardwareProfile\": {\n        \"vCPUs\":
+        16,\n        \"skuName\": \"general_i_16c64gb1024ssd_v2\",\n        \"memoryGB\":
+        64\n      },\n      \"hibernateSupport\": \"Enabled\",\n      \"storageProfile\":
+        {\n        \"osDisk\": {\n          \"diskSizeGB\": 1024\n        }\n      },\n
+        \     \"imageReference\": {\n        \"name\": \"microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc\",\n
+        \       \"version\": \"1.0.0\",\n        \"operatingSystem\": \"Windows11\",\n
+        \       \"osBuildNumber\": \"win11-24H2-ent-cpc\",\n        \"publishedDate\":
+        \"2024-10-01T00:00:00+00:00\"\n      },\n      \"localAdministrator\": \"Enabled\",\n
+        \     \"healthStatus\": \"Healthy\",\n      \"displayName\": \"pool-hibernate\"\n
+        \   }\n  ]\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '1843'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:11 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2024-12-17T01:08:11.4464531Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-no-hibernate?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-no-hibernate\",\n
+        \ \"name\": \"pool-no-hibernate\",\n  \"location\": \"uksouth\",\n  \"osType\":
+        \"Windows\",\n  \"hardwareProfile\": {\n    \"vCPUs\": 8,\n    \"skuName\":
+        \"general_i_8c32gb256ssd_v2\",\n    \"memoryGB\": 32\n  },\n  \"hibernateSupport\":
+        \"Disabled\",\n  \"storageProfile\": {\n    \"osDisk\": {\n      \"diskSizeGB\":
+        256\n    }\n  },\n  \"imageReference\": {\n    \"name\": \"microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc\",\n
+        \   \"version\": \"1.0.0\",\n    \"operatingSystem\": \"Windows11\",\n    \"osBuildNumber\":
+        \"win11-24H2-ent-cpc\",\n    \"publishedDate\": \"2024-10-01T00:00:00+00:00\"\n
+        \ },\n  \"localAdministrator\": \"Enabled\",\n  \"healthStatus\": \"Healthy\",\n
+        \ \"displayName\": \"pool-no-hibernate\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '802'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:11 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2024-12-17T01:08:11.4464531Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter dev schedule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --pool --endpoint --project
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules/default?api-version=2024-10-01-preview
+  response:
+    body:
+      string: "{\n  \"uri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate/schedules/default\",\n
+        \ \"name\": \"default\",\n  \"sourceUri\": \"https://00000000-0000-0000-0000-000000000000-amlim-dev-center-euap.centraluseuap.devcenter.azure.com/projects/amlim/pools/pool-hibernate\",\n
+        \ \"sourceType\": \"Pool\",\n  \"type\": \"StopDevBox\",\n  \"frequency\":
+        \"Daily\",\n  \"time\": \"19:00\",\n  \"timeZone\": \"America/Los_Angeles\"\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Location,Operation-Location,x-ms-correlation-request-id,x-ms-client-request-id
+      access-control-max-age:
+      - '86400'
+      connection:
+      - keep-alive
+      content-length:
+      - '473'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Dec 2024 01:07:12 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '297'
+      x-rate-limit-reset:
+      - '2024-12-17T01:08:11.4464531Z'
+    status:
+      code: 200
+      message: OK
+version: 1

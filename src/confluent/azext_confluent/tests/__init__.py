@@ -8,6 +8,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=import-outside-toplevel
+
 import inspect
 import logging
 import os
@@ -31,8 +33,8 @@ FAILED = "failed"
 def try_manual(func):
     def import_manual_function(origin_func):
         from importlib import import_module
-        decorated_path = inspect.getfile(origin_func)
-        module_path = __path__[0]
+        decorated_path = inspect.getfile(origin_func).lower()
+        module_path = __path__[0].lower()
         if not decorated_path.startswith(module_path):
             raise Exception("Decorator can only be used in submodules!")
         manual_path = os.path.join(
@@ -47,13 +49,12 @@ def try_manual(func):
         func_to_call = func
         try:
             func_to_call = import_manual_function(func)
-            func_to_call = import_manual_function(func)
             logger.info("Found manual override for %s(...)", func.__name__)
         except (ImportError, AttributeError):
-            pass
+            pass  # pylint: disable=inconsistent-return-statements
         return func_to_call
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):  # pylint: disable=inconsistent-return-statements
         func_to_call = get_func_to_call()
         logger.info("running %s()...", func.__name__)
         try:
@@ -66,6 +67,9 @@ def try_manual(func):
             ret = func_to_call(*args, **kwargs)
         except (AssertionError, AzureError, CliTestError, CliExecutionError, SystemExit,
                 JMESPathCheckAssertionError) as e:
+            use_exception_cache = os.getenv("TEST_EXCEPTION_CACHE")
+            if use_exception_cache is None or use_exception_cache.lower() != "true":
+                raise
             test_map[func.__name__]["end_dt"] = dt.datetime.utcnow()
             test_map[func.__name__]["result"] = FAILED
             test_map[func.__name__]["error_message"] = str(e).replace("\r\n", " ").replace("\n", " ")[:500]

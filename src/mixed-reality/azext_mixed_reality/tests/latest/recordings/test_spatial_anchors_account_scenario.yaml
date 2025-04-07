@@ -1,55 +1,5 @@
 interactions:
 - request:
-    body: '{"location": "eastus2", "tags": {"product": "azurecli", "cause": "automation",
-      "date": "2019-03-01T04:50:48Z"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - group create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '111'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --location --name --tag
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2019-03-01T04:50:48Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '385'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 01 Mar 2019 04:50:51 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 201
-      message: Created
-- request:
     body: null
     headers:
       Accept:
@@ -57,30 +7,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spatial-anchors-account list
+      - spatial-anchors-account create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g
+      - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) azsdk-python-azure-mgmt-resource/23.0.1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts?api-version=2019-02-28-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","test":"test_spatial_anchors_account_scenario","date":"2023-06-28T03:55:10Z","module":"mixed-reality"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '383'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:50:51 GMT
+      - Wed, 28 Jun 2023 03:55:14 GMT
       expires:
       - '-1'
       pragma:
@@ -108,32 +56,31 @@ interactions:
       Content-Length:
       - '23'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g -n -l
+      - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002?api-version=2019-02-28-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/SpatialAnchorsAccounts/cli000002","name":"cli000002","type":"Microsoft.MixedReality/SpatialAnchorsAccounts","location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"0af6c134-a9e9-44c8-ad91-483ff456d73c"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"dd5dd1d8-de66-4c41-ab35-fc21694690e5"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '494'
+      - '459'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:50:54 GMT
+      - Wed, 28 Jun 2023 03:55:20 GMT
       expires:
       - '-1'
       location:
-      - subscriptions/10438cf7-a794-4c7b-ad4c-5ddc1313ba7d/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/SpatialAnchorsAccounts/cli000002
+      - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name
+      ms-cv:
+      - H7yy/fHgxUGs0b8UmT5lTw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -153,38 +100,34 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spatial-anchors-account show
+      - spatial-anchors-account create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n
+      - -g -n --storage-account-name --tag --kind
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) azsdk-python-azure-mgmt-resource/23.0.1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002?api-version=2019-02-28-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/SpatialAnchorsAccounts/cli000002","name":"cli000002","type":"Microsoft.MixedReality/SpatialAnchorsAccounts","location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"0af6c134-a9e9-44c8-ad91-483ff456d73c"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","test":"test_spatial_anchors_account_scenario","date":"2023-06-28T03:55:10Z","module":"mixed-reality"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '494'
+      - '383'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:50:55 GMT
+      - Wed, 28 Jun 2023 03:55:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
@@ -193,90 +136,93 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"location": "eastus2", "properties": {"storageAccountName": "storage_account_name"},
+      "sku": {"name": "P3"}, "tags": {"tag": "tag"}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spatial-anchors-account keys list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002/keys?api-version=2019-02-28-preview
-  response:
-    body:
-      string: '{"primaryKey":"zpyJpSqfpmFOZmryd/BJwy9ieGCxOFfOldw//L/yOsI=","secondaryKey":"VBbap7DzPvyVXgG5FHviASv1MexMtFIkRJJZvHGh5Y8="}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '123'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 01 Mar 2019 04:50:55 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"serial": 1}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spatial-anchors-account primary-key renew
+      - spatial-anchors-account create
       Connection:
       - keep-alive
       Content-Length:
-      - '13'
+      - '132'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g -n
+      - -g -n --storage-account-name --tag --kind
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002/keys?api-version=2019-02-28-preview
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"primaryKey":"kwgK2I+gW6n9k56gLJIGokXSFYjcZbRuMmzZyJNkB+8=","secondaryKey":"VBbap7DzPvyVXgG5FHviASv1MexMtFIkRJJZvHGh5Y8="}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1","name":"spatial-anchors-account-name1","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"mixedreality.azure.com","accountId":"ec99725e-bb22-4a97-9e96-68b74937e4ae"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '123'
+      - '516'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:50:57 GMT
+      - Wed, 28 Jun 2023 03:55:28 GMT
       expires:
       - '-1'
+      location:
+      - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1
+      ms-cv:
+      - NnCsAZ/OOU+ZTk7sj3G5Bg.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"properties": {"storageAccountName": "storage_account_name1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spatial-anchors-account update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '63'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --storage-account-name
+      User-Agent:
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"dd5dd1d8-de66-4c41-ab35-fc21694690e5"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '504'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 03:55:30 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - 1YUbAKLi1kGzgfjzYGdz4Q.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -300,32 +246,31 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spatial-anchors-account keys list
+      - spatial-anchors-account show
       Connection:
       - keep-alive
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002/keys?api-version=2019-02-28-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"primaryKey":"kwgK2I+gW6n9k56gLJIGokXSFYjcZbRuMmzZyJNkB+8=","secondaryKey":"VBbap7DzPvyVXgG5FHviASv1MexMtFIkRJJZvHGh5Y8="}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"dd5dd1d8-de66-4c41-ab35-fc21694690e5"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '123'
+      - '504'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:50:58 GMT
+      - Wed, 28 Jun 2023 03:55:33 GMT
       expires:
       - '-1'
+      ms-cv:
+      - 1K1oe+qhBEyThU+m11jq+w.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -336,104 +281,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"serial": 2}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spatial-anchors-account secondary-key renew
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '13'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002/keys?api-version=2019-02-28-preview
-  response:
-    body:
-      string: '{"primaryKey":"kwgK2I+gW6n9k56gLJIGokXSFYjcZbRuMmzZyJNkB+8=","secondaryKey":"srVAoNAKesUzS6MhxQiV31nA2nP024CUzbTCmnEg4eE="}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '123'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 01 Mar 2019 04:50:59 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spatial-anchors-account delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002?api-version=2019-02-28-preview
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Fri, 01 Mar 2019 04:51:01 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
     status:
       code: 200
       message: OK
@@ -451,30 +298,121 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts?api-version=2019-02-28-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"dd5dd1d8-de66-4c41-ab35-fc21694690e5"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1","name":"spatial-anchors-account-name1","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"mixedreality.azure.com","accountId":"ec99725e-bb22-4a97-9e96-68b74937e4ae"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '1049'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:51:02 GMT
+      - Wed, 28 Jun 2023 03:55:34 GMT
       expires:
       - '-1'
+      ms-cv:
+      - SjvkEVECAkaoI/3Oxy52tA.0
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spatial-anchors-account delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1?api-version=2021-03-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 28 Jun 2023 03:55:41 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - jbEjzy/2qkijOy5bX+yBcA.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spatial-anchors-account list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts?api-version=2021-03-01-preview
+  response:
+    body:
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"dd5dd1d8-de66-4c41-ab35-fc21694690e5"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 03:55:43 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - 3lXL9sORRUi7lxWkzNyByw.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
@@ -490,7 +428,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spatial-anchors-account delete
+      - spatial-anchors-account key show
       Connection:
       - keep-alive
       Content-Length:
@@ -498,78 +436,194 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 azure-mgmt-mixedreality/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/cli000002?api-version=2019-02-28-preview
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/listKeys?api-version=2021-03-01-preview
   response:
     body:
-      string: ''
+      string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
     headers:
       cache-control:
       - no-cache
+      content-length:
+      - '51'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:51:03 GMT
+      - Wed, 28 Jun 2023 03:55:45 GMT
       expires:
       - '-1'
+      ms-cv:
+      - wOPR/u1sTE+Ke4qPdi+HTA.0
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
     status:
-      code: 204
-      message: No Content
+      code: 200
+      message: OK
 - request:
-    body: null
+    body: '{"serial": 1}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - group delete
+      - spatial-anchors-account key renew
       Connection:
       - keep-alive
       Content-Length:
-      - '0'
+      - '13'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - --name --yes --no-wait
+      - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.59
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/regenerateKeys?api-version=2021-03-01-preview
   response:
     body:
-      string: ''
+      string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '0'
+      - '51'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Fri, 01 Mar 2019 04:51:05 GMT
+      - Wed, 28 Jun 2023 03:55:46 GMT
       expires:
       - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdBQ09MNENGWk9PV0ZBM0lWNFI1Wko3NzNQUElMTklVUFFDU3xFMEFGNDk1NTBFQkRDNUE0LUVBU1RVUzIiLCJqb2JMb2NhdGlvbiI6ImVhc3R1czIifQ?api-version=2018-05-01
+      ms-cv:
+      - DEgnu6i7AUOKjedOxHRgMA.0
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
     status:
-      code: 202
-      message: Accepted
+      code: 200
+      message: OK
+- request:
+    body: '{"serial": 1}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spatial-anchors-account key renew
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '13'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -k
+      User-Agent:
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/regenerateKeys?api-version=2021-03-01-preview
+  response:
+    body:
+      string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '51'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 03:55:49 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - zs60bZJaoUaCP8L4ugVXCQ.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"serial": 2}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spatial-anchors-account key renew
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '13'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -k
+      User-Agent:
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/regenerateKeys?api-version=2021-03-01-preview
+  response:
+    body:
+      string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '51'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 03:55:50 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - KA6x5Z37kEW3VpEPSlFYEw.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
 version: 1

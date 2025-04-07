@@ -112,85 +112,6 @@ helps['monitor app-insights component delete'] = """
           az monitor app-insights component delete --app demoApp -g demoRg
 """
 
-helps['monitor app-insights component billing'] = """
-    type: group
-    short-summary: Manage an Application Insights component billing features.
-"""
-
-helps['monitor app-insights component billing show'] = """
-    type: command
-    short-summary: Show the billing features of an Application Insights resource.
-    examples:
-      - name: Show the billing features of an application insights component
-        text: |
-          az monitor app-insights component billing show --app demoApp -g demoRg
-"""
-
-helps['monitor app-insights component billing update'] = """
-    type: command
-    short-summary: Update the billing features of an Application Insights resource.
-    examples:
-      - name: Update the daily cap of the billing features
-        text: |
-          az monitor app-insights component billing update --app demoApp -g demoRg --cap 200 --stop
-"""
-
-helps['monitor app-insights api-key'] = """
-    type: group
-    short-summary: Operations on API keys associated with an Application Insights component.
-"""
-
-helps['monitor app-insights api-key show'] = """
-    type: command
-    short-summary: Get all keys or a specific API key associated with an Application Insights resource.
-    parameters:
-      - name: --api-key
-        type: string
-        short-summary: name of the API key to fetch. Can be found using `api-key show`.
-    examples:
-      - name: Fetch API Key.
-        text: |
-          az monitor app-insights api-key show --app demoApp -g demoRg --api-key demo-key
-      - name: Fetch API Keys.
-        text: |
-          az monitor app-insights api-key show --app demoApp -g demoRg
-"""
-
-helps['monitor app-insights api-key delete'] = """
-    type: command
-    short-summary: Delete an API key from an Application Insights resource.
-    parameters:
-      - name: --api-key
-        type: string
-        short-summary: Name of the API key to delete. Can be found using `api-key show`.
-    examples:
-      - name: Delete API Key.
-        text: |
-          az monitor app-insights api-key delete --app demoApp -g demoRg --api-key demo-key
-"""
-
-helps['monitor app-insights api-key create'] = """
-    type: command
-    short-summary: Create a new API key for use with an Application Insights resource.
-    parameters:
-      - name: --api-key
-        type: string
-        short-summary: Name of the API key to create.
-      - name: --read-properties
-        type: list
-        short-summary: A space seperated list of names of read Roles for this API key to inherit. Possible values include ReadTelemetry, AuthenticateSDKControlChannel and "".
-      - name: --write-properties
-        type: list
-        short-summary: A space seperated list of names of write Roles for this API key to inherit. Possible values include WriteAnnotations and "".
-    examples:
-      - name: Create a component with kind web and location.
-        text: |
-          az monitor app-insights api-key create --api-key cli-demo --read-properties ReadTelemetry --write-properties WriteAnnotations -g demoRg --app testApp
-      - name: Create a component with kind web and location without any permission
-        text: |
-          az monitor app-insights api-key create --api-key cli-demo --read-properties '""' --write-properties '""' -g demoRg --app testApp
-"""
-
 helps['monitor app-insights metrics'] = """
     type: group
     short-summary: Retrieve metrics from an application.
@@ -270,44 +191,9 @@ helps['monitor app-insights events show'] = """
           az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --offset 24h
 """
 
-helps['monitor app-insights component linked-storage'] = """
-    type: group
-    short-summary: Manage linked storage account for an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage show'] = """
-    type: command
-    short-summary: Show the details of linked storage account for an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage link'] = """
-    type: command
-    short-summary: Link a storage account with an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage update'] = """
-    type: command
-    short-summary: Update the linked storage account for an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage unlink'] = """
-    type: command
-    short-summary: Unlink a storage account with an Application Insights component.
-"""
-
 helps['monitor app-insights component continues-export'] = """
     type: group
     short-summary: Manage Continuous Export configurations for an Application Insights component.
-"""
-
-helps['monitor app-insights component continues-export list'] = """
-    type: command
-    short-summary: List Continuous Export configurations for an Application Insights component.
-    examples:
-      - name: ExportConfigurationsList
-        text: |
-            az monitor app-insights component continues-export list -g rg \\
-            --app 578f0e27-12e9-4631-bc02-50b965da2633
 """
 
 helps['monitor app-insights component continues-export create'] = """
@@ -342,24 +228,150 @@ helps['monitor app-insights component continues-export update'] = """
             --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
 """
 
-helps['monitor app-insights component continues-export show'] = """
-    type: command
-    short-summary: Get a specific Continuous Export configuration of an Application Insights component.
-    examples:
-      - name: Get a Continuous Export configuration by ID.
-        text: |
-            az monitor app-insights component continues-export show -g rg \\
-            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
-            --id exportid
+helps['monitor app-insights web-test'] = """
+    type: group
+    short-summary: Manage web test with application insights
 """
 
-helps['monitor app-insights component continues-export delete'] = """
+helps['monitor app-insights web-test list'] = """
     type: command
-    short-summary: Delete a specific Continuous Export configuration of an Application Insights component.
+    short-summary: "Get all Application Insights web tests defined for the specified component. And Get all \
+Application Insights web tests defined within a specified resource group. And Get all Application Insights web test \
+alerts definitions within a subscription."
     examples:
-      - name: Delete a Continuous Export configuration by ID.
-        text: |
-            az monitor app-insights component continues-export delete -g rg \\
-            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
-            --id exportid
+      - name: webTestListByComponent
+        text: |-
+               az monitor app-insights web-test list --component-name "my-component" --resource-group \
+"my-resource-group"
+      - name: webTestListByResourceGroup
+        text: |-
+               az monitor app-insights web-test list --resource-group "my-resource-group"
+      - name: webTestList
+        text: |-
+               az monitor app-insights web-test list
+"""
+
+helps['monitor app-insights web-test show'] = """
+    type: command
+    short-summary: "Get a specific Application Insights web test definition."
+    examples:
+      - name: webTestGet
+        text: |-
+               az monitor app-insights web-test show --resource-group "my-resource-group" --name \
+"my-webtest-01-mywebservice"
+"""
+
+helps['monitor app-insights web-test create'] = """
+    type: command
+    short-summary: "Create an Application Insights web test definition."
+    parameters:
+      - name: --locations
+        short-summary: "A list of where to physically run the tests from to give global coverage for accessibility of \
+your application."
+        long-summary: |
+            Usage: --locations Id=XX
+
+            Id: Location ID for the WebTest to run from.
+
+            Multiple actions can be specified by using more than one --locations argument.
+      - name: --content-validation
+        short-summary: "The collection of content validation properties"
+        long-summary: |
+            Usage: --content-validation content-match=XX ignore-case=XX pass-if-text-found=XX
+
+            content-match: Content to look for in the return of the WebTest.  Must not be null or empty.
+            ignore-case: When set, this value makes the ContentMatch validation case insensitive.
+            pass-if-text-found: When true, validation will pass if there is a match for the ContentMatch string.  If \
+false, validation will fail if there is a match
+      - name: --headers
+        short-summary: "List of headers and their values to add to the WebTest call."
+        long-summary: |
+            Usage: --headers key=XX value=XX
+
+            key: The name of the header.
+            value: The value of the header.
+
+            Multiple actions can be specified by using more than one --headers argument.
+    examples:
+      - name: webTestCreate
+        text: |-
+               az monitor app-insights web-test create --kind "ping" --location "South Central US" --web-test \
+"<WebTest Name=\\"my-webtest\\" Id=\\"678ddf96-1ab8-44c8-9274-123456789abc\\" Enabled=\\"True\\" \
+CssProjectStructure=\\"\\" CssIteration=\\"\\" Timeout=\\"120\\" WorkItemIds=\\"\\" xmlns=\\"http://microsoft.com/schem\
+as/VisualStudio/TeamTest/2010\\" Description=\\"\\" CredentialUserName=\\"\\" CredentialPassword=\\"\\" \
+PreAuthenticate=\\"True\\" Proxy=\\"default\\" StopOnError=\\"False\\" RecordedResultFile=\\"\\" ResultsLocale=\\"\\" \
+><Items><Request Method=\\"GET\\" Guid=\\"a4162485-9114-fcfc-e086-123456789abc\\" Version=\\"1.1\\" \
+Url=\\"http://my-component.azurewebsites.net\\" ThinkTime=\\"0\\" Timeout=\\"120\\" ParseDependentRequests=\\"True\\" \
+FollowRedirects=\\"True\\" RecordResult=\\"True\\" Cache=\\"False\\" ResponseTimeGoal=\\"0\\" Encoding=\\"utf-8\\" \
+ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\" IgnoreHttpStatusCode=\\"False\\" \
+/></Items></WebTest>" --description "Ping web test alert for mytestwebapp" --enabled true --frequency 900 \
+--web-test-kind "ping" --locations Id="us-fl-mia-edge" --defined-web-test-name \
+"my-webtest-my-component" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
+--resource-group "my-resource-group" --name "my-webtest-my-component" --tags hidden-link:XX=XX
+      - name: webTestCreateStandard
+        text: |-
+               az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
+alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "standard" --locations Id="us-fl-mia-edge" \
+--defined-web-test-name "my-webtest-my-component" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
+"https://bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
+--ssl-lifetime-check 100 --ssl-check true --resource-group "my-resource-group" --name \
+"my-webtest-my-component" --tags hidden-link:XX=XX
+"""
+
+helps['monitor app-insights web-test update'] = """
+    type: command
+    short-summary: "Update an Application Insights web test definition."
+    parameters:
+      - name: --locations
+        short-summary: "A list of where to physically run the tests from to give global coverage for accessibility of \
+your application."
+        long-summary: |
+            Usage: --locations Id=XX
+
+            Id: Location ID for the WebTest to run from.
+
+            Multiple actions can be specified by using more than one --locations argument.
+      - name: --content-validation
+        short-summary: "The collection of content validation properties"
+        long-summary: |
+            Usage: --content-validation content-match=XX ignore-case=XX pass-if-text-found=XX
+
+            content-match: Content to look for in the return of the WebTest.  Must not be null or empty.
+            ignore-case: When set, this value makes the ContentMatch validation case insensitive.
+            pass-if-text-found: When true, validation will pass if there is a match for the ContentMatch string.  If \
+false, validation will fail if there is a match
+      - name: --headers
+        short-summary: "List of headers and their values to add to the WebTest call."
+        long-summary: |
+            Usage: --headers key=XX value=XX
+
+            key: The name of the header.
+            value: The value of the header.
+
+            Multiple actions can be specified by using more than one --headers argument.
+    examples:
+      - name: webTestUpdate
+        text: |-
+               az monitor app-insights web-test update --kind "ping" --location "South Central US" --web-test \
+"<WebTest Name=\\"my-webtest\\" Id=\\"678ddf96-1ab8-44c8-9274-123456789abc\\" Enabled=\\"True\\" \
+CssProjectStructure=\\"\\" CssIteration=\\"\\" Timeout=\\"30\\" WorkItemIds=\\"\\" xmlns=\\"http://microsoft.com/schema\
+s/VisualStudio/TeamTest/2010\\" Description=\\"\\" CredentialUserName=\\"\\" CredentialPassword=\\"\\" \
+PreAuthenticate=\\"True\\" Proxy=\\"default\\" StopOnError=\\"False\\" RecordedResultFile=\\"\\" ResultsLocale=\\"\\" \
+><Items><Request Method=\\"GET\\" Guid=\\"a4162485-9114-fcfc-e086-123456789abc\\" Version=\\"1.1\\" \
+Url=\\"http://my-component.azurewebsites.net\\" ThinkTime=\\"0\\" Timeout=\\"30\\" ParseDependentRequests=\\"True\\" \
+FollowRedirects=\\"True\\" RecordResult=\\"True\\" Cache=\\"False\\" ResponseTimeGoal=\\"0\\" Encoding=\\"utf-8\\" \
+ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\" IgnoreHttpStatusCode=\\"False\\" \
+/></Items></WebTest>" --frequency 600 --web-test-kind "ping" --locations Id="us-fl-mia-edge" --locations \
+Id="apac-hk-hkn-azr" --defined-web-test-name "my-webtest-my-component" --synthetic-monitor-id \
+"my-webtest-my-component" --timeout 30 --resource-group "my-resource-group" --name "my-webtest-my-component"
+"""
+
+helps['monitor app-insights web-test delete'] = """
+    type: command
+    short-summary: "Delete an Application Insights web test."
+    examples:
+      - name: webTestDelete
+        text: |-
+               az monitor app-insights web-test delete --resource-group "my-resource-group" --name \
+"my-webtest-01-mywebservice"
 """

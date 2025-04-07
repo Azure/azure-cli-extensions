@@ -93,20 +93,30 @@ data_os_lvm_check () {
 	echo ${lvm_part} >> ${logpath}/${logfile}
 	if [ -z ${lvm_part} ]
 	then
-		export root_part=`fdisk -l ${data_disk} 2>&1 | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
+		#Updaing the below command to use lsblk instead of fdisk for accounting for different distros
+		#export root_part=`fdisk -l ${data_disk} 2>&1 | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
+		export root_part=`lsblk ${data_disk} -l -n -p -b 2>&1 | grep -w -v ${data_disk} |awk '$4 > 600000000{print $1}'` >> ${logpath}/${logfile}
 		echo "`date` LVM not found on the data disk" >> ${logpath}/${logfile}
 		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
 	else
-		export root_part=${lvm_part} >> ${logpath}/${logfile}
+		#adding a check to see if the returned value is just the partition number or partition full path.
+		if grep -q ${data_disk} <<< ${lvm_part}
+		then
+			export root_part=${lvm_part} >> ${logpath}/${logfile}
+		else
+			export root_part=${data_disk}${lvm_part} >> ${logpath}/${logfile}
+		fi
 		echo "`date` LVM found on the data disk" >> ${logpath}/${logfile}
-		echo "`date` The OS partition on the data drive is ${lvm_part}" >> ${logpath}/${logfile}
+		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
 	fi
 }
 
 locate_mount_data_boot () {
 	trapper
 	echo "`date` Locating the partitions on the data drive" >> ${logpath}/${logfile}
-	export data_parts=`fdisk -l ${data_disk} 2>&1 | grep ^/  | awk '{print $1}'` >> ${logpath}/${logfile}
+	#export data_parts=`fdisk -l ${data_disk} 2>&1 | grep ^/  | awk '{print $1}'` >> ${logpath}/${logfile}
+	#The below is updated to use lsblk, as fdisk output is diffferent between distros while the lsblk command is the same.
+	export data_parts=`lsblk ${data_disk} -l -o name -n -p | grep -v -w ${data_disk}` >> ${logpath}/${logfile}
 	echo "`date` Your data partitions are: ${data_parts}" >> ${logpath}/${logfile}
 
 	#create mountpoints for all the data parts
@@ -138,10 +148,12 @@ mount_cmd () {
 mount_lvm () {
 	trapper
 	echo "`date` Mounting LVM structures found on ${root_part}" >> ${logpath}/${logfile}
+	#adding below lines to make sure that volume groups are activated before trying to mount.
+	vgs >>  ${logpath}/${logfile}
+	vgchange -ay rootvg >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/rootlv /investigateroot >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/varlv /investigateroot/var/ >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/homelv /investigateroot/home >> ${logpath}/${logfile}
-	${mount_cmd} /dev/rootvg/optlv /investigateroot/opt >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/usrlv /investigateroot/usr >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/tmplv /investigateroot/tmp >> ${logpath}/${logfile}
 	lsblk -f >> ${logpath}/${logfile}
@@ -194,8 +206,30 @@ remount_boot () {
 	echo "`date` Mounting the boot partition ${boot_part} on /investigateroot/boot" >> ${logpath}/${logfile}
 	${mount_cmd} ${boot_part} /investigateroot/boot >> ${logpath}/${logfile}
 }
+install_required_packages()
+{
+	echo "`date` Checking about the required packages and instal the misssing ones" >> ${logpath}/${logfile}
+	echo "`date` Checking the distro of the recovery VM .." >> ${logpath}/${logfile}
+	output=`which apt`
+	if [ $? -eq 0 ]
+	then
+		echo "`date` This is ubuntu VM" >> ${logpath}/${logfile}
+		apt-get install -y cryptsetup lvm2 >> ${logpath}/${logfile}
+	else
+		output=`which zypper`
+		if [ $? -eq 0 ]
+		then
+			echo "`date` This is a sles VM" >> ${logpath}/${logfile}
+			zypper --non-interactive --no-refresh install cryptsetup lvm2
+		else
+			echo "`date` This a yum based distro"  >> ${logpath}/${logfile}
+			yum install -y cryptsetup lvm2
+		fi
+	fi
+}
 
 setlog
+install_required_packages
 duplication_validation
 create_mountpoints
 locatebekvol

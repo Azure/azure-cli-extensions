@@ -18,15 +18,19 @@ import datetime
 from pkg_resources import parse_version
 
 from jinja2 import Template  # pylint: disable=import-error
+import requests
 
-
-SCRIPTS_LOCATION = os.path.abspath(os.path.join('.', 'scripts'))
-
-AZURE_DOCS_CLI_REPO_PATH = os.path.join('.', 'azure-docs-cli')
+# After migration to OneBranch, clone azure-cli-extensions repo and azure-docs-cli repo are required.
+# Also standardizes the directory structure:
+# - $(System.DefaultWorkingDirectory)
+#   - azure-cli-extensions
+#   - azure-docs-cli
+AZURE_CLI_EXTENSIONS_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-cli-extensions'))
+AZURE_DOCS_CLI_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-docs-cli'))
 AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
-TEMPLATE_FILE = os.path.join(SCRIPTS_LOCATION, "ci", "avail-ext-doc", "list-template.md")
+TEMPLATE_FILE = os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts', 'ci', 'avail-ext-doc', 'list-template.md')
 
-sys.path.insert(0, SCRIPTS_LOCATION)
+sys.path.insert(0, os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts'))
 from ci.util import get_index_data, INDEX_PATH
 
 
@@ -36,12 +40,26 @@ def get_extensions():
     for _, exts in index_extensions.items():
         # Get latest version
         exts = sorted(exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
+
+        # some extension modules may not include 'HISTORY.rst'
+        project_url = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
+        history_tmp = project_url + '/HISTORY.rst'
+        history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
+        if exts[0]['metadata'].get('azext.isPreview'):
+            status = 'Preview'
+        elif exts[0]['metadata'].get('azext.isExperimental'):
+            status = 'Experimental'
+        else:
+            status = 'GA'
+
         extensions.append({
             'name': exts[0]['metadata']['name'],
             'desc': exts[0]['metadata']['summary'],
+            'min_cli_core_version': exts[0]['metadata']['azext.minCliCoreVersion'],
             'version': exts[0]['metadata']['version'],
-            'project_url': exts[0]['metadata']['extensions']['python.details']['project_urls']['Home'],
-            'preview': 'Yes' if exts[0]['metadata'].get('azext.isPreview') else ''
+            'project_url': project_url,
+            'history': history,
+            'status': status
         })
     return extensions
 

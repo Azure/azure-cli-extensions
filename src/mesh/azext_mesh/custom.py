@@ -26,23 +26,6 @@ from sfmergeutility import SFMergeUtility  # pylint: disable=E0611,import-error
 logger = get_logger(__name__)
 
 
-def list_application(client, resource_group_name=None):
-    """List all applications. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
-def show_application(client, resource_group_name, name):
-    """Show details of an application. """
-    return client.get(resource_group_name, name)
-
-
-def delete_application(client, resource_group_name, name, **kwargs):
-    """Delete an application. """
-    return client.delete(resource_group_name, name)
-
-
 def _ssl_context():
     if sys.version_info < (3, 4):
         return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
@@ -240,12 +223,14 @@ def _generate_arm_template_core(input_yaml_files=None, parameters=None):
     logger.warning("Generated ARM template file at %s.", output_file_path)
 
 
-def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
+def _deploy_arm_template_core(cmd, resource_group_name,  # pylint: disable=too-many-arguments
                               template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                               parameters=None, mode=None, validate_only=False,
                               no_wait=False):
-    DeploymentProperties, TemplateLink = get_sdk(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
-                                                 'DeploymentProperties', 'TemplateLink', mod='models')
+    DeploymentProperties, TemplateLink, Deployment = get_sdk(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                                             'DeploymentProperties', 'TemplateLink', 'Deployment',
+                                                             mod='models')
+
     template = None
     template_link = None
     template_obj = None
@@ -275,33 +260,32 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
                                       parameters=parameters, mode=mode)
     # workaround
     properties.mode = 'incremental'
-    smc = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+    smc = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).deployments
+    deployment = Deployment(properties=properties)
 
     logger.warning("Deploying . . .")
     logger.warning("You can get the state of the deployment with the cmd")
     logger.warning("az group deployment show --name %s --resource-group %s", deployment_name, resource_group_name)
     if validate_only:
-        return sdk_no_wait(no_wait, smc.deployments.validate, resource_group_name, deployment_name, properties)
+        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+            from azure.cli.core.commands import LongRunningOperation
+            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        else:
+            return sdk_no_wait(no_wait, smc.validate, resource_group_name, deployment_name, deployment)
 
-    return sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name, deployment_name, properties)
+    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def deploy_arm_template(cmd, resource_group_name,
                         template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                         parameters=None, mode=None, no_wait=False):
-    return _deploy_arm_template_core(cmd.cli_ctx, resource_group_name, template_file, template_uri,
+    return _deploy_arm_template_core(cmd, resource_group_name, template_file, template_uri,
                                      input_yaml_files, deployment_name, parameters, mode, no_wait=no_wait)
 
 
 def generate_arm_template(cmd, input_yaml_files=None, parameters=None):
     return _generate_arm_template_core(input_yaml_files, parameters)
-
-
-def list_networks(client, resource_group_name=None):
-    """List all networks in a resource group. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
 
 
 def create_volume(client, resource_group_name,
@@ -322,38 +306,9 @@ def create_volume(client, resource_group_name,
     return client.create(resource_group_name, name, volume_properties)
 
 
-def list_volumes(client, resource_group_name=None):
-    """List all volumes in a resource group. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
-def show_volume(client, resource_group_name, name):
-    """Show details of a volume. """
-    return client.get(resource_group_name, name)
-
-
-def delete_volume(client, resource_group_name, name, **kwargs):
-    """Delete a volume. """
-    return client.delete(resource_group_name, name)
-
-
-def list_secrets(client, resource_group_name=None):
-    """List all networks in a resource group. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
 def secret_show(client, resource_group_name, secret_name, secret_value_resource_name, show_value=False):
     secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
     if show_value:
         secret_value = client.list_value(resource_group_name, secret_name, secret_value_resource_name)
         secret_data.value = secret_value.value
-    return secret_data
-
-
-def list_secret_values(client, resource_group_name, secret_name):
-    secret_data = client.list(resource_group_name, secret_name)
     return secret_data
