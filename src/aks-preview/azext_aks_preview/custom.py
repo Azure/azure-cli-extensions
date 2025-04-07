@@ -3705,6 +3705,7 @@ def aks_check_network_outbound(
                             vm_name,
                             custom_endpoints)
 
+
 # pylint: disable=unused-argument
 def aks_loadbalancer_add(
     cmd,

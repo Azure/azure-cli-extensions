@@ -6,7 +6,7 @@
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import (
-    RequiredArgumentMissingError, CLIInternalError, 
+    RequiredArgumentMissingError, CLIInternalError,
     ResourceNotFoundError, BadRequestError, AzureInternalError
 )
 from azure.cli.core.util import CLIError
@@ -22,9 +22,14 @@ def aks_loadbalancer_update_internal(cmd, client, raw_parameters):
     loadbalancer_name = raw_parameters.get("name")
 
     # Check if the LoadBalancer exists before updating
-    existing_lb = client.get(
-        resource_group_name, cluster_name, loadbalancer_name
+    existing_loadbalancers = client.list_by_managed_cluster(
+        resource_group_name, cluster_name
     )
+    existing_lb = None
+    for lb in existing_loadbalancers:
+        if lb.name == loadbalancer_name:
+            existing_lb = lb
+            break
 
     if not existing_lb:
         raise ResourceNotFoundError(
@@ -59,34 +64,30 @@ def aks_loadbalancer_update_internal(cmd, client, raw_parameters):
         # Use existing value
         allow_service_placement = existing_lb.allow_service_placement
 
-    # Process selectors using a loop
-    selectors = {
-        "service_label_selector": existing_lb.service_label_selector,
-        "service_namespace_selector": existing_lb.service_namespace_selector,
-        "node_selector": existing_lb.node_selector,
-    }
+    # Process selectors
+    # Check for service_label_selector
+    service_label_selector_param = raw_parameters.get("service_label_selector")
+    if service_label_selector_param is not None:
+        service_label_selector = construct_label_selector(cmd, service_label_selector_param)
+        changes_requested = True
+    else:
+        service_label_selector = existing_lb.service_label_selector
 
-    # Initialize variables for the selectors
-    service_label_selector = None
-    service_namespace_selector = None
-    node_selector = None
+    # Check for service_namespace_selector
+    service_namespace_selector_param = raw_parameters.get("service_namespace_selector")
+    if service_namespace_selector_param is not None:
+        service_namespace_selector = construct_label_selector(cmd, service_namespace_selector_param)
+        changes_requested = True
+    else:
+        service_namespace_selector = existing_lb.service_namespace_selector
 
-    # Process each selector type
-    for selector_name, existing_value in selectors.items():
-        selector_param = raw_parameters.get(selector_name)
-        if selector_param is not None:
-            changes_requested = True
-            selector_value = construct_label_selector(cmd, selector_param)
-        else:
-            selector_value = existing_value
-
-        # Assign to the appropriate variable
-        if selector_name == "service_label_selector":
-            service_label_selector = selector_value
-        elif selector_name == "service_namespace_selector":
-            service_namespace_selector = selector_value
-        elif selector_name == "node_selector":
-            node_selector = selector_value
+    # Check for node_selector
+    node_selector_param = raw_parameters.get("node_selector")
+    if node_selector_param is not None:
+        node_selector = construct_label_selector(cmd, node_selector_param)
+        changes_requested = True
+    else:
+        node_selector = existing_lb.node_selector
 
     # Error if no changes are requested
     if not changes_requested:
@@ -95,17 +96,28 @@ def aks_loadbalancer_update_internal(cmd, client, raw_parameters):
             "Specify at least one property to update."
         )
 
-    # Call create_or_update with the parameters
-    client.create_or_update(
-        resource_group_name=resource_group_name,
-        resource_name=cluster_name,
-        load_balancer_name=loadbalancer_name,
-        name=loadbalancer_name,
+    # Load the LoadBalancer model class
+    LoadBalancer = cmd.get_models(
+        "LoadBalancer",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="load_balancers",
+    )
+
+    # Create the LoadBalancer object with updated or existing values
+    config = LoadBalancer(
         primary_agent_pool_name=primary_agent_pool_name,
         allow_service_placement=allow_service_placement,
         service_label_selector=service_label_selector,
         service_namespace_selector=service_namespace_selector,
         node_selector=node_selector,
+    )
+
+    # Call create_or_update with the LoadBalancer object
+    client.create_or_update(
+        resource_group_name=resource_group_name,
+        resource_name=cluster_name,
+        load_balancer_name=loadbalancer_name,
+        parameters=config,
     )
 
     # Wait for the load balancer to be provisioned and return the latest state
@@ -125,10 +137,15 @@ def aks_loadbalancer_add_internal(cmd, client, raw_parameters):
             "Please specify --name for load balancer configuration."
         )
 
-    # Check if the LoadBalancer exists before creating
-    existing_lb = client.get(
-        resource_group_name, cluster_name, loadbalancer_name
+    # Check if the LoadBalancer exists before updating
+    existing_loadbalancers = client.list_by_managed_cluster(
+        resource_group_name, cluster_name
     )
+    existing_lb = None
+    for lb in existing_loadbalancers:
+        if lb.name == loadbalancer_name:
+            existing_lb = lb
+            break
 
     if existing_lb:
         raise BadRequestError(
@@ -136,18 +153,14 @@ def aks_loadbalancer_add_internal(cmd, client, raw_parameters):
         )
 
     config = constructLoadBalancerConfiguration(cmd, raw_parameters)
+    logger.debug("Load balancer configuration: %s", config)
 
-    # Extract the individual properties from the LoadBalancer object
+    # Call create_or_update with the LoadBalancer object
     client.create_or_update(
         resource_group_name=resource_group_name,
         resource_name=cluster_name,
         load_balancer_name=loadbalancer_name,
-        name=loadbalancer_name,
-        primary_agent_pool_name=config.primary_agent_pool_name,
-        allow_service_placement=config.allow_service_placement,
-        service_label_selector=config.service_label_selector,
-        service_namespace_selector=config.service_namespace_selector,
-        node_selector=config.node_selector,
+        parameters=config,
     )
 
     # Wait for the load balancer to be provisioned and return the latest state
@@ -157,7 +170,6 @@ def aks_loadbalancer_add_internal(cmd, client, raw_parameters):
 
 
 def constructLoadBalancerConfiguration(cmd, raw_parameters):
-    name = raw_parameters.get("name")
     primary_agent_pool_name = raw_parameters.get("primary_agent_pool_name")
     allow_service_placement = raw_parameters.get("allow_service_placement")
 
@@ -165,10 +177,6 @@ def constructLoadBalancerConfiguration(cmd, raw_parameters):
     if primary_agent_pool_name is None:
         raise RequiredArgumentMissingError(
             "Please specify --primary-agent-pool-name for load balancer configuration."
-        )
-    if name is None:
-        raise RequiredArgumentMissingError(
-            "Please specify --name for load balancer configuration."
         )
 
     # Get the model class
@@ -189,7 +197,6 @@ def constructLoadBalancerConfiguration(cmd, raw_parameters):
 
     # Create the LoadBalancer object
     result = LoadBalancer(
-        name_properties_name=name,
         primary_agent_pool_name=primary_agent_pool_name,
         allow_service_placement=allow_service_placement,
         service_label_selector=service_label_selector,

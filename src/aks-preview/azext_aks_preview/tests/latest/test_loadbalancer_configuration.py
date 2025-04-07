@@ -33,7 +33,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         # Mock the client and cmd
         mock_client = MagicMock()
 
-        # Setup mock LoadBalancer get response with proper None values for selectors
+        # Setup mock LoadBalancer list response with proper None values for selectors
         mock_lb = MagicMock()
         mock_lb.name = "test_lb"
         mock_lb.primary_agent_pool_name = "nodepool1"
@@ -41,7 +41,9 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         mock_lb.service_label_selector = None
         mock_lb.service_namespace_selector = None
         mock_lb.node_selector = None
-        mock_client.get.return_value = mock_lb
+
+        # Setup mock_client.list_by_managed_cluster to return our mock LoadBalancer
+        mock_client.list_by_managed_cluster.return_value = [mock_lb]
 
         # Test parameters
         test_params = {
@@ -56,11 +58,17 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         mock_lb_result = MagicMock()
         mock_lb_result.name = "test_lb"
 
-        # Mock wait_for_loadbalancer_provisioning_state
+        # Create the mock LoadBalancer model class and instance
+        mock_loadbalancer_class = MagicMock()
+        mock_config = MagicMock()
+        mock_loadbalancer_class.return_value = mock_config
+
+        # Mock wait_for_loadbalancer_provisioning_state and get_models
         with patch(
             "azext_aks_preview.loadbalancerconfiguration.wait_for_loadbalancer_provisioning_state"
-        ) as mock_wait:
-
+        ) as mock_wait, patch.object(
+            self.cmd, "get_models", return_value=mock_loadbalancer_class
+        ):
             # Configure the wait function to return our mock result
             mock_wait.return_value = mock_lb_result
 
@@ -69,17 +77,28 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
                 self.cmd, mock_client, test_params
             )
 
-            # Assert client.create_or_update was called with correct parameters
-            mock_client.create_or_update.assert_called_once_with(
-                resource_group_name="test_rg",
-                resource_name="test_cluster",
-                load_balancer_name="test_lb",
-                name="test_lb",
+            # Assert the LoadBalancer model was loaded correctly
+            self.cmd.get_models.assert_called_with(
+                "LoadBalancer",
+                resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+                operation_group="load_balancers",
+            )
+
+            # Assert the LoadBalancer was created with correct properties
+            mock_loadbalancer_class.assert_called_with(
                 primary_agent_pool_name="nodepool1",
                 allow_service_placement=True,
                 service_label_selector=None,
                 service_namespace_selector=None,
                 node_selector=None,
+            )
+
+            # Assert client.create_or_update was called with correct parameters
+            mock_client.create_or_update.assert_called_once_with(
+                resource_group_name="test_rg",
+                resource_name="test_cluster",
+                load_balancer_name="test_lb",
+                parameters=mock_config,
             )
 
             # Assert wait_for_loadbalancer_provisioning_state was called correctly
@@ -94,8 +113,8 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         # Mock the client and cmd
         mock_client = MagicMock()
 
-        # Setup empty LoadBalancer get response
-        mock_client.get.return_value = None
+        # Setup empty LoadBalancer list response (no matching LB)
+        mock_client.list_by_managed_cluster.return_value = []
 
         # Test parameters for a non-existent LoadBalancer
         test_params = {
@@ -115,8 +134,8 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         # Mock the client and cmd
         mock_client = MagicMock()
 
-        # Setup empty LoadBalancer get response (no existing LB)
-        mock_client.get.return_value = None
+        # Setup empty LoadBalancer list response (no existing LB)
+        mock_client.list_by_managed_cluster.return_value = []
 
         # Test parameters
         test_params = {
@@ -143,7 +162,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
             # Create the mock configuration with proper None values for selectors
             mock_config = MagicMock()
-            mock_config.name_properties_name = "new_lb"
+            # Note: We don't set mock_config.name because it's read-only in the model
             mock_config.primary_agent_pool_name = "nodepool1"
             mock_config.allow_service_placement = True
             mock_config.service_label_selector = None
@@ -159,17 +178,12 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
             # Assert constructLoadBalancerConfiguration was called with correct params
             mock_construct.assert_called_once_with(self.cmd, test_params)
 
-            # Assert client.create_or_update was called with correct individual params
+            # Assert client.create_or_update was called with correct parameters
             mock_client.create_or_update.assert_called_once_with(
                 resource_group_name="test_rg",
                 resource_name="test_cluster",
                 load_balancer_name="new_lb",
-                name="new_lb",
-                primary_agent_pool_name="nodepool1",
-                allow_service_placement=True,
-                service_label_selector=None,
-                service_namespace_selector=None,
-                node_selector=None,
+                parameters=mock_config,
             )
 
             # Assert wait_for_loadbalancer_provisioning_state was called correctly
@@ -184,10 +198,10 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         # Mock the client and cmd
         mock_client = MagicMock()
 
-        # Setup LoadBalancer get response with an existing LB
+        # Setup LoadBalancer list response with an existing LB
         mock_lb = MagicMock()
         mock_lb.name = "existing_lb"
-        mock_client.get.return_value = mock_lb
+        mock_client.list_by_managed_cluster.return_value = [mock_lb]
 
         # Test parameters for an already existing LoadBalancer
         test_params = {
@@ -210,7 +224,6 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Test with required parameters
         params = {
-            "name": "test_lb",
             "primary_agent_pool_name": "nodepool1",
             "allow_service_placement": True,
         }
@@ -226,7 +239,6 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
             # Assert LoadBalancer was created with correct params
             mock_load_balancer.assert_called_once_with(
-                name_properties_name="test_lb",
                 primary_agent_pool_name="nodepool1",
                 allow_service_placement=True,
                 service_label_selector=None,
@@ -236,14 +248,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
     def test_construct_loadbalancer_configuration_missing_required_params(self):
         # Test missing primary_agent_pool_name
-        params = {"name": "test_lb"}
-        with self.assertRaises(RequiredArgumentMissingError):
-            loadbalancerconfiguration.constructLoadBalancerConfiguration(
-                self.cmd, params
-            )
-
-        # Test missing name
-        params = {"primary_agent_pool_name": "nodepool1"}
+        params = {}
         with self.assertRaises(RequiredArgumentMissingError):
             loadbalancerconfiguration.constructLoadBalancerConfiguration(
                 self.cmd, params
@@ -256,7 +261,6 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Test with all parameters including selectors
         params = {
-            "name": "test_lb",
             "primary_agent_pool_name": "nodepool1",
             "allow_service_placement": True,
             "service_label_selector": "app=frontend,tier=web",
@@ -284,7 +288,6 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
             # Assert LoadBalancer was created with correct params including selectors
             mock_load_balancer.assert_called_once_with(
-                name_properties_name="test_lb",
                 primary_agent_pool_name="nodepool1",
                 allow_service_placement=True,
                 service_label_selector=mock_service_label_selector,

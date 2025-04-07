@@ -19,6 +19,10 @@ Pending
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
 
+13.0.0b10
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
+
 13.0.0b9
 +++++++
 * Vendor new SDK and bump API version to 2024-10-02-preview.
