@@ -7,12 +7,11 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, Awaitable, TYPE_CHECKING
-
-from msrest import Deserializer, Serializer
+from typing import Any, Awaitable, Optional, TYPE_CHECKING
 
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
+from msrest import Deserializer, Serializer
 
 from .. import models
 from ._configuration import ScVmmMgmtClientConfiguration
@@ -22,7 +21,7 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-class ScVmmMgmtClient:    # pylint: disable=too-many-instance-attributes
+class ScVmmMgmtClient:
     """The Microsoft.ScVmm Rest API spec.
 
     :ivar virtual_machine_instances: VirtualMachineInstancesOperations operations
@@ -55,7 +54,7 @@ class ScVmmMgmtClient:    # pylint: disable=too-many-instance-attributes
     :type subscription_id: str
     :param base_url: Service URL. Default value is 'https://management.azure.com'.
     :type base_url: str
-    :keyword api_version: Api Version. The default value is "2023-10-07". Note that overriding this
+    :keyword api_version: Api Version. The default value is "2025-03-13". Note that overriding this
      default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no

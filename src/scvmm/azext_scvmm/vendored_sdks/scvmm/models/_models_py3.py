@@ -273,7 +273,7 @@ class AvailabilitySetProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -461,18 +461,22 @@ class CloudCapacity(msrest.serialization.Model):
     :vartype memory_mb: long
     :ivar vm_count: VMCount gives the max number of VMs that can be deployed in the cloud.
     :vartype vm_count: long
+    :ivar storage_gb: StorageGB gives the storage in GB present in the cloud.
+    :vartype storage_gb: long
     """
 
     _validation = {
         'cpu_count': {'readonly': True},
         'memory_mb': {'readonly': True},
         'vm_count': {'readonly': True},
+        'storage_gb': {'readonly': True},
     }
 
     _attribute_map = {
         'cpu_count': {'key': 'cpuCount', 'type': 'long'},
         'memory_mb': {'key': 'memoryMB', 'type': 'long'},
         'vm_count': {'key': 'vmCount', 'type': 'long'},
+        'storage_gb': {'key': 'storageGB', 'type': 'long'},
     }
 
     def __init__(
@@ -485,6 +489,7 @@ class CloudCapacity(msrest.serialization.Model):
         self.cpu_count = None
         self.memory_mb = None
         self.vm_count = None
+        self.storage_gb = None
 
 
 class InventoryItemProperties(msrest.serialization.Model):
@@ -510,7 +515,7 @@ class InventoryItemProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -567,7 +572,7 @@ class CloudInventoryItem(InventoryItemProperties):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -654,7 +659,7 @@ class CloudProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -1011,7 +1016,10 @@ class GuestAgentProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
+    :ivar private_link_scope_resource_id: The resource id of the private link scope this machine is
+     assigned to, if any.
+    :vartype private_link_scope_resource_id: str
     """
 
     _validation = {
@@ -1029,6 +1037,7 @@ class GuestAgentProperties(msrest.serialization.Model):
         'status': {'key': 'status', 'type': 'str'},
         'custom_resource_name': {'key': 'customResourceName', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'private_link_scope_resource_id': {'key': 'privateLinkScopeResourceId', 'type': 'str'},
     }
 
     def __init__(
@@ -1037,6 +1046,7 @@ class GuestAgentProperties(msrest.serialization.Model):
         credentials: Optional["GuestCredential"] = None,
         http_proxy_config: Optional["HttpProxyConfiguration"] = None,
         provisioning_action: Optional[Union[str, "ProvisioningAction"]] = None,
+        private_link_scope_resource_id: Optional[str] = None,
         **kwargs
     ):
         """
@@ -1047,6 +1057,9 @@ class GuestAgentProperties(msrest.serialization.Model):
         :keyword provisioning_action: Gets or sets the guest agent provisioning action. Possible values
          include: "install", "uninstall", "repair".
         :paramtype provisioning_action: str or ~azure.mgmt.scvmm.models.ProvisioningAction
+        :keyword private_link_scope_resource_id: The resource id of the private link scope this machine
+         is assigned to, if any.
+        :paramtype private_link_scope_resource_id: str
         """
         super(GuestAgentProperties, self).__init__(**kwargs)
         self.uuid = None
@@ -1056,6 +1069,7 @@ class GuestAgentProperties(msrest.serialization.Model):
         self.status = None
         self.custom_resource_name = None
         self.provisioning_state = None
+        self.private_link_scope_resource_id = private_link_scope_resource_id
 
 
 class GuestCredential(msrest.serialization.Model):
@@ -1882,6 +1896,8 @@ class OsProfileForVmInstance(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
+    :ivar admin_username: Gets or sets the admin username.
+    :vartype admin_username: str
     :ivar admin_password: Admin password of the virtual machine.
     :vartype admin_password: str
     :ivar computer_name: Gets or sets computer name.
@@ -1892,6 +1908,21 @@ class OsProfileForVmInstance(msrest.serialization.Model):
     :vartype os_sku: str
     :ivar os_version: Gets os version.
     :vartype os_version: str
+    :ivar domain_name: Gets or sets the domain name.
+    :vartype domain_name: str
+    :ivar domain_username: Gets or sets the domain username.
+    :vartype domain_username: str
+    :ivar domain_password: Password of the domain the VM has to join.
+    :vartype domain_password: str
+    :ivar workgroup: Gets or sets the workgroup.
+    :vartype workgroup: str
+    :ivar product_key: Gets or sets the product key.Input format xxxxx-xxxxx-xxxxx-xxxxx-xxxxx.
+    :vartype product_key: str
+    :ivar timezone: Gets or sets the index value of the timezone.
+    :vartype timezone: int
+    :ivar run_once_commands: Get or sets the commands to be run once at the time of creation
+     separated by semicolons.
+    :vartype run_once_commands: str
     """
 
     _validation = {
@@ -1901,32 +1932,73 @@ class OsProfileForVmInstance(msrest.serialization.Model):
     }
 
     _attribute_map = {
+        'admin_username': {'key': 'adminUsername', 'type': 'str'},
         'admin_password': {'key': 'adminPassword', 'type': 'str'},
         'computer_name': {'key': 'computerName', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'os_sku': {'key': 'osSku', 'type': 'str'},
         'os_version': {'key': 'osVersion', 'type': 'str'},
+        'domain_name': {'key': 'domainName', 'type': 'str'},
+        'domain_username': {'key': 'domainUsername', 'type': 'str'},
+        'domain_password': {'key': 'domainPassword', 'type': 'str'},
+        'workgroup': {'key': 'workgroup', 'type': 'str'},
+        'product_key': {'key': 'productKey', 'type': 'str'},
+        'timezone': {'key': 'timezone', 'type': 'int'},
+        'run_once_commands': {'key': 'runOnceCommands', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
+        admin_username: Optional[str] = None,
         admin_password: Optional[str] = None,
         computer_name: Optional[str] = None,
+        domain_name: Optional[str] = None,
+        domain_username: Optional[str] = None,
+        domain_password: Optional[str] = None,
+        workgroup: Optional[str] = None,
+        product_key: Optional[str] = None,
+        timezone: Optional[int] = None,
+        run_once_commands: Optional[str] = None,
         **kwargs
     ):
         """
+        :keyword admin_username: Gets or sets the admin username.
+        :paramtype admin_username: str
         :keyword admin_password: Admin password of the virtual machine.
         :paramtype admin_password: str
         :keyword computer_name: Gets or sets computer name.
         :paramtype computer_name: str
+        :keyword domain_name: Gets or sets the domain name.
+        :paramtype domain_name: str
+        :keyword domain_username: Gets or sets the domain username.
+        :paramtype domain_username: str
+        :keyword domain_password: Password of the domain the VM has to join.
+        :paramtype domain_password: str
+        :keyword workgroup: Gets or sets the workgroup.
+        :paramtype workgroup: str
+        :keyword product_key: Gets or sets the product key.Input format xxxxx-xxxxx-xxxxx-xxxxx-xxxxx.
+        :paramtype product_key: str
+        :keyword timezone: Gets or sets the index value of the timezone.
+        :paramtype timezone: int
+        :keyword run_once_commands: Get or sets the commands to be run once at the time of creation
+         separated by semicolons.
+        :paramtype run_once_commands: str
         """
         super(OsProfileForVmInstance, self).__init__(**kwargs)
+        self.admin_username = admin_username
         self.admin_password = admin_password
         self.computer_name = computer_name
         self.os_type = None
         self.os_sku = None
         self.os_version = None
+        self.domain_name = domain_name
+        self.domain_username = domain_username
+        self.domain_password = domain_password
+        self.workgroup = workgroup
+        self.product_key = product_key
+        self.timezone = timezone
+        self.run_once_commands = run_once_commands
 
 
 class StopVirtualMachineOptions(msrest.serialization.Model):
@@ -2530,7 +2602,7 @@ class VirtualMachineInstanceProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -2683,7 +2755,7 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     :ivar os_type: Gets the type of the os. Possible values include: "Windows", "Linux", "Other".
     :vartype os_type: str or ~azure.mgmt.scvmm.models.OsType
     :ivar os_name: Gets os name.
@@ -2692,6 +2764,8 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
     :vartype os_version: str
     :ivar power_state: Gets the power state of the virtual machine.
     :vartype power_state: str
+    :ivar generation: Gets vm generation.
+    :vartype generation: long
     :ivar ip_addresses: Gets or sets the nic ip addresses.
     :vartype ip_addresses: list[str]
     :ivar cloud: Cloud inventory resource details where the VM is present.
@@ -2713,6 +2787,7 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         'os_name': {'readonly': True},
         'os_version': {'readonly': True},
         'power_state': {'readonly': True},
+        'generation': {'readonly': True},
         'bios_guid': {'readonly': True},
         'managed_machine_resource_id': {'readonly': True},
     }
@@ -2727,6 +2802,7 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         'os_name': {'key': 'osName', 'type': 'str'},
         'os_version': {'key': 'osVersion', 'type': 'str'},
         'power_state': {'key': 'powerState', 'type': 'str'},
+        'generation': {'key': 'generation', 'type': 'long'},
         'ip_addresses': {'key': 'ipAddresses', 'type': '[str]'},
         'cloud': {'key': 'cloud', 'type': 'InventoryItemDetails'},
         'bios_guid': {'key': 'biosGuid', 'type': 'str'},
@@ -2752,6 +2828,7 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         self.os_name = None
         self.os_version = None
         self.power_state = None
+        self.generation = None
         self.ip_addresses = ip_addresses
         self.cloud = cloud
         self.bios_guid = None
@@ -2875,7 +2952,7 @@ class VirtualMachineTemplateInventoryItem(InventoryItemProperties):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     :ivar cpu_count: Gets the desired number of vCPUs for the vm.
     :vartype cpu_count: int
     :ivar memory_mb: MemoryMB is the desired size of a virtual machine's memory, in MB.
@@ -3008,7 +3085,7 @@ class VirtualMachineTemplateProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -3205,7 +3282,7 @@ class VirtualNetworkInventoryItem(InventoryItemProperties):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -3288,7 +3365,7 @@ class VirtualNetworkProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -3453,7 +3530,7 @@ class VmInstanceHybridIdentityMetadataProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
@@ -3651,7 +3728,7 @@ class VmmServerProperties(msrest.serialization.Model):
     :ivar provisioning_state: Provisioning state of the resource. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
      "Created".
-    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ResourceProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.scvmm.models.ProvisioningState
     """
 
     _validation = {
