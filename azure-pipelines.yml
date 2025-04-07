@@ -253,5 +253,9 @@ jobs:
     displayName: 'Use Python 3.x'
     inputs:
       versionSpec: 3.x
+  - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
+      #!/usr/bin/env bash
+      set -ev
+      source ./env/bin/activate
       python scripts/ci/test_init.py -v
