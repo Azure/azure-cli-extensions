@@ -116,7 +116,7 @@ class BaseConverter(ConverterTemplate):
         mount_path = self._get_storage_mount_path(disk_props)
         access_mode = self._get_storage_access_mode(disk_props)
         storage_unique_name = f"{storage_name}|{account_name}|{share_name}|{mount_path}|{access_mode}"
-        hash_value = hashlib.md5(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
+        hash_value = hashlib.sha256(storage_unique_name.encode()).hexdigest()[:16]  # Take first 16 chars of hash
         result = f"{storage_name}{hash_value}".replace("-", "").replace("_", "")
         return result[:32]  # Ensure total length is no more than 32
 
