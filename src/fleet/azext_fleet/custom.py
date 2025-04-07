@@ -10,15 +10,13 @@ from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.command_modules.acs._roleassignments import add_role_assignment
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
-from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet._helpers import print_or_merge_credentials, validate_subnet
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
-from azext_fleet.constants import FLEET_1P_APP_ID
 
 
 # pylint: disable=too-many-locals
@@ -112,19 +110,9 @@ def create_fleet(cmd,
     )
 
     if enable_private_cluster:
-        if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=agent_subnet_id):
-            raise CLIError(
-                "failed to create role assignment for Fleet RP.\nDo you have owner permissions on the vnet?\n"
-                "Is the Microsoft.Containerservice namespace registered?\n"
-                "Please try registering Fleet namespace before retrying: az provider register --namespace 'Microsoft.Containerservice'"  # pylint: disable=line-too-long
-            )
+        validate_subnet(cmd, resource_group_name, agent_subnet_id)
     if enable_vnet_integration:
-        if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=apiserver_subnet_id):
-            raise CLIError(
-                "failed to create role assignment for Fleet RP.\nDo you have owner permissions on the vnet?\n"
-                "Is the Microsoft.Containerservice namespace registered?\n"
-                "Please try registering Fleet namespace before retrying: az provider register --namespace 'Microsoft.Containerservice'"  # pylint: disable=line-too-long
-            )
+        validate_subnet(cmd, resource_group_name, apiserver_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
