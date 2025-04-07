@@ -248,6 +248,9 @@ def install_client_side_proxy(cmd, arc_proxy_folder):
 
 
 def _download_proxy_from_MCR(cmd, dest_dir, proxy_name, operating_system, architecture):
+    # active_directory in public cloud is login.microsoftonline.com
+    # the logic below dynamically creates the MCR url using a multi-part suffix for Airgapped clouds
+    # NST team has determined that these suffixes should be exposed to customers
     active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
     # default for public, mc, ff clouds
     mcr_postfix = active_directory_array[2]

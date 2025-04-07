@@ -212,6 +212,8 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
     }
     scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
     if not scope:
+        # NST team has determined Airgapped cloud endpoints should not be exposed to customers
+        # This dynamically creates correct scope api endpoints given generic suffixes that are 4 and 5 segments long
         active_directory_graph_api_array = cmd.cli_ctx.cloud.endpoints.activeDirectoryGraphResourceId.split(".")
         # special cases for USSec
         if (len(active_directory_graph_api_array) == 4):
