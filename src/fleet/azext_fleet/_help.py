@@ -380,6 +380,14 @@ helps['fleet autoupgradeprofile list'] = """
           text: az fleet autoupgradeprofile list -g MyFleetResourceGroup -f MyFleetName
 """
 
+helps['fleet autoupgradeprofile generate-update-run'] = """
+    type: command
+    short-summary: Generates an update run for a given auto upgrade profile.
+    examples:
+        - name: Generates an update run for a given auto upgrade profile.
+          text: az fleet autoupgradeprofile generate-update-run -g MyFleetResourceGroup -f MyFleetName --auto-upgrade-profile-name MyAutoUpgradeProfileName
+"""
+
 helps['fleet autoupgradeprofile wait'] = """
     type: command
     short-summary: Wait for an auto upgrade resource to reach a desired state.

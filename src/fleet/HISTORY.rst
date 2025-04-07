@@ -115,3 +115,7 @@ Release History
 1.4.0
 ++++++
 * Set autoupgradeprofile commands to preview mode
+
+1.5.0
+++++++
+* Upgrade SDK version to 2025-03-01

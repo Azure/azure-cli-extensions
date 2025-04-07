@@ -16,9 +16,10 @@ from azure.mgmt.core import ARMPipelineClient
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
 
 from . import models as _models
-from .._serialization import Deserializer, Serializer
 from ._configuration import ContainerServiceFleetMgmtClientConfiguration
+from ._serialization import Deserializer, Serializer
 from .operations import (
+    AutoUpgradeProfileOperationsOperations,
     AutoUpgradeProfilesOperations,
     FleetMembersOperations,
     FleetUpdateStrategiesOperations,
@@ -28,38 +29,37 @@ from .operations import (
 )
 
 if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential
 
 
-class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-version-keyword
+class ContainerServiceFleetMgmtClient:  # pylint: disable=too-many-instance-attributes
     """Azure Kubernetes Fleet Manager api client.
 
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.containerservicefleet.v2024_05_02_preview.operations.Operations
+    :vartype operations: azure.mgmt.containerservicefleet.operations.Operations
     :ivar fleets: FleetsOperations operations
-    :vartype fleets:
-     azure.mgmt.containerservicefleet.v2024_05_02_preview.operations.FleetsOperations
+    :vartype fleets: azure.mgmt.containerservicefleet.operations.FleetsOperations
     :ivar auto_upgrade_profiles: AutoUpgradeProfilesOperations operations
     :vartype auto_upgrade_profiles:
-     azure.mgmt.containerservicefleet.v2024_05_02_preview.operations.AutoUpgradeProfilesOperations
+     azure.mgmt.containerservicefleet.operations.AutoUpgradeProfilesOperations
+    :ivar auto_upgrade_profile_operations: AutoUpgradeProfileOperationsOperations operations
+    :vartype auto_upgrade_profile_operations:
+     azure.mgmt.containerservicefleet.operations.AutoUpgradeProfileOperationsOperations
     :ivar fleet_members: FleetMembersOperations operations
-    :vartype fleet_members:
-     azure.mgmt.containerservicefleet.v2024_05_02_preview.operations.FleetMembersOperations
+    :vartype fleet_members: azure.mgmt.containerservicefleet.operations.FleetMembersOperations
     :ivar update_runs: UpdateRunsOperations operations
-    :vartype update_runs:
-     azure.mgmt.containerservicefleet.v2024_05_02_preview.operations.UpdateRunsOperations
+    :vartype update_runs: azure.mgmt.containerservicefleet.operations.UpdateRunsOperations
     :ivar fleet_update_strategies: FleetUpdateStrategiesOperations operations
     :vartype fleet_update_strategies:
-     azure.mgmt.containerservicefleet.v2024_05_02_preview.operations.FleetUpdateStrategiesOperations
+     azure.mgmt.containerservicefleet.operations.FleetUpdateStrategiesOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription. Required.
+    :param subscription_id: The ID of the target subscription. The value must be an UUID. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2024-05-02-preview". Note that overriding
-     this default value may result in unsupported behavior.
+    :keyword api_version: Api Version. Default value is "2025-03-01". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
      Retry-After header is present.
@@ -99,23 +99,18 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-ver
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.operations = Operations(
-            self._client, self._config, self._serialize, self._deserialize, "2024-05-02-preview"
-        )
-        self.fleets = FleetsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2024-05-02-preview"
-        )
+        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.fleets = FleetsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.auto_upgrade_profiles = AutoUpgradeProfilesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2024-05-02-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.fleet_members = FleetMembersOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2024-05-02-preview"
+        self.auto_upgrade_profile_operations = AutoUpgradeProfileOperationsOperations(
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.update_runs = UpdateRunsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2024-05-02-preview"
-        )
+        self.fleet_members = FleetMembersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.update_runs = UpdateRunsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.fleet_update_strategies = FleetUpdateStrategiesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2024-05-02-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
 
     def _send_request(self, request: HttpRequest, *, stream: bool = False, **kwargs: Any) -> HttpResponse:
