@@ -40,3 +40,7 @@ def get_resource_groups_client(cli_ctx, subscription_id=None):
 
 def cf_auto_upgrade_profiles(cli_ctx, *_):
     return get_container_service_client(cli_ctx).auto_upgrade_profiles
+
+
+def cf_auto_upgrade_profile_operations(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).auto_upgrade_profile_operations
