@@ -826,6 +826,10 @@ def load_arguments(self, _):
             action="store_true",
         )
         c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -1301,6 +1305,14 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_acns_security",
+            action="store_true",
+        )
+        c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
+            "disable_retina_flow_logs",
             action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
