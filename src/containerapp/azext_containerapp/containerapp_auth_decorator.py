@@ -9,6 +9,7 @@ from azure.cli.command_modules.containerapp.containerapp_auth_decorator import C
 from azure.cli.command_modules.containerapp._utils import safe_set, set_field_in_auth_settings, update_http_settings_in_auth_settings, _ensure_identity_resource_id
 from azure.cli.command_modules.containerapp._constants import BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
 
+
 # decorator for preview auth show/update
 class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
 
@@ -57,7 +58,7 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         self.existing_auth = update_http_settings_in_auth_settings(self.existing_auth, self.get_argument_require_https(),
                                                                    self.get_argument_proxy_convention(), self.get_argument_proxy_custom_host_header(),
                                                                    self.get_argument_proxy_custom_proto_header())
-        
+
     def construct_payload(self):
         self.parent_construct_payload()
         self.set_up_token_store()
@@ -77,10 +78,9 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         if param_provided != 1:
             raise ArgumentUsageError(
                 'Usage Error: only blob storage token store is supported. --sas-url-secret, --sas-url-secret-name and --blob-container-uri should provide exactly one when token store is enabled')
-        
+
         if self.get_argument_blob_container_uri() is not None:
-            safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "blobContainerUri",
-                    value=self.get_argument_blob_container_uri())
+            safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "blobContainerUri", value=self.get_argument_blob_container_uri())
 
             identity = self.get_argument_blob_container_identity()
             if identity is not None:
@@ -94,7 +94,7 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         if self.get_argument_sas_url_secret_name() is not None:
             sas_url_setting_name = self.get_argument_sas_url_secret_name()
         safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "sasUrlSettingName", value=sas_url_setting_name)
-    
+
     def get_argument_blob_container_uri(self):
         return self.get_param("blob_container_uri")
 
