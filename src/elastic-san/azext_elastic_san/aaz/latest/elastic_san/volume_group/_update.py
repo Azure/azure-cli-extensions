@@ -85,6 +85,28 @@ class Update(AAZCommand):
             ),
         )
 
+        # define Arg Group "DeleteRetentionPolicy"
+
+        _args_schema = cls._args_schema
+        _args_schema.delete_retention_policy_state = AAZStrArg(
+            options=["--delete-retention-policy-state"],
+            arg_group="DeleteRetentionPolicy",
+            help="Manage delete retention policy state",
+            is_preview=True,
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.delete_retention_period_days = AAZIntArg(
+            options=["--delete-retention-period-days"],
+            arg_group="DeleteRetentionPolicy",
+            help="The number of days to retain the resources after deletion.",
+            is_preview=True,
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
@@ -116,12 +138,6 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.delete_retention_policy = AAZObjectArg(
-            options=["--delete-retention-policy"],
-            arg_group="Properties",
-            help="The retention policy for the soft deleted volume group and its associated resources.",
-            nullable=True,
-        )
         _args_schema.encryption = AAZStrArg(
             options=["--encryption"],
             arg_group="Properties",
@@ -153,21 +169,6 @@ class Update(AAZCommand):
             help="Type of storage target",
             nullable=True,
             enum={"Iscsi": "Iscsi", "None": "None"},
-        )
-
-        delete_retention_policy = cls._args_schema.delete_retention_policy
-        delete_retention_policy.policy_state = AAZStrArg(
-            options=["policy-state"],
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        delete_retention_policy.retention_period_days = AAZIntArg(
-            options=["retention-period-days"],
-            help="The number of days to retain the resources after deletion.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                minimum=0,
-            ),
         )
 
         encryption_properties = cls._args_schema.encryption_properties
@@ -488,7 +489,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("deleteRetentionPolicy", AAZObjectType, ".delete_retention_policy")
+                properties.set_prop("deleteRetentionPolicy", AAZObjectType)
                 properties.set_prop("encryption", AAZStrType, ".encryption")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
@@ -497,8 +498,8 @@ class Update(AAZCommand):
 
             delete_retention_policy = _builder.get(".properties.deleteRetentionPolicy")
             if delete_retention_policy is not None:
-                delete_retention_policy.set_prop("policyState", AAZStrType, ".policy_state")
-                delete_retention_policy.set_prop("retentionPeriodDays", AAZIntType, ".retention_period_days")
+                delete_retention_policy.set_prop("policyState", AAZStrType, ".delete_retention_policy_state")
+                delete_retention_policy.set_prop("retentionPeriodDays", AAZIntType, ".delete_retention_period_days")
 
             encryption_properties = _builder.get(".properties.encryptionProperties")
             if encryption_properties is not None:

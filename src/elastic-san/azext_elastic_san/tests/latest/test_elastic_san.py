@@ -311,3 +311,74 @@ class ElasticSanScenario(ScenarioTest):
                  "--identity {{type:SystemAssigned}}",
                  checks=[JMESPathCheck('identity.type', "SystemAssigned")
                          ]).get_output_in_json()
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.autoscale')
+    def test_elastic_san_autoscale_soft_delete_scenarios(self, resource_group):
+        self.kwargs.update({
+            "san_name": self.create_random_name('elastic-san', 24),
+            "vg_name": self.create_random_name('volume-group', 24),
+            "vg2_name": self.create_random_name('volume-group', 24),
+            "vnet_name": self.create_random_name('vnet', 24),
+            "subnet_name": self.create_random_name('subnet', 24),
+            "volume_name": self.create_random_name('volume', 24),
+            "volume2_name": self.create_random_name('volume', 24)
+        })
+        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
+                 '--base-size-tib 23 --extended-capacity-size-tib 14 '
+                 '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1 '
+                 '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 '
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1',
+                 checks=[
+                     JMESPathCheck('autoScaleProperties.scaleUpProperties.autoScalePolicyEnforcement', 'Enabled'),
+                     JMESPathCheck('autoScaleProperties.scaleUpProperties.capacityUnitScaleUpLimitTiB', 40),
+                     JMESPathCheck('autoScaleProperties.scaleUpProperties.increaseCapacityUnitByTiB', 4),
+                     JMESPathCheck('autoScaleProperties.scaleUpProperties.unusedSizeTiB', 24)
+                 ])
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16')
+        subnet_id = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name} '
+                             '--address-prefixes 10.0.0.0/24 '
+                             '--service-endpoints Microsoft.Storage').get_output_in_json()["id"]
+        self.kwargs.update({"subnet_id": subnet_id})
+        self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
+                 '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
+                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}} '
+                 '--delete-retention-policy-state Enabled --delete-retention-period-days 7')
+        self.cmd('az elastic-san volume-group create -e {san_name} -n {vg2_name} -g {rg} '
+                 '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
+                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}} '
+                 '--enforce-data-integrity-check-for-iscsi true '
+                 '--delete-retention-policy-state Enabled --delete-retention-period-days 7')
+        self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 2)])
+        # soft delete
+        self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg2_name} -y')
+        self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume-group list -g {rg} -e {san_name} '
+                 '--access-soft-deleted-resources True', checks=[JMESPathCheck('length(@)', 1)])
+
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume2_name} --size-gib 3')
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 2)])
+        # soft delete
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y')
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        deleted_volume_name = self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name} '
+                                       '--access-soft-deleted-resources true',
+                                       checks=[JMESPathCheck('length(@)', 1)]).get_output_in_json()[0]["name"]
+        self.kwargs.update({"deleted_volume_name": deleted_volume_name})
+        # restore
+        self.cmd('az elastic-san volume restore -g {rg} -e {san_name} -v {vg_name} -n {deleted_volume_name}')
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 2)])
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name} --access-soft-deleted-resources true',
+                 checks=[JMESPathCheck('length(@)', 0)])
+
+        # permanent delete
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y')
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {deleted_volume_name} '
+                 '--delete-type permanent -y')
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name} --access-soft-deleted-resources true',
+                 checks=[JMESPathCheck('length(@)', 0)])

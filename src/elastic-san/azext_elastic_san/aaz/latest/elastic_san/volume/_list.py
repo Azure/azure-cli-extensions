@@ -45,8 +45,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.soft_deleted_only = AAZStrArg(
-            options=["--soft-deleted-only"],
+        _args_schema.x_ms_access_soft_deleted_resources = AAZStrArg(
+            options=["--access-soft-deleted-resources", "--x-ms-access-soft-deleted-resources"],
             help="Optional, returns only soft deleted volumes if set to true. If set to false or if not specified, returns only active volumes.",
             is_preview=True,
             enum={"false": "false", "true": "true"},
@@ -156,7 +156,7 @@ class List(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "x-ms-access-soft-deleted-resources", self.ctx.args.soft_deleted_only,
+                    "x-ms-access-soft-deleted-resources", self.ctx.args.x_ms_access_soft_deleted_resources,
                 ),
                 **self.serialize_header_param(
                     "Accept", "application/json",

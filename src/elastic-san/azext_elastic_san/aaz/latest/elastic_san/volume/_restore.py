@@ -44,7 +44,7 @@ class Restore(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -58,7 +58,7 @@ class Restore(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",
@@ -69,7 +69,7 @@ class Restore(AAZCommand):
             ),
         )
         _args_schema.volume_name = AAZStrArg(
-            options=["--volume-name"],
+            options=["-n", "--name", "--volume-name"],
             help="The name of the Volume.",
             required=True,
             id_part="child_name_2",
