@@ -12,7 +12,8 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
-from azext_fleet._helpers import print_or_merge_credentials, validate_subnet
+from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet._validators import validate_subnet
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
@@ -109,7 +110,7 @@ def create_fleet(cmd,
         identity=managed_service_identity
     )
 
-    if enable_private_cluster or enable_vnet_integration:
+    if enable_private_cluster:
         validate_subnet(cmd, resource_group_name, agent_subnet_id)
 
     return sdk_no_wait(no_wait,

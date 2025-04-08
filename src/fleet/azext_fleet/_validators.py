@@ -8,6 +8,10 @@ import re
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
 from azure.mgmt.core.tools import is_valid_resource_id
+from azure.cli.command_modules.acs._roleassignments import add_role_assignment
+
+from azext_fleet.constants import FLEET_1P_APP_ID
+from azext_fleet._client_factory import get_provider_client
 
 
 def validate_member_cluster_id(namespace):
@@ -96,3 +100,15 @@ def validate_update_strategy_id(namespace):
     if not is_valid_resource_id(update_strategy_id):
         raise InvalidArgumentValueError(
             "--update-strategy-id is not a valid Azure resource ID.")
+
+
+def validate_subnet(cmd, subnet_id):
+    resource_client = get_provider_client(cmd.cli_ctx)
+    provider = resource_client.providers.get("Microsoft.ContainerService")
+
+    if provider.registration_state != 'Registered':
+        raise CLIError("The Microsoft.ContainerService resource provider is not registered."
+                       "Run `az provider register -n Microsoft.ContainerService --wait`.")
+    if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=subnet_id):
+        raise CLIError("failed to create role assignment for Fleet RP.\n"
+                       f"Do you have owner permissions on the subnet {subnet_id}?\n")
