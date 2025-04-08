@@ -7,7 +7,6 @@
 # pylint: disable=logging-fstring-interpolation
 import os
 import dataclasses
-import tempfile
 import shutil
 import subprocess
 
@@ -17,6 +16,7 @@ from azure.cli.command_modules.acr.repository import acr_repository_delete
 from azure.mgmt.core.tools import parse_resource_id
 from jsonschema.exceptions import ValidationError
 from knack.log import get_logger
+from tempfile import NamedTemporaryFile
 from ._constants import (
     BEARER_TOKEN_USERNAME,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
@@ -39,39 +39,33 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
     logger.debug(f"Entering create_oci_artifact_continuouspatching with parameters: {registry.name} {cssc_config_file} {dryrun}")
 
     oras_client = None
-    temp_artifact_name = None
     try:
         oras_client = _oras_client(registry)
-        # we might have to handle the tag lock/unlock for the cssc config file,
-        # to make it harder for the user to change it by mistake
 
         # the ORAS client can only work with files under the current directory
-        temp_artifact = tempfile.NamedTemporaryFile(
+        with NamedTemporaryFile(
             prefix="cssc_config_tmp_",
             mode="w+b",
             dir=os.getcwd(),
-            delete=False)
+            delete=False
+        ) as temp_artifact, open(cssc_config_file, "rb") as user_artifact:
+            shutil.copyfileobj(user_artifact, temp_artifact)
+            temp_artifact.flush()  # Ensure all data is written to disk
+            temp_artifact_name = temp_artifact.name
 
-        temp_artifact_name = temp_artifact.name
-        user_artifact = open(cssc_config_file, "rb")
-        shutil.copyfileobj(user_artifact, temp_artifact)
-        temp_artifact.close()
+            if dryrun:
+                oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
+            else:
+                oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
-        if dryrun:
-            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
-        else:
-            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
-
-        oras_client.push(
-            target=oci_target_name,
-            files=[temp_artifact.name])
+            oras_client.push(
+                target=oci_target_name,
+                files=[temp_artifact_name])
     except Exception as exception:
         raise AzCLIError(f"Failed to push OCI artifact to ACR: {exception}")
     finally:
         if oras_client:
             oras_client.logout(hostname=str.lower(registry.login_server))
-        if temp_artifact_name and os.path.exists(temp_artifact_name):
-            os.remove(temp_artifact_name)
 
 
 def get_oci_artifact_continuous_patch(cmd, registry):
@@ -84,9 +78,10 @@ def get_oci_artifact_continuous_patch(cmd, registry):
         oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
         oci_artifacts = oras_client.pull(target=oci_target_name,
-                                         stream=True)
+                                         overwrite=True)
         trigger_task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         file_name = oci_artifacts[0]
+        logger.debug(f"OCI artifact file name: {file_name}, trigger task: {trigger_task}")
         config = ContinuousPatchConfig().from_file(file_name, trigger_task)
     except Exception as exception:
         raise AzCLIError(f"Failed to get OCI artifact from ACR: {exception}")
@@ -125,8 +120,9 @@ def _oras_client(registry):
 
     try:
         token = _get_acr_token(registry.name, subscription)
-        client = OrasClient(hostname=str.lower(registry.login_server))
+        client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
         client.login(BEARER_TOKEN_USERNAME, token)
+        logger.debug(f"Login to ACR {registry.name} completed successfully.")
     except Exception as exception:
         raise AzCLIError(f"Failed to login to Artifact Store ACR {registry.name}: {exception}")
 

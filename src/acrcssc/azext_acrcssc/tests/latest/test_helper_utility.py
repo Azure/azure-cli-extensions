@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import MagicMock, patch
 from azext_acrcssc.helper._utility import convert_cron_to_schedule, convert_timespan_to_cron
 from azure.cli.core.azclierror import InvalidArgumentValueError
 

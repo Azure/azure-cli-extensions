@@ -193,7 +193,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_check_continuous_task_exists.return_value = True, []
         mock_acr_task_client = mock.MagicMock()
         mock_cf_acr_tasks.return_value = mock_acr_task_client
-        mock_acr_task_client.list.return_value = []
+        mock_acr_task_client.get.return_value = mock.MagicMock()
         mock_transform_task_list.return_value = []
 
         # Call the function
@@ -202,7 +202,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Assert that the dependencies were called with the correct arguments
         mock_check_continuous_task_exists.assert_called_once()
         mock_cf_acr_tasks.assert_called_once()
-        mock_acr_task_client.list.assert_called_once()
+        mock_acr_task_client.get.assert_called()
         mock_transform_task_list.assert_called_once()
         self.assertEqual(result, [])
 

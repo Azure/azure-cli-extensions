@@ -131,10 +131,10 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     )(poller)
     logger.debug("Finished deploying")
 
-    if deployment.properties is not None:
-        depl_props = deployment.properties
-    else:
+    if deployment.properties is None:
         raise RuntimeError("The deployment has no properties.\nAborting")
+
+    depl_props = deployment.properties
     logger.debug(f"Deployed: {deployment.name} {deployment.id} {depl_props}")
 
     if depl_props.provisioning_state != "Succeeded":

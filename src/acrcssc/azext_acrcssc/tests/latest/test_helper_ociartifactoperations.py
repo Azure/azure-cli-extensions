@@ -9,24 +9,31 @@ from unittest import mock
 from unittest.mock import MagicMock, patch
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from azure.cli.core.mock import DummyCli
-from azure.cli.core.azclierror import AzCLIError
 
 
 class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
     @patch('azext_acrcssc.helper._ociartifactoperations._oras_client')
-    @patch('azext_acrcssc.helper._ociartifactoperations.tempfile.NamedTemporaryFile')
-    def test_create_oci_artifact_continuous_patch(self, mock_NamedTemporaryFile, mock_oras_client):
+    @patch('azext_acrcssc.helper._ociartifactoperations.NamedTemporaryFile')
+    @patch('shutil.copyfileobj')
+    @patch('builtins.open')
+    def test_create_oci_artifact_continuous_patch(self, mock_open, mock_copyfileobj, mock_NamedTemporaryFile, mock_oras_client):
         # Mock the necessary dependencies
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file_path = temp_file.name
+        temp_artifact = MagicMock()
+        temp_artifact.name = "mock_temp_file_path"
+        mock_NamedTemporaryFile.return_value.__enter__.return_value = temp_artifact
+        
+        # Configure the open() mock to return a mock file object
+        mock_file = MagicMock()
+        mock_open.return_value = mock_file
+        mock_copyfileobj.return_value = None
+
         registry = MagicMock()
         registry.login_server = "test@azurecr.io"
-        cssc_config_file = temp_file_path
+        cssc_config_file = temp_artifact.name  # Use the mocked file path
         dryrun = False
         oras_client = MagicMock()
+        oras_client.push = MagicMock()
         mock_oras_client.return_value = oras_client
-        temp_artifact = MagicMock()
-        mock_NamedTemporaryFile.return_value = temp_artifact
 
         # Call the function
         with patch('os.path.exists', return_value=True), patch('os.remove', return_value=True):

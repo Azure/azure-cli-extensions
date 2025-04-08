@@ -56,6 +56,9 @@ CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-workflow"
 CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION = f"This task will trigger the continuous patching workflow based on the schedule set during the creation. It will match the filter repositories set with config parameter and schedule vulnerability scan check using {CONTINUOUSPATCH_TASK_SCANIMAGE_NAME} task."
 CONTINUOUS_PATCHING_WORKFLOW_NAME = CSSCTaskTypes.ContinuousPatchV1.value
 DESCRIPTION = "Description"
+CONTINUOUSPATCH_SCHEDULE_MIN_DAYS = 1
+CONTINUOUSPATCH_SCHEDULE_MAX_DAYS = 30
+
 
 CONTINUOUSPATCH_ALL_TASK_NAMES = [
     CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME,
@@ -69,10 +72,10 @@ WORKFLOW_VALIDATION_MESSAGE = "Validating configuration"
 
 ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST = f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow tasks does not exist. Run 'az acr supply-chain workflow create' command to create workflow tasks."
 ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS = f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow tasks already exists. Use 'az acr supply-chain workflow update' command to perform updates."
-ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
+ERROR_MESSAGE_INVALID_TASK = "Workflow type %s is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Schedule value is invalid. "
 ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT = "Schedule format is invalid. "
-RECOMMENDATION_SCHEDULE = "Schedule must be in the format of <number><unit> where unit is d for days. Example: 1d. Max value for d is 30d."
+RECOMMENDATION_SCHEDULE = f"Schedule must be in the format of <number><unit> where unit is d for days. Example: {CONTINUOUSPATCH_SCHEDULE_MIN_DAYS}d. Max value for d is {CONTINUOUSPATCH_SCHEDULE_MAX_DAYS}d."
 # this dictionary can be expanded to handle more configuration of the tasks regarding continuous patching
 # if this gets out of hand, or more types of tasks are supported, this should be a class on its own
 CONTINUOUSPATCH_TASK_DEFINITION = {

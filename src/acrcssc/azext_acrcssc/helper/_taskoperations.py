@@ -31,12 +31,12 @@ from ._constants import (
     DESCRIPTION,
     WORKFLOW_VALIDATION_MESSAGE,
     TaskRunStatus)
-from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
+from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
 from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
-from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
@@ -67,7 +67,6 @@ def create_update_continuous_patch_v1(cmd,
         schedule_cron_expression = convert_timespan_to_cron(schedule)
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
-    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
@@ -186,14 +185,24 @@ def list_continuous_patch_v1(cmd, registry):
 
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
-    tasks_list = acr_task_client.list(resource_group_name, registry.name)
-    filtered_cssc_tasks = _transform_task_list(tasks_list)
+    task_list = []
+    for task in CONTINUOUSPATCH_ALL_TASK_NAMES:
+        try:
+            task_list.append(acr_task_client.get(resource_group_name, registry.name, task))
+            logger.debug(f"Task {task} exists in registry {registry.name}")
+        except ResourceNotFoundError:
+            logger.debug(f"Task {task} does not exist in registry {registry.name}")
+
+    filtered_cssc_tasks = _transform_task_list(task_list)
     return filtered_cssc_tasks
 
 
 def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_internal_statements=True):
     logger.debug(f"Entering acr_cssc_dry_run with parameters: {registry} {config_file_path}")
     cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+
+    if is_create and cssc_tasks_exists:
+        raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
 
     if config_file_path is None:
         if not cssc_tasks_exists:
@@ -204,9 +213,6 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
         _, config_file_path = get_oci_artifact_continuous_patch(cmd, registry)
         if config_file_path is None:
             raise AzCLIError("Failed to retrieve the configuration file from the registry.")
-
-    if is_create and cssc_tasks_exists:
-        raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
 
     file_name = None
     tmp_folder = None
@@ -259,7 +265,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
                 architecture=platform_arch,
                 variant=platform_variant
             ),
-            credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
+            credentials=_get_custom_registry_credentials(cmd),
             agent_pool_name=None,
             log_template=None
         )
@@ -455,7 +461,6 @@ def _delete_task(cmd, registry, task_name):
 
 def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_group, task_name):
     role_client = cf_authorization(cli_ctx)
-    acrtask_client = cf_acr_tasks(cli_ctx)
 
     try:
         task = acrtask_client.get(resource_group, registry.name, task_name)
@@ -473,11 +478,16 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
         )
 
         for role in assigned_roles:
-            logger.debug(f"Deleting role assignments of task {task_name} from the registry")
-            role_client.role_assignments.delete(
-                scope=registry.id,
-                role_assignment_name=role.name
-            )
+            try:
+                logger.debug(f"Deleting role assignments of task {task_name} from the registry")
+                role_client.role_assignments.delete(
+                    scope=registry.id,
+                    role_assignment_name=role.name
+                )
+            except ResourceNotFoundError:
+                logger.debug(f"Role assignment {role.name} does not exist in registry {registry.name}")
+            except AzCLIError as exception:
+                logger.error(f"Failed to delete role assignment {role.name} from registry {registry.name} : {exception}")
 
 
 def _transform_task_list(tasks):
@@ -508,60 +518,11 @@ def _transform_task_list(tasks):
     return transformed
 
 
-def _get_custom_registry_credentials(cmd,
-                                     auth_mode=None,
-                                     login_server=None,
-                                     username=None,
-                                     password=None,
-                                     identity=None,
-                                     is_remove=False):
-    """Get the credential object from the input
-    :param str auth_mode: The login mode for the source registry
-    :param str login_server: The login server of custom registry
-    :param str username: The username for custom registry (plain text or a key vault secret URI)
-    :param str password: The password for custom registry (plain text or a key vault secret URI)
-    :param str identity: The task managed identity used for the credential
-    """
+def _get_custom_registry_credentials(cmd):
     acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
-    source_registry_credentials = None
-    if auth_mode:
-        source_registry_credentials = acr_tasks_client.models.SourceRegistryCredentials(
-            login_mode=auth_mode)
-
-    custom_registries = None
-    if login_server:
-        # if null username and password (or identity), then remove the credential
-        custom_reg_credential = None
-
-        is_identity_credential = False
-        if not username and not password:
-            is_identity_credential = identity is not None
-
-        if not is_remove:
-            if is_identity_credential:
-                custom_reg_credential = acr_tasks_client.models.CustomRegistryCredentials(
-                    identity=identity
-                )
-            else:
-                custom_reg_credential = acr_tasks_client.models.CustomRegistryCredentials(
-                    user_name=acr_tasks_client.models.SecretObject(
-                        type=acr_tasks_client.models.SecretObjectType.vaultsecret if _is_vault_secret(
-                            cmd, username)else acr_tasks_client.models.SecretObjectType.opaque,
-                        value=username
-                    ),
-                    password=acr_tasks_client.models.SecretObject(
-                        type=acr_tasks_client.models.SecretObjectType.vaultsecret if _is_vault_secret(
-                            cmd, password) else acr_tasks_client.models.SecretObjectType.opaque,
-                        value=password
-                    ),
-                    identity=identity
-                )
-
-        custom_registries = {login_server: custom_reg_credential}
-
     return acr_tasks_client.models.Credentials(
-        source_registry=source_registry_credentials,
-        custom_registries=custom_registries
+        source_registry=None,
+        custom_registries=None
     )
 
 
