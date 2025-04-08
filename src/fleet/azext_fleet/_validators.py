@@ -106,6 +106,8 @@ def validate_subnet(cmd, subnet_id):
     resource_client = get_provider_client(cmd.cli_ctx)
     provider = resource_client.providers.get("Microsoft.ContainerService")
 
+    # provider registration state being is checked to ensure that the Fleet service principal is available
+    # to create the role assignment on the subnet
     if provider.registration_state != 'Registered':
         raise CLIError("The Microsoft.ContainerService resource provider is not registered."
                        "Run `az provider register -n Microsoft.ContainerService --wait`.")
