@@ -80,7 +80,7 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install requests packaging setuptools
+      source ./env/bin/activate
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
