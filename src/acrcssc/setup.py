@@ -31,7 +31,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ["oras~=0.1.19", "croniter~=3.0.0"]
+DEPENDENCIES = ["oras~=0.2.25", "croniter~=3.0.0"]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

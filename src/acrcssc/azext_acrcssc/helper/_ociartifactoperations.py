@@ -84,7 +84,7 @@ def get_oci_artifact_continuous_patch(cmd, registry):
         oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
         oci_artifacts = oras_client.pull(target=oci_target_name,
-                                         stream=True)
+                                         overwrite=True)
         trigger_task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         file_name = oci_artifacts[0]
         config = ContinuousPatchConfig().from_file(file_name, trigger_task)
@@ -125,8 +125,9 @@ def _oras_client(registry):
 
     try:
         token = _get_acr_token(registry.name, subscription)
-        client = OrasClient(hostname=str.lower(registry.login_server))
+        client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
         client.login(BEARER_TOKEN_USERNAME, token)
+        logger.debug(f"Login to ACR {registry.name} completed successfully.")
     except Exception as exception:
         raise AzCLIError(f"Failed to login to Artifact Store ACR {registry.name}: {exception}")
 
