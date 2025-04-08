@@ -15,9 +15,9 @@ steps:
       git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
       python -m pip install -U pip
       pip install --trusted-host azurecliprod.blob.core.windows.net "https://azurecliprod.blob.core.windows.net/beta/azdev-0.2.3b1-py3-none-any.whl"
-      azdev --version
       azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
       pip list -v
+      azdev --version
       az --version
     displayName: 'azdev setup'
     env:
