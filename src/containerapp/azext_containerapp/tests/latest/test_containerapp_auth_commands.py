@@ -5,7 +5,7 @@
 
 from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
@@ -49,6 +49,7 @@ class ContainerappAuthIdentityTests(ScenarioTest):
             .format(resource_group, app, blobContainerUri), checks=[
                 JMESPathCheck('properties.login.tokenStore.enabled', True),
                 JMESPathCheck('properties.login.tokenStore.azureBlobStorage.blobContainerUri', blobContainerUri),
+                JMESPathCheckNotExists('properties.login.tokenStore.azureBlobStorage.managedIdentityResourceId'),
             ])
         
         self.cmd(
