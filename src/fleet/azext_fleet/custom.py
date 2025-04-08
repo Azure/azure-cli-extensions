@@ -109,10 +109,8 @@ def create_fleet(cmd,
         identity=managed_service_identity
     )
 
-    if enable_private_cluster:
+    if enable_private_cluster or enable_vnet_integration:
         validate_subnet(cmd, resource_group_name, agent_subnet_id)
-    if enable_vnet_integration:
-        validate_subnet(cmd, resource_group_name, apiserver_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
