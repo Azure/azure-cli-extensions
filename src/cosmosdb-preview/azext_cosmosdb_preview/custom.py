@@ -339,7 +339,8 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   hours_between_backups=None,
                                                   repair_enabled=None,
                                                   cluster_type='Production',
-                                                  extensions=None):
+                                                  extensions=None,
+                                                  azure_connection_method=None):
 
     """Creates an Azure Managed Cassandra Cluster"""
 
@@ -362,7 +363,8 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         hours_between_backups=hours_between_backups,
         repair_enabled=repair_enabled,
         cluster_type=cluster_type,
-        extensions=extensions)
+        extensions=extensions,
+        azure_connection_method=azure_connection_method)
 
     managed_service_identity_parameter = ManagedCassandraManagedServiceIdentity(
         type=identity_type
@@ -451,8 +453,8 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         external_seed_nodes=cluster_resource.properties.external_seed_nodes,
         seed_nodes=cluster_resource.properties.seed_nodes,
         cluster_type=cluster_type,
-        extensions=extensions
-    )
+        extensions=extensions,
+        azure_connection_method=cluster_resource.properties.azure_connection_method)
 
     cluster_resource_create_update_parameters = ClusterResource(
         location=cluster_resource.location,

@@ -183,6 +183,7 @@ def load_arguments(self, _):
         c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra.")
         c.argument('restore_from_backup_id', help="The resource id of a backup. If provided on create, the backup will be used to prepopulate the cluster. The cluster data center count and node counts must match the backup.")
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
+        c.argument('azure_connection_method', options_list=['--azure-connection-method', '-q'], help="This field can be specified to create VPN based Cassandra cluster, where the datacenter is in customers vnet with limited permissions to azure.")
 
     # Managed Cassandra Cluster
     for scope in ['managed-cassandra cluster backup show']:
