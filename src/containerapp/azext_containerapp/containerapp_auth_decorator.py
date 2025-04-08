@@ -73,14 +73,7 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         safe_set(self.existing_auth, "login", "tokenStore", "enabled", value=True)
         safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", value={})
 
-        param_provided = 0
-        if self.get_argument_sas_url_secret() is not None:
-            param_provided += 1
-        if self.get_argument_sas_url_secret_name() is not None:
-            param_provided += 1
-        if self.get_argument_blob_container_uri() is not None:
-            param_provided += 1
-
+        param_provided = sum(1 for param in [self.get_argument_sas_url_secret(), self.get_argument_sas_url_secret_name(), self.get_argument_blob_container_uri()] if param is not None)
         if param_provided != 1:
             raise ArgumentUsageError(
                 'Usage Error: only blob storage token store is supported. --sas-url-secret, --sas-url-secret-name and --blob-container-uri should provide exactly one when token store is enabled')
@@ -90,14 +83,11 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
                     value=self.get_argument_blob_container_uri())
 
             identity = self.get_argument_blob_container_identity()
-            if identity is None:
-                identity = ""
-            identity = identity.lower()
-            if identity != "":
+            if identity is not None:
+                identity = identity.lower()
                 subscription_id = get_subscription_id(self.cmd.cli_ctx)
                 identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
-                safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "managedIdentityResourceId",
-                    value=identity)
+                safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "managedIdentityResourceId", value=identity)
             return
 
         sas_url_setting_name = BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME

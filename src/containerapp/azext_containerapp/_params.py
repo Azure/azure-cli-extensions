@@ -279,7 +279,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp auth') as c:
         c.argument('blob_container_uri', help='The URI of the blob storage containing the tokens. Should not be used along with sas_url_secret and sas_url_secret_name.', is_preview=True)
         c.argument('blob_container_identity', options_list=['--blob-container-identity', '--bci'],
-                   help='Resource ID of a managed identity to authenticate with Azure blob storage, or Empty to use a system-assigned identity.', is_preview=True)
+                   help='Default Empty to use system-assigned identity, or using Resource ID of a managed identity to authenticate with Azure blob storage.', is_preview=True)
 
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run `az containerapp env workload-profile list-supported -l <region>` to check the options for your region.")
