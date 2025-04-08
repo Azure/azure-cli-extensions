@@ -17,7 +17,7 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         self.existing_auth = {}
         try:
             self.existing_auth = self.client.get(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), auth_config_name="current")["properties"]
-        except: # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except
             self.existing_auth["platform"] = {}
             self.existing_auth["platform"]["enabled"] = True
             self.existing_auth["globalValidation"] = {}
