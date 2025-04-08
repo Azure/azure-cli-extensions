@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout CLI extension repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            .github
       - name: Azdev Env Setup
         uses: ./.github/actions/env-setup
       - name: Get Diff Files
@@ -46,6 +50,7 @@ jobs:
           cat changed_files
           cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq
           echo "changed_module_list=$(cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq | xargs)" >> $GITHUB_ENV
+          git checkout "$base_branch_pre"/"$base_branch"
       - name: Display PR Diff Modules
         run: |
           for mod in ${changed_module_list[@]}
