@@ -238,10 +238,10 @@ Custom_Locations_OID_Fetch_Fault_Type_Exception = (
     "Exception while fetching oid for custom locations."
 )
 Successfully_Enabled_Features = (
-    "Successsfully enabled features: {} for the Connected Cluster {}"
+    "Successfully enabled features: {} for the Connected Cluster {}"
 )
 Successfully_Disabled_Features = (
-    "Successsfully disabled features: {} for the Connected Cluster {}"
+    "Successfully disabled features: {} for the Connected Cluster {}"
 )
 Error_enabling_Features = (
     'Error while updating agents for enabling features. Please run "kubectl get pods -n azure-arc" to check the '
