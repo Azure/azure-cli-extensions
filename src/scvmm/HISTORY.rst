@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.3
+1.2.0
 ++++++
 * Bump API version to stable/2025-03-13.
 
