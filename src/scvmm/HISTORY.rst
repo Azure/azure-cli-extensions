@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.3
+++++++
+* Bump API version to stable/2025-03-13.
+
 1.1.2
 ++++++
 * Security upgrades and fixes - Drop `msrestazure` dependency.
