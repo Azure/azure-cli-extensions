@@ -382,3 +382,39 @@ class ElasticSanScenario(ScenarioTest):
                  checks=[JMESPathCheck('length(@)', 1)])
         self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name} --access-soft-deleted-resources true',
                  checks=[JMESPathCheck('length(@)', 0)])
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.testrestore')
+    def test_elastic_san_test_restore_backup_scenarios(self, resource_group):
+        self.kwargs.update({
+            "san_name": self.create_random_name('elastic-san', 24),
+            "vg_name": self.create_random_name('volume-group', 24),
+            "vnet_name": self.create_random_name('vnet', 24),
+            "subnet_name": self.create_random_name('subnet', 24),
+            "volume_name": self.create_random_name('volume', 24),
+            "snapshot_name": self.create_random_name('snapshot', 24)
+        })
+        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
+                 '--base-size-tib 23 --extended-capacity-size-tib 14 '
+                 '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1 '
+                 '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 '
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1')
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16')
+        subnet_id = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name} '
+                             '--address-prefixes 10.0.0.0/24 '
+                             '--service-endpoints Microsoft.Storage').get_output_in_json()["id"]
+        self.kwargs.update({"subnet_id": subnet_id})
+        self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
+                 '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
+                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}} '
+                 '--delete-retention-policy-state Enabled --delete-retention-period-days 7')
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        # test backup
+        self.cmd('az elastic-san volume-group test-backup -g {rg} -e {san_name} -n {vg_name} '
+                 '--volume-names "[{volume_name}]"', checks=[JMESPathCheck('validationStatus', 'Success')])
+
+        # test restore
+        disk_snapshot_id = self.cmd('az snapshot create -g {rg} -n {snapshot_name} '
+                                    '--size-gb 1').get_output_in_json()["id"]
+        self.kwargs.update({"disk_snapshot_id": disk_snapshot_id})
+        self.cmd('az elastic-san volume-group test-restore -g {rg} -e {san_name} -n {vg_name} '
+                 '--disk-snapshot-ids "[{disk_snapshot_id}]"', checks=[JMESPathCheck('validationStatus', 'Success')])
