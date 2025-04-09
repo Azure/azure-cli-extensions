@@ -214,6 +214,11 @@ class TestIndex(unittest.TestCase):
             metadata.pop('generator', None)
             item['metadata'].pop('generator', None)
 
+            # Ignore document_names which is inconsistent with whl pkg.
+            # e.g: https://hciarcvmsstorage.z13.web.core.windows.net/cli-extensions/stack_hci_vm-1.7.8-py3-none-any.whl
+            metadata['extensions'].pop('document_names', None)
+            item['metadata']['extensions'].pop('document_names', None)
+
             # Ignore test_requires which is defined in setup.py,
             # as this information cannot be extracted from the whl pkg.
             item['metadata'].pop('test_requires', None)
