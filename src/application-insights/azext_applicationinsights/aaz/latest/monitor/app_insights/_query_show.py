@@ -46,8 +46,8 @@ class QueryShow(AAZCommand):
             help="ID of the application. This is Application ID from the API Access settings blade in the Azure portal.",
             required=True,
         )
-        _args_schema.query = AAZStrArg(
-            options=["--query"],
+        _args_schema.s_query = AAZStrArg(
+            options=["--s-query"],
             help="The Analytics query. Learn more about the [Analytics query syntax](https://azure.microsoft.com/documentation/articles/app-insights-analytics-reference/)",
             required=True,
         )
@@ -114,7 +114,7 @@ class QueryShow(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "query", self.ctx.args.query,
+                    "query", self.ctx.args.s_query,
                     required=True,
                 ),
                 **self.serialize_query_param(

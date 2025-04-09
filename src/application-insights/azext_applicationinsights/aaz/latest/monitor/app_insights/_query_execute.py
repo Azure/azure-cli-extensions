@@ -55,8 +55,8 @@ class QueryExecute(AAZCommand):
             arg_group="Body",
             help="A list of Application IDs for cross-application queries.",
         )
-        _args_schema.query = AAZStrArg(
-            options=["--query"],
+        _args_schema.s_query = AAZStrArg(
+            options=["--s-query"],
             arg_group="Body",
             help="The query to execute.",
             required=True,
@@ -144,7 +144,7 @@ class QueryExecute(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("applications", AAZListType, ".applications")
-            _builder.set_prop("query", AAZStrType, ".query", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("query", AAZStrType, ".s_query", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("timespan", AAZStrType, ".timespan")
 
             applications = _builder.get(".applications")
