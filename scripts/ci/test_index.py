@@ -210,6 +210,9 @@ class TestIndex(unittest.TestCase):
                           "And update the extension index with the latest azdev."
                           "(e.g. `azdev extension update-index xxx.whl`).".format(ext_name,
                                                                                            supported_generators))
+            # Ignore test_requires which is defined in setup.py,
+            # as this information cannot be extracted from the whl pkg.
+            item['metadata'].pop('test_requires', None)
             self.assertDictEqual(metadata, item['metadata'],
                                  "Metadata for {} in index doesn't match the expected of: \n"
                                  "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
