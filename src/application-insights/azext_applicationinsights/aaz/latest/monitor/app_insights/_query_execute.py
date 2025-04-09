@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class QueryExecute(AAZCommand):
     """Executes an Analytics query for data. [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query) is an example for using POST with an Analytics query.
+
+    :example: queryPost
+        az monitor app-insights query-execute --app-id 34adfa4f-cedf-4dc0-ba29-b6d1a69ab345 --timespan PT12H --s-query requests | summarize count() by bin(timestamp, 1h)
     """
 
     _aaz_info = {
