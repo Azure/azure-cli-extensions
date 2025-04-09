@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: Create an Elastic SAN.
         az elastic-san create -n "san_name" -g "rg" --tags '{key1810:aaaa}' -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}' --public-network-access Enabled --auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 --increase-capacity-unit-by-tib 4 --unused-size-tib 24
+
+    :example: Create an ElasticSAN with auto scale params
+        az elastic-san create -n san_name -g rg_name -l eastus2euap --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}' --availability-zones 1 --auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 --increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1
     """
 
     _aaz_info = {

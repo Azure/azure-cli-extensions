@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Restore(AAZCommand):
     """Restore Soft Deleted Volumes.
+
+    :example: Restore a deleted volume
+        az elastic-san volume restore -g rg_name -e san_name -v volume_group_name -n deleted_volume_name
     """
 
     _aaz_info = {

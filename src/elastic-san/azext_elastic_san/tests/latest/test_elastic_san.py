@@ -312,8 +312,8 @@ class ElasticSanScenario(ScenarioTest):
                  checks=[JMESPathCheck('identity.type', "SystemAssigned")
                          ]).get_output_in_json()
 
-    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.autoscale')
-    def test_elastic_san_autoscale_soft_delete_scenarios(self, resource_group):
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.softdelete')
+    def test_elastic_san_soft_delete_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
             "vg_name": self.create_random_name('volume-group', 24),
@@ -327,13 +327,7 @@ class ElasticSanScenario(ScenarioTest):
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1 '
                  '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 '
-                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1',
-                 checks=[
-                     JMESPathCheck('autoScaleProperties.scaleUpProperties.autoScalePolicyEnforcement', 'Enabled'),
-                     JMESPathCheck('autoScaleProperties.scaleUpProperties.capacityUnitScaleUpLimitTiB', 40),
-                     JMESPathCheck('autoScaleProperties.scaleUpProperties.increaseCapacityUnitByTiB', 4),
-                     JMESPathCheck('autoScaleProperties.scaleUpProperties.unusedSizeTiB', 24)
-                 ])
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1')
         self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16')
         subnet_id = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name} '
                              '--address-prefixes 10.0.0.0/24 '

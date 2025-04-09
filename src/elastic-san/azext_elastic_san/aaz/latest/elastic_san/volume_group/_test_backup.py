@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class TestBackup(AAZCommand):
     """Validate whether a disk snapshot backup can be taken for list of volumes.
+
+    :example: Test Backup
+        az elastic-san volume-group test-backup -g rg_name -e san_name -n volume_group_name --volume-names "[volume_name]"
     """
 
     _aaz_info = {

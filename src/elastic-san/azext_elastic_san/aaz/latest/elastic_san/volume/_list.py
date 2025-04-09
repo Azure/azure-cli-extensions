@@ -19,6 +19,9 @@ class List(AAZCommand):
 
     :example: List Volumes in a Volume Group.
         az elastic-san volume list -g "rg" -e "san_name" -v "vg_name"
+
+    :example: List soft-deleted volumes
+        az elastic-san volume list -g rg_name -e san_name -v volume_group_name --access-soft-deleted-resources true
     """
 
     _aaz_info = {

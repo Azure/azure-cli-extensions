@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class TestRestore(AAZCommand):
     """Validate whether a list of backed up disk snapshots can be restored into ElasticSan volumes.
+
+    :example: Test Restore
+        az elastic-san volume-group test-restore -g rg_name -e san_name -n volume_group_name --disk-snapshot-ids "[snapshot_id]"
     """
 
     _aaz_info = {
