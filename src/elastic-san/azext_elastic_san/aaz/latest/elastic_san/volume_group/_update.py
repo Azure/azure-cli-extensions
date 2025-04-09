@@ -89,7 +89,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.delete_retention_policy_state = AAZStrArg(
-            options=["--delete-retention-policy-state"],
+            options=["--delete-retention-state", "--delete-retention-policy-state"],
             arg_group="DeleteRetentionPolicy",
             help="Manage delete retention policy state",
             is_preview=True,
@@ -97,7 +97,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.delete_retention_period_days = AAZIntArg(
-            options=["--delete-retention-period-days"],
+            options=["--delete-retention-period", "--delete-retention-period-days"],
             arg_group="DeleteRetentionPolicy",
             help="The number of days to retain the resources after deletion.",
             is_preview=True,
