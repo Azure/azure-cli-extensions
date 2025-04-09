@@ -12,9 +12,9 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor app-insights query execute",
+    "monitor app-insights query-execute",
 )
-class Execute(AAZCommand):
+class QueryExecute(AAZCommand):
     """Executes an Analytics query for data. [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query) is an example for using POST with an Analytics query.
     """
 
@@ -205,8 +205,8 @@ class Execute(AAZCommand):
             return cls._schema_on_200
 
 
-class _ExecuteHelper:
-    """Helper class for Execute"""
+class _QueryExecuteHelper:
+    """Helper class for QueryExecute"""
 
 
-__all__ = ["Execute"]
+__all__ = ["QueryExecute"]

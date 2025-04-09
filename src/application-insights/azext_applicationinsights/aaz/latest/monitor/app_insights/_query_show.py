@@ -12,9 +12,9 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor app-insights query show",
+    "monitor app-insights query-show",
 )
-class Show(AAZCommand):
+class QueryShow(AAZCommand):
     """Get an Analytics query for data
     """
 
@@ -184,8 +184,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _QueryShowHelper:
+    """Helper class for QueryShow"""
 
 
-__all__ = ["Show"]
+__all__ = ["QueryShow"]
