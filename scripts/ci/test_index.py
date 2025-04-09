@@ -210,6 +210,10 @@ class TestIndex(unittest.TestCase):
                           "And update the extension index with the latest azdev."
                           "(e.g. `azdev extension update-index xxx.whl`).".format(ext_name,
                                                                                            supported_generators))
+            # Ignore generator which is hardcoded in azdev/operations/extensions/metadata.py.
+            metadata.pop('generator', None)
+            item['metadata'].pop('generator', None)
+
             # Ignore test_requires which is defined in setup.py,
             # as this information cannot be extracted from the whl pkg.
             item['metadata'].pop('test_requires', None)
