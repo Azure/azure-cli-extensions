@@ -18,6 +18,8 @@ from .helper._constants import (
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
     CONTINUOUSPATCH_ALL_TASK_NAMES,
+    CONTINUOUSPATCH_SCHEDULE_MIN_DAYS,
+    CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
     SUBSCRIPTION)
@@ -43,7 +45,7 @@ def _validate_continuouspatch_file(config_path):
     if not os.path.isfile(config_path):
         raise InvalidArgumentValueError(f"Config path file: {config_path} is not a valid file")
     if os.path.getsize(config_path) > CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT:
-        raise InvalidArgumentValueError(f"Config path file: {config_path} is too large. Max size limit is 10 MB")
+        raise InvalidArgumentValueError(f"Config path file: {config_path} is too large. Max size limit is {CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT / (1024 * 1024)} MB")
     if os.path.getsize(config_path) == 0:
         raise InvalidArgumentValueError(f"Config path file: {config_path} is empty")
     if not os.access(config_path, os.R_OK):
@@ -60,8 +62,6 @@ def _validate_continuouspatch_json(config_path):
     except Exception as e:
         logger.error(f"Error validating the continuous patch config file: {e}")
         raise InvalidArgumentValueError("File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
-    finally:
-        f.close()
 
 
 def _validate_continuouspatch_config(config):
@@ -130,7 +130,7 @@ def _validate_schedule(schedule):
 
     value = int(match.group(1))
     unit = match.group(2)
-    if unit == 'd' and (value < 1 or value > 30):  # day of the month
+    if unit == 'd' and (value < CONTINUOUSPATCH_SCHEDULE_MIN_DAYS or value > CONTINUOUSPATCH_SCHEDULE_MAX_DAYS):  # day of the month
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 
 
@@ -148,7 +148,7 @@ def validate_run_type(dryrun, run_immediately):
 
 def validate_task_type(task_type):
     if (task_type not in [item.value for item in CSSCTaskTypes]):
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK % task_type)
 
 
 def validate_cssc_optional_inputs(cssc_config_path, schedule):
