@@ -101,12 +101,12 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.app_id) and has_value(self.ctx.args.event_id) and has_value(self.ctx.args.event_type)
-        condition_1 = has_value(self.ctx.args.app_id) and has_value(self.ctx.args.event_type) and has_value(self.ctx.args.event_id) is not True
+        condition_0 = has_value(self.ctx.args.app_id) and has_value(self.ctx.args.event_type) and has_value(self.ctx.args.event_id) is not True
+        condition_1 = has_value(self.ctx.args.app_id) and has_value(self.ctx.args.event_id) and has_value(self.ctx.args.event_type)
         if condition_0:
-            self.EventsGet(ctx=self.ctx)()
-        if condition_1:
             self.EventsGetByType(ctx=self.ctx)()
+        if condition_1:
+            self.EventsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EventsGet(AAZHttpOperation):
+    class EventsGetByType(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftInsightsDataPlaneClient_application_insights"
 
         def __call__(self, *args, **kwargs):
@@ -135,7 +135,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/v1/apps/{appId}/events/{eventType}/{eventId}",
+                "/v1/apps/{appId}/events/{eventType}",
                 **self.url_parameters
             )
 
@@ -155,10 +155,6 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "eventId", self.ctx.args.event_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "eventType", self.ctx.args.event_type,
                     required=True,
                 ),
@@ -168,6 +164,33 @@ class Show(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$apply", self.ctx.args.apply,
+                ),
+                **self.serialize_query_param(
+                    "$count", self.ctx.args.count,
+                ),
+                **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
+                    "$format", self.ctx.args.format,
+                ),
+                **self.serialize_query_param(
+                    "$orderby", self.ctx.args.orderby,
+                ),
+                **self.serialize_query_param(
+                    "$search", self.ctx.args.search,
+                ),
+                **self.serialize_query_param(
+                    "$select", self.ctx.args.select,
+                ),
+                **self.serialize_query_param(
+                    "$skip", self.ctx.args.skip,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
                 **self.serialize_query_param(
                     "timespan", self.ctx.args.timespan,
                 ),
@@ -201,13 +224,13 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200["@ai.messages"] = AAZListType()
-            _schema_on_200["@odata.context"] = AAZStrType()
+            _schema_on_200["ai.messages"] = AAZListType()
+            _schema_on_200["odata.context"] = AAZStrType()
             _schema_on_200.value = AAZListType()
 
-            @ai.messages = cls._schema_on_200.@ai.messages
-            @ai.messages.Element = AAZFreeFormDictType()
-            _ShowHelper._build_schema_error_info_read(@ai.messages.Element)
+            ai.messages = cls._schema_on_200.ai.messages
+            ai.messages.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_error_info_read(ai.messages.Element)
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -541,7 +564,7 @@ class Show(AAZCommand):
 
             return cls._schema_on_200
 
-    class EventsGetByType(AAZHttpOperation):
+    class EventsGet(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftInsightsDataPlaneClient_application_insights"
 
         def __call__(self, *args, **kwargs):
@@ -555,7 +578,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/v1/apps/{appId}/events/{eventType}",
+                "/v1/apps/{appId}/events/{eventType}/{eventId}",
                 **self.url_parameters
             )
 
@@ -572,6 +595,10 @@ class Show(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "appId", self.ctx.args.app_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "eventId", self.ctx.args.event_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -617,13 +644,13 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200["@ai.messages"] = AAZListType()
-            _schema_on_200["@odata.context"] = AAZStrType()
+            _schema_on_200["ai.messages"] = AAZListType()
+            _schema_on_200["odata.context"] = AAZStrType()
             _schema_on_200.value = AAZListType()
 
-            @ai.messages = cls._schema_on_200.@ai.messages
-            @ai.messages.Element = AAZFreeFormDictType()
-            _ShowHelper._build_schema_error_info_read(@ai.messages.Element)
+            ai.messages = cls._schema_on_200.ai.messages
+            ai.messages.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_error_info_read(ai.messages.Element)
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
