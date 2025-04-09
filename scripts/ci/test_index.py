@@ -210,18 +210,20 @@ class TestIndex(unittest.TestCase):
                           "And update the extension index with the latest azdev."
                           "(e.g. `azdev extension update-index xxx.whl`).".format(ext_name,
                                                                                            supported_generators))
+
             # Ignore generator which is hardcoded in azdev/operations/extensions/metadata.py.
             metadata.pop('generator', None)
             item['metadata'].pop('generator', None)
 
             # Ignore document_names which is inconsistent with whl pkg.
             # e.g: https://hciarcvmsstorage.z13.web.core.windows.net/cli-extensions/stack_hci_vm-1.7.8-py3-none-any.whl
-            metadata['extensions'].pop('document_names', None)
-            item['metadata']['extensions'].pop('document_names', None)
+            metadata['extensions']['python.details'].pop('document_names', None)
+            item['metadata']['extensions']['python.details'].pop('document_names', None)
 
             # Ignore test_requires which is defined in setup.py,
             # as this information cannot be extracted from the whl pkg.
             item['metadata'].pop('test_requires', None)
+
             self.assertDictEqual(metadata, item['metadata'],
                                  "Metadata for {} in index doesn't match the expected of: \n"
                                  "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
