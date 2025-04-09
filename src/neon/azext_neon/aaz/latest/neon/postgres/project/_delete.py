@@ -12,29 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres organization delete",
-    is_preview=True,
+    "neon postgres project delete",
+    is_experimental=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Neon Postgres Organization
+    """Deletes a Neon Project resource
 
-    :example: Organizations_Delete
-        az neon postgres organization delete --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
+    :example: Delete Neon Project Examples
+        az neon postgres project delete  --resource-group rgneon --organization-name neon-org--project-name neon-project
     """
 
     _aaz_info = {
         "version": "2025-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -47,9 +46,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Name of the Neon organization",
+        _args_schema.organization_name = AAZStrArg(
+            options=["--organization-name"],
+            help="The Name of Neon Organization resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -58,15 +57,25 @@ class Delete(AAZCommand):
                 min_length=1,
             ),
         )
+        _args_schema.project_name = AAZStrArg(
+            options=["-n", "--name", "--project-name"],
+            help="The name of the Neon Project resource",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,24}$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
+            is_preview=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.OrganizationsDelete(ctx=self.ctx)()
+        self.ProjectsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,46 +86,23 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class OrganizationsDelete(AAZHttpOperation):
+    class ProjectsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}",
                 **self.url_parameters
             )
 
@@ -132,7 +118,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.name,
+                    "organizationName", self.ctx.args.organization_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,10 +146,10 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_204(self, session):
+        def on_200(self, session):
             pass
 
-        def on_200_201(self, session):
+        def on_204(self, session):
             pass
 
 
