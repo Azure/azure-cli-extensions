@@ -255,14 +255,14 @@ def load_command_table(self, args):
         g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
         g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp sessionpool', is_preview=True) as g:
+    with self.command_group('containerapp sessionpool') as g:
         g.custom_show_command('show', 'show_session_pool')
         g.custom_show_command('list', 'list_session_pool')
         g.custom_command('create', 'create_session_pool', supports_no_wait=True)
         g.custom_command('update', 'update_session_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp session code-interpreter', is_preview=True) as g:
+    with self.command_group('containerapp session code-interpreter') as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
         g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
         g.custom_show_command('show-file-content', 'show_file_content_session_code_interpreter')

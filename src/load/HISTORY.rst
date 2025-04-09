@@ -3,6 +3,20 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* Add commands for creating and managing notification rules using CLI. 
+
+
+1.8.0
+++++++
+* Add commands for creating and managing schedule triggers using CLI. 
+
+
+1.7.0
+++++++
+* Add support for metrics reference identity. Metrics reference identity can be set using `--metrics-reference-identity` argument in 'az load test create' and 'az load test update' commands. Metrics reference identity set in YAML config file under key `referenceIdentities` with `kind` as `Metrics` will also be honoured.
+
 
 1.6.0
 ++++++

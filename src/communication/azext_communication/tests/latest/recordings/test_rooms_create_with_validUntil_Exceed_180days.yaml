@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"validFrom": "2024-06-10T14:21:43.998279", "validUntil": "2024-12-27T13:21:43.998279",
+    body: '{"validFrom": "2025-03-27T10:25:57.193644", "validUntil": "2025-10-13T09:25:57.193644",
       "pstnDialOutEnabled": false}'
     headers:
       Accept:
@@ -14,32 +14,34 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 10 Jun 2024 13:21:44 GMT
+      - Thu, 27 Mar 2025 09:25:57 GMT
       Repeatability-Request-Id:
-      - 619a7c06-272c-11ef-a6ca-00155d7acf01
+      - 7d52dc2f-0aed-11f0-ad08-00155d7b1001
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
-      - eNwBcSBANEehWzYXzurWPPHeUFMVzqLiJ1btIzn9EDU=
+      - zy+nrQrxTHTSbLYDzXSyXx0H+pBkIRQV2rfavglmr74=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:21:44 GMT
+      - Thu, 27 Mar 2025 09:25:57 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "The request could not
         be understood by the server due to malformed syntax.", "details": [{"code":
-        "BadArgument", "message": "The time range is incorrect, or larger than 180
-        days.", "target": "ValidUntil"}]}}'
+        "BadArgument", "message": "The input provided could not be converted. Please
+        check the input and try again.", "target": "ValidUntil"}]}}'
     headers:
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:21:45 GMT
+      - Thu, 27 Mar 2025 09:25:57 GMT
       ms-cv:
-      - RYf8IhexMkmVBEEAmUYc3w.0
+      - mQ7wER8xbkKWCkiOEseQ8w.0
       request-context:
       - appId=
       strict-transport-security:
@@ -47,11 +49,9 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 06P1mZgAAAAB/Kvc3CcaDSaKrbDB2rPdiSEtCRURHRTA3MTMAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250327T092557Z-16c89bd967fzhg8vhC1MAAkxd40000000f000000000032n5
       x-cache:
       - CONFIG_NOCACHE
-      x-ms-error-code:
-      - BadRequest
     status:
       code: 400
       message: Bad Request

@@ -83,6 +83,26 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         except Exception as e:
             print(e)
 
+    @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
+    def test_managed_cassandra_cluster_create_with_azure_connection_method(self, resource_group):
+        self.kwargs.update({
+            'c': self.create_random_name(prefix='cli', length=10),
+            'subnet_id': self.create_subnet(resource_group),
+            'azure_connection_method': 'VPN',  # valid value(s) are : None or VPN
+        })
+
+        # Create Cluster with azure_connection_method
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -i password -q {azure_connection_method}')
+        cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
+        assert cluster['properties']['provisioningState'] == 'Succeeded'
+
+        # Clean up
+        try:
+            self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
+        except Exception as e:
+            print(e)
+
     # pylint: disable=line-too-long
     def create_subnet(self, resource_group):
 
