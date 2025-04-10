@@ -528,9 +528,9 @@ helps['aks create'] = f"""
         - name: --enable-vpa
           type: bool
           short-summary: Enable vertical pod autoscaler for cluster.
-        - name: --enable-addon-autoscaling
+        - name: --enable-optimized-addon-scaling
           type: bool
-          short-summary: Enable addon autoscaling for cluster.
+          short-summary: Enable optimized addon scaling feature for cluster.
         - name: --nodepool-allowed-host-ports
           type: string
           short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
@@ -1170,12 +1170,12 @@ helps['aks update'] = """
         - name: --disable-vpa
           type: bool
           short-summary: Disable vertical pod autoscaler for cluster.
-        - name: --enable-addon-autoscaling
+        - name: --enable-optimized-addon-scaling
           type: bool
-          short-summary: Enable addon autoscaling for cluster.
-        - name: --disable-addon-autoscaling
+          short-summary: Enable optimized addon scaling feature for cluster.
+        - name: --disable-optimized-addon-scaling
           type: bool
-          short-summary: Disable addon autoscaling for cluster.
+          short-summary: Disable optimized addon scaling feature for cluster.
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
