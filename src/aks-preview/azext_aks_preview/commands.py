@@ -11,8 +11,6 @@ from azext_aks_preview._client_factory import (
     cf_managed_clusters,
     cf_mc_snapshots,
     cf_nodepool_snapshots,
-    cf_trustedaccess_role,
-    cf_trustedaccess_role_binding,
     cf_machines,
     cf_operations,
     cf_load_balancers,
@@ -124,18 +122,6 @@ def load_command_table(self, _):
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._managed_clusters_snapshots_operations#ManagedClusterSnapshotsOperations.{}",
         client_factory=cf_mc_snapshots,
-    )
-
-    trustedaccess_role_sdk = CliCommandType(
-        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._trusted_access_roles_operations#TrustedAccessRolesOperations.{}",
-        client_factory=cf_trustedaccess_role,
-    )
-
-    trustedaccess_role_binding_sdk = CliCommandType(
-        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._trusted_access_role_bindings_operations#TrustedAccessRoleBindingsOperations.{}",
-        client_factory=cf_trustedaccess_role_binding,
     )
 
     # AKS managed cluster commands
@@ -368,28 +354,6 @@ def load_command_table(self, _):
         )
         g.custom_command("create", "aks_snapshot_create", supports_no_wait=True)
         g.custom_command("delete", "aks_snapshot_delete", supports_no_wait=True)
-
-    # AKS trusted access role commands
-    with self.command_group(
-        "aks trustedaccess role",
-        trustedaccess_role_sdk,
-        client_factory=cf_trustedaccess_role,
-    ) as g:
-        g.custom_command("list", "aks_trustedaccess_role_list")
-
-    # AKS trusted access rolebinding commands
-    with self.command_group(
-        "aks trustedaccess rolebinding",
-        trustedaccess_role_binding_sdk,
-        client_factory=cf_trustedaccess_role_binding,
-    ) as g:
-        g.custom_command("list", "aks_trustedaccess_role_binding_list")
-        g.custom_show_command("show", "aks_trustedaccess_role_binding_get")
-        g.custom_command("create", "aks_trustedaccess_role_binding_create")
-        g.custom_command("update", "aks_trustedaccess_role_binding_update")
-        g.custom_command(
-            "delete", "aks_trustedaccess_role_binding_delete", confirmation=True
-        )
 
     # AKS mesh commands
     with self.command_group(
