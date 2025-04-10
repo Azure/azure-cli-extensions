@@ -4165,6 +4165,8 @@ class ManagedCluster(TrackedResource):
      ~azure.mgmt.containerservice.v2025_01_02_preview.models.ManagedClusterBootstrapProfile
     :ivar status: Contains read-only information about the Managed Cluster.
     :vartype status: ~azure.mgmt.containerservice.v2025_01_02_preview.models.ManagedClusterStatus
+    :ivar encoded_custom_configuration: Encoded custom configuration.
+    :vartype encoded_custom_configuration: str
     """
 
     _validation = {
@@ -4266,6 +4268,10 @@ class ManagedCluster(TrackedResource):
         },
         "bootstrap_profile": {"key": "properties.bootstrapProfile", "type": "ManagedClusterBootstrapProfile"},
         "status": {"key": "properties.status", "type": "ManagedClusterStatus"},
+        "encoded_custom_configuration": {
+            "key": "properties.encodedCustomConfiguration",
+            "type": "str",
+        },
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -4318,6 +4324,7 @@ class ManagedCluster(TrackedResource):
         node_provisioning_profile: Optional["_models.ManagedClusterNodeProvisioningProfile"] = None,
         bootstrap_profile: Optional["_models.ManagedClusterBootstrapProfile"] = None,
         status: Optional["_models.ManagedClusterStatus"] = None,
+        encoded_custom_configuration: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4472,6 +4479,8 @@ class ManagedCluster(TrackedResource):
          ~azure.mgmt.containerservice.v2025_01_02_preview.models.ManagedClusterBootstrapProfile
         :keyword status: Contains read-only information about the Managed Cluster.
         :paramtype status: ~azure.mgmt.containerservice.v2025_01_02_preview.models.ManagedClusterStatus
+        :keyword encoded_custom_configuration: Encoded custom configuration.
+        :paramtype encoded_custom_configuration: str
         """
         super().__init__(tags=tags, location=location, **kwargs)
         self.e_tag: Optional[str] = None
@@ -4528,6 +4537,7 @@ class ManagedCluster(TrackedResource):
         self.node_provisioning_profile = node_provisioning_profile
         self.bootstrap_profile = bootstrap_profile
         self.status = status
+        self.encoded_custom_configuration = encoded_custom_configuration
 
 
 class ManagedClusterAADProfile(_serialization.Model):

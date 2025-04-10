@@ -641,6 +641,9 @@ helps['aks create'] = f"""
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
+        - name: --encoded-custom-configuration
+          type: string
+          short-summary: Path to JSON file containing custom configuration for the cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
