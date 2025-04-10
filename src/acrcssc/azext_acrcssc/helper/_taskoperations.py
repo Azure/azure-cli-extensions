@@ -70,16 +70,21 @@ def create_update_continuous_patch_v1(cmd,
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
+
+        if cssc_config_file is not None:
+            create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
+            logger.debug(f"Uploading of {cssc_config_file} for create completed successfully.")
+
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:
         if not cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
 
-        _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun, task_list)
+        if cssc_config_file is not None:
+            create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
+            logger.debug(f"Uploading of {cssc_config_file} for update completed successfully.")
 
-    if cssc_config_file is not None:
-        create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
-        logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
+        _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun, task_list)
 
     # on 'update' schedule is optional
     if schedule is None:
