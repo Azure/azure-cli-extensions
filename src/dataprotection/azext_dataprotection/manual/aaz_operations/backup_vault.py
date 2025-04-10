@@ -48,16 +48,22 @@ class Update(_Update):
             # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
             self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
 
+        # CMK - when setting type to SystemAssigned, we need to explicitly set UAMI to None
         if has_value(self.ctx.args.cmk_identity_type):
             cmk_identity_type = self.ctx.args.cmk_identity_type.to_serialized_data()
             if cmk_identity_type == "SystemAssigned":
                 self.ctx.args.cmk_user_assigned_identity_id = None
 
+        # Identity - when setting type to SystemAssigned, we need to explicitly set UAMI to None
         if has_value(self.ctx.args.type):
             identity_type = self.ctx.args.type.to_serialized_data()
             if identity_type == "SystemAssigned" or identity_type == "None":
                 # In either scenario, passing user_assigned_identities (even an empty list) would cause a failure.
                 self.ctx.args.user_assigned_identities = None
+        
+        if has_value(self.ctx.args.type or self.ctx.args.user_assigned_identities):
+            logger.warning("TODO proper warning - options --type and --uami will be deprecated, please use "
+                           "az dataprotection backup-vault identity assign/remove")
 
 
 class Create(_Create):
