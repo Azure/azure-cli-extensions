@@ -587,7 +587,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_create_with_addon_autoscaling(
+    def test_aks_create_with_optimized_addon_scaling(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -609,7 +609,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--vm-set-type VirtualMachineScaleSets -c 1 "
-            "--enable-addon-autoscaling "
+            "--enable-optimized-addon-scaling "
             "--kubernetes-version={k8s_version} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AddonAutoscalingPreview "
             "--ssh-key-value={ssh_key_value} -o json"
@@ -642,7 +642,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_update_with_addon_autoscaling(
+    def test_aks_update_with_optimized_addon_scaling(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -678,7 +678,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AddonAutoscalingPreview "
-            "--enable-addon-autoscaling -o json"
+            "--enable-optimized-addon-scaling -o json"
         )
         self.cmd(
             update_cmd,
@@ -697,7 +697,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AddonAutoscalingPreview "
-            "--disable-addon-autoscaling -o json"
+            "--disable-optimized-addon-scaling -o json"
         )
         self.cmd(
             update_cmd,
