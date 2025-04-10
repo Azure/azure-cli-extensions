@@ -544,6 +544,8 @@ def aks_create(
     vm_sizes=None,
     # IMDS restriction
     enable_imds_restriction=False,
+    # Encoded Custom Configuration
+    encoded_custom_configuration=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -93,6 +93,9 @@ aks create:
     disable_acns_observability:
       rule_exclusions:  
         - option_length_too_long
+    encoded_custom_configuration:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:

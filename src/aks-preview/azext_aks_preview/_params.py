@@ -967,6 +967,7 @@ def load_arguments(self, _):
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
+        c.argument("encoded_custom_configuration", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
