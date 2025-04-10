@@ -798,10 +798,10 @@ def load_arguments(self, _):
             help="enable vertical pod autoscaler for cluster",
         )
         c.argument(
-            "enable_addon_autoscaling",
+            "enable_optimized_addon_scaling",
             action="store_true",
             is_preview=True,
-            help="enable addon autoscaling for cluster",
+            help="enable optimized addon scaling for cluster",
         )
         c.argument(
             "enable_cilium_dataplane",
@@ -1257,16 +1257,16 @@ def load_arguments(self, _):
             help="disable vertical pod autoscaler for cluster",
         )
         c.argument(
-            "enable_addon_autoscaling",
+            "enable_optimized_addon_scaling",
             action="store_true",
             is_preview=True,
-            help="enable addon autoscaling for cluster",
+            help="enable optimized addon scaling for cluster",
         )
         c.argument(
-            "disable_addon_autoscaling",
+            "disable_optimized_addon_scaling",
             action="store_true",
             is_preview=True,
-            help="disable addon autoscaling for cluster",
+            help="disable optimized addon scaling for cluster",
         )
         c.argument(
             "cluster_snapshot_id",
