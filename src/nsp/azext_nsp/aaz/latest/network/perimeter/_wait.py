@@ -12,27 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter logging-configuration delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "network perimeter wait",
 )
-class Delete(AAZCommand):
-    """Delete a network security perimeter logging configuration.
-
-    :example: Delete a network security perimeter logging configuration
-        az network perimeter logging-configuration delete --resource-group rg1 --perimeter-name nsp1
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/loggingconfigurations/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}", "2024-07-01"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return None
+        return self._output()
 
     _args_schema = None
 
@@ -45,19 +40,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.logging_configuration_name = AAZStrArg(
-            options=["-n", "--name", "--logging-configuration-name"],
-            help="The name of the NSP logging configuration. Accepts 'instance' as name.",
-            required=True,
-            id_part="child_name_1",
-            default="instance",
-            fmt=AAZStrArgFormat(
-                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
-                max_length=80,
-            ),
-        )
         _args_schema.perimeter_name = AAZStrArg(
-            options=["--perimeter-name"],
+            options=["-n", "--name", "--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
@@ -73,7 +57,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkSecurityPerimeterLoggingConfigurationsDelete(ctx=self.ctx)()
+        self.NetworkSecurityPerimetersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,7 +68,11 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class NetworkSecurityPerimeterLoggingConfigurationsDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        return result
+
+    class NetworkSecurityPerimetersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,21 +80,19 @@ class Delete(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
-            if session.http_response.status_code in [204]:
-                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/{loggingConfigurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "GET"
 
         @property
         def error_format(self):
@@ -115,10 +101,6 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "loggingConfigurationName", self.ctx.args.logging_configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
                     required=True,
@@ -144,15 +126,66 @@ class Delete(AAZCommand):
             }
             return parameters
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
         def on_200(self, session):
-            pass
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
 
-        def on_204(self, session):
-            pass
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.perimeter_guid = AAZStrType(
+                serialized_name="perimeterGuid",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Wait"]

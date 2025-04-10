@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "network perimeter list",
 )
 class List(AAZCommand):
-    """List all network security perimeters in a subscription.
+    """List all network security perimeters.
 
-    :example: List Network Security Perimeters
+    :example: List all a network security perimeters
         az network perimeter list -g MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-08-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/networksecurityperimeters", "2023-08-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/networksecurityperimeters", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters", "2024-07-01"],
         ]
     }
 
@@ -80,7 +80,7 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
@@ -134,7 +134,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -180,8 +180,12 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.location = AAZStrType()
-            _element.name = AAZStrType()
-            _element.properties = AAZObjectType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -248,7 +252,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -294,8 +298,12 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.location = AAZStrType()
-            _element.name = AAZStrType()
-            _element.properties = AAZObjectType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},

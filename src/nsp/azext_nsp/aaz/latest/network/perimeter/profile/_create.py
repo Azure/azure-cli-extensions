@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "network perimeter profile create",
 )
 class Create(AAZCommand):
-    """Creates or updates a network profile.
+    """Create a network security perimeter profile.
 
-    :example: Create NSP Profile
+    :example: Create a network security perimeter profile
         az network perimeter profile create -n MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-08-01-preview",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}", "2024-07-01"],
         ]
     }
 
@@ -48,11 +48,19 @@ class Create(AAZCommand):
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.profile_name = AAZStrArg(
             options=["-n", "--name", "--profile-name"],
             help="The name of the NSP profile.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
+                max_length=80,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -80,7 +88,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspProfilesCreateOrUpdate(ctx=self.ctx)()
+        self.NetworkSecurityPerimeterProfilesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -92,10 +100,10 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NspProfilesCreateOrUpdate(AAZHttpOperation):
+    class NetworkSecurityPerimeterProfilesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -147,7 +155,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-08-01-preview",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -173,7 +181,6 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location")
-            _builder.set_prop("name", AAZStrType, ".profile_name")
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             tags = _builder.get(".tags")
@@ -204,8 +211,12 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.location = AAZStrType()
-            _schema_on_200_201.name = AAZStrType()
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},

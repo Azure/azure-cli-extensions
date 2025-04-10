@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter logging-configuration show",
+    "network perimeter associable-resource-type list",
 )
-class Show(AAZCommand):
-    """Get a network security perimeter logging configuration.
+class List(AAZCommand):
+    """List all network security perimeter associable resource types.
 
-    :example: Get a network security perimeter logging configuration
-        az network perimeter logging-configuration show --resource-group rg1 --perimeter-name nsp1
+    :example: List all network security perimeter associable resource types
+        az network perimeter onboarded-resources list -l northcentralus
     """
 
     _aaz_info = {
         "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/loggingconfigurations/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/locations/{}/perimeterassociableresourcetypes", "2024-07-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,35 +45,14 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.logging_configuration_name = AAZStrArg(
-            options=["-n", "--name", "--logging-configuration-name"],
-            help="The name of the NSP logging configuration. Accepts 'instance' as name.",
-            required=True,
-            id_part="child_name_1",
-            default="instance",
-            fmt=AAZStrArgFormat(
-                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
-                max_length=80,
-            ),
-        )
-        _args_schema.perimeter_name = AAZStrArg(
-            options=["--perimeter-name"],
-            help="The name of the network security perimeter.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="(^[a-zA-Z0-9]+[a-zA-Z0-9_.-]*[a-zA-Z0-9_]+$)|(^[a-zA-Z0-9]$)",
-                max_length=80,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.location = AAZResourceLocationArg(
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkSecurityPerimeterLoggingConfigurationsGet(ctx=self.ctx)()
+        self.NetworkSecurityPerimeterAssociableResourceTypesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,10 +64,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class NetworkSecurityPerimeterLoggingConfigurationsGet(AAZHttpOperation):
+    class NetworkSecurityPerimeterAssociableResourceTypesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -101,7 +82,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/{loggingConfigurationName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Network/locations/{location}/perimeterAssociableResourceTypes",
                 **self.url_parameters
             )
 
@@ -117,15 +98,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loggingConfigurationName", self.ctx.args.logging_configuration_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -172,36 +145,53 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
+            _element.location = AAZStrType()
+            _element.name = AAZStrType()
+            _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.enabled_log_categories = AAZListType(
-                serialized_name="enabledLogCategories",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"read_only": True},
             )
-            properties.version = AAZStrType()
+            properties.public_dns_zones = AAZListType(
+                serialized_name="publicDnsZones",
+                flags={"read_only": True},
+            )
+            properties.resource_type = AAZStrType(
+                serialized_name="resourceType",
+                flags={"read_only": True},
+            )
 
-            enabled_log_categories = cls._schema_on_200.properties.enabled_log_categories
-            enabled_log_categories.Element = AAZStrType()
+            public_dns_zones = cls._schema_on_200.value.Element.properties.public_dns_zones
+            public_dns_zones.Element = AAZStrType()
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]
