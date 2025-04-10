@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of managed identities.
+
+    :example: Show identity of the Backup vault
+        az dataprotection backup-vault identity show -g testRG -v testVault
     """
 
     _aaz_info = {

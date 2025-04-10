@@ -61,9 +61,11 @@ class Update(_Update):
                 # In either scenario, passing user_assigned_identities (even an empty list) would cause a failure.
                 self.ctx.args.user_assigned_identities = None
         
+        # However if we are trying to make identity changes with Vault update, that is not ideal. Redirecting users.
         if has_value(self.ctx.args.type or self.ctx.args.user_assigned_identities):
-            logger.warning("TODO proper warning - options --type and --uami will be deprecated, please use "
-                           "az dataprotection backup-vault identity assign/remove")
+            logger.warning("Warning: Updating the Managed Identity of a backup vault with the --type and --uami "
+                           "parameters will be deprecated soon. Please use "
+                           "az dataprotection backup-vault identity assign/remove instead")
 
 
 class Create(_Create):
@@ -98,9 +100,10 @@ class Create(_Create):
         #   https://github.com/Azure/azure-cli/blob/dev/doc/managed_identity_command_guideline.md
         # Includes deprecation of the old commands
         if has_value(self.ctx.args.type) or has_value(self.ctx.args.user_assigned_identities):
-            logger.warning("TODO warning for old style, using --mi-system-assigned and --mi-user-assigned instead. "
-                           "If either of the above is provided, any settings specified under these parameters will be "
-                           "overridden.")
+            logger.warning("Warning: Creating the Managed Identity of a backup vault with the --type and --uami "
+                           "parameters will be deprecated soon. Please use --mi-system-assigned and --mi-user-assigned "
+                           "instead. If either of the new parameters is provided, any settings defined under "
+                           "the old parameters will be overridden.")
         
         if has_value(self.ctx.args.mi_system_assigned) or has_value(self.ctx.args.mi_user_assigned):
             mi_type = None

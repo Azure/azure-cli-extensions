@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
+
+    :example: Remove System Identity
+        az az dataprotection backup-vault identity remove -g testRG -v testVault --system-assigned
+
+    :example: Remove User Assigned Identity
+        az az dataprotection backup-vault identity remove -g testRG -v testVault --user-assigned
     """
 
     _aaz_info = {
