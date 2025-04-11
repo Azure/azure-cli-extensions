@@ -12,20 +12,36 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import time
 
 
-def create_vault_and_policy(test):
-    backup_vault = test.cmd('az dataprotection backup-vault create '
-                            '-g "{rg}" --vault-name "{vaultName}" -l {location} '
-                            '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned '
-                            '--soft-delete-state Off',
-                            checks=[
-                                test.exists('identity.principalId')
-                            ]).get_output_in_json()
+def create_vault_and_policy(test, useSystemAssigned=True):
+    if useSystemAssigned:
+        backup_vault = test.cmd('az dataprotection backup-vault create '
+                                '-g "{rg}" --vault-name "{vaultName}" -l {location} '
+                                '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned '
+                                '--soft-delete-state Off',
+                                checks=[
+                                    test.exists('identity.principalId')
+                                ]).get_output_in_json()
 
-    # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
-    sp_list = []
-    while backup_vault['identity']['principalId'] not in sp_list:
-        sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
-        time.sleep(10)
+        # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
+        sp_list = []
+        while backup_vault['identity']['principalId'] not in sp_list:
+            sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
+            time.sleep(10)
+    else:
+        backup_vault = test.cmd('az dataprotection backup-vault create '
+                                '-g "{rg}" --vault-name "{vaultName}" -l {location} '
+                                '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type UserAssigned '
+                                '--uami {uamiUrl} '
+                                '--soft-delete-state Off',
+                                checks=[
+                                    test.exists('identity.userAssignedIdentities')
+                                ]).get_output_in_json()
+
+        # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
+        sp_list = []
+        while backup_vault['identity']['userAssignedIdentities']['{uamiUrl}']['principalId'] not in sp_list:
+            sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
+            time.sleep(10)
 
     policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type "{dataSourceType}"').get_output_in_json()
     test.kwargs.update({"policy": policy_json})
@@ -35,6 +51,36 @@ def create_vault_and_policy(test):
 
 
 class UpdateMSIPermissionsScenarioTest(ScenarioTest):
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-updatemsipermissions-', location='centraluseuap')
+    def test_dataprotection_update_msi_permissions_disk_uami(test):
+        test.kwargs.update({
+            'location': 'centraluseuap',
+            'vaultName': "clitest-bkp-vault",
+            'policyName': 'diskpolicy',
+            'dataSourceType': 'AzureDisk',
+            'diskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete',
+            'operation': "Backup",
+            'permissionsScope': "Resource",
+            'uamiUrl': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dppcliuamiccy'
+        })
+        create_vault_and_policy(test, useSystemAssigned=False)
+        backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
+                                        '-l {location} --policy-id "{policyId}" --datasource-id "{diskId}" --snapshot-rg "{rg}" '
+                                        '--uami {uamiUrl} --tags Owner=dppclitest').get_output_in_json()
+        test.kwargs.update({
+            "backupInstance": backup_instance_json,
+        })
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" --vault-name "{vaultName}" '
+                 '--datasource-type "{dataSourceType}" '
+                 '--operation "{operation}" '
+                 '--permissions-scope "{permissionsScope}" '
+                 '--uami "{uamiUrl}" '
+                 '--backup-instance "{backupInstance}" --yes')
+        # time.sleep(10)
 
     @live_only()
     @AllowLargeResponse()
