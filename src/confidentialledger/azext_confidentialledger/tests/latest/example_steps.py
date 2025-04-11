@@ -126,3 +126,15 @@ def step_delete(test, checks=None):
         '--resource-group "{rg}"',
         checks=checks,
     )
+
+# EXAMPLE: /Ledger/checknameavailability
+@try_manual
+def step_checknameavailability(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az confidentialledger check-name-availability  "
+        '--type Microsoft.ConfidentialLedger/Ledgers '
+        '--name {ledger_name}',
+        checks=checks,
+    )
