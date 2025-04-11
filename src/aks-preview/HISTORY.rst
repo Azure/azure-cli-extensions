@@ -14,14 +14,14 @@ Pending
 * Vendor new SDK and bump API version to 2025-01-02-preview.
 * Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
 
+14.0.0b2
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
+
 14.0.0b1
 +++++++
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
 * [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
-
-13.0.0b10
-+++++++
-* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
 
 13.0.0b9
 +++++++
