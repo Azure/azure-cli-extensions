@@ -209,6 +209,10 @@ Pending
 * [BREAKING CHANGE]: `az aks create`: Change the default value of option `--enable-managed-identity` from `True` to `False`
 * `az aks create`: When options `--service-principal` and `--client-secret` are not specified at the same time, CLI will backfill the value of `--enable-managed-identity` to `True` to maintain the same behavior as before (that is, create an cluster with managed system assigned identity by default)
 
+3.0.0b14
+++++++++
+* Add `--network-policy=none` to `az aks create/update`.
+
 3.0.0b13
 ++++++++
 * Set disable local accounts to true when creating an automatic cluster
