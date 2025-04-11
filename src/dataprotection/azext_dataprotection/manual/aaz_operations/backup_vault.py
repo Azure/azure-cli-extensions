@@ -60,7 +60,7 @@ class Update(_Update):
             if identity_type == "SystemAssigned" or identity_type == "None":
                 # In either scenario, passing user_assigned_identities (even an empty list) would cause a failure.
                 self.ctx.args.user_assigned_identities = None
-        
+
         # However if we are trying to make identity changes with Vault update, that is not ideal. Redirecting users.
         if has_value(self.ctx.args.type or self.ctx.args.user_assigned_identities):
             logger.warning("Warning: Updating the Managed Identity of a backup vault with the --type and --uami "
@@ -104,13 +104,13 @@ class Create(_Create):
                            "parameters will be deprecated soon. Please use --mi-system-assigned and --mi-user-assigned "
                            "instead. If either of the new parameters is provided, any settings defined under "
                            "the old parameters will be overridden.")
-        
+
         if has_value(self.ctx.args.mi_system_assigned) or has_value(self.ctx.args.mi_user_assigned):
             mi_type = None
-        
+
             if self.ctx.args.mi_system_assigned:
                 mi_type = "SystemAssigned"
-            
+
             if has_value(self.ctx.args.mi_user_assigned):
                 # Set the user assigned value from
                 user_assigned_identities = {}
@@ -122,5 +122,5 @@ class Create(_Create):
 
                 # Updating the Managed Identity type
                 mi_type = "UserAssigned" if mi_type is None else "SystemAssigned,UserAssigned"
-            
+
             self.ctx.args.type = mi_type
