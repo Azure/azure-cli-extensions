@@ -15063,7 +15063,7 @@ spec:
             "initTaint1=value1:PreferNoSchedule,initTaint2=value2:PreferNoSchedule"
         )
         nodepool_taints2 = "taint1=value2:PreferNoSchedule"
-        nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule"
+        nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule,initTaint2=value2:NoSchedule,CriticalAddonsOnly=true:NoSchedule,CriticalAddonsOnly=true:NoExecute"
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -15116,6 +15116,20 @@ spec:
             ],
         )
 
+        # add another nodepool with user mode, without init taints for now - AP level operations are blocked for init taints
+        create_ap_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool2_name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview "
+        )
+        self.cmd(
+            create_ap_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("mode", "User"),
+            ],
+        )
+
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--nodepool-taints {nodepool_taints2} "
@@ -15131,10 +15145,50 @@ spec:
                     "taint1=value2:PreferNoSchedule",
                 ),
                 self.check(
+                    "agentPoolProfiles[0].nodeInitializationTaints[] | length(@)",
+                    3,
+                ),
+                self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
                     "initTaint1=value2:PreferNoSchedule",
                 ),
+                self.check(
+                    "agentPoolProfiles[0].nodeInitializationTaints[1]",
+                    "CriticalAddonsOnly=true:NoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[0].nodeInitializationTaints[2]",
+                    "CriticalAddonsOnly=true:NoExecute",
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[] | length(@)",
+                    4,
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[0]",
+                    "initTaint1=value2:PreferNoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[1]",
+                    "initTaint2=value2:NoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[2]",
+                    "CriticalAddonsOnly=true:NoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[1].nodeInitializationTaints[3]",
+                    "CriticalAddonsOnly=true:NoExecute",
+                ),
             ],
+        )
+
+        # make sure user nodepool cannot be converted to system pool with hard taints present
+        self.cmd(
+            "aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool2_name} "
+            "--mode System "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview ",
+            expect_failure=True,
         )
 
         update_cmd = (
