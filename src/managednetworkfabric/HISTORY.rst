@@ -3,7 +3,7 @@
 Release History
 ===============
 
-8.0.0b1
+8.0.2b
 ++++++
 * New preview CLI version for latest api 2024-06-15-preview.
 * az core cli updated to version 2.67, aaz_dev updated to version 3.2.0, and azdev to version 0.1.94.
