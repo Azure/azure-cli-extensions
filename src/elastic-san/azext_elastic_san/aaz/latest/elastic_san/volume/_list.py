@@ -19,12 +19,15 @@ class List(AAZCommand):
 
     :example: List Volumes in a Volume Group.
         az elastic-san volume list -g "rg" -e "san_name" -v "vg_name"
+
+    :example: List soft-deleted volumes
+        az elastic-san volume list -g rg_name -e san_name -v volume_group_name --access-soft-deleted-resources true
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2024-07-01-preview"],
         ]
     }
 
@@ -45,6 +48,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_access_soft_deleted_resources = AAZStrArg(
+            options=["--soft-deleted-only", "--access-soft-deleted-resources", "--x-ms-access-soft-deleted-resources"],
+            help="Optional, returns only soft deleted volumes if set to true. If set to false or if not specified, returns only active volumes.",
+            is_preview=True,
+            enum={"false": "false", "true": "true"},
+        )
         _args_schema.elastic_san_name = AAZStrArg(
             options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
@@ -140,7 +149,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -149,6 +158,9 @@ class List(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-access-soft-deleted-resources", self.ctx.args.x_ms_access_soft_deleted_resources,
+                ),
                 **self.serialize_header_param(
                     "Accept", "application/json",
                 ),

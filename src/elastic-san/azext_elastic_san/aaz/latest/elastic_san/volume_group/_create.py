@@ -22,12 +22,15 @@ class Create(AAZCommand):
 
     :example: Create a volume group with CustomerManagedKey and UserAssignedIdentity
         az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithCustomerManagedKey --protocol-type Iscsi --identity '{type:UserAssigned,user-assigned-identity:"uai_id"}' --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"},identity:{user-assigned-identity:"uai_id"}}'
+
+    :example: Create a volume group with delete retention policy params
+        az elastic-san volume-group create -e san_name -n volume_group_name -g rg_name --encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --network-acls '{virtual-network-rules:[{id:{subnet_id},action:Allow}]}' --delete-retention-policy-state Enabled --delete-retention-period-days 7
     """
 
     _aaz_info = {
-        "version": "2024-06-01-preview",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2024-07-01-preview"],
         ]
     }
 
@@ -69,6 +72,26 @@ class Create(AAZCommand):
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=63,
                 min_length=3,
+            ),
+        )
+
+        # define Arg Group "DeleteRetentionPolicy"
+
+        _args_schema = cls._args_schema
+        _args_schema.delete_retention_policy_state = AAZStrArg(
+            options=["--delete-retention-state", "--delete-retention-policy-state"],
+            arg_group="DeleteRetentionPolicy",
+            help="Manage delete retention policy state",
+            is_preview=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.delete_retention_period_days = AAZIntArg(
+            options=["--retention-period", "--delete-retention-period-days"],
+            arg_group="DeleteRetentionPolicy",
+            help="The number of days to retain the resources after deletion.",
+            is_preview=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
             ),
         )
 
@@ -267,7 +290,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-01-preview",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -292,7 +315,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             identity = _builder.get(".identity")
@@ -306,11 +329,17 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("deleteRetentionPolicy", AAZObjectType)
                 properties.set_prop("encryption", AAZStrType, ".encryption")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("protocolType", AAZStrType, ".protocol_type")
+
+            delete_retention_policy = _builder.get(".properties.deleteRetentionPolicy")
+            if delete_retention_policy is not None:
+                delete_retention_policy.set_prop("policyState", AAZStrType, ".delete_retention_policy_state")
+                delete_retention_policy.set_prop("retentionPeriodDays", AAZIntType, ".delete_retention_period_days")
 
             encryption_properties = _builder.get(".properties.encryptionProperties")
             if encryption_properties is not None:
@@ -363,7 +392,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -409,6 +438,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.delete_retention_policy = AAZObjectType(
+                serialized_name="deleteRetentionPolicy",
+            )
             properties.encryption = AAZStrType()
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
@@ -429,6 +461,14 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            delete_retention_policy = cls._schema_on_200_201.properties.delete_retention_policy
+            delete_retention_policy.policy_state = AAZStrType(
+                serialized_name="policyState",
+            )
+            delete_retention_policy.retention_period_days = AAZIntType(
+                serialized_name="retentionPeriodDays",
             )
 
             encryption_properties = cls._schema_on_200_201.properties.encryption_properties

@@ -12,27 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume snapshot list",
+    "elastic-san volume-group test-backup",
+    is_preview=True,
 )
-class List(AAZCommand):
-    """List Snapshots in a VolumeGroup or List Snapshots by Volume (name) in a VolumeGroup using filter
+class TestBackup(AAZCommand):
+    """Validate whether a disk snapshot backup can be taken for list of volumes.
 
-    :example: snapshot list
-        az elastic-san volume snapshot list -g "rg" -e "san_name" -v "vg_name"
+    :example: Test Backup
+        az elastic-san volume-group test-backup -g rg_name -e san_name -n volume_group_name --volume-names "[volume_name]"
     """
 
     _aaz_info = {
         "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots", "2024-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/prebackup", "2024-07-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
+    AZ_SUPPORT_NO_WAIT = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -49,6 +50,7 @@ class List(AAZCommand):
             options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=24,
@@ -59,24 +61,34 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group", "--volume-group-name"],
+            options=["-n", "--name", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.filter = AAZStrArg(
-            options=["--filter"],
-            help="Specify `$filter='volumeName eq <volume name>'` to filter on volume.",
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.volume_names = AAZListArg(
+            options=["--volume-names"],
+            arg_group="Parameters",
+            help="array of volume names",
+            required=True,
         )
+
+        volume_names = cls._args_schema.volume_names
+        volume_names.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VolumeSnapshotsListByVolumeGroup(ctx=self.ctx)()
+        yield self.VolumesPreBackup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -88,31 +100,46 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class VolumeSnapshotsListByVolumeGroup(AAZHttpOperation):
+    class VolumesPreBackup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/snapshots",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/preBackup",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -144,9 +171,6 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "$filter", self.ctx.args.filter,
-                ),
-                **self.serialize_query_param(
                     "api-version", "2024-07-01-preview",
                     required=True,
                 ),
@@ -157,10 +181,28 @@ class List(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("volumeNames", AAZListType, ".volume_names", typ_kwargs={"flags": {"required": True}})
+
+            volume_names = _builder.get(".volumeNames")
+            if volume_names is not None:
+                volume_names.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -180,82 +222,15 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.creation_data = AAZObjectType(
-                serialized_name="creationData",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.source_volume_size_gi_b = AAZIntType(
-                serialized_name="sourceVolumeSizeGiB",
-                flags={"read_only": True},
-            )
-            properties.volume_name = AAZStrType(
-                serialized_name="volumeName",
-                flags={"read_only": True},
-            )
-
-            creation_data = cls._schema_on_200.value.Element.properties.creation_data
-            creation_data.source_id = AAZStrType(
-                serialized_name="sourceId",
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+            _schema_on_200.validation_status = AAZStrType(
+                serialized_name="validationStatus",
             )
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _TestBackupHelper:
+    """Helper class for TestBackup"""
 
 
-__all__ = ["List"]
+__all__ = ["TestBackup"]
