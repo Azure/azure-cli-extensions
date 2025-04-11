@@ -10,7 +10,7 @@ runs:
         label: ${{ toJSON(github.event.label) }}
       shell: bash
       run: |
-        echo version cal job start
+        echo start azdev env setup
     - name: Checkout CLI extension repo
       uses: actions/checkout@v4
       with:

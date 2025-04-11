@@ -89,5 +89,9 @@ jobs:
           for mod in ${changed_module_list[@]}
           do
             echo changed module: "${mod}"
-            azdev extension add "${mod}" && azdev linter "${mod}" --min-severity medium --repo ./ --src "$diff_branch" --tgt "$merge_base" 
+            azdev extension add "${mod}"
+            # ado linter task
+            azdev linter "${mod}" --min-severity medium
           done
+          # linter task that needs git commit info
+          azdev linter EXT --repo ./ --src "$diff_branch" --tgt "$merge_base" --rules missing_command_example
