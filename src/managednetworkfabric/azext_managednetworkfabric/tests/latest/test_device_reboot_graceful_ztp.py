@@ -29,7 +29,12 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_reboot(test, checks=[])
+    step_reboot(
+        test,
+        checks=[
+            test.check("status", "Succeeded"),
+        ],
+    )
     cleanup_scenario1(test)
 
 
@@ -42,7 +47,7 @@ def step_reboot(test, checks=None):
     )
 
 
-class GA_DeviceRebootScenarioTest1(ScenarioTest):
+class GA_DeviceRebootGracefulZTPScenarioTest1(ScenarioTest):
     """DeviceScenario test"""
 
     def __init__(self, *args, **kwargs):
@@ -51,11 +56,11 @@ class GA_DeviceRebootScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_DEVICE", "reboot_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "reboot_device_rg"),
-                "rebootType": CONFIG.get("NETWORK_DEVICE", "reboot_type"),
+                "rebootType": CONFIG.get("NETWORK_DEVICE", "graceful_ztp_reboot_type"),
             }
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Reboot_scenario1(self):
+    def test_GA_Device_Reboot_GracefulZTP_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)
