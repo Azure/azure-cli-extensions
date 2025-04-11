@@ -47,6 +47,7 @@ from azext_aks_preview._helpers import (
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
     setup_common_safeguards_profile,
+    filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -4954,7 +4955,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         nodepool_initialization_taints = self.context.get_nodepool_initialization_taints()
         if nodepool_initialization_taints is not None:
             for agent_profile in mc.agent_pool_profiles:
-                agent_profile.node_initialization_taints = nodepool_initialization_taints
+                if agent_profile.mode is not None and agent_profile.mode.lower() == "user":
+                    agent_profile.node_initialization_taints = nodepool_initialization_taints
+                    continue
+                # Filter out taints with hard effects (NoSchedule and NoExecute) for system pools
+                agent_profile.node_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
         return mc
 
     def update_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
