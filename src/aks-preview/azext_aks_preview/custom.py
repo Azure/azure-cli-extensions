@@ -3855,10 +3855,10 @@ def aks_loadbalancer_rebalance_nodes(
     from azext_aks_preview.loadbalancerconfiguration import (
         aks_loadbalancer_rebalance_internal,
     )
-    from azext_aks_preview._client_factory import cf_load_balancers
+    from azext_aks_preview._client_factory import cf_managed_clusters
 
     # Get the load balancers client
-    load_balancers_client = cf_load_balancers(cmd.cli_ctx)
+    managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
 
     # Prepare parameters for the internal function
     parameters = {
@@ -3867,4 +3867,4 @@ def aks_loadbalancer_rebalance_nodes(
         "load_balancer_names": load_balancer_names,
     }
 
-    return aks_loadbalancer_rebalance_internal(cmd, load_balancers_client, parameters)
+    return aks_loadbalancer_rebalance_internal(cmd, managed_clusters_client, parameters)

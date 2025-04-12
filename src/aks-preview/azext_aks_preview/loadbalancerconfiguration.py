@@ -10,6 +10,9 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError, BadRequestError, AzureInternalError
 )
 from azure.cli.core.util import CLIError
+from .vendored_sdks.azure_mgmt_preview_aks.v2025_01_02_preview.models import (
+    RebalanceLoadBalancersRequestBody,
+)
 
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
@@ -453,72 +456,6 @@ def wait_for_loadbalancer_provisioning_state(
     return results.get(loadbalancer_name)
 
 
-def wait_for_multiple_loadbalancers_provisioning_state(
-    client,
-    resource_group_name,
-    cluster_name,
-    lb_names_list,
-    timeout_seconds=600,
-    polling_interval_seconds=30,
-):
-    """
-    Poll multiple load balancers until all their provisioning states are 'Succeeded' or until timeout.
-
-    Uses list operation to efficiently check multiple load balancers with fewer API calls.
-
-    :param client: The LoadBalancers client
-    :param resource_group_name: Name of resource group
-    :param cluster_name: Name of the managed cluster
-    :param loadbalancer_names: List of names of the load balancer configurations
-    :param timeout_seconds: Maximum time to wait in seconds (default: 10 minutes)
-    :param polling_interval_seconds: Time between polling attempts in seconds (default: 30 seconds)
-    :return: Dictionary mapping load balancer names to their objects after successful provisioning
-    :raises: CLIError if timeout is reached or provisioning fails for any load balancer
-    """
-    # Simply call the helper function directly
-    return _check_loadbalancer_provisioning_states(
-        client,
-        resource_group_name,
-        cluster_name,
-        lb_names_list,
-        timeout_seconds,
-        polling_interval_seconds,
-    )
-
-
-def post_request(
-    cmd, resource_group_name, cluster_name, lb_names_list, subscription_id
-):
-    """Send a POST request to the rebalance load balancers endpoint."""
-
-    from azure.cli.core.util import send_raw_request
-
-    # Construct the URL
-    url = (
-        f"https://management.azure.com/subscriptions/{subscription_id}/"
-        f"resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/"
-        f"managedClusters/{cluster_name}/rebalanceLoadBalancers"
-        f"?api-version=2024-10-02-preview"
-    )
-
-    # Prepare the request body
-    import json
-
-    request_body = {"loadBalancerNames": lb_names_list}
-    body = json.dumps(request_body)
-    logger.debug("request body: %s", body)
-
-    # Set headers
-    headers = ["Content-Type=application/json"]
-    headers.append("User-Agent=azuremonitormetrics.rebalance_load_balancers")
-
-    try:
-        # Send the POST request
-        send_raw_request(cmd.cli_ctx, "POST", url, body=body, headers=headers)
-    except CLIError as e:
-        raise CLIInternalError(f"Failed to rebalance load balancers: {str(e)}")
-
-
 def aks_loadbalancer_rebalance_internal(cmd, client, raw_parameters):
     """Rebalance load balancers in an AKS cluster."""
 
@@ -531,10 +468,6 @@ def aks_loadbalancer_rebalance_internal(cmd, client, raw_parameters):
     if load_balancer_names is None:
         load_balancer_names = ""
 
-    from azure.cli.core.commands.client_factory import get_subscription_id
-
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-
     if not resource_group_name or not cluster_name:
         raise RequiredArgumentMissingError(
             "--resource-group and --name are required for rebalancing load balancers."
@@ -545,31 +478,17 @@ def aks_loadbalancer_rebalance_internal(cmd, client, raw_parameters):
         # Split the first element by comma if it contains multiple names
         lb_names_list = [name.strip() for name in load_balancer_names[0].split(",")]
 
-    try:
-        # Call the post_request function
-        post_request(
-            cmd, resource_group_name, cluster_name, lb_names_list, subscription_id
-        )
-    except CLIError as e:
-        # If any error is thrown in post_request, return it and end the function
-        return {"error": str(e)}
+    rebalance_params = RebalanceLoadBalancersRequestBody(
+        load_balancer_names=lb_names_list
+    )
 
-    # Wait for all given load balancers to reach Succeeded state
-    try:
-        # For multiple LB wait, pass the load_balancer_names directly
-        # Our helper _check_loadbalancer_provisioning_states will handle parsing the input format
-        lb_results = wait_for_multiple_loadbalancers_provisioning_state(
-            client,
-            resource_group_name,
-            cluster_name,
-            lb_names_list,
-        )
-        return {
-            "status": "Rebalance completed successfully",
-            "loadBalancers": list(lb_results),
-        }
-    except CLIError as e:
-        return {
-            "status": "Rebalance initiated but some load balancers failed to reach Succeeded state",
-            "error": str(e),
-        }
+    # Call the SDK's begin_rebalance_load_balancers method
+    # This returns a poller which the CLI framework should handle.
+    poller = client.begin_rebalance_load_balancers(
+        resource_group_name=resource_group_name,
+        resource_name=cluster_name,
+        parameters=rebalance_params,
+    )
+
+    # Return the poller for the CLI framework to handle waiting and result processing
+    return poller

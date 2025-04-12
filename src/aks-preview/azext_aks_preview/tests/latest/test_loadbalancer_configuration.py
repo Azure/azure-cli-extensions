@@ -479,7 +479,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         from azext_aks_preview.loadbalancerconfiguration import (
             aks_loadbalancer_rebalance_internal,
         )
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock
 
         # Mock the client
         mock_client = MagicMock()
@@ -488,60 +488,34 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
         raw_parameters = {
             "resource_group_name": "test-resource-group",
             "cluster_name": "test-cluster",
-            "load_balancer_names": ["lb1,lb2"],  # Changed to match new format
+            "load_balancer_names": ["lb1,lb2"],  # Format with comma-separated names
         }
 
-        # Mock post_request, get_subscription_id, and wait_for_multiple_loadbalancers_provisioning_state
-        with patch(
-            "azext_aks_preview.loadbalancerconfiguration.post_request"
-        ) as mock_post_request, patch(
-            "azure.cli.core.commands.client_factory.get_subscription_id"
-        ) as mock_get_subscription_id, patch(
-            "azext_aks_preview.loadbalancerconfiguration.wait_for_multiple_loadbalancers_provisioning_state"
-        ) as mock_wait:
+        # Create a mock poller
+        mock_poller = MagicMock()
+        mock_client.begin_rebalance_load_balancers.return_value = mock_poller
 
-            # Set up the mock return values
-            mock_post_request.return_value = {"status": "Succeeded"}
-            mock_get_subscription_id.return_value = "test-subscription-id"
-            mock_wait.return_value = {"lb1": MagicMock(), "lb2": MagicMock()}
+        # Call the function
+        result = aks_loadbalancer_rebalance_internal(
+            self.cmd, mock_client, raw_parameters
+        )
 
-            # Call the function
-            result = aks_loadbalancer_rebalance_internal(
-                self.cmd, mock_client, raw_parameters
-            )
+        # Verify begin_rebalance_load_balancers was called with the right parameters
+        mock_client.begin_rebalance_load_balancers.assert_called_once()
+        call_args = mock_client.begin_rebalance_load_balancers.call_args[1]
+        self.assertEqual(call_args["resource_group_name"], "test-resource-group")
+        self.assertEqual(call_args["resource_name"], "test-cluster")
+        self.assertEqual(call_args["parameters"].load_balancer_names, ["lb1", "lb2"])
 
-            # Verify post_request was called with the right parameters
-            mock_post_request.assert_called_once_with(
-                self.cmd,
-                "test-resource-group",
-                "test-cluster",
-                ["lb1", "lb2"],  # The processed list
-                "test-subscription-id"
-            )
-
-            # Verify get_subscription_id was called
-            mock_get_subscription_id.assert_called_once_with(self.cmd.cli_ctx)
-
-            # Verify wait_for_multiple_loadbalancers_provisioning_state was called with right parameters
-            mock_wait.assert_called_once_with(
-                mock_client,
-                "test-resource-group",
-                "test-cluster",
-                ["lb1", "lb2"]  # The processed list
-            )
-
-            # Verify the result is correctly returned
-            self.assertEqual(result, {
-                "status": "Rebalance completed successfully",
-                "loadBalancers": ["lb1", "lb2"]
-            })
+        # Verify the result is the poller
+        self.assertEqual(result, mock_poller)
 
     def test_aks_loadbalancer_rebalance_internal_no_load_balancer_names(self):
         # Import the functions to test and mock
         from azext_aks_preview.loadbalancerconfiguration import (
             aks_loadbalancer_rebalance_internal,
         )
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock
 
         # Mock the client
         mock_client = MagicMock()
@@ -553,50 +527,24 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
             "load_balancer_names": None,
         }
 
-        # Mock post_request, get_subscription_id, and wait_for_multiple_loadbalancers_provisioning_state
-        with patch(
-            "azext_aks_preview.loadbalancerconfiguration.post_request"
-        ) as mock_post_request, patch(
-            "azure.cli.core.commands.client_factory.get_subscription_id"
-        ) as mock_get_subscription_id, patch(
-            "azext_aks_preview.loadbalancerconfiguration.wait_for_multiple_loadbalancers_provisioning_state"
-        ) as mock_wait:
-            # Set up the mock return values
-            mock_post_request.return_value = {"status": "Succeeded"}
-            mock_get_subscription_id.return_value = "test-subscription-id"
-            # Mock the return value with all load balancers since none were specified
-            mock_wait.return_value = {"lb1": MagicMock(), "lb2": MagicMock(), "lb3": MagicMock()}
+        # Create a mock poller
+        mock_poller = MagicMock()
+        mock_client.begin_rebalance_load_balancers.return_value = mock_poller
 
-            # Call the function
-            result = aks_loadbalancer_rebalance_internal(
-                self.cmd, mock_client, raw_parameters
-            )
+        # Call the function
+        result = aks_loadbalancer_rebalance_internal(
+            self.cmd, mock_client, raw_parameters
+        )
 
-            # Verify post_request was called with the right parameters
-            mock_post_request.assert_called_once_with(
-                self.cmd,
-                "test-resource-group",
-                "test-cluster",
-                [],  # None is converted to empty list in the implementation
-                "test-subscription-id"
-            )
+        # Verify begin_rebalance_load_balancers was called with the right parameters
+        mock_client.begin_rebalance_load_balancers.assert_called_once()
+        call_args = mock_client.begin_rebalance_load_balancers.call_args[1]
+        self.assertEqual(call_args["resource_group_name"], "test-resource-group")
+        self.assertEqual(call_args["resource_name"], "test-cluster")
+        self.assertEqual(call_args["parameters"].load_balancer_names, [])
 
-            # Verify get_subscription_id was called
-            mock_get_subscription_id.assert_called_once_with(self.cmd.cli_ctx)
-
-            # Verify wait_for_multiple_loadbalancers_provisioning_state was called with right parameters
-            mock_wait.assert_called_once_with(
-                mock_client,
-                "test-resource-group",
-                "test-cluster",
-                []  # None is converted to empty list in the implementation
-            )
-
-            # Verify the result is correctly returned
-            self.assertEqual(result, {
-                "status": "Rebalance completed successfully",
-                "loadBalancers": ["lb1", "lb2", "lb3"]
-            })
+        # Verify the result is the poller
+        self.assertEqual(result, mock_poller)
 
     def test_aks_loadbalancer_rebalance_internal_missing_params(self):
         # Import the functions to test and mock
@@ -604,36 +552,27 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
             aks_loadbalancer_rebalance_internal,
         )
         from azure.cli.core.azclierror import RequiredArgumentMissingError
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock
 
         # Mock the client
         mock_client = MagicMock()
 
-        # Mock get_subscription_id since it will be called before parameter validation
-        with patch(
-            "azure.cli.core.commands.client_factory.get_subscription_id"
-        ) as mock_get_subscription_id:
-            mock_get_subscription_id.return_value = "test-subscription-id"
+        # Test missing resource_group_name
+        raw_parameters = {"resource_group_name": None, "cluster_name": "test-cluster"}
 
-            # Test missing resource_group_name
-            raw_parameters = {"resource_group_name": None, "cluster_name": "test-cluster"}
+        # Verify that RequiredArgumentMissingError is raised
+        with self.assertRaises(RequiredArgumentMissingError):
+            aks_loadbalancer_rebalance_internal(self.cmd, mock_client, raw_parameters)
 
-            # Verify that RequiredArgumentMissingError is raised
-            with self.assertRaises(RequiredArgumentMissingError):
-                aks_loadbalancer_rebalance_internal(self.cmd, mock_client, raw_parameters)
+        # Test missing cluster_name
+        raw_parameters = {
+            "resource_group_name": "test-resource-group",
+            "cluster_name": None,
+        }
 
-            # Test missing cluster_name
-            raw_parameters = {
-                "resource_group_name": "test-resource-group",
-                "cluster_name": None,
-            }
-
-            # Verify that RequiredArgumentMissingError is raised
-            with self.assertRaises(RequiredArgumentMissingError):
-                aks_loadbalancer_rebalance_internal(self.cmd, mock_client, raw_parameters)
-
-            # Verify get_subscription_id was called for each test case
-            self.assertEqual(mock_get_subscription_id.call_count, 2)
+        # Verify that RequiredArgumentMissingError is raised
+        with self.assertRaises(RequiredArgumentMissingError):
+            aks_loadbalancer_rebalance_internal(self.cmd, mock_client, raw_parameters)
 
     def test_check_loadbalancer_provisioning_states(self):
         # Import the function to test
