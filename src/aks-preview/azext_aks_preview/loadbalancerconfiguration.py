@@ -6,8 +6,8 @@
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import (
-    RequiredArgumentMissingError, CLIInternalError,
-    ResourceNotFoundError, BadRequestError, AzureInternalError
+    RequiredArgumentMissingError, ResourceNotFoundError,
+    BadRequestError, AzureInternalError
 )
 from azure.cli.core.util import CLIError
 from .vendored_sdks.azure_mgmt_preview_aks.v2025_01_02_preview.models import (
@@ -456,7 +456,7 @@ def wait_for_loadbalancer_provisioning_state(
     return results.get(loadbalancer_name)
 
 
-def aks_loadbalancer_rebalance_internal(cmd, client, raw_parameters):
+def aks_loadbalancer_rebalance_internal(client, raw_parameters):
     """Rebalance load balancers in an AKS cluster."""
 
     # Extract parameters
