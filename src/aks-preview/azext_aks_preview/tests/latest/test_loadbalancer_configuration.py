@@ -497,7 +497,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Call the function
         result = aks_loadbalancer_rebalance_internal(
-            self.cmd, mock_client, raw_parameters
+            mock_client, raw_parameters
         )
 
         # Verify begin_rebalance_load_balancers was called with the right parameters
@@ -533,7 +533,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Call the function
         result = aks_loadbalancer_rebalance_internal(
-            self.cmd, mock_client, raw_parameters
+            mock_client, raw_parameters
         )
 
         # Verify begin_rebalance_load_balancers was called with the right parameters
@@ -562,7 +562,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Verify that RequiredArgumentMissingError is raised
         with self.assertRaises(RequiredArgumentMissingError):
-            aks_loadbalancer_rebalance_internal(self.cmd, mock_client, raw_parameters)
+            aks_loadbalancer_rebalance_internal(mock_client, raw_parameters)
 
         # Test missing cluster_name
         raw_parameters = {
@@ -572,7 +572,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Verify that RequiredArgumentMissingError is raised
         with self.assertRaises(RequiredArgumentMissingError):
-            aks_loadbalancer_rebalance_internal(self.cmd, mock_client, raw_parameters)
+            aks_loadbalancer_rebalance_internal(mock_client, raw_parameters)
 
     def test_check_loadbalancer_provisioning_states(self):
         # Import the function to test

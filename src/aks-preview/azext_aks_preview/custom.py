@@ -3867,4 +3867,4 @@ def aks_loadbalancer_rebalance_nodes(
         "load_balancer_names": load_balancer_names,
     }
 
-    return aks_loadbalancer_rebalance_internal(cmd, managed_clusters_client, parameters)
+    return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
