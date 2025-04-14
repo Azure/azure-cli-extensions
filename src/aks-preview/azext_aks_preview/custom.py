@@ -3718,6 +3718,7 @@ def aks_loadbalancer_add(
     service_label_selector=None,
     service_namespace_selector=None,
     node_selector=None,
+    aks_custom_headers=None,
 ):
     """Add a load balancer configuration to a managed cluster.
 
@@ -3759,6 +3760,7 @@ def aks_loadbalancer_update(
     service_label_selector=None,
     service_namespace_selector=None,
     node_selector=None,
+    aks_custom_headers=None,
 ):
     """Update a load balancer configuration in a managed cluster.
 

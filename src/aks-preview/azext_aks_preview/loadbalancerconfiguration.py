@@ -23,6 +23,11 @@ def aks_loadbalancer_update_internal(cmd, client, raw_parameters):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     loadbalancer_name = raw_parameters.get("name")
+    aks_custom_headers = raw_parameters.get("aks_custom_headers")
+
+    # Get custom headers if provided
+    from azext_aks_preview.custom import get_aks_custom_headers
+    headers = get_aks_custom_headers(aks_custom_headers)
 
     # Check if the LoadBalancer exists before updating
     existing_loadbalancers = client.list_by_managed_cluster(
@@ -121,6 +126,7 @@ def aks_loadbalancer_update_internal(cmd, client, raw_parameters):
         resource_name=cluster_name,
         load_balancer_name=loadbalancer_name,
         parameters=config,
+        headers=headers,
     )
 
     # Wait for the load balancer to be provisioned and return the latest state
@@ -133,6 +139,11 @@ def aks_loadbalancer_add_internal(cmd, client, raw_parameters):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     loadbalancer_name = raw_parameters.get("name")
+    aks_custom_headers = raw_parameters.get("aks_custom_headers")
+
+    # Get custom headers if provided
+    from azext_aks_preview.custom import get_aks_custom_headers
+    headers = get_aks_custom_headers(aks_custom_headers)
 
     # Validate required parameters for adding a new LoadBalancer
     if not loadbalancer_name:
@@ -164,6 +175,7 @@ def aks_loadbalancer_add_internal(cmd, client, raw_parameters):
         resource_name=cluster_name,
         load_balancer_name=loadbalancer_name,
         parameters=config,
+        headers=headers,
     )
 
     # Wait for the load balancer to be provisioned and return the latest state
@@ -197,6 +209,8 @@ def constructLoadBalancerConfiguration(cmd, raw_parameters):
         cmd, raw_parameters.get("service_namespace_selector")
     )
     node_selector = construct_label_selector(cmd, raw_parameters.get("node_selector"))
+
+
 
     # Create the LoadBalancer object
     result = LoadBalancer(

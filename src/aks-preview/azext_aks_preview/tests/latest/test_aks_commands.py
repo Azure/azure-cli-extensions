@@ -15752,8 +15752,12 @@ spec:
         ])
 
         # Add the default kubernetes load balancer
+        add_lb_cmd = (
+            "aks loadbalancer add -g {resource_group} --cluster-name {name} --name kubernetes --primary-agent-pool-name {nodepool} --allow-service-placement true "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MultipleStandardLoadBalancersPreview"
+        )
         self.cmd(
-            "aks loadbalancer add -g {resource_group} --cluster-name {name} --name kubernetes --primary-agent-pool-name {nodepool} --allow-service-placement true",
+            add_lb_cmd,
             checks=[
                 self.check("name", "kubernetes"),
                 self.check("primaryAgentPoolName", "{nodepool}"),
@@ -15784,7 +15788,8 @@ spec:
         self.cmd(
             "aks loadbalancer add -g {resource_group} --cluster-name {name} "
             "--name {secondary_lb} --primary-agent-pool-name {secondary_nodepool} "
-            "--allow-service-placement true",
+            "--allow-service-placement true "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MultipleStandardLoadBalancersPreview",
             checks=[
                 self.check("name", "{secondary_lb}"),
                 self.check("primaryAgentPoolName", "{secondary_nodepool}"),
@@ -15801,7 +15806,8 @@ spec:
             "--name {secondary_lb} "
             "--service-label-selector app=frontend,tier=web "
             "--service-namespace-selector environment=production "
-            "--node-selector disk=ssd",
+            "--node-selector disk=ssd "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MultipleStandardLoadBalancersPreview",
             checks=[
                 self.check("name", "{secondary_lb}"),
                 self.check("primaryAgentPoolName", "{secondary_nodepool}"),

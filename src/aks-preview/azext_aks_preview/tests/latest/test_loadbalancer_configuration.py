@@ -99,6 +99,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
                 resource_name="test_cluster",
                 load_balancer_name="test_lb",
                 parameters=mock_config,
+                headers={},
             )
 
             # Assert wait_for_loadbalancer_provisioning_state was called correctly
@@ -184,6 +185,7 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
                 resource_name="test_cluster",
                 load_balancer_name="new_lb",
                 parameters=mock_config,
+                headers={},
             )
 
             # Assert wait_for_loadbalancer_provisioning_state was called correctly

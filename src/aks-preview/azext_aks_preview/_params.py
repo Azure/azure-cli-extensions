@@ -2347,6 +2347,10 @@ def load_arguments(self, _):
             help="Whether to automatically place services on the load balancer. Default is true.",
         )
         c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+        c.argument(
             "service_label_selector",
             options_list=["--service-label-selector", "-l"],
             help=(
@@ -2419,6 +2423,10 @@ def load_arguments(self, _):
             options_list=["--allow-service-placement", "-a"],
             arg_type=get_three_state_flag(),
             help="Whether to automatically place services on the load balancer. Default is true.",
+        )
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
         )
         c.argument(
             "service_label_selector",

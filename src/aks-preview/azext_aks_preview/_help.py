@@ -3335,6 +3335,10 @@ helps['aks loadbalancer add'] = """
           type: string
           short-summary: Node label selector for nodes that can be members of this load balancer.
           long-summary: Nodes that match this selector will be possible members of this load balancer. Format as comma-separated key=value pairs.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers to the AKS API.
+          long-summary: When specified, format should be Key1=Value1,Key2=Value2.
     examples:
         - name: Add a load balancer configuration with a specific primary agent pool
           text: az aks loadbalancer add -g MyResourceGroup -n secondary --cluster-name MyManagedCluster --primary-agent-pool-name nodepool1
@@ -3342,6 +3346,8 @@ helps['aks loadbalancer add'] = """
           text: az aks loadbalancer add -g MyResourceGroup -n app-lb --cluster-name MyManagedCluster --primary-agent-pool-name nodepool2 --service-label-selector app=frontend
         - name: Add a load balancer configuration that doesn't automatically place services
           text: az aks loadbalancer add -g MyResourceGroup -n restricted-lb --cluster-name MyManagedCluster --primary-agent-pool-name nodepool3 --allow-service-placement false
+        - name: Add a load balancer configuration with custom AKS API headers
+          text: az aks loadbalancer add -g MyResourceGroup -n api-lb --cluster-name MyManagedCluster --primary-agent-pool-name nodepool1 --aks-custom-headers CustomHeader=Value
 """
 
 helps['aks loadbalancer update'] = """
@@ -3371,6 +3377,10 @@ helps['aks loadbalancer update'] = """
           type: string
           short-summary: Node label selector for nodes that can be members of this load balancer.
           long-summary: Nodes that match this selector will be possible members of this load balancer. Format as comma-separated key=value pairs.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers to the AKS API.
+          long-summary: When specified, format should be Key1=Value1,Key2=Value2.
     examples:
         - name: Update a load balancer configuration's primary agent pool
           text: az aks loadbalancer update -g MyResourceGroup -n secondary --cluster-name MyManagedCluster --primary-agent-pool-name nodepool2
@@ -3378,6 +3388,8 @@ helps['aks loadbalancer update'] = """
           text: az aks loadbalancer update -g MyResourceGroup -n app-lb --cluster-name MyManagedCluster --allow-service-placement false
         - name: Update a load balancer configuration with new service selector
           text: az aks loadbalancer update -g MyResourceGroup -n app-lb --cluster-name MyManagedCluster --service-label-selector tier=frontend,environment=production
+        - name: Update a load balancer configuration with custom AKS API headers
+          text: az aks loadbalancer update -g MyResourceGroup -n api-lb --cluster-name MyManagedCluster --aks-custom-headers CustomHeader=Value
 """
 
 helps['aks loadbalancer delete'] = """
