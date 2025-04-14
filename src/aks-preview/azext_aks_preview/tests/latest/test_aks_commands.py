@@ -15706,7 +15706,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+        random_name_length=17, name_prefix="clitest", location="eastus2euap", preserve_default_location=True
     )
     def test_aks_loadbalancer_commands(
         self, resource_group
