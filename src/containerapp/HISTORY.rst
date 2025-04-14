@@ -11,6 +11,10 @@ upcoming
 * 'az containerapp create': Support --kind {functionapp}
 * Removed preview tag for command groups 'az containerapp sessionpool' and 'az containerapp session code-interpreter'
 
+1.1.0b4
+++++++
+* 'az containerapp job create': Fix creating event trigger with `--scale-rule-name`
+
 1.1.0b3
 ++++++
 * 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
