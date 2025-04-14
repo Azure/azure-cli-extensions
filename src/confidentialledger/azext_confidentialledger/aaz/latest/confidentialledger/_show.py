@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the properties of a Confidential Ledger.
+
+    :example: ConfidentialLedgerGet
+        az confidentialledger show --resource-group DummyResourceGroupName --ledger-name DummyLedgerName
     """
 
     _aaz_info = {

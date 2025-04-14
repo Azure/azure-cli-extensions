@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """To check whether a resource name is available.
+
+    :example: CheckNameAvailability
+        az confidentialledger check-name-availability --type Microsoft.ConfidentialLedger/ledgers --name sample-name
     """
 
     _aaz_info = {

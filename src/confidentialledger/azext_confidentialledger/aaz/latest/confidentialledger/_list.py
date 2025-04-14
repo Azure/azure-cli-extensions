@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the properties of all Confidential Ledgers.
+
+    :example: ConfidentialLedgerListBySub
+        az confidentialledger list
+
+    :example: ConfidentialLedgerListByResourceGroup
+        az confidentialledger list --resource-group DummyResourceGroupName
     """
 
     _aaz_info = {

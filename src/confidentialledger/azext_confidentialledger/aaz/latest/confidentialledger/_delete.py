@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an existing Confidential Ledger.
+
+    :example: ConfidentialLedgerDelete
+        az confidentialledger delete --resource-group DummyResourceGroupName --ledger-name DummyLedgerName
     """
 
     _aaz_info = {

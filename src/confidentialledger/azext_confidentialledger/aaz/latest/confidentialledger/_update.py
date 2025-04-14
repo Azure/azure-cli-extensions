@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a  Confidential Ledger with the specified ledger parameters.
+
+    :example: ConfidentialLedgerUpdate
+        az confidentialledger update --resource-group DummyResourceGroupName --ledger-name DummyLedgerName --location EastUS --aad-based-security-principals "[{principal-id:34621747-6fc8-4771-a2eb-72f31c461f2e,tenant-id:bce123b9-2b7b-4975-8360-5ca0b9b1cd08,ledger-role-name:Contributor}]" --tags "{additionalProps1:'additional update properties'}"
     """
 
     _aaz_info = {
