@@ -5,6 +5,11 @@ Release History
 
 8.0.0b2
 ++++++
+* Making the Network Monitor resource available through the CLI.
+* Within the the IPv4/IPv6 PrefixLimitPatchProperties structure for External and Internal Networks, renamed the 'softLimit' property to 'threshold'.
+
+8.0.0b1
+++++++
 * New preview CLI version for latest api 2024-06-15-preview.
 * az core cli updated to version 2.67, aaz_dev updated to version 3.2.0, and azdev to version 0.1.94.
 * New `fabric identity` commands introduced: `fabric identity assign`, `fabric identity remove`, `fabric identity show`.
