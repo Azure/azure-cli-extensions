@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.breaking_change import register_command_group_deprecate
 from azext_spring._utils import handle_asc_exception
 
 from ._client_factory import (cf_spring,
@@ -132,9 +131,6 @@ def load_command_table(self, _):
         operations_tmpl='azext_spring.jobs.job#{}',
         client_factory=cf_spring
     )
-
-    # https://aka.ms/asaretirement
-    register_command_group_deprecate('spring', target_version='Mar 2028', hide=True)
 
     with self.command_group('spring', custom_command_type=spring_routing_util,
                             exception_handler=handle_asc_exception) as g:
