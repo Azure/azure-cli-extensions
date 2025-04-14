@@ -12,24 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic integration list",
+    "apic api-analysis show",
+    is_preview=True,
 )
-class List(AAZCommand):
-    """List a collection of API sources.
+class Show(AAZCommand):
+    """Get details of the API analyzer configuration.
+
+    :example: Show details of an API Analysis rule config
+        az apic api-analysis show -g contoso-resources -n contoso -c spectral-openapi
     """
 
     _aaz_info = {
         "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apisources", "2024-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/analyzerconfigs/{}", "2024-06-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -42,6 +45,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.analyzer_config_name = AAZStrArg(
+            options=["-c", "--config-name", "--analyzer-config-name"],
+            help="The name of the configuration.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
+                max_length=90,
+                min_length=1,
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -49,6 +63,7 @@ class List(AAZCommand):
             options=["-n", "--service-name"],
             help="The name of Azure API Center service.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
@@ -59,21 +74,18 @@ class List(AAZCommand):
             options=["--workspace-name"],
             help="The name of the workspace.",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.filter = AAZStrArg(
-            options=["--filter"],
-            help="OData filter parameter.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApiSourcesList(ctx=self.ctx)()
+        self.AnalyzerConfigsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -85,11 +97,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ApiSourcesList(AAZHttpOperation):
+    class AnalyzerConfigsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +114,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apiSources",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/analyzerConfigs/{analyzerConfigName}",
                 **self.url_parameters
             )
 
@@ -118,6 +129,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "analyzerConfigName", self.ctx.args.analyzer_config_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -140,9 +155,6 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "$filter", self.ctx.args.filter,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2024-06-01-preview",
                     required=True,
@@ -177,95 +189,63 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True, "read_only": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.amazon_api_gateway_source = AAZObjectType(
-                serialized_name="amazonApiGatewaySource",
-            )
-            properties.api_source_type = AAZStrType(
-                serialized_name="apiSourceType",
+            properties = cls._schema_on_200.properties
+            properties.analyzer_type = AAZStrType(
+                serialized_name="analyzerType",
                 flags={"required": True},
             )
-            properties.azure_api_management_source = AAZObjectType(
-                serialized_name="azureApiManagementSource",
-            )
-            properties.import_specification = AAZStrType(
-                serialized_name="importSpecification",
-            )
-            properties.link_state = AAZObjectType(
-                serialized_name="linkState",
+            properties.description = AAZStrType()
+            properties.filter = AAZObjectType()
+            properties.state = AAZStrType(
                 flags={"read_only": True},
             )
-            properties.target_environment_id = AAZStrType(
-                serialized_name="targetEnvironmentId",
-            )
-            properties.target_lifecycle_stage = AAZStrType(
-                serialized_name="targetLifecycleStage",
-            )
-
-            amazon_api_gateway_source = cls._schema_on_200.value.Element.properties.amazon_api_gateway_source
-            amazon_api_gateway_source.access_key = AAZStrType(
-                serialized_name="accessKey",
-                flags={"required": True},
-            )
-            amazon_api_gateway_source.msi_resource_id = AAZStrType(
-                serialized_name="msiResourceId",
-            )
-            amazon_api_gateway_source.region_name = AAZStrType(
-                serialized_name="regionName",
-                flags={"required": True},
-            )
-            amazon_api_gateway_source.secret_access_key = AAZStrType(
-                serialized_name="secretAccessKey",
+            properties.title = AAZStrType(
                 flags={"required": True},
             )
 
-            azure_api_management_source = cls._schema_on_200.value.Element.properties.azure_api_management_source
-            azure_api_management_source.msi_resource_id = AAZStrType(
-                serialized_name="msiResourceId",
+            filter = cls._schema_on_200.properties.filter
+            filter.api_definitions = AAZListType(
+                serialized_name="apiDefinitions",
+                flags={"required": True},
             )
-            azure_api_management_source.resource_id = AAZStrType(
-                serialized_name="resourceId",
+            filter.api_versions = AAZListType(
+                serialized_name="apiVersions",
+                flags={"required": True},
+            )
+            filter.apis = AAZListType(
                 flags={"required": True},
             )
 
-            link_state = cls._schema_on_200.value.Element.properties.link_state
-            link_state.last_updated_on = AAZStrType(
-                serialized_name="lastUpdatedOn",
-                flags={"required": True},
-            )
-            link_state.message = AAZStrType()
-            link_state.state = AAZStrType()
+            api_definitions = cls._schema_on_200.properties.filter.api_definitions
+            api_definitions.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_analyzer_filter_condition_read(api_definitions.Element)
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            api_versions = cls._schema_on_200.properties.filter.api_versions
+            api_versions.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_analyzer_filter_condition_read(api_versions.Element)
+
+            apis = cls._schema_on_200.properties.filter.apis
+            apis.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_analyzer_filter_condition_read(apis.Element)
+
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -288,8 +268,18 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
+
+    _schema_analyzer_filter_condition_read = None
+
+    @classmethod
+    def _build_schema_analyzer_filter_condition_read(cls, _schema):
+        if cls._schema_analyzer_filter_condition_read is not None:
+            return
+
+        cls._schema_analyzer_filter_condition_read = _schema_analyzer_filter_condition_read = AAZFreeFormDictType()
 
 
-__all__ = ["List"]
+
+__all__ = ["Show"]
