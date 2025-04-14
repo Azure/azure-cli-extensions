@@ -210,9 +210,6 @@ def constructLoadBalancerConfiguration(cmd, raw_parameters):
     )
     node_selector = construct_label_selector(cmd, raw_parameters.get("node_selector"))
 
-
-
-    # Create the LoadBalancer object
     result = LoadBalancer(
         primary_agent_pool_name=primary_agent_pool_name,
         allow_service_placement=allow_service_placement,
