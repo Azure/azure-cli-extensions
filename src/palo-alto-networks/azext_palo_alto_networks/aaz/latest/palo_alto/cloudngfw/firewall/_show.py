@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2023-09-01"],
         ]
     }
 
@@ -120,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -316,6 +316,9 @@ class Show(AAZCommand):
                 serialized_name="publicIps",
                 flags={"required": True},
             )
+            network_profile.trusted_ranges = AAZListType(
+                serialized_name="trustedRanges",
+            )
             network_profile.vnet_configuration = AAZObjectType(
                 serialized_name="vnetConfiguration",
             )
@@ -330,6 +333,9 @@ class Show(AAZCommand):
             public_ips = cls._schema_on_200.properties.network_profile.public_ips
             public_ips.Element = AAZObjectType()
             _ShowHelper._build_schema_ip_address_read(public_ips.Element)
+
+            trusted_ranges = cls._schema_on_200.properties.network_profile.trusted_ranges
+            trusted_ranges.Element = AAZStrType()
 
             vnet_configuration = cls._schema_on_200.properties.network_profile.vnet_configuration
             vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
