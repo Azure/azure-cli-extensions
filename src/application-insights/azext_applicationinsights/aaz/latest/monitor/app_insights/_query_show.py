@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "monitor app-insights query-show",
-)
 class QueryShow(AAZCommand):
     """Get an Analytics query for data
     """
@@ -46,8 +43,8 @@ class QueryShow(AAZCommand):
             help="ID of the application. This is Application ID from the API Access settings blade in the Azure portal.",
             required=True,
         )
-        _args_schema.s_query = AAZStrArg(
-            options=["--s-query"],
+        _args_schema.query = AAZStrArg(
+            options=["--query"],
             help="The Analytics query. Learn more about the [Analytics query syntax](https://azure.microsoft.com/documentation/articles/app-insights-analytics-reference/)",
             required=True,
         )
@@ -114,7 +111,7 @@ class QueryShow(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "query", self.ctx.args.s_query,
+                    "query", self.ctx.args.query,
                     required=True,
                 ),
                 **self.serialize_query_param(
@@ -179,7 +176,7 @@ class QueryShow(AAZCommand):
             rows.Element = AAZListType()
 
             _element = cls._schema_on_200.tables.Element.rows.Element
-            _element.Element = AAZStrType()
+            _element.Element = AAZAnyType()
 
             return cls._schema_on_200
 

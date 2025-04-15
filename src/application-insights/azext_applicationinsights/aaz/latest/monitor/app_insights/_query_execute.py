@@ -11,14 +11,8 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "monitor app-insights query-execute",
-)
 class QueryExecute(AAZCommand):
     """Executes an Analytics query for data. [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query) is an example for using POST with an Analytics query.
-
-    :example: queryPost
-        az monitor app-insights query-execute --app-id 34adfa4f-cedf-4dc0-ba29-b6d1a69ab345 --timespan PT12H --s-query requests | summarize count() by bin(timestamp, 1h)
     """
 
     _aaz_info = {
@@ -58,8 +52,8 @@ class QueryExecute(AAZCommand):
             arg_group="Body",
             help="A list of Application IDs for cross-application queries.",
         )
-        _args_schema.s_query = AAZStrArg(
-            options=["--s-query"],
+        _args_schema.query = AAZStrArg(
+            options=["--query"],
             arg_group="Body",
             help="The query to execute.",
             required=True,
@@ -147,7 +141,7 @@ class QueryExecute(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("applications", AAZListType, ".applications")
-            _builder.set_prop("query", AAZStrType, ".s_query", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("query", AAZStrType, ".query", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("timespan", AAZStrType, ".timespan")
 
             applications = _builder.get(".applications")
@@ -203,7 +197,7 @@ class QueryExecute(AAZCommand):
             rows.Element = AAZListType()
 
             _element = cls._schema_on_200.tables.Element.rows.Element
-            _element.Element = AAZStrType()
+            _element.Element = AAZAnyType()
 
             return cls._schema_on_200
 

@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.0
+++++++++++++++++++
+* `az monitor app-insights events/metrics/query`: Migrate data-plane using codegen tool
+
 1.2.3
 ++++++++++++++++++
 * `az monitor app-insights events/metrics/query`: Fix error: Profile.get_login_credentials() got an unexpected keyword argument 'resource'

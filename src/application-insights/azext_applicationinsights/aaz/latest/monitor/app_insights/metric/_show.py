@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "monitor app-insights metrics show",
-)
 class Show(AAZCommand):
     """Get metric values for a single metric
     """

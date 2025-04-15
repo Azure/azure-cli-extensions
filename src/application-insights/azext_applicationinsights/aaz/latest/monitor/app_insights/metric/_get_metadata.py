@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "monitor app-insights metrics get-metadata",
-)
 class GetMetadata(AAZCommand):
     """Get metadata describing the available metrics
     """
