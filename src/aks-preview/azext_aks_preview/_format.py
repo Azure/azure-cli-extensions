@@ -373,3 +373,68 @@ def _format_mesh_revision_entry(revision):
         }
         flattened.append(item)
     return flattened
+
+def core_extension_list_table_format(results):
+    return [__get_table_row(result) for result in results]
+
+
+def core_extension_show_table_format(result):
+    return __get_table_row(result)
+
+
+def __get_table_row(result):
+    return OrderedDict([
+        ('name', result['name']),
+        ('extensionType', result.get('extensionType', '')),
+        ('version', result.get('version', '')),
+        ('provisioningState', result.get('provisioningState', '')),
+        ('lastModifiedAt', result.get('systemData', {}).get('lastModifiedAt', '')),
+        ('isSystemExtension', result.get('isSystemExtension', '')),
+    ])
+
+
+def core_extension_types_list_table_format(results):
+    return [__get_extension_type_table_row(result) for result in results]
+
+
+def core_extension_type_show_table_format(result):
+    return __get_extension_type_table_row(result)
+
+
+def __get_extension_type_table_row(result):
+    # Populate the values to be returned if they are not undefined
+    clusterTypes = ''
+    if result['properties']['supportedClusterTypes'] is not None:
+        clusterTypes = ', '.join(result['properties']['supportedClusterTypes'])
+
+    name = result['name']
+    defaultScope, allowMultipleInstances, defaultReleaseNamespace = '', '', ''
+    if result['properties']['supportedScopes']:
+        defaultScope = result['properties']['supportedScopes']['defaultScope']
+        if result['properties']['supportedScopes']['clusterScopeSettings'] is not None:
+            allowMultipleInstances = result['properties']['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
+            defaultReleaseNamespace = result['properties']['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
+
+    retVal = OrderedDict([
+        ('name', name),
+        ('defaultScope', defaultScope),
+        ('clusterTypes', clusterTypes),
+        ('allowMultipleInstances', allowMultipleInstances),
+        ('defaultReleaseNamespace', defaultReleaseNamespace)
+    ])
+
+    return retVal
+
+
+def core_extension_type_versions_list_table_format(results):
+    return [__get_extension_type_versions_table_row(result) for result in results]
+
+
+def core_extension_type_version_show_table_format(results):
+    return __get_extension_type_versions_table_row(results)
+
+
+def __get_extension_type_versions_table_row(result):
+    return OrderedDict([
+        ('versions', result['properties']['version'])
+    ])
