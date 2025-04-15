@@ -75,27 +75,28 @@ def _validate_continuouspatch_config(config):
                 raise InvalidArgumentValueError("Configuration error: Tag '*' is not allowed with other tags in the same repository. Use '*' as the only tag in the repository to avoid overlaps.")
 
 
-# to save on API calls, we the list of tasks found in the registry
+# to save on API calls, we use task_list to return a list of CSSC tasks found in the registry
 def check_continuous_task_exists(cmd, registry):
     task_list = []
     missing_tasks = []
-    try:
-        acrtask_client = cf_acr_tasks(cmd.cli_ctx)
-        for task_name in CONTINUOUSPATCH_ALL_TASK_NAMES:
+
+    acrtask_client = cf_acr_tasks(cmd.cli_ctx)
+    for task_name in CONTINUOUSPATCH_ALL_TASK_NAMES:
+        try:
             task = get_task(cmd, registry, task_name, acrtask_client)
             if task is None:
                 missing_tasks.append(task_name)
             else:
                 task_list.append(task)
+        except Exception as exception:
+            logger.debug(f"Failed to find tasks from registry {registry.name} : {exception}")
+            missing_tasks.append(task_name)
 
-        if len(missing_tasks) > 0:
-            logger.debug(f"Failed to find tasks {', '.join(missing_tasks)} from registry {registry.name}")
-            return False, task_list
-
-        return True, task_list
-    except Exception as exception:
-        logger.debug(f"Failed to find tasks from registry {registry.name} : {exception}")
+    if len(missing_tasks) > 0:
+        logger.debug(f"Failed to find tasks {', '.join(missing_tasks)} from registry {registry.name}")
         return False, task_list
+
+    return True, task_list
 
 
 def check_continuous_task_config_exists(cmd, registry):
@@ -136,7 +137,7 @@ def _validate_schedule(schedule):
 
 def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediately=False):
     _validate_schedule(schedule)
-    if config_file_path is not None:
+    if config_file_path:
         validate_continuouspatch_config_v1(config_file_path)
     validate_run_type(dryrun, run_immediately)
 

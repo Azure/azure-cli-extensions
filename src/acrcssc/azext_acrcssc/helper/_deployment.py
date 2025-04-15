@@ -44,13 +44,12 @@ def validate_and_deploy_template(cmd_ctx,
         mode=DeploymentMode.incremental)
     try:
         validate_template(cmd_ctx, resource_group, deployment_name, template)
-        if (dryrun):
+        if dryrun:
             logger.debug("Dry run, skipping deployment")
             return None
 
         return deploy_template(cmd_ctx, resource_group, deployment_name, template)
     except Exception as exception:
-        logger.debug(f'Failed to validate and deploy template: {exception}')
         raise AzCLIError(f'Failed to validate and deploy template: {exception}')
 
 
@@ -61,10 +60,7 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
     api_clients = cf_resources(cmd_ctx)
     validation_res = None
     deployment = Deployment(
-        properties=template,
-        # tags = { "test": CSSC_TAGS }, #we need to know if tagging
-        # is something that will help ust, tasks are proxy resources,
-        # so not sure how that would work
+        properties=template
     )
 
     for validation_attempt in range(2):
@@ -80,7 +76,8 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
                 cmd_ctx, "Validating ARM template..."
             )(validation)
             break
-        except Exception:  # pylint: disable=broad-except
+        except Exception as exception:  # pylint: disable=broad-except
+            logger.debug(f"Validation attempt {validation_attempt + 1} failed for template {template}, exception: {exception}")
             if validation_attempt == 1:
                 raise
 
@@ -138,7 +135,7 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     logger.debug(f"Deployed: {deployment.name} {deployment.id} {depl_props}")
 
     if depl_props.provisioning_state != "Succeeded":
-        logger.debug(f"Failed to provision: {depl_props}")
+        logger.error(f"Failed to provision: {depl_props}")
         raise RuntimeError(
             "Deploy of template to resource group"
             f" {resource_group} proceeded but the provisioning"

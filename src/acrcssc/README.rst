@@ -15,6 +15,7 @@ Continuous Patching is currently in preview. The following limitations apply:
 - Windows-based container images aren’t supported
 - Only "OS-level" vulnerabilities will be patched. This includes packages in the image managed by a package manager such as “apt” and “yum”. Vulnerabilities at the “application level” are unable to be patched, such as compiled languages like Go, Python, NodeJS
 - Patching is only supported in Public regions, not in Sovereign regions
+- CSSC patching is not supported for registries or in regions where Tasks are unavailable.
 
 Features
 ========

@@ -63,7 +63,7 @@ def create_update_continuous_patch_v1(cmd,
     schedule_cron_expression = None
     cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
 
-    if schedule is not None:
+    if schedule:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
@@ -71,16 +71,15 @@ def create_update_continuous_patch_v1(cmd,
         if cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
 
-        if cssc_config_file is not None:
-            create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
-            logger.debug(f"Uploading of {cssc_config_file} for create completed successfully.")
+        create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
+        logger.debug(f"Uploading of {cssc_config_file} for create completed successfully.")
 
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:
         if not cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
 
-        if cssc_config_file is not None:
+        if cssc_config_file:
             create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
             logger.debug(f"Uploading of {cssc_config_file} for update completed successfully.")
 
@@ -136,7 +135,7 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
             logger.debug(f"Task {task.name} is different from the extension task, updating the task")
             _update_task_yaml(acr_task_client, registry, resource_group, task, extension_task)
 
-    if schedule_cron_expression is not None:
+    if schedule_cron_expression:
         _update_task_schedule(acr_task_client, registry, resource_group, schedule_cron_expression, dry_run)
 
 
@@ -476,23 +475,26 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
 
     identity = task.identity
 
-    if identity:
-        assigned_roles = role_client.role_assignments.list_for_scope(
-            registry.id,
-            filter=f"principalId eq '{identity.principal_id}'"
-        )
+    if not identity or not identity.principal_id:
+        logger.debug(f"Task {task_name} has no associated managed identity. Skipping role assignment deletion.")
+        return None
 
-        for role in assigned_roles:
-            try:
-                logger.debug(f"Deleting role assignments of task {task_name} from the registry")
-                role_client.role_assignments.delete(
-                    scope=registry.id,
-                    role_assignment_name=role.name
-                )
-            except ResourceNotFoundError:
-                logger.debug(f"Role assignment {role.name} does not exist in registry {registry.name}")
-            except AzCLIError as exception:
-                logger.error(f"Failed to delete role assignment {role.name} from registry {registry.name} : {exception}")
+    assigned_roles = role_client.role_assignments.list_for_scope(
+        registry.id,
+        filter=f"principalId eq '{identity.principal_id}'"
+    )
+
+    for role in assigned_roles:
+        try:
+            logger.debug(f"Deleting role assignments of task {task_name} from the registry")
+            role_client.role_assignments.delete(
+                scope=registry.id,
+                role_assignment_name=role.name
+            )
+        except ResourceNotFoundError:
+            logger.debug(f"Role assignment {role.name} does not exist in registry {registry.name}")
+        except AzCLIError as exception:
+            logger.error(f"Failed to delete role assignment {role.name} from registry {registry.name} : {exception}")
 
 
 def _transform_task_list(tasks):
@@ -529,17 +531,6 @@ def _get_custom_registry_credentials(cmd):
         source_registry=None,
         custom_registries=None
     )
-
-
-def _is_vault_secret(cmd, credential):
-    keyvault_dns = None
-    try:
-        keyvault_dns = cmd.cli_ctx.cloud.suffixes.keyvault_dns
-    except Exception:
-        return False
-    if credential is not None:
-        return keyvault_dns.upper() in credential.upper()
-    return False
 
 
 def get_next_date(cron_expression):

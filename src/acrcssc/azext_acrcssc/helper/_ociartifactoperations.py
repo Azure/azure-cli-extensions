@@ -58,6 +58,7 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
             else:
                 oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
+            logger.debug(f"Publish OCI artifact to: {oci_target_name}")
             oras_client.push(
                 target=oci_target_name,
                 files=[temp_artifact_name])
@@ -72,13 +73,19 @@ def get_oci_artifact_continuous_patch(cmd, registry):
     logger.debug("Entering get_oci_artifact_continuous_patch with parameter: %s", registry.login_server)
     config = None
     file_name = None
+    oras_client = None
     try:
         oras_client = _oras_client(registry)
 
         oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
+        logger.debug(f"Pull OCI artifact from: {oci_target_name}")
         oci_artifacts = oras_client.pull(target=oci_target_name,
                                          overwrite=True)
+
+        if not oci_artifacts:
+            raise AzCLIError(f"Failed to pull OCI artifact from ACR: {oci_target_name}")
+
         trigger_task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         file_name = oci_artifacts[0]
         logger.debug(f"OCI artifact file name: {file_name}, trigger task: {trigger_task}")
@@ -86,7 +93,8 @@ def get_oci_artifact_continuous_patch(cmd, registry):
     except Exception as exception:
         raise AzCLIError(f"Failed to get OCI artifact from ACR: {exception}")
     finally:
-        oras_client.logout(hostname=str.lower(registry.login_server))
+        if oras_client:
+            oras_client.logout(hostname=str.lower(registry.login_server))
 
     return config, file_name
 
@@ -98,19 +106,19 @@ def delete_oci_artifact_continuous_patch(cmd, registry):
 
     try:
         token = _get_acr_token(registry.name, subscription)
-
+        oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}"
         # Delete repository, removing only image isn't deleting the repository always (Bug)
         acr_repository_delete(
             cmd=cmd,
             registry_name=registry.name,
-            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}",
+            repository=oci_target_name,
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=True)
         logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
         logger.debug(exception)
-        logger.error(f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1} might not exist or attempt to delete failed.")
+        logger.error(f"{oci_target_name}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1} might not exist or attempt to delete failed.")
         raise
 
 
@@ -191,9 +199,10 @@ class ContinuousPatchConfig:
         try:
             json_config = json.loads(json_str)
             validate(json_config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
+        except json.JSONDecodeError as e:
+            raise AzCLIError(f"Failed to parse JSON: {e}", e)
         except ValidationError as e:
-            logger.error("Error validating the continuous patch config file: %s", e)
-            return None
+            raise AzCLIError(f"Error validating the continuous patch config file: {e}", e)
 
         self.version = json_config.get("version", "")
         repositories = json_config.get("repositories", [])
