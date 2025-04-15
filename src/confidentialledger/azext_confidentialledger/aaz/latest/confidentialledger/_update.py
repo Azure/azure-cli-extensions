@@ -79,7 +79,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.aad_based_security_principals = AAZListArg(
-            options=["--aad-based-security-principals"],
+            options=["--aad-based-users", "--aad-based-security-principals"],
             arg_group="Properties",
             help="Array of all AAD based Security Principals.",
             nullable=True,
@@ -92,7 +92,7 @@ class Update(AAZCommand):
             enum={"CodeTransparency": "CodeTransparency", "ConfidentialLedger": "ConfidentialLedger"},
         )
         _args_schema.cert_based_security_principals = AAZListArg(
-            options=["--cert-based-security-principals"],
+            options=["--cert-based-users", "--cert-based-security-principals"],
             arg_group="Properties",
             help="Array of all cert based Security Principals.",
             nullable=True,
@@ -156,7 +156,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.write_lb_address_prefix = AAZStrArg(
-            options=["--write-lb-address-prefix"],
+            options=["--write-lb-prefix", "--write-lb-address-prefix"],
             arg_group="Properties",
             help="Prefix for the write load balancer. Example: write",
             nullable=True,
