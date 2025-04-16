@@ -14,7 +14,8 @@ from ._constants import (
     CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
     RESOURCE_GROUP,
-    TMP_DRY_RUN_FILE_NAME)
+    TMP_DRY_RUN_FILE_NAME,
+    RECOMMENDATION_SCHEDULE)
 from .._client_factory import cf_acr_tasks
 
 logger = get_logger(__name__)
@@ -23,9 +24,10 @@ logger = get_logger(__name__)
 
 def convert_timespan_to_cron(schedule, date_time=None):
     # Regex to look for pattern 1d, 2d, 3d, etc.
-    match = re.match(r'(\d+)([d])', schedule)
+    match = re.match(r'(\d+)(d)$', schedule)
     if match is None:
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
+                                        recommendation=RECOMMENDATION_SCHEDULE)
 
     value = int(match.group(1))
     unit = match.group(2)
@@ -39,7 +41,8 @@ def convert_timespan_to_cron(schedule, date_time=None):
 
     if unit == 'd':  # day of the month
         if value < CONTINUOUSPATCH_SCHEDULE_MIN_DAYS or value > CONTINUOUSPATCH_SCHEDULE_MAX_DAYS:
-            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
+            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
+                                            recommendation=RECOMMENDATION_SCHEDULE)
         cron_expression = f'{cron_minute} {cron_hour} */{value} * *'
 
     return cron_expression
@@ -67,7 +70,7 @@ def create_temporary_dry_run_file(file_location, tmp_folder):
     templates_path = os.path.abspath(os.path.join(
         os.path.dirname(__file__),
         "../templates"))
-    logger.debug(f"templates_path:  {templates_path}")
+    logger.debug(f"templates_path: {templates_path}")
 
     try:
         os.makedirs(tmp_folder, exist_ok=True)

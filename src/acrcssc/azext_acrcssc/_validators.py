@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long
 # pylint: disable=broad-exception-caught
 # pylint: disable=logging-fstring-interpolation
-import json
 import os
 import re
 from knack.log import get_logger
@@ -15,27 +14,23 @@ from .helper._constants import (
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     CONTINUOUSPATCH_IMAGE_LIMIT,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
-    CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
     CONTINUOUSPATCH_ALL_TASK_NAMES,
-    CONTINUOUSPATCH_SCHEDULE_MIN_DAYS,
-    CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
-    ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
     SUBSCRIPTION)
-from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_SCHEDULE
-from .helper._ociartifactoperations import _get_acr_token
+from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK
+from .helper._ociartifactoperations import _get_acr_token, ContinuousPatchConfig
 from azure.mgmt.core.tools import (parse_resource_id)
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._client_factory import cf_acr_tasks
-from .helper._utility import get_task
+from .helper._utility import get_task, convert_timespan_to_cron
 
 logger = get_logger(__name__)
 
 
 def validate_continuouspatch_config_v1(config_path):
     _validate_continuouspatch_file(config_path)
-    config = _validate_continuouspatch_json(config_path)
+    config = validate_continuouspatch_json(config_path)
     _validate_continuouspatch_config(config)
 
 
@@ -52,26 +47,21 @@ def _validate_continuouspatch_file(config_path):
         raise InvalidArgumentValueError(f"Config path file: '{config_path}' is not readable")
 
 
-def _validate_continuouspatch_json(config_path):
-    from jsonschema import validate
-    try:
-        with open(config_path, 'r') as f:
-            config = json.load(f)
-            validate(config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
-            return config
-    except Exception as e:
-        logger.error(f"Error validating the continuous patch config file: {e}")
-        raise InvalidArgumentValueError("File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
+def validate_continuouspatch_json(config_path):
+    config = ContinuousPatchConfig().from_file(file_path=config_path)
+    if not config:
+        raise InvalidArgumentValueError(f"Config path file: {config_path} is not a valid JSON file. Use --help to see the schema of the config file.")
+    return config
 
 
 def _validate_continuouspatch_config(config):
-    if not isinstance(config, dict):
+    if not isinstance(config, ContinuousPatchConfig):
         raise InvalidArgumentValueError("Config file is not a valid JSON file. Use --help to see the schema of the config file.")
-    for repository in config.get("repositories", []):
-        for tag in repository.get("tags", []):
+    for repository in config.repositories:
+        for tag in repository.tags:
             if re.match(r'.*-patched$', tag) or re.match(r'.*-[0-9]{1,3}$', tag):
-                raise InvalidArgumentValueError(f"Configuration error: Repository '{repository['repository']}' with tag '{tag}' is not allowed. Tags ending with '*-patched' (floating tag) or '*-0' to '*-999' (incremental tag) are reserved for internal use.")
-            if tag == "*" and len(repository.get("tags", [])) > 1:
+                raise InvalidArgumentValueError(f"Configuration error: Repository '{repository.repository}' with tag '{tag}' is not allowed. Tags ending with '*-patched' (floating tag) or '*-0' to '*-999' (incremental tag) are reserved for internal use.")
+            if tag == "*" and len(repository.tags) > 1:
                 raise InvalidArgumentValueError("Configuration error: Tag '*' is not allowed with other tags in the same repository. Use '*' as the only tag in the repository to avoid overlaps.")
 
 
@@ -92,7 +82,7 @@ def check_continuous_task_exists(cmd, registry):
             logger.debug(f"Failed to find tasks from registry {registry.name} : {exception}")
             missing_tasks.append(task_name)
 
-    if len(missing_tasks) > 0:
+    if missing_tasks:
         logger.debug(f"Failed to find tasks {', '.join(missing_tasks)} from registry {registry.name}")
         return False, task_list
 
@@ -115,7 +105,7 @@ def check_continuous_task_config_exists(cmd, registry):
         if hasattr(exception, 'status_code') and exception.status_code == 404:
             return False
         # report on the error only if we get something other than 404
-        logger.debug(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
+        logger.error(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
         raise
     return True
 
@@ -124,15 +114,10 @@ def _validate_schedule(schedule):
     # during update, schedule can be null if we are only updating the config
     if schedule is None:
         return
-    # Extract the numeric value and unit from the timespan expression
-    match = re.match(r'(\d+)(d)$', schedule)
-    if not match:
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_SCHEDULE)
-
-    value = int(match.group(1))
-    unit = match.group(2)
-    if unit == 'd' and (value < CONTINUOUSPATCH_SCHEDULE_MIN_DAYS or value > CONTINUOUSPATCH_SCHEDULE_MAX_DAYS):  # day of the month
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
+    # the convertion to cron will raise an error if the format is invalid
+    cron = convert_timespan_to_cron(schedule)
+    if not cron:
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT)
 
 
 def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediately=False):
@@ -161,7 +146,8 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
     match = re.search(r"Matches found: (\d+)", dryrun_log)
     if match is None:
         # the quick task did not return the expected output, we cannot validate the image limit but cannot block the operation
-        logger.error("Error parsing for image limit.")
+        logger.error("Failed to parse the image limit from the dry run log. Execution will continue.")
+        logger.debug("Dry run log: %s", dryrun_log)
         return
 
     image_limit = int(match.group(1))

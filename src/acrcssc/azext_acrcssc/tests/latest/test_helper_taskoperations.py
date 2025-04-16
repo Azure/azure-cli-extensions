@@ -186,14 +186,10 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
 
 
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
-    @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_tasks")
     @mock.patch("azext_acrcssc.helper._taskoperations._transform_task_list")
-    def test_list_continuous_patch_v1(self, mock_transform_task_list, mock_cf_acr_tasks, mock_check_continuous_task_exists):
+    def test_list_continuous_patch_v1(self, mock_transform_task_list, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
         mock_check_continuous_task_exists.return_value = True, []
-        mock_acr_task_client = mock.MagicMock()
-        mock_cf_acr_tasks.return_value = mock_acr_task_client
-        mock_acr_task_client.get.return_value = mock.MagicMock()
         mock_transform_task_list.return_value = []
 
         # Call the function
@@ -201,8 +197,6 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
 
         # Assert that the dependencies were called with the correct arguments
         mock_check_continuous_task_exists.assert_called_once()
-        mock_cf_acr_tasks.assert_called_once()
-        mock_acr_task_client.get.assert_called()
         mock_transform_task_list.assert_called_once()
         self.assertEqual(result, [])
 

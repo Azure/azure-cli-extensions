@@ -30,7 +30,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
                 _validate_schedule(timespan)
 
     def test_validate_schedule_invalid(self):
-        test_cases = [('df'),('12'),('dd'),('41d'), ('21dd')]
+        test_cases = [('df'),('12'),('dd'),('41d'), ('21dd'), ('0d'), ('-1d'), ('d')]
 
         for timespan in test_cases:
             self.assertRaises(InvalidArgumentValueError, _validate_schedule, timespan)
@@ -85,151 +85,148 @@ class AcrCsscCommandsTests(unittest.TestCase):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
 
-        # Test when the file does not exist
-        with patch('os.path.exists', return_value=False):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            # Test when the file does not exist
+            with patch('os.path.exists', return_value=False):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Test when the path is not a file
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=False):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            # Test when the path is not a file
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=False):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Test when the file size exceeds the limit
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=10485761):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            # Test when the file size exceeds the limit
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=10485761):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Test when the file is empty
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=0):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            # Test when the file is empty
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=0):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Test when the file is not readable
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=False):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            # Test when the file is not readable
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=False):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Clean up the temporary file
-        os.remove(temp_file_path)
-
-    @patch('azext_acrcssc._validators.json.load')
+    @patch('azext_acrcssc.helper._ociartifactoperations.json.loads')
     def test_validate_continuouspatch_json_valid_json_should_parse(self, mock_load):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
 
-        mock_config = {
-            "repositories": [
-                {
-                    "repository": "docker-local",
-                    "tags": ["v1"],
-                    "enabled": True
-                }],
-            "version": "v1"
-        }
-        mock_load.return_value = mock_config
+            mock_config = {
+                "repositories": [
+                    {
+                        "repository": "docker-local",
+                        "tags": ["v1"],
+                        "enabled": True
+                    }],
+                "version": "v1"
+            }
+            mock_load.return_value = mock_config
 
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-            validate_continuouspatch_config_v1(temp_file_path)
-            mock_load.assert_called_once_with(mock.ANY)
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=True):
+                validate_continuouspatch_config_v1(temp_file_path)
+                mock_load.assert_called_once_with(mock.ANY)
 
-    @patch('azext_acrcssc._validators.json.load')
+    @patch('azext_acrcssc.helper._ociartifactoperations.json.loads')
     def test_validate_continuouspatch_json_invalid_json_should_fail(self, mock_load):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
 
-        # Test when version is missing
-        mock_invalid_config = {
-            "repositories": [
-                {
-                    "repository": "docker-local",
-                    "tags": ["v1"],
-                }]
-        }
-        mock_load.return_value = mock_invalid_config
+            # Test when version is missing
+            mock_invalid_config = {
+                "repositories": [
+                    {
+                        "repository": "docker-local",
+                        "tags": ["v1"],
+                    }]
+            }
+            mock_load.return_value = mock_invalid_config
 
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=True):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Test when repositories is empty
-        mock_invalid_config = {
-            "repositories": [],
-            "version": "v1"
-        }
-        mock_load.return_value = mock_invalid_config
+            # Test when repositories is empty
+            mock_invalid_config = {
+                "repositories": [],
+                "version": "v1"
+            }
+            mock_load.return_value = mock_invalid_config
 
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=True):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        # Test when same repository is repeated
-        mock_invalid_config = {
-            "repositories": [
-                {
-                    "repository": "docker-local",
-                    "tags": ["v1"],
-                },
-                {
-                    "repository": "docker-local",
-                    "tags": ["v1"],
-                }],
-            "version": "v1"
-        }
-        mock_load.return_value = mock_invalid_config
+            # Test when same repository is repeated
+            mock_invalid_config = {
+                "repositories": [
+                    {
+                        "repository": "docker-local",
+                        "tags": ["v1"],
+                    },
+                    {
+                        "repository": "docker-local",
+                        "tags": ["v1"],
+                    }],
+                "version": "v1"
+            }
+            mock_load.return_value = mock_invalid_config
 
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=True):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-    @patch('azext_acrcssc._validators.json.load')
+    @patch('azext_acrcssc.helper._ociartifactoperations.json.loads')
     def test_validate_continuouspatch_json_invalid_tags_should_fail(self, mock_load):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
 
-        mock_invalid_config = {
-            "repositories": [
-                {
-                    "repository": "docker-local",
-                    "tags": ["v1-patched"],
-                }],
-            "version": "v1"
-        }
-        mock_load.return_value = mock_invalid_config
+            mock_invalid_config = {
+                "repositories": [
+                    {
+                        "repository": "docker-local",
+                        "tags": ["v1-patched"],
+                    }],
+                "version": "v1"
+            }
+            mock_load.return_value = mock_invalid_config
 
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=True):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
-        mock_invalid_config = {
-            "repositories": [
-                {
-                    "repository": "docker-local",
-                    "tags": ["v1-999"],
-                }],
-            "version": "v1"
-        }
-        mock_load.return_value = mock_invalid_config
+            mock_invalid_config = {
+                "repositories": [
+                    {
+                        "repository": "docker-local",
+                        "tags": ["v1-999"],
+                    }],
+                "version": "v1"
+            }
+            mock_load.return_value = mock_invalid_config
 
-        with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+            with patch('os.path.exists', return_value=True), \
+                patch('os.path.isfile', return_value=True), \
+                patch('os.path.getsize', return_value=100), \
+                patch('os.access', return_value=True):
+                self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
 
     def _setup_cmd(self):
         cmd = mock.MagicMock()
