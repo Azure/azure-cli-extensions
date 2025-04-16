@@ -226,9 +226,10 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
             'app_id1': app1_info["appId"],
             'id1': app1_info["id"],
         })
-        self.cmd('az monitor app-insights events show --app {app_id1} --type availabilityResults --start-time 2025-04-06 00:31 +00:00 --end-time 2025-04-16 01:31 +00:00', checks=[
-            self.check('value', []),
-        ])
+        result = self.cmd('az monitor app-insights events show --app {app_id1} --type availabilityResults --start-time 2025-04-06 00:31 +00:00 --end-time 2025-04-16 01:31 +00:00').get_output_in_json()
+        assert result["value"] == []
+        assert result["@ai.messages"][0]["code"] == "AddedLimitToQuery" # might change over time
+        assert isinstance(result["@odata.context"], str)
 
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}',
                  checks=[self.is_empty()])

@@ -224,17 +224,17 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ai_messages = AAZListType(
-                serialized_name="aiMessages",
+            _schema_on_200.aimessages = AAZListType(
+                serialized_name="@ai.messages",
             )
-            _schema_on_200.odata_context = AAZStrType(
-                serialized_name="odataContext",
+            _schema_on_200.odatacontext = AAZStrType(
+                serialized_name="@odata.context",
             )
             _schema_on_200.value = AAZListType()
 
-            ai_messages = cls._schema_on_200.ai_messages
-            ai_messages.Element = AAZFreeFormDictType()
-            _ShowHelper._build_schema_error_info_read(ai_messages.Element)
+            aimessages = cls._schema_on_200.aimessages
+            aimessages.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_error_info_read(aimessages.Element)
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -648,17 +648,17 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ai_messages = AAZListType(
-                serialized_name="aiMessages",
+            _schema_on_200.aimessages = AAZListType(
+                serialized_name="@ai.messages",
             )
-            _schema_on_200.odata_context = AAZStrType(
-                serialized_name="odataContext",
+            _schema_on_200.odatacontext = AAZStrType(
+                serialized_name="@odata.context",
             )
             _schema_on_200.value = AAZListType()
 
-            ai_messages = cls._schema_on_200.ai_messages
-            ai_messages.Element = AAZFreeFormDictType()
-            _ShowHelper._build_schema_error_info_read(ai_messages.Element)
+            aimessages = cls._schema_on_200.aimessages
+            aimessages.Element = AAZFreeFormDictType()
+            _ShowHelper._build_schema_error_info_read(aimessages.Element)
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
