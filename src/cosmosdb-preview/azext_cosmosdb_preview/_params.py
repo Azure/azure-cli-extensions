@@ -229,7 +229,7 @@ def load_arguments(self, _):
         c.argument('disk_capacity', options_list=['--disk-capacity'], help="Number of disk used for data centers. Default value is 4.")
         c.argument('availability_zone', options_list=['--availability-zone', '-z'], arg_type=get_three_state_flag(), help="If the data center haves Availability Zone feature, apply it to the Virtual Machine ScaleSet that host the data center virtual machines.")
         c.argument('private_endpoint_ip_address', options_list=['--private-endpoint-ip-address', '-i'], help="This is the IP address of the private Endpoint NIC, to be used in cases of VPN based cassandra datacenters.")
-    
+
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter list') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
