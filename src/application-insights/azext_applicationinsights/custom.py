@@ -31,11 +31,11 @@ HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --nam
 
 def execute_query(cmd, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
     """Executes a query against the provided Application Insights application."""
-    from .aaz.latest.monitor.app_insights import QueryExecute
     targets = get_query_targets(cmd.cli_ctx, application, resource_group_name)
     if not isinstance(offset, datetime.timedelta):
         offset = isodate.parse_duration(offset)
     timespan = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
+    from .aaz.latest.monitor.app_insights import QueryExecute
     arg_obj = {
         "app_id": targets[0],
         "query": analytics_query,
@@ -65,10 +65,11 @@ def get_events(cmd, application, event_type, event=None, start_time=None, end_ti
 
 
 def get_metric(cmd, application, metric, start_time=None, end_time=None, offset='1h', interval=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None, resource_group_name=None):
-    from .aaz.latest.monitor.app_insights.metric import Show
     timespan = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
+    app_id = get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name)
+    from .aaz.latest.monitor.app_insights.metric import Show
     arg_obj = {
-        "app_id": get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name),
+        "app_id": app_id,
         "metric_id": metric,
         "timespan": timespan,
         "interval": interval,
@@ -82,9 +83,10 @@ def get_metric(cmd, application, metric, start_time=None, end_time=None, offset=
 
 
 def get_metrics_metadata(cmd, application, resource_group_name=None):
+    app_id = get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name)
     from .aaz.latest.monitor.app_insights.metric import GetMetadata
     arg_obj = {
-        "app_id": get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name),
+        "app_id": app_id,
     }
     return GetMetadata(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
 
