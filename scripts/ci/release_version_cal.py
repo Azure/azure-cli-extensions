@@ -229,7 +229,7 @@ def extract_module_metadata_update_info(mod_update_info, mod):
         if current_meta_data.get("azext.isPreview", None):
             mod_update_info["meta_updated"] = True
             mod_update_info["preview_tag_diff"] = "add"
-            return
+        return
     if last_meta_data.get("azext.isExperimental", False) and not current_meta_data.get("azext.isExperimental", False):
         mod_update_info["exp_tag_diff"] = "remove"
         mod_update_info["meta_updated"] = True
