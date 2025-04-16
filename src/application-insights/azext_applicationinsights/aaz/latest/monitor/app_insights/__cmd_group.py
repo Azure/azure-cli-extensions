@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor app-insights",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage App
+    """Commands for querying data in Application Insights applications.
     """
     pass
 
