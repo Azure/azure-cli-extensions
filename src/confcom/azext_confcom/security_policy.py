@@ -401,7 +401,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             return pretty_print_func(policy)
         return print_func(policy)
 
-    # pylint: disable=R0914, R0915
+    # pylint: disable=R0914, R0915, R0912
     def populate_policy_content_for_all_images(
         self, individual_image=False, tar_mapping=None, faster_hashing=False,
     ) -> None:
@@ -461,6 +461,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                         image_command = image.get_command()
                         manifest_entrypoint = image_info.get("Entrypoint") or []
                         manifest_command = image_info.get("Cmd") or []
+                        # pylint: disable=line-too-long
                         # this describes the potential options that can happen: https://unofficial-kubernetes.readthedocs.io/en/latest/concepts/configuration/container-command-args/
                         if image_entrypoint and not image_command:
                             command = image_entrypoint
@@ -1038,6 +1039,10 @@ def load_policy_from_virtual_node_yaml_file(
         disable_stdio: bool = False,
         approve_wildcards: bool = False,
         diff_mode: bool = False,
+        rego_imports: list = None,
+        exclude_default_fragments: bool = False,
+        fragment_contents: list = None,
+        infrastructure_svn: str = None,
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
@@ -1046,6 +1051,10 @@ def load_policy_from_virtual_node_yaml_file(
         disable_stdio=disable_stdio,
         approve_wildcards=approve_wildcards,
         diff_mode=diff_mode,
+        rego_imports=rego_imports,
+        exclude_default_fragments=exclude_default_fragments,
+        fragment_contents=fragment_contents,
+        infrastructure_svn=infrastructure_svn,
     )
 
 
@@ -1056,6 +1065,10 @@ def load_policy_from_virtual_node_yaml_str(
         disable_stdio: bool = False,
         approve_wildcards: bool = False,
         diff_mode: bool = False,
+        rego_imports: list = None,
+        exclude_default_fragments: bool = False,
+        fragment_contents: Any = None,
+        infrastructure_svn: str = None,
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -1120,6 +1133,18 @@ def load_policy_from_virtual_node_yaml_str(
         # e.g. lifecycle and probes are not supported in initContainers
         init_containers = case_insensitive_dict_get(spec, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS) or []
 
+        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
+        if infrastructure_svn:
+            # assumes the first DEFAULT_REGO_FRAGMENT is always the
+            # infrastructure fragment
+            rego_fragments[0][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
+            ] = infrastructure_svn
+        if rego_imports:
+            # error check the rego imports for invalid data types
+            processed_imports = process_fragment_imports(rego_imports)
+            rego_fragments.extend(processed_imports)
+
         for container in containers + init_containers:
             # image and name
             image = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_IMAGE)
@@ -1139,7 +1164,7 @@ def load_policy_from_virtual_node_yaml_str(
             args = case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_ARGS) or []
 
             # mounts
-            mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
+            mounts = []
             volumes = case_insensitive_dict_get(spec, "volumes") or []
 
             if use_workload_identity:
@@ -1260,9 +1285,11 @@ def load_policy_from_virtual_node_yaml_str(
                 },
                 debug_mode=debug_mode,
                 disable_stdio=disable_stdio,
-                rego_fragments=copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS),
+                rego_fragments=rego_fragments,
+                # fallback to default fragments if the policy is not present
                 is_vn2=True,
                 existing_rego_fragments=existing_fragments,
+                fragment_contents=fragment_contents,
             )
         )
     return all_policies
@@ -1285,6 +1312,10 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
     container_list = case_insensitive_dict_get(
         config_dict, config.ACI_FIELD_CONTAINERS
     )
+
+    scenario = case_insensitive_dict_get(
+        config_dict, config.ACI_FIELD_SCENARIO
+    ) or ""
 
     for container in container_list:
         container_name = case_insensitive_dict_get(
@@ -1318,6 +1349,17 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
         extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
         extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
 
+        container_security_context = case_insensitive_dict_get(
+            container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+        ) or {}
+
+        mounts = process_mounts_from_config(container_properties) + process_configmap(container_properties)
+        if (
+            scenario.lower() == config.VN2 and
+            case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED) is True
+        ):
+            mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+
         containers.append(
             {
                 config.ACI_FIELD_CONTAINERS_ID: image_name,
@@ -1330,8 +1372,7 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 )
                 or [],
-                config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts_from_config(container_properties)
-                + process_configmap(container_properties),
+                config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
                 config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                 + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                 if debug_mode
@@ -1352,4 +1393,5 @@ def load_policy_from_config_str(config_str, debug_mode: bool = False, disable_st
         disable_stdio=disable_stdio,
         rego_fragments=rego_fragments,
         debug_mode=debug_mode,
+        is_vn2=scenario.lower() == config.VN2,
     )

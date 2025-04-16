@@ -11,6 +11,7 @@ ACI_FIELD_VERSION = "version"
 ACI_FIELD_RESOURCES = "resources"
 ACI_FIELD_RESOURCES_NAME = "name"
 ACI_FIELD_CONTAINERS = "containers"
+ACI_FIELD_SCENARIO = "scenario"
 ACI_FIELD_CONTAINERS_NAME = "name"
 ACI_FIELD_CONTAINERS_CONTAINERIMAGE = "containerImage"
 ACI_FIELD_CONTAINERS_ENVS = "environmentVariables"
@@ -162,6 +163,11 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION = "/mnt/configmap"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE = "emptyDir"
 REGO_CONTAINER_START = "containers := "
 REGO_FRAGMENT_START = "fragments := "
+
+# scenario options
+VN2 = "vn2"
+ACI = "aci"
+KATA = "kata"
 
 
 CONFIG_FILE = "./data/internal_config.json"

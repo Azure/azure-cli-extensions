@@ -525,7 +525,7 @@ def extract_get_signals(container_json: Any) -> List:
 
 
 class ContainerImage:
-    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes, too-many-public-methods
 
     @classmethod
     def from_json(
@@ -667,6 +667,9 @@ class ContainerImage:
     def get_mounts(self) -> List:
         return self._mounts
 
+    def set_mounts(self, mounts) -> None:
+        self._mounts = mounts
+
     def get_seccomp_profile_sha256(self) -> str:
         return self._seccomp_profile_sha256
 
@@ -796,10 +799,11 @@ class UserContainerImage(ContainerImage):
             image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
 
         # Start with the customer environment rules
-        env_rules = _INJECTED_CUSTOMER_ENV_RULES
+        env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES
+            image.set_mounts(image.get_mounts() + copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE))
 
         image.set_extra_environment_rules(env_rules)
         return image

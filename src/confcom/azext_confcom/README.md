@@ -277,6 +277,29 @@ Use the following command to generate and print a security policy for an AKS pod
 az confcom acipolicygen --virtual-node-yaml ./pod.yaml --print-policy
 ```
 
+To generate a security policy using a policy config file for Virtual Node, the `scenario` field must be equal to `"vn2"`. This looks like:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8"
+            }
+        }
+    ]
+}
+```
+
+This `scenario` field adds the necessary environment variables and mount values to containers in the config file.
+
+### Workload Identity
+
+To use workload identities with VN2, the associated label [described here](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet#pod-labels) must be present. Having this will add the requisite environment variables and mounts to each container's policy.
+
 > [!NOTE]
 > The `acipolicygen` command is specific to generating policies for ACI-based containers. For generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature, use the `katapolicygen` command.
 

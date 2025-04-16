@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.2.3
+++++++
+* adding fragment support for VN2
+
 1.2.2
 ++++++
 * support for pure OCI v1 schema 2 formatted images
