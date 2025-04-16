@@ -2329,7 +2329,7 @@ def load_arguments(self, _):
                    nargs="+",
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
-    
+
     with self.argument_context('aks extension') as c:
         c.argument('location',
                    validator=get_default_location_from_resource_group)
@@ -2358,23 +2358,26 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config', c.deprecate(target='--config-settings', redirect='--configuration-settings')],
+                   options_list=['--configuration-settings', '--config'],
                    action=AddConfigurationSettings,
                    nargs='+',
-                   help='Configuration Settings as key=value pair.  Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.')
+                   help='Configuration Settings as key=value pair.'
+                   + 'Repeat parameter for each setting.'
+                   + 'Do not use this for secrets, as this value is returned in response.')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--config-protected-settings', '--config-protected', c.deprecate(target='--configuration-protected-settings', redirect='--config-protected-settings')],
+                   options_list=['--config-protected-settings', '--config-protected'],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
-                   help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
+                   help='Configuration Protected Settings as key=value pair.'
+                   + 'Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--config-settings-file', '--config-file', c.deprecate(target='--configuration-settings-file', redirect='--config-settings-file')],
+                   options_list=['--config-settings-file', '--config-file'],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--config-protected-settings-file', '--config-protected-file', c.deprecate(target='--configuration-protected-settings-file', redirect='--config-protected-file')],
+                   options_list=['--config-protected-settings-file', '--config-protected-file'],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')
@@ -2405,10 +2408,14 @@ def load_arguments(self, _):
         c.argument('version',
                    help='Version for the extension type.')
         c.argument('major_version',
-                   help='Filter results by only the major version of an extension type. For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown. The default value is None')
+                   help='Filter results by only the major version of an extension type.'
+                   + 'For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown.'
+                   + 'The default value is None')
         c.argument('show_latest',
                    arg_type=get_three_state_flag(),
-                   help='Filter results by only the latest version. For example, if this flag is used the latest version of the extensionType will be shown.')
+                   help='Filter results by only the latest version.'
+                   + 'For example, if this flag is used the latest version of the extensionType will be shown.')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()

@@ -3311,7 +3311,7 @@ helps['aks extension create'] = """
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
-  parameters: 
+  parameters:
     - name: --extension-type, -t
       type: string
       short-summary: Name of the extension type
@@ -3336,7 +3336,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 helps['aks extension delete'] = """
   type: command
   short-summary: Delete a Kubernetes Core Extension.
-  parameters: 
+  parameters:
     - name: --cluster-name, -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3356,7 +3356,7 @@ properties is supported before updating these properties. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
  source control. Also verify that no secrets are present in the logs of your command or script. \
  For additional information, see http://aka.ms/clisecrets.
-  parameters: 
+  parameters:
     - name: --extension-type, -t
       type: string
       short-summary: Name of the extension type
@@ -3405,7 +3405,7 @@ helps['aks extension list'] = """
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
-  parameters: 
+  parameters:
     - name: --cluster-name, -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3420,7 +3420,7 @@ helps['aks extension show'] = """
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
-  parameters: 
+  parameters:
     - name: --cluster-name, -c
       type: string
       short-summary: Name of the AKS cluster

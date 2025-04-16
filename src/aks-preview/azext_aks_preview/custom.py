@@ -3705,46 +3705,59 @@ def aks_check_network_outbound(
                             vm_name,
                             custom_endpoints)
 
+
 def create_core_extension():
     print("create aks extension")
+
 
 def list_core_extension():
     print("list_cores_extension")
 
+
 def update_core_extension():
     print("update_core_extension")
+
 
 def delete_core_extension():
     print("delete core extension")
 
+
 def show_core_extension():
     print("show core extension")
 
+
 def list_core_extension_types_by_location():
     print("list core extension types by location")
+
 
 # get by location
 def show_core_extension_type_by_location():
     print("show core extension types by location")
 
+
 # list version by location
 def list_core_extension_type_versions_by_location():
     print("list core extension type versions by location")
+
 
 # show version by location
 def show_core_extension_type_version_by_location():
     print("show core extension type versions by location")
 
+
 def list_core_extension_types_by_cluster():
     print("list core extension types by cluster")
+
 
 # get by cluster
 def show_core_extension_type_by_cluster():
     print("show core extension types by cluster")
 
+
 # list version by cluster
 def list_core_extension_type_versions_by_cluster():
     print("list core extension type versions by cluster")
+
 
 # show version by cluster
 def show_core_extension_type_version_by_cluster():

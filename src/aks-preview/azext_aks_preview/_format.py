@@ -374,6 +374,7 @@ def _format_mesh_revision_entry(revision):
         flattened.append(item)
     return flattened
 
+
 def core_extension_list_table_format(results):
     return [__get_table_row(result) for result in results]
 
@@ -408,19 +409,19 @@ def __get_extension_type_table_row(result):
         clusterTypes = ', '.join(result['properties']['supportedClusterTypes'])
 
     name = result['name']
-    defaultScope, allowMultipleInstances, defaultReleaseNamespace = '', '', ''
+    defaultScope, allowMultIns, defReleaseNs = '', '', ''
     if result['properties']['supportedScopes']:
         defaultScope = result['properties']['supportedScopes']['defaultScope']
         if result['properties']['supportedScopes']['clusterScopeSettings'] is not None:
-            allowMultipleInstances = result['properties']['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
-            defaultReleaseNamespace = result['properties']['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
+            allowMultIns = result['properties']['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
+            defReleaseNs = result['properties']['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
 
     retVal = OrderedDict([
         ('name', name),
         ('defaultScope', defaultScope),
         ('clusterTypes', clusterTypes),
-        ('allowMultipleInstances', allowMultipleInstances),
-        ('defaultReleaseNamespace', defaultReleaseNamespace)
+        ('allowMultipleInstances', allowMultIns),
+        ('defaultReleaseNamespace', defReleaseNs)
     ])
 
     return retVal
