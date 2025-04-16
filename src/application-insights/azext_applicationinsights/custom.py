@@ -16,7 +16,6 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.aaz import has_value, register_command
-from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 from .aaz.latest.monitor.app_insights.api_key import List as APIKeyList, Create as _APIKeyCreate, Delete as _APIKeyDelete
 from .aaz.latest.monitor.app_insights.component.billing import Show as _BillingShow, Update as _BillingUpdate
@@ -44,7 +43,7 @@ def execute_query(cmd, application, analytics_query, start_time=None, end_time=N
     }
     try:
         return QueryExecute(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
-    except ErrorResponseException as ex:
+    except Exception as ex:
         if "PathNotFoundError" in ex.message:
             raise ValueError("The Application Insight is not found. Please check the app id again.")
         raise ex
