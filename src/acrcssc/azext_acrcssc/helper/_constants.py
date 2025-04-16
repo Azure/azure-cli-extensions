@@ -34,7 +34,6 @@ BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
 RESOURCE_GROUP = "resource_group"
 SUBSCRIPTION = "subscription"
 TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
-REGISTRY_BASIC_SKU = "basic"
 
 
 # Continuous Patch Constants
@@ -74,7 +73,10 @@ ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS = f"{CONTINUOUS_PATCHING_WORKFLOW_NA
 ERROR_MESSAGE_INVALID_TASK = "Workflow type %s is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Schedule value is invalid. "
 ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT = "Schedule format is invalid. "
+ERROR_MESSAGE_INVALID_JSON_PARSE = "File used for --config cannot be parsed as a JSON file. Use --help to see the schema of the config file."
+ERROR_MESSAGE_INVALID_JSON_SCHEMA = "File used for --config is not a valid config JSON file. Use --help to see the schema of the config file."
 RECOMMENDATION_SCHEDULE = f"Schedule must be in the format of <number><unit> where unit is d for days. Example: {CONTINUOUSPATCH_SCHEDULE_MIN_DAYS}d. Max value for d is {CONTINUOUSPATCH_SCHEDULE_MAX_DAYS}d."
+
 # this dictionary can be expanded to handle more configuration of the tasks regarding continuous patching
 # if this gets out of hand, or more types of tasks are supported, this should be a class on its own
 CONTINUOUSPATCH_TASK_DEFINITION = {

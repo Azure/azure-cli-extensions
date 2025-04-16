@@ -65,7 +65,7 @@ def create_update_continuous_patch_v1(cmd,
 
     if schedule:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
-        logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
+        logger.debug(f"converted schedule {schedule} to cron expression: {schedule_cron_expression}")
 
     if is_create_workflow:
         if cssc_tasks_exists:
@@ -150,7 +150,8 @@ def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
 
 def delete_continuous_patch_v1(cmd, registry, yes):
     logger.debug("Entering delete_continuous_patch_v1")
-    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    cssc_tasks_exists, cssc_task_list = check_continuous_task_exists(cmd, registry)
+    task_list_names = [task.name for task in cssc_task_list]
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
 
     acr_run_client = cf_acr_runs(cmd.cli_ctx)
@@ -161,19 +162,22 @@ def delete_continuous_patch_v1(cmd, registry, yes):
         resource_group_name=resource_group_name,
         status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
         taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
-    if len(running_tasks) > 0:
+    if running_tasks:
         from knack.prompting import prompt_y_n
         if yes or prompt_y_n("There are currently running tasks for this workflow. Do you want to cancel their execution?"):
             _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks)
 
     if cssc_tasks_exists:
-        cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
+        cssc_tasks = ', '.join(task_list_names)
         logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
-        for taskname in CONTINUOUSPATCH_ALL_TASK_NAMES:
-            _delete_task(cmd, registry, taskname)
-            logger.warning(f"Task {taskname} deleted.")
     else:
         logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+        if task_list_names:
+            logger.warning("An attempt will be made to delete any dangling workflow tasks and the configuration file.")
+
+    for taskname in task_list_names:
+        _delete_task(cmd, registry, taskname)
+        logger.warning(f"Task {taskname} deleted.")
 
     if cssc_config_exists:
         logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
@@ -182,20 +186,10 @@ def delete_continuous_patch_v1(cmd, registry, yes):
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
-    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
     if not cssc_tasks_exists:
-        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+        logger.error(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
         return
-
-    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
-    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
-    task_list = []
-    for task in CONTINUOUSPATCH_ALL_TASK_NAMES:
-        try:
-            task_list.append(acr_task_client.get(resource_group_name, registry.name, task))
-            logger.debug(f"Task {task} exists in registry {registry.name}")
-        except ResourceNotFoundError:
-            logger.debug(f"Task {task} does not exist in registry {registry.name}")
 
     filtered_cssc_tasks = _transform_task_list(task_list)
     return filtered_cssc_tasks
@@ -308,9 +302,12 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
 
 def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks):
     for task in running_tasks:
-        logger.warning("Sending request to cancel task %s", task.name)
-        logger.debug("Cancel Task run, name %s run id: %s", task.name, task.run_id)
-        acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
+        try:
+            logger.warning("Sending request to cancel task %s", task.name)
+            logger.debug("Cancel Task run, name %s run id: %s", task.name, task.run_id)
+            acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
+        except Exception as exception:
+            logger.error(f"Failed to cancel task {task.name} from registry {registry_name}: {exception}")
 
 
 def track_scan_progress(cmd, resource_group_name, registry, status):
@@ -479,10 +476,14 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
         logger.debug(f"Task {task_name} has no associated managed identity. Skipping role assignment deletion.")
         return None
 
-    assigned_roles = role_client.role_assignments.list_for_scope(
-        registry.id,
-        filter=f"principalId eq '{identity.principal_id}'"
-    )
+    try:
+        assigned_roles = role_client.role_assignments.list_for_scope(
+            registry.id,
+            filter=f"principalId eq '{identity.principal_id}'"
+        )
+    except ResourceNotFoundError:
+        logger.debug(f"Role assignments for principal ID {identity.principal_id} do not exist in registry {registry.name}")
+        return None
 
     for role in assigned_roles:
         try:

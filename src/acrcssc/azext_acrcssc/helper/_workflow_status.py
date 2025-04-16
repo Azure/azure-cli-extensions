@@ -239,6 +239,9 @@ class WorkflowTaskStatus:
                 taskrun.task_log_result = tasklog
             except ResourceNotFoundError as e:
                 logger.debug("Failed to get logs for taskrun: %s with exception: %s", taskrun.run_id, e)
+            except CloudError as e:
+                logger.debug("An unexpected exception has occurred for taskrun: %s with exception: %s",
+                             taskrun.run_id, e)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = []
@@ -250,7 +253,10 @@ class WorkflowTaskStatus:
                 futures.append(future)
 
             # Wait for all threads to complete
-            concurrent.futures.wait(futures)
+            while not all(future.done() for future in futures):
+                if progress_indicator:
+                    progress_indicator.update_progress()
+                time.sleep(0.5)
 
     @staticmethod
     def from_taskrun(cmd,

@@ -34,7 +34,7 @@ def validate_and_deploy_template(cmd_ctx,
         os.path.join(
             os.path.dirname(
                 os.path.abspath(__file__)),
-            "../templates/"))  # needs to be a constant
+            "../templates/"))
 
     arm_path = os.path.join(deployment_path, "arm")
     template_path = os.path.join(arm_path, template_file_name)
@@ -91,36 +91,32 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
         logger.error(
             (
                 f"Template for resource group {resource_group} has failed validation. The message"
-                " was: {validation_res.error.message}. See logs for additional details."
+                f" was: {validation_res.error.message}. See logs for additional details."
             )
         )
         logger.debug(
             (
                 f"Template for resource group {resource_group} failed validation."
-                " Full error details: {validation_res.error}"
+                f" Full error details: {validation_res.error}"
             )
         )
         raise RuntimeError("Azure template validation failed.")
 
     # Validation succeeded so proceed with deployment
-    logger.debug("Successfully validated resources for {resource_group}")
+    logger.debug(f"Successfully validated resources for {resource_group}")
 
 
 def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     api_client = cf_resources(cmd_ctx)
 
     deployment = Deployment(
-        properties=template,
-        # tags = { "test": CSSC_TAGS },
-        # we need to know if tagging is something that will help us,
-        # tasks are proxy resources, so not sure how that would work
+        properties=template
     )
 
     poller = api_client.deployments.begin_create_or_update(
         resource_group_name=resource_group,
         deployment_name=deployment_name,
         parameters=deployment)
-    logger.debug(poller)
 
     # Wait for the deployment to complete and get the outputs
     deployment: DeploymentExtended = LongRunningOperation(
