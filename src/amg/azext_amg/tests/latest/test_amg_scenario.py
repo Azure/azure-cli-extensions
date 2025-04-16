@@ -544,7 +544,8 @@ class AmgScenarioTest(ScenarioTest):
         self.kwargs.update({
             'name': self.create_random_name(prefix='clitestamginteg', length=23),
             'location': 'westcentralus',
-            'monitor_name': self.create_random_name(prefix='clitestamwinteg', length=23)
+            'monitor_name': self.create_random_name(prefix='clitestamwinteg', length=23),
+            'sub': self.get_subscription_id()
         })
 
         owner = self._get_signed_in_user()
@@ -556,7 +557,7 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
 
-            self.cmd('grafana integrations monitor add -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+            self.cmd('grafana integrations monitor add -g {rg} -n {name} --monitor-sub-id {sub} --monitor-rg-name {rg} --monitor-name {monitor_name}')
 
             monitor_integrations = self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
                 self.check('length([])', 1)
@@ -567,7 +568,7 @@ class AmgScenarioTest(ScenarioTest):
             ])
 
             self._poll_for_amg_succeeded_state('{rg}', '{name}', timeout=500)  # Wait for workspace to complete 'Updating' provisioning state
-            self.cmd('grafana integrations monitor delete -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+            self.cmd('grafana integrations monitor delete -g {rg} -n {name} --monitor-sub-id {sub} --monitor-rg-name {rg} --monitor-name {monitor_name}')
 
             self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
                 self.check('length([])', 0)
