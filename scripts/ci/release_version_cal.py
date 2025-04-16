@@ -220,7 +220,8 @@ def extract_module_metadata_update_info(mod_update_info, mod):
     """
     mod_update_info["meta_updated"] = False
     # metadata is required for this task, (and also az extension *)
-    last_meta_data = find_module_metadata_of_latest_version(mod).get("metadata", {})
+    pre_release = find_module_metadata_of_latest_version(mod)
+    last_meta_data = pre_release.get("metadata", {}) if pre_release else None
     current_meta_data = find_module_metadata_of_current_version(mod)
     if not current_meta_data:
         raise Exception(f"Please check {mod}: azext_metadata.json file")
@@ -249,16 +250,18 @@ def extract_module_version_info(mod_update_info, mod):
     print("next_version_pre_tag: ", next_version_pre_tag)
     print("next_version_segment_tag: ", next_version_segment_tag)
     pkg_name = get_mod_package_name(mod)
+    print(f"get pkg name: {pkg_name} for mod: {mod}")
     pre_release = get_module_metadata_of_max_version(pkg_name)
-    print(f"Get prerelease info for mod: {mod} as below:")
-    print(json.dumps(pre_release))
     clean_mod_of_azdev(mod)
-    print("Start generating base metadata")
-    install_mod_of_last_version(pkg_name, pre_release)
-    base_meta_folder = os.path.join(cli_ext_path, base_meta_path)
-    gen_metadata_from_whl(pkg_name, base_meta_folder)
-    remove_mod_of_last_version(pkg_name)
-    print("End generating base metadata")
+    if pre_release:
+        print(f"Get prerelease info for mod: {mod} as below:")
+        print(json.dumps(pre_release))
+        print("Start generating base metadata")
+        install_mod_of_last_version(pkg_name, pre_release)
+        base_meta_folder = os.path.join(cli_ext_path, base_meta_path)
+        gen_metadata_from_whl(pkg_name, base_meta_folder)
+        remove_mod_of_last_version(pkg_name)
+        print("End generating base metadata")
     base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + pkg_name + "_meta.json")
     diff_meta_file = os.path.join(cli_ext_path, diff_meta_path, "az_" + mod + "_meta.json")
     if not os.path.exists(base_meta_file) and not os.path.exists(diff_meta_file):
