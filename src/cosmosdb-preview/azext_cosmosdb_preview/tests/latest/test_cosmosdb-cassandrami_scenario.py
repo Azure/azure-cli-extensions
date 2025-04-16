@@ -94,15 +94,13 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         })
 
         # Create Cluster with azure_connection_method
-        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -i password -q {azure_connection_method} --debug')
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -i password -q {azure_connection_method}')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
-        print(cluster)
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
         # Create Datacenter
         self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id} -i 10.0.0.8')
         datacenter = self.cmd('az managed-cassandra datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
-        print(datacenter)
         assert datacenter['properties']['provisioningState'] == 'Succeeded'
 
         # Clean up
