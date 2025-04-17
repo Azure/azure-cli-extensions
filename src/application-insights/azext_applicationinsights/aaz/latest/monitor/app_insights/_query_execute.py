@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 class QueryExecute(AAZCommand):
-    """Executes an Analytics query for data. [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query) is an example for using POST with an Analytics query.
+    """Executes an Analytics query for data. Doc https://dev.applicationinsights.io/documentation/Using-the-API/Query is an example for using POST with an Analytics query.
     """
 
     _aaz_info = {

@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "monitor app-insights events",
-)
 class __CMDGroup(AAZCommandGroup):
     """Manage Event
     """

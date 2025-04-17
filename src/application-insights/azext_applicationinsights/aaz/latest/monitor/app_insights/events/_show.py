@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "monitor app-insights events show",
-)
 class Show(AAZCommand):
     """Get the data for a single event
     """
