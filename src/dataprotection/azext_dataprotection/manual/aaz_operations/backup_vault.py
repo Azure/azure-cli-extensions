@@ -9,15 +9,63 @@
 
 from azure.cli.core.aaz import (
     AAZStrArg, AAZBoolArg, AAZListArg, AAZResourceIdArg,
-    AAZResourceIdArgFormat, AAZUndefined, has_value
+    AAZResourceIdArgFormat, AAZUndefined, has_value,
+    AAZJsonInstanceUpdateOperation, AAZIdentityObjectType,
+    AAZStrType, AAZListType
 )
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from knack.log import get_logger
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Update as _Update
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as _Create
+from azext_dataprotection.aaz.latest.dataprotection.backup_vault.identity import Remove as _IdentityRemove
 from ..helpers import critical_operation_map, transform_resource_guard_operation_request
 
 logger = get_logger(__name__)
+
+
+class IdentityRemove(_IdentityRemove):
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.selectors.subresource.required())
+
+        def _update_instance(self, instance):
+            args = self.ctx.args
+            if has_value(args.mi_user_assigned) and "UserAssigned" in instance.type.to_serialized_data():
+                arguments_user_assigned = args.mi_user_assigned.to_serialized_data()
+                user_assigned_identities = instance.user_assigned_identities
+
+                # Remove individual UAMI from identity object
+                for identity in arguments_user_assigned:
+                    user_assigned_identities._data.pop(identity, None)
+
+                # Remove all UAMI from identity object
+                instance.user_assigned_identities = user_assigned_identities
+                if not arguments_user_assigned:
+                    user_assigned_identities._data.clear()
+
+                # Set updated identity users value
+                instance.user_assigned_identities = user_assigned_identities
+
+                # If the users were blank, remove UserAssigned
+                if not user_assigned_identities._data:
+                    instance._data.pop("user_assigned_identities", None)
+                    if "SystemAssigned" in instance.type.to_serialized_data():
+                        instance.type = "SystemAssigned"
+                    else:
+                        instance.type = None
+
+            if has_value(args.mi_system_assigned) and "SystemAssigned" in instance.type.to_serialized_data():
+                instance._data.pop("principal_id", None)
+
+                # Remove System Assigned from Identity Type
+                if "UserAssigned" in instance.type.to_serialized_data():
+                    instance.type = "UserAssigned"
+                else:
+                    instance.type = None
+
+            return instance
 
 
 class Update(_Update):
