@@ -52,3 +52,9 @@ az connectedk8s delete \
     --ids "/subscriptions/subscription_id/resourceGroups/my-rg/providers/Microsoft.Kubernetes/connectedClusters/my-cluster" \
     -y
 ```
+
+#### Troubleshoot and get logs for a broken cluster 
+```
+az connectedk8s troubleshoot \
+    --resource-group my-rg \
+    --name my-cluster \
