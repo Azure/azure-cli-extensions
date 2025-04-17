@@ -1,6 +1,10 @@
 .. :changelog:
 Release History
 ===============
+1.4.0
+*  Add support for private endpoint in VPN based datacenter deployments in managed cassandra.
+
++++++++
 1.3.0
 *  Add support for VPN cluster deployments in managed cassandra.
 
