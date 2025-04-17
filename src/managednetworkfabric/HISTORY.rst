@@ -3,6 +3,11 @@
 Release History
 ===============
 
+8.0.0b2
+++++++
+* Making the Network Monitor resource available through the CLI.
+* Within the the IPv4/IPv6 PrefixLimitPatchProperties structure for External and Internal Networks, renamed the 'softLimit' property to 'threshold'.
+
 8.0.0b1
 ++++++
 * New preview CLI version for latest api 2024-06-15-preview.
