@@ -89,7 +89,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
             'subnet_id': self.create_subnet(resource_group),
-            'd': self.create_random_name(prefix='vpn-dc', length=10),
+            'd': self.create_random_name(prefix='cli-dc', length=10),
             'azure_connection_method': 'VPN',  # valid value(s) are : None or VPN
         })
 
