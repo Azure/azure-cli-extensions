@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/backupvaults", "2024-04-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/backupvaults", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults", "2025-01-01"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -163,7 +163,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -236,6 +236,7 @@ class List(AAZCommand):
             )
             properties.resource_move_details = AAZObjectType(
                 serialized_name="resourceMoveDetails",
+                flags={"read_only": True},
             )
             properties.resource_move_state = AAZStrType(
                 serialized_name="resourceMoveState",
@@ -423,7 +424,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -471,7 +472,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -544,6 +545,7 @@ class List(AAZCommand):
             )
             properties.resource_move_details = AAZObjectType(
                 serialized_name="resourceMoveDetails",
+                flags={"read_only": True},
             )
             properties.resource_move_state = AAZStrType(
                 serialized_name="resourceMoveState",

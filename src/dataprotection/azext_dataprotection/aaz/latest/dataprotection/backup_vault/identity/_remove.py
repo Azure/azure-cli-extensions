@@ -12,28 +12,30 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault update",
+    "dataprotection backup-vault identity remove",
 )
-class Update(AAZCommand):
-    """Updates a BackupVault resource belonging to a resource group. For example, updating tags for a resource.
+class Remove(AAZCommand):
+    """Remove the user or system managed identities.
 
-    :example: Patch BackupVault
-        az dataprotection backup-vault update --azure-monitor-alerts-for-job-failures "Enabled" --tags newKey="newVal" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+    :example: Remove System Identity
+        az az dataprotection backup-vault identity remove -g testRG -v testVault --system-assigned
+
+    :example: Remove User Assigned Identity
+        az az dataprotection backup-vault identity remove -g testRG -v testVault --user-assigned
     """
 
     _aaz_info = {
         "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-01-01", "identity"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
@@ -54,161 +56,34 @@ class Update(AAZCommand):
             options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
-            id_part="name",
         )
 
-        # define Arg Group "CrossRegionRestoreSettings"
+        # define Arg Group "Parameters.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.cross_region_restore_state = AAZStrArg(
-            options=["--crr-state", "--cross-region-restore-state"],
-            arg_group="CrossRegionRestoreSettings",
-            help="Set the CrossRegionRestore state. Once enabled, it cannot be set to disabled.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Parameters.identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Parameters.identity",
+            help="Set the user managed identities.",
+            blank=[],
         )
 
-        # define Arg Group "EncryptionSettings"
-
-        _args_schema = cls._args_schema
-        _args_schema.cmk_user_assigned_identity_id = AAZStrArg(
-            options=["--cmk-uami", "--cmk-user-assigned-identity-id"],
-            arg_group="EncryptionSettings",
-            help="This parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
-            nullable=True,
-        )
-        _args_schema.cmk_identity_type = AAZStrArg(
-            options=["--cmk-identity-type"],
-            arg_group="EncryptionSettings",
-            help="The identity type to be used for CMK encryption - SystemAssigned or UserAssigned Identity.",
-            nullable=True,
-            enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
-        )
-        _args_schema.cmk_encryption_key_uri = AAZStrArg(
-            options=["--cmk-encryption-key-uri"],
-            arg_group="EncryptionSettings",
-            help="The key uri of the Customer Managed Key",
-            nullable=True,
-        )
-        _args_schema.cmk_encryption_state = AAZStrArg(
-            options=["--cmk-encryption-state"],
-            arg_group="EncryptionSettings",
-            help="Enable CMK encryption state for a Backup Vault.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled", "Inconsistent": "Inconsistent"},
-        )
-
-        # define Arg Group "FeatureSettings"
-
-        _args_schema = cls._args_schema
-        _args_schema.cross_subscription_restore_state = AAZStrArg(
-            options=["--csr-state", "--cross-subscription-restore-state"],
-            arg_group="FeatureSettings",
-            help="CrossSubscriptionRestore state",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
-        )
-
-        # define Arg Group "Identity"
-
-        _args_schema = cls._args_schema
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="Identity",
-            help="The identityType which can be \"SystemAssigned\", \"UserAssigned\", \"SystemAssigned,UserAssigned\" or \"None\"",
-            nullable=True,
-        )
-        _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--uami", "--user-assigned-identities"],
-            arg_group="Identity",
-            help="Gets or sets the user assigned identities.",
-            nullable=True,
-        )
-
-        user_assigned_identities = cls._args_schema.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
-
-        # define Arg Group "Monitoring Settings Azure Monitor Alert Settings"
-
-        _args_schema = cls._args_schema
-        _args_schema.azure_monitor_alerts_for_job_failures = AAZStrArg(
-            options=["--job-failure-alerts", "--azure-monitor-alerts-for-job-failures"],
-            arg_group="Monitoring Settings Azure Monitor Alert Settings",
-            help="Property that specifies whether built-in Azure Monitor alerts should be fired for all failed jobs.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.resource_guard_operation_requests = AAZListArg(
-            options=["--resource-guard-operation-requests"],
-            singular_options=["--operation-requests"],
-            arg_group="Properties",
-            help="Critical operation request which is protected by the resourceGuard",
-            nullable=True,
-        )
-
-        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
-        resource_guard_operation_requests.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "SecuritySettings"
-
-        _args_schema = cls._args_schema
-        _args_schema.immutability_state = AAZStrArg(
-            options=["--immutability-state"],
-            arg_group="SecuritySettings",
-            help={"short-summary": "Immutability state", "long-summary": "Use this parameter to configure immutability settings for the vault. Allowed values are Disabled, Unlocked and Locked. By default, immutability is \"Disabled\" for the vault. \"Unlocked\" means that immutability is enabled for the vault and can be reversed. \"Locked\" means that immutability is enabled for the vault and cannot be reversed."},
-            nullable=True,
-            enum={"Disabled": "Disabled", "Locked": "Locked", "Unlocked": "Unlocked"},
-        )
-
-        # define Arg Group "SoftDeleteSettings"
-
-        _args_schema = cls._args_schema
-        _args_schema.retention_duration_in_days = AAZFloatArg(
-            options=["--soft-delete-retention", "--retention-duration-in-days"],
-            arg_group="SoftDeleteSettings",
-            help="Soft delete retention duration",
-            nullable=True,
-        )
-        _args_schema.soft_delete_state = AAZStrArg(
-            options=["--soft-delete-state"],
-            arg_group="SoftDeleteSettings",
-            help="State of soft delete",
-            nullable=True,
-            enum={"AlwaysOn": "AlwaysOn", "Off": "Off", "On": "On"},
-        )
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.BackupVaultsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
+        self.pre_instance_update(self.ctx.selectors.subresource.required())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.post_instance_update(self.ctx.selectors.subresource.required())
         yield self.BackupVaultsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -229,8 +104,19 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
 
     class BackupVaultsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -311,7 +197,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_backup_vault_resource_read(cls._schema_on_200)
+            _RemoveHelper._build_schema_backup_vault_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -422,113 +308,33 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_backup_vault_resource_read(cls._schema_on_200_201)
+            _RemoveHelper._build_schema_backup_vault_resource_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self._update_instance(self.ctx.selectors.subresource.required())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 value=instance,
-                typ=AAZObjectType
+                typ=AAZIdentityObjectType
             )
-            _builder.set_prop("identity", AAZIdentityObjectType)
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "remove"}})
+            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "remove"}})
 
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
-
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("featureSettings", AAZObjectType)
-                properties.set_prop("monitoringSettings", AAZObjectType)
-                properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
-                properties.set_prop("securitySettings", AAZObjectType)
-
-            feature_settings = _builder.get(".properties.featureSettings")
-            if feature_settings is not None:
-                feature_settings.set_prop("crossRegionRestoreSettings", AAZObjectType)
-                feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
-
-            cross_region_restore_settings = _builder.get(".properties.featureSettings.crossRegionRestoreSettings")
-            if cross_region_restore_settings is not None:
-                cross_region_restore_settings.set_prop("state", AAZStrType, ".cross_region_restore_state")
-
-            cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
-            if cross_subscription_restore_settings is not None:
-                cross_subscription_restore_settings.set_prop("state", AAZStrType, ".cross_subscription_restore_state")
-
-            monitoring_settings = _builder.get(".properties.monitoringSettings")
-            if monitoring_settings is not None:
-                monitoring_settings.set_prop("azureMonitorAlertSettings", AAZObjectType)
-
-            azure_monitor_alert_settings = _builder.get(".properties.monitoringSettings.azureMonitorAlertSettings")
-            if azure_monitor_alert_settings is not None:
-                azure_monitor_alert_settings.set_prop("alertsForAllJobFailures", AAZStrType, ".azure_monitor_alerts_for_job_failures")
-
-            resource_guard_operation_requests = _builder.get(".properties.resourceGuardOperationRequests")
-            if resource_guard_operation_requests is not None:
-                resource_guard_operation_requests.set_elements(AAZStrType, ".")
-
-            security_settings = _builder.get(".properties.securitySettings")
-            if security_settings is not None:
-                security_settings.set_prop("encryptionSettings", AAZObjectType)
-                security_settings.set_prop("immutabilitySettings", AAZObjectType)
-                security_settings.set_prop("softDeleteSettings", AAZObjectType)
-
-            encryption_settings = _builder.get(".properties.securitySettings.encryptionSettings")
-            if encryption_settings is not None:
-                encryption_settings.set_prop("kekIdentity", AAZObjectType)
-                encryption_settings.set_prop("keyVaultProperties", AAZObjectType)
-                encryption_settings.set_prop("state", AAZStrType, ".cmk_encryption_state")
-
-            kek_identity = _builder.get(".properties.securitySettings.encryptionSettings.kekIdentity")
-            if kek_identity is not None:
-                kek_identity.set_prop("identityId", AAZStrType, ".cmk_user_assigned_identity_id")
-                kek_identity.set_prop("identityType", AAZStrType, ".cmk_identity_type")
-
-            key_vault_properties = _builder.get(".properties.securitySettings.encryptionSettings.keyVaultProperties")
-            if key_vault_properties is not None:
-                key_vault_properties.set_prop("keyUri", AAZStrType, ".cmk_encryption_key_uri")
-
-            immutability_settings = _builder.get(".properties.securitySettings.immutabilitySettings")
-            if immutability_settings is not None:
-                immutability_settings.set_prop("state", AAZStrType, ".immutability_state")
-
-            soft_delete_settings = _builder.get(".properties.securitySettings.softDeleteSettings")
-            if soft_delete_settings is not None:
-                soft_delete_settings.set_prop("retentionDurationInDays", AAZFloatType, ".retention_duration_in_days")
-                soft_delete_settings.set_prop("state", AAZStrType, ".soft_delete_state")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            user_assigned = _builder.get(".userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             return _instance_value
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _RemoveHelper:
+    """Helper class for Remove"""
 
     _schema_backup_vault_resource_read = None
 
@@ -781,4 +587,4 @@ class _UpdateHelper:
         _schema.type = cls._schema_backup_vault_resource_read.type
 
 
-__all__ = ["Update"]
+__all__ = ["Remove"]
