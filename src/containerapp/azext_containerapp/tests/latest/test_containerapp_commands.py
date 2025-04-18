@@ -684,6 +684,24 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 40),
         ])
 
+        self.cmd('containerapp env ingress restore-defaults --environment {} -g {}'.format(env_name, resource_group), checks=[
+        JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+        JMESPathCheck('properties.ingressConfiguration.minReplicas', 2), 
+        JMESPathCheck('properties.ingressConfiguration.maxReplicas', 10),
+        JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 8), 
+        JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 4),  
+        JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 100), 
+    ])
+    
+        self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
+        JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+        JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
+        JMESPathCheck('properties.ingressConfiguration.maxReplicas', 10),
+        JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 480),
+        JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 240),
+        JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 100),
+    ])
+
         # Clean up
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
