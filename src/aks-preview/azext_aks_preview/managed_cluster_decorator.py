@@ -763,6 +763,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return not disable_acns_security
         return None
 
+    def get_retina_flow_logs(self) -> Union[bool, None]:
+        """Get the enablement of retina flow logs
+
+        :return: bool or None"""
+        enable_retina_flow_logs = self.raw_param.get("enable_retina_flow_logs")
+        disable_retina_flow_logs = self.raw_param.get("disable_retina_flow_logs")
+        if enable_retina_flow_logs is None and disable_retina_flow_logs is None:
+            return None
+        if enable_retina_flow_logs and disable_retina_flow_logs:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-retina-flow-logs and "
+                "--disable-retina-flow-logs at the same time."
+            )
+        enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
+        disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
+        retina_flow_logs = enable_retina_flow_logs or not disable_retina_flow_logs
+        return retina_flow_logs
+
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
 
