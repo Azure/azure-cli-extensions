@@ -8,4 +8,13 @@
 # pylint: skip-file
 # flake8: noqa
 
-from ._clients import *
+from azure.cli.core.aaz import *
+
+
+class __CMDGroup(AAZCommandGroup):
+    """Manage Event
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
