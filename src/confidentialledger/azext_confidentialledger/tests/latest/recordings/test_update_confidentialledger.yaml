@@ -1,0 +1,68 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"aadBasedSecurityPrincipals": [{"principalId":
+      "78945818-3e7d-4708-bd84-3a480f1fbeb5", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "ledgerRoleName": "Administrator"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '214'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --aad-based-security-principals
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pratik-rg/providers/Microsoft.ConfidentialLedger/ledgers/cliTest1?api-version=2022-05-13
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pratik-rg/providers/Microsoft.ConfidentialLedger/ledgers/cliTest1","name":"cliTest1","type":"microsoft.confidentialledger/ledgers","location":"eastus","tags":{"scope":"acl"},"systemData":{"createdBy":"pratikrathod@microsoft.com","createdByType":"User","createdAt":"2025-04-09T18:51:47.6668802Z","lastModifiedBy":"pratikrathod@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-09T22:02:37.9114627Z"},"properties":{"ledgerName":"cliTest1","ledgerType":"Unknown","aadBasedSecurityPrincipals":[{"principalId":"78945818-3e7d-4708-bd84-3a480f1fbeb5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-764adefa67c6","provisioningState":"Succeeded","ledgerUri":"https://clitest1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/clitest1"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '980'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 09 Apr 2025 22:02:37 GMT
+      etag:
+      - '"2002b4ee-0000-0100-0000-67f6ee7e0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - dd6c2bde-a9e1-435a-a2a2-5868420b77e5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-tag:
+      - 1.0.03011.237-8eb772224b8dc663d3bef6b87f3f877faa4bbbc7
+      x-ms-machinename:
+      - controlplane-78fbf84486-xxpjm
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=78945818-3e7d-4708-bd84-3a480f1fbeb5/westus/d962e630-547a-4148-bc57-a155704105b7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '19999'
+      x-msedge-ref:
+      - 'Ref A: BD5A6779DF294BD989A371AF79E955DB Ref B: SJC211051201037 Ref C: 2025-04-09T22:02:37Z'
+    status:
+      code: 200
+      message: OK
+version: 1
