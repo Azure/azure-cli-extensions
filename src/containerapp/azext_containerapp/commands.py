@@ -295,3 +295,4 @@ def load_command_table(self, args):
     with self.command_group('containerapp env ingress', is_preview=True) as g:
         g.custom_show_command('show', 'show_environment_ingress')
         g.custom_command('update', 'update_environment_ingress')
+        g.custom_command('restore-defaults', 'reset_environment_ingress_to_defaults')

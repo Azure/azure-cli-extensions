@@ -2375,3 +2375,12 @@ helps['containerapp env ingress update'] = """
       text: |
           az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
+
+helps['containerapp env ingress restore-defaults'] = """
+    type: command
+    short-summary: Reset the ingress settings to default values.
+    examples:
+    - name: Reset the ingress settings for the environment to its default values
+      text: |
+          az containerapp env ingress restore-defaults -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+"""

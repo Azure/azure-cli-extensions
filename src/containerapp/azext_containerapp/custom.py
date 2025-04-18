@@ -3772,3 +3772,37 @@ def update_environment_ingress(cmd, environment, resource_group_name, workload_p
     
     except Exception as e:
         handle_raw_exception(e)
+
+def reset_environment_ingress_to_defaults(cmd, environment, resource_group_name, workload_profile_name, no_wait=False):
+    """Reset environment ingress configuration to default values.
+    
+    :param cmd: Command context
+    :param environment: Name of the Container App environment
+    :param resource_group_name: Name of resource group
+    :param no_wait: Do not wait for the long-running operation to finish
+    :return: The updated ingress configuration
+    """
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    
+    # Default values for environment ingress
+    default_min_replicas = 2
+    default_max_replicas = 10
+    default_termination_grace_period = 8
+    default_request_idle_timeout = 4
+    default_header_count_limit = 100
+    
+    logger.warning("Resetting environment ingress configuration to default values")
+    
+    # Call existing update method with default values
+    return update_environment_ingress(
+        cmd=cmd,
+        environment=environment,
+        resource_group_name=resource_group_name,
+        workload_profile_name=workload_profile_name,
+        min_replicas=default_min_replicas,
+        max_replicas=default_max_replicas,
+        termination_grace_period=default_termination_grace_period,
+        request_idle_timeout=default_request_idle_timeout,
+        header_count_limit=default_header_count_limit,
+        no_wait=no_wait
+    )
