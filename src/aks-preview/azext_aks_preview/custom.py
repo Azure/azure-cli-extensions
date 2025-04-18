@@ -3704,3 +3704,169 @@ def aks_check_network_outbound(
                             instance_id,
                             vm_name,
                             custom_endpoints)
+
+
+# pylint: disable=unused-argument
+def aks_loadbalancer_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    primary_agent_pool_name,
+    allow_service_placement=None,
+    service_label_selector=None,
+    service_namespace_selector=None,
+    node_selector=None,
+    aks_custom_headers=None,
+):
+    """Add a load balancer configuration to a managed cluster.
+
+    :param resource_group_name: Name of resource group.
+    :type resource_group_name: str
+    :param cluster_name: Name of the managed cluster.
+    :type cluster_name: str
+    :param name: Name of the public load balancer.
+    :type name: str
+    :param primary_agent_pool_name: Name of the primary agent pool for this load balancer.
+    :type primary_agent_pool_name: str
+    :param allow_service_placement: Whether to automatically place services on the load balancer. Default is true.
+    :type allow_service_placement: bool
+    :param service_label_selector: Only services that match this selector can be placed on this load balancer.
+    :type service_label_selector: str
+    :param service_namespace_selector: Services created in namespaces that match the selector can be
+        placed on this load balancer.
+    :type service_namespace_selector: str
+    :param node_selector: Nodes that match this selector will be possible members of this load balancer.
+    :type node_selector: str
+    """
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    from azext_aks_preview.loadbalancerconfiguration import (
+        aks_loadbalancer_add_internal,
+    )
+
+    return aks_loadbalancer_add_internal(cmd, client, raw_parameters)
+
+
+def aks_loadbalancer_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    primary_agent_pool_name=None,
+    allow_service_placement=None,
+    service_label_selector=None,
+    service_namespace_selector=None,
+    node_selector=None,
+    aks_custom_headers=None,
+):
+    """Update a load balancer configuration in a managed cluster.
+
+    :param resource_group_name: Name of resource group.
+    :type resource_group_name: str
+    :param cluster_name: Name of the managed cluster.
+    :type cluster_name: str
+    :param loadbalancer_name: Name of the load balancer configuration.
+    :type loadbalancer_name: str
+    :param name: Name of the public load balancer.
+    :type name: str
+    :param primary_agent_pool_name: Name of the primary agent pool for this load balancer.
+    :type primary_agent_pool_name: str
+    :param allow_service_placement: Whether to automatically place services on the load balancer. Default is true.
+    :type allow_service_placement: bool
+    :param service_label_selector: Only services that match this selector can be placed on this load balancer.
+    :type service_label_selector: str
+    :param service_namespace_selector: Services created in namespaces that match the selector can be
+        placed on this load balancer.
+    :type service_namespace_selector: str
+    :param node_selector: Nodes that match this selector will be possible members of this load balancer.
+    :type node_selector: str
+    """
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    from azext_aks_preview.loadbalancerconfiguration import (
+        aks_loadbalancer_update_internal,
+    )
+
+    return aks_loadbalancer_update_internal(cmd, client, raw_parameters)
+
+
+def aks_loadbalancer_delete(cmd, client, resource_group_name, cluster_name, name):
+    """Delete a load balancer configuration in a managed cluster.
+
+    :param resource_group_name: Name of resource group.
+    :type resource_group_name: str
+    :param cluster_name: Name of the managed cluster.
+    :type cluster_name: str
+    :param name: Name of the load balancer configuration.
+    :type name: str
+    """
+    return client.begin_delete(resource_group_name, cluster_name, name)
+
+
+def aks_loadbalancer_list(cmd, client, resource_group_name, cluster_name):
+    """List load balancer configurations in a managed cluster.
+
+    :param resource_group_name: Name of resource group.
+    :type resource_group_name: str
+    :param cluster_name: Name of the managed cluster.
+    :type cluster_name: str
+    """
+    return client.list_by_managed_cluster(resource_group_name, cluster_name)
+
+
+def aks_loadbalancer_show(cmd, client, resource_group_name, cluster_name, name):
+    """Show the details for a load balancer configuration.
+
+    :param resource_group_name: Name of resource group.
+    :type resource_group_name: str
+    :param cluster_name: Name of the managed cluster.
+    :type cluster_name: str
+    :param name: Name of the load balancer configuration.
+    :type name: str
+    """
+    return client.get(resource_group_name, cluster_name, name)
+
+
+# pylint: disable=unused-argument
+def aks_loadbalancer_rebalance_nodes(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    load_balancer_names=None,
+):
+    """Rebalance nodes across specific load balancers.
+
+    :param cmd: Command context
+    :param client: AKS client
+    :param resource_group_name: Name of resource group.
+    :type resource_group_name: str
+    :param cluster_name: Name of the managed cluster.
+    :type cluster_name: str
+    :param load_balancer_names: Names of load balancers to rebalance.
+        If not specified, all load balancers will be rebalanced.
+    :type load_balancer_names: list[str]
+    :param no_wait: Do not wait for the long-running operation to finish.
+    :type no_wait: bool
+    :return: The result of the rebalance operation
+    """
+    from azext_aks_preview.loadbalancerconfiguration import (
+        aks_loadbalancer_rebalance_internal,
+    )
+    from azext_aks_preview._client_factory import cf_managed_clusters
+
+    # Get the load balancers client
+    managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
+
+    # Prepare parameters for the internal function
+    parameters = {
+        "resource_group_name": resource_group_name,
+        "cluster_name": cluster_name,
+        "load_balancer_names": load_balancer_names,
+    }
+
+    return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
