@@ -462,53 +462,53 @@ def load_command_table(self, _):
 
     with self.command_group("aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters) \
             as g:
-        g.custom_command('create', 'create_core_extension', supports_no_wait=True)
-        g.custom_command('delete', 'delete_core_extension', supports_no_wait=True)
-        g.custom_command('list', 'list_core_extension', table_transformer=core_extension_list_table_format)
-        g.custom_show_command('show', 'show_core_extension', table_transformer=core_extension_show_table_format)
-        g.custom_command('update', 'update_core_extension', supports_no_wait=True)
+        g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
+        g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
+        g.custom_command('list', 'list_k8s_extension', table_transformer=core_extension_list_table_format)
+        g.custom_show_command('show', 'show_k8s_extension', table_transformer=core_extension_show_table_format)
+        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
 
     with self.command_group(
         "aks extension type", managed_clusters_sdk, client_factory=cf_managed_clusters, is_preview=True
     ) as g:
         g.custom_command(
             'list-by-location',
-            'list_core_extension_types_by_location',
+            'list_k8s_extension_types_by_location',
             table_transformer=core_extension_types_list_table_format
         )
         g.custom_command(
             'show-by-location',
-            'show_core_extension_type_by_location',
+            'show_k8s_extension_type_by_location',
             table_transformer=core_extension_type_show_table_format
         )
         g.custom_command(
             'list-versions-by-location',
-            'list_core_extension_type_versions_by_location',
+            'list_k8s_extension_type_versions_by_location',
             table_transformer=core_extension_type_versions_list_table_format
         )
         g.custom_command(
             'show-version-by-location',
-            'show_core_extension_type_version_by_location',
+            'show_k8s_extension_type_version_by_location',
             table_transformer=core_extension_type_version_show_table_format
         )
 
         g.custom_command(
             'list-by-cluster',
-            'list_core_extension_types_by_cluster',
+            'list_k8s_extension_types_by_cluster',
             table_transformer=core_extension_types_list_table_format
         )
         g.custom_command(
             'show-by-cluster',
-            'show_core_extension_type_by_cluster',
+            'show_k8s_extension_type_by_cluster',
             table_transformer=core_extension_type_show_table_format
         )
         g.custom_command(
             'list-versions-by-cluster',
-            'list_core_extension_type_versions_by_cluster',
+            'list_k8s_extension_type_versions_by_cluster',
             table_transformer=core_extension_type_versions_list_table_format
         )
         g.custom_command(
             'show-version-by-cluster',
-            'show_core_extension_type_version_by_cluster',
+            'show_k8s_extension_type_version_by_cluster',
             table_transformer=core_extension_type_version_show_table_format
         )

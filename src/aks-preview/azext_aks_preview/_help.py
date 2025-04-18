@@ -3302,12 +3302,12 @@ helps['aks check-network outbound'] = """
 """
 helps['aks extension'] = """
   type: group
-  short-summary: Commands to manage core extensions in Kubernetes cluster
+  short-summary: Commands to manage extensions in Kubernetes cluster
 """
 helps['aks extension create'] = """
   type: command
-  short-summary: Creates the Kubernetes core extension instance on the managed cluster. Please refer to the example at the end to see how to create a core extension
-  long-summary: Create a Kubernetes Core Extension. \
+  short-summary: Creates the Kubernetes extension instance on the managed cluster. Please refer to the example at the end to see how to create a core extension
+  long-summary: Create a Kubernetes Extension. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
@@ -3328,7 +3328,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       type: string
       short-summary: specify the release train for the extension type
   examples:
-    - name: Install core extension on AKS cluster
+    - name: Install K8s extension on AKS cluster
       text: az aks extension create --resource-group my-resource-group \
 --cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
 --scope cluster --release-train stable
