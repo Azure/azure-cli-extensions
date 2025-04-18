@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "confluent organization environment schema-registry-cluster show",
 )
 class Show(AAZCommand):
-    """Get schema registry cluster by Id
+    """Get schema registry cluster by ID.
     """
 
     _aaz_info = {
-        "version": "2024-02-13",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}/schemaregistryclusters/{}", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments/{}/schemaregistryclusters/{}", "2024-07-01"],
         ]
     }
 
@@ -49,7 +49,7 @@ class Show(AAZCommand):
         )
         _args_schema.environment_id = AAZStrArg(
             options=["--environment-id"],
-            help="Confluent environment id",
+            help="Confluent environment ID.",
             required=True,
             id_part="child_name_1",
         )
@@ -60,8 +60,7 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
+            help="Resource group.",
             required=True,
         )
         return cls._args_schema
@@ -139,7 +138,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-13",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
