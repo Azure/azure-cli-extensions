@@ -638,6 +638,73 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('corsPolicy', None),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_ingress_commands(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        ingress_config = self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('properties', JMESPathCheckExists()),
+        ]).get_output_in_json()
+        
+        self.cmd('containerapp env ingress update --environment {} -g {} --workload-profile-name Consumption --min-replicas 2 --max-replicas 5'.format(
+            env_name, resource_group), checks=[
+            JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+            JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
+            JMESPathCheck('properties.ingressConfiguration.maxReplicas', 5),
+        ])
+        
+        self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+            JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
+            JMESPathCheck('properties.ingressConfiguration.maxReplicas', 5),
+        ])
+        
+        self.cmd('containerapp env ingress update --environment {} -g {} --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40'.format(
+            env_name, resource_group), checks=[
+            JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+            JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
+            JMESPathCheck('properties.ingressConfiguration.maxReplicas', 5),
+            JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 45),
+            JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 180),
+            JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 40),
+        ])
+
+        self.cmd('containerapp env ingress restore-defaults --environment {} -g {}'.format(env_name, resource_group), checks=[
+        JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+        JMESPathCheck('properties.ingressConfiguration.minReplicas', 2), 
+        JMESPathCheck('properties.ingressConfiguration.maxReplicas', 10),
+        JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 8), 
+        JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 4),  
+        JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 100), 
+    ])
+    
+        self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
+        JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
+        JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
+        JMESPathCheck('properties.ingressConfiguration.maxReplicas', 10),
+        JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 480),
+        JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 240),
+        JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 100),
+    ])
+
+        # Clean up
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+
 
 class ContainerappCustomDomainTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):

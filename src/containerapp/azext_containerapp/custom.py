@@ -3710,3 +3710,100 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         return r['properties']['configuration']['ingress']['traffic']
     except Exception as e:
         handle_raw_exception(e)
+
+
+def show_environment_ingress(cmd, environment, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, environment)
+        if not env:
+            raise ResourceNotFoundError(f"The containerapp environment '{environment}' does not exist")
+        
+        ingress_config = safe_get(env, "properties", "ingressConfiguration")
+        if not ingress_config:
+            return {"message": "No ingress configuration found for this environment"}
+        
+        return ingress_config
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_environment_ingress(cmd, environment, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period, request_idle_timeout, header_count_limit, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, environment)
+        if not env:
+            raise ResourceNotFoundError(f"The containerapp environment '{environment}' does not exist")
+        
+        env_patch = {}
+        ingress_config = {}
+        
+        # Only set values that were specified
+        if workload_profile_name is not None:
+            ingress_config["workloadProfileName"] = workload_profile_name
+        if min_replicas is not None:
+            ingress_config["minReplicas"] = min_replicas
+        if max_replicas is not None:
+            ingress_config["maxReplicas"] = max_replicas
+        if termination_grace_period is not None:
+            ingress_config["terminationGracePeriod"] = termination_grace_period
+        if request_idle_timeout is not None:
+            ingress_config["requestIdleTimeout"] = request_idle_timeout
+        if header_count_limit is not None:
+            ingress_config["headerCountLimit"] = header_count_limit
+            
+        # Only add ingressConfiguration to the patch if any values were specified
+        if ingress_config:
+            safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
+        else:
+            return {"message": "No changes specified for ingress configuration"}
+                
+        # Update the environment with the patched ingress configuration
+        result = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=environment,
+            managed_environment_envelope=env_patch,
+            no_wait=no_wait
+        )
+        
+        return safe_get(result, "properties", "ingressConfiguration")
+    
+    except Exception as e:
+        handle_raw_exception(e)
+
+def reset_environment_ingress_to_defaults(cmd, environment, resource_group_name, workload_profile_name, no_wait=False):
+    """Reset environment ingress configuration to default values.
+    
+    :param cmd: Command context
+    :param environment: Name of the Container App environment
+    :param resource_group_name: Name of resource group
+    :param no_wait: Do not wait for the long-running operation to finish
+    :return: The updated ingress configuration
+    """
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    
+    # Default values for environment ingress
+    default_min_replicas = 2
+    default_max_replicas = 10
+    default_termination_grace_period = 8
+    default_request_idle_timeout = 4
+    default_header_count_limit = 100
+    
+    logger.warning("Resetting environment ingress configuration to default values")
+    
+    # Call existing update method with default values
+    return update_environment_ingress(
+        cmd=cmd,
+        environment=environment,
+        resource_group_name=resource_group_name,
+        workload_profile_name=workload_profile_name,
+        min_replicas=default_min_replicas,
+        max_replicas=default_max_replicas,
+        termination_grace_period=default_termination_grace_period,
+        request_idle_timeout=default_request_idle_timeout,
+        header_count_limit=default_header_count_limit,
+        no_wait=no_wait
+    )
