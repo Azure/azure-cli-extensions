@@ -3345,7 +3345,7 @@ helps['aks extension delete'] = """
       short-summary: Name of the extension instance
   examples:
     - name: Delete an existing Kubernetes core extension on AKS cluster
-      text: az aks extension delete --resource-group <group> --cluster-name <name> --name <extension name>
+      text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
 """
 helps['aks extension update'] = """
   type: command
@@ -3499,7 +3499,7 @@ helps['az aks extension type show-version-by-location'] = """
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
     - name: Show properties for a Core Extension Type version for an existing cluster
-      text: az aks extension type extension-types show-version-by-location --location eastus --extension-type <type> \
+      text: az aks extension type show-version-by-location --location eastus --extension-type <type> \
       --version 1.0.0
 """
 helps['az aks extension type list-by-cluster'] = """
