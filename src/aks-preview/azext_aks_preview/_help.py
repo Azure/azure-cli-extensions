@@ -3449,7 +3449,7 @@ helps['az aks extension type show-by-cluster'] = """
   examples:
     - name: Show properties for a Core Extension Type for an existing cluster
       text: az aks extension type show-by-cluster --resource-group my-resource-group \
-      --cluster-name mycluster --extension-type <type>
+--cluster-name mycluster --extension-type <type>
 """
 helps['az aks extension type show-by-location'] = """
   type: command
@@ -3464,7 +3464,7 @@ helps['az aks extension type show-by-location'] = """
   examples:
     - name: Show properties for a Core Extension Type in a region
       text: az aks extension type show-by-location \
-      --location eastus --extension-type <type>
+--location eastus --extension-type <type>
 """
 helps['az aks extension type show-version-by-cluster'] = """
   type: command
@@ -3482,7 +3482,7 @@ helps['az aks extension type show-version-by-cluster'] = """
   examples:
     - name: Show properties for a Core Extension Type version for an existing cluster
       text: az aks extension type show-version-by-cluster --resource-group my-resource-group \
-      --cluster-name mycluster --extension-type <type> --version 1.0.0
+--cluster-name mycluster --extension-type <type> --version 1.0.0
 """
 helps['az aks extension type show-version-by-location'] = """
   type: command
@@ -3500,7 +3500,7 @@ helps['az aks extension type show-version-by-location'] = """
   examples:
     - name: Show properties for a Core Extension Type version for an existing cluster
       text: az aks extension type show-version-by-location --location eastus --extension-type <type> \
-      --version 1.0.0
+--version 1.0.0
 """
 helps['az aks extension type list-by-cluster'] = """
   type: command
@@ -3512,7 +3512,7 @@ helps['az aks extension type list-by-cluster'] = """
   examples:
     - name: List available Core Extension Types for an existing cluster
       text: az aks extension type list-by-cluster --resource-group my-resource-group \
-      --cluster-name mycluster
+--cluster-name mycluster
 """
 helps['az aks extension type list-by-location'] = """
   type: command
