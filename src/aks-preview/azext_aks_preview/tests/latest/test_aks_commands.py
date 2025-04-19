@@ -15649,3 +15649,55 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="centraluseuap",
+    )
+    def test_k8s_extension(self):
+        extension_type = 'microsoft.flux'
+        self.kwargs.update({
+            'name': 'flux',
+            'rg': 'azurecli-tests',
+            'cluster_name': 'arc-cluster',
+            'extension_type': extension_type,
+            'release_train': 'stable',
+            'version': '1.15.1',
+        })
+
+        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+                 '--extension-type {extension_type} --release-train {release_train} --version {version} '
+                 '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
+
+        # Update requires agent running in k8s cluster that is connected to Azure - so no update tests here
+        # self.cmd('aks extension update -g {rg} -n {name} --tags foo=boo', checks=[
+        #     self.check('tags.foo', 'boo')
+        # ])
+
+        installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
+        found_extension = False
+        for item in installed_exts:
+            if item['extensionType'] == extension_type:
+                found_extension = True
+                break
+        self.assertTrue(found_extension)
+
+        self.cmd('aks extension show -c {cluster_name} -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('releaseTrain', '{release_train}'),
+            self.check('version', '{version}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('extensionType', '{extension_type}')
+        ])
+
+        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} --force -y')
+
+        installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
+        found_extension = False
+        for item in installed_exts:
+            if item['extensionType'] == extension_type:
+                found_extension = True
+                break
+        self.assertFalse(found_extension)
