@@ -17,7 +17,10 @@ class CreatePolicy(_Create):
         """Define custom arguments for the command."""
         # Call the parent class method to initialize the argument schema
         cls.args_schema = super()._build_arguments_schema(*args, **kwargs)
-        cls._args_schema.retention_policies._registered = False
+
+        # Remove the registration of the retention policies schema so it doesn't show up in the CLI help
+        if hasattr(cls._args_schema.retention_policies, '_registered'):
+            setattr(cls._args_schema.retention_policies, '_registered', False)
         _args_schema = cls._args_schema
 
         # Define retention policy arguments with their CLI options and descriptions
