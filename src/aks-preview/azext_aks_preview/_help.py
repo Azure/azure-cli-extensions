@@ -3369,22 +3369,22 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --release-train
       type: string
       short-summary: specify the release train for the core extension type
-    - name: --auto-upgrade, --auto-upgrade-minor-version
+    - name: --auto-upgrade --auto-upgrade-minor-version
       type: bool
       short-summary: Automatically upgrade minor version of the core extension instanc
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-    - name: --configuration-settings, --config
+    - name: --configuration-settings --config
       type: string
       short-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.
-    - name: --config-protected-settings, --config-protected
+    - name: --config-protected-settings --config-protected
       type: string
       short-summary: Configuration Protected Settings as key=value pair. Repeat parameter for each setting. Only the key is returned in response, the value is not.
-    - name: --config-settings-file, --config-file
+    - name: --config-settings-file --config-file
       type: string
       short-summary: JSON file path for configuration-settings
-    - name: ----config-protected-settings-file, --config-protected-file
+    - name: ----config-protected-settings-file --config-protected-file
       type: string
       short-summary: JSON file path for configuration-protected-settings
 

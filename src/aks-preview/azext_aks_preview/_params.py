@@ -2337,6 +2337,7 @@ def load_arguments(self, _):
                    options_list=['--name', '-n'],
                    help='Name of the extension instance')
         c.argument('extension_type',
+                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
@@ -2401,6 +2402,7 @@ def load_arguments(self, _):
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
+                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
                    validator=get_default_location_from_resource_group,
@@ -2411,6 +2413,9 @@ def load_arguments(self, _):
                    help='Filter results by only the major version of an extension type.'
                    + 'For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown.'
                    + 'The default value is None')
+        c.argument('release_train',
+                   arg_group="Version",
+                   help='Specify the release train for the extension type.')
         c.argument('show_latest',
                    arg_type=get_three_state_flag(),
                    help='Filter results by only the latest version.'
