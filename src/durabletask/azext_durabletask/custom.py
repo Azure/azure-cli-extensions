@@ -31,12 +31,11 @@ class CreatePolicy(_Create):
         # Add each retention argument to the schema
         for arg_name, (option, short_option, help_text) in retention_args.items():
             setattr(_args_schema, arg_name, AAZStrArg(
-                    arg_group="Properties",  # Group these arguments under "Properties"
-                    options=[option, short_option],  # CLI options for the argument
-                    help=help_text,  # Description of the argument
-                    required=False,  # These arguments are optional
-                    ),
-                )
+                arg_group="Properties",  # Group these arguments under "Properties"
+                options=[option, short_option],  # CLI options for the argument
+                help=help_text,  # Description of the argument
+                required=False,  # These arguments are optional
+            ))
 
         return _args_schema
 
@@ -72,7 +71,7 @@ def _build_retention_policies(args_dict):
         """Convert a value to an integer, handling serialization."""
         try:
             return int(value.to_serialized_data())  # Convert serialized data to an integer
-        except Exception:
+        except (ValueError, TypeError):
             return None  # Return None if conversion fails
 
     # Add default retention policy if specified
