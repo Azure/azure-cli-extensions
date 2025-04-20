@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Retention Policy
+
+        :example: Show details of a specific retention policy on a Scheduler.
+        az durabletask retention-policy show -g "example-rg" --scheduler-name "example-scheduler"
     """
 
     _aaz_info = {

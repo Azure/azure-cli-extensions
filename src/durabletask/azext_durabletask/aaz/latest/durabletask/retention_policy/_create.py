@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "durabletask retention-policy create",
 )
 class Create(AAZCommand):
-    """Create a Retention Policy
+    """Create a Retention Policy on a Durabletask Scheduler.
+
+    :example: Create a new retention policy for a scheduler with a default retention period of 30 days.
+        az durabletask retention-policy create -g "example-rg" --scheduler-name "example-scheduler" --retention-days 30
     """
 
     _aaz_info = {
@@ -57,11 +60,7 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.retention_policies = AAZListArg(
-            options=["--retention-policies"],
-            arg_group="Properties",
-            help="The orchestration retention policies",
-        )
+        _args_schema.retention_policies = AAZListArg()
 
         retention_policies = cls._args_schema.retention_policies
         retention_policies.Element = AAZObjectArg()
