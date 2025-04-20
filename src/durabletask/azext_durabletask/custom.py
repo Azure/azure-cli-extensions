@@ -41,6 +41,16 @@ class CreatePolicy(_Create):
 
     def pre_operations(self):
         """Prepare retention policies before executing the operation."""
+
+        if not any([
+            self.ctx.args.default_days,
+            self.ctx.args.canceled_days,
+            self.ctx.args.completed_days,
+            self.ctx.args.failed_days,
+            self.ctx.args.terminated_days
+        ]):
+            raise ValueError("At least one retention period (e.g., --default-days, --canceled-days) must be specified.")
+
         # Build the retention policies based on the provided arguments
         self.ctx.args.retention_policies = _build_retention_policies({
             key: value for key, value in {
