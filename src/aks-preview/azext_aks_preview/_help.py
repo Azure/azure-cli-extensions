@@ -3375,6 +3375,18 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
+    - name: --configuration-settings --config
+      type: string
+      short-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.
+    - name: --config-protected-settings --config-protected
+      type: string
+      short-summary: Configuration Protected Settings as key=value pair. Repeat parameter for each setting. Only the key is returned in response, the value is not.
+    - name: --config-settings-file --config-file
+      type: string
+      short-summary: JSON file path for configuration-settings
+    - name: --config-protected-settings-file --config-protected-file
+      type: string
+      short-summary: JSON file path for configuration-protected-settings
 
   examples:
     - name: Update core extension on AKS cluster
@@ -3447,6 +3459,9 @@ helps['aks extension-type show-by-location'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
+    - name: --location
+      type: string
+      short-summary: Location of the AKS cluster
   examples:
     - name: Show properties for a Core Extension Type in a region
       text: az aks extension-type show-by-location \
@@ -3477,6 +3492,9 @@ helps['aks extension-type show-version-by-location'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
+    - name: --location
+      type: string
+      short-summary: Location of the AKS cluster
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
@@ -3504,6 +3522,9 @@ helps['aks extension-type list-by-location'] = """
   type: command
   short-summary: List available Core Extension Types in a region.
   parameters:
+    - name: --location
+      type: string
+      short-summary: Location of the AKS cluster
   examples:
     - name: List available Core Extension Types in a region
       text: az aks extension-type list-by-location --location eastus
@@ -3527,6 +3548,9 @@ helps['aks extension-type list-versions-by-location'] = """
   type: command
   short-summary: List available Core Extension Types in a region.
   parameters:
+    - name: --location
+      type: string
+      short-summary: Location of the AKS cluster
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
