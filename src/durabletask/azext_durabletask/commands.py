@@ -6,5 +6,6 @@
 # --------------------------------------------------------------------------------------------
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group('durabletask orchestration') as g:
-        g.custom_command('list', 'list_orchestrations')
+    with self.command_group('durabletask retention-policy'):
+        from .custom import CreatePolicy
+        self.command_table["durabletask retention-policy create"] = CreatePolicy(loader=self)

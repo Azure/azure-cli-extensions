@@ -10,7 +10,4 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    with self.argument_context('durabletask orchestration list') as c:
-        c.argument('max_items', options_list=['--max-items', '-i'], help='The maximum number of orchestrations to return')
-        c.argument('scheduler_name', options_list=['--scheduler-name ', '-s'], help='The name of the scheduler.')
-        c.argument('taskhub_name', options_list=['--taskhub-name', '-t'], help='The name of the taskhub.')
+    pass
