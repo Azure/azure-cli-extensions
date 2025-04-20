@@ -2396,7 +2396,7 @@ def load_arguments(self, _):
         c.argument('force',
                    help='Specify whether to force delete the extension from the cluster.')
 
-    with self.argument_context("aks extension type") as c:
+    with self.argument_context("aks extension-type") as c:
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
