@@ -3432,12 +3432,12 @@ The output includes secrets that you must protect. Be sure that you do not inclu
         text: az aks extension show --resource-group my-resource-group \
 --cluster-name mycluster --name myextension
 """
-helps['az aks extension-type'] = """
+helps['aks extension-type'] = """
   type: group
   short-summary: Manage extension types in Azure Kubernetes Service.
   long-summary: This command group allows you to list, update, and manage extension types for AKS clusters.
 """
-helps['az aks extension-type show-by-cluster'] = """
+helps['aks extension-type show-by-cluster'] = """
   type: command
   short-summary: Show properties for a Core Extension Type for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
@@ -3449,10 +3449,10 @@ helps['az aks extension-type show-by-cluster'] = """
       short-summary: Name of the AKS cluster
   examples:
     - name: Show properties for a Core Extension Type for an existing cluster
-      text: az aks extension type show-by-cluster --resource-group my-resource-group \
+      text: az aks extension-type show-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
 """
-helps['az aks extension-type show-by-location'] = """
+helps['aks extension-type show-by-location'] = """
   type: command
   short-summary: Show properties for a Core Extension Type in a region.
   parameters:
@@ -3465,9 +3465,9 @@ helps['az aks extension-type show-by-location'] = """
   examples:
     - name: Show properties for a Core Extension Type in a region
       text: az aks extension-type show-by-location \
---location eastus --extension-type <type>
+--location eastus --extension-type type
 """
-helps['az aks extension-type show-version-by-cluster'] = """
+helps['aks extension-type show-version-by-cluster'] = """
   type: command
   short-summary: Show properties associated with a Core Extension Type version for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
@@ -3483,9 +3483,9 @@ helps['az aks extension-type show-version-by-cluster'] = """
   examples:
     - name: Show properties for a Core Extension Type version for an existing cluster
       text: az aks extension-type show-version-by-cluster --resource-group my-resource-group \
---cluster-name mycluster --extension-type <type> --version 1.0.0
+--cluster-name mycluster --extension-type type --version 1.0.0
 """
-helps['az aks extension-type show-version-by-location'] = """
+helps['aks extension-type show-version-by-location'] = """
   type: command
   short-summary: Show properties for a Core Extension Type version in a region.
   parameters:
@@ -3503,7 +3503,7 @@ helps['az aks extension-type show-version-by-location'] = """
       text: az aks extension-type show-version-by-location --location eastus --extension-type <type> \
 --version 1.0.0
 """
-helps['az aks extension-type list-by-cluster'] = """
+helps['aks extension-type list-by-cluster'] = """
   type: command
   short-summary: List available Core Extension Types for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
@@ -3515,7 +3515,7 @@ helps['az aks extension-type list-by-cluster'] = """
       text: az aks extension-type list-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster
 """
-helps['az aks extension-type list-by-location'] = """
+helps['aks extension-type list-by-location'] = """
   type: command
   short-summary: List available Core Extension Types in a region.
   parameters:

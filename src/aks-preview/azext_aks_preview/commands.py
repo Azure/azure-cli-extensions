@@ -468,8 +468,8 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_k8s_extension', table_transformer=core_extension_show_table_format)
         g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
 
-    with self.command_group("aks extension-type", managed_clusters_sdk, client_factory=cf_managed_clusters) \
-        as g:
+    with self.command_group("aks extension-type", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
         g.custom_command(
             'list-by-location',
             'list_k8s_extension_types_by_location',
