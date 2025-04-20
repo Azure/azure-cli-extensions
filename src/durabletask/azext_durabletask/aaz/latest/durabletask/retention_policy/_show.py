@@ -51,6 +51,7 @@ class Show(AAZCommand):
             options=["--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),

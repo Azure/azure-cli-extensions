@@ -19,6 +19,11 @@ class CreatePolicy(_Create):
         cls.args_schema = super()._build_arguments_schema(*args, **kwargs)
         _args_schema = cls._args_schema
 
+        # Remove the default retention policies argument from the schema so it doesn't appear in the help output
+        # We construct it as a property below
+        _args_schema = cls._args_schema
+        _args_schema.retention_policies._registered = False
+
         # Define retention policy arguments with their CLI options and descriptions
         retention_args = {
             "default_days": ("--default-days", "-d", "The number of days to retain orchestrations."),
