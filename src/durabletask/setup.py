@@ -26,9 +26,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    "httpx[http2]>=0.27.0"
-]
+DEPENDENCIES = []
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
