@@ -3384,7 +3384,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --config-settings-file --config-file
       type: string
       short-summary: JSON file path for configuration-settings
-    - name: ----config-protected-settings-file --config-protected-file
+    - name: --config-protected-settings-file --config-protected-file
       type: string
       short-summary: JSON file path for configuration-protected-settings
 
