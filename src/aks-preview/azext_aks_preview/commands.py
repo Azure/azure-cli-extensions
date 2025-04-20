@@ -469,7 +469,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
 
     with self.command_group(
-        "aks extension type", managed_clusters_sdk, client_factory=cf_managed_clusters, is_preview=True
+        "aks extension=type", managed_clusters_sdk, client_factory=cf_managed_clusters, is_preview=True
     ) as g:
         g.custom_command(
             'list-by-location',
