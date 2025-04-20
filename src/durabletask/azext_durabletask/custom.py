@@ -6,7 +6,8 @@
 # --------------------------------------------------------------------------------------------
 
 from .aaz.latest.durabletask.retention_policy import Create as _Create
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz import AAZStrArg
+
 
 class CreatePolicy(_Create):
     """Create a retention policy for a Durabletask scheduler."""
@@ -34,8 +35,8 @@ class CreatePolicy(_Create):
                     options=[option, short_option],  # CLI options for the argument
                     help=help_text,  # Description of the argument
                     required=False,  # These arguments are optional
-                ),
-            )
+                    ),
+                )
 
         return _args_schema
 
@@ -61,6 +62,7 @@ class CreatePolicy(_Create):
                 'terminated_days': self.ctx.args.terminated_days
             }.items() if value is not None  # Only include arguments that are not None
         })
+
 
 def _build_retention_policies(args_dict):
     """Build a list of retention policies based on the provided arguments."""
