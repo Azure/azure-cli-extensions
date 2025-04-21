@@ -3515,7 +3515,6 @@ helps['aks extension-type list-by-cluster'] = """
 helps['aks extension-type list-by-location'] = """
   type: command
   short-summary: List available Core Extension Types in a region.
-  parameters:
   examples:
     - name: List available Core Extension Types in a region
       text: az aks extension-type list-by-location --location eastus
