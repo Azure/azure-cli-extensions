@@ -3459,9 +3459,6 @@ helps['aks extension-type show-by-location'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
-    - name: --location
-      type: string
-      short-summary: Location of the AKS cluster
   examples:
     - name: Show properties for a Core Extension Type in a region
       text: az aks extension-type show-by-location \
@@ -3492,9 +3489,6 @@ helps['aks extension-type show-version-by-location'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
-    - name: --location
-      type: string
-      short-summary: Location of the AKS cluster
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
@@ -3522,9 +3516,6 @@ helps['aks extension-type list-by-location'] = """
   type: command
   short-summary: List available Core Extension Types in a region.
   parameters:
-    - name: --location
-      type: string
-      short-summary: Location of the AKS cluster
   examples:
     - name: List available Core Extension Types in a region
       text: az aks extension-type list-by-location --location eastus
@@ -3548,9 +3539,6 @@ helps['aks extension-type list-versions-by-location'] = """
   type: command
   short-summary: List available Core Extension Types in a region.
   parameters:
-    - name: --location
-      type: string
-      short-summary: Location of the AKS cluster
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
