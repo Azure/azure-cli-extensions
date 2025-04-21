@@ -15656,7 +15656,7 @@ spec:
         name_prefix="clitest",
         location="centraluseuap",
     )
-    def test_k8s_extension(self):
+    def test_aks_extension(self):
         extension_type = 'microsoft.flux'
         self.kwargs.update({
             'name': 'flux',

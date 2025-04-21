@@ -3306,7 +3306,7 @@ helps['aks extension'] = """
 """
 helps['aks extension create'] = """
   type: command
-  short-summary: Creates the Kubernetes extension instance on the managed cluster. Please refer to the example at the end to see how to create a core extension
+  short-summary: Creates the Kubernetes extension instance on the managed cluster. Please refer to the example at the end to see how to create a k8s extension
   long-summary: Create a Kubernetes Extension. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
@@ -3335,7 +3335,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 """
 helps['aks extension delete'] = """
   type: command
-  short-summary: Delete a Kubernetes Core Extension.
+  short-summary: Delete a Kubernetes Extension.
   parameters:
     - name: --cluster-name -c
       type: string
@@ -3344,12 +3344,12 @@ helps['aks extension delete'] = """
       type: string
       short-summary: Name of the extension instance
   examples:
-    - name: Delete an existing Kubernetes core extension on AKS cluster
+    - name: Delete an existing Kubernetes extension on AKS cluster
       text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
 """
 helps['aks extension update'] = """
   type: command
-  short-summary: Update mutable properties of a Kubernetes Core Extension.
+  short-summary: Update mutable properties of a Kubernetes Extension.
   long-summary: For update to ConfigSettings and ConfigProtectedSettings, please \
 refer to documentation of the cluster extension service to check update to these \
 properties is supported before updating these properties. \
@@ -3365,13 +3365,13 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       short-summary: Name of the extension instance
     - name: --release-train
       type: string
-      short-summary: specify the release train for the core extension type
+      short-summary: specify the release train for the extension type
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
 
   examples:
-    - name: Update core extension on AKS cluster
+    - name: Update K8s extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
 --cluster-name mycluster --name myextension --auto-upgrade true/false \
 --version extension-version --release-train stable \
@@ -3382,8 +3382,8 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 """
 helps['aks extension list'] = """
   type: command
-  short-summary: List Kubernetes Core Extensions
-  long-summary: List all Kubernetes Core Extensions in a cluster, including their properties. \
+  short-summary: List Kubernetes Extensions
+  long-summary: List all Kubernetes Extensions in a cluster, including their properties. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
@@ -3392,13 +3392,13 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       type: string
       short-summary: Name of the AKS cluster
   examples:
-    - name: List all Kubernetes Core Extensions on a cluster
+    - name: List all Kubernetes Extensions on a cluster
       text: az aks extension list --resource-group <group> --cluster-name <name>
 """
 helps['aks extension show'] = """
   type: command
-  short-summary: Show a Kubernetes Core Extension
-  long-summary: Show a Kubernetes Core Extension including its properties. \
+  short-summary: Show a Kubernetes Extension
+  long-summary: Show a Kubernetes Extension including its properties. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
@@ -3410,7 +3410,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       type: string
       short-summary: Name of the extension instance
   examples:
-      - name: Show details of a Kubernetes Core Extension
+      - name: Show details of a Kubernetes Extension
         text: az aks extension show --resource-group my-resource-group \
 --cluster-name mycluster --name myextension
 """
@@ -3421,7 +3421,7 @@ helps['aks extension-type'] = """
 """
 helps['aks extension-type show-by-cluster'] = """
   type: command
-  short-summary: Show properties for a Core Extension Type for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: Show properties for a K8s Extension Type for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --extension-type -t
       type: string
@@ -3430,25 +3430,25 @@ helps['aks extension-type show-by-cluster'] = """
       type: string
       short-summary: Name of the AKS cluster
   examples:
-    - name: Show properties for a Core Extension Type for an existing cluster
+    - name: Show properties for a K8s Extension Type for an existing cluster
       text: az aks extension-type show-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
 """
 helps['aks extension-type show-by-location'] = """
   type: command
-  short-summary: Show properties for a Core Extension Type in a region.
+  short-summary: Show properties for a K8s Extension Type in a region.
   parameters:
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
   examples:
-    - name: Show properties for a Core Extension Type in a region
+    - name: Show properties for a K8s Extension Type in a region
       text: az aks extension-type show-by-location \
 --location eastus --extension-type type
 """
 helps['aks extension-type show-version-by-cluster'] = """
   type: command
-  short-summary: Show properties associated with a Core Extension Type version for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: Show properties associated with a K8s Extension Type version for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --extension-type -t
       type: string
@@ -3460,13 +3460,13 @@ helps['aks extension-type show-version-by-cluster'] = """
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
-    - name: Show properties for a Core Extension Type version for an existing cluster
+    - name: Show properties for a K8s Extension Type version for an existing cluster
       text: az aks extension-type show-version-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
 """
 helps['aks extension-type show-version-by-location'] = """
   type: command
-  short-summary: Show properties for a Core Extension Type version in a region.
+  short-summary: Show properties for a K8s Extension Type version in a region.
   parameters:
     - name: --extension-type -t
       type: string
@@ -3475,35 +3475,35 @@ helps['aks extension-type show-version-by-location'] = """
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
-    - name: Show properties for a Core Extension Type version for an existing cluster
+    - name: Show properties for a K8s Extension Type version for an existing cluster
       text: az aks extension-type show-version-by-location --location eastus --extension-type <type> \
 --version 1.0.0
 """
 helps['aks extension-type list-by-cluster'] = """
   type: command
-  short-summary: List available Core Extension Types for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: List available K8s Extension Types for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
     - name: --release-train
       type: string
-      short-summary: specify the release train for the core extension type
+      short-summary: specify the release train for the K8s extension type
   examples:
-    - name: List available Core Extension Types for an existing cluster
+    - name: List available K8s Extension Types for an existing cluster
       text: az aks extension-type list-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster
 """
 helps['aks extension-type list-by-location'] = """
   type: command
-  short-summary: List available Core Extension Types in a region.
+  short-summary: List available K8s Extension Types in a region.
   examples:
-    - name: List available Core Extension Types in a region
+    - name: List available K8s Extension Types in a region
       text: az aks extension-type list-by-location --location eastus
 """
 helps['aks extension-type list-versions-by-cluster'] = """
   type: command
-  short-summary: List available Core Extension Type versions for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: List available K8s Extension Type versions for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --cluster-name -c
       type: string
@@ -3512,18 +3512,18 @@ helps['aks extension-type list-versions-by-cluster'] = """
       type: string
       short-summary: Name of the extension type
   examples:
-    - name: List available Core Extension Types for an existing cluster
+    - name: List available K8s Extension Types for an existing cluster
       text: az aks extension-type list-versions-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
 """
 helps['aks extension-type list-versions-by-location'] = """
   type: command
-  short-summary: List available Core Extension Types in a region.
+  short-summary: List available K8s Extension Types in a region.
   parameters:
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
   examples:
-    - name: List available Core Extension Types in a region
+    - name: List available K8s Extension Types in a region
       text: az aks extension-type list-versions-by-location --location eastus --extension-type <type>
 """
