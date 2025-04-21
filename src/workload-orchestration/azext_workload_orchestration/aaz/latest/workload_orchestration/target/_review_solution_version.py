@@ -286,6 +286,21 @@ class ReviewSolutionVersion(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.resourceId = AAZStrType(
+                serialized_name="resourceId",
+                flags={"read_only": True},
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.startTime = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.endTime = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
             _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -304,44 +319,63 @@ class ReviewSolutionVersion(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.configuration = AAZStrType(
+            properties.properties = AAZObjectType()
+            properties.extendedLocation = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            properties.eTag = AAZStrType(
+                serialized_name="eTag",
                 flags={"read_only": True},
             )
-            properties.provisioning_state = AAZStrType(
+            properties.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            
+            nested_properties = properties.properties
+            nested_properties.configuration = AAZStrType(
+                flags={"read_only": True},
+            )
+            nested_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.review_id = AAZStrType(
+            nested_properties.review_id = AAZStrType(
                 serialized_name="reviewId",
                 flags={"read_only": True},
             )
-            properties.revision = AAZIntType(
+            nested_properties.revision = AAZIntType(
                 flags={"read_only": True},
             )
-            properties.solution_dependencies = AAZListType(
+            nested_properties.solution_dependencies = AAZListType(
                 serialized_name="solutionDependencies",
                 flags={"read_only": True},
             )
-            properties.solution_instance_name = AAZStrType(
+            nested_properties.solution_instance_name = AAZStrType(
                 serialized_name="solutionInstanceName",
                 flags={"read_only": True},
             )
-            properties.solution_template_version_id = AAZStrType(
+            nested_properties.solution_template_version_id = AAZStrType(
                 serialized_name="solutionTemplateVersionId",
                 flags={"read_only": True},
             )
-            properties.specification = AAZFreeFormDictType(
+            nested_properties.specification = AAZFreeFormDictType(
                 flags={"required": True},
             )
-            properties.state = AAZStrType(
+            nested_properties.state = AAZStrType(
                 flags={"read_only": True},
             )
-            properties.target_display_name = AAZStrType(
+            nested_properties.target_display_name = AAZStrType(
                 serialized_name="targetDisplayName",
                 flags={"read_only": True},
             )
 
-            solution_dependencies = cls._schema_on_200.properties.solution_dependencies
+            solution_dependencies = nested_properties.solution_dependencies
             solution_dependencies.Element = AAZObjectType()
             _ReviewSolutionVersionHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
 
