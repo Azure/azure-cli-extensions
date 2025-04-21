@@ -117,18 +117,23 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_linux and _uses_managed_disk(source_vm):  
             # Setting the OS type to 'Linux'.  
             os_type = 'Linux'  
-            # Checking the Hyper-V generation of the source VM.  
-            hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)  
-            if hyperV_generation_linux == 'V2':  
-                # If the Hyper-V generation is 'V2', log this information and select the Linux distribution for a Gen2 VM.  
-                logger.info('Generation 2 VM detected')  
-                os_image_urn = _select_distro_linux_gen2(distro)  
-            if architecture_type == 'Arm64':  
-                # If the architecture type is 'Arm64', log this information and select the Linux distribution for an Arm64 VM.  
-                logger.info('ARM64 VM detected')  
-                os_image_urn = _select_distro_linux_Arm64(distro)  
-            else:  
-                # If the architecture type is not 'Arm64', select the Linux distribution for a regular VM.  
+            # Checking the Hyper-V generation of the source VM.
+            hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
+            if hyperV_generation_linux == 'V2':
+                # If the Hyper-V generation is 'V2', it may be ARM:
+                if architecture_type == 'Arm64':
+                    # If the architecture type is 'Arm64', log this information and select the Linux distribution for an Arm64 VM.  
+                    logger.info('ARM64 VM detected')
+                    os_image_urn = _select_distro_linux_Arm64(distro)
+                    # Trusted launch is not supported on ARM
+                    logger.info('Disabling trusted launch on ARM')
+                    disable_trusted_launch = True
+                else:
+                    # log this information and select the Linux distribution for an x86 Gen2 VM.
+                    logger.info('Generation 2 VM detected')
+                    os_image_urn = _select_distro_linux_gen2(distro)
+            else:
+                # If the architecture type is not 'V2', select a Gen1 VM
                 os_image_urn = _select_distro_linux(distro)  
         else:  
             # If the source VM's OS is not Linux, check if a recovery key is provided.  

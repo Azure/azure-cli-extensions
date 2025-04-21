@@ -2,6 +2,12 @@
 Release History
 ===============
 
+2.1.2
+++++++
+Added images available for --distro flag to include current distributions, will remove EoL versions in future releases
+Fixing a logic bug to allow V2 linux detection to work properly, and with Arm64
+Disabled trusted launch for Arm64
+
 2.1.1
 ++++++
 Updated README file for `vm repair` extension. 
