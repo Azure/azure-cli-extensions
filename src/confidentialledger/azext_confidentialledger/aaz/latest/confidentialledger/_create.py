@@ -53,7 +53,7 @@ class Create(AAZCommand):
             help="Name of the Confidential Ledger",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]",
+                pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -214,16 +214,16 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [201]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -338,44 +338,44 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_201(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_201
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_201 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_201(cls):
-            if cls._schema_on_201 is not None:
-                return cls._schema_on_201
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_201 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_201 = cls._schema_on_201
-            _schema_on_201.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_201.location = AAZStrType(
+            _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_201.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_201.properties = AAZObjectType()
-            _schema_on_201.system_data = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_201.tags = AAZDictType()
-            _schema_on_201.type = AAZStrType(
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_201.properties
+            properties = cls._schema_on_200_201.properties
             properties.aad_based_security_principals = AAZListType(
                 serialized_name="aadBasedSecurityPrincipals",
             )
@@ -436,10 +436,10 @@ class Create(AAZCommand):
                 serialized_name="writeLBAddressPrefix",
             )
 
-            aad_based_security_principals = cls._schema_on_201.properties.aad_based_security_principals
+            aad_based_security_principals = cls._schema_on_200_201.properties.aad_based_security_principals
             aad_based_security_principals.Element = AAZObjectType()
 
-            _element = cls._schema_on_201.properties.aad_based_security_principals.Element
+            _element = cls._schema_on_200_201.properties.aad_based_security_principals.Element
             _element.ledger_role_name = AAZStrType(
                 serialized_name="ledgerRoleName",
             )
@@ -450,16 +450,16 @@ class Create(AAZCommand):
                 serialized_name="tenantId",
             )
 
-            cert_based_security_principals = cls._schema_on_201.properties.cert_based_security_principals
+            cert_based_security_principals = cls._schema_on_200_201.properties.cert_based_security_principals
             cert_based_security_principals.Element = AAZObjectType()
 
-            _element = cls._schema_on_201.properties.cert_based_security_principals.Element
+            _element = cls._schema_on_200_201.properties.cert_based_security_principals.Element
             _element.cert = AAZStrType()
             _element.ledger_role_name = AAZStrType(
                 serialized_name="ledgerRoleName",
             )
 
-            system_data = cls._schema_on_201.system_data
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -479,10 +479,10 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_201.tags
+            tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_201
+            return cls._schema_on_200_201
 
 
 class _CreateHelper:

@@ -15,25 +15,26 @@ interactions:
       User-Agent:
       - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SqlTestLedgerRG/providers/Microsoft.ConfidentialLedger/ledgers/sql-test-ledger-1?api-version=2022-05-13
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SqlTestLedgerRG/providers/Microsoft.ConfidentialLedger/ledgers/sql-test-ledger-1?api-version=2024-09-19-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SqlTestLedgerRG/providers/Microsoft.ConfidentialLedger/Ledgers/sql-test-ledger-1","name":"sql-test-ledger-1","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","tags":{"scope":"acl"},"properties":{"ledgerName":"sql-test-ledger-1","ledgerUri":"https://sql-test-ledger-1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/sql-test-ledger-1","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"e76336f1-cae2-492f-84bc-bfcbb6503c9b","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"},{"principalId":"61fe3baa-994a-463a-9851-e199115e4b19","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"},{"principalId":"56454aeb-8719-4b58-9965-bb7b454032d2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-4b1780eeff08"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SqlTestLedgerRG/providers/Microsoft.ConfidentialLedger/Ledgers/sql-test-ledger-1","name":"sql-test-ledger-1","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","tags":{"scope":"acl"},"properties":{"ledgerName":"sql-test-ledger-1","ledgerUri":"https://sql-test-ledger-1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/sql-test-ledger-1","runningState":"Active","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"e76336f1-cae2-492f-84bc-bfcbb6503c9b","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"},{"principalId":"61fe3baa-994a-463a-9851-e199115e4b19","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"},{"principalId":"56454aeb-8719-4b58-9965-bb7b454032d2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-4b1780eeff08","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
+        Node","workerThreads":0}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1026'
+      - '1240'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 09 Apr 2025 22:26:29 GMT
+      - Mon, 21 Apr 2025 16:56:32 GMT
       etag:
       - '"030105ea-0000-0100-0000-678938290000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - d72a376a-5b7d-4bdc-9b00-0eb2a7f7fb16
+      - 7e0024c7-49cf-42a0-80e3-e588eed2890e
       pragma:
       - no-cache
       strict-transport-security:
@@ -43,15 +44,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-image-tag:
-      - 1.0.03011.237-8eb772224b8dc663d3bef6b87f3f877faa4bbbc7
+      - 1.0.03020.245-cd77d0d5c8109fe7bf9e3ea1e1bb58b23d8a69d4
       x-ms-machinename:
-      - controlplane-78fbf84486-xxpjm
+      - controlplane-6d79b784b6-bhqhx
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: CDDA0CD14C5047BE922D249A73B97493 Ref B: SJC211051201037 Ref C: 2025-04-09T22:26:28Z'
+      - 'Ref A: F42863BEF8304D22ACE75722B8796D48 Ref B: SJC211051205023 Ref C: 2025-04-21T16:56:31Z'
     status:
       code: 200
       message: OK

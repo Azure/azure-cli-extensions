@@ -32,7 +32,7 @@ class ConfidentialLedgerTests(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     def test_create_confidentialledger(self):
         self.kwargs.update({
-            'ledger_name': 'azclitest1',
+            'ledger_name': 'azclitest',
             'rg': 'AzCliExtensionRg',
             'location': 'eastus',
             'ledger_type': 'Public',
@@ -47,15 +47,16 @@ class ConfidentialLedgerTests(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     def test_update_confidentialledger(self):
         self.kwargs.update({
-            'ledger_name': 'cliTest1',
-            'rg': 'pratik-rg',
+            'ledger_name': 'azclitest',
+            'rg': 'AzCliExtensionRg',
             'location': 'eastus',
             'ledger-role-name': 'Administrator',
             'principal-id': '78945818-3e7d-4708-bd84-3a480f1fbeb5',
             'tenant-id': '72f988bf-86f1-41af-91ab-2d7cd011db47',
         })
-        self.cmd('az confidentialledger update --name {ledger_name} --resource-group {rg} --location {location} '
-        '--aad-based-security-principals ledger-role-name={ledger-role-name} principal-id={principal-id} tenant-id={tenant-id}', checks=[
+        self.cmd('az confidentialledger update --name {ledger_name} --resource-group {rg} ' 
+                 '--aad-based-security-principals "[{{\'principal-id\':{principal-id},\'tenant-id\':{tenant-id},\'ledger-role-name\':{ledger-role-name}}}]"', 
+        checks=[
             self.check('name', '{ledger_name}'),
             self.check('resourceGroup', '{rg}'),
             self.check('location', '{location}'),
@@ -67,15 +68,15 @@ class ConfidentialLedgerTests(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     def test_delete_confidentialledger(self):
         self.kwargs.update({
-            'ledger_name': 'cliTest1',
-            'rg': 'pratik-rg',
+            'ledger_name': 'azclitest',
+            'rg': 'AzCliExtensionRg',
         })
         self.cmd('az confidentialledger delete --name {ledger_name} --resource-group {rg} --yes')
 
     @AllowLargeResponse(size_kb=10240)
     def test_checknameavailability_confidentialledger(self):
         self.kwargs.update({
-            'ledger_name': 'AzCliExtensionTestLedger',
+            'ledger_name': 'azclitest',
             'type': 'Microsoft.ConfidentialLedger/Ledgers',
             'rg': 'AzCliExtensionRg',
         })
