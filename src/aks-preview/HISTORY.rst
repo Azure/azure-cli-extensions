@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+
+14.0.0b2
++++++++
+* Update the `disable-egress-gateway` subcommand to fix `--help` output for the `az aks mesh` command.
 * Vendor new SDK and bump API version to 2025-01-02-preview.
 * Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
 
