@@ -3391,8 +3391,8 @@ The output includes secrets that you must protect. Be sure that you do not inclu
   examples:
     - name: Update core extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
---cluster-name mycluster --name myextension --auto-upgrade true/false \
---version extension-version --release-train stable \
+--cluster-name mycluster --name myextension --extension-type microsoft.flux \
+--auto-upgrade true/false --version extension-version --release-train stable \
 --configuration-settings settings-key=settings-value \
 --config-protected-settings protected-settings-key=protected-value \
 --config-settings-file=config-settings-file \
