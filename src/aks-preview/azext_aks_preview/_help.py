@@ -3363,12 +3363,12 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --name -n
       type: string
       short-summary: Name of the extension instance
+    - name: --auto-upgrade-minor-version, --auto-upgrade
+      type: bool
+      short-summary: Automatically upgrade minor version of the core extension instance
     - name: --release-train
       type: string
       short-summary: specify the release train for the core extension type
-    - name: --auto-upgrade-minor-version --auto-upgrade
-      type: bool
-      short-summary: Automatically upgrade minor version of the core extension instanc
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
