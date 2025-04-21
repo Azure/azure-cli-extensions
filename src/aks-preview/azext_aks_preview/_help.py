@@ -3357,9 +3357,6 @@ The output includes secrets that you must protect. Be sure that you do not inclu
  source control. Also verify that no secrets are present in the logs of your command or script. \
  For additional information, see http://aka.ms/clisecrets.
   parameters:
-    - name: --extension-type -t
-      type: string
-      short-summary: Name of the extension type
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3391,8 +3388,8 @@ The output includes secrets that you must protect. Be sure that you do not inclu
   examples:
     - name: Update core extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
---cluster-name mycluster --name myextension --extension-type microsoft.flux \
---auto-upgrade true/false --version extension-version --release-train stable \
+--cluster-name mycluster --name myextension --auto-upgrade true/false \
+--version extension-version --release-train stable \
 --configuration-settings settings-key=settings-value \
 --config-protected-settings protected-settings-key=protected-value \
 --config-settings-file=config-settings-file \
