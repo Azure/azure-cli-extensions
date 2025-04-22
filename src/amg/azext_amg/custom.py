@@ -826,18 +826,18 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
     return json.loads(response.content)
 
 
-def link_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, resource_group_name=None,
-                 skip_role_assignments=False):
+def link_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, monitor_subscription_id=None,
+                 resource_group_name=None, skip_role_assignments=False):
     from .integrations import link_amw_to_amg
     link_amw_to_amg(cmd, grafana_name, monitor_name, resource_group_name, monitor_resource_group_name,
-                    skip_role_assignments)
+                    monitor_subscription_id, skip_role_assignments)
 
 
-def unlink_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, resource_group_name=None,
-                   skip_role_assignments=False):
+def unlink_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, monitor_subscription_id=None,
+                   resource_group_name=None, skip_role_assignments=False):
     from .integrations import unlink_amw_from_amg
     unlink_amw_from_amg(cmd, grafana_name, monitor_name, resource_group_name, monitor_resource_group_name,
-                        skip_role_assignments)
+                        monitor_subscription_id, skip_role_assignments)
 
 
 def list_monitors(cmd, grafana_name, resource_group_name=None):
