@@ -2367,20 +2367,42 @@ helps['containerapp env ingress show'] = """
           az containerapp env ingress show -g MyResourceGroup -n MyEnvironment
 """
 
+helps['containerapp env ingress'] = """
+    type: group
+    short-summary: Configures premium ingress settings for the environment.
+    long-summary: |
+        Premium ingress settings apply to all applications in the environment. They allow moving the ingress instances to a workload profile and scaling them beyond the system defaults to enable high traffic workloads. Other settings include request idle timeouts, header count limits, and the termination grace period.
+    examples:
+    - name: Set the ingress settings for the environment.
+      text: |
+          az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+"""
+
+helps['containerapp env ingress set'] = """
+    type: command
+    short-summary: Set the ingress settings for the environment. 
+    long-summary: |
+        Unspecified optional parameters will be cleared from any existing configuration.
+    examples:
+    - name: Set the ingress settings for the environment.
+      text: |
+          az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+"""
+
 helps['containerapp env ingress update'] = """
     type: command
     short-summary: Update the ingress settings for the environment.
     examples:
-    - name: Update the ingress settings for the environment.
+    - name: Update the workload profile used for ingress.
       text: |
           az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
 
-helps['containerapp env ingress restore-defaults'] = """
+helps['containerapp env ingress reset'] = """
     type: command
-    short-summary: Reset the ingress settings to default values.
+    short-summary: Removes the ingress settings and resets the system to default values.
     examples:
     - name: Reset the ingress settings for the environment to its default values
       text: |
-          az containerapp env ingress restore-defaults -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+          az containerapp env ingress reset -g MyResourceGroup -n MyEnvironment
 """

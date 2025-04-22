@@ -646,64 +646,64 @@ class ContainerappIngressTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+        logs_workspace_id = self.cmd(f'monitor log-analytics workspace create -g {resource_group} -n {env_name} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {env_name}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key}')
 
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        self.cmd(f'az containerapp env workload-profile add -g {resource_group} -n {env_name} -w wp-ingress --min-nodes 2 --max-nodes 5 --workload-profile-type D4'.format(env_name, resource_group))
 
-        ingress_config = self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('properties', JMESPathCheckExists()),
-        ]).get_output_in_json()
-        
-        self.cmd('containerapp env ingress update --environment {} -g {} --workload-profile-name Consumption --min-replicas 2 --max-replicas 5'.format(
-            env_name, resource_group), checks=[
-            JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
-            JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
-            JMESPathCheck('properties.ingressConfiguration.maxReplicas', 5),
-        ])
-        
-        self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
-            JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
-            JMESPathCheck('properties.ingressConfiguration.maxReplicas', 5),
-        ])
-        
-        self.cmd('containerapp env ingress update --environment {} -g {} --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40'.format(
-            env_name, resource_group), checks=[
-            JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
-            JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
-            JMESPathCheck('properties.ingressConfiguration.maxReplicas', 5),
-            JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 45),
-            JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 180),
-            JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 40),
+        self.cmd(f'containerapp env ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('message', 'No ingress configuration found for this environment, using default values.'),
         ])
 
-        self.cmd('containerapp env ingress restore-defaults --environment {} -g {}'.format(env_name, resource_group), checks=[
-        JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
-        JMESPathCheck('properties.ingressConfiguration.minReplicas', 2), 
-        JMESPathCheck('properties.ingressConfiguration.maxReplicas', 10),
-        JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 8), 
-        JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 4),  
-        JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 100), 
-    ])
+        self.cmd(f'containerapp env ingress set -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 3 --max-replicas 5', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 3),
+            JMESPathCheck('scale.maxReplicas', 5),
+            JMESPathCheck('terminationGracePeriodSeconds', None),
+            JMESPathCheck('requestIdleTimeout', None),
+            JMESPathCheck('headerCountLimit', None),
+        ])
+        
+        self.cmd(f'containerapp env ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 3),
+            JMESPathCheck('scale.maxReplicas', 5),
+            JMESPathCheck('terminationGracePeriodSeconds', None),
+            JMESPathCheck('requestIdleTimeout', None),
+            JMESPathCheck('headerCountLimit', None),
+        ])
+        
+        self.cmd(f'containerapp env ingress update -g {resource_group} -n {env_name} --min-replicas 4 --max-replicas 20 --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 4),
+            JMESPathCheck('scale.maxReplicas', 20),
+            JMESPathCheck('terminationGracePeriodSeconds', 45),
+            JMESPathCheck('requestIdleTimeout', 180),
+            JMESPathCheck('headerCountLimit', 40),
+        ])
+
+        # set removes unspecified optional parameters
+        self.cmd(f'containerapp env ingress set -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 2 --max-replicas 3 --request-idle-timeout 90', checks=[
+            JMESPathCheck('workloadProfileName', 'wp-ingress'),
+            JMESPathCheck('scale.minReplicas', 2),
+            JMESPathCheck('scale.maxReplicas', 3),
+            JMESPathCheck('requestIdleTimeout', 90),
+            JMESPathCheck('terminationGracePeriodSeconds', None),
+            JMESPathCheck('headerCountLimit', None),
+        ])
+
+        self.cmd(f'containerapp env ingress reset -g {resource_group} -n {env_name}')
     
-        self.cmd('containerapp env ingress show --environment {} -g {}'.format(env_name, resource_group), checks=[
-        JMESPathCheck('properties.ingressConfiguration.workloadProfileName', 'Consumption'),
-        JMESPathCheck('properties.ingressConfiguration.minReplicas', 2),
-        JMESPathCheck('properties.ingressConfiguration.maxReplicas', 10),
-        JMESPathCheck('properties.ingressConfiguration.terminationGracePeriod', 480),
-        JMESPathCheck('properties.ingressConfiguration.requestIdleTimeout', 240),
-        JMESPathCheck('properties.ingressConfiguration.headerCountLimit', 100),
-    ])
+        self.cmd(f'containerapp env ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('message', 'No ingress configuration found for this environment, using default values.'),
+        ])
 
         # Clean up
-        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
 
 
 class ContainerappCustomDomainTests(ScenarioTest):

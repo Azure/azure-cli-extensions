@@ -503,11 +503,11 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env ingress') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('name', options_list=['--environment'], help="The name of the managed environment.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name'], help="The name of the workload profile.")
-        c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run.")
-        c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run.")
-        c.argument('termination_grace_period', options_list=['--termination-grace-period'], type=int, help="Time given during shutdown to finish requests before cancelling.")
-        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout (in minutes) for idle requests.")
-        c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit for header count.")
+        c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
+        c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run. Default 2, minimum 2.")
+        c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run. Default 10. The upper limit is the maximum cores avalable in the workload profile.")
+        c.argument('termination_grace_period', options_list=['--termination-grace-period'], type=int, help="Time in seconds to drain requests durring ingress shutdown. Default 500, minimum 0, maximum 3600.")
+        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
+        c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
         
