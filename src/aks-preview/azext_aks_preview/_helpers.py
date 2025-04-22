@@ -399,7 +399,7 @@ def check_if_extension_type_is_in_allow_list(extension_type_name):
     return extension_type_name.lower() in allowedListOfExtensions
 
   
-  def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
+def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
     filtered_taints = []
     for taint in node_initialization_taints:
         if not taint:
