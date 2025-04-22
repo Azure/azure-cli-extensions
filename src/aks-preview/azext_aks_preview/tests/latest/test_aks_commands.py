@@ -15654,19 +15654,25 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="centraluseuap",
+        location="eastus2",
     )
-    def test_aks_extension(self):
+    def test_aks_extension(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
         extension_type = 'microsoft.flux'
         self.kwargs.update({
             'name': 'flux',
-            'rg': 'azurecli-tests',
-            'cluster_name': 'arc-cluster',
+            'rg': resource_group,
+            'cluster_name': aks_name,
             'extension_type': extension_type,
             'release_train': 'stable',
             'version': '1.15.1',
         })
+        
+        # create the cluster 
+        self.cmd('aks create -g {rg} -n {name} '
+                 '--node-count 3 --generate-ssh-keys')
 
+        # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
                  '--extension-type {extension_type} --release-train {release_train} --version {version} '
                  '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
@@ -15676,6 +15682,7 @@ spec:
         #     self.check('tags.foo', 'boo')
         # ])
 
+        # list the extensions on the cluster
         installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
         found_extension = False
         for item in installed_exts:
@@ -15684,6 +15691,7 @@ spec:
                 break
         self.assertTrue(found_extension)
 
+        # do a GET on the extension
         self.cmd('aks extension show -c {cluster_name} -g {rg} -n {name}', checks=[
             self.check('name', '{name}'),
             self.check('releaseTrain', '{release_train}'),
@@ -15692,7 +15700,8 @@ spec:
             self.check('extensionType', '{extension_type}')
         ])
 
-        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} --force -y')
+        # delete the extension
+        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name} --force -y')
 
         installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
         found_extension = False
@@ -15701,3 +15710,72 @@ spec:
                 found_extension = True
                 break
         self.assertFalse(found_extension)
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2",
+    )
+    def test_aks_extension_type(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        extension_type = 'microsoft.flux'
+        self.kwargs.update({
+            'name': 'flux',
+            'rg': resource_group,
+            'cluster_name': aks_name,
+            'extension_type': extension_type,
+            'release_train': 'stable',
+            'version': '1.15.1',
+        })
+        
+        # create the cluster 
+        self.cmd('aks create -g {rg} -n {name} '
+                 '--node-count 3 --generate-ssh-keys')
+
+        # create the K8s extension
+        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+                 '--extension-type {extension_type} --release-train {release_train} --version {version} '
+                 '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
+
+        self.cmd('aks extension-types show-by-cluster -g {rg} -c {cluster_name} '
+                 '--extension-type {extension_type}', checks=[
+                     self.check('name', '{extension_type}')
+                 ])
+        
+        self.cmd('aks extension-types show-by-location -l {location} '
+                 '--extension-type {extension_type}', checks=[
+                     self.check('name', '{extension_type}')
+                 ])
+        
+        extensionTypes_list = self.cmd('aks extension-types list-by-cluster -g {rg} '
+                                       '-c {cluster_name}').get_output_in_json()
+        assert len(extensionTypes_list) > 0
+
+        extensionTypes_locationList = self.cmd('aks extension-types list-by-location '
+                                               '--location {location}').get_output_in_json()
+        assert len(extensionTypes_locationList) > 0
+
+        extensionTypes_list = self.cmd('aks extension-types list-versions-by-cluster -g {rg} -c {cluster_name} '
+                                       '--extension-type {extension_type}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        extensionTypes_list = self.cmd('aks extension-types list-versions-by-location --location {location} '
+                                       '--extension-type {extension_type}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        extensionTypes_list = self.cmd('aks extension-types show-version-by-cluster -g {rg} -c {cluster_name} '
+                                       '--extension-type {extension_type} --version {version}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        extensionTypes_list = self.cmd('aks extension-types show-version-by-location --location {location} '
+                                       '--extension-type {extension_type} --version {version}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        # delete the extension
+        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name}  --force -y')
