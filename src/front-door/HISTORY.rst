@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.1
+++++++
+* Update module documentation.
+
 1.2.0
 ++++++
 * change default value of sku in creating waf

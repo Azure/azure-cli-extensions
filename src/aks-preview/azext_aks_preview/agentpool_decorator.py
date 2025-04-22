@@ -39,7 +39,10 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
 )
-from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import (
+    get_nodepool_snapshot_by_snapshot_id,
+    filter_hard_taints,
+)
 
 logger = get_logger(__name__)
 
@@ -870,7 +873,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         :return: the AgentPool object
         """
         self._ensure_agentpool(agentpool)
-        agentpool.node_initialization_taints = self.context.get_node_initialization_taints()
+        nodepool_initialization_taints = self.context.get_node_initialization_taints()
+        # filter out taints with hard effects for System pools
+        if agentpool.mode is None or agentpool.mode.lower() == "system":
+            nodepool_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
+        agentpool.node_initialization_taints = nodepool_initialization_taints
         return agentpool
 
     def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:

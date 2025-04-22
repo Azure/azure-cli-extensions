@@ -715,6 +715,12 @@ examples:
   - name: Configure the app to listen to the forward headers X-FORWARDED-HOST and X-FORWARDED-PROTO.
     text: |
         az containerapp auth update -g myResourceGroup --name my-containerapp --proxy-convention Standard
+  - name: Configure the blob storage token store using default system assigned managed identity to authenticate.
+    text: |
+        az containerapp auth update -g myResourceGroup --name my-containerapp --token-store true --blob-container-uri https://storageAccount1.blob.core.windows.net/container1
+  - name: Configure the blob storage token store using user assigned managed identity to authenticate.
+    text: |
+        az containerapp auth update -g myResourceGroup --name my-containerapp --token-store true --blob-container-uri https://storageAccount1.blob.core.windows.net/container1 --blob-container-identity managedIdentityResourceId
 """
 
 helps['containerapp env workload-profile set'] = """

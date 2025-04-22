@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update the Internal Network resource.
 
     :example: Update the Internal Network resource
-        az networkfabric internalnetwork update --resource-group "example-rg" --l3-isolation-domain-name "example-l3domain" --resource-name "example-internalNetwork" --mtu 1500 --is-monitoring-enabled "True" --connected-ipv4-subnets "[{prefix:'10.0.0.1/21'},{prefix:'10.0.0.1/22'}]" --static-route-configuration "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},ipv4Routes:[{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']},{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']}]}" --bgp-configuration  "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},defaultRouteOriginate:True,allowAS:2,allowASOverride:Enable,peerASN:65047,ipv4ListenRangePrefixes:['10.1.0.0/28','10.1.0.1/28'],ipv4NeighborAddress:[{address:'10.0.0.11'},{address:'10.0.0.12'}]}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}"
+        az networkfabric internalnetwork update --resource-group "example-rg" --l3-isolation-domain-name "example-l3domain" --resource-name "example-internalNetwork" --mtu 1500 --is-monitoring-enabled "True" --connected-ipv4-subnets "[{prefix:'10.0.0.1/21'},{prefix:'10.0.0.1/22'}]" --static-route-configuration "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},ipv4Routes:[{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']},{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']}]}" --bgp-configuration  "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},defaultRouteOriginate:True,allowAS:2,allowASOverride:Enable,peerASN:65047,ipv4ListenRangePrefixes:['10.1.0.0/28','10.1.0.1/28'],ipv4NeighborAddress:[{address:'10.0.0.11'},{address:'10.0.0.12'}],v4OverV6BgpSession:'Enabled',v6OverV4BgpSession:'Enabled'}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --native-ipv4-prefix-limit "{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}" --native-ipv6-prefix-limit "{prefixLimits:[{idleTimeExpiry:60,maximumRoutes:5,threshold:50},{idleTimeExpiry:80,maximumRoutes:10,threshold:60}]}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric internalnetwork update --static-route-configuration "??"
@@ -420,7 +420,7 @@ class Update(AAZCommand):
         if cls._args_prefix_limit_patch_properties_update is not None:
             _schema.idle_time_expiry = cls._args_prefix_limit_patch_properties_update.idle_time_expiry
             _schema.maximum_routes = cls._args_prefix_limit_patch_properties_update.maximum_routes
-            _schema.soft_limit = cls._args_prefix_limit_patch_properties_update.soft_limit
+            _schema.threshold = cls._args_prefix_limit_patch_properties_update.threshold
             return
 
         cls._args_prefix_limit_patch_properties_update = AAZObjectArg()
@@ -434,14 +434,14 @@ class Update(AAZCommand):
             options=["maximum-routes"],
             help="Maximum routes allowed.",
         )
-        prefix_limit_patch_properties_update.soft_limit = AAZIntArg(
-            options=["soft-limit"],
+        prefix_limit_patch_properties_update.threshold = AAZIntArg(
+            options=["threshold"],
             help="Limit at which route prefixes a warning is generate.",
         )
 
         _schema.idle_time_expiry = cls._args_prefix_limit_patch_properties_update.idle_time_expiry
         _schema.maximum_routes = cls._args_prefix_limit_patch_properties_update.maximum_routes
-        _schema.soft_limit = cls._args_prefix_limit_patch_properties_update.soft_limit
+        _schema.threshold = cls._args_prefix_limit_patch_properties_update.threshold
 
     _args_static_route_patch_properties_update = None
 
@@ -980,7 +980,7 @@ class _UpdateHelper:
             return
         _builder.set_prop("idleTimeExpiry", AAZIntType, ".idle_time_expiry")
         _builder.set_prop("maximumRoutes", AAZIntType, ".maximum_routes")
-        _builder.set_prop("softLimit", AAZIntType, ".soft_limit")
+        _builder.set_prop("threshold", AAZIntType, ".threshold")
 
     @classmethod
     def _build_schema_static_route_patch_properties_update(cls, _builder):

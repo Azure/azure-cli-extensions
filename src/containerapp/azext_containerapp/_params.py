@@ -276,6 +276,11 @@ def load_arguments(self, _):
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
 
+    with self.argument_context('containerapp auth') as c:
+        c.argument('blob_container_uri', help='The URI of the blob storage containing the tokens. Should not be used along with sas_url_secret and sas_url_secret_name.', is_preview=True)
+        c.argument('blob_container_identity', options_list=['--blob-container-identity', '--bci'],
+                   help='Default Empty to use system-assigned identity, or using Resource ID of a managed identity to authenticate with Azure blob storage.', is_preview=True)
+
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run `az containerapp env workload-profile list-supported -l <region>` to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
