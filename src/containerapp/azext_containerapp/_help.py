@@ -2375,7 +2375,7 @@ helps['containerapp env ingress'] = """
     examples:
     - name: Set the ingress settings for the environment.
       text: |
-          az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env ingress set -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
 """
 
 helps['containerapp env ingress set'] = """
@@ -2386,7 +2386,7 @@ helps['containerapp env ingress set'] = """
     examples:
     - name: Set the ingress settings for the environment.
       text: |
-          az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env ingress set -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
 """
 
 helps['containerapp env ingress update'] = """
