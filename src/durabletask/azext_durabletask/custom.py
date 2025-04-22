@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
 
 from .aaz.latest.durabletask.retention_policy import Create as _Create
 from azure.cli.core.aaz import AAZStrArg
@@ -121,11 +120,11 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
 
     endpoint = scheduler['properties']['endpoint']
     endpoint += "/v1/taskhubs/orchestrations/query"
-    grabbed_token = f"Bearer {get_bearer_token(cmd.cli_ctx)}"
+    dataplane_token  = f"Bearer {get_dataplane_bearer_token(cmd.cli_ctx)}"
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': grabbed_token,
+        'Authorization': dataplane_token ,
         'x-taskhub': taskhub_name
     }
 
@@ -133,6 +132,8 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
 
     client = httpx.Client(http2=True)
     response = client.post(endpoint, json=payload, headers=headers)
+    if response.status_code == 404:
+        raise Exception("Error retrieving orchestration details. Please check the scheduler name, taskhub name, and resource group.")
     return response.json()
 
 
@@ -147,11 +148,11 @@ def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, o
 
     endpoint = scheduler['properties']['endpoint']
     endpoint += "/v1/taskhubs/orchestrations/" + orchestration_id
-    grabbed_token = f"Bearer {get_bearer_token(cmd.cli_ctx)}"
+    dataplane_token  = f"Bearer {get_dataplane_bearer_token(cmd.cli_ctx)}"
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': grabbed_token,
+        'Authorization': dataplane_token ,
         'x-taskhub': taskhub_name
     }
 
@@ -160,7 +161,7 @@ def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, o
     return response.json()
 
 
-def get_bearer_token(cli_ctx):
+def get_dataplane_bearer_token(cli_ctx):
     from azure.cli.core._profile import Profile
     from azure.cli.core.auth.util import resource_to_scopes
     profile = Profile(cli_ctx=cli_ctx)
