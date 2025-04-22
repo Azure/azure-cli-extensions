@@ -2380,7 +2380,7 @@ helps['containerapp env ingress'] = """
 
 helps['containerapp env ingress set'] = """
     type: command
-    short-summary: Set the ingress settings for the environment. 
+    short-summary: Set the ingress settings for the environment.
     long-summary: |
         Unspecified optional parameters will be cleared from any existing configuration.
     examples:

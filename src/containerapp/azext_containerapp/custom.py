@@ -3718,17 +3718,17 @@ def show_environment_ingress(cmd, name, resource_group_name):
         env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
         if not env:
             raise ResourceNotFoundError(f"The containerapp environment '{name}' does not exist")
-        
+
         ingress_config = safe_get(env, "properties", "ingressConfiguration")
         if not ingress_config:
             return {"message": "No ingress configuration found for this environment, using default values."}
-        
+
         return ingress_config
     except Exception as e:
         handle_raw_exception(e)
 
 
-def set_environment_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period = None, request_idle_timeout = None, header_count_limit = None, no_wait=False):
+def set_environment_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
@@ -3758,24 +3758,25 @@ def set_environment_ingress(cmd, name, resource_group_name, workload_profile_nam
             managed_environment_envelope=env_patch,
             no_wait=no_wait
         )
-        
+
         return safe_get(result, "properties", "ingressConfiguration")
-    
+
     except Exception as e:
         handle_raw_exception(e)
 
-def update_environment_ingress(cmd, name, resource_group_name, workload_profile_name = None, min_replicas = None, max_replicas = None, termination_grace_period = None, request_idle_timeout = None, header_count_limit = None, no_wait=False):
+
+def update_environment_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
         if not env:
             raise ResourceNotFoundError(f"The containerapp environment '{name}' does not exist")
-        
+
         env_patch = {}
         ingress_config = {}
         scale = {}
-        
+
         if workload_profile_name is not None:
             ingress_config["workloadProfileName"] = workload_profile_name
         if min_replicas is not None:
@@ -3790,13 +3791,13 @@ def update_environment_ingress(cmd, name, resource_group_name, workload_profile_
             ingress_config["requestIdleTimeout"] = request_idle_timeout
         if header_count_limit is not None:
             ingress_config["headerCountLimit"] = header_count_limit
-            
+
         # Only add ingressConfiguration to the patch if any values were specified
         if ingress_config:
             safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
         else:
             return {"message": "No changes specified for ingress configuration"}
-                
+
         # Update the environment with the patched ingress configuration
         result = ManagedEnvironmentPreviewClient.update(
             cmd=cmd,
@@ -3805,11 +3806,12 @@ def update_environment_ingress(cmd, name, resource_group_name, workload_profile_
             managed_environment_envelope=env_patch,
             no_wait=no_wait
         )
-        
+
         return safe_get(result, "properties", "ingressConfiguration")
-    
+
     except Exception as e:
         handle_raw_exception(e)
+
 
 def reset_environment_ingress_to_defaults(cmd, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -3830,6 +3832,6 @@ def reset_environment_ingress_to_defaults(cmd, name, resource_group_name, no_wai
             managed_environment_envelope=env_patch,
             no_wait=no_wait
         )
-    
+
     except Exception as e:
         handle_raw_exception(e)
