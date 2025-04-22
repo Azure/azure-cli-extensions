@@ -120,11 +120,11 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
 
     endpoint = scheduler['properties']['endpoint']
     endpoint += "/v1/taskhubs/orchestrations/query"
-    dataplane_token  = f"Bearer {get_dataplane_bearer_token(cmd.cli_ctx)}"
+    dataplane_token = f"Bearer {get_dataplane_bearer_token(cmd.cli_ctx)}"
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': dataplane_token ,
+        'Authorization': dataplane_token,
         'x-taskhub': taskhub_name
     }
 
@@ -148,11 +148,11 @@ def show_orchestration(cmd, resource_group_name, scheduler_name, taskhub_name, o
 
     endpoint = scheduler['properties']['endpoint']
     endpoint += "/v1/taskhubs/orchestrations/" + orchestration_id
-    dataplane_token  = f"Bearer {get_dataplane_bearer_token(cmd.cli_ctx)}"
+    dataplane_token = f"Bearer {get_dataplane_bearer_token(cmd.cli_ctx)}"
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': dataplane_token ,
+        'Authorization': dataplane_token,
         'x-taskhub': taskhub_name
     }
 
