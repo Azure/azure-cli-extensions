@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env ingress': New environment level ingress configuration.
 
 1.1.0b4
 ++++++
