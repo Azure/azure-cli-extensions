@@ -131,3 +131,9 @@ Release History
 2.5.5
 ++++++
 * `az grafana notification-channel test`: fix issue with test output parsing
+
+2.6.0
+++++++
+* `az grafana integrations monitor add`: support optional subscription id argument for multi-subscription scenarios
+* `az grafana integrations monitor delete`: support optional subscription id argument for multi-subscription scenarios
+* `az grafana notification-channel`: deprecate command group as part of Grafana legacy alerting deprecation
