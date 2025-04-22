@@ -9,6 +9,7 @@ import json
 import httpx
 from azure.cli.core.commands.client_factory import get_subscription_id
 from .aaz.latest.durabletask.scheduler import Show
+from azure.core.exceptions import HttpResponseError
 
 class CreatePolicy(_Create):
     """Create a retention policy for a Durabletask scheduler."""
@@ -128,12 +129,14 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
         'x-taskhub': taskhub_name
     }
 
-    payload = {"filter": {}, "pagination": {"startIndex": start_index, "count": max_items}, "sort": [{"column": "LAST_UPDATED_AT", "direction": "DESCENDING_SORT"}]}
+    payload = {"filter": {}, "pagination": {"startIndex": start_index, "count": max_items},
+               "sort": [{"column": "LAST_UPDATED_AT", "direction": "DESCENDING_SORT"}]}
 
     client = httpx.Client(http2=True)
     response = client.post(endpoint, json=payload, headers=headers)
     if response.status_code == 404:
-        raise Exception("Error retrieving orchestration details. Please check the scheduler name, taskhub name, and resource group.")
+        raise HttpResponseError("Error retrieving orchestration details." \
+                                " Please check the scheduler name, taskhub name, and resource group.")
     return response.json()
 
 
