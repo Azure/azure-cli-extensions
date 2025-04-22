@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Status(AAZCommand):
     """Get a StandbyContainerGroupPoolRuntimeViewResource
+
+    :example: StandbyContainerGroupPoolRuntimeViews_Status
+        az standby-container-group-pool status --resource-group rgstandbypool --name pool --version latest --subscription 00000000-0000-0000-0000-000000000009
     """
 
     _aaz_info = {
@@ -42,6 +45,7 @@ class Status(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The resource group",
             required=True,
         )
         _args_schema.version = AAZStrArg(
@@ -49,12 +53,13 @@ class Status(AAZCommand):
             help="The unique identifier for the runtime view. The input string should be the word 'latest', which will get the latest runtime view of the pool, otherwise the request will fail with NotFound exception.",
             required=True,
             id_part="child_name_1",
+            default="latest",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{0,24}$",
             ),
         )
-        _args_schema.standby_container_group_pool_name = AAZStrArg(
-            options=["--name", "--standby-container-group-pool-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the standby container group pool",
             required=True,
             id_part="name",
@@ -119,7 +124,7 @@ class Status(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
+                    "standbyContainerGroupPoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

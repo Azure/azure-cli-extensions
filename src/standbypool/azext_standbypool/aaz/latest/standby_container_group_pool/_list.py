@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List StandbyContainerGroupPoolResource resources by subscription ID by resource group
+
+    :example: StandbyContainerGroupPools_ListBySubscription
+        az standby-container-group-pool list --subscription 00000000-0000-0000-0000-000000000009 --resource-group resourceGroup
     """
 
     _aaz_info = {
@@ -43,7 +46,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The resource group",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
