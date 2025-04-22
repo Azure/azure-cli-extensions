@@ -9,7 +9,7 @@ import re
 import stat
 import sys
 import tempfile
-from typing import TypeVar
+from typing import List, TypeVar
 
 import yaml
 from azext_aks_preview._client_factory import (
@@ -397,3 +397,24 @@ def get_k8s_extension_module(module_name):
 def check_if_extension_type_is_in_allow_list(extension_type_name):
     allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
     return extension_type_name.lower() in allowedListOfExtensions
+
+  
+  def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
+    filtered_taints = []
+    for taint in node_initialization_taints:
+        if not taint:
+            continue
+        # Parse the taint to get the effect
+        taint_parts = taint.split(":")
+        if len(taint_parts) == 2:
+            effect = taint_parts[-1].strip()
+            # Keep the taint if it has a soft effect (PreferNoSchedule)
+            # or if it's a CriticalAddonsOnly taint - AKS allows those on system pools
+            if effect.lower() == "prefernoschedule" or taint.lower().startswith("criticaladdonsonly"):
+                filtered_taints.append(taint)
+            else:
+                logger.warning('Taint %s with hard effect will be skipped from system pool', taint)
+        else:
+            # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
+            filtered_taints.append(taint)
+    return filtered_taints
