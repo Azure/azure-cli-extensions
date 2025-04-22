@@ -14,15 +14,23 @@ from azure.cli.testsdk import ScenarioTest
 class ConfidentialLedgerTests(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
-    def test_list_confidentialledger(self):
+    def test_list_bysubscription_confidentialledger(self):
         accounts_list = self.cmd('az confidentialledger list').get_output_in_json()
+        assert len(accounts_list) > 0
+
+    @AllowLargeResponse(size_kb=10240)
+    def test_list_byresourcegroup_confidentialledger(self):
+        self.kwargs.update({
+            'rg': 'AzCliExtensionRg',
+        })
+        accounts_list = self.cmd('az confidentialledger list --resource-group {rg}').get_output_in_json()
         assert len(accounts_list) > 0
 
     @AllowLargeResponse(size_kb=10240)
     def test_show_confidentialledger(self):
         self.kwargs.update({
-            'ledger_name': 'sql-test-ledger-1',
-            'rg': 'SqlTestLedgerRG',
+            'ledger_name': 'azclitest1',
+            'rg': 'AzCliExtensionRg',
         })
         self.cmd('az confidentialledger show --name {ledger_name} --resource-group {rg}', checks=[
             self.check('name', '{ledger_name}'),

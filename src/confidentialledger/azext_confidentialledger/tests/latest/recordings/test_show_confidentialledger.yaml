@@ -13,28 +13,28 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1026-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SqlTestLedgerRG/providers/Microsoft.ConfidentialLedger/ledgers/sql-test-ledger-1?api-version=2024-09-19-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/ledgers/azclitest1?api-version=2024-09-19-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SqlTestLedgerRG/providers/Microsoft.ConfidentialLedger/Ledgers/sql-test-ledger-1","name":"sql-test-ledger-1","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","tags":{"scope":"acl"},"properties":{"ledgerName":"sql-test-ledger-1","ledgerUri":"https://sql-test-ledger-1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/sql-test-ledger-1","runningState":"Active","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"e76336f1-cae2-492f-84bc-bfcbb6503c9b","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"},{"principalId":"61fe3baa-994a-463a-9851-e199115e4b19","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"},{"principalId":"56454aeb-8719-4b58-9965-bb7b454032d2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-4b1780eeff08","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/Ledgers/azclitest1","name":"azclitest1","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","properties":{"ledgerName":"azclitest1","ledgerUri":"https://azclitest1.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/azclitest1","runningState":"Active","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"78945818-3e7d-4708-bd84-3a480f1fbeb5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Contributor"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-9dde71291670","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
         Node","workerThreads":0}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1240'
+      - '909'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Apr 2025 16:56:32 GMT
+      - Tue, 22 Apr 2025 06:02:26 GMT
       etag:
-      - '"030105ea-0000-0100-0000-678938290000"'
+      - '"1e02a84e-0000-0100-0000-67f6ca0f0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 7e0024c7-49cf-42a0-80e3-e588eed2890e
+      - b8480f49-c19b-41cb-828a-c17d6dcc4236
       pragma:
       - no-cache
       strict-transport-security:
@@ -46,13 +46,13 @@ interactions:
       x-ms-image-tag:
       - 1.0.03020.245-cd77d0d5c8109fe7bf9e3ea1e1bb58b23d8a69d4
       x-ms-machinename:
-      - controlplane-6d79b784b6-bhqhx
+      - controlplane-6d79b784b6-jfn47
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F42863BEF8304D22ACE75722B8796D48 Ref B: SJC211051205023 Ref C: 2025-04-21T16:56:31Z'
+      - 'Ref A: 732AE19C792A44A4988A236B0365CBBB Ref B: SJC211051203017 Ref C: 2025-04-22T06:02:26Z'
     status:
       code: 200
       message: OK
