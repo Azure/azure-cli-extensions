@@ -8,17 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._adhoc_backup import *
-from ._create import *
-from ._delete import *
-from ._list import *
-from ._resume_protection import *
-from ._show import *
-from ._stop_protection import *
-from ._suspend_backup import *
-from ._update import *
-from ._validate_for_backup import *
-from ._validate_for_restore import *
-from ._validate_for_update import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "dataprotection backup-vault identity",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Identities for Backup Vaults
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

@@ -8,13 +8,14 @@
 
 from azure.cli.core.aaz import (
     AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg, AAZResourceLocationArg,
-    AAZResourceLocationArgFormat, AAZUndefined, has_value
+    AAZResourceLocationArgFormat, AAZUndefined, AAZObjectType, AAZStrType, has_value
 )
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
+    ValidateForUpdate as _ValidateForUpdate,
     Update as _Update,
     StopProtection as _StopProtection,
     SuspendBackup as _SuspendBackup,
@@ -29,6 +30,81 @@ from ..helpers import (
     convert_dict_keys_snake_to_camel, critical_operation_map,
     transform_resource_guard_operation_request
 )
+
+
+class ValidateForUpdateBI(_ValidateForUpdate):
+
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class BackupInstancesValidateForModifyBackup(_ValidateForUpdate.BackupInstancesValidateForModifyBackup):
+
+        # TODO zubairabid - remove after swagger fix
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def content(self):
+            from azext_dataprotection.manual import helpers
+            backup_instance = self.ctx.args.backup_instance.to_serialized_data()
+            body = helpers.convert_dict_keys_snake_to_camel(backup_instance)
+
+            return {
+                "backupInstance": body
+            }
+
+        # TODO zubairabid - remove after swagger fix
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        # TODO zubairabid - remove after swagger fix
+        _schema_on_200 = None
+
+        # TODO zubairabid - remove after swagger fix
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.job_id = AAZStrType(
+                serialized_name="jobId",
+            )
+            _schema_on_200.object_type = AAZStrType(
+                serialized_name="objectType",
+                flags={"required": True},
+            )
+
+            return cls._schema_on_200
 
 
 class UpdateWithBI(_Update):
