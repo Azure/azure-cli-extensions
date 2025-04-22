@@ -135,7 +135,7 @@ def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, 
     client = httpx.Client(http2=True)
     response = client.post(endpoint, json=payload, headers=headers)
     if response.status_code == 404:
-        raise HttpResponseError("Error retrieving orchestration details." \
+        raise HttpResponseError("Error retrieving orchestration details."
                                 " Please check the scheduler name, taskhub name, and resource group.")
     return response.json()
 
