@@ -196,6 +196,7 @@ DEFAULT_MOUNTS_USER = _config["mount"]["default_mounts_user"]
 DEFAULT_MOUNTS_USER_VIRTUAL_NODE = _config["mount"]["default_mounts_user_virtual_node"]
 DEFAULT_MOUNTS_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node"]
 DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node_privileged"]
+DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE = _config["mount"]["default_mounts_workload_identity_virtual_node"]
 # default mounts policy options for all containers
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers

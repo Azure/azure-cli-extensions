@@ -385,9 +385,12 @@ spec:
 
         # have to extract the name from the pattern
         env_rule_names = [(env_rule['pattern']).split("=")[0] for env_rule in containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]]
+        mounts = [mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] for mount in containers[0][config.ACI_FIELD_CONTAINERS_MOUNTS]]
 
         for var in config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY:
           self.assertTrue(var['name'] in env_rule_names)
+        for mount in config.DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE:
+            self.assertTrue(mount['mountPath'] in mounts)
 
     def test_volume_claim(self):
         virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_volume_claim)[0]

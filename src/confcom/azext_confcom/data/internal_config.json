@@ -282,6 +282,14 @@
                 "mountType": "emptyDir",
                 "mountPath": "/etc/hostname"
             }
+        ],
+        "default_mounts_workload_identity_virtual_node": [
+            {
+                "name": "azure-tokens",
+                "mountType": "emptyDir",
+                "mountPath": "/var/run/secrets/azure/tokens",
+                "readonly": true
+            }
         ]
     },
     "sidecar_base_names": [
