@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a StandbyVirtualMachinePoolResource
-
-    :example: Create standby virtual machine pool
-        az standby-vm-pool create --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --max-ready-capacity 20 --min-ready-capacity 10 --vm-state Running --vmss-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.Compute/virtualMachineScaleSets/myvmss --location eastus
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2025-03-01"],
         ]
     }
 
@@ -46,7 +43,6 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
@@ -92,7 +88,7 @@ class Create(AAZCommand):
             options=["--vm-state"],
             arg_group="Properties",
             help="Specifies the desired state of virtual machines in the pool.",
-            enum={"Deallocated": "Deallocated", "Running": "Running"},
+            enum={"Deallocated": "Deallocated", "Hibernated": "Hibernated", "Running": "Running"},
         )
 
         # define Arg Group "Resource"
@@ -197,7 +193,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
