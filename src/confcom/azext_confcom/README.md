@@ -181,22 +181,7 @@ Users just need to make a tar file by using the `docker save` command above, inc
 When generating security policy without using `--tar` argument, the confcom extension CLI tool attemps to fetch the image remotely if it is not locally available.
 However, the CLI tool does not attempt to fetch remotely if `--tar` argument is used.
 
-Example 11: The process used in example 10 can also be used to save multiple images into the same tar file. See the following example:
-
-```bash
-docker save ImageTag1 ImageTag2 ImageTag3 -o file.tar
-```
-
-Disconnect from network and delete the local image from the docker daemon.
-Use the following command to generate CCE policy for the image.
-
-```bash
-az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
-```
-
-Note that multiple images saved to the tar file is only available using the docker-archive format for tar files. OCI does not support multi-image tar files at this time.
-
-Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
+Example 11: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
 
 ```bash
 docker save image:tag1 -o file1.tar
@@ -221,7 +206,7 @@ Use the following command to generate CCE policy for the image.
 az confcom acipolicygen -a .\sample-template-input.json --tar .\tar_mappings.json
 ```
 
-Example 13: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
+Example 12: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
 
 Create parameters in the ARM Template for each environment variable that has an unknown or secret value such as:
 

@@ -416,6 +416,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         proxy = self._get_rootfs_proxy()
         container_images = self.get_images()
 
+        if isinstance(tar_mapping, str) and len(container_images) > 1:
+            eprint(
+                "Cannot have only one tar file when generating policy for multiple images. " +
+                "Please create a json file that maps image name to tar file path"
+            )
+
         # total tasks to complete is number of images to pull and get layers
         # (i.e. total images * 2 tasks)
         _TOTAL = 2 * len(container_images)
