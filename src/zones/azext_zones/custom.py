@@ -10,7 +10,7 @@ from ._argHelper import build_arg_query, execute_arg_query
 __logger = get_logger(__name__)
 
 
-def validate_zones(client, resource_group_names):
+def validate_zones(client, cmd, resource_group_names):
     # Build the ARG query to retrieve resources
     query = build_arg_query(resource_group_names, None, None)
     __logger.warning("Query: %s", query)
@@ -22,6 +22,22 @@ def validate_zones(client, resource_group_names):
     validation_results = validate_resources(resources)
 
     # Present the results to the user
+    return validation_results
+
+    if(cmd.output == 'table'):
+        # Output results in table format
+        from knack.table import TableFormatter
+        from knack.output import table_output       
+
+        table = TableFormatter(cmd, cmd.output).get_table()
+        table.add_column('Name', 'name')    
+        table.add_column('Location', 'location')
+        table.add_column('Resource Group', 'resourceGroup')
+        table.add_column('Type', 'type')
+        table.add_column('Zone Redundant', 'zoneRedundant')
+        table.add_row(validation_results)
+        table_output(cmd, table, validation_results)
+
     return validation_results
 
 
