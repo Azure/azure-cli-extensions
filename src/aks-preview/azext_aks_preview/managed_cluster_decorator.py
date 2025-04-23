@@ -3021,6 +3021,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
+
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs()
+        if retina_flow_logs_enabled is not None:
+            monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
+            if monitoring_addon_profile and monitoring_addon_profile.enabled:
+                config = monitoring_addon_profile.config or {}
+                config["enableRetinaFlowLogs"] = str(retina_flow_logs_enabled)
+                monitoring_addon_profile.config = config
+
         mc.addon_profiles = addon_profiles
         return mc
 

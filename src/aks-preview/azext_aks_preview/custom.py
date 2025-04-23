@@ -127,6 +127,23 @@ from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
+import azure.cli.command_modules.acs.addonconfiguration
+
+azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
+    "Microsoft-ContainerLog",
+    "Microsoft-ContainerLogV2-HighScale",
+    "Microsoft-KubeEvents",
+    "Microsoft-KubePodInventory",
+    "Microsoft-KubeNodeInventory",
+    "Microsoft-KubePVInventory",
+    "Microsoft-KubeServices",
+    "Microsoft-KubeMonAgentEvents",
+    "Microsoft-InsightsMetrics",
+    "Microsoft-ContainerInventory",
+    "Microsoft-ContainerNodeInventory",
+    "Microsoft-Perf",
+    "Microsoft-RetinaNetworkFlowLogs",
+]
 
 logger = get_logger(__name__)
 
