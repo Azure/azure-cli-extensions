@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Branch
+
+    :example: Update a Branch
+        az neon postgres branch update --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --project-id old-frost-16758796 --branch-name test-branch --entity-name test-branch2 --role-name test_role --database-name testneondb
     """
 
     _aaz_info = {
