@@ -104,7 +104,7 @@ def step_update(test, create_output_json, checks=None):
     test.cmd(
         "az confidentialledger update "
         f'--location "{location}" '
-        f"{aad_based_principals} "
+        f"[{aad_based_principals}] "
         f"{cert_based_principals} "
         f'--ledger-type "{ledger_type}" '
         f"--tags {tags} "
@@ -124,5 +124,17 @@ def step_delete(test, checks=None):
         "az confidentialledger delete -y "
         '--name "{myLedger}" '
         '--resource-group "{rg}"',
+        checks=checks,
+    )
+
+# EXAMPLE: /Ledger/checknameavailability
+@try_manual
+def step_checknameavailability(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az confidentialledger check-name-availability  "
+        '--type Microsoft.ConfidentialLedger/Ledgers '
+        '--name {ledger_name}',
         checks=checks,
     )

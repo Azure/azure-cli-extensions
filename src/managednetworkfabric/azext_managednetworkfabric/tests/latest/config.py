@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods
 
-""" ManagedNetworkFabric resource specific configuration"""
+"""ManagedNetworkFabric resource specific configuration"""
 
 import configparser
 from os import path
