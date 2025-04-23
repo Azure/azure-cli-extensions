@@ -23,7 +23,9 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "azure-mgmt-core>=1.5.0",
+]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
