@@ -2,6 +2,11 @@
 
 Release History
 ===============
+2.0.0b1
+++++++++++++++++++
+* `az monitor app-insights events/metrics/query`: Migrate data-plane using codegen tool
+* [Breaking Change] `az monitor app-insights events show`: Response schema key `aimessages` and `odatacontext` changed to `@ai.messages` and `@odata.context` to be consistent with swagger api
+
 1.2.3
 ++++++++++++++++++
 * `az monitor app-insights events/metrics/query`: Fix error: Profile.get_login_credentials() got an unexpected keyword argument 'resource'

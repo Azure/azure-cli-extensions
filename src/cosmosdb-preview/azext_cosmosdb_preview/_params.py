@@ -179,7 +179,7 @@ def load_arguments(self, _):
     # Managed Cassandra Cluster
     with self.argument_context('managed-cassandra cluster create') as c:
         c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
-        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.", required=True)
+        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center. This param is not needed for VPN clusters.")
         c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra.")
         c.argument('restore_from_backup_id', help="The resource id of a backup. If provided on create, the backup will be used to prepopulate the cluster. The cluster data center count and node counts must match the backup.")
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
@@ -228,6 +228,7 @@ def load_arguments(self, _):
         c.argument('disk_sku', options_list=['--disk-sku'], help="Disk SKU used for data centers. Default value is P30.")
         c.argument('disk_capacity', options_list=['--disk-capacity'], help="Number of disk used for data centers. Default value is 4.")
         c.argument('availability_zone', options_list=['--availability-zone', '-z'], arg_type=get_three_state_flag(), help="If the data center haves Availability Zone feature, apply it to the Virtual Machine ScaleSet that host the data center virtual machines.")
+        c.argument('private_endpoint_ip_address', options_list=['--private-endpoint-ip-address', '-i'], help="This is the IP address of the private Endpoint NIC, to be used in cases of VPN based cassandra datacenters.")
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter list') as c:

@@ -12,11 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+14.0.0b3
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
+
 14.0.0b2
 +++++++
-* Vendor new SDK and bump API version to 2025-01-02-preview.
-* Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
-* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
+* Update the `disable-egress-gateway` subcommand to fix `--help` output for the `az aks mesh` command.
+
 
 14.0.0b1
 +++++++

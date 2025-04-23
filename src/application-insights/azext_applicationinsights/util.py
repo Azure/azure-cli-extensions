@@ -3,10 +3,25 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from enum import Enum
 from datetime import datetime
 import dateutil.parser  # pylint: disable=import-error
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azext_applicationinsights._client_factory import applicationinsights_mgmt_plane_client
+
+
+class EventType(str, Enum):
+    all = "$all"
+    traces = "traces"
+    custom_events = "customEvents"
+    page_views = "pageViews"
+    browser_timings = "browserTimings"
+    requests = "requests"
+    dependencies = "dependencies"
+    exceptions = "exceptions"
+    availability_results = "availabilityResults"
+    performance_counters = "performanceCounters"
+    custom_metrics = "customMetrics"
 
 
 def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
