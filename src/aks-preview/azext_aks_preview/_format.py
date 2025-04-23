@@ -3,19 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_aks_preview._consts import (
-    CONST_K8S_EXTENSION_FORMAT_MOD_NAME,
-)
-from azext_aks_preview._helpers import (
-    get_k8s_extension_module,
-)
 from collections import OrderedDict
 # pylint: disable=import-error
 from jmespath import compile as compile_jmes, Options
 # pylint: disable=import-error
 from jmespath import functions
 
-k8s_extension_format_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_FORMAT_MOD_NAME)
 
 def aks_addon_list_available_table_format(result):
     def parser(entry):
@@ -383,13 +376,11 @@ def _format_mesh_revision_entry(revision):
 
 
 def k8s_extension_list_table_format(results):
-    return k8s_extension_format_mod.k8s_extension_list_table_format(results)
-    #return [__get_table_row(result) for result in results]
+    return [__get_table_row(result) for result in results]
 
 
 def k8s_extension_show_table_format(result):
-    return k8s_extension_format_mod.k8s_extension_show_table_format(results)
-    #return __get_table_row(result)
+    return __get_table_row(result)
 
 
 def __get_table_row(result):
@@ -404,13 +395,11 @@ def __get_table_row(result):
 
 
 def k8s_extension_types_list_table_format(results):
-    return k8s_extension_format_mod.k8s_extension_types_list_table_format(results)
-    #return [__get_extension_type_table_row(result) for result in results]
+    return [__get_extension_type_table_row(result) for result in results]
 
 
 def k8s_extension_type_show_table_format(result):
-    return k8s_extension_format_mod.k8s_extension_type_show_table_format(results)
-    #return __get_extension_type_table_row(result)
+    return __get_extension_type_table_row(result)
 
 
 def __get_extension_type_table_row(result):
@@ -439,13 +428,11 @@ def __get_extension_type_table_row(result):
 
 
 def k8s_extension_type_versions_list_table_format(results):
-    return k8s_extension_format_mod.k8s_extension_type_versions_list_table_format(results)
-    #return [__get_extension_type_versions_table_row(result) for result in results]
+    return [__get_extension_type_versions_table_row(result) for result in results]
 
 
 def k8s_extension_type_version_show_table_format(results):
-    return k8s_extension_format_mod.k8s_extension_type_version_show_table_format(results)
-    #return __get_extension_type_versions_table_row(results)
+    return __get_extension_type_versions_table_row(results)
 
 
 def __get_extension_type_versions_table_row(result):
