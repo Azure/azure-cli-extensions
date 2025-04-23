@@ -13,5 +13,7 @@ from ._create import *
 from ._delete import *
 from ._list import *
 from ._show import *
+from ._test_backup import *
+from ._test_restore import *
 from ._update import *
 from ._wait import *

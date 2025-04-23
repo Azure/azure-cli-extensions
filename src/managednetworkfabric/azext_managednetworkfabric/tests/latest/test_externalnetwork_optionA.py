@@ -80,9 +80,9 @@ class GA_ExternalNetworkOptionAScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "name": CONFIG.get("EXTERNAL_NETWORK", "name"),
-                "rg": CONFIG.get("EXTERNAL_NETWORK", "resource_group"),
-                "l3Domain": CONFIG.get("EXTERNAL_NETWORK", "l3_domain"),
+                "name": CONFIG.get("EXTERNAL_NETWORK", "optiona_name"),
+                "rg": CONFIG.get("EXTERNAL_NETWORK", "optiona_resource_group"),
+                "l3Domain": CONFIG.get("EXTERNAL_NETWORK", "optiona_l3_domain"),
                 "s2PeeringOption": CONFIG.get("EXTERNAL_NETWORK", "s2_peering_option"),
                 "importRoutePolicy": CONFIG.get(
                     "EXTERNAL_NETWORK", "import_route_policy"
