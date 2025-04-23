@@ -3368,3 +3368,18 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 --config-settings-file=config-settings-file \
 --config-protected-file=protected-settings-file
 """
+
+helps['aks extension delete'] = """
+  type: command
+  short-summary: Delete a Kubernetes Extension.
+  parameters:
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+  examples:
+    - name: Delete an existing Kubernetes extension on AKS cluster
+      text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
+"""

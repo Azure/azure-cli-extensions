@@ -458,3 +458,4 @@ def load_command_table(self, _):
             as g:
         g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
         g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
+        g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)

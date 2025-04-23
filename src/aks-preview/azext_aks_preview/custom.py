@@ -3804,3 +3804,34 @@ def update_k8s_extension(
         return result
     except Exception as ex:
         logger.error("K8s extension failed to patch.\nError: %s", ex)
+
+
+def delete_k8s_extension(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    no_wait=False,
+    yes=False,
+    force=False,
+):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.delete_k8s_extension(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            name,
+            "managedClusters",
+            no_wait=no_wait,
+            yes=yes,
+            force=force,
+        )
+        return result
+    except Exception as ex:
+        logger.error("Failed to delete K8s extension.\nError: %s", ex)
