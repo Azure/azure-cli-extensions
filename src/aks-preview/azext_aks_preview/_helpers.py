@@ -410,7 +410,7 @@ def get_k8s_extension_module(module_name):
         return azext_custom
     except ImportError:
         raise UnknownError(  # pylint: disable=raise-missing-from
-            "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
+            "Please add CLI extension `k8s-extension` for performing K8s extension operations.\n"
             "Run command `az extension add --name k8s-extension`"
         )
 
