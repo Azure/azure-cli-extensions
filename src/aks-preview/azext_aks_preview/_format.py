@@ -375,11 +375,11 @@ def _format_mesh_revision_entry(revision):
     return flattened
 
 
-def core_extension_list_table_format(results):
+def k8s_extension_list_table_format(results):
     return [__get_table_row(result) for result in results]
 
 
-def core_extension_show_table_format(result):
+def k8s_extension_show_table_format(result):
     return __get_table_row(result)
 
 
