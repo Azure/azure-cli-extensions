@@ -470,6 +470,19 @@ def validate_autostop_error_rate(namespace):
         )
 
 
+def validate_autostop_maximum_virtual_users_per_engine(namespace):
+    if namespace.autostop_maximum_virtual_users_per_engine is None:
+        return
+    if not isinstance(namespace.autostop_maximum_virtual_users_per_engine, int):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-engine-users type: {type(namespace.autostop_maximum_virtual_users_per_engine)}"
+        )
+    if namespace.autostop_maximum_virtual_users_per_engine <= 0:
+        raise InvalidArgumentValueError(
+            "Autostop maximum users per engine should be greater than 0"
+        )
+
+
 def _validate_autostop_disable_configfile(autostop):
     if autostop.casefold() not in ["disable"]:
         raise InvalidArgumentValueError(

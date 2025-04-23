@@ -274,8 +274,8 @@ def parse_env(envs):
     return env_dict
 
 
-def create_autostop_criteria_from_args(autostop, error_rate, time_window):
-    if (autostop is None and error_rate is None and time_window is None):
+def create_autostop_criteria_from_args(autostop, error_rate, time_window, max_vu_per_engine):
+    if (autostop is None and error_rate is None and time_window is None and max_vu_per_engine is None):
         return None
     autostop_criteria = {}
     autostop_criteria["autoStopDisabled"] = not autostop if autostop is not None else False
@@ -283,6 +283,8 @@ def create_autostop_criteria_from_args(autostop, error_rate, time_window):
         autostop_criteria["errorRate"] = error_rate
     if time_window is not None:
         autostop_criteria["errorRateTimeWindowInSeconds"] = time_window
+    if max_vu_per_engine is not None:
+        autostop_criteria["maximumVirtualUsersPerEngine"] = max_vu_per_engine
     return autostop_criteria
 
 
