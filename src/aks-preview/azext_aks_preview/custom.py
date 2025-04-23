@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines, disable=broad-except
+# pylint: disable=too-many-lines
 import datetime
 import json
 import os
@@ -57,18 +57,14 @@ from azext_aks_preview._consts import (
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
     CONST_ARTIFACT_SOURCE_DIRECT,
-    CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
-    CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    get_k8s_extension_module,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
-    check_if_extension_type_is_in_allow_list,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -3708,56 +3704,3 @@ def aks_check_network_outbound(
                             instance_id,
                             vm_name,
                             custom_endpoints)
-
-
-def create_k8s_extension(
-    cmd,
-    client,
-    resource_group_name,
-    cluster_name,
-    name,
-    extension_type,
-    scope=None,
-    auto_upgrade_minor_version=None,
-    release_train=None,
-    version=None,
-    target_namespace=None,
-    release_namespace=None,
-    configuration_settings=None,
-    configuration_protected_settings=None,
-    configuration_settings_file=None,
-    configuration_protected_settings_file=None,
-    no_wait=False,
-):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to install {extension_type.lower()}" +
-                              "as it is not in allowed list of extension types")
-
-    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
-
-    try:
-        result = k8s_extension_custom_mod.create_k8s_extension(
-            cmd,
-            client,
-            resource_group_name,
-            cluster_name,
-            name=name,
-            cluster_type="managedClusters",
-            extension_type=extension_type,
-            auto_upgrade_minor_version=auto_upgrade_minor_version,
-            release_train=release_train,
-            scope=scope,
-            version=version,
-            target_namespace=target_namespace,
-            release_namespace=release_namespace,
-            configuration_settings=configuration_settings,
-            configuration_protected_settings=configuration_protected_settings,
-            configuration_settings_file=configuration_settings_file,
-            configuration_protected_settings_file=configuration_protected_settings_file,
-            no_wait=no_wait,
-        )
-        return result
-    except Exception as ex:
-        logger.error("K8s extension failed to install.\nError: %s", ex)
