@@ -131,6 +131,7 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_K8S_EXTENSION_ACTION_MOD_NAME
 )
 
 from azext_aks_preview._helpers import (
