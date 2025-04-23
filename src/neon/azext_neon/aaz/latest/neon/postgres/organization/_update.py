@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Updates a Neon Postgres organization
 
-    :example: Organization_Update
+    :example: Update Neon Postgres Organization
         az neon postgres create --resource-group demoResourceGroup --name demoNeonResource --location eastus2 --subscription 12345678-1234-1234-1234-123456789abc --marketplace-details "{subscription-id:abcd1234-5678-90ab-cdef-12345678abcd,subscription-status:Subscribed,offer-details:{publisher-id:neon1722366567200,offer-id:neon_serverless_postgres_azure_prod,plan-id:neon_serverless_postgres_azure_prod_scale,plan-name:Scale Plan,term-unit:P1M,term-id:gmz7xq9ge3py}}"  --company-details "{}" --partner-organization-properties "{}"
     """
 

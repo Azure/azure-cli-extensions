@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List Branch resources by Project
 
-    :example: List Branch
+    :example: List Branches under a Project
         az neon postgres branch list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
     """
 
@@ -57,7 +57,7 @@ class List(AAZCommand):
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The name of the Neon Project resource.",
+            help="The id of the Neon Project resource.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",

@@ -20,8 +20,8 @@ class List(AAZCommand):
 
     List Neon Project associated with your Neon Organization resource, including those shared with you.
 
-    :example: List Projects Examples
-        az neon postgres project list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test
+    :example: List Neon Projects within an Organization
+        az neon postgres project list --resource-group rgneon --organization-name org-cli-test
     """
 
     _aaz_info = {

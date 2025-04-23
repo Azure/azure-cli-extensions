@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a Branch
 
-    :example: Branches_Delete_MaximumSet
+    :example: Delete Branch
         az neon postgres branch delete --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
     """
 
@@ -47,7 +47,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.branch_id = AAZStrArg(
             options=["--branch-id"],
-            help="The name of the Branch",
+            help="The id of the Neon Branch resource",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -67,7 +67,7 @@ class Delete(AAZCommand):
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The name of the Neon Project resource.",
+            help="The id of the Neon Project resource.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

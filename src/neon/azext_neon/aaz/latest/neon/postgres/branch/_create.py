@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Branch
 
-    :example: Branches_CreateOrUpdate_MaximumSet
-        az neon postgres branch create --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --project-id old-frost-16758796 --branch-name test-branch --entity-name test-branch --role-name test_role --database-name testneondb
+    :example: Create a Branch
+        az neon postgres branch create --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --project-id old-frost-16758796 --branch-name test-branch --entity-name test-branch --role-name test_role --database-name testneondb
     """
 
     _aaz_info = {

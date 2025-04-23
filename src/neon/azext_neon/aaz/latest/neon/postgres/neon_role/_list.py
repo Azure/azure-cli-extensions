@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List NeonRole resources by Branch
 
-    :example: NeonRoles_List_MaximumSet
-        az neon postgres neon-role list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-test-cli --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
+    :example: List Neon Roles under a Branch
+        az neon postgres neon-role list --resource-group rgneon --organization-name org-test-cli --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.branch_id = AAZStrArg(
             options=["--branch-id"],
-            help="The name of the Branch",
+            help="The id of the Neon Branch resource",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -65,7 +65,7 @@ class List(AAZCommand):
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The name of the Neon Project resource.",
+            help="The id of the Neon Project resource.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",

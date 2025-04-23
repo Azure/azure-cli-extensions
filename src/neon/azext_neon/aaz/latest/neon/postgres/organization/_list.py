@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List Neon organizations by subscription ID
 
-    :example: Organizations_ListBySubscription
+    :example: List Neon Postgres Organization
         az neon postgres organization list --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup
     """
 

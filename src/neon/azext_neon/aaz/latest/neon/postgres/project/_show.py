@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get details of a Neon Project resource
 
-    :example: Get Project Details Examples
-        az neon postgres project show --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
+    :example: Show Neon Project Deatils
+        az neon postgres project show --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
     """
 
     _aaz_info = {
@@ -58,7 +58,7 @@ class Show(AAZCommand):
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The name of the Neon Project resource.",
+            help="The id of the Neon Project resource.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetConnectionUri(AAZCommand):
     """Action to retrieve the connection URI for the Neon Database.
+
+    :example: Get Database Connection URI
+        az neon postgres project get-connection-uri --resource-group rgneon --organization-name test-org --project-name entity-name --project-id old-frost-16758796 --branch-id br-spring-field-a8vje3tr --database-name neondb --role-name owner_role --endpoint-id ep-purple-voice-a84wphbw --is-pooled false
     """
 
     _aaz_info = {

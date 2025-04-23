@@ -19,9 +19,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a Neon Postgres Organization
 
-    :example: Organizations_Delete
+    :example: Delete Neon Postgres Organization
         az neon postgres organization delete --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
-        az neon postgres organization delete --resource-group demoResourceGroup --name demoNeonResource
     """
 
     _aaz_info = {

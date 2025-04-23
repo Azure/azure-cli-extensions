@@ -19,8 +19,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Deletes a Neon Project resource
 
-    :example: Delete Neon Project Examples
-        az neon postgres project delete --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
+    :example: Delete Neon Project
+        az neon postgres project delete --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
     """
 
     _aaz_info = {
@@ -59,7 +59,7 @@ class Delete(AAZCommand):
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The name of the Neon Project resource",
+            help="The id of the Neon Project resource.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

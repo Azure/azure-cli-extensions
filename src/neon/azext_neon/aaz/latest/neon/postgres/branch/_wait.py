@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.branch_id = AAZStrArg(
             options=["--branch-id"],
-            help="The name of the Branch",
+            help="The id of the Neon Branch resource",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -62,7 +62,7 @@ class Wait(AAZWaitCommand):
         )
         _args_schema.project_id = AAZStrArg(
             options=["--project-id"],
-            help="The name of the Neon Project resource.",
+            help="The id of the Neon Project resource.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
