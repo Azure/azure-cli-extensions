@@ -100,11 +100,6 @@ class Create(AAZCommand):
                 pattern="^[a-z0-9-]{1,60}$",
             ),
         )
-        _args_schema.project_id = AAZStrArg(
-            options=["--project-id"],
-            arg_group="Properties",
-            help="The ID of the project this branch belongs to",
-        )
         _args_schema.role_name = AAZStrArg(
             options=["--role-name"],
             arg_group="Properties",
@@ -259,7 +254,6 @@ class Create(AAZCommand):
                 properties.set_prop("databaseName", AAZStrType, ".database_name")
                 properties.set_prop("entityName", AAZStrType, ".entity_name")
                 properties.set_prop("parentId", AAZStrType, ".parent_id")
-                properties.set_prop("projectId", AAZStrType, ".project_id")
                 properties.set_prop("roleName", AAZStrType, ".role_name")
 
             return self.serialize_content(_content_value)
