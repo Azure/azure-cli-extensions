@@ -30,7 +30,7 @@ def yaml_parse_autostop_criteria(data):
     time_window = data[LoadTestConfigKeys.AUTOSTOP].get(LoadTestConfigKeys.AUTOSTOP_ERROR_RATE_TIME_WINDOW)
     max_vu_per_engine = data[LoadTestConfigKeys.AUTOSTOP].get(LoadTestConfigKeys.AUTOSTOP_MAX_VU_PER_ENGINE)
     # pylint: disable-next=protected-access
-    validators._validate_autostop_criteria_configfile(error_rate, time_window)
+    validators._validate_autostop_criteria_configfile(error_rate, time_window, max_vu_per_engine)
     autostop_criteria = {
         "autoStopDisabled": False,
     }

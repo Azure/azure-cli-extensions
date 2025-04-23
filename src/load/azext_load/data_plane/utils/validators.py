@@ -490,7 +490,7 @@ def _validate_autostop_disable_configfile(autostop):
         )
 
 
-def _validate_autostop_criteria_configfile(error_rate, time_window):
+def _validate_autostop_criteria_configfile(error_rate, time_window, max_vu_per_engine):
     if error_rate is not None:
         if isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0):
             raise InvalidArgumentValueError(
@@ -503,6 +503,10 @@ def _validate_autostop_criteria_configfile(error_rate, time_window):
     if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
         raise InvalidArgumentValueError(
             "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
+        )
+    if max_vu_per_engine is not None and (not isinstance(max_vu_per_engine, int) or max_vu_per_engine <= 0):
+        raise InvalidArgumentValueError(
+            "Invalid value for maximumVirtualUsersPerEngine. Value should be an integer greater than 0"
         )
 
 
