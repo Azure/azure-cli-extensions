@@ -3335,3 +3335,36 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 --cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
 --scope cluster --release-train stable
 """
+
+helps['aks extension update'] = """
+  type: command
+  short-summary: Update mutable properties of a Kubernetes Extension.
+  long-summary: For update to ConfigSettings and ConfigProtectedSettings, please \
+refer to documentation of the cluster extension service to check update to these \
+properties is supported before updating these properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+ source control. Also verify that no secrets are present in the logs of your command or script. \
+ For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+    - name: --release-train
+      type: string
+      short-summary: specify the release train for the extension type
+    - name: --version
+      type: string
+      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
+  examples:
+    - name: Update K8s extension on AKS cluster
+      text: az aks extension update --resource-group my-resource-group \
+--cluster-name mycluster --name myextension --auto-upgrade true/false \
+--version extension-version --release-train stable \
+--configuration-settings settings-key=settings-value \
+--config-protected-settings protected-settings-key=protected-value \
+--config-settings-file=config-settings-file \
+--config-protected-file=protected-settings-file
+"""

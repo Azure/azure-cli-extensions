@@ -457,3 +457,4 @@ def load_command_table(self, _):
     with self.command_group("aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters) \
             as g:
         g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
+        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)

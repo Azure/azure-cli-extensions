@@ -2386,6 +2386,11 @@ def load_arguments(self, _):
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
 
+    with self.argument_context("aks extension update") as c:
+        c.argument('yes',
+                   options_list=['--yes', '-y'],
+                   help='Ignore confirmation prompts')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
