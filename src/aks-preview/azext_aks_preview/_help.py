@@ -3300,38 +3300,3 @@ helps['aks check-network outbound'] = """
         type: string
         short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
 """
-
-helps['aks extension'] = """
-  type: group
-  short-summary: Commands to manage extensions in Kubernetes cluster
-"""
-
-helps['aks extension create'] = """
-  type: command
-  short-summary: Creates the Kubernetes extension instance on the managed cluster. Please refer to the example at the end to see how to create a k8s extension
-  long-summary: Create a Kubernetes Extension. \
-The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
-  source control. Also verify that no secrets are present in the logs of your command or script. \
-  For additional information, see http://aka.ms/clisecrets.
-  parameters:
-    - name: --extension-type -t
-      type: string
-      short-summary: Name of the extension type
-    - name: --cluster-name -c
-      type: string
-      short-summary: Name of the AKS cluster
-    - name: --name -n
-      type: string
-      short-summary: Name of the extension instance
-    - name: --scope
-      type: string
-      short-summary: specify scope of the extension type, takes in name or cluster as the scope
-    - name: --release-train
-      type: string
-      short-summary: specify the release train for the extension type
-  examples:
-    - name: Install K8s extension on AKS cluster
-      text: az aks extension create --resource-group my-resource-group \
---cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
---scope cluster --release-train stable
-"""

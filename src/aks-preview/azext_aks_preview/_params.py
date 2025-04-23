@@ -131,11 +131,8 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
-    CONST_K8S_EXTENSION_ACTION_MOD_NAME,
 )
-from azext_aks_preview._helpers import (
-    get_k8s_extension_module,
-)
+
 from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
@@ -2331,63 +2328,6 @@ def load_arguments(self, _):
                    nargs="+",
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
-
-    with self.argument_context('aks extension') as c:
-        c.argument('location',
-                   validator=get_default_location_from_resource_group)
-        c.argument('name',
-                   options_list=['--name', '-n'],
-                   help='Name of the extension instance')
-        c.argument('extension_type',
-                   options_list=['--extension-type', '-t'],
-                   help='Name of the extension type.')
-        c.argument('cluster_name',
-                   options_list=['--cluster-name', '-c'],
-                   help='Name of the Kubernetes cluster')
-        c.argument('scope',
-                   arg_type=get_enum_type(['cluster', 'namespace']),
-                   help='Specify the extension scope.')
-        c.argument('auto_upgrade_minor_version',
-                   arg_group="Version",
-                   options_list=['--auto-upgrade-minor-version', '--auto-upgrade'],
-                   arg_type=get_three_state_flag(),
-                   help='Automatically upgrade minor version of the extension instance.')
-        c.argument('version',
-                   arg_group="Version",
-                   help='Specify the version to install for the extension instance if'
-                   ' --auto-upgrade-minor-version is not enabled.')
-        c.argument('release_train',
-                   arg_group="Version",
-                   help='Specify the release train for the extension type.')
-        c.argument('configuration_settings',
-                   arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config'],
-                   action=k8s_extension_action_mod.AddConfigurationSettings,
-                   nargs='+',
-                   help='Configuration Settings as key=value pair.'
-                   + 'Repeat parameter for each setting.'
-                   + 'Do not use this for secrets, as this value is returned in response.')
-        c.argument('configuration_protected_settings',
-                   arg_group="Configuration",
-                   options_list=['--config-protected-settings', '--config-protected'],
-                   action=k8s_extension_action_mod.AddConfigurationProtectedSettings,
-                   nargs='+',
-                   help='Configuration Protected Settings as key=value pair.'
-                   + 'Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
-        c.argument('configuration_settings_file',
-                   arg_group="Configuration",
-                   options_list=['--config-settings-file', '--config-file'],
-                   help='JSON file path for configuration-settings')
-        c.argument('configuration_protected_settings_file',
-                   arg_group="Configuration",
-                   options_list=['--config-protected-settings-file', '--config-protected-file'],
-                   help='JSON file path for configuration-protected-settings')
-        c.argument('release_namespace',
-                   help='Specify the namespace to install the extension release.')
-        c.argument('target_namespace',
-                   help='Specify the target namespace to install to for the extension instance. This'
-                   ' parameter is required if extension scope is set to \'namespace\'')
-
 
 def _get_default_install_location(exe_name):
     system = platform.system()
