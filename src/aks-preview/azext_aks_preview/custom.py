@@ -3835,3 +3835,21 @@ def delete_k8s_extension(
         return result
     except Exception as ex:
         logger.error("Failed to delete K8s extension.\nError: %s", ex)
+
+
+def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+
+    try:
+        result = k8s_extension_custom_mod.show_k8s_extension(
+            client,
+            resource_group_name,
+            cluster_name,
+            name,
+            "managedClusters",
+        )
+        return result
+    except Exception as ex:
+        logger.error("Failed to get K8s extension.\nError: %s", ex)

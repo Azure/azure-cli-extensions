@@ -16,6 +16,11 @@ from azext_aks_preview._client_factory import (
     cf_machines,
     cf_operations,
 )
+
+from azext_aks_preview._consts import (
+    CONST_K8S_EXTENSION_FORMAT_MOD_NAME,
+)
+
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
     aks_addon_list_table_format,
@@ -38,6 +43,11 @@ from azext_aks_preview._format import (
     aks_mesh_revisions_table_format,
     aks_mesh_upgrades_table_format,
 )
+
+from azext_aks_preview._helpers import (
+    get_k8s_extension_module,
+)
+
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -82,6 +92,7 @@ def transform_mc_objects_with_custom_cas(result):
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
+    k8s_extension_format_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_FORMAT_MOD_NAME)
     managed_clusters_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._managed_clusters_operations#ManagedClustersOperations.{}",
@@ -459,3 +470,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
         g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
         g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
+        g.custom_show_command(
+            'show',
+            'show_k8s_extension',
+            table_transformer=k8s_extension_format_mod.k8s_extension_show_table_format
+        )

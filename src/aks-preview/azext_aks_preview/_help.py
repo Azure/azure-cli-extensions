@@ -3383,3 +3383,23 @@ helps['aks extension delete'] = """
     - name: Delete an existing Kubernetes extension on AKS cluster
       text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
 """
+
+helps['aks extension show'] = """
+  type: command
+  short-summary: Show a Kubernetes Extension
+  long-summary: Show a Kubernetes Extension including its properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+  source control. Also verify that no secrets are present in the logs of your command or script. \
+  For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+  examples:
+      - name: Show details of a Kubernetes Extension
+        text: az aks extension show --resource-group my-resource-group \
+--cluster-name mycluster --name myextension
+"""
