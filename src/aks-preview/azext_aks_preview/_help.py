@@ -3300,3 +3300,8 @@ helps['aks check-network outbound'] = """
         type: string
         short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
 """
+
+helps['aks extension'] = """
+  type: group
+  short-summary: Commands to manage extensions in Kubernetes cluster
+"""
