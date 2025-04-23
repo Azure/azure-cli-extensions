@@ -763,7 +763,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return not disable_acns_security
         return None
 
-    def get_retina_flow_logs(self) -> Union[bool, None]:
+    def get_retina_flow_logs(self, mc: ManagedCluster) -> Union[bool, None]:
         """Get the enablement of retina flow logs
 
         :return: bool or None"""
@@ -775,6 +775,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-retina-flow-logs and "
                 "--disable-retina-flow-logs at the same time."
+            )
+        if (
+            enable_retina_flow_logs and
+            (not self.raw_param.get("enable_acns", False) and
+            not (mc.network_profile and mc.network_profile.advanced_networking and mc.network_profile.advanced_networking.enabled)) or
+            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
+        ):
+            raise InvalidArgumentValueError(
+                "Flow logs requires '--enable-acns', advanced networking to be enabled, and the 'omsagent' addon to be enabled."
             )
         enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
         disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
@@ -3022,7 +3031,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
 
-        retina_flow_logs_enabled = self.context.get_retina_flow_logs()
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
         if retina_flow_logs_enabled is not None:
             monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
             if monitoring_addon_profile and monitoring_addon_profile.enabled:
@@ -4065,6 +4074,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     enabled=acns_security_enabled,
                 )
             mc.network_profile.advanced_networking = acns
+        return mc
+    
+    def update_monitoring_profile_flow_logs(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update monitor profile for the ManagedCluster object for flow logs.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
+        if retina_flow_logs_enabled is not None:
+            if mc.addon_profiles:
+                monitoring_addon_profile = mc.addon_profiles.get("omsagent")
+                if monitoring_addon_profile and monitoring_addon_profile.enabled:
+                    monitoring_addon_profile.config = monitoring_addon_profile.config or {}
+                    monitoring_addon_profile.config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -5342,6 +5367,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
+        # update update_monitoring_profile_flow_logs
+        mc = self.update_monitoring_profile_flow_logs(mc)
 
         return mc
 
