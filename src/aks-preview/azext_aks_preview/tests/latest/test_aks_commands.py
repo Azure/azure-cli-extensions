@@ -13797,7 +13797,7 @@ spec:
         # update to disable retina flow logs
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
         )
         self.cmd(
             update_cmd,

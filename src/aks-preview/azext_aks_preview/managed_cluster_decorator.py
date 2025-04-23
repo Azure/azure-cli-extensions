@@ -783,7 +783,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
         ):
             raise InvalidArgumentValueError(
-                "Flow logs requires '--enable-acns', advanced networking to be enabled, and the 'omsagent' addon to be enabled."
+                "Flow logs requires '--enable-acns', advanced networking to be enabled, and the monitoring addon to be enabled."
             )
         enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
         disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
@@ -3034,7 +3034,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
         if retina_flow_logs_enabled is not None:
             monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
-            if monitoring_addon_profile and monitoring_addon_profile.enabled:
+            if monitoring_addon_profile:
                 config = monitoring_addon_profile.config or {}
                 config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
                 monitoring_addon_profile.config = config
@@ -4086,7 +4086,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
         if retina_flow_logs_enabled is not None:
             if mc.addon_profiles:
-                monitoring_addon_profile = mc.addon_profiles.get("omsagent")
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
                 if monitoring_addon_profile and monitoring_addon_profile.enabled:
                     monitoring_addon_profile.config = monitoring_addon_profile.config or {}
                     monitoring_addon_profile.config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
@@ -5353,6 +5355,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update acns in network_profile
         mc = self.update_acns_in_network_profile(mc)
+        # update update_monitoring_profile_flow_logs
+        mc = self.update_monitoring_profile_flow_logs(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
@@ -5367,8 +5371,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
-        # update update_monitoring_profile_flow_logs
-        mc = self.update_monitoring_profile_flow_logs(mc)
 
         return mc
 
