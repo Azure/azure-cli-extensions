@@ -33,7 +33,6 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     zones_type,
 )
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
@@ -132,7 +131,6 @@ from azext_aks_preview._consts import (
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
 )
-
 from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
@@ -433,8 +431,6 @@ def load_arguments(self, _):
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
-
-    k8s_extension_action_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_ACTION_MOD_NAME)
 
     # AKS command argument configuration
     with self.argument_context("aks") as c:
