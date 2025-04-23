@@ -17,10 +17,6 @@ from azext_aks_preview._client_factory import (
     cf_operations,
 )
 
-from azext_aks_preview._consts import (
-    CONST_K8S_EXTENSION_FORMAT_MOD_NAME,
-)
-
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
     aks_addon_list_table_format,
@@ -42,10 +38,12 @@ from azext_aks_preview._format import (
     aks_versions_table_format,
     aks_mesh_revisions_table_format,
     aks_mesh_upgrades_table_format,
-)
-
-from azext_aks_preview._helpers import (
-    get_k8s_extension_module,
+    k8s_extension_list_table_format,
+    k8s_extension_show_table_format,
+    k8s_extension_types_list_table_format,
+    k8s_extension_type_show_table_format,
+    k8s_extension_type_versions_list_table_format,
+    k8s_extension_type_version_show_table_format
 )
 
 from knack.log import get_logger
@@ -92,8 +90,6 @@ def transform_mc_objects_with_custom_cas(result):
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
-    k8s_extension_format_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_FORMAT_MOD_NAME)
-
     managed_clusters_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._managed_clusters_operations#ManagedClustersOperations.{}",
@@ -473,12 +469,12 @@ def load_command_table(self, _):
         g.custom_command(
             'list',
             'list_k8s_extension',
-            table_transformer=k8s_extension_format_mod.k8s_extension_list_table_format
+            table_transformer=k8s_extension_list_table_format
         )
         g.custom_show_command(
             'show',
             'show_k8s_extension',
-            table_transformer=k8s_extension_format_mod.k8s_extension_show_table_format
+            table_transformer=k8s_extension_show_table_format
         )
         g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
 
@@ -488,41 +484,41 @@ def load_command_table(self, _):
         g.custom_command(
             'list-by-location',
             'list_k8s_extension_types_by_location',
-            table_transformer=k8s_extension_format_mod.k8s_extension_types_list_table_format
+            table_transformer=k8s_extension_types_list_table_format
         )
         g.custom_command(
             'show-by-location',
             'show_k8s_extension_type_by_location',
-            table_transformer=k8s_extension_format_mod.k8s_extension_type_show_table_format
+            table_transformer=k8s_extension_type_show_table_format
         )
         g.custom_command(
             'list-versions-by-location',
             'list_k8s_extension_type_versions_by_location',
-            table_transformer=k8s_extension_format_mod.k8s_extension_type_versions_list_table_format
+            table_transformer=k8s_extension_type_versions_list_table_format
         )
         g.custom_command(
             'show-version-by-location',
             'show_k8s_extension_type_version_by_location',
-            table_transformer=k8s_extension_format_mod.k8s_extension_type_version_show_table_format
+            table_transformer=k8s_extension_type_version_show_table_format
         )
 
         g.custom_command(
             'list-by-cluster',
             'list_k8s_extension_types_by_cluster',
-            table_transformer=k8s_extension_format_mod.k8s_extension_types_list_table_format
+            table_transformer=k8s_extension_types_list_table_format
         )
         g.custom_command(
             'show-by-cluster',
             'show_k8s_extension_type_by_cluster',
-            table_transformer=k8s_extension_format_mod.k8s_extension_type_show_table_format
+            table_transformer=k8s_extension_type_show_table_format
         )
         g.custom_command(
             'list-versions-by-cluster',
             'list_k8s_extension_type_versions_by_cluster',
-            table_transformer=k8s_extension_format_mod.k8s_extension_type_versions_list_table_format
+            table_transformer=k8s_extension_type_versions_list_table_format
         )
         g.custom_command(
             'show-version-by-cluster',
             'show_k8s_extension_type_version_by_cluster',
-            table_transformer=k8s_extension_format_mod.k8s_extension_type_version_show_table_format
+            table_transformer=k8s_extension_type_version_show_table_format
         )
