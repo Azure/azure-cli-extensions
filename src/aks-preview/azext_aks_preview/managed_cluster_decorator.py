@@ -779,11 +779,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if (
             enable_retina_flow_logs and
             (not self.raw_param.get("enable_acns", False) and
-            not (mc.network_profile and mc.network_profile.advanced_networking and mc.network_profile.advanced_networking.enabled)) or
+                not (mc.network_profile and mc.network_profile.advanced_networking and
+                     mc.network_profile.advanced_networking.enabled)) or
             not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
         ):
             raise InvalidArgumentValueError(
-                "Flow logs requires '--enable-acns', advanced networking to be enabled, and the monitoring addon to be enabled."
+                "Flow logs requires '--enable-acns', advanced networking "
+                "to be enabled, and the monitoring addon to be enabled."
             )
         enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
         disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
@@ -4075,7 +4077,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
             mc.network_profile.advanced_networking = acns
         return mc
-    
+
     def update_monitoring_profile_flow_logs(self, mc: ManagedCluster) -> ManagedCluster:
         """Update monitor profile for the ManagedCluster object for flow logs.
 
