@@ -4091,9 +4091,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 addon_consts = self.context.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
-                if monitoring_addon_profile and monitoring_addon_profile.enabled:
-                    monitoring_addon_profile.config = monitoring_addon_profile.config or {}
-                    monitoring_addon_profile.config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                if monitoring_addon_profile:
+                    config = monitoring_addon_profile.config or {}
+                    config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                    monitoring_addon_profile.config = config
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
