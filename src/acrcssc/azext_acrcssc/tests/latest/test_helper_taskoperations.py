@@ -200,15 +200,17 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_transform_task_list.assert_called_once()
         self.assertEqual(result, [])
 
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
     @mock.patch("azext_acrcssc.helper._taskoperations.WorkflowTaskStatus.generate_logs")
     @mock.patch("azext_acrcssc.helper._taskoperations.create_temporary_dry_run_file")
     @mock.patch("azext_acrcssc.helper._taskoperations.delete_temporary_dry_run_file")
     @mock.patch("azext_acrcssc.helper._taskoperations.prepare_source_location")
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_registries_tasks")
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_runs")
+    @mock.patch('azext_acrcssc._validators.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch("azext_acrcssc.helper._taskoperations.LongRunningOperation")
-    def test_acr_cssc_dry_run(self, mock_LongRunningOperation, mock_cf_acr_tasks, mock_cf_acr_runs, mock_cf_acr_registries_tasks, mock_prepare_source_location, mock_delete_temporary_dry_run_file, mock_create_temporary_dry_run_file, mock_generate_logs):
+    def test_acr_cssc_dry_run(self, mock_LongRunningOperation, mock_cf_acr_tasks_taskoperations, mock_cf_acr_tasks_validator, mock_cf_acr_runs, mock_cf_acr_registries_tasks, mock_prepare_source_location, mock_delete_temporary_dry_run_file, mock_create_temporary_dry_run_file, mock_generate_logs, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
         config_file_path = "test_config_file_path"
         mock_acr_registries_task_client = mock.MagicMock()
@@ -216,9 +218,11 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_acr_run_client = mock.MagicMock()
         mock_cf_acr_runs.return_value = mock_acr_run_client
         mock_acr_task_client = mock.MagicMock()
-        mock_cf_acr_tasks.return_value = mock_acr_task_client
+        mock_cf_acr_tasks_validator.return_value = mock_acr_task_client
+        mock_cf_acr_tasks_taskoperations.return_value = mock_acr_task_client
         mock_LongRunningOperation.return_value.return_value.run_id = "test_run_id"
         mock_generate_logs.return_value = "mock_logs"
+        mock_check_continuous_task_exists.return_value = False, []
 
         # Call the function
         result = acr_cssc_dry_run(self.cmd, self.registry, config_file_path)

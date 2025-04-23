@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import unittest
 from azext_acrcssc.helper._utility import convert_cron_to_schedule, convert_timespan_to_cron
 from azure.cli.core.azclierror import InvalidArgumentValueError
