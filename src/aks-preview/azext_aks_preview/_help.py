@@ -15,6 +15,11 @@ AKS_SERVICE_PRINCIPAL_CACHE = os.path.join(
     '$HOME', '.azure', 'aksServicePrincipal.json')
 
 # AKS command help
+helps['aks'] = """
+    type: group
+    short-summary: Manage Azure Kubernetes Service (AKS) clusters.
+"""
+
 helps['aks create'] = f"""
     type: command
     short-summary: Create a new managed Kubernetes cluster.
