@@ -2325,6 +2325,7 @@ def load_arguments(self, _):
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
 
+
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == "Windows":
