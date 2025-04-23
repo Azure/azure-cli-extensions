@@ -196,6 +196,20 @@ class LoadTestScenarioAutostop(ScenarioTest):
             autostop_error_rate_time_window=-1,
         )
 
+        # Invalid autostop test case: autostop maximum VU per engine = 0
+        _configure_command_assert_exception(
+            self,
+            "Autostop maximum users per engine should be greater than 0",
+            autostop_maximum_vu_per_engine=0,
+        )
+
+        # Invalid autostop test case: autostop maximum VU per engine < 0
+        _configure_command_assert_exception(
+            self,
+            "Autostop maximum users per engine should be greater than 0",
+            autostop_maximum_vu_per_engine=0,
+        )
+
         # Invalid autostop test case: autostop error rate time window not of integer type
         # This is not needed as the argument is type checked
         # argument --autostop-time-window: invalid int value: '90.4'
@@ -204,7 +218,7 @@ class LoadTestScenarioAutostop(ScenarioTest):
         # Invalid autostop from config test case: autostop random string
         _configure_command_assert_exception(
             self,
-            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow",
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage, timeWindow and/or maximumVirtualUsersPerEngine",
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP,
         )
 
@@ -222,6 +236,13 @@ class LoadTestScenarioAutostop(ScenarioTest):
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW,
         )
 
+        # Invalid autostop from config test case: autostop time window < 0
+        _configure_command_assert_exception(
+            self,
+            "Invalid value for maximumVirtualUserPerEngine. Value should be an integer greater than 0",
+            load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_MAX_VU_PER_ENGINE,
+        )
+
 
 def _configure_command_jmes_checks(
     self,
@@ -229,6 +250,7 @@ def _configure_command_jmes_checks(
     autostop=None,
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
+    autostop_maximum_vu_per_engine=None,
     load_test_config_file=None,
 ):
     command = (
@@ -258,6 +280,13 @@ def _configure_command_jmes_checks(
             }
         )
         command += "--autostop-time-window {autostop_error_rate_time_window} "
+    if autostop_maximum_vu_per_engine is not None:
+        self.kwargs.update(
+            {
+                "autostop_maximum_vu_per_engine": autostop_maximum_vu_per_engine,
+            }
+        )
+        command += "--autostop-engine-users {autostop_maximum_vu_per_engine} "
     if load_test_config_file is not None:
         self.kwargs.update(
             {
@@ -277,6 +306,7 @@ def _configure_command_assert_exception(
     autostop=None,
     autostop_error_rate=None,
     autostop_error_rate_time_window=None,
+    autostop_maximum_vu_per_engine=None,
     load_test_config_file=None,
 ):
     command = (
@@ -306,6 +336,13 @@ def _configure_command_assert_exception(
             }
         )
         command += "--autostop-time-window {autostop_error_rate_time_window} "
+    if autostop_maximum_vu_per_engine is not None:
+        self.kwargs.update(
+            {
+                "autostop_maximum_vu_per_engine": autostop_maximum_vu_per_engine,
+            }
+        )
+        command += "--autostop-engine-users {autostop_maximum_vu_per_engine} "
     if load_test_config_file is not None:
         self.kwargs.update(
             {

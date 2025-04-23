@@ -486,7 +486,8 @@ def validate_autostop_maximum_virtual_users_per_engine(namespace):
 def _validate_autostop_disable_configfile(autostop):
     if autostop.casefold() not in ["disable"]:
         raise InvalidArgumentValueError(
-            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow"
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage, timeWindow "
+            "and/or maximumVirtualUsersPerEngine"
         )
 
 
