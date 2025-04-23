@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "neon postgres organization update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Updates a Neon Postgres organization
 
     :example: Organization_Update
-        az az neon postgres organization update --resource-group demoResourceGroup --name demoNeonResource --user-details "{first-name:John,last-name:Doe,email-address:johndoe@example.com,upn:johndoe,phone-number:+1234567890}" --company-details "{company-name:DemoCompany,country:USA,office-address:'123 Azure Ave, Redmond, WA',business-phone:+9876543210,domain:democompany.com,number-of-employees:1000}" --partner-organization-properties "{organization-id:org-5678,org-name:PartnerOrg,single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:app-9876,single-sign-on-url:'https://sso.partnerorg.com',aad-domains:['partnerorg.com']}}" --tags "{environment:production}"
+        az neon postgres create --resource-group demoResourceGroup --name demoNeonResource --location eastus2 --subscription 12345678-1234-1234-1234-123456789abc --marketplace-details "{subscription-id:abcd1234-5678-90ab-cdef-12345678abcd,subscription-status:Subscribed,offer-details:{publisher-id:neon1722366567200,offer-id:neon_serverless_postgres_azure_prod,plan-id:neon_serverless_postgres_azure_prod_scale,plan-name:Scale Plan,term-unit:P1M,term-id:gmz7xq9ge3py}}"  --company-details "{}" --partner-organization-properties "{}"
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01"],
         ]
     }
 
@@ -62,122 +61,97 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
-            is_preview=True,
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.partner_organization_properties = AAZObjectArg(
-            options=["--partner-org-props", "--partner-organization-properties"],
+        _args_schema.company_details = AAZObjectArg(
+            options=["--company-details"],
             arg_group="Properties",
-            help="Organization properties",
-            nullable=True,
+            help="Details of the company.",
         )
-        _args_schema.project_properties = AAZObjectArg(
-            options=["--project-props", "--project-properties"],
+        _args_schema.marketplace_details = AAZObjectArg(
+            options=["--marketplace-details"],
             arg_group="Properties",
-            help="Neon Project Properties",
-            is_preview=True,
+            help="Marketplace details of the resource.",
+        )
+
+        company_details = cls._args_schema.company_details
+        company_details.business_phone = AAZStrArg(
+            options=["business-phone"],
+            help="Business phone number of the company",
+            nullable=True,
+        )
+        company_details.company_name = AAZStrArg(
+            options=["company-name"],
+            help="Company name",
+            nullable=True,
+        )
+        company_details.country = AAZStrArg(
+            options=["country"],
+            help="Country name of the company",
+            nullable=True,
+        )
+        company_details.domain = AAZStrArg(
+            options=["domain"],
+            help="Domain of the user",
+            nullable=True,
+        )
+        company_details.number_of_employees = AAZIntArg(
+            options=["number-of-employees"],
+            help="Number of employees in the company",
+            nullable=True,
+        )
+        company_details.office_address = AAZStrArg(
+            options=["office-address"],
+            help="Office address of the company",
             nullable=True,
         )
 
-        partner_organization_properties = cls._args_schema.partner_organization_properties
-        partner_organization_properties.organization_id = AAZStrArg(
-            options=["organization-id"],
-            help="Organization Id in partner's system",
+        marketplace_details = cls._args_schema.marketplace_details
+        marketplace_details.offer_details = AAZObjectArg(
+            options=["offer-details"],
+            help="Offer details for the marketplace that is selected by the user",
+        )
+        marketplace_details.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="SaaS subscription id for the the marketplace offer",
             nullable=True,
         )
-        partner_organization_properties.org_name = AAZStrArg(
-            options=["org-name"],
-            help="Organization name in partner's system",
-            fmt=AAZStrArgFormat(
-                pattern="^\\S.{0,62}\\S$|^\\S$",
-                max_length=50,
-                min_length=1,
-            ),
-        )
-        partner_organization_properties.single_sign_on_properties = AAZObjectArg(
-            options=["single-sign-on-properties"],
-            help="Single Sign On properties for the organization",
+        marketplace_details.subscription_status = AAZStrArg(
+            options=["subscription-status"],
+            help="Marketplace subscription status",
             nullable=True,
+            enum={"PendingFulfillmentStart": "PendingFulfillmentStart", "Subscribed": "Subscribed", "Suspended": "Suspended", "Unsubscribed": "Unsubscribed"},
         )
 
-        single_sign_on_properties = cls._args_schema.partner_organization_properties.single_sign_on_properties
-        single_sign_on_properties.aad_domains = AAZListArg(
-            options=["aad-domains"],
-            help="List of AAD domains fetched from Microsoft Graph for user.",
+        offer_details = cls._args_schema.marketplace_details.offer_details
+        offer_details.offer_id = AAZStrArg(
+            options=["offer-id"],
+            help="Offer Id for the marketplace offer",
+        )
+        offer_details.plan_id = AAZStrArg(
+            options=["plan-id"],
+            help="Plan Id for the marketplace offer",
+        )
+        offer_details.plan_name = AAZStrArg(
+            options=["plan-name"],
+            help="Plan Name for the marketplace offer",
             nullable=True,
         )
-        single_sign_on_properties.enterprise_app_id = AAZStrArg(
-            options=["enterprise-app-id"],
-            help="AAD enterprise application Id used to setup SSO",
+        offer_details.publisher_id = AAZStrArg(
+            options=["publisher-id"],
+            help="Publisher Id for the marketplace offer",
+        )
+        offer_details.term_id = AAZStrArg(
+            options=["term-id"],
+            help="Term Id for the marketplace offer",
             nullable=True,
         )
-        single_sign_on_properties.single_sign_on_state = AAZStrArg(
-            options=["single-sign-on-state"],
-            help="State of the Single Sign On for the organization",
-            nullable=True,
-            enum={"Disable": "Disable", "Enable": "Enable", "Initial": "Initial"},
-        )
-        single_sign_on_properties.single_sign_on_url = AAZStrArg(
-            options=["single-sign-on-url"],
-            help="URL for SSO to be used by the partner to redirect the user to their system",
-            nullable=True,
-        )
-
-        aad_domains = cls._args_schema.partner_organization_properties.single_sign_on_properties.aad_domains
-        aad_domains.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        project_properties = cls._args_schema.project_properties
-        project_properties.branch = AAZObjectArg(
-            options=["branch"],
-            help="The Branch properties of the project. This is optional",
-            is_preview=True,
-            nullable=True,
-        )
-        project_properties.project_name = AAZStrArg(
-            options=["project-name"],
-            help="Name of the resource",
-            is_preview=True,
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                pattern="^\\S.{0,62}\\S$|^\\S$",
-            ),
-        )
-        project_properties.pg_version = AAZIntArg(
-            options=["pg-version"],
-            help="Postgres version for the project",
-            nullable=True,
-        )
-        project_properties.region_id = AAZStrArg(
-            options=["region-id"],
-            help="Region where the project is created",
-            nullable=True,
-        )
-
-        branch = cls._args_schema.project_properties.branch
-        branch.database_name = AAZStrArg(
-            options=["database-name"],
-            help="Database name associated with the branch",
-            is_preview=True,
-            nullable=True,
-        )
-        branch.branch_name = AAZStrArg(
-            options=["branch-name"],
-            help="Name of the resource",
-            is_preview=True,
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                pattern="^\\S.{0,62}\\S$|^\\S$",
-            ),
-        )
-        branch.role_name = AAZStrArg(
-            options=["role-name"],
-            help="Role name associated with the branch",
-            is_preview=True,
+        offer_details.term_unit = AAZStrArg(
+            options=["term-unit"],
+            help="Term Name for the marketplace offer",
             nullable=True,
         )
 
@@ -474,7 +448,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -573,7 +547,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -636,38 +610,32 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("partnerOrganizationProperties", AAZObjectType, ".partner_organization_properties")
-                properties.set_prop("projectProperties", AAZObjectType, ".project_properties")
+                properties.set_prop("companyDetails", AAZObjectType, ".company_details", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
 
-            partner_organization_properties = _builder.get(".properties.partnerOrganizationProperties")
-            if partner_organization_properties is not None:
-                partner_organization_properties.set_prop("organizationId", AAZStrType, ".organization_id")
-                partner_organization_properties.set_prop("organizationName", AAZStrType, ".org_name", typ_kwargs={"flags": {"required": True}})
-                partner_organization_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
+            company_details = _builder.get(".properties.companyDetails")
+            if company_details is not None:
+                company_details.set_prop("businessPhone", AAZStrType, ".business_phone")
+                company_details.set_prop("companyName", AAZStrType, ".company_name")
+                company_details.set_prop("country", AAZStrType, ".country")
+                company_details.set_prop("domain", AAZStrType, ".domain")
+                company_details.set_prop("numberOfEmployees", AAZIntType, ".number_of_employees")
+                company_details.set_prop("officeAddress", AAZStrType, ".office_address")
 
-            single_sign_on_properties = _builder.get(".properties.partnerOrganizationProperties.singleSignOnProperties")
-            if single_sign_on_properties is not None:
-                single_sign_on_properties.set_prop("aadDomains", AAZListType, ".aad_domains")
-                single_sign_on_properties.set_prop("enterpriseAppId", AAZStrType, ".enterprise_app_id")
-                single_sign_on_properties.set_prop("singleSignOnState", AAZStrType, ".single_sign_on_state")
-                single_sign_on_properties.set_prop("singleSignOnUrl", AAZStrType, ".single_sign_on_url")
+            marketplace_details = _builder.get(".properties.marketplaceDetails")
+            if marketplace_details is not None:
+                marketplace_details.set_prop("offerDetails", AAZObjectType, ".offer_details", typ_kwargs={"flags": {"required": True}})
+                marketplace_details.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+                marketplace_details.set_prop("subscriptionStatus", AAZStrType, ".subscription_status")
 
-            aad_domains = _builder.get(".properties.partnerOrganizationProperties.singleSignOnProperties.aadDomains")
-            if aad_domains is not None:
-                aad_domains.set_elements(AAZStrType, ".")
-
-            project_properties = _builder.get(".properties.projectProperties")
-            if project_properties is not None:
-                project_properties.set_prop("branch", AAZObjectType, ".branch")
-                project_properties.set_prop("entityName", AAZStrType, ".project_name")
-                project_properties.set_prop("pgVersion", AAZIntType, ".pg_version")
-                project_properties.set_prop("regionId", AAZStrType, ".region_id")
-
-            branch = _builder.get(".properties.projectProperties.branch")
-            if branch is not None:
-                branch.set_prop("databaseName", AAZStrType, ".database_name")
-                branch.set_prop("entityName", AAZStrType, ".branch_name")
-                branch.set_prop("roleName", AAZStrType, ".role_name")
+            offer_details = _builder.get(".properties.marketplaceDetails.offerDetails")
+            if offer_details is not None:
+                offer_details.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={"flags": {"required": True}})
+                offer_details.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
+                offer_details.set_prop("planName", AAZStrType, ".plan_name")
+                offer_details.set_prop("publisherId", AAZStrType, ".publisher_id", typ_kwargs={"flags": {"required": True}})
+                offer_details.set_prop("termId", AAZStrType, ".term_id")
+                offer_details.set_prop("termUnit", AAZStrType, ".term_unit")
 
             tags = _builder.get(".tags")
             if tags is not None:

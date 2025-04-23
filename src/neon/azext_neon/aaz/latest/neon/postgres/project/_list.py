@@ -21,14 +21,13 @@ class List(AAZCommand):
     List Neon Project associated with your Neon Organization resource, including those shared with you.
 
     :example: List Projects Examples
-        az neon postgres project list --resource-group rgneon --organization-name neon-org
-        az neon postgres project list -s12345-34567 -g rgneon --organization-name neon-org
+        az neon postgres project list --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects", "2025-03-01"],
         ]
     }
 
@@ -62,7 +61,6 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
-            is_preview=True,
         )
         return cls._args_schema
 
@@ -132,7 +130,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }

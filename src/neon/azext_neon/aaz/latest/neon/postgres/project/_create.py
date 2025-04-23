@@ -19,15 +19,13 @@ class Create(AAZCommand):
     """Creates a Neon Project resource
 
     :example: Create Projects Examples
-        az neon postgres project create --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 17 --branch "{branch-name:main, role-name:Owner_role,database-name:neondb}"
-        az neon postgres project create --resource-group rgneon --organization-name neon-org --project-name neon-project --region east us 2
-        az neon postgres project create -g rgneon --organization-name neon-org -n neon-project - --region East US 2 --pg-version 17 --branch "{branch-name:main, role-name:Owner_role,database-name:neondb}"
+        az neon postgres project create --resource-group rgneon --organization-name neon-org --project-name neon-project --region eastus2 --pg-version 17 --branch "{branch-name:main, role-name:owner_role,database-name:neondb}"
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01"],
         ]
     }
 
@@ -73,7 +71,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
-            is_preview=True,
         )
 
         # define Arg Group "Properties"
@@ -109,6 +106,17 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
+        )
+        branch.parent_id = AAZStrArg(
+            options=["parent-id"],
+            help="The ID of the parent branch",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9-]{1,60}$",
+            ),
+        )
+        branch.project_id = AAZStrArg(
+            options=["project-id"],
+            help="The ID of the project this branch belongs to",
         )
         branch.role_name = AAZStrArg(
             options=["role-name"],
@@ -373,7 +381,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -410,6 +418,8 @@ class Create(AAZCommand):
             if branch is not None:
                 branch.set_prop("databaseName", AAZStrType, ".database_name")
                 branch.set_prop("entityName", AAZStrType, ".branch_name")
+                branch.set_prop("parentId", AAZStrType, ".parent_id")
+                branch.set_prop("projectId", AAZStrType, ".project_id")
                 branch.set_prop("roleName", AAZStrType, ".role_name")
 
             return self.serialize_content(_content_value)

@@ -35,11 +35,20 @@ class NeonScenario(ScenarioTest):
             'domain': 'samplecompany.com',
             'number_of_employees': 500,
             'organization_id': 'org67890',
-            'org-name': 'PartnerOrgForCLITest1',
+            'org_name': 'PartnerOrgForCLITest1',
             'enterprise_app_id': 'app67890',
             'sso_url': 'https://sso.partnerorgtest.com',
             'aad_domain': 'partnerorgtest.com',
-            'resource_group': 'NeonDemoRG'
+            'resource_group': 'NeonDemoRG',
+            'project_name': 'NeonCLITestProject1',
+            'pg_version': '17',
+            'branch_name': 'main',
+            'role_name': 'test_role',
+            'database_name': 'testdb',
+            'region_id': 'Central US EUAP',
+            'storage': 0,
+            'history_retention': 0,
+            'entity_name': 'Neon-Partner-Demo-GA project'
         })
 
         # Create Neon Organization
@@ -48,8 +57,12 @@ class NeonScenario(ScenarioTest):
                  '"offer-details": {{"publisher-id": "{publisher_id}", "offer-id": "{offer_id}", "plan-id": "{plan_id}", "plan-name": "{plan_name}", "term-unit": "{term_unit}", "term-id": "{term_id}"}}}}\' '
                  '--user-details \'{{"first-name": "{user_first_name}", "last-name": "{user_last_name}", "email-address": "{user_email}", "upn": "{user_upn}", "phone-number": "{user_phone}"}}\' '
                  '--company-details \'{{"company-name": "{company_name}", "country": "{country}", "business-phone": "{business_phone}", "office-address": "{office_address}", "domain": "{domain}", "number-of-employees": {number_of_employees}}}\' '
-                 '--partner-organization-properties \'{{"organization-id": "{organization_id}", "org-name": "{org-name}", '
-                 '"single-sign-on-properties": {{"single-sign-on-state": "Enable", "enterprise-app-id": "{enterprise_app_id}", "single-sign-on-url": "{sso_url}", "aad-domains": ["{aad_domain}"]}}}}\'',
+                 '--partner-organization-properties \'{{"organization-id": "{organization_id}", "org-name": "{org_name}", '
+                 '"single-sign-on-properties": {{"single-sign-on-state": "Enable", "enterprise-app-id": "{enterprise_app_id}", "single-sign-on-url": "{sso_url}", "aad-domains": ["{aad_domain}"]}}}}\' '
+                 '--partner-project-properties \'{{"project-name": "{project_name}", "pg-version": "{pg_version}", '
+                 '"region-id": "{region_id}", "storage": {storage}, "history-retention": {history_retention}, '
+                 '"branch": {{"branch-name": "{branch_name}", "role-name": "{role_name}", "database-name": "{database_name}"}}, '
+                 '"entity-name": "{entity_name}"}}\'',
                  checks=[
                      self.check('name', '{name}'),
                  ])

@@ -13,16 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "neon postgres project update",
-    is_experimental=True,
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Updates a Neon Project resource
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01"],
         ]
     }
 
@@ -49,7 +49,6 @@ class Update(AAZCommand):
             options=["--organization-name"],
             help="Name of the Neon Organizations resource",
             required=True,
-            is_experimental=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
@@ -61,7 +60,6 @@ class Update(AAZCommand):
             options=["-n", "--name", "--project-name"],
             help="The name of the Project",
             required=True,
-            is_experimental=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -70,7 +68,6 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
-            is_experimental=True,
         )
 
         # define Arg Group "Properties"
@@ -80,7 +77,6 @@ class Update(AAZCommand):
             options=["--branch"],
             arg_group="Properties",
             help="The Branch properties of the project. This is optional",
-            is_experimental=True,
             nullable=True,
         )
         _args_schema.pg_version = AAZIntArg(
@@ -93,7 +89,6 @@ class Update(AAZCommand):
             options=["--region"],
             arg_group="Properties",
             help="Region where the project is created",
-            is_experimental=True,
             nullable=True,
         )
 
@@ -106,16 +101,6 @@ class Update(AAZCommand):
         branch.database_name = AAZStrArg(
             options=["database-name"],
             help="Database name associated with the branch",
-            nullable=True,
-        )
-        branch.databases = AAZListArg(
-            options=["databases"],
-            help="Neon Databases associated with the branch",
-            nullable=True,
-        )
-        branch.endpoints = AAZListArg(
-            options=["endpoints"],
-            help="Endpoints associated with the branch",
             nullable=True,
         )
         branch.entity_name = AAZStrArg(
@@ -144,35 +129,12 @@ class Update(AAZCommand):
             help="Role name associated with the branch",
             nullable=True,
         )
-        branch.roles = AAZListArg(
-            options=["roles"],
-            help="Roles associated with the branch",
-            nullable=True,
-        )
 
         attributes = cls._args_schema.branch.attributes
         attributes.Element = AAZObjectArg(
             nullable=True,
         )
         cls._build_args_models_attributes_update(attributes.Element)
-
-        databases = cls._args_schema.branch.databases
-        databases.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_models_neon_database_properties_update(databases.Element)
-
-        endpoints = cls._args_schema.branch.endpoints
-        endpoints.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_models_endpoint_properties_update(endpoints.Element)
-
-        roles = cls._args_schema.branch.roles
-        roles.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_models_neon_role_properties_update(roles.Element)
         return cls._args_schema
 
     _args_models_attributes_update = None
@@ -456,7 +418,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -559,7 +521,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -629,29 +591,14 @@ class Update(AAZCommand):
             if branch is not None:
                 branch.set_prop("attributes", AAZListType, ".attributes")
                 branch.set_prop("databaseName", AAZStrType, ".database_name")
-                branch.set_prop("databases", AAZListType, ".databases")
-                branch.set_prop("endpoints", AAZListType, ".endpoints")
                 branch.set_prop("entityName", AAZStrType, ".entity_name")
                 branch.set_prop("parentId", AAZStrType, ".parent_id")
                 branch.set_prop("projectId", AAZStrType, ".project_id")
                 branch.set_prop("roleName", AAZStrType, ".role_name")
-                branch.set_prop("roles", AAZListType, ".roles")
 
             attributes = _builder.get(".properties.branch.attributes")
             if attributes is not None:
                 _UpdateHelper._build_schema_models_attributes_update(attributes.set_elements(AAZObjectType, "."))
-
-            databases = _builder.get(".properties.branch.databases")
-            if databases is not None:
-                _UpdateHelper._build_schema_models_neon_database_properties_update(databases.set_elements(AAZObjectType, "."))
-
-            endpoints = _builder.get(".properties.branch.endpoints")
-            if endpoints is not None:
-                _UpdateHelper._build_schema_models_endpoint_properties_update(endpoints.set_elements(AAZObjectType, "."))
-
-            roles = _builder.get(".properties.branch.roles")
-            if roles is not None:
-                _UpdateHelper._build_schema_models_neon_role_properties_update(roles.set_elements(AAZObjectType, "."))
 
             return _instance_value
 

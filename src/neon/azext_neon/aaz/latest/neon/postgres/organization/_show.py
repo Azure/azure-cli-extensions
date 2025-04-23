@@ -20,12 +20,13 @@ class Show(AAZCommand):
 
     :example: Organizations_Get
         az neon postgres organization show --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
+        az neon postgres organization show --resource-group demoResourceGroup --name demoNeonResource
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01"],
         ]
     }
 
@@ -127,7 +128,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }

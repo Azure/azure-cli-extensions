@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon postgres project",
+    "neon postgres branch",
 )
 class __CMDGroup(AAZCommandGroup):
-    """The projects command allows you to list, create, update, delete, and retrieve information about Neon projects.
+    """Manage Branch
     """
     pass
 

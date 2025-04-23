@@ -19,13 +19,13 @@ class Show(AAZCommand):
     """Get details of a Neon Project resource
 
     :example: Get Project Details Examples
-        az neon postgres project show --resource-group rgneon --organization-name neon-org--project-name neon-project
+        az neon postgres project show --subscription 38a546de-5736-48e8-a69a-5cc636794112 --resource-group rgneon --organization-name org-cli-test --project-id old-frost-16758796
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01"],
         ]
     }
 
@@ -56,8 +56,8 @@ class Show(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.project_name = AAZStrArg(
-            options=["-n", "--name", "--project-name"],
+        _args_schema.project_id = AAZStrArg(
+            options=["--project-id"],
             help="The name of the Neon Project resource.",
             required=True,
             id_part="child_name_1",
@@ -68,7 +68,6 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
-            is_preview=True,
         )
         return cls._args_schema
 
@@ -123,7 +122,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "projectName", self.ctx.args.project_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -141,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }

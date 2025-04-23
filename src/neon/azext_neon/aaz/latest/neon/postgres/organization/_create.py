@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create a Neon Postgres organization
 
     :example: Organizations_CreateOrUpdate
-        az neon postgres create --resource-group demoResourceGroup --name demoNeonResource --location eastus --subscription 12345678-1234-1234-1234-123456789abc --marketplace-details "{subscription-id:abcd1234-5678-90ab-cdef-12345678abcd,subscription-status:PendingFulfillmentStart,offer-details:{publisher-id:microsoft,offer-id:neon-postgres,plan-id:serverless-plan,plan-name:'Neon Serverless Postgres - Free (Test_Liftr)',term-unit:P1M,term-id:term1234}}" --user-details "{first-name:John,last-name:Doe,email-address:johndoe@example.com,upn:johndoe,phone-number:+1234567890}" --company-details "{company-name:'DemoCompany',country:USA,business-phone:+9876543210,office-address:'123 Azure Ave, Redmond, WA',domain:democompany.com,number-of-employees:1000}" --partner-organization-properties "{organization-id:org-5678,org-name:'PartnerOrg',single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:app-9876,single-sign-on-url:'https://sso.partnerorg.com',aad-domains:['partnerorg.com']}}"
+        az az neon postgres organization create --resource-group sralluri_rg --name Org-cli-test --location "Central US EUAP" --subscription 68a546de-5736-48e8-a69a-5cc636794112 --marketplace-details "{subscription-id:329b25d9-168d-48d5-de4b-28b2324db159,subscription-status:Subscribed,offer-details:{publisher-id:neon1722366567200,offer-id:neon_serverless_postgres_azure_prod,plan-id:neon_serverless_postgres_azure_prod_free,plan-name:'Free Plan',term-unit:P1M,term-id:gmz7xq9ge3py}}" --user-details "{first-name:User,last-name:Conotoso,email-address:contoso@outlook.com,upn:contoso@outlook.com,phone-number:''}" --company-details "{company-name:'',country:'',business-phone:''}" --partner-organization-properties "{organization-name:Org-cli-test}" --project-properties "{region:'Central US EUAP',pgVersion:17,branch:{branch-name:main,database-name:neondb,role-name:owner_role},project-name:Org-cli-test-project}"
     """
 
     _aaz_info = {
-        "version": "2025-03-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01"],
         ]
     }
 
@@ -59,7 +59,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="The name of the Azure resource group",
             required=True,
-            is_preview=True,
         )
 
         # define Arg Group "Properties"
@@ -84,7 +83,6 @@ class Create(AAZCommand):
             options=["--project-props", "--project-properties"],
             arg_group="Properties",
             help="Neon Project Properties",
-            is_preview=True,
         )
         _args_schema.user_details = AAZObjectArg(
             options=["--user-details"],
@@ -131,7 +129,6 @@ class Create(AAZCommand):
         marketplace_details.subscription_status = AAZStrArg(
             options=["subscription-status"],
             help="Marketplace subscription status",
-            is_preview=True,
             default="PendingFulfillmentStart",
             enum={"PendingFulfillmentStart": "PendingFulfillmentStart", "Subscribed": "Subscribed", "Suspended": "Suspended", "Unsubscribed": "Unsubscribed"},
         )
@@ -141,14 +138,12 @@ class Create(AAZCommand):
             options=["offer-id"],
             help="Offer Id for the marketplace offer",
             required=True,
-            is_preview=True,
             default="neon_serverless_postgres_azure_prod",
         )
         offer_details.plan_id = AAZStrArg(
             options=["plan-id"],
             help="Plan Id for the marketplace offer",
             required=True,
-            is_preview=True,
             default="neon_serverless_postgres_azure_prod_free",
         )
         offer_details.plan_name = AAZStrArg(
@@ -160,18 +155,17 @@ class Create(AAZCommand):
             options=["publisher-id"],
             help="Publisher Id for the marketplace offer",
             required=True,
-            is_preview=True,
             default="neon1722366567200",
         )
         offer_details.term_id = AAZStrArg(
             options=["term-id"],
             help="Term Id for the marketplace offer",
-            is_preview=True,
             default="gmz7xq9ge3py",
         )
         offer_details.term_unit = AAZStrArg(
             options=["term-unit"],
             help="Term Name for the marketplace offer",
+            default="P1M",
         )
 
         partner_organization_properties = cls._args_schema.partner_organization_properties
@@ -179,9 +173,9 @@ class Create(AAZCommand):
             options=["organization-id"],
             help="Organization Id in partner's system",
         )
-        partner_organization_properties.org_name = AAZStrArg(
-            options=["org-name"],
-            help="Organization name in partner's system",
+        partner_organization_properties.organization_name = AAZStrArg(
+            options=["organization-name"],
+            help="Organization name in Neon Partner Console",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
@@ -224,7 +218,6 @@ class Create(AAZCommand):
         project_properties.project_name = AAZStrArg(
             options=["project-name"],
             help="Name of the resource",
-            is_preview=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
@@ -232,26 +225,22 @@ class Create(AAZCommand):
         project_properties.pg_version = AAZIntArg(
             options=["pg-version"],
             help="Postgres version for the project",
-            is_preview=True,
             default=17,
         )
         project_properties.region = AAZStrArg(
             options=["region"],
             help="Region where the project is created",
-            is_preview=True,
         )
 
         branch = cls._args_schema.project_properties.branch
         branch.database_name = AAZStrArg(
             options=["database-name"],
             help="Database name associated with the branch",
-            is_preview=True,
             default="neondb",
         )
         branch.branch_name = AAZStrArg(
             options=["branch-name"],
             help="Name of the resource",
-            is_preview=True,
             fmt=AAZStrArgFormat(
                 pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
@@ -259,7 +248,6 @@ class Create(AAZCommand):
         branch.role_name = AAZStrArg(
             options=["role-name"],
             help="Role name associated with the branch",
-            is_preview=True,
             default="Owner_role",
         )
 
@@ -494,7 +482,7 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class OrganizationsCreateOrUpdate(AAZHttpOperation):
@@ -561,7 +549,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -625,7 +613,7 @@ class Create(AAZCommand):
             partner_organization_properties = _builder.get(".properties.partnerOrganizationProperties")
             if partner_organization_properties is not None:
                 partner_organization_properties.set_prop("organizationId", AAZStrType, ".organization_id")
-                partner_organization_properties.set_prop("organizationName", AAZStrType, ".org_name", typ_kwargs={"flags": {"required": True}})
+                partner_organization_properties.set_prop("organizationName", AAZStrType, ".organization_name", typ_kwargs={"flags": {"required": True}})
                 partner_organization_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
 
             single_sign_on_properties = _builder.get(".properties.partnerOrganizationProperties.singleSignOnProperties")
