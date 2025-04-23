@@ -3920,6 +3920,9 @@ def list_k8s_extension_type_versions_by_location(
     major_version=None,
     show_latest=False
 ):
+    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
+        raise ValidationError(f"Failed to list extension type versions by location for {extension_type.lower()}" +
+                              "as it is not in allowed list of extension types")
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
