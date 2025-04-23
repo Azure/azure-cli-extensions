@@ -131,11 +131,6 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
-    CONST_K8S_EXTENSION_ACTION_MOD_NAME,
-)
-
-from azext_aks_preview._helpers import (
-    get_k8s_extension_module,
 )
 
 from azext_aks_preview._validators import (
@@ -224,6 +219,11 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
+)
+
+from .action import (
+    AddConfigurationSettings,
+    AddConfigurationProtectedSettings,
 )
 
 from knack.arguments import CLIArgumentType
@@ -439,8 +439,6 @@ def load_arguments(self, _):
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
-
-    k8s_extension_action_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_ACTION_MOD_NAME)
 
     # AKS command argument configuration
     with self.argument_context("aks") as c:
@@ -2365,7 +2363,7 @@ def load_arguments(self, _):
         c.argument('configuration_settings',
                    arg_group="Configuration",
                    options_list=['--configuration-settings', '--config'],
-                   action=k8s_extension_action_mod.AddConfigurationSettings,
+                   action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.'
                    + 'Repeat parameter for each setting.'
@@ -2373,7 +2371,7 @@ def load_arguments(self, _):
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
                    options_list=['--config-protected-settings', '--config-protected'],
-                   action=k8s_extension_action_mod.AddConfigurationProtectedSettings,
+                   action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.'
                    + 'Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
