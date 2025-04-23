@@ -61,6 +61,7 @@ azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
     "Microsoft-RetinaNetworkFlowLogs",
 ]
 
+
 # pylint: disable=too-many-locals
 def enable_addons(
     cmd,
