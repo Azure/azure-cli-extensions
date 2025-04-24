@@ -11,7 +11,7 @@ from ._locationHelper import LocationDataHelper
 __logger = get_logger(__name__)
 
 
-def validate_zones(client, cmd, resource_group_names):
+def validate_zones(client, cmd, omit_dependent_resources, resource_group_names):
 
     # Get the location data we'll use to validate the resources
     location_data_helper = LocationDataHelper(cmd)
@@ -25,12 +25,12 @@ def validate_zones(client, cmd, resource_group_names):
     resources = execute_arg_query(client, query, None, 0, None, None, False, None)
 
     # Run validation on the retrieved resources
-    validation_results = validate_resources(resources)
+    validation_results = validate_resources(resources, omit_dependent_resources)
 
     return validation_results
 
 
-def validate_resources(resources):
+def validate_resources(resources, omit_dependent_resources=False):
     resource_results = []
     if resources['count'] == 0:
         errMsg = ("No resources found, validation could not be run.")
@@ -50,12 +50,13 @@ def validate_resources(resources):
             validator = ResourceTypeValidatorFactory.getValidator(resourceProvider)
             zrStatus = ZoneRedundancyValidationResult.Unknown if validator is None else validator.validate(resource)
 
-        resource_result = {}
-        resource_result['name'] = resource['name']
-        resource_result['location'] = resource['location']
-        resource_result['resourceGroup'] = resource['resourceGroup']
-        resource_result['resourceType'] =  resource['type']
-        resource_result['zoneRedundant'] = ZoneRedundancyValidationResult.to_string(zrStatus)
-        resource_results.append(resource_result)
+        if zrStatus is not ZoneRedundancyValidationResult.Dependent or not omit_dependent_resources:
+            resource_result = {}
+            resource_result['name'] = resource['name']
+            resource_result['location'] = resource['location']
+            resource_result['resourceGroup'] = resource['resourceGroup']
+            resource_result['resourceType'] =  resource['type']
+            resource_result['zoneRedundant'] = ZoneRedundancyValidationResult.to_string(zrStatus)
+            resource_results.append(resource_result)
 
     return resource_results

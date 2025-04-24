@@ -21,3 +21,6 @@ az zones validate
 
 Validate all resources in specific resource groups to which you have read access:
 az zones validate [--resource-groups <resource_group1>,<resource_group2> ...]
+
+Omit 'dependent' resources from the output:
+az zones validate --omit-dependent-resources
