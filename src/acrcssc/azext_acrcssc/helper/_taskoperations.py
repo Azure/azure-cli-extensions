@@ -310,7 +310,7 @@ def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, r
             logger.error(f"Failed to cancel task {task.name} from registry {registry_name}: {exception}")
 
 
-def track_scan_progress(cmd, resource_group_name, registry, status):
+def track_scan_progress(cmd, resource_group_name, registry, status=None):
     logger.debug("Entering track_scan_progress")
 
     cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
