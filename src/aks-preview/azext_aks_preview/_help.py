@@ -3539,6 +3539,7 @@ helps['aks extension-type list-versions-by-location'] = """
   examples:
     - name: List available K8s Extension Types in a region
       text: az aks extension-type list-versions-by-location --location eastus --extension-type <type>
+"""
 
 helps['aks loadbalancer'] = """
     type: group
