@@ -83,8 +83,8 @@ def update_acrcssc(cmd,
                    resource_group_name,
                    registry_name,
                    workflow_type,
-                   config,
-                   schedule,
+                   config=None,
+                   schedule=None,
                    dryrun=False,
                    run_immediately=False):
     '''Update a continuous patch task in the registry.'''
@@ -141,7 +141,7 @@ def cancel_runs(cmd,
     cancel_continuous_patch_runs(cmd, resource_group_name, registry_name)
 
 
-def list_scan_status(cmd, registry_name, resource_group_name, status, workflow_type):
+def list_scan_status(cmd, registry_name, resource_group_name, workflow_type, status=None):
     '''track in continuous patch in the registry.'''
     logger.debug('Entering track_scan_status with parameters:%s %s %s', resource_group_name, registry_name, workflow_type)
 
