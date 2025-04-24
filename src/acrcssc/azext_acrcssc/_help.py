@@ -28,7 +28,7 @@ helps['acr supply-chain workflow update'] = """
     type: command
     short-summary: Update acr supply chain workflow.
     examples:
-        - name: Updates acr supply chain workflow
+        - name: Update acr supply chain workflow
           text: az acr supply-chain workflow update -r $MyRegistry -g $MyResourceGroup --type \
                 continuouspatchv1 --schedule 1d --config path-to-config-file
 """
