@@ -10,9 +10,7 @@ from azure.cli.core.azclierror import (
     BadRequestError, AzureInternalError
 )
 from azure.cli.core.util import CLIError
-from .vendored_sdks.azure_mgmt_preview_aks.v2025_01_02_preview.models import (
-    RebalanceLoadBalancersRequestBody,
-)
+from .vendored_sdks.azure_mgmt_preview_aks.models import RebalanceLoadBalancersRequestBody
 
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
