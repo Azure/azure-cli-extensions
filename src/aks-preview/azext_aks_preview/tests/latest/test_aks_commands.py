@@ -15720,11 +15720,12 @@ spec:
             'extension_type': extension_type,
             'release_train': 'stable',
             'version': '1.15.1',
+            "ssh_key_value": self.generate_ssh_keys(),
         })
         
         # create the cluster 
-        self.cmd('aks create -g {rg} -n {name} '
-                 '--node-count 3 --generate-ssh-keys')
+        self.cmd('aks create -g {rg} -n {cluster_name} '
+                 '--node-count 3  --ssh-key-value={ssh_key_value}')
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
