@@ -7,7 +7,8 @@ class microsoft_network:
 
     @staticmethod
     def validate(resource):
-        resourceSubType = resource['type'].split('/')[1]
+        resourceType = resource['type']
+        resourceSubType = resourceType[resourceType.index('/') + 1:]
 
         _logger = get_logger("microsoft_network")
         _logger.debug("Validating Microsoft.Network resource type: %s", resourceSubType)
@@ -52,6 +53,9 @@ class microsoft_network:
             case 'privatednszones':
                 # Private DNS zones are zone redundant by default 
                 # https://learn.microsoft.com/azure/dns/private-dns-resiliency
+                return ZoneRedundancyValidationResult.Always
+            
+            case 'privatednszones/virtualnetworklinks':
                 return ZoneRedundancyValidationResult.Always
 
             case 'privateendpoints':

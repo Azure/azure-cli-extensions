@@ -7,7 +7,8 @@ class microsoft_storage:
     
     @staticmethod
     def validate(resource):
-        resourceSubType = resource['type'].split('/')[1]
+        resourceType = resource['type']
+        resourceSubType = resourceType[resourceType.index('/') + 1:]
 
         _logger = get_logger("microsoft_storage")   
         _logger.debug("Validating Microsoft.Storage resource type: %s", resourceSubType)
