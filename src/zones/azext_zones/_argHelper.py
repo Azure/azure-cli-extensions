@@ -5,7 +5,6 @@ from knack.log import get_logger
 
 from .vendored_sdks.resourcegraph.models import ResultTruncated
 from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat
-
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import BadRequestError, AzureInternalError

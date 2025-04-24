@@ -27,18 +27,6 @@ def validate_zones(client, cmd, resource_group_names):
     # Run validation on the retrieved resources
     validation_results = validate_resources(resources)
 
-    # Present the results to the user
-    return validation_results
-
-    if(cmd.output == 'table'):
-        # Output results in table format
-        from knack.table import TableFormatter
-        from knack.output import table_output       
-
-        table = TableFormatter(cmd, cmd.output).get_table()
-        table_output(cmd, table, validation_results)
-
-    # Default to json output if no specific format is requested
     return validation_results
 
 
