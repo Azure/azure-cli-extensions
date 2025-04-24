@@ -15,7 +15,7 @@ def validate_zones(client, cmd, resource_group_names):
 
     # Get the location data we'll use to validate the resources
     location_data_helper = LocationDataHelper(cmd)
-    location_data = location_data_helper.get_location_data()
+    location_data_helper.get_location_data()
 
     # Build the ARG query to retrieve resources
     query = build_arg_query(resource_group_names, None)
@@ -39,8 +39,8 @@ def validate_resources(resources):
     # Loop through the resources and validate each one
     for resource in resources['data']:
         resourceProvider = resource['type'].split('/')[0]
-        region = resource['location']  
-        zrStatus = None                
+        region = resource['location']
+        zrStatus = None
 
         # If the region does not have zones, we need to look no further
         regionHasZones = LocationDataHelper.region_has_zones(region)

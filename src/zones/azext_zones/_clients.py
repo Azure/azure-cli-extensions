@@ -3,8 +3,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 
 class MgmtApiClient():
 
-    @classmethod
-    def query(cls, cmd, method, resource, api_version, requestBody):
+    def query(self, cmd, method, resource, api_version, requestBody):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = ("{}/subscriptions/{}/{}?api-version={}")

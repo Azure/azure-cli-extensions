@@ -4,7 +4,7 @@ from knack.util import todict
 from knack.log import get_logger
 
 from .vendored_sdks.resourcegraph.models import ResultTruncated
-from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat
+from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, Error
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import BadRequestError, AzureInternalError
@@ -28,7 +28,9 @@ def build_arg_query(resource_groups, attributes):
     return query
 
 
-def execute_arg_query(client, graph_query, first, skip, subscriptions, management_groups, allow_partial_scopes, skip_token):
+def execute_arg_query(
+        client, graph_query, first, skip, subscriptions, management_groups, allow_partial_scopes, skip_token):
+
     mgs_list = management_groups
     if mgs_list is not None and len(mgs_list) > __MANAGEMENT_GROUP_LIMIT:
         mgs_list = mgs_list[:__MANAGEMENT_GROUP_LIMIT]

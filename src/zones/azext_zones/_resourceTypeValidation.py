@@ -1,7 +1,6 @@
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from ._locationHelper import LocationDataHelper
 
 resource_type_validators = {}
 
