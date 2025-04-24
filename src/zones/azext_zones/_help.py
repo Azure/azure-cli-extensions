@@ -9,10 +9,10 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['zones'] = """
     type: group
-    short-summary: Commands to manage Zoness.
+    short-summary: Commands to validate Availability Zone Configuration. Use one of the options below.
 """
 
 helps['zones validate'] = """
     type: command
-    short-summary: Validates zone redundancy status.
+    short-summary: Validates zone redundancy status of all resources in the current subscription context for which you have read access.
 """

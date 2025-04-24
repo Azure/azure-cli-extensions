@@ -1,6 +1,7 @@
 
 from abc import ABC, abstractmethod
 from enum import Enum
+from ._locationHelper import LocationDataHelper
 
 resource_type_validators = {}
 
@@ -36,6 +37,7 @@ class ZoneRedundancyValidationResult(Enum):
     No = 4              # Resource is not configured for zone redundancy
     Never = 5           # Resource cannot be configured for zone redundancy
     Dependent = 6       # Resource is zone redundant if parent or related resource is zone redundant
+    NoZonesInRegion = 7 # Resource is not zone redundant because the region does not support zones
 
 
     def to_string(value):

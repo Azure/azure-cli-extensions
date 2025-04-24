@@ -4,7 +4,7 @@ from knack.util import todict
 from knack.log import get_logger
 
 from .vendored_sdks.resourcegraph.models import ResultTruncated
-from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, Error
+from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat
 
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import HttpResponseError
@@ -16,15 +16,12 @@ __MANAGEMENT_GROUP_LIMIT = 10
 __logger = get_logger(__name__)
 
 
-def build_arg_query(resource_groups, tags, attributes):
-    # type: (list[str], list[str], list[str]) -> str
+def build_arg_query(resource_groups, attributes):
+    # type: (list[str], list[str]) -> str
 
     query = "Resources"
     if resource_groups is not None and len(resource_groups) > 0:
         query += " | where resourceGroup in ({0})".format(','.join(f"'{item}'" for item in resource_groups.split(',')))
-
-    # if tags is not None and len(tags) > 0:
-    #     query += " | where tags['{0}'] =~ '{1}'".format(tags[0], tags[1])
 
     if attributes is not None and len(attributes) > 0:
         query += " | project {0}".format(', '.join(attributes))
