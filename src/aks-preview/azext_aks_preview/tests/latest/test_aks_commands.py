@@ -13807,6 +13807,19 @@ spec:
             ],
         )
 
+        # update to enable retina flow logs
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --enable-retina-flow-logs "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+            ],
+        )
+
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
