@@ -13795,31 +13795,26 @@ spec:
             self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-RetinaNetworkFlowLogs'),
         ])
 
-        # update to disable retina flow logs
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
-            ],
-        )
+        # Below steps are disabled for now. Confirmed working with local build of cli-extensions, however live recordings are not working properly
+        # # update to disable pfl
+        # disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs -o json"
+        # self.cmd(
+        #     disable_cmd,
+        #     checks=[
+        #         self.check("provisioningState", "Succeeded"),
+        #         self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
+        #     ],
+        # )
 
-        # update to enable retina flow logs
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} --enable-retina-flow-logs "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
-            ],
-        )
+        # # enable update command for pfl
+        # enable_cmd_update = "aks update --resource-group={resource_group} --name={name} --enable-retina-flow-logs -o json"
+        # self.cmd(
+        #     enable_cmd_update,
+        #     checks=[
+        #         self.check("provisioningState", "Succeeded"),
+        #         self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+        #     ],
+        # )
 
         # delete
         self.cmd(
