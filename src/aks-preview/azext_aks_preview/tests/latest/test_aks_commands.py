@@ -15704,6 +15704,7 @@ spec:
             checks=[self.is_empty()],
         )
 
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
@@ -15722,7 +15723,7 @@ spec:
             'version': '1.15.1',
             "ssh_key_value": self.generate_ssh_keys(),
         })
-        
+
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
@@ -15784,8 +15785,9 @@ spec:
             'release_train': 'stable',
             'version': '1.15.1',
             "ssh_key_value": self.generate_ssh_keys(),
+            'location': resource_group_location,
         })
-        
+
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
@@ -15795,40 +15797,40 @@ spec:
                  '--extension-type {extension_type} --release-train {release_train} --version {version} '
                  '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
 
-        self.cmd('aks extension-types show-by-cluster -g {rg} -c {cluster_name} '
+        self.cmd('aks extension-type show-by-cluster -g {rg} -c {cluster_name} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
-        
-        self.cmd('aks extension-types show-by-location -l {location} '
+
+        self.cmd('aks extension-type show-by-location --location {location} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
-        
-        extensionTypes_list = self.cmd('aks extension-types list-by-cluster -g {rg} '
+
+        extensionTypes_list = self.cmd('aks extension-type list-by-cluster -g {rg} '
                                        '-c {cluster_name}').get_output_in_json()
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_locationList = self.cmd('aks extension-types list-by-location '
+        extensionTypes_locationList = self.cmd('aks extension-type list-by-location '
                                                '--location {location}').get_output_in_json()
         assert len(extensionTypes_locationList) > 0
 
-        extensionTypes_list = self.cmd('aks extension-types list-versions-by-cluster -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension-type list-versions-by-cluster -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('aks extension-types list-versions-by-location --location {location} '
+        extensionTypes_list = self.cmd('aks extension-type list-versions-by-location --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('aks extension-types show-version-by-cluster -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension-type show-version-by-cluster -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('aks extension-types show-version-by-location --location {location} '
+        extensionTypes_list = self.cmd('aks extension-type show-version-by-location --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
