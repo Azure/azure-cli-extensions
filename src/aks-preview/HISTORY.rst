@@ -12,6 +12,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+14.0.0b3
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
 
 14.0.0b2
 +++++++

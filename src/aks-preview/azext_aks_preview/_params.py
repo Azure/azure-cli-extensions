@@ -2325,6 +2325,149 @@ def load_arguments(self, _):
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
 
+    # AKS loadbalancer command parameter configuration
+    with self.argument_context("aks loadbalancer add") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            help="Name of the load balancer configuration. Required.",
+        )
+        c.argument(
+            "primary_agent_pool_name",
+            options_list=["--primary-agent-pool-name", "-p"],
+            help=(
+                "Name of the primary agent pool for this load balancer. "
+                "All nodes in this pool will be added to the load balancer. Required."
+            ),
+        )
+        c.argument(
+            "allow_service_placement",
+            options_list=["--allow-service-placement", "-a"],
+            arg_type=get_three_state_flag(),
+            help="Whether to automatically place services on the load balancer. Default is true.",
+        )
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+        c.argument(
+            "service_label_selector",
+            options_list=["--service-label-selector", "-l"],
+            help=(
+                "Only services that match this selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "service_namespace_selector",
+            options_list=["--service-namespace-selector", "-s"],
+            help=(
+                "Services created in namespaces that match the selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "node_selector",
+            options_list=["--node-selector", "-d"],
+            help=(
+                "Nodes that match this selector will be possible members of this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+
+    with self.argument_context("aks loadbalancer rebalance-nodes") as c:
+        c.argument(
+            "resource_group_name",
+            options_list=["--resource-group", "-g"],
+            help="Name of resource group.",
+            id_part="resource_group",
+            configured_default="aks",
+        )
+        c.argument(
+            "cluster_name",
+            options_list=["--name", "-n"],
+            help="Name of the managed cluster.",
+        )
+        c.argument(
+            "load_balancer_names",
+            options_list=["--load-balancer-names", "--lb-names"],
+            nargs="+",
+            help=(
+                "Space-separated list of load balancer names to rebalance. "
+                "If not specified, all load balancers will be rebalanced."
+            ),
+        )
+        c.argument(
+            "no_wait", help="Do not wait for the long-running operation to finish."
+        )
+
+    with self.argument_context("aks loadbalancer update") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            help="Name of the public load balancer. Required.",
+        )
+        c.argument(
+            "primary_agent_pool_name",
+            options_list=["--primary-agent-pool-name", "-p"],
+            help=(
+                "Name of the primary agent pool for this load balancer. "
+                "All nodes in this pool will be added to the load balancer."
+            ),
+        )
+        c.argument(
+            "allow_service_placement",
+            options_list=["--allow-service-placement", "-a"],
+            arg_type=get_three_state_flag(),
+            help="Whether to automatically place services on the load balancer. Default is true.",
+        )
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+        c.argument(
+            "service_label_selector",
+            options_list=["--service-label-selector", "-l"],
+            help=(
+                "Only services that match this selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "service_namespace_selector",
+            options_list=["--service-namespace-selector", "-s"],
+            help=(
+                "Services created in namespaces that match the selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "node_selector",
+            options_list=["--node-selector", "-d"],
+            help=(
+                "Nodes that match this selector will be possible members of this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+
+    # Define parameters for show and delete commands
+    for scope in [
+        "aks loadbalancer show",
+        "aks loadbalancer delete",
+    ]:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "name",
+                options_list=["--name", "-n"],
+                help="Name of the load balancer configuration. Required.",
+            )
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
