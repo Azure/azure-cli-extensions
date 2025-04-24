@@ -26,6 +26,10 @@ from azext_aks_preview._consts import (
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
     CONST_CONFCOM_ADDON_NAME,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
+    CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
+    CONST_NAMESPACE_DELETE_POLICY_KEEP,
     CONST_INGRESS_APPGW_ADDON_NAME,
     CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
     CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
@@ -88,6 +92,9 @@ from azext_aks_preview.aks_draft.commands import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+)
+from azext_aks_preview.managednamespace import (
+    aks_managed_namespace_add,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -224,6 +231,42 @@ def aks_browse(
         listen_port,
         CUSTOM_MGMT_AKS_PREVIEW,
     )
+
+# pylint: disable=unused-argument
+def aks_namespace_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    namespace_name,
+    tags=None,
+    labels=None,
+    annotations=None,
+    cpu_request=None,
+    cpu_limit=None,
+    memory_request=None,
+    memory_limit=None,
+    ingress_rule=CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+    egress_rule=CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
+    adoption_policy=CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
+    delete_policy=CONST_NAMESPACE_DELETE_POLICY_KEEP,
+):
+    existedNamespace = None
+    try:
+        existedNamespace = client.get(resource_group_name, cluster_name, namespace_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedNamespace:
+        raise Exception(  # pylint: disable=broad-exception-raised
+            "Namespace " +
+            namespace_name +
+            " already existed, please use 'az aks namespace update' command to update!"
+        )
+    
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_managed_namespace_add(cmd, client, raw_parameters)
 
 
 def aks_maintenanceconfiguration_list(

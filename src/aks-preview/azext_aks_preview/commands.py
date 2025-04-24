@@ -7,6 +7,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azext_aks_preview._client_factory import (
     cf_agent_pools,
+    cf_namespaces,
     cf_maintenance_configurations,
     cf_managed_clusters,
     cf_mc_snapshots,
@@ -94,6 +95,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._agent_pools_operations#AgentPoolsOperations.{}",
         client_factory=cf_managed_clusters,
+    )
+
+    namespaces_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._namespaces_operations#NamespacesOperations.{}",
+        client_factory=cf_namespaces,
     )
 
     machines_sdk = CliCommandType(
@@ -227,6 +234,19 @@ def load_command_table(self, _):
         g.custom_command("enable", "aks_addon_enable", supports_no_wait=True)
         g.custom_command("disable", "aks_addon_disable", supports_no_wait=True)
         g.custom_command("update", "aks_addon_update", supports_no_wait=True)
+    
+    # AKS managed namespace commands
+    with self.command_group(
+        "aks namespace",
+        namespaces_sdk,
+        client_factory=cf_namespaces,
+    ) as g:
+        g.custom_command("add", "aks_namespace_add")
+        # g.custom_command("list", "aks_namespace_list")
+        # g.custom_show_command("show", "aks_namespace_show")
+        # g.custom_command("update", "aks_namespace_update")
+        # g.custom_command("delete", "aks_namespace_delete")
+        # g.custom_command("get-credentials", "aks_get_credentials")
 
     # AKS agent pool commands
     with self.command_group(

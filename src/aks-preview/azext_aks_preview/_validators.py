@@ -165,6 +165,45 @@ def validate_ip_ranges(namespace):
         except ValueError:
             pass
 
+def validate_namespace_name(namespace):
+	_validate_namespace_name(namespace.name)
+
+def _validate_namespace_name(name):
+    """
+    Validates a Kubernetes namespace name.
+    Raises ValueError if the name is invalid.
+    """
+    if name != "":
+        if len(name) < 1 or len(name) > 63:
+            raise ValueError("Namespace name must be between 1 and 63 characters.")
+        pattern = r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+        if not re.match(pattern, name):
+            raise ValueError(
+                f"Invalid namespace '{name}'. Must consist of lower case alphanumeric characters or '-', "
+                "and must start and end with an alphanumeric character."
+                )
+
+def validate_resource_quota(namespace):
+    if hasattr(namespace, 'cpu_request'):
+        cpu_request = namespace.cpu_request
+        if not cpu_request.endswith("m"):
+            raise ValueError("--cpu-request must be specified in millicores, like 200m")
+    if hasattr(namespace, 'cpu_limit'):
+        cpu_limit = namespace.cpu_limit
+        if not cpu_limit.endswith("m"):
+            raise ValueError("--cpu-limit must be specified in millicores, like 200m")
+    pattern = r"^\d+(Ki|Mi|Gi|Ti|Pi|Ei)$"
+    if hasattr(namespace, 'memory_request'):
+        memory_request = namespace.memory_request
+        if not re.match(pattern, memory_request):
+            raise ValueError("--memory-request must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+    if hasattr(namespace, 'memory_limit'):
+        memory_limit = namespace.memory_limit
+        if not re.match(pattern, memory_limit):
+            raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.") 
+
 
 def _validate_nodepool_name(nodepool_name):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""

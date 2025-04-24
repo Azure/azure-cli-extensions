@@ -1663,6 +1663,56 @@ helps['aks maintenanceconfiguration update'] = """
                 }
 """
 
+helps['aks namespace'] = """
+    type: group
+    short-summary: Commands to manage namespace in managed Kubernetes cluster.
+"""
+
+helps['aks namespace add'] = """
+    type: command
+    short-summary: Add a namespace to the managed Kubernetes cluster.
+    parameters:
+        - name: --name
+          type: string
+          short-summary: The name of the managed namespace.
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --tags
+          type: string
+          short-summary: The tags of the managed namespace.
+        - name: --labels
+          type: string
+          short-summary: Labels for the managed namespace.
+        - name: --annotations
+          type: string
+          short-summary: Annotations for the managed namespace.
+        - name: --cpu-request
+          type: string
+          short-summary: CPU request of the namespace.
+        - name: --cpu-limit
+          type: string
+          short-summary: CPU limit of the namespace.
+        - name: --memory-request
+          type: string
+          short-summary: Memory request of the namespace.
+        - name: --memory-limit
+          type: string
+          short-summary: Memory limit of the namespace.
+        - name: --ingress-rule
+          type: string
+          short-summary: Ingress policy rule for the network.
+        - name: --egress-rule
+          type: string
+          short-summary: Egress policy rule for the network.
+        - name: --adoption-policy
+          type: string
+          short-summary: Action if Kubernetes namespace with same name already exists.
+        - name: --delete-policy
+          type: string
+          short-summary: Delete options of a namespace
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.

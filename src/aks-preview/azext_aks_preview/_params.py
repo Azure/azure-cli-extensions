@@ -43,6 +43,14 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_NAMESPACE_ADOPTION_POLICY_NEVER, 
+    CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
+    CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+    CONST_NAMESPACE_DELETE_POLICY_KEEP,
+    CONST_NAMESPACE_DELETE_POLICY_DELETE,
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
@@ -133,6 +141,8 @@ from azext_aks_preview._consts import (
 )
 from azext_aks_preview._validators import (
     validate_acr,
+    validate_namespace_name,
+    validate_resource_quota,
     validate_addon,
     validate_addons,
     validate_agent_pool_name,
@@ -304,6 +314,24 @@ node_os_upgrade_channels = [
 nrg_lockdown_restriction_levels = [
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
+]
+
+# consts for managed namespace
+network_policy_rules = [
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
+    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+]
+
+adoption_policy = [
+    CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
+    CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
+    CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
+]
+
+delete_policy = [
+    CONST_NAMESPACE_DELETE_POLICY_KEEP,
+    CONST_NAMESPACE_DELETE_POLICY_DELETE,
 ]
 
 # consts for maintenance configuration
@@ -1396,6 +1424,52 @@ def load_arguments(self, _):
             help="Node pool name, upto 12 alphanumeric characters",
             validator=validate_nodepool_name,
         )
+    
+    # managed namespace
+    with self.argument_context("aks namespace") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "namespace_name",
+            options_list=["--name"],
+            validator=validate_namespace_name,
+            help="The managed namespace name.",
+            )
+    
+    for scope in [
+        "aks namespace add",
+        # "aks namespace update",
+    ]:
+        with self.argument_context(scope) as c:
+            c.argument("tags", tags_type, options_list=["--tags"], help="The tags to set to the managed namespace.")
+            c.argument("labels", nargs="*", options_list=["--labels"], help="Labels set to the managed namespace")
+            c.argument("annotations ", nargs="*", options_list=["--annotations"], help="Labels set to the managed namespace")
+            c.argument("cpu_request", type=str, options_list=["--cpu-request"], validator=validate_resource_quota)
+            c.argument("cpu_limit", type=str, options_list=["--cpu-limit"], validator=validate_resource_quota)
+            c.argument("memory_request", type=str, options_list=["--memory-request"], validator=validate_resource_quota)
+            c.argument("memory_limit", type=str, options_list=["--memory-limit"], validator=validate_resource_quota)
+            c.argument("ingress_rule", options_list=["--ingress-rule"], arg_type=get_enum_type(network_policy_rules))
+            c.argument("egress_rule", options_list=["--egress-rule"], arg_type=get_enum_type(network_policy_rules))
+            c.argument("adoption_policy", options_list=["--adoption-policy"], arg_type=get_enum_type(adoption_policy))
+            c.argument("delete_policy", options_list=["--delete-policy"], arg_type=get_enum_type(delete_policy))
+
+    # for scope in [
+    #     "aks namespace show",
+    #     "aks namespace delete",
+    # ]:
+    #     with self.argument_context("aks namespace show") as c:
+    #         c.argument("cluster_name", help="The cluster name.")
+    #         c.argument(
+    #             "name",
+    #             options_list=["--name"],
+    #             validator=validate_namespace_name,
+    #             help="The managed namespace name.",
+    #         )
+
+    # with self.argument_context("aks namespace list") as c:
+    #      c.argument("cluster_name", help="The cluster name.")
+
+    # ToDO: add an argument context "aks namespace get-credentials"
+
 
     with self.argument_context("aks nodepool") as c:
         c.argument("cluster_name", help="The cluster name.")
