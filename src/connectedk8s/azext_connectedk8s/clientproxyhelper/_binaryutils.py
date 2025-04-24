@@ -84,7 +84,7 @@ def _download_proxy_from_MCR(
         mar_target,
     )
 
-    client = oras.client.OrasClient()
+    client = oras.client.OrasClient(hostname=mcr_url)
     t0 = time.time()
 
     try:

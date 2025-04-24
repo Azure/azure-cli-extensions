@@ -1227,7 +1227,7 @@ def install_helm_client(cmd: CLICommand) -> str:
 
         mcr_url = utils.get_mcr_path(cmd)
 
-        client = oras.client.OrasClient()
+        client = oras.client.OrasClient(hostname=mcr_url)
         retry_count = 3
         retry_delay = 5
         for i in range(retry_count):
