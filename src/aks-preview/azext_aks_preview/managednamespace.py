@@ -266,13 +266,13 @@ def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
         CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
     }
 
-    if ingress_rule not in valid_network_policy_rules:
+    if ingress_rule is not None and ingress_rule not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
             f"Invalid ingress_rule '{ingress_rule}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
     
-    if egress_rule not in valid_network_policy_rules:
+    if egress_rule is not None and egress_rule not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
             f"Invalid egress_rule '{egress_rule}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
@@ -306,7 +306,7 @@ def updateAdoptionPolicy(cmd, raw_parameters, existedNamespace):
         CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS
     }
 
-    if adoption_policy not in valid_adoption_policy:
+    if adoption_policy is not None and adoption_policy not in valid_adoption_policy:
         raise InvalidArgumentValueError(
             f"Invalid adoption policy '{adoption_policy}'. Must be one of: "
             f"{', '.join(valid_adoption_policy)}"
@@ -325,7 +325,7 @@ def updateDeletePolicy(cmd, raw_parameters, existedNamespace):
         CONST_NAMESPACE_DELETE_POLICY_DELETE
     }
 
-    if delete_policy not in valid_delete_policy:
+    if delete_policy is not None and delete_policy not in valid_delete_policy:
         raise InvalidArgumentValueError(
             f"Invalid delete policy '{delete_policy}'. Must be one of: "
             f"{', '.join(valid_delete_policy)}"
