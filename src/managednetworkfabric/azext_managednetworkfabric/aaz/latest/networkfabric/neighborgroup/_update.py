@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -53,22 +53,13 @@ class Update(AAZCommand):
             help="Name of the Neighbor Group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -76,12 +67,19 @@ class Update(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Description for underlying resource.",
+            help="Switch configuration description.",
+            nullable=True,
         )
         _args_schema.destination = AAZObjectArg(
             options=["--destination"],
             arg_group="Properties",
             help="An array of destination IPv4 Addresses or IPv6 Addresses.",
+            nullable=True,
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
         destination = cls._args_schema.destination
@@ -101,18 +99,13 @@ class Update(AAZCommand):
         )
 
         ipv4_addresses = cls._args_schema.destination.ipv4_addresses
-        ipv4_addresses.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
+        ipv4_addresses.Element = AAZStrArg()
 
         ipv6_addresses = cls._args_schema.destination.ipv6_addresses
-        ipv6_addresses.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
+        ipv6_addresses.Element = AAZStrArg()
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -196,7 +189,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -221,13 +214,13 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("destination", AAZObjectType, ".destination")
+                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("destination", AAZObjectType, ".destination", typ_kwargs={"nullable": True})
 
             destination = _builder.get(".properties.destination")
             if destination is not None:
@@ -292,6 +285,10 @@ class Update(AAZCommand):
             properties.destination = AAZObjectType(
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.network_tap_ids = AAZListType(
                 serialized_name="networkTapIds",
                 flags={"read_only": True},
@@ -318,6 +315,11 @@ class Update(AAZCommand):
 
             ipv6_addresses = cls._schema_on_200.properties.destination.ipv6_addresses
             ipv6_addresses.Element = AAZStrType()
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
 
             network_tap_ids = cls._schema_on_200.properties.network_tap_ids
             network_tap_ids.Element = AAZStrType()

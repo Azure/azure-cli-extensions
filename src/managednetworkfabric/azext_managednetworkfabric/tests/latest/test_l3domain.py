@@ -39,9 +39,10 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nf_id}"
+        "az networkfabric l3domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nfId}"
         " --redistribute-connected-subnets {redistributeConnectedSubnets} --redistribute-static-routes {redistributeStaticRoutes}"
-        " --aggregate-route-configuration {aggregateRouteConf}",
+        " --aggregate-route-configuration {aggregateRouteConf} --connected-subnet-route-policy {connectedSubnetRoutePolicy}"
+        " --route-prefix-limit {routePrefixLimit} --static-route-route-policy {staticRouteRoutePolicy}",
         checks=checks,
     )
 
@@ -79,7 +80,7 @@ class GA_L3DomainScenarioTest1(ScenarioTest):
                 "name": CONFIG.get("L3_ISOLATION_DOMAIN", "name"),
                 "rg": CONFIG.get("L3_ISOLATION_DOMAIN", "resource_group"),
                 "location": CONFIG.get("L3_ISOLATION_DOMAIN", "location"),
-                "nf_id": CONFIG.get("L3_ISOLATION_DOMAIN", "nf_id"),
+                "nfId": CONFIG.get("L3_ISOLATION_DOMAIN", "nf_id"),
                 "redistributeConnectedSubnets": CONFIG.get(
                     "L3_ISOLATION_DOMAIN", "redistribute_connected_subnets"
                 ),
@@ -94,6 +95,12 @@ class GA_L3DomainScenarioTest1(ScenarioTest):
                 ),
                 "updatedAggregateRouteConf": CONFIG.get(
                     "L3_ISOLATION_DOMAIN", "updated_aggregate_route_conf"
+                ),
+                "routePrefixLimit": CONFIG.get(
+                    "L3_ISOLATION_DOMAIN", "route_prefix_limit"
+                ),
+                "staticRouteRoutePolicy": CONFIG.get(
+                    "L3_ISOLATION_DOMAIN", "static_route_route_policy"
                 ),
             }
         )

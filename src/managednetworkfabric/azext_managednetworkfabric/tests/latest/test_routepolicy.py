@@ -60,7 +60,7 @@ def step_create_s1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statements_with_ipcommunity}",
+        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statementsWithIpcommunity}",
         checks=checks,
     )
 
@@ -70,7 +70,7 @@ def step_create_s2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statements_with_ipextcommunity}",
+        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statementsWithIpextcommunity}",
         checks=checks,
     )
 
@@ -89,7 +89,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements {updated_statements_with_ipcommunity}",
+        "az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements {updatedStatementsWithIpcommunity}",
         checks=checks,
     )
 
@@ -126,13 +126,13 @@ class GA_RoutePolicyScenarioTest1(ScenarioTest):
                 "nfId": CONFIG.get("ROUTE_POLICY", "nf_id"),
                 "addressFamilyType": CONFIG.get("ROUTE_POLICY", "address_family_type"),
                 "defaultAction": CONFIG.get("ROUTE_POLICY", "default_action"),
-                "statements_with_ipcommunity": CONFIG.get(
+                "statementsWithIpcommunity": CONFIG.get(
                     "ROUTE_POLICY", "statements_with_ipcommunity"
                 ),
-                "updated_statements_with_ipcommunity": CONFIG.get(
+                "updatedStatementsWithIpcommunity": CONFIG.get(
                     "ROUTE_POLICY", "updated_statements_with_ipcommunity"
                 ),
-                "statements_with_ipextcommunity": CONFIG.get(
+                "statementsWithIpextcommunity": CONFIG.get(
                     "ROUTE_POLICY", "statements_with_ipextcommunity"
                 ),
             }

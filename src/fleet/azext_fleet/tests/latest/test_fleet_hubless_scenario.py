@@ -179,6 +179,10 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
+        self.cmd('fleet autoupgradeprofile generate-update-run -g {rg} -f {fleet_name} --auto-upgrade-profile-name {autoupgradeprofile_name}', checks=[
+            self.check("contains(id, 'auto-{autoupgradeprofile_name}-rapid')", True)
+        ])
+
         self.cmd('fleet autoupgradeprofile delete -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} --yes')
 
         self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name} --yes')
