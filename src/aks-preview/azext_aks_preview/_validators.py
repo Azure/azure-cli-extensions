@@ -184,23 +184,19 @@ def _validate_namespace_name(name):
                 )
 
 def validate_resource_quota(namespace):
-    if hasattr(namespace, 'cpu_request'):
-        cpu_request = namespace.cpu_request
-        if not cpu_request.endswith("m"):
+    if namespace.cpu_request is not None:
+        if not namespace.cpu_request.endswith("m"):
             raise ValueError("--cpu-request must be specified in millicores, like 200m")
-    if hasattr(namespace, 'cpu_limit'):
-        cpu_limit = namespace.cpu_limit
-        if not cpu_limit.endswith("m"):
+    if namespace.cpu_limit is not None:
+        if not namespace.cpu_limit.endswith("m"):
             raise ValueError("--cpu-limit must be specified in millicores, like 200m")
     pattern = r"^\d+(Ki|Mi|Gi|Ti|Pi|Ei)$"
-    if hasattr(namespace, 'memory_request'):
-        memory_request = namespace.memory_request
-        if not re.match(pattern, memory_request):
+    if namespace.memory_request is not None:
+        if not re.match(pattern, namespace.memory_request):
             raise ValueError("--memory-request must be specified in the power-of-two equivalents form:"
                              "Ei, Pi, Ti, Gi, Mi, Ki.")
-    if hasattr(namespace, 'memory_limit'):
-        memory_limit = namespace.memory_limit
-        if not re.match(pattern, memory_limit):
+    if namespace.memory_limit is not None:
+        if not re.match(pattern, namespace.memory_limit):
             raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
                              "Ei, Pi, Ti, Gi, Mi, Ki.") 
 
