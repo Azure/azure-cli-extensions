@@ -8,8 +8,10 @@ from azure.cli.core.azclierror import ArgumentUsageError
 
 # pylint: disable=protected-access, too-few-public-methods
 
-# code derived from https://github.com/Azure/azure-cli-extensions/blob/main/src/k8s-extension/azext_k8s_extension/action.py
-# TODO: Update this file if there are changes to this class in the k8s-extensions folder 
+# Reference: https://github.com/Azure/azure-cli-extensions/blob/main/src/k8s-extension/azext_k8s_extension/action.py
+# TODO: Update this file if there are changes to this class in the k8s-extensions folder
+
+
 class AddConfigurationSettings(argparse._AppendAction):
 
     def __call__(self, parser, namespace, values, option_string=None):
