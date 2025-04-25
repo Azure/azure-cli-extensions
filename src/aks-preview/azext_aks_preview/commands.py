@@ -475,8 +475,9 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command("outbound", "aks_check_network_outbound")
 
-    with self.command_group("aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters) \
-            as g:
+    with self.command_group(
+        "aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
         g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
         g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
         g.custom_command(
