@@ -15,15 +15,18 @@ class microsoft_compute:
         
         match resourceSubType:
             case 'disks':
-                return ZoneRedundancyValidationResult.Yes if resource['zones'] is not None and len(resource['zones']) > 1 else ZoneRedundancyValidationResult.No
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 else ZoneRedundancyValidationResult.No
 
             case 'virtualmachinescalesets':
                 # VMSS is ZR if deployed to more than one zone
-                return ZoneRedundancyValidationResult.Yes if resource['zones'] is not None and len(resource['zones']) > 1 else ZoneRedundancyValidationResult.No
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 else ZoneRedundancyValidationResult.No
             
             case 'virtualmachines':
                 # VM is ZR if deployed to more than one zone
-                return ZoneRedundancyValidationResult.Yes if resource['zones'] is not None and len(resource['zones']) > 1 else ZoneRedundancyValidationResult.No
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 else ZoneRedundancyValidationResult.No
             
             case 'virtualmachines/extensions':
                 # VM extensions are zone redundant if the VM they are attached to is zone redundant

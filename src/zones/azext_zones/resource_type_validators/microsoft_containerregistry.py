@@ -19,4 +19,7 @@ class microsoft_containerregistry:
                 # https://learn.microsoft.com/azure/container-registry/zone-redundancy
                 return ZoneRedundancyValidationResult.Yes if resource['properties']['zoneRedundancy'] == 'Enabled' else ZoneRedundancyValidationResult.No
 
+            case 'registries/replications':
+                return ZoneRedundancyValidationResult.Dependent
+            
         return ZoneRedundancyValidationResult.Unknown

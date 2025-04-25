@@ -33,7 +33,10 @@ class microsoft_network:
                 return ZoneRedundancyValidationResult.Always
 
             case 'loadbalancers':
-                return ZoneRedundancyValidationResult.Yes if resource['sku']['name'] in ['Standard'] and resource['frontendipconfigurations'][0].zones not in [None, []] else ZoneRedundancyValidationResult.No
+                frontend_ip_configs = resource.get('frontendipconfigurations', [])
+                zones = frontend_ip_configs[0].get('zones') if frontend_ip_configs else None
+                is_standard_sku = resource.get('sku', {}).get('name') == 'Standard'
+                return ZoneRedundancyValidationResult.Yes if is_standard_sku and zones else ZoneRedundancyValidationResult.No
 
             case 'localnetworkgateways':
                 # Local network gateways depend on the configuration of the VPN Gateway

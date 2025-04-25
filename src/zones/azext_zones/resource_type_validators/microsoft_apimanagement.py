@@ -21,8 +21,8 @@ class microsoft_apimanagement:
             case 'service':
                 # API Management instances are zone redundant if they are premium and have more than one zone
                 # https://learn.microsoft.com/azure/api-management/high-availability#availability-zones
-                return ZoneRedundancyValidationResult.Yes if resource['zones'] not in [None, []] \
-                        and len(resource['zones']) > 1 \
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 \
                         and resource['sku']['name'] == 'Premium' \
                         else ZoneRedundancyValidationResult.No
 

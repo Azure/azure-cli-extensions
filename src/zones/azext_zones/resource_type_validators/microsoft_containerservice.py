@@ -18,8 +18,8 @@ class microsoft_containerservice:
                 # AKS clusters are zone redundant if the node pools are spread across multiple zones
                 # Zone Redundancy on AKS involves a lot of configuration steps, testing is required beyond this script.
                 # https://learn.microsoft.com/azure/aks/availability-zones-overview
-                poolZones = resource['properties']['agentPoolProfiles'][0]['availabilityZones']
-                poolZoneCount = len(poolZones) if poolZones else 0
-                return ZoneRedundancyValidationResult.Yes if poolZoneCount > 1 == 'Enabled' else ZoneRedundancyValidationResult.No
+                poolZones = resource['properties']['agentPoolProfiles'][0].get('availabilityZones') or []                                                                              
+                poolZoneCount = len(poolZones)
+                return ZoneRedundancyValidationResult.Yes if poolZoneCount > 1 else ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown
