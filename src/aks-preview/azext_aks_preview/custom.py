@@ -252,6 +252,7 @@ def aks_namespace_add(
     egress_rule=None,
     adoption_policy=None,
     delete_policy=None,
+    no_wait=False,
 ):
     existedNamespace = None
     try:
@@ -267,7 +268,7 @@ def aks_namespace_add(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     headers = get_aks_custom_headers(aks_custom_headers)
-    return aks_managed_namespace_add(cmd, client, raw_parameters, headers)
+    return aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait)
 
 # pylint: disable=unused-argument
 def aks_namespace_update(
@@ -288,6 +289,7 @@ def aks_namespace_update(
     egress_rule=None,
     adoption_policy=None,
     delete_policy=None,
+    no_wait=False,
 ):
     try:
         existedNamespace = client.get(resource_group_name, cluster_name, name)
@@ -301,7 +303,7 @@ def aks_namespace_update(
         #DO NOT MOVE: get all the original parameters and save them as a dictionary
         raw_parameters = locals()
         headers = get_aks_custom_headers(aks_custom_headers)
-        return aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace)
+        return aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait)
 
 
 def aks_maintenanceconfiguration_list(

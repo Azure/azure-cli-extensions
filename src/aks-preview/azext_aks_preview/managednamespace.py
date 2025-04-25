@@ -9,6 +9,10 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
 )
 
+from azure.cli.core.util import (
+    sdk_no_wait,
+)
+
 from azext_aks_preview._consts import (
     CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
     CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
@@ -22,18 +26,20 @@ from azext_aks_preview._consts import (
 
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
-def aks_managed_namespace_add(cmd, client, raw_parameters, headers):
+def aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
     namespace_config = constructNamespace(cmd, raw_parameters, namespace_name)
 
-    return client.begin_create_or_update(
-        resource_group_name=resource_group_name,
-        resource_name=cluster_name,
-        namespace_name=namespace_name,
-        parameters=namespace_config,
-        headers=headers
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        namespace_name,
+        namespace_config,
+        headers=headers,
     )
 
 def constructNamespace(cmd, raw_parameters, namespace_name):
@@ -175,18 +181,20 @@ def parse_key_value_list(pairs):
         result[key.strip()] = value.strip()
     return result
 
-def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace):
+def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
     namespace_config = updateNamespace(cmd, raw_parameters, existedNamespace)
 
-    return client.begin_create_or_update(
-        resource_group_name=resource_group_name,
-        resource_name=cluster_name,
-        namespace_name=namespace_name,
-        parameters=namespace_config,
-        headers=headers
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        namespace_name,
+        namespace_config,
+        headers=headers,
     )
 
 def updateNamespace(cmd, raw_parameters, existedNamespace):

@@ -1440,7 +1440,7 @@ def load_arguments(self, _):
         "aks namespace update",
     ]:
         with self.argument_context(scope) as c:
-            c.argument("tags", tags_type, options_list=["--tags"], help="The tags to set to the managed namespace.")
+            c.argument("tags", tags_type, options_list=["--tags"], help="The tags to set to the managed namespace")
             c.argument("labels", nargs="*", options_list=["--labels"], help="Labels set to the managed namespace")
             c.argument("annotations", nargs="*", options_list=["--annotations"], help="Labels set to the managed namespace")
             c.argument("cpu_request", type=str, options_list=["--cpu-request"], validator=validate_resource_quota)
@@ -1452,6 +1452,7 @@ def load_arguments(self, _):
             c.argument("adoption_policy", options_list=["--adoption-policy"], arg_type=get_enum_type(adoption_policy))
             c.argument("delete_policy", options_list=["--delete-policy"], arg_type=get_enum_type(delete_policy))
             c.argument("aks_custom_headers", options_list=["--aks-custom-headers"])
+            c.argument("no_wait", help="Do not wait for the long-running operation to finish")
 
     # for scope in [
     #     "aks namespace show",
