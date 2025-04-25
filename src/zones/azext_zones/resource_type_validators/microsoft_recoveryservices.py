@@ -1,0 +1,22 @@
+from .._resourceTypeValidation import ZoneRedundancyValidationResult, register_resource_type
+from knack.log import get_logger
+
+
+@register_resource_type('microsoft.recoveryservices')
+class microsoft_recoveryservices:
+    
+    @staticmethod
+    def validate(resource):
+        resourceType = resource['type']
+        resourceSubType = resourceType[resourceType.index('/') + 1:]
+
+        _logger = get_logger("microsoft_recoveryservices")   
+        _logger.debug("Validating Microsoft.recoveryservices resource type: %s", resourceSubType)
+        
+        match resourceSubType:
+            case 'vaults':
+                # https://learn.microsoft.com/azure/reliability/reliability-backup#availability-zone-support
+                # Recovery Services vaults are zone redundant if the storage redundancy was set to ZoneRedundant
+                return ZoneRedundancyValidationResult.Yes if resource['redundancySettings']['standardTierStorageRedundancy'] == 'ZoneRedundant' else ZoneRedundancyValidationResult.No
+
+        return ZoneRedundancyValidationResult.Unknown

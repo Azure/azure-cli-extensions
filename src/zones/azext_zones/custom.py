@@ -48,7 +48,14 @@ def validate_resources(resources, omit_dependent_resources=False):
             zrStatus = ZoneRedundancyValidationResult.NoZonesInRegion
         else:
             validator = ResourceTypeValidatorFactory.getValidator(resourceProvider)
-            zrStatus = ZoneRedundancyValidationResult.Unknown if validator is None else validator.validate(resource)
+            if validator is None:
+                zrStatus = ZoneRedundancyValidationResult.Unknown
+            else: 
+                try:
+                    zrStatus = validator.validate(resource)
+                except Exception as e:
+                    __logger.warning(f"An error occurred when validating {resource.get('name', '')}: {e}\nPlease check the resource manually.")
+                    zrStatus = ZoneRedundancyValidationResult.Unknown
 
         if zrStatus is not ZoneRedundancyValidationResult.Dependent or not omit_dependent_resources:
             resource_result = {}

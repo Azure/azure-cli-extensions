@@ -15,10 +15,12 @@ class microsoft_network:
 
         match resourceSubType:
             case 'applicationgateways':
-                return ZoneRedundancyValidationResult.Yes if resource['zones'] not in [None, []] else ZoneRedundancyValidationResult.No
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 else ZoneRedundancyValidationResult.No
 
             case 'azurefirewalls':
-                return ZoneRedundancyValidationResult.Yes if resource['zones'] not in [None, []] and resource['sku']['capacity'] > 1 else ZoneRedundancyValidationResult.No
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 and resource['sku']['capacity'] > 1 else ZoneRedundancyValidationResult.No
 
             case 'connections':
                 # Network connections depend on the configuration of the Virtual Network Gateway
@@ -33,10 +35,9 @@ class microsoft_network:
                 return ZoneRedundancyValidationResult.Always
 
             case 'loadbalancers':
-                frontend_ip_configs = resource.get('frontendipconfigurations', [])
-                zones = frontend_ip_configs[0].get('zones') if frontend_ip_configs else None
-                is_standard_sku = resource.get('sku', {}).get('name') == 'Standard'
-                return ZoneRedundancyValidationResult.Yes if is_standard_sku and zones else ZoneRedundancyValidationResult.No
+                frontend_ip_configs = resource['properties'].get('frontendIPConfigurations') or []
+                zones = frontend_ip_configs[0].get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 else ZoneRedundancyValidationResult.No
 
             case 'localnetworkgateways':
                 # Local network gateways depend on the configuration of the VPN Gateway
@@ -65,7 +66,8 @@ class microsoft_network:
                 return ZoneRedundancyValidationResult.Always
 
             case 'publicipaddresses':
-                return ZoneRedundancyValidationResult.Yes if resource['sku']['name'] in ['Standard'] and resource['zones'] not in [None, []] else ZoneRedundancyValidationResult.No
+                zones = resource.get('zones') or []
+                return ZoneRedundancyValidationResult.Yes if resource['sku']['name'] in ['Standard'] and len(zones) > 1 else ZoneRedundancyValidationResult.No
 
             case 'virtualnetworks':
                 # Virtual networks span all availability zones in a region.
