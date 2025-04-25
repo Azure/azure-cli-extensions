@@ -1437,7 +1437,7 @@ def load_arguments(self, _):
     
     for scope in [
         "aks namespace add",
-        # "aks namespace update",
+        "aks namespace update",
     ]:
         with self.argument_context(scope) as c:
             c.argument("tags", tags_type, options_list=["--tags"], help="The tags to set to the managed namespace.")

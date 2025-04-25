@@ -95,6 +95,7 @@ from azext_aks_preview.maintenanceconfiguration import (
 )
 from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
+    aks_managed_namespace_update,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -247,10 +248,10 @@ def aks_namespace_add(
     labels=None,
     annotations=None,
     aks_custom_headers=None,
-    ingress_rule=CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
-    egress_rule=CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
-    adoption_policy=CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
-    delete_policy=CONST_NAMESPACE_DELETE_POLICY_KEEP,
+    ingress_rule=None,
+    egress_rule=None,
+    adoption_policy=None,
+    delete_policy=None,
 ):
     existedNamespace = None
     try:
@@ -259,16 +260,48 @@ def aks_namespace_add(
         pass
 
     if existedNamespace:
-        raise Exception(  # pylint: disable=broad-exception-raised
-            "Namespace " +
-            name +
-            " already existed, please use 'az aks namespace update' command to update!"
+        raise CLIError(
+            f"Namespace '{name}' already exists. Please use 'az aks namespace update' to update it."
         )
     
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     headers = get_aks_custom_headers(aks_custom_headers)
     return aks_managed_namespace_add(cmd, client, raw_parameters, headers)
+
+# pylint: disable=unused-argument
+def aks_namespace_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    cpu_request=None,
+    cpu_limit=None,
+    memory_request=None,
+    memory_limit=None,
+    tags=None,
+    labels=None,
+    annotations=None,
+    aks_custom_headers=None,
+    ingress_rule=None,
+    egress_rule=None,
+    adoption_policy=None,
+    delete_policy=None,
+):
+    try:
+        existedNamespace = client.get(resource_group_name, cluster_name, name)
+    except ResourceNotFoundError:
+        raise CLIError(
+            f"Namespace '{name}' doesn't exist."
+            "Please use 'aks namespace list' to get current list of managed namespaces"
+        )
+    
+    if existedNamespace:
+        #DO NOT MOVE: get all the original parameters and save them as a dictionary
+        raw_parameters = locals()
+        headers = get_aks_custom_headers(aks_custom_headers)
+        return aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace)
 
 
 def aks_maintenanceconfiguration_list(

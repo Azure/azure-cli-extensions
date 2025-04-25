@@ -26,7 +26,7 @@ def aks_managed_namespace_add(cmd, client, raw_parameters, headers):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     namespace_name = raw_parameters.get("name")
-    namespace_config = constructNamespace(cmd, raw_parameters)
+    namespace_config = constructNamespace(cmd, raw_parameters, namespace_name)
 
     return client.begin_create_or_update(
         resource_group_name=resource_group_name,
@@ -36,8 +36,7 @@ def aks_managed_namespace_add(cmd, client, raw_parameters, headers):
         headers=headers
     )
 
-def constructNamespace(cmd, raw_parameters):
-    namespace_name = raw_parameters.get("name")
+def constructNamespace(cmd, raw_parameters, namespace_name):
     tags = raw_parameters.get("tags", {})
     labels_raw = raw_parameters.get("labels")
     labels = parse_key_value_list(labels_raw)
@@ -66,7 +65,6 @@ def constructNamespace(cmd, raw_parameters):
     )
     
     namespace_config = Namespace()
-    print(namespace_config)
     namespace_config.name = namespace_name
     namespace_config.tags = tags
     namespace_config.properties = namespace_properties
@@ -99,8 +97,8 @@ def setResourceQuota(cmd, raw_parameters):
     return rq
 
 def setNetworkPolicyRule(cmd, raw_parameters):
-    ingress_rule = raw_parameters.get("ingress_rule", CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE)
-    egress_rule = raw_parameters.get("egress_rule", CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL)
+    ingress_rule = raw_parameters.get("ingress_rule") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE
+    egress_rule = raw_parameters.get("egress_rule") or  CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
 
     valid_network_policy_rules = {
         CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
@@ -134,7 +132,7 @@ def setNetworkPolicyRule(cmd, raw_parameters):
     return np
 
 def setAdoptionPolicy(cmd, raw_parameters):
-    adoption_policy = raw_parameters.get("adoption_policy", CONST_NAMESPACE_ADOPTION_POLICY_NEVER)
+    adoption_policy = raw_parameters.get("adoption_policy") or CONST_NAMESPACE_ADOPTION_POLICY_NEVER
     
     valid_adoption_policy = {
         CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
@@ -151,7 +149,7 @@ def setAdoptionPolicy(cmd, raw_parameters):
     return adoption_policy
 
 def setDeletePolicy(cmd, raw_parameters):
-    delete_policy = raw_parameters.get("delete_policy", CONST_NAMESPACE_DELETE_POLICY_KEEP)
+    delete_policy = raw_parameters.get("delete_policy") or CONST_NAMESPACE_DELETE_POLICY_KEEP
     
     valid_delete_policy = {
         CONST_NAMESPACE_DELETE_POLICY_KEEP,
@@ -176,3 +174,164 @@ def parse_key_value_list(pairs):
         key, value = pair.split("=", 1)
         result[key.strip()] = value.strip()
     return result
+
+def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace):
+    resource_group_name = raw_parameters.get("resource_group_name")
+    cluster_name = raw_parameters.get("cluster_name")
+    namespace_name = raw_parameters.get("name")
+    namespace_config = updateNamespace(cmd, raw_parameters, existedNamespace)
+
+    return client.begin_create_or_update(
+        resource_group_name=resource_group_name,
+        resource_name=cluster_name,
+        namespace_name=namespace_name,
+        parameters=namespace_config,
+        headers=headers
+    )
+
+def updateNamespace(cmd, raw_parameters, existedNamespace):
+    tags = raw_parameters.get("tags", {})
+    labels_raw = raw_parameters.get("labels")
+    labels = parse_key_value_list(labels_raw)
+    annotations_raw = raw_parameters.get("annotations")
+    annotations = parse_key_value_list(annotations_raw)
+
+    NamespaceProperties = cmd.get_models(
+        "NamespaceProperties",
+        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group = "namespaces"
+    )
+    
+    namespace_properties = NamespaceProperties(
+        labels = labels,
+        annotations = annotations,
+        default_resource_quota = updateResourceQuota(cmd, raw_parameters, existedNamespace),
+        default_network_policy = updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace),
+        adoption_policy = updateAdoptionPolicy(cmd, raw_parameters, existedNamespace),
+        delete_policy = updateDeletePolicy(cmd, raw_parameters, existedNamespace)
+    )
+
+    Namespace = cmd.get_models(
+        "Namespace",
+        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group = "namespaces"
+    )
+    
+    namespace_config = Namespace()
+    namespace_config.name = existedNamespace.name
+    namespace_config.tags = tags
+    namespace_config.properties = namespace_properties
+    return namespace_config
+
+def updateResourceQuota(cmd, raw_parameters, existedNamespace):
+    cpu_request = raw_parameters.get("cpu_request")
+    cpu_limit = raw_parameters.get("cpu_limit")
+    memory_request = raw_parameters.get("memory_request")
+    memory_limit = raw_parameters.get("memory_limit")
+
+    if cpu_request is None:
+        cpu_request = existedNamespace.properties.default_resource_quota.cpu_request
+    
+    if cpu_limit is None:
+        cpu_limit = existedNamespace.properties.default_resource_quota.cpu_limit
+
+    if memory_request is None:
+        memory_request = existedNamespace.properties.default_resource_quota.memory_request
+    
+    if memory_limit is None:
+        memory_limit = existedNamespace.properties.default_resource_quota.memory_limit
+    
+    ResourceQuota = cmd.get_models(
+        "ResourceQuota",
+        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group = "namespaces"
+    )
+
+    rq = ResourceQuota(
+        cpu_request = cpu_request,
+        cpu_limit = cpu_limit,
+        memory_request = memory_request,
+        memory_limit = memory_limit
+    )
+    
+    return rq
+
+def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
+    ingress_rule = raw_parameters.get("ingress_rule")
+    egress_rule = raw_parameters.get("egress_rule")
+
+    valid_network_policy_rules = {
+        CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
+        CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
+        CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
+    }
+
+    if ingress_rule not in valid_network_policy_rules:
+        raise InvalidArgumentValueError(
+            f"Invalid ingress_rule '{ingress_rule}'. Must be one of: "
+            f"{', '.join(valid_network_policy_rules)}"
+        )
+    
+    if egress_rule not in valid_network_policy_rules:
+        raise InvalidArgumentValueError(
+            f"Invalid egress_rule '{egress_rule}'. Must be one of: "
+            f"{', '.join(valid_network_policy_rules)}"
+        )
+    
+    if ingress_rule is None:
+        ingress_rule = existedNamespace.properties.default_network_policy.ingress
+    
+    if egress_rule is None:
+        egress_rule = existedNamespace.properties.default_network_policy.egress
+
+    NetworkPolicies = cmd.get_models(
+        "NetworkPolicies",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
+    )
+
+    np = NetworkPolicies(
+        ingress = ingress_rule,
+        egress = egress_rule
+    )
+    
+    return np
+
+def updateAdoptionPolicy(cmd, raw_parameters, existedNamespace):
+    adoption_policy = raw_parameters.get("adoption_policy")
+    
+    valid_adoption_policy = {
+        CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
+        CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
+        CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS
+    }
+
+    if adoption_policy not in valid_adoption_policy:
+        raise InvalidArgumentValueError(
+            f"Invalid adoption policy '{adoption_policy}'. Must be one of: "
+            f"{', '.join(valid_adoption_policy)}"
+        )
+    
+    if adoption_policy is None:
+        adoption_policy = existedNamespace.properties.adoption_policy
+    
+    return adoption_policy
+
+def updateDeletePolicy(cmd, raw_parameters, existedNamespace):
+    delete_policy = raw_parameters.get("delete_policy")
+    
+    valid_delete_policy = {
+        CONST_NAMESPACE_DELETE_POLICY_KEEP,
+        CONST_NAMESPACE_DELETE_POLICY_DELETE
+    }
+
+    if delete_policy not in valid_delete_policy:
+        raise InvalidArgumentValueError(
+            f"Invalid delete policy '{delete_policy}'. Must be one of: "
+            f"{', '.join(valid_delete_policy)}"
+        )
+    
+    if delete_policy is None:
+        delete_policy = existedNamespace.properties.delete_policy
+    
+    return delete_policy
