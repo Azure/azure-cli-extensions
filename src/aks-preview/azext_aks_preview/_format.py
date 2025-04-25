@@ -375,15 +375,17 @@ def _format_mesh_revision_entry(revision):
     return flattened
 
 
-def k8s_extension_list_table_format(results):
-    return [__get_table_row(result) for result in results]
+def aks_extension_list_table_format(results):
+    """Format a list of K8s extensions as summary results for display with "-o table". """
+    return [_get_table_row(result) for result in results]
 
 
-def k8s_extension_show_table_format(result):
-    return __get_table_row(result)
+def aks_extension_show_table_format(result):
+    """Format a K8s extension as summary results for display with "-o table". """
+    return _get_table_row(result)
 
 
-def __get_table_row(result):
+def _get_table_row(result):
     return OrderedDict([
         ('name', result['name']),
         ('extensionType', result.get('extensionType', '')),
@@ -394,48 +396,53 @@ def __get_table_row(result):
     ])
 
 
-def k8s_extension_types_list_table_format(results):
-    return [__get_extension_type_table_row(result) for result in results]
+def aks_extension_types_list_table_format(results):
+    """Format a list of K8s extension types as summary results for display with "-o table". """
+    return [_get_extension_type_table_row(result) for result in results]
 
 
-def k8s_extension_type_show_table_format(result):
-    return __get_extension_type_table_row(result)
+def aks_extension_type_show_table_format(result):
+    """Format a K8s extension type as summary results for display with "-o table". """
+    return _get_extension_type_table_row(result)
 
 
-def __get_extension_type_table_row(result):
+def _get_extension_type_table_row(result):
     # Populate the values to be returned if they are not undefined
     clusterTypes = ''
     if result['properties']['supportedClusterTypes'] is not None:
         clusterTypes = ', '.join(result['properties']['supportedClusterTypes'])
 
     name = result['name']
-    defaultScope, allowMultIns, defReleaseNs = '', '', ''
+    defaultScope, allowMultInstances, defaultReleaseNamespace = '', '', ''
     if result['properties']['supportedScopes']:
         defaultScope = result['properties']['supportedScopes']['defaultScope']
         if result['properties']['supportedScopes']['clusterScopeSettings'] is not None:
-            allowMultIns = result['properties']['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
-            defReleaseNs = result['properties']['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
+            clusterScopeSettings = result['properties']['supportedScopes']['clusterScopeSettings']
+            allowMultInstances = clusterScopeSettings['allowMultipleInstances']
+            defaultReleaseNamespace = clusterScopeSettings['defaultReleaseNamespace']
 
     retVal = OrderedDict([
         ('name', name),
         ('defaultScope', defaultScope),
         ('clusterTypes', clusterTypes),
-        ('allowMultipleInstances', allowMultIns),
-        ('defaultReleaseNamespace', defReleaseNs)
+        ('allowMultipleInstances', allowMultInstances),
+        ('defaultReleaseNamespace', defaultReleaseNamespace)
     ])
 
     return retVal
 
 
-def k8s_extension_type_versions_list_table_format(results):
-    return [__get_extension_type_versions_table_row(result) for result in results]
+def aks_extension_type_versions_list_table_format(results):
+    """Format a list of K8s extension type versions as summary results for display with "-o table". """
+    return [_get_extension_type_versions_table_row(result) for result in results]
 
 
-def k8s_extension_type_version_show_table_format(results):
-    return __get_extension_type_versions_table_row(results)
+def aks_extension_type_version_show_table_format(results):
+    """Format a K8s extension type version as summary results for display with "-o table". """
+    return _get_extension_type_versions_table_row(results)
 
 
-def __get_extension_type_versions_table_row(result):
+def _get_extension_type_versions_table_row(result):
     return OrderedDict([
         ('versions', result['properties']['version'])
     ])

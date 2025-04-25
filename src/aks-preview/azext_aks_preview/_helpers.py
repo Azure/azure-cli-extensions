@@ -389,11 +389,12 @@ def get_k8s_extension_module(module_name):
         return azext_custom
     except ImportError:
         raise UnknownError(  # pylint: disable=raise-missing-from
-            "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
+            "Please add CLI extension `k8s-extension` for performing Azure Extension operations.\n"
             "Run command `az extension add --name k8s-extension`"
         )
 
 
+# TODO: Need to should source the set of allowed extensions from the extensions API at some point
 def check_if_extension_type_is_in_allow_list(extension_type_name):
     allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
     return extension_type_name.lower() in allowedListOfExtensions
