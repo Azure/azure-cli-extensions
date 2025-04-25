@@ -2333,7 +2333,8 @@ def load_arguments(self, _):
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
 
-    with self.argument_context('aks extension') as c:
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest
+     with self.argument_context('aks extension') as c:
         c.argument('location',
                    validator=get_default_location_from_resource_group)
         c.argument('name',
@@ -2388,6 +2389,7 @@ def load_arguments(self, _):
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
+
     with self.argument_context("aks extension update") as c:
         c.argument('yes',
                    options_list=['--yes', '-y'],
@@ -2400,6 +2402,7 @@ def load_arguments(self, _):
         c.argument('force',
                    help='Specify whether to force delete the extension from the cluster.')
 
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
     with self.argument_context("aks extension-type") as c:
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
