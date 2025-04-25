@@ -1711,6 +1711,9 @@ helps['aks namespace add'] = """
         - name: --delete-policy
           type: string
           short-summary: Delete options of a namespace
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool'] = """

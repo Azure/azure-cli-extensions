@@ -238,14 +238,15 @@ def aks_namespace_add(
     client,
     resource_group_name,
     cluster_name,
-    namespace_name,
+    name,
+    cpu_request,
+    cpu_limit,
+    memory_request,
+    memory_limit,
     tags=None,
     labels=None,
     annotations=None,
-    cpu_request=None,
-    cpu_limit=None,
-    memory_request=None,
-    memory_limit=None,
+    aks_custom_headers=None,
     ingress_rule=CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
     egress_rule=CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
     adoption_policy=CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
@@ -253,20 +254,21 @@ def aks_namespace_add(
 ):
     existedNamespace = None
     try:
-        existedNamespace = client.get(resource_group_name, cluster_name, namespace_name)
+        existedNamespace = client.get(resource_group_name, cluster_name, name)
     except ResourceNotFoundError:
         pass
 
     if existedNamespace:
         raise Exception(  # pylint: disable=broad-exception-raised
             "Namespace " +
-            namespace_name +
+            name +
             " already existed, please use 'az aks namespace update' command to update!"
         )
     
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
-    return aks_managed_namespace_add(cmd, client, raw_parameters)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return aks_managed_namespace_add(cmd, client, raw_parameters, headers)
 
 
 def aks_maintenanceconfiguration_list(
