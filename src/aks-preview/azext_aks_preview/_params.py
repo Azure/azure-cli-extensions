@@ -1454,25 +1454,6 @@ def load_arguments(self, _):
             c.argument("aks_custom_headers", options_list=["--aks-custom-headers"])
             c.argument("no_wait", help="Do not wait for the long-running operation to finish")
 
-    # for scope in [
-    #     "aks namespace show",
-    #     "aks namespace delete",
-    # ]:
-    #     with self.argument_context("aks namespace show") as c:
-    #         c.argument("cluster_name", help="The cluster name.")
-    #         c.argument(
-    #             "name",
-    #             options_list=["--name"],
-    #             validator=validate_namespace_name,
-    #             help="The managed namespace name.",
-    #         )
-
-    # with self.argument_context("aks namespace list") as c:
-    #      c.argument("cluster_name", help="The cluster name.")
-
-    # ToDO: add an argument context "aks namespace get-credentials"
-
-
     with self.argument_context("aks nodepool") as c:
         c.argument("cluster_name", help="The cluster name.")
         c.argument(

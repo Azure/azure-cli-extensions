@@ -242,11 +242,7 @@ def load_command_table(self, _):
         client_factory=cf_namespaces,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
-        # g.custom_command("list", "aks_namespace_list")
-        # g.custom_show_command("show", "aks_namespace_show")
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
-        # g.custom_command("delete", "aks_namespace_delete")
-        # g.custom_command("get-credentials", "aks_get_credentials")
 
     # AKS agent pool commands
     with self.command_group(
