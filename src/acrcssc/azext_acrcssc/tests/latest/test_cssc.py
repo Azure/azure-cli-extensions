@@ -52,5 +52,5 @@ class AcrcsscTest(unittest.TestCase):
     @mock.patch("azext_acrcssc.cssc.cf_acr_registries")
     def test_list_scan_status(self, mock_cf_acr_registries, mock_track_scan_progress):
         mock_cf_acr_registries.return_value.get.return_value = self.registry
-        list_scan_status(self.cmd, self.registry.name, "mockrg", "mockstatus", "continuouspatchv1")
+        list_scan_status(self.cmd, self.registry.name, "mockrg", workflow_type="continuouspatchv1", status="mockstatus")
         mock_track_scan_progress.assert_called_once_with(self.cmd, "mockrg", self.registry, "mockstatus")
