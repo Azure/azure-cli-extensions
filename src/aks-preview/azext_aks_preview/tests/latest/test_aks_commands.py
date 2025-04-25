@@ -15734,7 +15734,7 @@ spec:
                  '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
 
         # Update the K8s extension 
-        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+        self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
                  '--no-wait --auto-upgrade true')
 
         # list the K8s extension on the cluster
