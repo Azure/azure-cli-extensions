@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.1
+1.0.0b1
 ++++++
 * Release for Public Preview
 * Added `list`and `cancel-run` commands for workflows
@@ -11,6 +11,6 @@ Release History
 * `cancel-run` command allows to canceling all running scan and patch tasks
 
 
-1.1.0
+0.1.0b1
 ++++++
 * Initial release for Private Preview
