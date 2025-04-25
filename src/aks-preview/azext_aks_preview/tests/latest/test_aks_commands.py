@@ -15733,12 +15733,11 @@ spec:
                  '--extension-type {extension_type} --release-train {release_train} --version {version} '
                  '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
 
-        # Update requires agent running in k8s cluster that is connected to Azure - so no update tests here
-        # self.cmd('aks extension update -g {rg} -n {name} --tags foo=boo', checks=[
-        #     self.check('tags.foo', 'boo')
-        # ])
+        # Update the K8s extension 
+        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+                 '--no-wait --auto-upgrade true')
 
-        # list the extensions on the cluster
+        # list the K8s extension on the cluster
         installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
         found_extension = False
         for item in installed_exts:
