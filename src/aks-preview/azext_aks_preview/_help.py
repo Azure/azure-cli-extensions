@@ -3382,11 +3382,13 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-
+    - name: --auto-upgrade-minor-version --auto-upgrade
+      type: string
+      short-summary: Automatically upgrade minor version of the extension instance
   examples:
     - name: Update K8s extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
---cluster-name mycluster --name myextension --auto-upgrade true/false \
+--cluster-name mycluster --name myextension --auto-upgrade-minor-version true/false \
 --version extension-version --release-train stable \
 --configuration-settings settings-key=settings-value \
 --config-protected-settings protected-settings-key=protected-value \
