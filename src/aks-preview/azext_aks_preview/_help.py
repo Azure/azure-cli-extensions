@@ -3439,7 +3439,7 @@ helps['aks extension type show-by-cluster'] = """
       short-summary: Name of the AKS cluster
   examples:
     - name: Show properties for a K8s Extension Type for an existing cluster
-      text: az aks extension-type show-by-cluster --resource-group my-resource-group \
+      text: az aks extension type show-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
 """
 
@@ -3452,7 +3452,7 @@ helps['aks extension type show-by-location'] = """
       short-summary: Name of the extension type
   examples:
     - name: Show properties for a K8s Extension Type in a region
-      text: az aks extension-type show-by-location \
+      text: az aks extension type show-by-location \
 --location eastus --extension-type type
 """
 
@@ -3471,7 +3471,7 @@ helps['aks extension type show-version-by-cluster'] = """
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
     - name: Show properties for a K8s Extension Type version for an existing cluster
-      text: az aks extension-type show-version-by-cluster --resource-group my-resource-group \
+      text: az aks extension type show-version-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
 """
 
@@ -3487,7 +3487,7 @@ helps['aks extension type show-version-by-location'] = """
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
     - name: Show properties for a K8s Extension Type version for an existing cluster
-      text: az aks extension-type show-version-by-location --location eastus --extension-type <type> \
+      text: az aks extension type show-version-by-location --location eastus --extension-type <type> \
 --version 1.0.0
 """
 
@@ -3503,7 +3503,7 @@ helps['aks extension type list-by-cluster'] = """
       short-summary: specify the release train for the K8s extension type
   examples:
     - name: List available K8s Extension Types for an existing cluster
-      text: az aks extension-type list-by-cluster --resource-group my-resource-group \
+      text: az aks extension type list-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster
 """
 
@@ -3512,7 +3512,7 @@ helps['aks extension type list-by-location'] = """
   short-summary: List available K8s Extension Types in a region.
   examples:
     - name: List available K8s Extension Types in a region
-      text: az aks extension-type list-by-location --location eastus
+      text: az aks extension type list-by-location --location eastus
 """
 helps['aks extension type list-versions-by-cluster'] = """
   type: command
@@ -3526,7 +3526,7 @@ helps['aks extension type list-versions-by-cluster'] = """
       short-summary: Name of the extension type
   examples:
     - name: List available K8s Extension Types for an existing cluster
-      text: az aks extension-type list-versions-by-cluster --resource-group my-resource-group \
+      text: az aks extension type list-versions-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
 """
 
@@ -3539,7 +3539,7 @@ helps['aks extension type list-versions-by-location'] = """
       short-summary: Name of the extension type
   examples:
     - name: List available K8s Extension Types in a region
-      text: az aks extension-type list-versions-by-location --location eastus --extension-type <type>
+      text: az aks extension type list-versions-by-location --location eastus --extension-type <type>
 """
 
 helps['aks loadbalancer'] = """
