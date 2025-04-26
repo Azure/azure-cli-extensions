@@ -1,0 +1,58 @@
+version: v1.1.0
+alias:
+  values:
+    ScanReport : os-vulnerability-report_trivy_{{ regexReplaceAll "[^a-zA-Z0-9]" .Values.SOURCE_REPOSITORY "-" }}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
+    cssc : mcr.microsoft.com/acr/cssc:56f0765
+steps:
+  # Step #1: Perform the vulnerability scan
+  - id: print-inputs
+    cmd: |
+        bash -c 'echo "Scan, Upload scan report and Schedule Patch for {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+  - id: setup-data-dir
+    cmd: bash mkdir ./data
+  - id: generate-trivy-report
+    cmd: |
+      cssc trivy image \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      --vuln-type os \
+      --ignore-unfixed \
+      --format json \
+      --timeout 30m \
+      --scanners vuln \
+      --output /workspace/data/$ScanReport
+
+  # Step 2: Attach the vulnerability scan report to the image
+  - id: upload-trivy-report
+    cmd: |
+      cssc oras attach \
+      --artifact-type vulnerabilityScan/report \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      ./data/$ScanReport
+
+  - cmd: bash echo "Uploaded vulnerability report $ScanReport to the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"
+
+  - id: buildkitd
+    cmd: moby/buildkit --addr tcp://0.0.0.0:8888
+    entrypoint: buildkitd
+    detach: true
+    privileged: true
+    ports: ["127.0.0.1:8888:8888/tcp"]
+  
+  - id: list-output-file
+    cmd: bash ls -l /workspace/data
+  
+  # Step 3: Patch the image with Copacetic
+  - id: patch-image
+    cmd: |
+      cssc copa patch \
+      -i "{{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}" \
+      -r ./data/$ScanReport \
+      -t "{{.Values.SOURCE_IMAGE_TAG}}-patched" \
+      --timeout=30m \
+      --addr tcp://127.0.0.1:8888
+    network: host
+
+  - id: push-image
+    cmd: docker push {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-patched
+
+  - cmd: bash echo "Patched image pushed to {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-patched"
