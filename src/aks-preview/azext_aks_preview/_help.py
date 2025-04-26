@@ -3446,6 +3446,9 @@ helps['aks extension type show-by-cluster'] = """
   type: command
   short-summary: Show properties for a K8s Extension Type for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
@@ -3475,6 +3478,9 @@ helps['aks extension type show-version-by-cluster'] = """
   type: command
   short-summary: Show properties associated with a K8s Extension Type version for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
@@ -3510,6 +3516,9 @@ helps['aks extension type list-by-cluster'] = """
   type: command
   short-summary: List available K8s Extension Types for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3533,6 +3542,9 @@ helps['aks extension type list-versions-by-cluster'] = """
   type: command
   short-summary: List available K8s Extension Type versions for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster

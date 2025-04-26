@@ -2335,11 +2335,9 @@ def load_arguments(self, _):
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest
     with self.argument_context('aks extension') as c:
-        c.argument(
-            "resource_group_name",
-            options_list=["--resource-group", "-g"],
-            help="Name of resource group.",
-        )
+        c.argument('resource_group_name',
+                   options_list=['--resource-group', '-g'],
+                   help='Name of resource group.')
         c.argument('location',
                    validator=get_default_location_from_resource_group)
         c.argument('name',
@@ -2409,6 +2407,9 @@ def load_arguments(self, _):
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
     with self.argument_context("aks extension type") as c:
+        c.argument('resource_group_name',
+                   options_list=['--resource-group', '-g'],
+                   help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
