@@ -2354,7 +2354,7 @@ def load_arguments(self, _):
                    help='Specify the extension scope.')
         c.argument('auto_upgrade_minor_version',
                    arg_group="Version",
-                   options_list=['--auto-upgrade-minor-version', '--upgrade'],
+                   options_list=['--auto-upgrade-minor-version', '--auto-upgrade'],
                    arg_type=get_three_state_flag(),
                    help='Automatically upgrade minor version of the extension instance.')
         c.argument('version',
