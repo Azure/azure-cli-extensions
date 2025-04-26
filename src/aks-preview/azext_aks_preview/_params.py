@@ -2334,7 +2334,7 @@ def load_arguments(self, _):
                    validator=validate_custom_endpoints)
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest
-     with self.argument_context('aks extension') as c:
+    with self.argument_context('aks extension') as c:
         c.argument('location',
                    validator=get_default_location_from_resource_group)
         c.argument('name',
