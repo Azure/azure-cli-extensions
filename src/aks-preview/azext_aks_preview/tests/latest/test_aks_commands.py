@@ -7167,14 +7167,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'resource_group': resource_group,
-            'name': resource_name,
+            'resource_name': resource_name,
+            'namespace_name': 'namespace01',
             'location': resource_group_location,
             'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
         create_cmd = ' '.join([
-            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            'aks', 'create', '--resource-group={resource_group}', '--name={resource_name}', '--location={location}',
             '--ssh-key-value={ssh_key_value}'
         ])
 
@@ -7183,27 +7184,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         create_namespace_cmd = (
-            "aks namespace add --resource-group={resource_group} --cluster-name={name} --location={location} "
+            "aks namespace add --resource-group={resource_group} --cluster-name={resource_name} --name={namespace_name} "
             "--cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi "
             "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview"
         )
 
         self.cmd(create_namespace_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+            self.check('properties.provisioningState', 'Succeeded'),
         ])
 
         update_namespace_cmd = (
-            "aks namespace update --resource-group={resource_group} --cluster-name={name} --location={location} "
+            "aks namespace update --resource-group={resource_group} --cluster-name={resource_name} --name={namespace_name} "
             "--cpu-request 700m --cpu-limit 800m --memory-request 3Gi --memory-limit 5Gi --labels x=y "
             "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview"
         )
 
         self.cmd(update_namespace_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+            self.check('properties.provisioningState', 'Succeeded'),
         ])
 
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {resource_name} --yes --no-wait",
             checks=[self.is_empty()],
         )
 
