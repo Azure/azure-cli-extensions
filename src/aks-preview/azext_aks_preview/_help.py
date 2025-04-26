@@ -3314,6 +3314,9 @@ The output includes secrets that you must protect. Be sure that you do not inclu
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
@@ -3340,6 +3343,9 @@ helps['aks extension delete'] = """
   type: command
   short-summary: Delete a Kubernetes Extension.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3361,6 +3367,9 @@ The output includes secrets that you must protect. Be sure that you do not inclu
  source control. Also verify that no secrets are present in the logs of your command or script. \
  For additional information, see http://aka.ms/clisecrets.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3393,6 +3402,9 @@ The output includes secrets that you must protect. Be sure that you do not inclu
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
@@ -3409,6 +3421,9 @@ The output includes secrets that you must protect. Be sure that you do not inclu
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
   parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
