@@ -1,0 +1,94 @@
+name: GH Azdev Style
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+      types: [opened, labeled, unlabeled, synchronize]
+      branches:
+        - main
+
+permissions: {}
+
+jobs:
+  azdev-style:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+    steps:
+      - name: Checkout CLI extension repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            .github
+      - name: Azdev Env Setup
+        uses: ./.github/actions/env-setup
+      - name: Get Diff Files
+        env:
+          bash_sha: ${{ github.event.pull_request.base.sha }}
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          base_repo: ${{ github.event.pull_request.base.repo.clone_url }}
+          base_branch_pre: "upstream"
+          diff_sha: ${{ github.event.pull_request.head.sha }}
+          diff_branch: ${{ github.event.pull_request.head.ref }}
+          repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          set -x
+          git --version
+          git log --oneline | head -n 10
+          git branch -a
+          git fetch "$base_repo" "$base_branch":"$base_branch_pre"/"$base_branch"
+          git checkout "$base_branch_pre"/"$base_branch"
+          git log --oneline | head -n 10
+          git checkout "$diff_branch"
+          git log --oneline | head -n 10
+          git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch"
+          set +e
+          # by default set -e is enabled to run commands, intermediate command failure may cause the whole step to fail. disable it here.
+          git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" | grep -v "/tests/" > changed_files
+          cat changed_files
+          cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq
+          echo "changed_module_list=$(cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq | xargs)" >> $GITHUB_ENV
+          git checkout -f "$base_branch_pre"/"$base_branch"
+      - name: Display PR Diff Modules
+        run: |
+          for mod in ${changed_module_list[@]}
+          do
+            echo changed module: "${mod}"
+          done
+          if [ -z "$changed_module_list" ]; then
+            echo "no_changed_mod=true" >> $GITHUB_ENV
+          else
+            echo "no_changed_mod=false" >> $GITHUB_ENV
+          fi
+          echo array length
+          echo ${#changed_module_list[@]}
+
+      - name: Run Azdev Style
+        if: ${{ env.no_changed_mod == 'false' }}
+        env:
+          pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          pr_user: ${{ github.event.pull_request.user.login }}
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
+          diff_branch: ${{ github.event.pull_request.head.ref }}
+        run: |
+          chmod +x env/bin/activate
+          source ./env/bin/activate
+          set -ev
+
+          git checkout -f "$diff_branch"
+          # always use the latest index.json and scripts from base branch
+          git checkout "$base_branch_pre"/"$base_branch" -- scripts
+          git checkout "$base_branch_pre"/"$base_branch" -- src/index.json
+          git checkout "$base_branch_pre"/"$base_branch" -- .github
+          merge_base=$(git merge-base HEAD "$base_branch_pre"/"$base_branch")
+          echo merge_base: "$merge_base"
+          
+          for mod in ${changed_module_list[@]}
+          do
+            echo changed module: "${mod}"
+            azdev extension add "${mod}"
+            azdev style "${mod}"
+          done

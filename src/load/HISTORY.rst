@@ -2,9 +2,16 @@
 
 Release History
 ===============
+
+2.0.0
+++++++
+* Add commands for creating and managing notification rules using CLI. 
+
+
 1.8.0
 ++++++
 * Add commands for creating and managing schedule triggers using CLI. 
+
 
 1.7.0
 ++++++

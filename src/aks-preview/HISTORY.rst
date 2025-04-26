@@ -11,6 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2025-01-02-preview.
+* Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
+
+14.0.0b1
++++++++
+* [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
+* [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
 
 13.0.0b9
 +++++++

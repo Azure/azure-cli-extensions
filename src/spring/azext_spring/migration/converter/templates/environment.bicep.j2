@@ -78,9 +78,9 @@ resource maintenanceConfig 'Microsoft.App/managedEnvironments/maintenanceConfigu
 
 {%- if data.storages %}
 {%- for storage in data.storages %}
-
+@secure()
 param {{storage.paramContainerAppEnvStorageAccountKey}} string
-resource {{storage.containerAppEnvStorageName}} 'Microsoft.App/managedEnvironments/storages@2024-08-02-preview' = {
+resource {{storage.storageName}} 'Microsoft.App/managedEnvironments/storages@2024-08-02-preview' = {
   parent: containerAppEnv
   name: '{{storage.storageName}}'
   properties: {
