@@ -2403,7 +2403,7 @@ def load_arguments(self, _):
                    help='Specify whether to force delete the extension from the cluster.')
 
     # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
-    with self.argument_context("aks extension-type") as c:
+    with self.argument_context("aks extension type") as c:
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
