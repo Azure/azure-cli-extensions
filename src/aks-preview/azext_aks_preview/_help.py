@@ -3382,7 +3382,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-    - name: --auto-upgrade-minor-version
+    - name: --auto-upgrade-minor-version --upgrade
       type: string
       short-summary: Automatically upgrade minor version of the extension instance
   examples:
