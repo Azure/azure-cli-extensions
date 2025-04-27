@@ -3447,7 +3447,7 @@ Do not use this for secrets, as this value is returned in response. If not speci
       type: string
       short-summary: Configuration Protected Settings as key=value pair
       long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
-Only the key is returned in response, the value is not. If not specified, default value is None
+Only the key is returned in response, the value is not. If not specified, default value is Non
     - name: --config-file --config-settings-file
       type: string
       short-summary: JSON file path for configuration-settings
