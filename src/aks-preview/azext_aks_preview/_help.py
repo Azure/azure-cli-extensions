@@ -3329,14 +3329,51 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --scope
       type: string
       short-summary: specify scope of the extension type, takes in namespace or cluster as the scope
+      long-summary: specify scope of the extension type, takes in namespace or cluster as the scope \
+If not specified, default scope set in the extension type registration will be used
     - name: --release-train
       type: string
       short-summary: specify the release train for the extension type
+      long-summary: specify the release train for the extension type, default value is stable if not specified
+    - name: --version
+      type: string
+      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
+      long-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled. \
+If not specified, will install the latest available version for the extension
+    - name: --auto-upgrade --auto-upgrade-minor-version
+      type: string
+      short-summary: Automatically upgrade minor version of the extension instance
+      long-summary: Automatically upgrade minor version of the extension instance. If not specified, default value is true
+    - name: --config --configuration-settings
+      type: string
+      short-summary: Configuration Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Do not use this for secrets, as this value is returned in response. If not specified, default value is None
+    - name: --config-protected --config-protected-settings
+      type: string
+      short-summary: Configuration Protected Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Only the key is returned in response, the value is not. If not specified, default value is None
+    - name: --config-file --config-settings-file
+      type: string
+      short-summary: JSON file path for configuration-settings
+      long-summary: JSON file path for configuration-settings. If not specified, default value is None
+    - name: --config-protected-file --config-protected-settings-file
+      type: string
+      short-summary: JSON file path for configuration-protected-settings
+      long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
   examples:
-    - name: Install K8s extension on AKS cluster
+    - name: Install K8s extension on AKS cluster with required parameters
+      text: az aks extension create --resource-group my-resource-group \
+--cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
+    - name: Install K8s extension with optional parameters scope and release train
       text: az aks extension create --resource-group my-resource-group \
 --cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
 --scope cluster --release-train stable
+    - name: Install K8s extension with autoupgrade turned off and optional parameters \
+version and configuration settings 
+      text: az aks extension create --resource-group abc --cluster-name test --name flux \
+--extension-type microsoft.flux --config useKubeletIdentity=true
 """
 
 helps['aks extension delete'] = """
@@ -3352,9 +3389,21 @@ helps['aks extension delete'] = """
     - name: --name -n
       type: string
       short-summary: Name of the extension instance
+    - name: --yes -y
+      type: bool
+      short-summary: Ignores confirmation prompt.
+      long-summary: Ignores confirmation prompt. If not specified, default value is false
+    - name: --force
+      type: bool
+      short-summary: Specify whether to force delete the extension from the cluster
+      long-summary: Specify whether to force delete the extension from the cluster \
+If not specified, default value is false
   examples:
     - name: Delete an existing Kubernetes extension on AKS cluster
       text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
+    - name: Delete an existing Kubernetes extension on AKS cluster with optional parameters
+      text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext \
+--yes --force
 """
 
 helps['aks extension update'] = """
@@ -3379,12 +3428,12 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --release-train
       type: string
       short-summary: specify the release train for the extension type
-      long-summary: specify the release train for the extension type, default value is None if not specified
+      long-summary: specify the release train for the extension type, default value is stable if not specified
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
       long-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled. \
-Default value is None if not specified
+If not specified, will install the latest available version for the extension
     - name: --auto-upgrade --auto-upgrade-minor-version
       type: string
       short-summary: Automatically upgrade minor version of the extension instance
@@ -3407,8 +3456,15 @@ Only the key is returned in response, the value is not. If not specified, defaul
       type: string
       short-summary: JSON file path for configuration-protected-settings
       long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
+    - name: --yes -y
+      type: bool
+      short-summary: Ignores confirmation prompt.
+      long-summary: Ignores confirmation prompt. If not specified, default value is false
   examples:
-    - name: Update K8s extension on AKS cluster
+    - name: Update K8s extension on AKS cluster 
+      text: az aks extension update --resource-group my-resource-group \
+--cluster-name mycluster --name myextension
+    - name: Update K8s extension on AKS cluster with optional parameters included
       text: az aks extension update --resource-group my-resource-group \
 --cluster-name mycluster --name myextension --auto-upgrade-minor-version true/false \
 --version extension-version --release-train stable \
