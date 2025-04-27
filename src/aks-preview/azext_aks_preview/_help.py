@@ -3328,7 +3328,7 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       short-summary: Name of the extension instance
     - name: --scope
       type: string
-      short-summary: specify scope of the extension type, takes in name or cluster as the scope
+      short-summary: specify scope of the extension type, takes in namespace or cluster as the scope
     - name: --release-train
       type: string
       short-summary: specify the release train for the extension type
@@ -3379,12 +3379,21 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --release-train
       type: string
       short-summary: specify the release train for the extension type
+      long-summary: specify the release train for the extension type, default value is None if not specified
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
+      long-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled. \
+Default value is None if not specified
     - name: --auto-upgrade --auto-upgrade-minor-version
       type: string
       short-summary: Automatically upgrade minor version of the extension instance
+      long-summary: Automatically upgrade minor version of the extension instance. If not specified, default value is true
+    - name: --config --configuration-settings
+      type: string
+      short-summary: Configuration Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Do not use this for secrets, as this value is returned in response. If not specified, default value is None 
   examples:
     - name: Update K8s extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
