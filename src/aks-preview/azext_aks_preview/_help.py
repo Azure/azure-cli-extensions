@@ -3393,7 +3393,20 @@ Default value is None if not specified
       type: string
       short-summary: Configuration Settings as key=value pair
       long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
-Do not use this for secrets, as this value is returned in response. If not specified, default value is None 
+Do not use this for secrets, as this value is returned in response. If not specified, default value is None
+    - name: --config-protected --config-protected-settings
+      type: string
+      short-summary: Configuration Protected Settings as key=value pair
+      long-summary: Configuration Settings as key=value pair. Repeat parameter for each setting. \
+Only the key is returned in response, the value is not. If not specified, default value is None
+    - name: --config-file --config-settings-file
+      type: string
+      short-summary: JSON file path for configuration-settings
+      long-summary: JSON file path for configuration-settings. If not specified, default value is None
+    - name: --config-protected-file --config-protected-settings-file
+      type: string
+      short-summary: JSON file path for configuration-protected-settings
+      long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
   examples:
     - name: Update K8s extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
