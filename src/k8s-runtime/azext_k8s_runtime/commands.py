@@ -10,8 +10,7 @@
 
 from azext_k8s_runtime import K8sRuntimeCommandsLoader
 
-from .custom import (enable_storage_class_cmd, disable_storage_class_cmd,
-                     enable_load_balancer_cmd, disable_load_balancer_cmd)
+from .custom import enable_load_balancer_cmd, disable_load_balancer_cmd
 
 
 def load_command_table(self: K8sRuntimeCommandsLoader, _):  # pylint: disable=unused-argument

@@ -10,7 +10,6 @@
 
 from azure.cli.core.commands import AzCliCommand
 
-from .custom_commands.storage_class import enable_storage_class, disable_storage_class
 from .custom_commands.load_balancer import enable_load_balancer, disable_load_balancer
 
 
