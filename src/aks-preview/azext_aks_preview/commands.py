@@ -15,10 +15,7 @@ from azext_aks_preview._client_factory import (
     cf_trustedaccess_role_binding,
     cf_machines,
     cf_operations,
-)
-
-from azext_aks_preview._consts import (
-    CONST_K8S_EXTENSION_FORMAT_MOD_NAME,
+    cf_load_balancers,
 )
 
 from azext_aks_preview._format import (
@@ -42,10 +39,12 @@ from azext_aks_preview._format import (
     aks_versions_table_format,
     aks_mesh_revisions_table_format,
     aks_mesh_upgrades_table_format,
-)
-
-from azext_aks_preview._helpers import (
-    get_k8s_extension_module,
+    aks_extension_list_table_format,
+    aks_extension_show_table_format,
+    aks_extension_types_list_table_format,
+    aks_extension_type_show_table_format,
+    aks_extension_type_versions_list_table_format,
+    aks_extension_type_version_show_table_format,
 )
 
 from knack.log import get_logger
@@ -92,7 +91,6 @@ def transform_mc_objects_with_custom_cas(result):
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
-    k8s_extension_format_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_FORMAT_MOD_NAME)
     managed_clusters_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._managed_clusters_operations#ManagedClustersOperations.{}",
@@ -206,6 +204,18 @@ def load_command_table(self, _):
         g.custom_command("add", "aks_maintenanceconfiguration_add")
         g.custom_command("update", "aks_maintenanceconfiguration_update")
         g.custom_command("delete", "aks_maintenanceconfiguration_delete")
+
+    # AKS loadbalancer commands
+    with self.command_group(
+        "aks loadbalancer",
+        client_factory=cf_load_balancers,
+    ) as g:
+        g.custom_command("list", "aks_loadbalancer_list")
+        g.custom_show_command("show", "aks_loadbalancer_show")
+        g.custom_command("add", "aks_loadbalancer_add")
+        g.custom_command("update", "aks_loadbalancer_update")
+        g.custom_command("delete", "aks_loadbalancer_delete")
+        g.custom_command("rebalance-nodes", "aks_loadbalancer_rebalance_nodes")
 
     # AKS addon commands
     with self.command_group(
@@ -465,13 +475,64 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command("outbound", "aks_check_network_outbound")
 
-    with self.command_group("aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters) \
-            as g:
+    with self.command_group(
+        "aks extension", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
         g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
-        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
         g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
+        g.custom_command(
+            'list',
+            'list_k8s_extension',
+            table_transformer=aks_extension_list_table_format
+        )
         g.custom_show_command(
             'show',
             'show_k8s_extension',
-            table_transformer=k8s_extension_format_mod.k8s_extension_show_table_format
+            table_transformer=aks_extension_show_table_format
+        )
+        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
+
+    with self.command_group(
+        "aks extension-type", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command(
+            'list-by-location',
+            'list_k8s_extension_types_by_location',
+            table_transformer=aks_extension_types_list_table_format
+        )
+        g.custom_command(
+            'show-by-location',
+            'show_k8s_extension_type_by_location',
+            table_transformer=aks_extension_type_show_table_format
+        )
+        g.custom_command(
+            'list-versions-by-location',
+            'list_k8s_extension_type_versions_by_location',
+            table_transformer=aks_extension_type_versions_list_table_format
+        )
+        g.custom_command(
+            'show-version-by-location',
+            'show_k8s_extension_type_version_by_location',
+            table_transformer=aks_extension_type_version_show_table_format
+        )
+
+        g.custom_command(
+            'list-by-cluster',
+            'list_k8s_extension_types_by_cluster',
+            table_transformer=aks_extension_types_list_table_format
+        )
+        g.custom_command(
+            'show-by-cluster',
+            'show_k8s_extension_type_by_cluster',
+            table_transformer=aks_extension_type_show_table_format
+        )
+        g.custom_command(
+            'list-versions-by-cluster',
+            'list_k8s_extension_type_versions_by_cluster',
+            table_transformer=aks_extension_type_versions_list_table_format
+        )
+        g.custom_command(
+            'show-version-by-cluster',
+            'show_k8s_extension_type_version_by_cluster',
+            table_transformer=aks_extension_type_version_show_table_format
         )
