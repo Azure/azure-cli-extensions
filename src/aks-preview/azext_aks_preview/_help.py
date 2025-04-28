@@ -3545,9 +3545,9 @@ helps['aks extension type show'] = """
       text: az aks extension type show --location eastus --extension-type type
 """
 
-helps['aks extension type show-version-by-cluster'] = """
+helps['aks extension type show-version'] = """
   type: command
-  short-summary: Show properties associated with a K8s Extension Type version for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
+  short-summary: Show properties associated with a K8s Extension Type version. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
     - name: --resource-group -g
       type: string
@@ -3563,24 +3563,10 @@ helps['aks extension type show-version-by-cluster'] = """
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
     - name: Show properties for a K8s Extension Type version for an existing cluster
-      text: az aks extension type show-version-by-cluster --resource-group my-resource-group \
+      text: az aks extension type show-version --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
-"""
-
-helps['aks extension type show-version-by-location'] = """
-  type: command
-  short-summary: Show properties for a K8s Extension Type version in a region.
-  parameters:
-    - name: --extension-type -t
-      type: string
-      short-summary: Name of the extension type
-    - name: --version
-      type: string
-      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-  examples:
-    - name: Show properties for a K8s Extension Type version for an existing cluster
-      text: az aks extension type show-version-by-location --location eastus --extension-type <type> \
---version 1.0.0
+    - name: Show properties for a K8s Extension Type version for a location
+      text: az aks extension type show-version --location eastus --extension-type <type> --version 1.0.0
 """
 
 helps['aks extension type list-by-cluster'] = """
@@ -3609,6 +3595,7 @@ helps['aks extension type list-by-location'] = """
     - name: List available K8s Extension Types in a region
       text: az aks extension type list-by-location --location eastus
 """
+
 helps['aks extension type list-versions-by-cluster'] = """
   type: command
   short-summary: List available K8s Extension Type versions for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.

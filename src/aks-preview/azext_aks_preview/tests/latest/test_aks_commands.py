@@ -15797,13 +15797,13 @@ spec:
                  '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
 
         # show by cluster
-        self.cmd('aks extension-type show --scope cluster -g {rg} -c {cluster_name} '
+        self.cmd('aks extension-type show -g {rg} -c {cluster_name} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
 
         # show by location
-        self.cmd('aks extension-type show --scope location --location {location} '
+        self.cmd('aks extension-type show --location {location} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
