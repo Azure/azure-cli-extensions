@@ -15796,12 +15796,14 @@ spec:
                  '--extension-type {extension_type} --release-train {release_train} --version {version} '
                  '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
 
-        self.cmd('aks extension-type show-by-cluster -g {rg} -c {cluster_name} '
+        # show by cluster
+        self.cmd('aks extension-type show --scope cluster -g {rg} -c {cluster_name} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
 
-        self.cmd('aks extension-type show-by-location --location {location} '
+        # show by location
+        self.cmd('aks extension-type show --scope location --location {location} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])

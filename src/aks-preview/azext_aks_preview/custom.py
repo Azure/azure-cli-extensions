@@ -3897,7 +3897,7 @@ def show_k8s_extension_type(
     client,
     extension_type,
     scope,
-    region=None,
+    location=None,
     resource_group_name=None,
     cluster_name=None
 ):
@@ -3909,13 +3909,13 @@ def show_k8s_extension_type(
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
     try:
         if scope == "location":
-            if not region:
+            if not location:
                 raise ValidationError("Location needs to be specified as an argument to get " +
                                       f"extension type {extension_type} by location")
             result = k8s_extension_custom_mod.show_extension_type_by_location(
                 client,
-                region,
-                extension_type,
+                location,
+                extension_type=extension_type,
             )
             return result
         elif scope == "cluster":
@@ -3932,25 +3932,6 @@ def show_k8s_extension_type(
             return result
         else:
             raise ValidationError(f"Invalid scope {scope} was specified as an argument. Valid options are cluster and location")
-    except Exception as ex:
-        logger.error("Failed to get K8s extension types by location.\nError: %s", ex)
-
-
-# get by location
-def show_k8s_extension_type_by_location(cmd, client, region, extension_type):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to get extension type {extension_type.lower()} by location " +
-                              "as it is not in allowed list of extension types")
-    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
-    try:
-        result = k8s_extension_custom_mod.show_extension_type_by_location(
-            client,
-            region,
-            extension_type,
-        )
-        return result
     except Exception as ex:
         logger.error("Failed to get K8s extension types by location.\nError: %s", ex)
 
@@ -4033,33 +4014,6 @@ def list_k8s_extension_types_by_cluster(
         return result
     except Exception as ex:
         logger.error("Failed to list K8s extension type versions by cluster.\nError: %s", ex)
-
-
-# get by cluster
-def show_k8s_extension_type_by_cluster(
-    cmd,
-    client,
-    resource_group_name,
-    cluster_name,
-    extension_type
-):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to get extension type {extension_type.lower()} by cluster " +
-                              "as it is not in allowed list of extension types")
-    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
-    try:
-        result = k8s_extension_custom_mod.show_extension_type_by_cluster(
-            client,
-            resource_group_name,
-            cluster_name,
-            "managedClusters",
-            extension_type,
-        )
-        return result
-    except Exception as ex:
-        logger.error("Failed to get K8s extension type by cluster.\nError: %s", ex)
 
 
 # list version by cluster

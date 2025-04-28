@@ -506,11 +506,6 @@ def load_command_table(self, _):
             table_transformer=aks_extension_types_list_table_format
         )
         g.custom_command(
-            'show-by-location',
-            'show_k8s_extension_type_by_location',
-            table_transformer=aks_extension_type_show_table_format
-        )
-        g.custom_command(
             'list-versions-by-location',
             'list_k8s_extension_type_versions_by_location',
             table_transformer=aks_extension_type_versions_list_table_format
@@ -525,11 +520,6 @@ def load_command_table(self, _):
             'list-by-cluster',
             'list_k8s_extension_types_by_cluster',
             table_transformer=aks_extension_types_list_table_format
-        )
-        g.custom_command(
-            'show-by-cluster',
-            'show_k8s_extension_type_by_cluster',
-            table_transformer=aks_extension_type_show_table_format
         )
         g.custom_command(
             'list-versions-by-cluster',
