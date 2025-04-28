@@ -7,7 +7,7 @@ import os
 import unittest
 
 from azure.cli.testsdk import (ScenarioTest)
-from ..._resourceTypeValidation import ResourceTypeValidatorFactory, ZoneRedundancyValidationResult
+from ..._resourceTypeValidation import getResourceTypeValidator, ZoneRedundancyValidationResult
 
 
 class test_microsoft_network(ScenarioTest):
@@ -125,7 +125,7 @@ class test_microsoft_network(ScenarioTest):
     def setUpClass(cls):
         super(test_microsoft_network, cls).setUpClass()
         resourceProvider = cls.resource_applicationgateways_zr['type'].split('/')[0]
-        cls.validator = ResourceTypeValidatorFactory.getValidator(resourceProvider)
+        cls.validator = getResourceTypeValidator(resourceProvider)
 
 
     def test_applicationgateways_zr(self):
@@ -163,7 +163,7 @@ class test_microsoft_network(ScenarioTest):
         zrResult = self.validator.validate(self.resource_publicipaddresses_zr)
         self.assertEqual(zrResult, ZoneRedundancyValidationResult.Yes)
 
-    def test_publicipaddresses_onzr(self):
+    def test_publicipaddresses_nzr(self):
         # Test for non-zone redundancy scenario
         zrResult = self.validator.validate(self.resource_publicipaddresses_nonzr)
         self.assertEqual(zrResult, ZoneRedundancyValidationResult.No)

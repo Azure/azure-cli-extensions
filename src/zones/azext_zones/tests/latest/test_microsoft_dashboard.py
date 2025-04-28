@@ -10,27 +10,21 @@ from azure.cli.testsdk import (ScenarioTest)
 from ..._resourceTypeValidation import getResourceTypeValidator, ZoneRedundancyValidationResult
 
 
-class test_microsoft_search(ScenarioTest):
+class test_microsoft_dashboard(ScenarioTest):
 
     resource_zr = \
         {
-            "type": "microsoft.search/searchservices",
-            "sku": {
-                "name": "standard"
-            },
+            "type": "microsoft.dashboard/grafana",
             "properties": {
-                "replicaCount": 3
+                "zoneRedundancy": 'Enabled'
             }
         }
 
     resource_nonzr = \
         {
-            "type": "microsoft.search/searchservices",
-            "sku": {
-                "name": "standard"
-            },
+            "type": "microsoft.dashboard/grafana",
             "properties": {
-                "replicaCount": 1
+                "zoneRedundancy": 'Disabled'
             }
         }
     
@@ -38,7 +32,7 @@ class test_microsoft_search(ScenarioTest):
 
     @classmethod
     def setUpClass(cls):
-        super(test_microsoft_search, cls).setUpClass()
+        super(test_microsoft_dashboard, cls).setUpClass()
         resourceProvider = cls.resource_zr['type'].split('/')[0]
         cls.validator = getResourceTypeValidator(resourceProvider)
 

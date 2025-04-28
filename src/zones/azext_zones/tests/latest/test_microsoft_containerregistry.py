@@ -7,7 +7,7 @@ import os
 import unittest
 
 from azure.cli.testsdk import (ScenarioTest)
-from ..._resourceTypeValidation import ResourceTypeValidatorFactory, ZoneRedundancyValidationResult
+from ..._resourceTypeValidation import getResourceTypeValidator, ZoneRedundancyValidationResult
 
 
 class test_microsoft_containerregistry(ScenarioTest):
@@ -35,7 +35,7 @@ class test_microsoft_containerregistry(ScenarioTest):
     def setUpClass(cls):
         super(test_microsoft_containerregistry, cls).setUpClass()
         resourceProvider = cls.resource_zr['type'].split('/')[0]
-        cls.validator = ResourceTypeValidatorFactory.getValidator(resourceProvider)
+        cls.validator = getResourceTypeValidator(resourceProvider)
 
 
     def test_zr(self):
