@@ -3879,8 +3879,8 @@ def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
 
 
 def list_k8s_extension_types(
-    cmd, 
-    client, 
+    cmd,
+    client,
     location=None,
     resource_group_name=None,
     cluster_name=None,
@@ -3986,7 +3986,7 @@ def list_k8s_extension_type_versions(
                 major_version=major_version,
                 show_latest=show_latest,
             )
-            return result            
+            return result
     except Exception as ex:
         logger.error("Failed to list K8s extension type versions by location.\nError: %s", ex)
 

@@ -42,6 +42,7 @@ logger = get_logger(__name__)
 ManagedCluster = TypeVar("ManagedCluster")
 allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
 
+
 def which(binary):
     path_var = os.getenv('PATH')
     if platform.system() == 'Windows':
