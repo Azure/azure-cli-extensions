@@ -40,7 +40,7 @@ logger = get_logger(__name__)
 
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
-
+allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
 
 def which(binary):
     path_var = os.getenv('PATH')
@@ -396,7 +396,6 @@ def get_k8s_extension_module(module_name):
 
 # TODO: Need to should source the set of allowed extensions from the extensions API at some point
 def check_if_extension_type_is_in_allow_list(extension_type_name):
-    allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
     return extension_type_name.lower() in allowedListOfExtensions
 
 
