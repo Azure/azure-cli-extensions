@@ -496,6 +496,11 @@ def load_command_table(self, _):
         "aks extension type", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
         g.custom_command(
+            'show-by-location',
+            'show_k8s_extension_type',
+            table_transformer=aks_extension_type_show_table_format
+        )
+        g.custom_command(
             'list-by-location',
             'list_k8s_extension_types_by_location',
             table_transformer=aks_extension_types_list_table_format

@@ -3522,6 +3522,36 @@ helps['aks extension type'] = """
   long-summary: This command group allows you to list, update, and manage extension types for AKS clusters.
 """
 
+helps['aks extension type show'] = """
+  type: command
+  short-summary: Show properties for a K8s Extension Type for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.
+  parameters:
+    - name: --extension-type -t
+      type: string
+      short-summary: Name of the extension type
+    - name: --scope
+      type: string
+      short-summary: Specify scope for querying the extension type data
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
+    - name: --region
+      type: string
+      short-summary: Location of the extension type
+      long-summary: Location of the extension type. If not specified, default value is None
+  examples:
+    - name: Show properties for a K8s Extension Type for an existing cluster by cluster
+      text: az aks extension type show --scope cluster --resource-group my-resource-group\
+ --cluster-name mycluster --extension-type <type>
+    - name: Show properties for a K8s Extension Type in a region
+      text: az aks extension type show --scope location --region eastus --extension-type type
+"""
+
 helps['aks extension type show-by-cluster'] = """
   type: command
   short-summary: Show properties for a K8s Extension Type for an existing cluster. The properties used for filtering include kubernetes version, location of the cluster.

@@ -2416,6 +2416,9 @@ def load_arguments(self, _):
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
+        c.argument('scope',
+                   arg_type=get_enum_type(['cluster', 'location']),
+                   help='Specify the scope for querying the extension type data.')
         c.argument('location',
                    validator=get_default_location_from_resource_group,
                    help='Name of the location. Values from: `az account list-locations`')
