@@ -2409,11 +2409,11 @@ def load_arguments(self, _):
     with self.argument_context("aks extension type") as c:
         c.argument('resource_group_name',
                    options_list=['--resource-group', '-g'],
-                   validator = validate_resource_group_parameter,
+                   validator=validate_resource_group_parameter,
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
-                   validator = validate_location_cluster_name_resource_group_mutually_exclusive,
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],

@@ -3611,10 +3611,10 @@ helps['aks extension type list-versions'] = """
       short-summary: Name of the extension type
   examples:
     - name: List available K8s Extension Types for an existing cluster
-      text: az aks extension type list-versions-by-cluster --resource-group my-resource-group \
+      text: az aks extension type list-versions --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
     - name: List available K8s Extension Types in a region
-      text: az aks extension type list-versions-by-location --location eastus --extension-type <type>
+      text: az aks extension type list-versions --location eastus --extension-type <type>
 """
 
 helps['aks loadbalancer'] = """
