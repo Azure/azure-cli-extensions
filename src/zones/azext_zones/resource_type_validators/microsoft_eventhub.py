@@ -4,16 +4,17 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.eventhub')
 class microsoft_eventhub:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_eventhub")   
-        _logger.debug("Validating Microsoft.eventhub resource type: %s", resourceSubType)
-        
+        _logger = get_logger("microsoft_eventhub")
+        _logger.debug(
+            "Validating Microsoft.eventhub resource type: %s",
+            resourceSubType)
 
-        # If you create an Event Hubs namespace in a region that supports availability zones, zone redundancy is automatically enabled. 
+        # If you create an Event Hubs namespace in a region that supports availability zones, zone redundancy is automatically enabled.
         # https://learn.microsoft.com/azure/reliability/reliability-event-hubs#availability-zone-support
         return ZoneRedundancyValidationResult.Always

@@ -4,21 +4,24 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.search')
 class microsoft_search:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_search")   
-        _logger.debug("Validating Microsoft.search resource type: %s", resourceSubType)
+        _logger = get_logger("microsoft_search")
+        _logger.debug(
+            "Validating Microsoft.search resource type: %s",
+            resourceSubType)
 
         match resourceSubType:
             case 'searchservices':
-                # Standard or higher tiers in supported regions are zone redundant if the replica count is greater than 1. 
-                # https://learn.microsoft.com/azure/search/search-reliability#availability-zone-support 
+                # Standard or higher tiers in supported regions are zone redundant if the replica count is greater than 1.
+                # https://learn.microsoft.com/azure/search/search-reliability#availability-zone-support
                 sku = resource['sku']['name'] or ''
                 replicaCount = resource['properties'].get('replicaCount', 0)
-                return ZoneRedundancyValidationResult.Yes if sku not in ['Free', 'Basic'] and replicaCount > 1 else ZoneRedundancyValidationResult.No
+                return ZoneRedundancyValidationResult.Yes if sku not in [
+                    'Free', 'Basic'] and replicaCount > 1 else ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

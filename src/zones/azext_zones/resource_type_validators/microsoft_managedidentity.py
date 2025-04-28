@@ -4,14 +4,16 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.managedidentity')
 class microsoft_managedidentity:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_managedidentity")   
-        _logger.debug("Validating Microsoft.managedidentity resource type: %s", resourceSubType)
+        _logger = get_logger("microsoft_managedidentity")
+        _logger.debug(
+            "Validating Microsoft.managedidentity resource type: %s",
+            resourceSubType)
 
         # managedidentity resources are zone redundant by default
         return ZoneRedundancyValidationResult.Always

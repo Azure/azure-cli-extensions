@@ -4,15 +4,17 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.machinelearningservices')
 class microsoft_machinelearningservices:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_machinelearningservices")   
-        _logger.debug("Validating Microsoft.machinelearningservices resource type: %s", resourceSubType)
-        
+        _logger = get_logger("microsoft_machinelearningservices")
+        _logger.debug(
+            "Validating Microsoft.machinelearningservices resource type: %s",
+            resourceSubType)
+
         match resourceSubType:
             case 'workspaces':
                 return ZoneRedundancyValidationResult.Never

@@ -4,15 +4,17 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.web')
 class microsoft_web:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_web")   
-        _logger.debug("Validating Microsoft.web resource type: %s", resourceSubType)
-        
+        _logger = get_logger("microsoft_web")
+        _logger.debug(
+            "Validating Microsoft.web resource type: %s",
+            resourceSubType)
+
         match resourceSubType:
             case 'serverfarms':
                 # App Service Plans are zone redundant if they have zone redundancy enabled and have more than one instance
@@ -20,9 +22,10 @@ class microsoft_web:
                 zrEnabled = resource['properties'].get('zoneRedundant', False)
                 instanceCount = resource['sku'].get('capacity', 0)
                 return ZoneRedundancyValidationResult.Yes if zrEnabled and instanceCount > 1 else ZoneRedundancyValidationResult.No
-            
+
             case 'sites':
-                # Web Apps are zone redundant if they are hosted on a zone redundant App Service Plan
+                # Web Apps are zone redundant if they are hosted on a zone
+                # redundant App Service Plan
                 return ZoneRedundancyValidationResult.Dependent
 
         return ZoneRedundancyValidationResult.Unknown

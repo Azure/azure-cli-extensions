@@ -4,15 +4,16 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.chaos')
 class microsoft_chaos:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_chaos")   
-        _logger.debug("Validating Microsoft.chaos resource type: %s", resourceSubType)
-        
+        _logger = get_logger("microsoft_chaos")
+        _logger.debug(
+            "Validating Microsoft.chaos resource type: %s",
+            resourceSubType)
 
         # chaos profiles are always zone redundant
         # https://learn.microsoft.com/azure/reliability/reliability-chaos-studio#availability-zone-support

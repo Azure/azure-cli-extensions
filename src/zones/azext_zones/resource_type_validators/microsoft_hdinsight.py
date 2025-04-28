@@ -4,14 +4,16 @@ from knack.log import get_logger
 
 @register_resource_type('microsoft.hdinsight')
 class microsoft_hdinsight:
-    
+
     @staticmethod
     def validate(resource):
         resourceType = resource['type']
         resourceSubType = resourceType[resourceType.index('/') + 1:]
 
-        _logger = get_logger("microsoft_hdinsight")   
-        _logger.debug("Validating Microsoft.hdinsight resource type: %s", resourceSubType)
+        _logger = get_logger("microsoft_hdinsight")
+        _logger.debug(
+            "Validating Microsoft.hdinsight resource type: %s",
+            resourceSubType)
 
         # HDInsight clusters are zonal resources. They exist in a single zone.
         return ZoneRedundancyValidationResult.Never
