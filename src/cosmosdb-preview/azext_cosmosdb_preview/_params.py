@@ -20,7 +20,16 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id,
     validate_table_role_definition_body,
     validate_table_role_definition_id,
-    validate_table_role_assignment_id)
+    validate_table_role_assignment_id,
+    validate_gremlin_role_definition_body,
+    validate_gremlin_role_definition_id,
+    validate_gremlin_role_assignment_id,
+    validate_cassandra_role_definition_body,
+    validate_cassandra_role_definition_id,
+    validate_cassandra_role_assignment_id,    
+    validate_mongoMI_role_definition_body,
+    validate_mongoMI_role_definition_id,
+    validate_mongoMI_role_assignment_id)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -69,6 +78,60 @@ TABLE_ROLE_DEFINITION_EXAMPLE = """--body "{
 """
 
 TABLE_ROLE_ASSIGNMENT_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleDefinitionId\\": \\"MyTestRoleAssignment\\",
+\\"PrincipalId\\": \\"efc9875a-2cc4-40d5-8958-566017875b39\\",
+\\"Scope\\":\\"/subscriptions/cfe9875a-2cc4-40d5-8958-566017875b39/resourceGroups/MyResourceGroup/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\",
+}"
+"""
+
+GREMLIN_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyTestRole\\",
+\\"type\\": \\"CustomRole\\",
+\\"description\\": \\"Custom role to read Cosmos DB metadata\\",
+\\"AssignableScopes\\":[\\"/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\"],
+\\"Permissions\\": [{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}]
+}"
+"""
+
+GREMLIN_ROLE_ASSIGNMENT_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleDefinitionId\\": \\"MyTestRoleAssignment\\",
+\\"PrincipalId\\": \\"efc9875a-2cc4-40d5-8958-566017875b39\\",
+\\"Scope\\":\\"/subscriptions/cfe9875a-2cc4-40d5-8958-566017875b39/resourceGroups/MyResourceGroup/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\",
+}"
+"""
+
+CASSANDRA_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyTestRole\\",
+\\"type\\": \\"CustomRole\\",
+\\"description\\": \\"Custom role to read Cosmos DB metadata\\",
+\\"AssignableScopes\\":[\\"/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\"],
+\\"Permissions\\": [{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}]
+}"
+"""
+
+CASSANDRA_ROLE_ASSIGNMENT_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleDefinitionId\\": \\"MyTestRoleAssignment\\",
+\\"PrincipalId\\": \\"efc9875a-2cc4-40d5-8958-566017875b39\\",
+\\"Scope\\":\\"/subscriptions/cfe9875a-2cc4-40d5-8958-566017875b39/resourceGroups/MyResourceGroup/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\",
+}"
+"""
+
+MONGOMI_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyTestRole\\",
+\\"type\\": \\"CustomRole\\",
+\\"description\\": \\"Custom role to read Cosmos DB metadata\\",
+\\"AssignableScopes\\":[\\"/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\"],
+\\"Permissions\\": [{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}]
+}"
+"""
+
+MONGOMI_ROLE_ASSIGNMENT_EXAMPLE = """--body "{
 \\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
 \\"RoleDefinitionId\\": \\"MyTestRoleAssignment\\",
 \\"PrincipalId\\": \\"efc9875a-2cc4-40d5-8958-566017875b39\\",
@@ -689,3 +752,45 @@ def load_arguments(self, _):
         c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
         c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
+
+    # gremlin role definition
+    with self.argument_context('cosmosdb gremlin role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-i'], validator=validate_gremlin_role_definition_id, help="Unique ID for the Gremlin Role Definition.")
+        c.argument('gremlin_role_definition_body', options_list=['--body', '-b'], validator=validate_gremlin_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), RoleName, Description, AssignableScopes, Permissions.  You can enter it as a string or as a file, e.g., --body @gremlin-role_definition-body-file.json or " + GREMLIN_ROLE_DEFINITION_EXAMPLE)
+
+    with self.argument_context('cosmosdb gremlin role assignment') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_gremlin_role_assignment_id, help="Optional for Create. Unique ID for the Role Assignment. If not provided, a new GUID will be used.")
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], help="Unique ID of the Role Definition that this Role Assignment refers to.")
+        c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
+        c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
+        c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
+
+    # cassandra role definition
+    with self.argument_context('cosmosdb cassandra role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-i'], validator=validate_cassandra_role_definition_id, help="Unique ID for the Cassandra Role Definition.")
+        c.argument('cassandra_role_definition_body', options_list=['--body', '-b'], validator=validate_cassandra_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), RoleName, Description, AssignableScopes, Permissions.  You can enter it as a string or as a file, e.g., --body @cassandra-role_definition-body-file.json or " + GREMLIN_ROLE_DEFINITION_EXAMPLE)
+
+    with self.argument_context('cosmosdb cassandra role assignment') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_cassandra_role_assignment_id, help="Optional for Create. Unique ID for the Role Assignment. If not provided, a new GUID will be used.")
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], help="Unique ID of the Role Definition that this Role Assignment refers to.")
+        c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
+        c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
+        c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
+
+    # mongoMI role definition
+    with self.argument_context('cosmosdb mongoMI role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-i'], validator=validate_mongoMI_role_definition_id, help="Unique ID for the MongoMI Role Definition.")
+        c.argument('mongoMI_role_definition_body', options_list=['--body', '-b'], validator=validate_mongoMI_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), RoleName, Description, AssignableScopes, Permissions.  You can enter it as a string or as a file, e.g., --body @mongoMI-role_definition-body-file.json or " + GREMLIN_ROLE_DEFINITION_EXAMPLE)
+
+    with self.argument_context('cosmosdb mongoMI role assignment') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_mongoMI_role_assignment_id, help="Optional for Create. Unique ID for the Role Assignment. If not provided, a new GUID will be used.")
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], help="Unique ID of the Role Definition that this Role Assignment refers to.")
+        c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
+        c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
+        c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")       

@@ -54,6 +54,18 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#TableResourcesOperations.{}',
         client_factory=cf_table_resources)
 
+    cosmosdb_rbac_gremlin_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#GremlinResourcesOperations.{}',
+        client_factory=cf_gremlin_resources)
+
+    cosmosdb_rbac_cassandra_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#CassandraResourcesOperations.{}',
+        client_factory=cf_cassandra_resources)
+
+    cosmosdb_rbac_mongoMI_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoMIResourcesOperations.{}',
+        client_factory=cf_mongoMI_resources)
+
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update', supports_no_wait=True)
@@ -114,6 +126,54 @@ def load_command_table(self, _):
         g.show_command('show', 'get_table_role_assignment')
         g.command('delete', 'begin_delete_table_role_assignment', confirmation=True)
 
+    with self.command_group('cosmosdb gremlin role definition', cosmosdb_rbac_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_gremlin_role_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_gremlin_role_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_gremlin_role_definition_exists')
+        g.command('list', 'list_gremlin_role_definitions')
+        g.show_command('show', 'get_gremlin_role_definition')
+        g.command('delete', 'begin_delete_gremlin_role_definition', confirmation=True)        
+    
+    with self.command_group('cosmosdb gremlin role assignment', cosmosdb_rbac_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_gremlin_role_assignment_create')
+        g.custom_command('update', 'cli_cosmosdb_gremlin_role_assignment_update')
+        g.custom_command('exists', 'cli_cosmosdb_gremlin_role_assignment_exists')
+        g.command('list', 'list_gremlin_role_assignments')
+        g.show_command('show', 'get_gremlin_role_assignment')
+        g.command('delete', 'begin_delete_gremlin_role_assignment', confirmation=True)        
+
+    with self.command_group('cosmosdb cassandra role definition', cosmosdb_rbac_cassandra_sdk, client_factory=cf_cassandra_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_cassandra_role_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_cassandra_role_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_cassandra_role_definition_exists')
+        g.command('list', 'list_cassandra_role_definitions')
+        g.show_command('show', 'get_cassandra_role_definition')
+        g.command('delete', 'begin_delete_cassandra_role_definition', confirmation=True)        
+    
+    with self.command_group('cosmosdb cassandra role assignment', cosmosdb_rbac_cassandra_sdk, client_factory=cf_cassandra_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_cassandra_role_assignment_create')
+        g.custom_command('update', 'cli_cosmosdb_cassandra_role_assignment_update')
+        g.custom_command('exists', 'cli_cosmosdb_cassandra_role_assignment_exists')
+        g.command('list', 'list_cassandra_role_assignments')
+        g.show_command('show', 'get_cassandra_role_assignment')
+        g.command('delete', 'begin_delete_cassandra_role_assignment', confirmation=True)
+
+    with self.command_group('cosmosdb mongoMI role definition', cosmosdb_rbac_mongoMI_sdk, client_factory=cf_mongoMI_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongoMI_role_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_mongoMI_role_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_mongoMI_role_definition_exists')
+        g.command('list', 'list_mongoMI_role_definitions')
+        g.show_command('show', 'get_mongoMI_role_definition')
+        g.command('delete', 'begin_delete_mongoMI_role_definition', confirmation=True)        
+    
+    with self.command_group('cosmosdb mongoMI role assignment', cosmosdb_rbac_mongoMI_sdk, client_factory=cf_mongoMI_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongoMI_role_assignment_create')
+        g.custom_command('update', 'cli_cosmosdb_mongoMI_role_assignment_update')
+        g.custom_command('exists', 'cli_cosmosdb_mongoMI_role_assignment_exists')
+        g.command('list', 'list_mongoMI_role_assignments')
+        g.show_command('show', 'get_mongoMI_role_assignment')
+        g.command('delete', 'begin_delete_mongoMI_role_assignment', confirmation=True)
+                
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',

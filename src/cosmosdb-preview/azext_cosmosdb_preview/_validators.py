@@ -289,3 +289,132 @@ def validate_table_role_assignment_id(ns):
     """ Extracts Guid role assignment Id """
     if ns.role_assignment_id is not None:
         ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "tableRoleAssignments")
+
+def validate_gremlin_role_definition_body(cmd, ns):
+    """ Extracts role definition body """
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import RoleDefinitionType
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.gremlin_role_definition_body is not None:
+        if os.path.exists(ns.gremlin_role_definition_body):
+            gremlin_role_definition = get_file_json(ns.gremlin_role_definition_body)
+        else:
+            gremlin_role_definition = shell_safe_json_parse(ns.gremlin_role_definition_body)
+
+        if not isinstance(gremlin_role_definition, dict):
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid gremlin role definition. A valid dictionary JSON representation is expected.')
+
+        if 'RoleName' not in gremlin_role_definition or not isinstance(gremlin_role_definition['RoleName'], str) or len(gremlin_role_definition['RoleName']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid gremlin role name. A valid string role name is expected.')
+                            
+        if 'AssignableScopes' not in gremlin_role_definition or not isinstance(gremlin_role_definition['AssignableScopes'], list) or len(gremlin_role_definition['AssignableScopes']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid Gremlin role definition for AssignableScopes. A valid list of strings is expected.')        
+        
+        if 'Permissions' not in gremlin_role_definition or not isinstance(gremlin_role_definition['Permissions'], list) or len(gremlin_role_definition['Permissions']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid Gremlin role Permissions. A valid List JSON representation is expected.')
+
+        if 'Type' not in gremlin_role_definition:
+            gremlin_role_definition['Type'] = RoleDefinitionType.custom_role
+
+        ns.gremlin_role_definition_body = gremlin_role_definition
+
+def validate_gremlin_role_definition_id(ns):
+    """ Extracts Guid role definition Id """
+    if ns.role_definition_id is not None:
+        ns.role_definition_id = _parse_resource_path(ns.role_definition_id, False, "gremlinRoleDefinitions")
+        
+def validate_gremlin_role_assignment_id(ns):
+    """ Extracts Guid role assignment Id """
+    if ns.role_assignment_id is not None:
+        ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "gremlinRoleAssignments")
+
+def validate_cassandra_role_definition_body(cmd, ns):
+    """ Extracts role definition body """
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import RoleDefinitionType
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.cassandra_role_definition_body is not None:
+        if os.path.exists(ns.cassandra_role_definition_body):
+            cassandra_role_definition = get_file_json(ns.cassandra_role_definition_body)
+        else:
+            cassandra_role_definition = shell_safe_json_parse(ns.cassandra_role_definition_body)
+
+        if not isinstance(cassandra_role_definition, dict):
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid cassandra role definition. A valid dictionary JSON representation is expected.')
+
+        if 'RoleName' not in cassandra_role_definition or not isinstance(cassandra_role_definition['RoleName'], str) or len(cassandra_role_definition['RoleName']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid cassandra role name. A valid string role name is expected.')
+                            
+        if 'AssignableScopes' not in cassandra_role_definition or not isinstance(cassandra_role_definition['AssignableScopes'], list) or len(cassandra_role_definition['AssignableScopes']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid Cassandra role definition for AssignableScopes. A valid list of strings is expected.')        
+        
+        if 'Permissions' not in cassandra_role_definition or not isinstance(cassandra_role_definition['Permissions'], list) or len(cassandra_role_definition['Permissions']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid Cassandra role Permissions. A valid List JSON representation is expected.')
+
+        if 'Type' not in cassandra_role_definition:
+            cassandra_role_definition['Type'] = RoleDefinitionType.custom_role
+
+        ns.cassandra_role_definition_body = cassandra_role_definition
+
+def validate_cassandra_role_definition_id(ns):
+    """ Extracts Guid role definition Id """
+    if ns.role_definition_id is not None:
+        ns.role_definition_id = _parse_resource_path(ns.role_definition_id, False, "cassandraRoleDefinitions")
+        
+def validate_cassandra_role_assignment_id(ns):
+    """ Extracts Guid role assignment Id """
+    if ns.role_assignment_id is not None:
+        ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "cassandraRoleAssignments")
+
+def validate_mongoMI_role_definition_body(cmd, ns):
+    """ Extracts role definition body """
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import RoleDefinitionType
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.mongoMI_role_definition_body is not None:
+        if os.path.exists(ns.mongoMI_role_definition_body):
+            mongoMI_role_definition = get_file_json(ns.mongoMI_role_definition_body)
+        else:
+            mongoMI_role_definition = shell_safe_json_parse(ns.mongoMI_role_definition_body)
+
+        if not isinstance(mongoMI_role_definition, dict):
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid mongoMI role definition. A valid dictionary JSON representation is expected.')
+
+        if 'RoleName' not in mongoMI_role_definition or not isinstance(mongoMI_role_definition['RoleName'], str) or len(mongoMI_role_definition['RoleName']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid mongoMI role name. A valid string role name is expected.')
+                            
+        if 'AssignableScopes' not in mongoMI_role_definition or not isinstance(mongoMI_role_definition['AssignableScopes'], list) or len(mongoMI_role_definition['AssignableScopes']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid MongoMI role definition for AssignableScopes. A valid list of strings is expected.')        
+        
+        if 'Permissions' not in mongoMI_role_definition or not isinstance(mongoMI_role_definition['Permissions'], list) or len(mongoMI_role_definition['Permissions']) == 0:
+            raise InvalidArgumentValueError(
+                'Role creation failed. Invalid MongoMI role Permissions. A valid List JSON representation is expected.')
+
+        if 'Type' not in mongoMI_role_definition:
+            mongoMI_role_definition['Type'] = RoleDefinitionType.custom_role
+
+        ns.mongoMI_role_definition_body = mongoMI_role_definition
+
+def validate_mongoMI_role_definition_id(ns):
+    """ Extracts Guid role definition Id """
+    if ns.role_definition_id is not None:
+        ns.role_definition_id = _parse_resource_path(ns.role_definition_id, False, "mongoMIRoleDefinitions")
+        
+def validate_mongoMI_role_assignment_id(ns):
+    """ Extracts Guid role assignment Id """
+    if ns.role_assignment_id is not None:
+        ns.role_assignment_id = _parse_resource_path(ns.role_assignment_id, False, "mongoMIRoleAssignments")
