@@ -908,6 +908,7 @@ def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
             "Cannot specify --location and --resource-group and --cluster at the same time."
         )
 
+
 def validate_resource_group_parameter(namespace):
     if namespace.resource_group_name and not namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --cluster")

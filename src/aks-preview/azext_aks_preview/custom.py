@@ -4013,6 +4013,7 @@ def list_k8s_extension_type_versions_by_cluster(
     except Exception as ex:
         logger.error("Failed to list K8s extension type versions by cluster.\nError: %s", ex)
 
+
 # show extension type version
 def show_k8s_extension_type_version(
     cmd,
