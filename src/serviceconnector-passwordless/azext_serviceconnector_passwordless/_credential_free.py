@@ -1043,6 +1043,8 @@ class FabricSqlHandler(SqlHandler):
         grant_q2 = "ALTER ROLE db_datawriter ADD MEMBER \"{}\"".format(self.aad_username)
         grant_q3 = "ALTER ROLE db_ddladmin ADD MEMBER \"{}\"".format(self.aad_username)
 
+        logger.warning("IMPORTANT: Manual steps required to complete this service connection. Please refer to %s for more details.", "https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-fabric-sql#share-access-to-sql-database-in-fabric")
+
         return [delete_q, role_q, grant_q1, grant_q2, grant_q3]
 
 
