@@ -3896,7 +3896,6 @@ def show_k8s_extension_type(
     cmd,
     client,
     extension_type,
-    scope,
     location=None,
     resource_group_name=None,
     cluster_name=None
@@ -3908,20 +3907,14 @@ def show_k8s_extension_type(
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
     try:
-        if scope == "location":
-            if not location:
-                raise ValidationError("Location needs to be specified as an argument to get " +
-                                      f"extension type {extension_type} by location")
+        if location:
             result = k8s_extension_custom_mod.show_extension_type_by_location(
                 client,
                 location,
                 extension_type=extension_type,
             )
             return result
-        elif scope == "cluster":
-            if not resource_group_name or not cluster_name:
-                raise ValidationError("The resource group name and cluster name need to be specified as an argument " +
-                                      f"to get extension type {extension_type} by cluster")
+        if cluster_name and resource_group_name:
             result = k8s_extension_custom_mod.show_extension_type_by_cluster(
                 client,
                 resource_group_name,
@@ -3930,8 +3923,6 @@ def show_k8s_extension_type(
                 extension_type,
             )
             return result
-        else:
-            raise ValidationError(f"Invalid scope {scope} was specified as an argument. Valid options are cluster and location")
     except Exception as ex:
         logger.error("Failed to get K8s extension types by location.\nError: %s", ex)
 

@@ -199,6 +199,8 @@ from azext_aks_preview._validators import (
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
     validate_max_unavailable,
+    validate_location_cluster_name_resource_group_mutually_exclusive,
+    validate_resource_group_parameter,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -2338,8 +2340,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name',
                    options_list=['--resource-group', '-g'],
                    help='Name of resource group.')
-        c.argument('location',
-                   validator=get_default_location_from_resource_group)
         c.argument('name',
                    options_list=['--name', '-n'],
                    help='Name of the extension instance')
@@ -2409,21 +2409,17 @@ def load_arguments(self, _):
     with self.argument_context("aks extension type") as c:
         c.argument('resource_group_name',
                    options_list=['--resource-group', '-g'],
+                   validator = validate_resource_group_parameter,
                    help='Name of resource group.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
+                   validator = validate_location_cluster_name_resource_group_mutually_exclusive,
                    help='Name of the Kubernetes cluster')
         c.argument('extension_type',
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
-        c.argument('scope',
-                   arg_type=get_enum_type(['cluster', 'location']),
-                   help='Specify the scope for querying the extension type data.')
         c.argument('location',
-                   validator=get_default_location_from_resource_group,
-                   help='Name of the location. Values from: `az account list-locations`')
-        c.argument('region',
-                   validator=get_default_location_from_resource_group,
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
                    help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')
@@ -2438,6 +2434,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help='Filter results by only the latest version.'
                    + 'For example, if this flag is used the latest version of the extensionType will be shown.')
+
     # AKS loadbalancer command parameter configuration
     with self.argument_context("aks loadbalancer add") as c:
         c.argument(

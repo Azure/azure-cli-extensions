@@ -3529,9 +3529,6 @@ helps['aks extension type show'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
-    - name: --scope
-      type: string
-      short-summary: Specify scope for querying the extension type data
     - name: --resource-group -g
       type: string
       short-summary: Name of the resource group.
@@ -3542,10 +3539,10 @@ helps['aks extension type show'] = """
       long-summary: Name of the AKS cluster. If not specified, default value is None
   examples:
     - name: Show properties for a K8s Extension Type for an existing cluster by cluster
-      text: az aks extension type show --scope cluster --resource-group my-resource-group\
+      text: az aks extension type show --resource-group my-resource-group\
  --cluster-name mycluster --extension-type <type>
     - name: Show properties for a K8s Extension Type in a location
-      text: az aks extension type show --scope location --location eastus --extension-type type
+      text: az aks extension type show --location eastus --extension-type type
 """
 
 helps['aks extension type show-version-by-cluster'] = """
