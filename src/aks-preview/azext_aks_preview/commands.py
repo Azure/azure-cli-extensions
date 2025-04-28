@@ -511,12 +511,7 @@ def load_command_table(self, _):
             table_transformer=aks_extension_type_versions_list_table_format
         )
         g.custom_command(
-            'list-by-location',
-            'list_k8s_extension_types_by_location',
-            table_transformer=aks_extension_types_list_table_format
-        )
-        g.custom_command(
-            'list-by-cluster',
-            'list_k8s_extension_types_by_cluster',
+            'list',
+            'list_k8s_extension_types',
             table_transformer=aks_extension_types_list_table_format
         )

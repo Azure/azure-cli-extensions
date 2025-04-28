@@ -15793,8 +15793,8 @@ spec:
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --release-train {release_train} --version {version} '
-                 '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
+                 '--extension-type {extension_type} --release-train {release_train} '
+                 '--config useKubeletIdentity=true --no-wait')
 
         # show by cluster
         self.cmd('aks extension-type show -g {rg} -c {cluster_name} '
@@ -15808,11 +15808,13 @@ spec:
                      self.check('name', '{extension_type}')
                  ])
 
-        extensionTypes_list = self.cmd('aks extension-type list-by-cluster -g {rg} '
+        # list extension type by cluster
+        extensionTypes_list = self.cmd('aks extension-type list -g {rg} '
                                        '-c {cluster_name}').get_output_in_json()
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_locationList = self.cmd('aks extension-type list-by-location '
+        # list extension type by location
+        extensionTypes_locationList = self.cmd('aks extension-type list '
                                                '--location {location}').get_output_in_json()
         assert len(extensionTypes_locationList) > 0
 
@@ -15823,7 +15825,7 @@ spec:
         assert len(extensionTypes_list) > 0
 
         # list versions by location
-        extensionTypes_list = self.cmd('aks extension-type list-versions-by-location --location {location} '
+        extensionTypes_list = self.cmd('aks extension-type list-versions --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0

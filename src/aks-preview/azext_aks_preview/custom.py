@@ -3877,16 +3877,33 @@ def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
         logger.error("Failed to get K8s extension.\nError: %s", ex)
 
 
-def list_k8s_extension_types_by_location(cmd, client, location):
+def list_k8s_extension_types(
+    cmd, 
+    client, 
+    location=None,
+    resource_group_name=None,
+    cluster_name=None,
+    release_train=None
+):
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
     try:
-        result = k8s_extension_custom_mod.list_extension_types_by_location(
-            client,
-            location,
-        )
-        return result
+        if location:
+            result = k8s_extension_custom_mod.list_extension_types_by_location(
+                client,
+                location,
+            )
+            return result
+        if cluster_name and resource_group_name:
+            result = k8s_extension_custom_mod.list_extension_types_by_cluster(
+                client,
+                resource_group_name,
+                cluster_name,
+                "managedClusters",
+                release_train=release_train,
+            )
+            return result
     except Exception as ex:
         logger.error("Failed to list K8s extension types by location.\nError: %s", ex)
 
@@ -3925,6 +3942,7 @@ def show_k8s_extension_type(
             return result
     except Exception as ex:
         logger.error("Failed to get K8s extension types by location.\nError: %s", ex)
+
 
 # list version by location
 def list_k8s_extension_type_versions(
@@ -3972,29 +3990,6 @@ def list_k8s_extension_type_versions(
         logger.error("Failed to list K8s extension type versions by location.\nError: %s", ex)
 
 
-def list_k8s_extension_types_by_cluster(
-    cmd,
-    client,
-    resource_group_name,
-    cluster_name,
-    release_train=None
-):
-    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
-    try:
-        result = k8s_extension_custom_mod.list_extension_types_by_cluster(
-            client,
-            resource_group_name,
-            cluster_name,
-            "managedClusters",
-            release_train=release_train,
-        )
-        return result
-    except Exception as ex:
-        logger.error("Failed to list K8s extension type versions by cluster.\nError: %s", ex)
-
-
 # show extension type version
 def show_k8s_extension_type_version(
     cmd,
@@ -4003,7 +3998,7 @@ def show_k8s_extension_type_version(
     version,
     location=None,
     resource_group_name=None,
-    cluster_name=None,
+    cluster_name=None
 ):
     if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
         raise ValidationError(f"Failed to get extension type version by cluster for {extension_type.lower()} " +
