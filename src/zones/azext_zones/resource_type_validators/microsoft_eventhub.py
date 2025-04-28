@@ -13,10 +13,7 @@ class microsoft_eventhub:
         _logger = get_logger("microsoft_eventhub")   
         _logger.debug("Validating Microsoft.eventhub resource type: %s", resourceSubType)
         
-        match resourceSubType:
-            case 'namespaces':
-                # If you create an Event Hubs namespace in a region that supports availability zones, zone redundancy is automatically enabled. 
-                # https://learn.microsoft.com/azure/reliability/reliability-event-hubs#availability-zone-support
-                return ZoneRedundancyValidationResult.Always
 
-        return ZoneRedundancyValidationResult.Unknown
+        # If you create an Event Hubs namespace in a region that supports availability zones, zone redundancy is automatically enabled. 
+        # https://learn.microsoft.com/azure/reliability/reliability-event-hubs#availability-zone-support
+        return ZoneRedundancyValidationResult.Always

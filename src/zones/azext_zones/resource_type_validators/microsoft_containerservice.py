@@ -12,7 +12,7 @@ class microsoft_containerservice:
 
         _logger = get_logger("microsoft_containerservice")   
         _logger.debug("Validating Microsoft.containerservice resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'managedclusters':
                 # AKS clusters are zone redundant if the node pools are spread across multiple zones

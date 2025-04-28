@@ -12,7 +12,7 @@ class microsoft_dbforpostgresql:
 
         _logger = get_logger("microsoft_dbforpostgresql")   
         _logger.debug("Validating Microsoft.dbforpostgresql resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'flexibleservers':                                
                 return (

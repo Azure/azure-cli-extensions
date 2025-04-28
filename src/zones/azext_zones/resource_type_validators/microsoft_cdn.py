@@ -13,9 +13,6 @@ class microsoft_cdn:
         _logger = get_logger("microsoft_cdn")   
         _logger.debug("Validating Microsoft.cdn resource type: %s", resourceSubType)
         
-        match resourceSubType:
-            case 'profiles':
-                # Cdn profiles are a global service and are zone redundant by default
-                return ZoneRedundancyValidationResult.Always
 
-        return ZoneRedundancyValidationResult.Unknown
+        # Cdn profiles are a global service and are zone redundant by default
+        return ZoneRedundancyValidationResult.Always

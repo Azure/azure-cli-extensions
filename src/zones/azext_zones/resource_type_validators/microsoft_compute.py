@@ -12,7 +12,7 @@ class microsoft_compute:
 
         _logger = get_logger("microsoft_compute")   
         _logger.debug("Validating Microsoft.Compute resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'disks':
                 zones = resource.get('zones') or []

@@ -13,10 +13,7 @@ class microsoft_automation:
         _logger = get_logger("microsoft_automation")   
         _logger.debug("Validating Microsoft.automation resource type: %s", resourceSubType)
         
-        match resourceSubType:
-            case 'automationaccounts':
-                # Automation accounts are zone redundant by default
-                # https://learn.microsoft.com/azure/automation/automation-availability-zones
-                return ZoneRedundancyValidationResult.Always
 
-        return ZoneRedundancyValidationResult.Unknown
+        # Automation accounts are zone redundant by default
+        # https://learn.microsoft.com/azure/automation/automation-availability-zones
+        return ZoneRedundancyValidationResult.Always

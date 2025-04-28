@@ -20,5 +20,9 @@ class microsoft_web:
                 zrEnabled = resource['properties'].get('zoneRedundant', False)
                 instanceCount = resource['sku'].get('capacity', 0)
                 return ZoneRedundancyValidationResult.Yes if zrEnabled and instanceCount > 1 else ZoneRedundancyValidationResult.No
+            
+            case 'sites':
+                # Web Apps are zone redundant if they are hosted on a zone redundant App Service Plan
+                return ZoneRedundancyValidationResult.Dependent
 
         return ZoneRedundancyValidationResult.Unknown

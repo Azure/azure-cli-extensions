@@ -12,7 +12,7 @@ class microsoft_search:
 
         _logger = get_logger("microsoft_search")   
         _logger.debug("Validating Microsoft.search resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'searchservices':
                 # Standard or higher tiers in supported regions are zone redundant if the replica count is greater than 1. 

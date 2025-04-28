@@ -12,7 +12,7 @@ class microsoft_documentdb:
 
         _logger = get_logger("microsoft_documentdb")   
         _logger.debug("Validating Microsoft.documentdb resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'databaseaccounts':
                 # https://learn.microsoft.com/en-us/azure/reliability/reliability-cosmos-db-nosql

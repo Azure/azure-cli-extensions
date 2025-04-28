@@ -12,7 +12,7 @@ class microsoft_containerregistry:
 
         _logger = get_logger("microsoft_containerregistry")   
         _logger.debug("Validating Microsoft.containerregistry resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'registries':
                 # Container registries are zone redundant if the setting enabled

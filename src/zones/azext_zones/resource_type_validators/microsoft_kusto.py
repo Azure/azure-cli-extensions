@@ -12,7 +12,7 @@ class microsoft_kusto:
 
         _logger = get_logger("microsoft_kusto")   
         _logger.debug("Validating Microsoft.kusto resource type: %s", resourceSubType)
-        
+              
         match resourceSubType:
             case 'clusters':
                 # AKS clusters are zone redundant if the node pools are spread across multiple zones

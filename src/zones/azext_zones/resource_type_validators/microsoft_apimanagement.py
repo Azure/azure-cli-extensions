@@ -12,7 +12,7 @@ class microsoft_apimanagement:
 
         _logger = get_logger("microsoft_apimanagement")   
         _logger.debug("Validating Microsoft.apimanagement resource type: %s", resourceSubType)
-        
+
         match resourceSubType:
             case 'gateways':
                 # ZR state of the gateway is defined on the service level
