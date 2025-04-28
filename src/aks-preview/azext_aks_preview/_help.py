@@ -3365,7 +3365,7 @@ Only the key is returned in response, the value is not. If not specified, defaul
   examples:
     - name: Install K8s extension on AKS cluster with required parameters
       text: az aks extension create --resource-group my-resource-group \
---cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
+--cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh
     - name: Install K8s extension with optional parameters scope and release train
       text: az aks extension create --resource-group my-resource-group \
 --cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
@@ -3456,8 +3456,12 @@ Only the key is returned in response, the value is not. If not specified, defaul
       type: string
       short-summary: JSON file path for configuration-protected-settings
       long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
+    - name: --yes -y
+      type: bool
+      short-summary: Ignores confirmation prompt.
+      long-summary: Ignores confirmation prompt. If not specified, default value is false
   examples:
-    - name: Update K8s extension on AKS cluster 
+    - name: Update K8s extension on AKS cluster
       text: az aks extension update --resource-group my-resource-group \
 --cluster-name mycluster --name myextension
     - name: Update K8s extension on AKS cluster with optional parameters included
