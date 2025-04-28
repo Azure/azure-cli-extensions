@@ -3588,10 +3588,10 @@ helps['aks extension type list'] = """
       short-summary: specify the release train for the K8s extension type
   examples:
     - name: List available K8s Extension Types for an existing cluster
-      text: az aks extension type list-by-cluster --resource-group my-resource-group \
+      text: az aks extension type list --resource-group my-resource-group \
 --cluster-name mycluster
     - name: List available K8s Extension Types in a region
-      text: az aks extension type list-by-location --location eastus
+      text: az aks extension type list --location eastus
 """
 
 helps['aks extension type list-versions'] = """
