@@ -33,7 +33,6 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     zones_type,
 )
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
