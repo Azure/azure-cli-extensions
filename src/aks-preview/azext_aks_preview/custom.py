@@ -3891,7 +3891,15 @@ def list_k8s_extension_types_by_location(cmd, client, location):
         logger.error("Failed to list K8s extension types by location.\nError: %s", ex)
 
 # get K8s extension type
-def show_k8s_extension_type(cmd, client, scope, region, resource_group_name, cluster_name, extension_type):
+def show_k8s_extension_type(
+    cmd, 
+    client,
+    extension_type,
+    scope, 
+    region = None, 
+    resource_group_name = None, 
+    cluster_name = None
+):
     if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
         raise ValidationError(f"Failed to get extension type {extension_type.lower()} by location " +
                               "as it is not in allowed list of extension types")
