@@ -3897,9 +3897,9 @@ def show_k8s_extension_type(
     client,
     extension_type,
     scope,
-    region = None,
-    resource_group_name = None,
-    cluster_name = None
+    region=None,
+    resource_group_name=None,
+    cluster_name=None
 ):
     if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
         raise ValidationError(f"Failed to get extension type {extension_type.lower()} by location " +
