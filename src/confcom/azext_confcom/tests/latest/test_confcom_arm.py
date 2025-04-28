@@ -1031,7 +1031,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
         python_flag = False
         thim_flag = False
         for value in output_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]:
-            if "PYTHON" in value[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
+            if "python" in value[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
                 python_flag = True
             if f"{config.ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_NAME}=.*" == value[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
                 thim_flag = True
