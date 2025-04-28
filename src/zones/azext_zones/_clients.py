@@ -1,6 +1,8 @@
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 
+
+# pylint: disable=too-few-public-methods
 class MgmtApiClient():
 
     def query(self, cmd, method, resource, api_version, requestBody):
