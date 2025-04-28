@@ -2,9 +2,9 @@
 
 Release History
 ===============
-1.2.2
+1.3.0
 ++++++
-* add support for captcha
+* Add support for captcha
 
 1.2.1
 ++++++
