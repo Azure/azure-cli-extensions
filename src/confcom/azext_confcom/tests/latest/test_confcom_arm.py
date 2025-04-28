@@ -855,7 +855,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
         # see if we have environment variables specific to the python image in the parameter file
         python_flag = False
         for rules in output_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]:
-            if "PYTHON" in rules[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
+            if "python" in rules[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]:
                 python_flag = True
         self.assertTrue(python_flag)
 
