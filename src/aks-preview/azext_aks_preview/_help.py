@@ -3371,7 +3371,7 @@ Only the key is returned in response, the value is not. If not specified, defaul
 --cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
 --scope cluster --release-train stable
     - name: Install K8s extension with autoupgrade turned off and optional parameters \
-version and configuration settings 
+version and configuration settings
       text: az aks extension create --resource-group abc --cluster-name test --name flux \
 --extension-type microsoft.flux --config useKubeletIdentity=true
 """
@@ -3548,10 +3548,12 @@ helps['aks extension type show-by-location'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
+    - name: --location
+      type: string
+      short-summary: Location of the extension type
   examples:
     - name: Show properties for a K8s Extension Type in a region
-      text: az aks extension type show-by-location \
---location eastus --extension-type type
+      text: az aks extension type show-by-location --location eastus --extension-type type
 """
 
 helps['aks extension type show-version-by-cluster'] = """
