@@ -15816,22 +15816,26 @@ spec:
                                                '--location {location}').get_output_in_json()
         assert len(extensionTypes_locationList) > 0
 
-        extensionTypes_list = self.cmd('aks extension-type list-versions-by-cluster -g {rg} -c {cluster_name} '
+        # list versions by cluster
+        extensionTypes_list = self.cmd('aks extension-type list-versions -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
+        # list versions by location
         extensionTypes_list = self.cmd('aks extension-type list-versions-by-location --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('aks extension-type show-version-by-cluster -g {rg} -c {cluster_name} '
+        # show version by cluster
+        extensionTypes_list = self.cmd('aks extension-type show-version -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('aks extension-type show-version-by-location --location {location} '
+        # show version by location
+        extensionTypes_list = self.cmd('aks extension-type show-version --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
