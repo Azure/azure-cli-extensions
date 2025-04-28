@@ -1259,7 +1259,7 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
             self.client,
-            {"vm_sizes": "Standard_D4s_v3,Standard_D8s_v3", "node-count": 5},
+            {"vm_sizes": "Standard_D4s_v3", "node-count": 5},
             self.resource_type,
             self.agentpool_decorator_mode,
         )
@@ -1278,7 +1278,7 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
                 scale=self.models.ScaleProfile(
                     manual=[
                         self.models.ManualScaleProfile(
-                            sizes=["Standard_D4s_v3", "Standard_D8s_v3"],
+                            size="Standard_D4s_v3",
                             count=5,
                         )
                     ]

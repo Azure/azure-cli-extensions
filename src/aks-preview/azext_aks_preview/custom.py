@@ -1685,7 +1685,7 @@ def aks_agentpool_manual_scale_add(cmd,
         operation_group="managed_clusters",
     )
     sizes = [x.strip() for x in vm_sizes.split(",")]
-    new_manual_scale_profile = ManualScaleProfile(sizes=sizes, count=int(node_count))
+    new_manual_scale_profile = ManualScaleProfile(size=sizes[0], count=int(node_count))
     instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
 
     return sdk_no_wait(
@@ -1715,13 +1715,13 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
         raise ClientRequestError("Cannot update manual in a non-virtualmachines node pool.")
 
     _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
-    _vm_sizes = [x.strip() for x in vm_sizes.split(",")] if vm_sizes else []
+    _vm_sizes = [x.strip() for x in vm_sizes.split(",")] if vm_sizes else [""]
     manual_exists = False
     for m in instance.virtual_machines_profile.scale.manual:
-        if m.sizes == _current_vm_sizes:
+        if m.size == _current_vm_sizes[0]:
             manual_exists = True
             if vm_sizes:
-                m.sizes = _vm_sizes
+                m.size = _vm_sizes[0]
             if node_count:
                 m.count = int(node_count)
             break
@@ -1753,13 +1753,13 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
     _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
     manual_exists = False
     for m in instance.virtual_machines_profile.scale.manual:
-        if m.sizes == _current_vm_sizes:
+        if m.size == _current_vm_sizes[0]:
             manual_exists = True
             instance.virtual_machines_profile.scale.manual.remove(m)
             break
     if not manual_exists:
         raise InvalidArgumentValueError(
-            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
+            f"Manual with sizes {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(

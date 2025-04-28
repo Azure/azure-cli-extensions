@@ -987,7 +987,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             scale=self.models.ScaleProfile(
                 manual=[
                     self.models.ManualScaleProfile(
-                        sizes=sizes,
+                        size=sizes[0],
                         count=count,
                     )
                 ]
