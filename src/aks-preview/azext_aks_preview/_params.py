@@ -2419,6 +2419,9 @@ def load_arguments(self, _):
         c.argument('location',
                    validator=get_default_location_from_resource_group,
                    help='Name of the location. Values from: `az account list-locations`')
+        c.argument('region',
+                   validator=get_default_location_from_resource_group,
+                   help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')
         c.argument('major_version',

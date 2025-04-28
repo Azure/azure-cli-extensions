@@ -3548,12 +3548,12 @@ helps['aks extension type show-by-location'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
-    - name: --location
+    - name: --region
       type: string
       short-summary: Location of the extension type
   examples:
     - name: Show properties for a K8s Extension Type in a region
-      text: az aks extension type show-by-location --location eastus --extension-type type
+      text: az aks extension type show-by-location --region eastus --extension-type type
 """
 
 helps['aks extension type show-version-by-cluster'] = """

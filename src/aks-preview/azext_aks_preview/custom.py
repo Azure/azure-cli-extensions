@@ -3892,7 +3892,7 @@ def list_k8s_extension_types_by_location(cmd, client, location):
 
 
 # get by location
-def show_k8s_extension_type_by_location(cmd, client, location, extension_type):
+def show_k8s_extension_type_by_location(cmd, client, region, extension_type):
     if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
         raise ValidationError(f"Failed to get extension type {extension_type.lower()} by location " +
                               "as it is not in allowed list of extension types")
