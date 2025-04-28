@@ -3552,12 +3552,14 @@ helps['aks extension type show-version'] = """
     - name: --resource-group -g
       type: string
       short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
@@ -3576,9 +3578,11 @@ helps['aks extension type list'] = """
     - name: --resource-group -g
       type: string
       short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
     - name: --release-train
       type: string
       short-summary: specify the release train for the K8s extension type
@@ -3597,9 +3601,11 @@ helps['aks extension type list-versions'] = """
     - name: --resource-group -g
       type: string
       short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
     - name: --cluster-name -c
       type: string
       short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
