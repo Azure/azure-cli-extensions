@@ -3456,10 +3456,6 @@ Only the key is returned in response, the value is not. If not specified, defaul
       type: string
       short-summary: JSON file path for configuration-protected-settings
       long-summary: JSON file path for configuration-protected-settings. If not specified, default value is None
-    - name: --yes -y
-      type: bool
-      short-summary: Ignores confirmation prompt.
-      long-summary: Ignores confirmation prompt. If not specified, default value is false
   examples:
     - name: Update K8s extension on AKS cluster 
       text: az aks extension update --resource-group my-resource-group \
