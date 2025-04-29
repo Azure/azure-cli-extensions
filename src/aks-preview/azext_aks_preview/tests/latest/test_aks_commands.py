@@ -12219,7 +12219,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("agentPoolProfiles[0].vmSize", None),
                 self.check("agentPoolProfiles[0].count", None),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].size", "Standard_D4s_v3"),
-                # self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
             ],
         )
@@ -12250,7 +12249,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("vmSize", None),
                 self.check("count", None),
                 self.check("virtualMachinesProfile.scale.manual[0].size", "Standard_D2s_v3"),
-                # self.check("virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
                 self.check("virtualMachinesProfile.scale.manual[0].count", "2"),
             ],
         )
@@ -12280,7 +12278,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("vmSize", None),
                 self.check("count", None),
                 self.check("virtualMachinesProfile.scale.manual[1].size", "Standard_DS2_v2"),
-                # self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
                 self.check("virtualMachinesProfile.scale.manual[1].count", "2"),
             ],
         )
@@ -12298,9 +12295,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("typePropertiesType", "VirtualMachines"),
                 self.check("vmSize", None),
                 self.check("count", None),
-                # self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
                 self.check("virtualMachinesProfile.scale.manual[1].size", "Standard_D8s_v3"),
-                # self.check("virtualMachinesProfile.scale.manual[1].sizes[2]", "Standard_DC2s_v3"),
                 self.check("virtualMachinesProfile.scale.manual[1].count", "5"),
             ],
         )
