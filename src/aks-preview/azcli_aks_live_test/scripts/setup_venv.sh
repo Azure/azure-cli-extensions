@@ -34,6 +34,9 @@ setupAZ(){
     # install azdev, used later to install azcli and extension
     pip install azdev==0.1.60
 
+    # fix setuptools to 77.0.3 as a workaround for "No module named azure.cli.__main__; 'azure.cli' is a package and cannot be directly executed"
+    pip install setuptools==77.0.3
+
     # pre-install-az: check existing az
     which az || az version || az extension list || true
 
