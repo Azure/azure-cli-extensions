@@ -17,6 +17,10 @@ Pending
 ++++++++
 * Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
 
+14.0.0b7
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines to awalys support only a single SKU size.
+
 14.0.0b6
 +++++++
 * Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
