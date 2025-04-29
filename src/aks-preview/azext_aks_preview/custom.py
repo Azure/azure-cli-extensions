@@ -305,6 +305,17 @@ def aks_namespace_update(
         headers = get_aks_custom_headers(aks_custom_headers)
         return aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait)
 
+def aks_namespace_show(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    cluster_name,
+    name
+):
+    logger.warning('resource_group_name: %s, cluster_name: %s, managed_namespace_name: %s ',
+                   resource_group_name, cluster_name, name)
+    return client.get(resource_group_name, cluster_name, name)
+
 
 def aks_maintenanceconfiguration_list(
     cmd,  # pylint: disable=unused-argument

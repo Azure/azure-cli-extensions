@@ -1453,6 +1453,17 @@ def load_arguments(self, _):
             c.argument("delete_policy", options_list=["--delete-policy"], arg_type=get_enum_type(delete_policy))
             c.argument("aks_custom_headers", options_list=["--aks-custom-headers"])
             c.argument("no_wait", help="Do not wait for the long-running operation to finish")
+    
+    for scope in [
+        "aks namespace show",
+    ]:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "name",
+                options_list=["--name"],
+                validator=validate_namespace_name,
+                help="The managed namespace name.",
+            )
 
     with self.argument_context("aks nodepool") as c:
         c.argument("cluster_name", help="The cluster name.")

@@ -243,6 +243,7 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
+        g.custom_show_command("show", "aks_namespace_show")
 
     # AKS agent pool commands
     with self.command_group(
