@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a Branch
 
     :example: Create a Branch
-        az neon postgres branch create --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --project-id old-frost-16758796 --branch-name test-branch --entity-name test-branch --role-name test_role --database-name testneondb
+        az neon postgres branch create --resource-group rgneon --organization-name org-cli-test --project-name old-frost-16758796 --branch-name test-branch --entity-name test-branch --role-name test_role --database-name testneondb
     """
 
     _aaz_info = {
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="The name of the Branch",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.organization_name = AAZStrArg(
@@ -68,7 +68,7 @@ class Create(AAZCommand):
             help="The Id of the Neon Project.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(

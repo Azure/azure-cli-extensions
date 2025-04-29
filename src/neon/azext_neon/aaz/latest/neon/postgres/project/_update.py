@@ -65,7 +65,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -452,7 +452,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_project_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_models_project_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -567,7 +567,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_project_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_models_project_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -858,37 +858,37 @@ class _UpdateHelper:
         _schema.permissions = cls._schema_models_neon_role_properties_read.permissions
         _schema.provisioning_state = cls._schema_models_neon_role_properties_read.provisioning_state
 
-    _schema_project_read = None
+    _schema_models_project_read = None
 
     @classmethod
-    def _build_schema_project_read(cls, _schema):
-        if cls._schema_project_read is not None:
-            _schema.id = cls._schema_project_read.id
-            _schema.name = cls._schema_project_read.name
-            _schema.properties = cls._schema_project_read.properties
-            _schema.system_data = cls._schema_project_read.system_data
-            _schema.type = cls._schema_project_read.type
+    def _build_schema_models_project_read(cls, _schema):
+        if cls._schema_models_project_read is not None:
+            _schema.id = cls._schema_models_project_read.id
+            _schema.name = cls._schema_models_project_read.name
+            _schema.properties = cls._schema_models_project_read.properties
+            _schema.system_data = cls._schema_models_project_read.system_data
+            _schema.type = cls._schema_models_project_read.type
             return
 
-        cls._schema_project_read = _schema_project_read = AAZObjectType()
+        cls._schema_models_project_read = _schema_models_project_read = AAZObjectType()
 
-        project_read = _schema_project_read
-        project_read.id = AAZStrType(
+        models_project_read = _schema_models_project_read
+        models_project_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        project_read.name = AAZStrType(
+        models_project_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        project_read.properties = AAZObjectType()
-        project_read.system_data = AAZObjectType(
+        models_project_read.properties = AAZObjectType()
+        models_project_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        project_read.type = AAZStrType(
+        models_project_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_project_read.properties
+        properties = _schema_models_project_read.properties
         properties.attributes = AAZListType()
         properties.branch = AAZObjectType()
         properties.created_at = AAZStrType(
@@ -923,11 +923,11 @@ class _UpdateHelper:
         properties.roles = AAZListType()
         properties.storage = AAZIntType()
 
-        attributes = _schema_project_read.properties.attributes
+        attributes = _schema_models_project_read.properties.attributes
         attributes.Element = AAZObjectType()
         cls._build_schema_models_attributes_read(attributes.Element)
 
-        branch = _schema_project_read.properties.branch
+        branch = _schema_models_project_read.properties.branch
         branch.attributes = AAZListType()
         branch.created_at = AAZStrType(
             serialized_name="createdAt",
@@ -960,27 +960,27 @@ class _UpdateHelper:
         )
         branch.roles = AAZListType()
 
-        attributes = _schema_project_read.properties.branch.attributes
+        attributes = _schema_models_project_read.properties.branch.attributes
         attributes.Element = AAZObjectType()
         cls._build_schema_models_attributes_read(attributes.Element)
 
-        databases = _schema_project_read.properties.branch.databases
+        databases = _schema_models_project_read.properties.branch.databases
         databases.Element = AAZObjectType()
         cls._build_schema_models_neon_database_properties_read(databases.Element)
 
-        endpoints = _schema_project_read.properties.branch.endpoints
+        endpoints = _schema_models_project_read.properties.branch.endpoints
         endpoints.Element = AAZObjectType()
         cls._build_schema_models_endpoint_properties_read(endpoints.Element)
 
-        roles = _schema_project_read.properties.branch.roles
+        roles = _schema_models_project_read.properties.branch.roles
         roles.Element = AAZObjectType()
         cls._build_schema_models_neon_role_properties_read(roles.Element)
 
-        databases = _schema_project_read.properties.databases
+        databases = _schema_models_project_read.properties.databases
         databases.Element = AAZObjectType()
         cls._build_schema_models_neon_database_properties_read(databases.Element)
 
-        default_endpoint_settings = _schema_project_read.properties.default_endpoint_settings
+        default_endpoint_settings = _schema_models_project_read.properties.default_endpoint_settings
         default_endpoint_settings.autoscaling_limit_max_cu = AAZFloatType(
             serialized_name="autoscalingLimitMaxCu",
             flags={"required": True},
@@ -990,15 +990,15 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        endpoints = _schema_project_read.properties.endpoints
+        endpoints = _schema_models_project_read.properties.endpoints
         endpoints.Element = AAZObjectType()
         cls._build_schema_models_endpoint_properties_read(endpoints.Element)
 
-        roles = _schema_project_read.properties.roles
+        roles = _schema_models_project_read.properties.roles
         roles.Element = AAZObjectType()
         cls._build_schema_models_neon_role_properties_read(roles.Element)
 
-        system_data = _schema_project_read.system_data
+        system_data = _schema_models_project_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -1018,11 +1018,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_project_read.id
-        _schema.name = cls._schema_project_read.name
-        _schema.properties = cls._schema_project_read.properties
-        _schema.system_data = cls._schema_project_read.system_data
-        _schema.type = cls._schema_project_read.type
+        _schema.id = cls._schema_models_project_read.id
+        _schema.name = cls._schema_models_project_read.name
+        _schema.properties = cls._schema_models_project_read.properties
+        _schema.system_data = cls._schema_models_project_read.system_data
+        _schema.type = cls._schema_models_project_read.type
 
 
 __all__ = ["Update"]

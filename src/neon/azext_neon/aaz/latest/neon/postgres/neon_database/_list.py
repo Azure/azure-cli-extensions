@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="The id of the Neon Branch resource",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.organization_name = AAZStrArg(
@@ -68,7 +68,7 @@ class List(AAZCommand):
             help="The id of the Neon Project resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -109,7 +109,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/neonDatabases",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}/branches/{branchName}/neondatabases",
                 **self.url_parameters
             )
 

@@ -53,7 +53,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.organization_name = AAZStrArg(
@@ -73,7 +73,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -259,7 +259,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_branch_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_models_branch_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -378,7 +378,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_branch_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_models_branch_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -423,37 +423,59 @@ class _UpdateHelper:
         _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
-    _schema_branch_read = None
+    _schema_models_attributes_read = None
 
     @classmethod
-    def _build_schema_branch_read(cls, _schema):
-        if cls._schema_branch_read is not None:
-            _schema.id = cls._schema_branch_read.id
-            _schema.name = cls._schema_branch_read.name
-            _schema.properties = cls._schema_branch_read.properties
-            _schema.system_data = cls._schema_branch_read.system_data
-            _schema.type = cls._schema_branch_read.type
+    def _build_schema_models_attributes_read(cls, _schema):
+        if cls._schema_models_attributes_read is not None:
+            _schema.name = cls._schema_models_attributes_read.name
+            _schema.value = cls._schema_models_attributes_read.value
             return
 
-        cls._schema_branch_read = _schema_branch_read = AAZObjectType()
+        cls._schema_models_attributes_read = _schema_models_attributes_read = AAZObjectType()
 
-        branch_read = _schema_branch_read
-        branch_read.id = AAZStrType(
+        models_attributes_read = _schema_models_attributes_read
+        models_attributes_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        models_attributes_read.value = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_models_attributes_read.name
+        _schema.value = cls._schema_models_attributes_read.value
+
+    _schema_models_branch_read = None
+
+    @classmethod
+    def _build_schema_models_branch_read(cls, _schema):
+        if cls._schema_models_branch_read is not None:
+            _schema.id = cls._schema_models_branch_read.id
+            _schema.name = cls._schema_models_branch_read.name
+            _schema.properties = cls._schema_models_branch_read.properties
+            _schema.system_data = cls._schema_models_branch_read.system_data
+            _schema.type = cls._schema_models_branch_read.type
+            return
+
+        cls._schema_models_branch_read = _schema_models_branch_read = AAZObjectType()
+
+        models_branch_read = _schema_models_branch_read
+        models_branch_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        branch_read.name = AAZStrType(
+        models_branch_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        branch_read.properties = AAZObjectType()
-        branch_read.system_data = AAZObjectType(
+        models_branch_read.properties = AAZObjectType()
+        models_branch_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        branch_read.type = AAZStrType(
+        models_branch_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_branch_read.properties
+        properties = _schema_models_branch_read.properties
         properties.attributes = AAZListType()
         properties.created_at = AAZStrType(
             serialized_name="createdAt",
@@ -486,14 +508,14 @@ class _UpdateHelper:
         )
         properties.roles = AAZListType()
 
-        attributes = _schema_branch_read.properties.attributes
+        attributes = _schema_models_branch_read.properties.attributes
         attributes.Element = AAZObjectType()
         cls._build_schema_models_attributes_read(attributes.Element)
 
-        databases = _schema_branch_read.properties.databases
+        databases = _schema_models_branch_read.properties.databases
         databases.Element = AAZObjectType()
 
-        _element = _schema_branch_read.properties.databases.Element
+        _element = _schema_models_branch_read.properties.databases.Element
         _element.attributes = AAZListType()
         _element.branch_id = AAZStrType(
             serialized_name="branchId",
@@ -517,14 +539,14 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        attributes = _schema_branch_read.properties.databases.Element.attributes
+        attributes = _schema_models_branch_read.properties.databases.Element.attributes
         attributes.Element = AAZObjectType()
         cls._build_schema_models_attributes_read(attributes.Element)
 
-        endpoints = _schema_branch_read.properties.endpoints
+        endpoints = _schema_models_branch_read.properties.endpoints
         endpoints.Element = AAZObjectType()
 
-        _element = _schema_branch_read.properties.endpoints.Element
+        _element = _schema_models_branch_read.properties.endpoints.Element
         _element.attributes = AAZListType()
         _element.branch_id = AAZStrType(
             serialized_name="branchId",
@@ -551,14 +573,14 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        attributes = _schema_branch_read.properties.endpoints.Element.attributes
+        attributes = _schema_models_branch_read.properties.endpoints.Element.attributes
         attributes.Element = AAZObjectType()
         cls._build_schema_models_attributes_read(attributes.Element)
 
-        roles = _schema_branch_read.properties.roles
+        roles = _schema_models_branch_read.properties.roles
         roles.Element = AAZObjectType()
 
-        _element = _schema_branch_read.properties.roles.Element
+        _element = _schema_models_branch_read.properties.roles.Element
         _element.attributes = AAZListType()
         _element.branch_id = AAZStrType(
             serialized_name="branchId",
@@ -583,14 +605,14 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        attributes = _schema_branch_read.properties.roles.Element.attributes
+        attributes = _schema_models_branch_read.properties.roles.Element.attributes
         attributes.Element = AAZObjectType()
         cls._build_schema_models_attributes_read(attributes.Element)
 
-        permissions = _schema_branch_read.properties.roles.Element.permissions
+        permissions = _schema_models_branch_read.properties.roles.Element.permissions
         permissions.Element = AAZStrType()
 
-        system_data = _schema_branch_read.system_data
+        system_data = _schema_models_branch_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -610,33 +632,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_branch_read.id
-        _schema.name = cls._schema_branch_read.name
-        _schema.properties = cls._schema_branch_read.properties
-        _schema.system_data = cls._schema_branch_read.system_data
-        _schema.type = cls._schema_branch_read.type
-
-    _schema_models_attributes_read = None
-
-    @classmethod
-    def _build_schema_models_attributes_read(cls, _schema):
-        if cls._schema_models_attributes_read is not None:
-            _schema.name = cls._schema_models_attributes_read.name
-            _schema.value = cls._schema_models_attributes_read.value
-            return
-
-        cls._schema_models_attributes_read = _schema_models_attributes_read = AAZObjectType()
-
-        models_attributes_read = _schema_models_attributes_read
-        models_attributes_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        models_attributes_read.value = AAZStrType(
-            flags={"required": True},
-        )
-
-        _schema.name = cls._schema_models_attributes_read.name
-        _schema.value = cls._schema_models_attributes_read.value
+        _schema.id = cls._schema_models_branch_read.id
+        _schema.name = cls._schema_models_branch_read.name
+        _schema.properties = cls._schema_models_branch_read.properties
+        _schema.system_data = cls._schema_models_branch_read.system_data
+        _schema.type = cls._schema_models_branch_read.type
 
 
 __all__ = ["Update"]

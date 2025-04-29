@@ -19,14 +19,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a Neon Postgres Organization
 
-    :example: Delete Neon Postgres Organization
+    :example: Organizations_Delete
         az neon postgres organization delete --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2024-08-01-preview"],
         ]
     }
 
@@ -59,7 +59,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Azure resource group",
+            help="Name of the resource group",
             required=True,
         )
         return cls._args_schema
@@ -150,7 +150,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }
