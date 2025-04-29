@@ -4,12 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 from .aaz.latest.durabletask.retention_policy import Create as _Create
-from azure.cli.core.aaz import AAZStrArg
-import json
-import httpx
-from azure.cli.core.commands.client_factory import get_subscription_id
 from .aaz.latest.durabletask.scheduler import Show
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.aaz import AAZStrArg
 from azure.core.exceptions import HttpResponseError
+import httpx
+
 
 class CreatePolicy(_Create):
     """Create a retention policy for a Durabletask scheduler."""
@@ -109,6 +109,7 @@ def _build_retention_policies(args_dict):
                 })
 
     return retention_policies
+
 
 def list_orchestrations(cmd, resource_group_name, scheduler_name, taskhub_name, max_items=100, start_index=0):
     # Get FQDN of the scheduler
