@@ -2,6 +2,13 @@
 
 Release History
 ===============
+
+1.2.3
+++++++
+* adding fragment support for VN2
+* bugfix for vn2 workload identities
+* no longer encouraged to have multiple images in the same tar file
+
 1.2.2
 ++++++
 * support for pure OCI v1 schema 2 formatted images
