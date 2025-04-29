@@ -1428,18 +1428,18 @@ def load_arguments(self, _):
     # managed namespace
     with self.argument_context("aks namespace") as c:
         c.argument("cluster_name", help="The cluster name.")
-        c.argument(
-            "name",
-            options_list=["--name"],
-            validator=validate_namespace_name,
-            help="The managed namespace name.",
-            )
     
     for scope in [
         "aks namespace add",
         "aks namespace update",
     ]:
         with self.argument_context(scope) as c:
+            c.argument(
+            "name",
+            options_list=["--name"],
+            validator=validate_namespace_name,
+            help="The managed namespace name.",
+            )
             c.argument("tags", tags_type, options_list=["--tags"], help="The tags to set to the managed namespace")
             c.argument("labels", nargs="*", options_list=["--labels"], help="Labels set to the managed namespace")
             c.argument("annotations", nargs="*", options_list=["--annotations"], help="Labels set to the managed namespace")

@@ -316,6 +316,14 @@ def aks_namespace_show(
                    resource_group_name, cluster_name, name)
     return client.get(resource_group_name, cluster_name, name)
 
+def aks_namespace_list(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    cluster_name 
+):
+    return client.list_by_managed_cluster(resource_group_name, cluster_name)
+
 
 def aks_maintenanceconfiguration_list(
     cmd,  # pylint: disable=unused-argument

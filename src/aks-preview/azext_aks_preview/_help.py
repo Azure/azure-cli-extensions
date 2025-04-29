@@ -1783,6 +1783,11 @@ helps['aks namespace show'] = """
     short-summary: show the details of a managed namespace in managed Kubernetes cluster.
 """
 
+helps['aks namespace list'] = """
+    type: command
+    short-summary: List managed namespaces in managed Kubernetes cluster.
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.
