@@ -21,6 +21,7 @@ from azext_confcom.errors import (
 )
 import azext_confcom.config as config
 from azext_confcom.template_util import DockerClient
+from azext_confcom.os_util import write_json_to_file
 
 
 def create_tar_file(image_path: str) -> None:
@@ -571,9 +572,19 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
 
         filename = os.path.join(self.path, "./mariner2.tar")
         create_tar_file(filename)
+        image_mapping = {"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot": filename}
+
+        # check to make sure many:1 mapping doesn't work
+        with self.assertRaises(SystemExit) as exc_info:
+            clean_room_image.populate_policy_content_for_all_images(
+                tar_mapping=filename
+            )
+        self.assertEqual(exc_info.exception.code, 1)
+
         clean_room_image.populate_policy_content_for_all_images(
-            tar_mapping=filename
+            tar_mapping=image_mapping
         )
+
         remove_tar_file(filename)
         regular_image_json = json.loads(
             regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
