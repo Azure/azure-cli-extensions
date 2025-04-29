@@ -25,7 +25,7 @@ class microsoft_apimanagement:
                 # https://learn.microsoft.com/azure/api-management/high-availability#availability-zones
                 zones = resource.get('zones') or []
                 if len(zones) > 1 and resource['sku']['name'] == 'Premium':
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

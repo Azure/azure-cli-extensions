@@ -19,7 +19,7 @@ class microsoft_sql:
             case 'servers/databases':
                 # https://learn.microsoft.com/azure/azure-sql/database/high-availability-sla-local-zone-redundancy#high-availability-through-zone-redundancy
                 if resource['properties']['zoneRedundant']:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

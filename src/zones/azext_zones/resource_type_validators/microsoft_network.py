@@ -19,7 +19,7 @@ class microsoft_network:
             case 'applicationgateways':
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 
@@ -50,7 +50,7 @@ class microsoft_network:
                 if len(zones) > 1:
                     return ZoneRedundancyValidationResult.Yes
                 else:
-                   return ZoneRedundancyValidationResult.No
+                    return ZoneRedundancyValidationResult.No
 
             case 'localnetworkgateways':
                 # Local network gateways depend on the configuration of the VPN

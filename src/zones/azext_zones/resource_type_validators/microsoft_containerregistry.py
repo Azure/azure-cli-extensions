@@ -20,7 +20,7 @@ class microsoft_containerregistry:
                 # Container registries are zone redundant if the setting enabled
                 # https://learn.microsoft.com/azure/container-registry/zone-redundancy
                 if resource['properties']['zoneRedundancy'] == 'Enabled':
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

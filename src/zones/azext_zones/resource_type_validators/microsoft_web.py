@@ -22,8 +22,8 @@ class microsoft_web:
                 zrEnabled = resource['properties'].get('zoneRedundant', False)
                 instanceCount = resource['sku'].get('capacity', 0)
                 if zrEnabled and instanceCount > 1:
-                    return ZoneRedundancyValidationResult.Yes 
-                else: 
+                    return ZoneRedundancyValidationResult.Yes
+                else:
                     return ZoneRedundancyValidationResult.No
 
             case 'sites':

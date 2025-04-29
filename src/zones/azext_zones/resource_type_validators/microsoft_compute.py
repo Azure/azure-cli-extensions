@@ -19,7 +19,7 @@ class microsoft_compute:
             case 'disks':
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 
@@ -27,7 +27,7 @@ class microsoft_compute:
                 # VMSS is ZR if deployed to more than one zone
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 
@@ -35,7 +35,7 @@ class microsoft_compute:
                 # VM is ZR if deployed to more than one zone
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

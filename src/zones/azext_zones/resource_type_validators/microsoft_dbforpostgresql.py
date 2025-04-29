@@ -17,11 +17,11 @@ class microsoft_dbforpostgresql:
 
         match resourceSubType:
             case 'flexibleservers':
-                
-                    if resource['properties'].get('highAvailability', {}).get(
+
+                if resource['properties'].get('highAvailability', {}).get(
                         'mode', {}) == 'ZoneRedundant':
-                        return ZoneRedundancyValidationResult.Yes  
-                    else:
-                        return ZoneRedundancyValidationResult.No
+                    return ZoneRedundancyValidationResult.Yes
+                else:
+                    return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

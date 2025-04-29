@@ -21,14 +21,14 @@ class microsoft_cache:
                 # https://learn.microsoft.com/azure/azure-cache-for-redis/cache-high-availability#zone-redundancy
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 
             case 'redisenterprise':
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

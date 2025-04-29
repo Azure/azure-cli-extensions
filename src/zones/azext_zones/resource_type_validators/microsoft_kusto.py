@@ -22,7 +22,7 @@ class microsoft_kusto:
                 # https://learn.microsoft.com/azure/aks/availability-zones-overview
                 zones = resource.get('zones') or []
                 if len(zones) > 1:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

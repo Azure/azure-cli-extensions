@@ -21,7 +21,7 @@ class microsoft_documentdb:
                 # CosmosDB databases are zone redundant if then have the
                 # setting enabled on the region
                 if resource['properties']['locations'][0]['isZoneRedundant']:
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 

@@ -20,7 +20,7 @@ class microsoft_storage:
                 # Storage accounts are zone redundant if they are in the ZRS
                 # SKU
                 if resource['sku']['name'] == 'Standard_ZRS':
-                    return ZoneRedundancyValidationResult.Yes 
+                    return ZoneRedundancyValidationResult.Yes
                 else:
                     return ZoneRedundancyValidationResult.No
 
