@@ -28,4 +28,17 @@ class microsoft_sql:
                 # above
                 return ZoneRedundancyValidationResult.Dependent
 
+            case 'managedinstances':
+                # SQL MI can be zone redundant if this has been enabled on the resource
+                # https://learn.microsoft.com/azure/azure-sql/managed-instance/high-availability-sla-local-zone-redundancy?view=azuresql#zone-redundant-availability
+                if resource['properties'].get('zoneRedundant', {}) is True:
+                    return ZoneRedundancyValidationResult.Yes
+                else:
+                    return ZoneRedundancyValidationResult.No
+
+            case 'instancepools':
+                # Instance pools depend on the managed instances within them to
+                # be zone redundant
+                return ZoneRedundancyValidationResult.Dependent
+
         return ZoneRedundancyValidationResult.Unknown

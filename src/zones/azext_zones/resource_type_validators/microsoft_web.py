@@ -31,4 +31,15 @@ class microsoft_web:
                 # redundant App Service Plan
                 return ZoneRedundancyValidationResult.Dependent
 
+            case 'hostingenvironments':
+                zrStatus = resource['properties'].get('zoneRedundant', False)
+                if zrStatus:
+                    return ZoneRedundancyValidationResult.Yes
+                else:
+                    return ZoneRedundancyValidationResult.No
+
+            case 'staticsites':
+                # Static Web Apps are always zone redundant
+                return ZoneRedundancyValidationResult.Always
+
         return ZoneRedundancyValidationResult.Unknown
