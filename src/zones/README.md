@@ -13,7 +13,7 @@ For each resource, one of the following statuses will be returned:
     Dependent           # Resource is zone redundant if parent or related resource is zone redundant
     NoZonesInRegion     # The region the resource is deployed in does not have Availability Zones
 
-    > **Note**  
+    > [!NOTE]  
     > This extension is in active development. While an effort has been made to include the most common resource types and their zone redundancy configuration, there are still plenty of resource types missing. More will be added in future releases. In the meantime, if you need specific resources added or have found errors, please raise a Github issue.
 
 ## When should you use this?
