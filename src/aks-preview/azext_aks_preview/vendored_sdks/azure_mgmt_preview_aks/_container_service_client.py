@@ -9,19 +9,17 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional, TYPE_CHECKING, cast
+from typing import Any, Optional, TYPE_CHECKING
 from typing_extensions import Self
 
 from azure.core.pipeline import policies
-from azure.core.settings import settings
 from azure.mgmt.core import ARMPipelineClient
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
-from azure.mgmt.core.tools import get_arm_endpoints
 from azure.profiles import KnownProfiles, ProfileDefinition
 from azure.profiles.multiapiclient import MultiApiClientMixin
 
 from ._configuration import ContainerServiceClientConfiguration
-from ._utils.serialization import Deserializer, Serializer
+from ._serialization import Deserializer, Serializer
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -74,18 +72,13 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
         credential: "TokenCredential",
         subscription_id: str,
         api_version: Optional[str]=None,
-        base_url: Optional[str] = None,
+        base_url: str = "https://management.azure.com",
         profile: KnownProfiles=KnownProfiles.default,
         **kwargs: Any
     ):
         if api_version:
             kwargs.setdefault('api_version', api_version)
-        _cloud = kwargs.pop("cloud_setting", None) or settings.current.azure_cloud  # type: ignore
-        _endpoints = get_arm_endpoints(_cloud)
-        if not base_url:
-            base_url = _endpoints["resource_manager"]
-        credential_scopes = kwargs.pop("credential_scopes", _endpoints["credential_scopes"])
-        self._config = ContainerServiceClientConfiguration(credential, subscription_id, credential_scopes=credential_scopes, **kwargs)
+        self._config = ContainerServiceClientConfiguration(credential, subscription_id, **kwargs)
         _policies = kwargs.pop("policies", None)
         if _policies is None:
             _policies = [
@@ -104,7 +97,7 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, base_url), policies=_policies, **kwargs)
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=base_url, policies=_policies, **kwargs)
         super(ContainerServiceClient, self).__init__(
             api_version=api_version,
             profile=profile

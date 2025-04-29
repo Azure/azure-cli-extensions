@@ -27,7 +27,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ...._serialization import Deserializer, Serializer
 from ...operations._container_service_operations import build_list_node_image_versions_request
 from .._configuration import ContainerServiceClientConfiguration
 

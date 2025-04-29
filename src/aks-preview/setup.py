@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "14.0.0b4"
+VERSION = "14.0.0b5"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -23,9 +23,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = [
-    "azure-mgmt-core>=1.5.0",
-]
+DEPENDENCIES = []
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
