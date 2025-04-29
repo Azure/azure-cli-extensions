@@ -21,7 +21,9 @@ class microsoft_search:
                 # https://learn.microsoft.com/azure/search/search-reliability#availability-zone-support
                 sku = resource['sku']['name'] or ''
                 replicaCount = resource['properties'].get('replicaCount', 0)
-                return ZoneRedundancyValidationResult.Yes if sku not in [
-                    'Free', 'Basic'] and replicaCount > 1 else ZoneRedundancyValidationResult.No
+                if sku not in ['Free', 'Basic'] and replicaCount > 1:
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

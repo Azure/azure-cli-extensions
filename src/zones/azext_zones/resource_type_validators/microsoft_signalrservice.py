@@ -19,7 +19,9 @@ class microsoft_signalrservice:
             case 'signalr':
                 # SignalR is zone redundant by default on premium tiers
                 # https://learn.microsoft.com/azure/azure-signalr/availability-zones
-                return ZoneRedundancyValidationResult.Yes if resource['sku'][
-                    'name'] == 'Premium' else ZoneRedundancyValidationResult.No
+                if resource['sku']['name'] == 'Premium':
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

@@ -21,7 +21,9 @@ class microsoft_kusto:
                 # Zone Redundancy on AKS involves a lot of configuration steps, testing is required beyond this script.
                 # https://learn.microsoft.com/azure/aks/availability-zones-overview
                 zones = resource.get('zones') or []
-                return ZoneRedundancyValidationResult.Yes if len(
-                    zones) > 1 else ZoneRedundancyValidationResult.No
+                if len(zones) > 1:
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

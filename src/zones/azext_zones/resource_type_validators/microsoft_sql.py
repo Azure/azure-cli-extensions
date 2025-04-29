@@ -18,8 +18,10 @@ class microsoft_sql:
         match resourceSubType:
             case 'servers/databases':
                 # https://learn.microsoft.com/azure/azure-sql/database/high-availability-sla-local-zone-redundancy#high-availability-through-zone-redundancy
-                return ZoneRedundancyValidationResult.Yes if resource['properties'][
-                    'zoneRedundant'] else ZoneRedundancyValidationResult.No
+                if resource['properties']['zoneRedundant']:
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
             case 'servers':
                 # Zone Redundancy for SQL is set at the database level, see

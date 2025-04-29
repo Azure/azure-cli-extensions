@@ -16,7 +16,7 @@ class microsoft_containerinstance:
             resourceSubType)
 
         match resourceSubType:
-            case 'containerGroups':
+            case 'containergroups':
                 # Container groups of container instances are zonal resources, so they are never zone redundant
                 # https://learn.microsoft.com/azure/reliability/reliability-containers#availability-zone-support
                 return ZoneRedundancyValidationResult.Never

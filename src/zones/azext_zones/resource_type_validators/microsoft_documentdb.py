@@ -20,9 +20,10 @@ class microsoft_documentdb:
                 # https://learn.microsoft.com/en-us/azure/reliability/reliability-cosmos-db-nosql
                 # CosmosDB databases are zone redundant if then have the
                 # setting enabled on the region
-                return ZoneRedundancyValidationResult.Yes if \
-                    resource['properties']['locations'][0]['isZoneRedundant'] \
-                    else ZoneRedundancyValidationResult.No
+                if resource['properties']['locations'][0]['isZoneRedundant']:
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
             case 'mongoClusters':
                 # https://learn.microsoft.com/azure/reliability/reliability-cosmos-mongodb#availability-zone-support

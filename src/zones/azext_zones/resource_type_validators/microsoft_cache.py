@@ -20,12 +20,16 @@ class microsoft_cache:
                 # Redis caches are zone redundant if they are premium SKU and have more than one zone set
                 # https://learn.microsoft.com/azure/azure-cache-for-redis/cache-high-availability#zone-redundancy
                 zones = resource.get('zones') or []
-                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 \
-                    else ZoneRedundancyValidationResult.No
+                if len(zones) > 1:
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
             case 'redisenterprise':
                 zones = resource.get('zones') or []
-                return ZoneRedundancyValidationResult.Yes if len(zones) > 1 \
-                    else ZoneRedundancyValidationResult.No
+                if len(zones) > 1:
+                    return ZoneRedundancyValidationResult.Yes 
+                else:
+                    return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

@@ -24,7 +24,9 @@ class microsoft_app:
             case 'managedenvironments':
                 # Managed Environments are zone redundant if the zoneRedundant property is set to true
                 # https://learn.microsoft.com/azure/reliability/reliability-azure-container-apps#availability-zone-support
-                return ZoneRedundancyValidationResult.Yes if resource['properties'].get(
-                    'zoneRedundant', {}) else ZoneRedundancyValidationResult.No
+                if resource['properties'].get('zoneRedundant', {}) is True:
+                    return ZoneRedundancyValidationResult.Yes
+                else:
+                    return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

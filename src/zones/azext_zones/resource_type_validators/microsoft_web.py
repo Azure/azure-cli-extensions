@@ -21,7 +21,10 @@ class microsoft_web:
                 # https://learn.microsoft.com/azure/reliability/reliability-app-service?pivots=free-shared-basic#availability-zone-support
                 zrEnabled = resource['properties'].get('zoneRedundant', False)
                 instanceCount = resource['sku'].get('capacity', 0)
-                return ZoneRedundancyValidationResult.Yes if zrEnabled and instanceCount > 1 else ZoneRedundancyValidationResult.No
+                if zrEnabled and instanceCount > 1:
+                    return ZoneRedundancyValidationResult.Yes 
+                else: 
+                    return ZoneRedundancyValidationResult.No
 
             case 'sites':
                 # Web Apps are zone redundant if they are hosted on a zone
