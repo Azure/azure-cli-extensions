@@ -9,3 +9,26 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['durabletask orchestration'] = '''
+    type: group
+    short-summary: Commands to manage Durabletask orchestrations.
+'''
+
+helps['durabletask orchestration list'] = '''
+    type: command
+    short-summary: "Lists orchestration details associated with a particular taskhub."
+    examples:
+      - name: Lists 20 orchestrations from a taskhub starting from the 10th orchestration.
+        text: |
+          az durabletask orchestration list -g example_resource_group -s example_scheduler_name -t example_taskhub_name -m 20 --start-index 10
+'''
+
+helps['durabletask orchestration show'] = '''
+    type: command
+    short-summary: "Show details of a specific orchestration."
+    examples:
+      - name: Show details of an orchestration with the ID 4d6488acb6a34c209e6b3423572ae710.
+        text: |
+          az durabletask orchestration show -g "example_resource_group" -s "example_scheduler_name" -t "example_taskhub_name" --id 4d6488acb6a34c209e6b3423572ae710
+'''

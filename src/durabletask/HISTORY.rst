@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.0b5
++++++
+* Adding orchestration command to list and show orchestrations.
 
 1.0.0b4
 +++++
