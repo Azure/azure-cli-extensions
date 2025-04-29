@@ -13,7 +13,6 @@ from azure.cli.core.azclierror import ArgumentUsageError
 
 
 class AddConfigurationSettings(argparse._AppendAction):
-
     def __call__(self, parser, namespace, values, option_string=None):
         settings = {}
         for item in values:
