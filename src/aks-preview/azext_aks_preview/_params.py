@@ -1456,6 +1456,7 @@ def load_arguments(self, _):
     
     for scope in [
         "aks namespace show",
+        "aks namespace delete",
     ]:
         with self.argument_context(scope) as c:
             c.argument(

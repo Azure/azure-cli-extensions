@@ -1788,6 +1788,11 @@ helps['aks namespace list'] = """
     short-summary: List managed namespaces in managed Kubernetes cluster.
 """
 
+helps['aks namespace delete'] = """
+    type: command
+    short-summary: Delete a managed namespace in managed Kubernetes cluster.
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.
