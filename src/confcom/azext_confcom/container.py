@@ -133,6 +133,19 @@ def extract_working_dir(container_json: Any) -> str:
     return workingDir
 
 
+def extract_entrypoint(container_json: Any) -> List[str]:
+    # parse entrypoint. can either be a list of strings or None in the case of non-VN2 policy generation
+    entrypoint = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_TEMPLATE_ENTRYPOINT
+    )
+    if not isinstance(entrypoint, list) and entrypoint is not None:
+        eprint(
+            f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+            + f'["{config.ACI_FIELD_TEMPLATE_ENTRYPOINT}"] must be list of Strings.'
+        )
+    return entrypoint
+
+
 def extract_command(container_json: Any) -> List[str]:
     # parse command
     command = case_insensitive_dict_get(
@@ -512,7 +525,7 @@ def extract_get_signals(container_json: Any) -> List:
 
 
 class ContainerImage:
-    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes, too-many-public-methods
 
     @classmethod
     def from_json(
@@ -523,6 +536,7 @@ class ContainerImage:
         id_val = extract_id(container_json)
         container_name = extract_container_name(container_json)
         environment_rules = extract_env_rules(container_json=container_json)
+        entrypoint = extract_entrypoint(container_json)
         command = extract_command(container_json)
         working_dir = extract_working_dir(container_json)
         mounts = extract_mounts(container_json)
@@ -543,6 +557,7 @@ class ContainerImage:
             containerImage=container_image,
             containerName=container_name,
             environmentRules=environment_rules,
+            entrypoint=entrypoint,
             command=command,
             workingDir=working_dir,
             mounts=mounts,
@@ -568,6 +583,7 @@ class ContainerImage:
         allow_elevated: bool,
         id_val: str,
         extraEnvironmentRules: Dict,
+        entrypoint: List[str] = None,
         capabilities: Dict = copy.deepcopy(_CAPABILITIES),
         user: Dict = copy.deepcopy(_DEFAULT_USER),
         seccomp_profile_sha256: str = "",
@@ -575,7 +591,7 @@ class ContainerImage:
         allowPrivilegeEscalation: bool = True,
         execProcesses: List = None,
         signals: List = None,
-        containerName: str = ""
+        containerName: str = "",
     ) -> None:
         self.containerImage = containerImage
         self.containerName = containerName
@@ -584,6 +600,7 @@ class ContainerImage:
         else:
             self.base, self.tag = containerImage, "latest"
         self._environmentRules = environmentRules
+        self._entrypoint = entrypoint
         self._command = command
         self._workingDir = workingDir
         self._layers = []
@@ -621,6 +638,11 @@ class ContainerImage:
     def set_working_dir(self, workingDir: str) -> None:
         self._workingDir = workingDir
 
+    # note that entrypoint is only used for VN2 containers because of kubernetes discrepancy in naming
+    # entrypoint -> command, args -> command
+    def get_entrypoint(self) -> List[str]:
+        return self._entrypoint
+
     def get_command(self) -> List[str]:
         return self._command
 
@@ -644,6 +666,9 @@ class ContainerImage:
 
     def get_mounts(self) -> List:
         return self._mounts
+
+    def set_mounts(self, mounts) -> None:
+        self._mounts = mounts
 
     def get_seccomp_profile_sha256(self) -> str:
         return self._seccomp_profile_sha256
@@ -774,10 +799,11 @@ class UserContainerImage(ContainerImage):
             image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
 
         # Start with the customer environment rules
-        env_rules = _INJECTED_CUSTOMER_ENV_RULES
+        env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES
+            image.set_mounts(image.get_mounts() + copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE))
 
         image.set_extra_environment_rules(env_rules)
         return image
