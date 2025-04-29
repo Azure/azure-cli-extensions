@@ -9,5 +9,5 @@ from azext_zones._client_factory import cf_zones
 
 def load_command_table(self, _):
 
-    with self.command_group('zones', client_factory=cf_zones, is_experimental=True) as g:
+    with self.command_group('zones', client_factory=cf_zones, is_preview=True) as g:
         g.custom_command('validate', 'validate_zones')
