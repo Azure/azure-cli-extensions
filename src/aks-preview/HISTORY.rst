@@ -14,7 +14,7 @@ Pending
 
 14.0.0b5
 ++++++++
-* Vendor new SDK and bump API version to 2025-02-02-preview.
+* Re-generate the SDK for API version 2025-02-02-preview with @autorest/python@6.32.3 to fix `\#31345 <https://github.com/Azure/azure-cli/issues/31345>`_.
 
 14.0.0b4
 ++++++++
