@@ -13,6 +13,9 @@ For each resource, one of the following statuses will be returned:
     Dependent           # Resource is zone redundant if parent or related resource is zone redundant
     NoZonesInRegion     # The region the resource is deployed in does not have Availability Zones
 
+    > **Note**  
+    > This extension is in active development. While an effort has been made to include the most common resource types and their zone redundancy configuration, there are still plenty of resource types missing. More will be added in future releases. In the meantime, if you need specific resources added or have found errors, please raise a Github issue.
+
 ## When should you use this?
 
 In order to build a fully zone redundant application, you need to satisfy three criteria:
@@ -61,6 +64,6 @@ az zones validate --omit-dependent-resources
 
 - The _zones_ CLI extension can only help with resources you can view, i.e. for which you have read access. You must ensure that all relevant resources are indeed listed in the results.
 
-- While this extension is a useful tool in validating zone redundancy on resources, you are still responsible for reviewing the [Reliability Guides](https://learn.microsoft.com/azure/reliability/overview-reliability-guidance) for all the services you use in your applications, as these may contain important information regarding operation in high availability scenarios.
+- While this extension is a useful tool in validating zone redundancy on resources, you are still responsible for reviewing the [Reliability Guides](https://learn.microsoft.com/azure/reliability/overview-reliability-guidance) for all the services you use in your applications, as these may contain important information regarding operation in high availability scenarios. Ultimately, the product reliability guides are the authoritative source for zone redundancy guidance. 
 
 - Zonal services are considered to be Zone Redundant if they are deployed to at least 2 zones. 

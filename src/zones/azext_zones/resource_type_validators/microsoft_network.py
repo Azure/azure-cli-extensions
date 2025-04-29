@@ -65,7 +65,7 @@ class microsoft_network:
             case 'networksecuritygroups':
                 return ZoneRedundancyValidationResult.Always
 
-            case 'networkwatchers':
+            case 'networkwatchers' | 'networkwatchers/flowlogs' | 'networkwatchers/packetcaptures':
                 # Network watchers are zone redundant by default
                 return ZoneRedundancyValidationResult.Always
 
