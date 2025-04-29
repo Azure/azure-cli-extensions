@@ -11,7 +11,7 @@ from ._locationDataHelper import LocationDataHelper
 __logger = get_logger(__name__)
 
 
-def validate_zones(client, cmd, omit_dependent_resources, resource_group_names):
+def validate_zones(client, cmd, omit_dependent, resource_group_names):
     # Build the ARG query to retrieve resources
     query = build_arg_query(resource_group_names, None)
     __logger.debug("Built ARG Query: %s", query)
@@ -20,12 +20,12 @@ def validate_zones(client, cmd, omit_dependent_resources, resource_group_names):
     resources = execute_arg_query(client, query, None, 0, None, None, False, None)
 
     # Run validation on the retrieved resources
-    validation_results = validate_resources(cmd, resources, omit_dependent_resources)
+    validation_results = validate_resources(cmd, resources, omit_dependent)
 
     return validation_results
 
 
-def validate_resources(cmd, resources, omit_dependent_resources=False):
+def validate_resources(cmd, resources, omit_dependent=False):
     resource_results = []
     if resources['count'] == 0:
         errMsg = ("No resources found, validation could not be run.")
@@ -67,7 +67,7 @@ def validate_resources(cmd, resources, omit_dependent_resources=False):
                                     Please check the resource manually.", resource.get('name', ''), e)
                     zrStatus = ZoneRedundancyValidationResult.Unknown
 
-        if zrStatus is not ZoneRedundancyValidationResult.Dependent or not omit_dependent_resources:
+        if zrStatus is not ZoneRedundancyValidationResult.Dependent or not omit_dependent:
             resource_result = {}
             resource_result['name'] = resource['name']
             resource_result['location'] = resource['location']
