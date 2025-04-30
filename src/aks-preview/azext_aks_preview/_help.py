@@ -3569,6 +3569,7 @@ helps['aks extension type version show'] = """
     - name: --version
       type: string
       short-summary: Specify the extension version to show to the user
+  examples:
     - name: Show properties for a K8s Extension Type version for an existing cluster
       text: az aks extension type version show --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0

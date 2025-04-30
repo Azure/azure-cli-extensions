@@ -3894,6 +3894,7 @@ def list_k8s_extension_types(
             result = k8s_extension_custom_mod.list_extension_types_by_location(
                 client,
                 location,
+                cluster_type="managedClusters",
             )
             return result
         if cluster_name and resource_group_name:
@@ -3930,6 +3931,7 @@ def show_k8s_extension_type(
                 client,
                 location,
                 extension_type=extension_type,
+                cluster_type="managedClusters",
             )
             return result
         if cluster_name and resource_group_name:
