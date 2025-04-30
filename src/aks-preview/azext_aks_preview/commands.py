@@ -21,6 +21,7 @@ from azext_aks_preview._client_factory import (
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
     aks_addon_list_table_format,
+    aks_namespace_list_table_format,
     aks_addon_show_table_format,
     aks_agentpool_list_table_format,
     aks_agentpool_show_table_format,
@@ -244,7 +245,7 @@ def load_command_table(self, _):
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
         g.custom_show_command("show", "aks_namespace_show")
-        g.custom_command("list", "aks_namespace_list")
+        g.custom_command("list", "aks_namespace_list", table_transformer=aks_namespace_list_table_format)
         g.custom_command("delete", "aks_namespace_delete", supports_no_wait=True)
 
     # AKS agent pool commands
