@@ -903,7 +903,6 @@ def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
     resource_group_name = namespace.resource_group_name
     cluster_name = namespace.cluster_name
     if location and resource_group_name and cluster_name:
-        print(location)
         raise MutuallyExclusiveArgumentError(
             "Cannot specify --location and --resource-group and --cluster at the same time."
         )
