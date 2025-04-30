@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "neon",
+    "neon postgres neon-role",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Neon Postgres
+    """Manage Neon Role
     """
     pass
 
