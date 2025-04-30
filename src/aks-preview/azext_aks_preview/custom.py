@@ -26,10 +26,6 @@ from azext_aks_preview._consts import (
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
     CONST_CONFCOM_ADDON_NAME,
-    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
-    CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
-    CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
-    CONST_NAMESPACE_DELETE_POLICY_KEEP,
     CONST_INGRESS_APPGW_ADDON_NAME,
     CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
     CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
@@ -233,6 +229,7 @@ def aks_browse(
         CUSTOM_MGMT_AKS_PREVIEW,
     )
 
+
 # pylint: disable=unused-argument
 def aks_namespace_add(
     cmd,
@@ -264,11 +261,12 @@ def aks_namespace_add(
         raise CLIError(
             f"Namespace '{name}' already exists. Please use 'az aks namespace update' to update it."
         )
-    
+
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     headers = get_aks_custom_headers(aks_custom_headers)
     return aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait)
+
 
 # pylint: disable=unused-argument
 def aks_namespace_update(
@@ -298,12 +296,13 @@ def aks_namespace_update(
             f"Namespace '{name}' doesn't exist."
             "Please use 'aks namespace list' to get current list of managed namespaces"
         )
-    
+
     if existedNamespace:
-        #DO NOT MOVE: get all the original parameters and save them as a dictionary
+        # DO NOT MOVE: get all the original parameters and save them as a dictionary
         raw_parameters = locals()
         headers = get_aks_custom_headers(aks_custom_headers)
         return aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait)
+
 
 def aks_namespace_show(
     cmd,  # pylint: disable=unused-argument
@@ -316,13 +315,15 @@ def aks_namespace_show(
                    resource_group_name, cluster_name, name)
     return client.get(resource_group_name, cluster_name, name)
 
+
 def aks_namespace_list(
     cmd,  # pylint: disable=unused-argument
     client,
     resource_group_name,
-    cluster_name 
+    cluster_name
 ):
     return client.list_by_managed_cluster(resource_group_name, cluster_name)
+
 
 def aks_namespace_delete(
     cmd,  # pylint: disable=unused-argument
@@ -352,6 +353,7 @@ def aks_namespace_delete(
         cluster_name,
         name,
     )
+
 
 def aks_namespace_get_credentials(
     cmd,  # pylint: disable=unused-argument
@@ -391,6 +393,7 @@ def aks_namespace_get_credentials(
             path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError) as exc:
         raise CLIError("Fail to find kubeconfig file.") from exc
+
 
 def aks_maintenanceconfiguration_list(
     cmd,  # pylint: disable=unused-argument

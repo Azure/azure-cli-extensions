@@ -43,7 +43,7 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
-    CONST_NAMESPACE_ADOPTION_POLICY_NEVER, 
+    CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
     CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
     CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
     CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
@@ -1424,25 +1424,30 @@ def load_arguments(self, _):
             help="Node pool name, upto 12 alphanumeric characters",
             validator=validate_nodepool_name,
         )
-    
+
     # managed namespace
     with self.argument_context("aks namespace") as c:
         c.argument("cluster_name", help="The cluster name.")
-    
+
     for scope in [
         "aks namespace add",
         "aks namespace update",
     ]:
         with self.argument_context(scope) as c:
             c.argument(
-            "name",
-            options_list=["--name"],
-            validator=validate_namespace_name,
-            help="The managed namespace name.",
+                "name",
+                options_list=["--name"],
+                validator=validate_namespace_name,
+                help="The managed namespace name.",
             )
             c.argument("tags", tags_type, options_list=["--tags"], help="The tags to set to the managed namespace")
             c.argument("labels", nargs="*", options_list=["--labels"], help="Labels set to the managed namespace")
-            c.argument("annotations", nargs="*", options_list=["--annotations"], help="Labels set to the managed namespace")
+            c.argument(
+                "annotations",
+                nargs="*",
+                options_list=["--annotations"],
+                help="Annotations set to the managed namespace",
+            )
             c.argument("cpu_request", type=str, options_list=["--cpu-request"], validator=validate_resource_quota)
             c.argument("cpu_limit", type=str, options_list=["--cpu-limit"], validator=validate_resource_quota)
             c.argument("memory_request", type=str, options_list=["--memory-request"], validator=validate_resource_quota)
@@ -1453,7 +1458,7 @@ def load_arguments(self, _):
             c.argument("delete_policy", options_list=["--delete-policy"], arg_type=get_enum_type(delete_policy))
             c.argument("aks_custom_headers", options_list=["--aks-custom-headers"])
             c.argument("no_wait", help="Do not wait for the long-running operation to finish")
-    
+
     for scope in [
         "aks namespace show",
         "aks namespace delete",
@@ -1468,11 +1473,11 @@ def load_arguments(self, _):
 
     with self.argument_context("aks namespace get-credentials") as c:
         c.argument(
-                "name",
-                options_list=["--name"],
-                validator=validate_namespace_name,
-                help="The managed namespace name.",
-            )
+            "name",
+            options_list=["--name"],
+            validator=validate_namespace_name,
+            help="The managed namespace name.",
+        )
         c.argument(
             "context_name",
             options_list=["--context"],

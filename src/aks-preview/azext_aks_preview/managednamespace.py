@@ -26,6 +26,7 @@ from azext_aks_preview._consts import (
 
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
+
 def aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
@@ -42,6 +43,7 @@ def aks_managed_namespace_add(cmd, client, raw_parameters, headers, no_wait):
         headers=headers,
     )
 
+
 def constructNamespace(cmd, raw_parameters, namespace_name):
     tags = raw_parameters.get("tags", {})
     labels_raw = raw_parameters.get("labels")
@@ -51,30 +53,31 @@ def constructNamespace(cmd, raw_parameters, namespace_name):
 
     NamespaceProperties = cmd.get_models(
         "NamespaceProperties",
-        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group = "namespaces"
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
     )
-    
+
     namespace_properties = NamespaceProperties(
-        labels = labels,
-        annotations = annotations,
-        default_resource_quota = setResourceQuota(cmd, raw_parameters),
-        default_network_policy = setNetworkPolicyRule(cmd, raw_parameters),
-        adoption_policy = setAdoptionPolicy(cmd, raw_parameters),
-        delete_policy = setDeletePolicy(cmd, raw_parameters)
+        labels=labels,
+        annotations=annotations,
+        default_resource_quota=setResourceQuota(cmd, raw_parameters),
+        default_network_policy=setNetworkPolicyRule(cmd, raw_parameters),
+        adoption_policy=setAdoptionPolicy(raw_parameters),
+        delete_policy=setDeletePolicy(raw_parameters)
     )
 
     Namespace = cmd.get_models(
         "Namespace",
-        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group = "namespaces"
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
     )
-    
+
     namespace_config = Namespace()
     namespace_config.name = namespace_name
     namespace_config.tags = tags
     namespace_config.properties = namespace_properties
     return namespace_config
+
 
 def setResourceQuota(cmd, raw_parameters):
     cpu_request = raw_parameters.get("cpu_request")
@@ -85,26 +88,27 @@ def setResourceQuota(cmd, raw_parameters):
     if any(param is None for param in [cpu_request, cpu_limit, memory_request, memory_limit]):
         raise RequiredArgumentMissingError(
             "Please specify --cpu-request, --cpu-limit, --memory-request, and --memory-limit."
-    )
-    
+        )
+
     ResourceQuota = cmd.get_models(
         "ResourceQuota",
-        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group = "namespaces"
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
     )
 
     rq = ResourceQuota(
-        cpu_request = cpu_request,
-        cpu_limit = cpu_limit,
-        memory_request = memory_request,
-        memory_limit = memory_limit
+        cpu_request=cpu_request,
+        cpu_limit=cpu_limit,
+        memory_request=memory_request,
+        memory_limit=memory_limit
     )
-    
+
     return rq
+
 
 def setNetworkPolicyRule(cmd, raw_parameters):
     ingress_rule = raw_parameters.get("ingress_rule") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE
-    egress_rule = raw_parameters.get("egress_rule") or  CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
+    egress_rule = raw_parameters.get("egress_rule") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
 
     valid_network_policy_rules = {
         CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
@@ -117,7 +121,7 @@ def setNetworkPolicyRule(cmd, raw_parameters):
             f"Invalid ingress_rule '{ingress_rule}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
-    
+
     if egress_rule not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
             f"Invalid egress_rule '{egress_rule}'. Must be one of: "
@@ -131,15 +135,16 @@ def setNetworkPolicyRule(cmd, raw_parameters):
     )
 
     np = NetworkPolicies(
-        ingress = ingress_rule,
-        egress = egress_rule
+        ingress=ingress_rule,
+        egress=egress_rule
     )
-    
+
     return np
 
-def setAdoptionPolicy(cmd, raw_parameters):
+
+def setAdoptionPolicy(raw_parameters):
     adoption_policy = raw_parameters.get("adoption_policy") or CONST_NAMESPACE_ADOPTION_POLICY_NEVER
-    
+
     valid_adoption_policy = {
         CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
         CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
@@ -151,12 +156,13 @@ def setAdoptionPolicy(cmd, raw_parameters):
             f"Invalid adoption policy '{adoption_policy}'. Must be one of: "
             f"{', '.join(valid_adoption_policy)}"
         )
-    
+
     return adoption_policy
 
-def setDeletePolicy(cmd, raw_parameters):
+
+def setDeletePolicy(raw_parameters):
     delete_policy = raw_parameters.get("delete_policy") or CONST_NAMESPACE_DELETE_POLICY_KEEP
-    
+
     valid_delete_policy = {
         CONST_NAMESPACE_DELETE_POLICY_KEEP,
         CONST_NAMESPACE_DELETE_POLICY_DELETE
@@ -167,8 +173,9 @@ def setDeletePolicy(cmd, raw_parameters):
             f"Invalid delete policy '{delete_policy}'. Must be one of: "
             f"{', '.join(valid_delete_policy)}"
         )
-    
+
     return delete_policy
+
 
 def parse_key_value_list(pairs):
     result = {}
@@ -180,6 +187,7 @@ def parse_key_value_list(pairs):
         key, value = pair.split("=", 1)
         result[key.strip()] = value.strip()
     return result
+
 
 def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
@@ -197,6 +205,7 @@ def aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNa
         headers=headers,
     )
 
+
 def updateNamespace(cmd, raw_parameters, existedNamespace):
     tags = raw_parameters.get("tags", {})
     labels_raw = raw_parameters.get("labels")
@@ -206,30 +215,31 @@ def updateNamespace(cmd, raw_parameters, existedNamespace):
 
     NamespaceProperties = cmd.get_models(
         "NamespaceProperties",
-        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group = "namespaces"
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
     )
-    
+
     namespace_properties = NamespaceProperties(
-        labels = labels,
-        annotations = annotations,
-        default_resource_quota = updateResourceQuota(cmd, raw_parameters, existedNamespace),
-        default_network_policy = updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace),
-        adoption_policy = updateAdoptionPolicy(cmd, raw_parameters, existedNamespace),
-        delete_policy = updateDeletePolicy(cmd, raw_parameters, existedNamespace)
+        labels=labels,
+        annotations=annotations,
+        default_resource_quota=updateResourceQuota(cmd, raw_parameters, existedNamespace),
+        default_network_policy=updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace),
+        adoption_policy=updateAdoptionPolicy(raw_parameters, existedNamespace),
+        delete_policy=updateDeletePolicy(raw_parameters, existedNamespace)
     )
 
     Namespace = cmd.get_models(
         "Namespace",
-        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group = "namespaces"
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
     )
-    
+
     namespace_config = Namespace()
     namespace_config.name = existedNamespace.name
     namespace_config.tags = tags
     namespace_config.properties = namespace_properties
     return namespace_config
+
 
 def updateResourceQuota(cmd, raw_parameters, existedNamespace):
     cpu_request = raw_parameters.get("cpu_request")
@@ -239,30 +249,31 @@ def updateResourceQuota(cmd, raw_parameters, existedNamespace):
 
     if cpu_request is None:
         cpu_request = existedNamespace.properties.default_resource_quota.cpu_request
-    
+
     if cpu_limit is None:
         cpu_limit = existedNamespace.properties.default_resource_quota.cpu_limit
 
     if memory_request is None:
         memory_request = existedNamespace.properties.default_resource_quota.memory_request
-    
+
     if memory_limit is None:
         memory_limit = existedNamespace.properties.default_resource_quota.memory_limit
-    
+
     ResourceQuota = cmd.get_models(
         "ResourceQuota",
-        resource_type = CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group = "namespaces"
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="namespaces"
     )
 
     rq = ResourceQuota(
-        cpu_request = cpu_request,
-        cpu_limit = cpu_limit,
-        memory_request = memory_request,
-        memory_limit = memory_limit
+        cpu_request=cpu_request,
+        cpu_limit=cpu_limit,
+        memory_request=memory_request,
+        memory_limit=memory_limit
     )
-    
+
     return rq
+
 
 def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
     ingress_rule = raw_parameters.get("ingress_rule")
@@ -279,16 +290,16 @@ def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
             f"Invalid ingress_rule '{ingress_rule}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
-    
+
     if egress_rule is not None and egress_rule not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
             f"Invalid egress_rule '{egress_rule}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
-    
+
     if ingress_rule is None:
         ingress_rule = existedNamespace.properties.default_network_policy.ingress
-    
+
     if egress_rule is None:
         egress_rule = existedNamespace.properties.default_network_policy.egress
 
@@ -299,15 +310,16 @@ def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
     )
 
     np = NetworkPolicies(
-        ingress = ingress_rule,
-        egress = egress_rule
+        ingress=ingress_rule,
+        egress=egress_rule
     )
-    
+
     return np
 
-def updateAdoptionPolicy(cmd, raw_parameters, existedNamespace):
+
+def updateAdoptionPolicy(raw_parameters, existedNamespace):
     adoption_policy = raw_parameters.get("adoption_policy")
-    
+
     valid_adoption_policy = {
         CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
         CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
@@ -319,15 +331,16 @@ def updateAdoptionPolicy(cmd, raw_parameters, existedNamespace):
             f"Invalid adoption policy '{adoption_policy}'. Must be one of: "
             f"{', '.join(valid_adoption_policy)}"
         )
-    
+
     if adoption_policy is None:
         adoption_policy = existedNamespace.properties.adoption_policy
-    
+
     return adoption_policy
 
-def updateDeletePolicy(cmd, raw_parameters, existedNamespace):
+
+def updateDeletePolicy(raw_parameters, existedNamespace):
     delete_policy = raw_parameters.get("delete_policy")
-    
+
     valid_delete_policy = {
         CONST_NAMESPACE_DELETE_POLICY_KEEP,
         CONST_NAMESPACE_DELETE_POLICY_DELETE
@@ -338,8 +351,8 @@ def updateDeletePolicy(cmd, raw_parameters, existedNamespace):
             f"Invalid delete policy '{delete_policy}'. Must be one of: "
             f"{', '.join(valid_delete_policy)}"
         )
-    
+
     if delete_policy is None:
         delete_policy = existedNamespace.properties.delete_policy
-    
+
     return delete_policy

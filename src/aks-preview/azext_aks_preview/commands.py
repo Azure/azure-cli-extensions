@@ -235,7 +235,7 @@ def load_command_table(self, _):
         g.custom_command("enable", "aks_addon_enable", supports_no_wait=True)
         g.custom_command("disable", "aks_addon_disable", supports_no_wait=True)
         g.custom_command("update", "aks_addon_update", supports_no_wait=True)
-    
+
     # AKS managed namespace commands
     with self.command_group(
         "aks namespace",

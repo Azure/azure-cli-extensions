@@ -165,8 +165,10 @@ def validate_ip_ranges(namespace):
         except ValueError:
             pass
 
+
 def validate_namespace_name(namespace):
-	_validate_namespace_name(namespace.name)
+    _validate_namespace_name(namespace.name)
+
 
 def _validate_namespace_name(name):
     """
@@ -181,7 +183,8 @@ def _validate_namespace_name(name):
             raise ValueError(
                 f"Invalid namespace '{name}'. Must consist of lower case alphanumeric characters or '-', "
                 "and must start and end with an alphanumeric character."
-                )
+            )
+
 
 def validate_resource_quota(namespace):
     if namespace.cpu_request is not None:
@@ -198,7 +201,7 @@ def validate_resource_quota(namespace):
     if namespace.memory_limit is not None:
         if not re.match(pattern, namespace.memory_limit):
             raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
-                             "Ei, Pi, Ti, Gi, Mi, Ki.") 
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
 
 
 def _validate_nodepool_name(nodepool_name):
