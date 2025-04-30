@@ -493,6 +493,7 @@ def aks_create(
     enable_acns=None,
     disable_acns_observability=None,
     disable_acns_security=None,
+    acns_advanced_networkpolicies=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -724,6 +725,7 @@ def aks_update(
     disable_acns=None,
     disable_acns_observability=None,
     disable_acns_security=None,
+    acns_advanced_networkpolicies=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
