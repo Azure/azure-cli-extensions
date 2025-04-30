@@ -12,20 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "neon postgres organization show",
-    is_preview=True,
+    "neon postgres project wait",
 )
-class Show(AAZCommand):
-    """Get a Neon organization
-
-    :example: Show Neon Postgres Organization
-        az neon postgres organization show --resource-group demoResourceGroup --name demoNeonResource
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/neon.postgres/organizations/{}/projects/{}", "2025-03-01"],
         ]
     }
 
@@ -45,15 +40,24 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Name of the Neon organization",
+        _args_schema.organization_name = AAZStrArg(
+            options=["--organization-name"],
+            help="The name of the Neon Organization resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
                 min_length=1,
+            ),
+        )
+        _args_schema.project_id = AAZStrArg(
+            options=["--project-id"],
+            help="The id of the Neon Project resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^\\S.{0,62}\\S$|^\\S$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -64,7 +68,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.OrganizationsGet(ctx=self.ctx)()
+        self.ProjectsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,10 +80,10 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class OrganizationsGet(AAZHttpOperation):
+    class ProjectsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +97,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Neon.Postgres/organizations/{organizationName}/projects/{projectName}",
                 **self.url_parameters
             )
 
@@ -109,7 +113,11 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.name,
+                    "organizationName", self.ctx.args.organization_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,9 +171,6 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -174,155 +179,50 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.company_details = AAZObjectType(
-                serialized_name="companyDetails",
-                flags={"required": True},
+            properties.attributes = AAZListType()
+            properties.branch = AAZObjectType()
+            properties.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
             )
-            properties.marketplace_details = AAZObjectType(
-                serialized_name="marketplaceDetails",
-                flags={"required": True},
+            properties.databases = AAZListType()
+            properties.default_endpoint_settings = AAZObjectType(
+                serialized_name="defaultEndpointSettings",
             )
-            properties.partner_organization_properties = AAZObjectType(
-                serialized_name="partnerOrganizationProperties",
+            properties.endpoints = AAZListType()
+            properties.entity_id = AAZStrType(
+                serialized_name="entityId",
+                flags={"read_only": True},
             )
-            properties.project_properties = AAZObjectType(
-                serialized_name="projectProperties",
+            properties.entity_name = AAZStrType(
+                serialized_name="entityName",
+            )
+            properties.history_retention = AAZIntType(
+                serialized_name="historyRetention",
+            )
+            properties.pg_version = AAZIntType(
+                serialized_name="pgVersion",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user_details = AAZObjectType(
-                serialized_name="userDetails",
-                flags={"required": True},
-            )
-
-            company_details = cls._schema_on_200.properties.company_details
-            company_details.business_phone = AAZStrType(
-                serialized_name="businessPhone",
-            )
-            company_details.company_name = AAZStrType(
-                serialized_name="companyName",
-            )
-            company_details.country = AAZStrType()
-            company_details.domain = AAZStrType()
-            company_details.number_of_employees = AAZIntType(
-                serialized_name="numberOfEmployees",
-            )
-            company_details.office_address = AAZStrType(
-                serialized_name="officeAddress",
-            )
-
-            marketplace_details = cls._schema_on_200.properties.marketplace_details
-            marketplace_details.offer_details = AAZObjectType(
-                serialized_name="offerDetails",
-                flags={"required": True},
-            )
-            marketplace_details.subscription_id = AAZStrType(
-                serialized_name="subscriptionId",
-            )
-            marketplace_details.subscription_status = AAZStrType(
-                serialized_name="subscriptionStatus",
-            )
-
-            offer_details = cls._schema_on_200.properties.marketplace_details.offer_details
-            offer_details.offer_id = AAZStrType(
-                serialized_name="offerId",
-                flags={"required": True},
-            )
-            offer_details.plan_id = AAZStrType(
-                serialized_name="planId",
-                flags={"required": True},
-            )
-            offer_details.plan_name = AAZStrType(
-                serialized_name="planName",
-            )
-            offer_details.publisher_id = AAZStrType(
-                serialized_name="publisherId",
-                flags={"required": True},
-            )
-            offer_details.term_id = AAZStrType(
-                serialized_name="termId",
-            )
-            offer_details.term_unit = AAZStrType(
-                serialized_name="termUnit",
-            )
-
-            partner_organization_properties = cls._schema_on_200.properties.partner_organization_properties
-            partner_organization_properties.organization_id = AAZStrType(
-                serialized_name="organizationId",
-            )
-            partner_organization_properties.organization_name = AAZStrType(
-                serialized_name="organizationName",
-                flags={"required": True},
-            )
-            partner_organization_properties.single_sign_on_properties = AAZObjectType(
-                serialized_name="singleSignOnProperties",
-            )
-
-            single_sign_on_properties = cls._schema_on_200.properties.partner_organization_properties.single_sign_on_properties
-            single_sign_on_properties.aad_domains = AAZListType(
-                serialized_name="aadDomains",
-            )
-            single_sign_on_properties.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
-            )
-            single_sign_on_properties.single_sign_on_state = AAZStrType(
-                serialized_name="singleSignOnState",
-            )
-            single_sign_on_properties.single_sign_on_url = AAZStrType(
-                serialized_name="singleSignOnUrl",
-            )
-
-            aad_domains = cls._schema_on_200.properties.partner_organization_properties.single_sign_on_properties.aad_domains
-            aad_domains.Element = AAZStrType()
-
-            project_properties = cls._schema_on_200.properties.project_properties
-            project_properties.attributes = AAZListType()
-            project_properties.branch = AAZObjectType()
-            project_properties.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            project_properties.databases = AAZListType()
-            project_properties.default_endpoint_settings = AAZObjectType(
-                serialized_name="defaultEndpointSettings",
-            )
-            project_properties.endpoints = AAZListType()
-            project_properties.entity_id = AAZStrType(
-                serialized_name="entityId",
-                flags={"read_only": True},
-            )
-            project_properties.entity_name = AAZStrType(
-                serialized_name="entityName",
-            )
-            project_properties.history_retention = AAZIntType(
-                serialized_name="historyRetention",
-            )
-            project_properties.pg_version = AAZIntType(
-                serialized_name="pgVersion",
-            )
-            project_properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            project_properties.region_id = AAZStrType(
+            properties.region_id = AAZStrType(
                 serialized_name="regionId",
             )
-            project_properties.roles = AAZListType()
-            project_properties.storage = AAZIntType()
+            properties.roles = AAZListType()
+            properties.storage = AAZIntType()
 
-            attributes = cls._schema_on_200.properties.project_properties.attributes
+            attributes = cls._schema_on_200.properties.attributes
             attributes.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_attributes_read(attributes.Element)
+            _WaitHelper._build_schema_models_attributes_read(attributes.Element)
 
-            branch = cls._schema_on_200.properties.project_properties.branch
+            branch = cls._schema_on_200.properties.branch
             branch.attributes = AAZListType()
             branch.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -355,27 +255,27 @@ class Show(AAZCommand):
             )
             branch.roles = AAZListType()
 
-            attributes = cls._schema_on_200.properties.project_properties.branch.attributes
+            attributes = cls._schema_on_200.properties.branch.attributes
             attributes.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_attributes_read(attributes.Element)
+            _WaitHelper._build_schema_models_attributes_read(attributes.Element)
 
-            databases = cls._schema_on_200.properties.project_properties.branch.databases
+            databases = cls._schema_on_200.properties.branch.databases
             databases.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_database_properties_read(databases.Element)
+            _WaitHelper._build_schema_models_neon_database_properties_read(databases.Element)
 
-            endpoints = cls._schema_on_200.properties.project_properties.branch.endpoints
+            endpoints = cls._schema_on_200.properties.branch.endpoints
             endpoints.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_endpoint_properties_read(endpoints.Element)
+            _WaitHelper._build_schema_models_endpoint_properties_read(endpoints.Element)
 
-            roles = cls._schema_on_200.properties.project_properties.branch.roles
+            roles = cls._schema_on_200.properties.branch.roles
             roles.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_role_properties_read(roles.Element)
+            _WaitHelper._build_schema_models_neon_role_properties_read(roles.Element)
 
-            databases = cls._schema_on_200.properties.project_properties.databases
+            databases = cls._schema_on_200.properties.databases
             databases.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_database_properties_read(databases.Element)
+            _WaitHelper._build_schema_models_neon_database_properties_read(databases.Element)
 
-            default_endpoint_settings = cls._schema_on_200.properties.project_properties.default_endpoint_settings
+            default_endpoint_settings = cls._schema_on_200.properties.default_endpoint_settings
             default_endpoint_settings.autoscaling_limit_max_cu = AAZFloatType(
                 serialized_name="autoscalingLimitMaxCu",
                 flags={"required": True},
@@ -385,28 +285,13 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
-            endpoints = cls._schema_on_200.properties.project_properties.endpoints
+            endpoints = cls._schema_on_200.properties.endpoints
             endpoints.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_endpoint_properties_read(endpoints.Element)
+            _WaitHelper._build_schema_models_endpoint_properties_read(endpoints.Element)
 
-            roles = cls._schema_on_200.properties.project_properties.roles
+            roles = cls._schema_on_200.properties.roles
             roles.Element = AAZObjectType()
-            _ShowHelper._build_schema_models_neon_role_properties_read(roles.Element)
-
-            user_details = cls._schema_on_200.properties.user_details
-            user_details.email_address = AAZStrType(
-                serialized_name="emailAddress",
-            )
-            user_details.first_name = AAZStrType(
-                serialized_name="firstName",
-            )
-            user_details.last_name = AAZStrType(
-                serialized_name="lastName",
-            )
-            user_details.phone_number = AAZStrType(
-                serialized_name="phoneNumber",
-            )
-            user_details.upn = AAZStrType()
+            _WaitHelper._build_schema_models_neon_role_properties_read(roles.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -428,14 +313,11 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
     _schema_models_attributes_read = None
 
@@ -627,4 +509,4 @@ class _ShowHelper:
         _schema.provisioning_state = cls._schema_models_neon_role_properties_read.provisioning_state
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]
