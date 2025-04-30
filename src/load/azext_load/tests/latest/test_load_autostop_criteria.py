@@ -52,6 +52,7 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
             JMESPathCheck("autoStopCriteria.errorRate", 90.0),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 60),
+            JMESPathCheck("autoStopCriteria.maximumVirtualUsersPerEngine", 5000),
         ]
         # Create load test with autostop disabled through config file
         self.cmd(
@@ -73,12 +74,16 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck(
                 "autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW
             ),
+            JMESPathCheck(
+                "autoStopCriteria.maximumVirtualUsersPerEngine", LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE
+            ),
         ]
         _configure_command_jmes_checks(
             self,
             checks,
             autostop_error_rate=LoadTestConstants.AUTOSTOP_ERROR_RATE,
             autostop_error_rate_time_window=LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
+            autostop_maximum_vu_per_engine=LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE
         )
 
         # Update load test with autostop criteria when error rate is integer
@@ -88,6 +93,9 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck("autoStopCriteria.errorRate", float(LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)),
             JMESPathCheck(
                 "autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW
+            ),
+            JMESPathCheck(
+                "autoStopCriteria.maximumVirtualUsersPerEngine", LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE
             ),
         ]
         _configure_command_jmes_checks(self, checks, autostop_error_rate=LoadTestConstants.AUTOSTOP_ERROR_RATE_INTEGER)
@@ -100,6 +108,9 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck(
                 "autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW
             ),
+            JMESPathCheck(
+                "autoStopCriteria.maximumVirtualUsersPerEngine", LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE
+            ),
         ]
         _configure_command_jmes_checks(self, checks, autostop=LoadTestConstants.AUTOSTOP_DISABLED)
 
@@ -109,6 +120,7 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", 85.0),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
+            JMESPathCheck("autoStopCriteria.maximumVirtualUsersPerEngine", 1500),
         ]
         _configure_command_jmes_checks(
             self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP
@@ -117,10 +129,12 @@ class LoadTestScenarioAutostop(ScenarioTest):
         # Update load test with autostop criteria through config file: only error rate
         # Order of this test case is important as response payload for time-window is checked from previous test case
         # Order of this test case is important as response payload for error-rate is checked in next test case
+        # Order of this test case is important as response payload for max-vu-engine is checked in next test case
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", 98.5),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
+            JMESPathCheck("autoStopCriteria.maximumVirtualUsersPerEngine", 1500),
         ]
         _configure_command_jmes_checks(
             self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE
@@ -128,13 +142,27 @@ class LoadTestScenarioAutostop(ScenarioTest):
 
         # Update load test with autostop criteria through config file: only time window
         # Order of this test case is important as response payload for error-rate is checked from previous test case
+        # Order of this test case is important as response payload for max-vu-engine is checked in next test case
         checks = [
             JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
             JMESPathCheck("autoStopCriteria.errorRate", 98.5),
             JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 250),
+            JMESPathCheck("autoStopCriteria.maximumVirtualUsersPerEngine", 1500),
         ]
         _configure_command_jmes_checks(
             self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW
+        )
+
+        # Update load test with autostop criteria through config file: only time window
+        # Order of this test case is important as response payload for max-vu-engine is checked in next test case
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", 98.5),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 250),
+            JMESPathCheck("autoStopCriteria.maximumVirtualUsersPerEngine", 2500),
+        ]
+        _configure_command_jmes_checks(
+            self, checks, load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_MAX_VU_ENGINE
         )
 
         # Update load test with CLI autostop criteria when both config file and CLI arguments are provided
@@ -144,12 +172,16 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck(
                 "autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW
             ),
+            JMESPathCheck(
+                "autoStopCriteria.maximumVirtualUsersPerEngine", LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE
+            ),
         ]
         _configure_command_jmes_checks(
             self,
             checks,
             autostop_error_rate=LoadTestConstants.AUTOSTOP_ERROR_RATE,
             autostop_error_rate_time_window=LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
+            autostop_maximum_vu_per_engine=LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE,
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
         )
 
@@ -160,6 +192,9 @@ class LoadTestScenarioAutostop(ScenarioTest):
             JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
             JMESPathCheck(
                 "autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW
+            ),
+            JMESPathCheck(
+                "autoStopCriteria.maximumVirtualUsersPerEngine", LoadTestConstants.AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE
             ),
         ]
         _configure_command_jmes_checks(
@@ -239,7 +274,7 @@ class LoadTestScenarioAutostop(ScenarioTest):
         # Invalid autostop from config test case: autostop time window < 0
         _configure_command_assert_exception(
             self,
-            "Invalid value for maximumVirtualUserPerEngine. Value should be an integer greater than 0",
+            "Invalid value for maximumVirtualUsersPerEngine. Value should be an integer greater than 0",
             load_test_config_file=LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_MAX_VU_PER_ENGINE,
         )
 

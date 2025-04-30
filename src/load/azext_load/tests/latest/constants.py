@@ -126,6 +126,9 @@ class LoadConstants:
     LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW = os.path.join(
         TEST_RESOURCES_DIR, r"config-autostop-criteria-time-window.yaml"
     )
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_MAX_VU_ENGINE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-autostop-criteria-max-vu-engine.yaml"
+    )
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE = os.path.join(
         TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-error-rate.yaml"
     )
