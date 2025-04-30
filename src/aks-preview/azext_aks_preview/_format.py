@@ -382,7 +382,7 @@ def aks_extension_list_table_format(results):
 
 def aks_extension_show_table_format(result):
     """Format a K8s extension as summary results for display with "-o table". """
-    return _get_table_row(result)
+    return _get_extension_table_row(result)
 
 
 def _get_extension_table_row(result):
