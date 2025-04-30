@@ -506,7 +506,8 @@ def create_containerapp(cmd,
                         max_inactive_revisions=None,
                         runtime=None,
                         enable_java_metrics=None,
-                        enable_java_agent=None):
+                        enable_java_agent=None,
+                        kind=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -1400,6 +1401,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None,
                        token_store=None, sas_url_secret=None, sas_url_secret_name=None,
+                       blob_container_uri=None, blob_container_identity=None,
                        yes=False):
     raw_parameters = locals()
     containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(

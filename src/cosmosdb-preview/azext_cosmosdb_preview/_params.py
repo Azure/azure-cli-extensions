@@ -17,7 +17,10 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_role_definition_body,
     validate_mongo_role_definition_id,
     validate_mongo_user_definition_body,
-    validate_mongo_user_definition_id)
+    validate_mongo_user_definition_id,
+    validate_table_role_definition_body,
+    validate_table_role_definition_id,
+    validate_table_role_assignment_id)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -54,6 +57,24 @@ from azure.cli.command_modules.cosmosdb._validators import (
     validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
     validate_client_encryption_policy)
 
+
+TABLE_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyTestRole\\",
+\\"type\\": \\"CustomRole\\",
+\\"description\\": \\"Custom role to read Cosmos DB metadata\\",
+\\"AssignableScopes\\":[\\"/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\"],
+\\"Permissions\\": [{\\"dataActions\\": [\\"Microsoft.DocumentDB/databaseAccounts/readMetadata\\"]}]
+}"
+"""
+
+TABLE_ROLE_ASSIGNMENT_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleDefinitionId\\": \\"MyTestRoleAssignment\\",
+\\"PrincipalId\\": \\"efc9875a-2cc4-40d5-8958-566017875b39\\",
+\\"Scope\\":\\"/subscriptions/cfe9875a-2cc4-40d5-8958-566017875b39/resourceGroups/MyResourceGroup/providers/Microsoft.DocumentDB/databaseAccounts/MyDBAccountName\\",
+}"
+"""
 
 MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
 \\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
@@ -158,10 +179,11 @@ def load_arguments(self, _):
     # Managed Cassandra Cluster
     with self.argument_context('managed-cassandra cluster create') as c:
         c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
-        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.", required=True)
+        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center. This param is not needed for VPN clusters.")
         c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra.")
         c.argument('restore_from_backup_id', help="The resource id of a backup. If provided on create, the backup will be used to prepopulate the cluster. The cluster data center count and node counts must match the backup.")
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
+        c.argument('azure_connection_method', options_list=['--azure-connection-method', '-q'], help="This field can be specified to create VPN based Cassandra cluster, where the datacenter is in customers vnet with limited permissions to azure.")
 
     # Managed Cassandra Cluster
     for scope in ['managed-cassandra cluster backup show']:
@@ -206,6 +228,7 @@ def load_arguments(self, _):
         c.argument('disk_sku', options_list=['--disk-sku'], help="Disk SKU used for data centers. Default value is P30.")
         c.argument('disk_capacity', options_list=['--disk-capacity'], help="Number of disk used for data centers. Default value is 4.")
         c.argument('availability_zone', options_list=['--availability-zone', '-z'], arg_type=get_three_state_flag(), help="If the data center haves Availability Zone feature, apply it to the Virtual Machine ScaleSet that host the data center virtual machines.")
+        c.argument('private_endpoint_ip_address', options_list=['--private-endpoint-ip-address', '-i'], help="This is the IP address of the private Endpoint NIC, to be used in cases of VPN based cassandra datacenters.")
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter list') as c:
@@ -652,3 +675,17 @@ def load_arguments(self, _):
         c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=False)
         c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
+
+    # table role definition
+    with self.argument_context('cosmosdb table role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-i'], validator=validate_table_role_definition_id, help="Unique ID for the Table Role Definition.")
+        c.argument('table_role_definition_body', options_list=['--body', '-b'], validator=validate_table_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), RoleName, Description, AssignableScopes, Permissions.  You can enter it as a string or as a file, e.g., --body @table-role_definition-body-file.json or " + TABLE_ROLE_DEFINITION_EXAMPLE)
+
+    with self.argument_context('cosmosdb table role assignment') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_table_role_assignment_id, help="Optional for Create. Unique ID for the Role Assignment. If not provided, a new GUID will be used.")
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], help="Unique ID of the Role Definition that this Role Assignment refers to.")
+        c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
+        c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
+        c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")

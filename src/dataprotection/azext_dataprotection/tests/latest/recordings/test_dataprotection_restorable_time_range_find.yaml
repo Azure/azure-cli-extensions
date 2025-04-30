@@ -17,12 +17,12 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:31.7147539Z","endTime":"2024-05-08T10:33:31.8927736Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:42:48.2042399Z","endTime":"2025-03-11T08:42:48.3022332Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:31 GMT
+      - Tue, 11 Mar 2025 08:42:48 GMT
       expires:
       - '-1'
       pragma:
@@ -42,10 +42,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: E502FC1C21BF4ADE925BFE36C7A7DAE3 Ref B: AMS231032608035 Ref C: 2024-05-08T10:33:31Z'
+      - 'Ref A: 2403F2C514414A3A887482EF651CB4ED Ref B: MAA201060516051 Ref C: 2025-03-11T08:42:46Z'
     status:
       code: 200
       message: OK
@@ -69,12 +71,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:33.3085256Z","endTime":"2002-05-14T14:00:00.0000000Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:42:50.3605040Z","endTime":"2002-05-14T14:00:00.0000000Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -83,7 +85,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:33 GMT
+      - Tue, 11 Mar 2025 08:42:50 GMT
       expires:
       - '-1'
       pragma:
@@ -94,10 +96,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 151EC4F213E84405844B82CEC0A7DF1E Ref B: AMS231032609031 Ref C: 2024-05-08T10:33:32Z'
+      - 'Ref A: 702D8783FD184291983CAF7476690253 Ref B: MAA201060516039 Ref C: 2025-03-11T08:42:48Z'
     status:
       code: 200
       message: OK
@@ -121,12 +125,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2051-02-27T12:00:00.0000000Z","endTime":"2024-05-08T10:33:35.6479052Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2051-02-27T12:00:00.0000000Z","endTime":"2025-03-11T08:42:52.8753715Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -135,7 +139,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:34 GMT
+      - Tue, 11 Mar 2025 08:42:52 GMT
       expires:
       - '-1'
       pragma:
@@ -146,10 +150,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 9491144577404D6D9DF7637A9D2847AC Ref B: AMS231020512033 Ref C: 2024-05-08T10:33:33Z'
+      - 'Ref A: 39BD43079BB34FE78485F78280C8CB32 Ref B: MAA201060513021 Ref C: 2025-03-11T08:42:51Z'
     status:
       code: 200
       message: OK
@@ -173,12 +179,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:36.7617080Z","endTime":"2024-05-08T10:33:36.8978710Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:42:54.5636328Z","endTime":"2025-03-11T08:42:54.7932939Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -187,7 +193,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:36 GMT
+      - Tue, 11 Mar 2025 08:42:54 GMT
       expires:
       - '-1'
       pragma:
@@ -198,10 +204,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11998'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '798'
       x-msedge-ref:
-      - 'Ref A: 34A265A27F654074A8BE3F4B3B1830FA Ref B: AMS231020512027 Ref C: 2024-05-08T10:33:36Z'
+      - 'Ref A: C9064FD7E65E44E89EC307165BAFC229 Ref B: MAA201060514017 Ref C: 2025-03-11T08:42:53Z'
     status:
       code: 200
       message: OK
@@ -225,12 +233,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:38.0742787Z","endTime":"2024-05-08T10:33:38.2260108Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:42:56.4855301Z","endTime":"2025-03-11T08:42:56.6896431Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -239,7 +247,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:38 GMT
+      - Tue, 11 Mar 2025 08:42:56 GMT
       expires:
       - '-1'
       pragma:
@@ -250,10 +258,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 571D32656EBE4E82BD3851F5484275B9 Ref B: AMS231020512023 Ref C: 2024-05-08T10:33:37Z'
+      - 'Ref A: E3EE885554A74E4695CF7EE0522CB434 Ref B: MAA201060515025 Ref C: 2025-03-11T08:42:55Z'
     status:
       code: 200
       message: OK
@@ -277,12 +287,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:39.4649058Z","endTime":"2024-05-08T10:33:39.5623159Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:42:58.8137067Z","endTime":"2025-03-11T08:42:58.9387931Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -291,7 +301,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:39 GMT
+      - Tue, 11 Mar 2025 08:42:59 GMT
       expires:
       - '-1'
       pragma:
@@ -302,10 +312,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: F71647DA4CF84909AE1814EB69DA64A2 Ref B: AMS231020615021 Ref C: 2024-05-08T10:33:38Z'
+      - 'Ref A: 181DE441DEBD4CA996D341BE9C2E9655 Ref B: MAA201060514051 Ref C: 2025-03-11T08:42:57Z'
     status:
       code: 200
       message: OK
@@ -329,12 +341,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:40.5586786Z","endTime":"2024-05-08T10:33:40.6621023Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:43:01.1105915Z","endTime":"2025-03-11T08:43:01.2095358Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -343,7 +355,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:39 GMT
+      - Tue, 11 Mar 2025 08:43:01 GMT
       expires:
       - '-1'
       pragma:
@@ -354,10 +366,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 28B2E1AC81C5400F87681186F4D74064 Ref B: AMS231032609029 Ref C: 2024-05-08T10:33:39Z'
+      - 'Ref A: 8559FAC1FA93477AB48E01FD75AE1BA0 Ref B: MAA201060516037 Ref C: 2025-03-11T08:42:59Z'
     status:
       code: 200
       message: OK
@@ -381,12 +395,12 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:42.1680461Z","endTime":"2024-05-08T10:33:42.2704883Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:43:02.9856320Z","endTime":"2025-03-11T08:43:03.1654068Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -395,7 +409,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:41 GMT
+      - Tue, 11 Mar 2025 08:43:02 GMT
       expires:
       - '-1'
       pragma:
@@ -406,10 +420,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 48164797913E47DDA81BC0F023C009B0 Ref B: AMS231032609029 Ref C: 2024-05-08T10:33:41Z'
+      - 'Ref A: B11BB886D07F40AF8400095A89561153 Ref B: MAA201060516019 Ref C: 2025-03-11T08:43:02Z'
     status:
       code: 200
       message: OK
@@ -431,12 +447,12 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2024-04-08T10:33:43.4336964Z","endTime":"2024-05-08T10:33:43.5340340Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
+      string: '{"properties":{"restorableTimeRanges":[{"startTime":"2025-02-09T08:43:05.2825150Z","endTime":"2025-03-11T08:43:05.4505993Z","objectType":"RestorableTimeRange"}],"objectType":"AzureBackupFindRestorableTimeRangesResponse"},"id":"clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e","type":"Microsoft.DataProtection/backupVaults/backupInstances/findRestorableTimeRanges"}'
     headers:
       cache-control:
       - no-cache
@@ -445,7 +461,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:43 GMT
+      - Tue, 11 Mar 2025 08:43:05 GMT
       expires:
       - '-1'
       pragma:
@@ -456,10 +472,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 747B71D33E9948ECB57A4EA466C92AF3 Ref B: AMS231020615021 Ref C: 2024-05-08T10:33:42Z'
+      - 'Ref A: 223A0F478DD4467FA30C2F80EC895298 Ref B: MAA201060514017 Ref C: 2025-03-11T08:43:03Z'
     status:
       code: 200
       message: OK
@@ -481,7 +499,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -489,7 +507,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Invalid
         inputs from caller.","recommendedAction":["Please retry after some time with
         correct inputs. Reach out to the Azure Backup support if the issue persists.
-        "],"details":null,"code":"DppPluginInvalidInputParameters","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"718247ce-0d26-11ef-b97b-6045bd876689"}}}],"code":"DppPluginInvalidInputParameters","message":"Invalid
+        "],"details":null,"code":"DppPluginInvalidInputParameters","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"da26af2a-fe54-11ef-9945-cc15311bf11f"}}}],"code":"DppPluginInvalidInputParameters","message":"Invalid
         inputs from caller.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -499,7 +517,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:44 GMT
+      - Tue, 11 Mar 2025 08:43:06 GMT
       expires:
       - '-1'
       pragma:
@@ -510,10 +528,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 31C89292F9A5490DA494F4505E79827E Ref B: AMS231022012039 Ref C: 2024-05-08T10:33:43Z'
+      - 'Ref A: 10F156821DC54E95B57509FFF7D92106 Ref B: MAA201060513021 Ref C: 2025-03-11T08:43:06Z'
     status:
       code: 400
       message: Bad Request
@@ -535,7 +555,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -543,7 +563,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"7232b635-0d26-11ef-825a-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"db370721-fe54-11ef-9826-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -553,7 +573,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:46 GMT
+      - Tue, 11 Mar 2025 08:43:08 GMT
       expires:
       - '-1'
       pragma:
@@ -566,10 +586,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 72083243545E415AA78FE36CA49D5816 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:45Z'
+      - 'Ref A: D6168B2F642D445D8095114332388DC0 Ref B: MAA201060513037 Ref C: 2025-03-11T08:43:07Z'
     status:
       code: 500
       message: Internal Server Error
@@ -591,7 +613,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -599,7 +621,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"7232b635-0d26-11ef-825a-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"db370721-fe54-11ef-9826-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -609,7 +631,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:46 GMT
+      - Tue, 11 Mar 2025 08:43:09 GMT
       expires:
       - '-1'
       pragma:
@@ -622,10 +644,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 9DE934E4542A4159864DD7104914FB89 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:46Z'
+      - 'Ref A: 2EE8BE52399D438DBED430E0AC4610B3 Ref B: MAA201060513037 Ref C: 2025-03-11T08:43:09Z'
     status:
       code: 500
       message: Internal Server Error
@@ -647,7 +671,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -655,7 +679,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"7232b635-0d26-11ef-825a-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"db370721-fe54-11ef-9826-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -665,7 +689,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:49 GMT
+      - Tue, 11 Mar 2025 08:43:12 GMT
       expires:
       - '-1'
       pragma:
@@ -678,10 +702,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 4E39D5F2FC6741A68A6ADBDE4AD3F469 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:48Z'
+      - 'Ref A: 06BA4999E4774B329B0F4EC8AA02B75B Ref B: MAA201060513037 Ref C: 2025-03-11T08:43:12Z'
     status:
       code: 500
       message: Internal Server Error
@@ -703,7 +729,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -711,7 +737,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"7232b635-0d26-11ef-825a-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"db370721-fe54-11ef-9826-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -721,7 +747,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:54 GMT
+      - Tue, 11 Mar 2025 08:43:17 GMT
       expires:
       - '-1'
       pragma:
@@ -734,10 +760,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: CDD2E638C42543898DAD16009A8C3926 Ref B: AMS231032607027 Ref C: 2024-05-08T10:33:52Z'
+      - 'Ref A: 950E03E0C2D1455E97EC8D1391E579F7 Ref B: MAA201060513037 Ref C: 2025-03-11T08:43:16Z'
     status:
       code: 500
       message: Internal Server Error
@@ -759,7 +787,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -767,7 +795,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Invalid
         inputs from caller.","recommendedAction":["Please retry after some time with
         correct inputs. Reach out to the Azure Backup support if the issue persists.
-        "],"details":null,"code":"DppPluginInvalidInputParameters","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"77d2c3d3-0d26-11ef-9c4a-6045bd876689"}}}],"code":"DppPluginInvalidInputParameters","message":"Invalid
+        "],"details":null,"code":"DppPluginInvalidInputParameters","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"e1f5a105-fe54-11ef-b2a1-cc15311bf11f"}}}],"code":"DppPluginInvalidInputParameters","message":"Invalid
         inputs from caller.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -777,7 +805,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:55 GMT
+      - Tue, 11 Mar 2025 08:43:19 GMT
       expires:
       - '-1'
       pragma:
@@ -788,10 +816,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: ACC5AC4121C44B968149EFC231BEAA4A Ref B: AMS231022012021 Ref C: 2024-05-08T10:33:54Z'
+      - 'Ref A: 3B1CBCA12D044E37B673EB677AA228A6 Ref B: MAA201060513037 Ref C: 2025-03-11T08:43:19Z'
     status:
       code: 400
       message: Bad Request
@@ -813,7 +843,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -821,7 +851,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"78a231e9-0d26-11ef-a439-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"e3051156-fe54-11ef-a14d-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -831,7 +861,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:56 GMT
+      - Tue, 11 Mar 2025 08:43:21 GMT
       expires:
       - '-1'
       pragma:
@@ -844,10 +874,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 3B8E3BE9AE6F4CA4B82DE899736BE794 Ref B: AMS231032609051 Ref C: 2024-05-08T10:33:55Z'
+      - 'Ref A: 5CD6B3591CD44EF1BCFDF58CB8A9BD3E Ref B: MAA201060516009 Ref C: 2025-03-11T08:43:21Z'
     status:
       code: 500
       message: Internal Server Error
@@ -869,7 +901,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -877,7 +909,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"78a231e9-0d26-11ef-a439-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"e3051156-fe54-11ef-a14d-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -887,7 +919,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:56 GMT
+      - Tue, 11 Mar 2025 08:43:23 GMT
       expires:
       - '-1'
       pragma:
@@ -900,10 +932,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: FD983CB40E8E4DA791A6DB5DA53B9DE8 Ref B: AMS231032609051 Ref C: 2024-05-08T10:33:57Z'
+      - 'Ref A: 9CF596567DC2439BA4714DD485465F1E Ref B: MAA201060516009 Ref C: 2025-03-11T08:43:22Z'
     status:
       code: 500
       message: Internal Server Error
@@ -925,7 +959,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -933,7 +967,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"78a231e9-0d26-11ef-a439-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"e3051156-fe54-11ef-a14d-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -943,7 +977,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:33:59 GMT
+      - Tue, 11 Mar 2025 08:43:26 GMT
       expires:
       - '-1'
       pragma:
@@ -956,10 +990,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 50065DDB224643A69E51E37CE7388D7F Ref B: AMS231032609051 Ref C: 2024-05-08T10:33:59Z'
+      - 'Ref A: 3F4F07399620414E8120A85F90780582 Ref B: MAA201060516009 Ref C: 2025-03-11T08:43:26Z'
     status:
       code: 500
       message: Internal Server Error
@@ -981,7 +1017,7 @@ interactions:
       ParameterSetName:
       - --source-data-store-type -g --vault-name --backup-instance-name --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
@@ -989,7 +1025,7 @@ interactions:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"Microsoft
         Azure Backup encountered an internal error.","recommendedAction":["Wait for
         a few minutes and then try the operation again. If the issue persists, please
-        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"78a231e9-0d26-11ef-a439-6045bd876689"}}}],"code":"CloudInternalError","message":"Microsoft
+        contact Microsoft support."],"details":null,"code":"CloudInternalError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"e3051156-fe54-11ef-a14d-cc15311bf11f"}}}],"code":"CloudInternalError","message":"Microsoft
         Azure Backup encountered an internal error.","target":null,"details":null}}'
     headers:
       cache-control:
@@ -999,7 +1035,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:34:03 GMT
+      - Tue, 11 Mar 2025 08:43:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1012,10 +1048,12 @@ interactions:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 9BB956AEB5C84AA08A167B51985878AF Ref B: AMS231032609051 Ref C: 2024-05-08T10:34:03Z'
+      - 'Ref A: E8CE85A9039B4BCFB536A1B94B10541E Ref B: MAA201060516009 Ref C: 2025-03-11T08:43:31Z'
     status:
       code: 500
       message: Internal Server Error
@@ -1039,14 +1077,14 @@ interactions:
       - --source-data-store-type -g --vault-name --backup-instance-name --start-time
         --end-time
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e/findRestorableTimeRanges?api-version=2024-04-01
   response:
     body:
       string: '{"error":{"additionalInfo":[{"type":"UserFacingError","info":{"message":"The
         given time range is invalid","recommendedAction":["Please ensure that the
-        given time range in the request is valid"],"details":null,"code":"UserErrorInvalidRestorableTimeRange","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"7dc181ba-0d26-11ef-aff2-6045bd876689"}}}],"code":"UserErrorInvalidRestorableTimeRange","message":"The
+        given time range in the request is valid"],"details":null,"code":"UserErrorInvalidRestorableTimeRange","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":{"ActivityId":"ea10f10f-fe54-11ef-9d34-cc15311bf11f"}}}],"code":"UserErrorInvalidRestorableTimeRange","message":"The
         given time range is invalid","target":null,"details":null}}'
     headers:
       cache-control:
@@ -1056,7 +1094,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 08 May 2024 10:34:04 GMT
+      - Tue, 11 Mar 2025 08:43:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1067,10 +1105,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 0E0E5090C7FF4CA3AC18A5DB7B312FB2 Ref B: AMS231020512045 Ref C: 2024-05-08T10:34:04Z'
+      - 'Ref A: A9945015C25041588E2BB10CDAAF1A16 Ref B: MAA201060515019 Ref C: 2025-03-11T08:43:32Z'
     status:
       code: 400
       message: Bad Request

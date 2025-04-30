@@ -20,6 +20,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+    CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_CONFCOM_ADDON_NAME,
     CONST_CUSTOM_CA_TEST_CERT,
     CONST_DEFAULT_NODE_OS_TYPE,
@@ -943,6 +944,84 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_3.get_enable_cilium_dataplane(), False)
+
+    def test_mc_get_acns_advanced_networkpolicies(self):
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_acns_advanced_networkpolicies(), None)
+        # Flag set to None.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_advanced_networkpolicies": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_acns_advanced_networkpolicies(), "None")
+        # Flag set to FQDN
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_advanced_networkpolicies": "FQDN",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_acns_advanced_networkpolicies(), "FQDN")
+        # Flag set to L7
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_advanced_networkpolicies": "L7",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_acns_advanced_networkpolicies(), "L7")
+        # Fail on setting advanced_networkpolicies and disable acns
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "acns_advanced_networkpolicies": "L7",
+                    "disable_acns": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_5.get_acns_advanced_networkpolicies()
+        # Fail on setting advanced_networkpolicies and disable acns security
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "acns_advanced_networkpolicies": "L7",
+                    "disable_acns_security": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_acns_advanced_networkpolicies()
+
 
     def test_mc_get_acns_enablement(self):
         # Default, not set.
@@ -3794,6 +3873,63 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
             mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
         ))
+    
+    def test_handle_egress_gateways_asm(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_service_mesh": True,
+                    "enable_egress_gateway": True,
+                    "istio_egressgateway_name": "istio-egress-1",
+                    "gateway_configuration_name": "istio-sgc-1",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),
+        )
+        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    egress_gateways=[
+                        self.models.IstioEgressGateway(
+                            enabled=True,
+                            name="istio-egress-1",
+                            namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+                            gateway_configuration_name="istio-sgc-1"
+                        )
+                    ]
+                )
+            ),
+        ))
+        # ASM was never enabled on the cluster
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+        )
+        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    egress_gateways=[
+                        self.models.IstioEgressGateway(
+                            enabled=True,
+                            name="istio-egress-1",
+                            namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+                            gateway_configuration_name="istio-sgc-1"
+                        )
+                    ]
+                )
+            ),
+        ))
 
     def test_handle_ingress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -5026,7 +5162,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_set_up_addon_autoscaling(self):
+    def test_set_up_optimized_addon_scaling(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -5035,19 +5171,19 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_addon_autoscaling(mc_1)
+        dec_mc_1 = dec_1.set_up_optimized_addon_scaling(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
-            {"enable_addon_autoscaling": True},
+            {"enable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_addon_autoscaling(mc_2)
+        dec_mc_2 = dec_2.set_up_optimized_addon_scaling(mc_2)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -7553,6 +7689,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_azure_service_mesh": True,
                 "enable_egress_gateway": True,
+                "istio_egressgateway_name": "istio-egress-1",
+                "gateway_configuration_name": "istio-sgc-1",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -7569,7 +7707,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     components=self.models.IstioComponents(
                         egress_gateways=[
                             self.models.IstioEgressGateway(
-                                enabled=True
+                                enabled=True,
+                                name="istio-egress-1",
+                                gateway_configuration_name="istio-sgc-1",
+                                namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
                             )
                         ]
                     )
@@ -7954,7 +8095,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
 
-    def test_update_addon_autoscaling(self):
+    def test_update_optimized_addon_scaling(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -7966,7 +8107,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_addon_autoscaling(mc_0)
+        dec_mc_0 = dec_0.update_optimized_addon_scaling(mc_0)
         ground_truth_mc_0 = self.models.ManagedCluster(
             location="test_location",
         )
@@ -7976,7 +8117,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_addon_autoscaling": True, "disable_addon_autoscaling": True},
+            {"enable_optimized_addon_scaling": True, "disable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(
@@ -7984,20 +8125,20 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_1.update_addon_autoscaling(mc_1)
+            dec_1.update_optimized_addon_scaling(mc_1)
 
-        # enable addon autoscaling should set addon_autoscaling to Enabled
+        # enable optimized addon scaling should set optimized_addon_scaling to Enabled
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_addon_autoscaling": True},
+            {"enable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
         )
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_addon_autoscaling(mc_2)
+        dec_mc_2 = dec_2.update_optimized_addon_scaling(mc_2)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -8013,18 +8154,18 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-        # disable addon autoscaling should set addon_autoscaling to Disabled
+        # disable optimized addon scaling should set optimized_addon_scaling to Disabled
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"disable_addon_autoscaling": True},
+            {"disable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
         )
         dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.update_addon_autoscaling(mc_3)
+        dec_mc_3 = dec_3.update_optimized_addon_scaling(mc_3)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )

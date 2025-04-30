@@ -4,6 +4,17 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp auth update': Support authenticating blob storage token store using managed identity with `--blob-container-uri` and `--blob-container-identity`.
+
+1.1.0b4
+++++++
+* 'az containerapp create': Support --kind {functionapp}
+* Removed preview tag for command groups 'az containerapp sessionpool' and 'az containerapp session code-interpreter'
+
+1.1.0b3
+++++++
+* 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
 
 1.1.0b2
 ++++++

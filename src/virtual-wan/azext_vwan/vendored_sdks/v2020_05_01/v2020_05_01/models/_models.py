@@ -129,57 +129,57 @@ class ApplicationGateway(Resource):
     :vartype operational_state: str or
      ~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayOperationalState
     :param gateway_ip_configurations: Subnets of the application gateway resource. For default
-     limits, see `Application Gateway limits <https://docs.microsoft.com/azure/azure-subscription-
+     limits, see `Application Gateway limits <https://learn.microsoft.com/azure/azure-subscription-
      service-limits#application-gateway-limits>`_.
     :type gateway_ip_configurations:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayIPConfiguration]
     :param authentication_certificates: Authentication certificates of the application gateway
      resource. For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-
      limits>`_.
     :type authentication_certificates:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayAuthenticationCertificate]
     :param trusted_root_certificates: Trusted Root certificates of the application gateway
      resource. For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-
      limits>`_.
     :type trusted_root_certificates:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayTrustedRootCertificate]
     :param ssl_certificates: SSL certificates of the application gateway resource. For default
-     limits, see `Application Gateway limits <https://docs.microsoft.com/azure/azure-subscription-
+     limits, see `Application Gateway limits <https://learn.microsoft.com/azure/azure-subscription-
      service-limits#application-gateway-limits>`_.
     :type ssl_certificates:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewaySslCertificate]
     :param frontend_ip_configurations: Frontend IP addresses of the application gateway resource.
-     For default limits, see `Application Gateway limits <https://docs.microsoft.com/azure/azure-
+     For default limits, see `Application Gateway limits <https://learn.microsoft.com/azure/azure-
      subscription-service-limits#application-gateway-limits>`_.
     :type frontend_ip_configurations:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayFrontendIPConfiguration]
     :param frontend_ports: Frontend ports of the application gateway resource. For default limits,
-     see `Application Gateway limits <https://docs.microsoft.com/azure/azure-subscription-service-
+     see `Application Gateway limits <https://learn.microsoft.com/azure/azure-subscription-service-
      limits#application-gateway-limits>`_.
     :type frontend_ports:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayFrontendPort]
     :param probes: Probes of the application gateway resource.
     :type probes: list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayProbe]
     :param backend_address_pools: Backend address pool of the application gateway resource. For
-     default limits, see `Application Gateway limits <https://docs.microsoft.com/azure/azure-
+     default limits, see `Application Gateway limits <https://learn.microsoft.com/azure/azure-
      subscription-service-limits#application-gateway-limits>`_.
     :type backend_address_pools:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayBackendAddressPool]
     :param backend_http_settings_collection: Backend http settings of the application gateway
      resource. For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-
      limits>`_.
     :type backend_http_settings_collection:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayBackendHttpSettings]
     :param http_listeners: Http listeners of the application gateway resource. For default limits,
-     see `Application Gateway limits <https://docs.microsoft.com/azure/azure-subscription-service-
+     see `Application Gateway limits <https://learn.microsoft.com/azure/azure-subscription-service-
      limits#application-gateway-limits>`_.
     :type http_listeners:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayHttpListener]
     :param url_path_maps: URL path map of the application gateway resource. For default limits, see
-     `Application Gateway limits <https://docs.microsoft.com/azure/azure-subscription-service-
+     `Application Gateway limits <https://learn.microsoft.com/azure/azure-subscription-service-
      limits#application-gateway-limits>`_.
     :type url_path_maps: list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayUrlPathMap]
     :param request_routing_rules: Request routing rules of the application gateway resource.
@@ -189,7 +189,7 @@ class ApplicationGateway(Resource):
     :type rewrite_rule_sets:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayRewriteRuleSet]
     :param redirect_configurations: Redirect configurations of the application gateway resource.
-     For default limits, see `Application Gateway limits <https://docs.microsoft.com/azure/azure-
+     For default limits, see `Application Gateway limits <https://learn.microsoft.com/azure/azure-
      subscription-service-limits#application-gateway-limits>`_.
     :type redirect_configurations:
      list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayRedirectConfiguration]
@@ -4497,7 +4497,7 @@ class BGPCommunity(msrest.serialization.Model):
     :param community_name: The name of the bgp community. e.g. Skype.
     :type community_name: str
     :param community_value: The value of the bgp community. For more information:
-     https://docs.microsoft.com/en-us/azure/expressroute/expressroute-routing.
+     https://learn.microsoft.com/en-us/azure/expressroute/expressroute-routing.
     :type community_value: str
     :param community_prefixes: The prefixes that the bgp community contains.
     :type community_prefixes: list[str]
@@ -19127,7 +19127,7 @@ class VirtualNetworkPeering(SubResource):
     :type use_remote_gateways: bool
     :param remote_virtual_network: The reference to the remote virtual network. The remote virtual
      network can be in the same or different region (preview). See here to register for the preview
-     and learn more (https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-create-
+     and learn more (https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-create-
      peering).
     :type remote_virtual_network: ~azure.mgmt.network.v2020_05_01.models.SubResource
     :param remote_address_space: The reference to the remote virtual network address space.

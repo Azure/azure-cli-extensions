@@ -483,9 +483,8 @@ class Update(AAZCommand):
         _args_schema.routing_type = AAZStrArg(
             options=["--routing-type"],
             arg_group="Properties",
-            help="The resource routing type.",
+            help="The resource routing type. The options are: CascadeExtension, Default, Extension, Failover, Fanout, HostBased, LocationBased, ProxyOnly, Tenant. Select multiple with a comma separated string.",
             nullable=True,
-            enum={"CascadeExtension": "CascadeExtension", "Default": "Default", "Extension": "Extension", "Failover": "Failover", "Fanout": "Fanout", "HostBased": "HostBased", "LocationBased": "LocationBased", "ProxyOnly": "ProxyOnly", "Tenant": "Tenant"},
         )
         _args_schema.service_tree_infos = AAZListArg(
             options=["--service-tree-infos"],
