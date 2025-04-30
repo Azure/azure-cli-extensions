@@ -15773,6 +15773,89 @@ spec:
         name_prefix="clitest",
         location="eastus2",
     )
+    def test_aks_extension_backup(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        storage_account = self.create_random_name("storageacc", 16)
+        blob = self.create_random_name('blob', 16)
+        extension_type = 'microsoft.dataprotection.kubernetes'
+        self.kwargs.update({
+            'name': 'backup',
+            'rg': resource_group,
+            'cluster_name': aks_name,
+            'extension_type': extension_type,
+            'release_train': 'stable',
+            'version': '0.0.3004-544',
+            'storageAccount': storage_account,
+            'blob': blob,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        # create storage account
+        self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
+                 '--location {location} --sku Standard_LRS '
+                 '--allow-shared-key-access false')
+
+        # create blob container in storage account 
+        self.cmd('storage container create --name {blob} --account-name {storageAccount} ' 
+                 '--auth-mode login')
+
+        # create the cluster 
+        response = self.cmd('aks create -g {rg} -n {cluster_name} '
+                 '--node-count 3  --ssh-key-value={ssh_key_value}').get_output_in_json()
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+        self.kwargs.update({
+            'subscription': subscription,
+        })
+        # create the K8s extension
+        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+                 '--extension-type {extension_type} --release-train {release_train} '
+                 '--version {version} --scope cluster --config useKubeletIdentity=true '
+                 '--no-wait --auto-upgrade false --configuration-settings '
+                 'blobContainer={blob} storageAccount={storageAccount} '
+                 'storageAccountResourceGroup={rg} '
+                 'storageAccountSubscriptionId={subscription}')
+
+        # Update the K8s extension 
+        self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
+                 '--no-wait --auto-upgrade true')
+
+        # list the K8s extension on the cluster
+        installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
+        found_extension = False
+        for item in installed_exts:
+            if item['extensionType'] == extension_type:
+                found_extension = True
+                break
+        self.assertTrue(found_extension)
+
+        # do a GET on the extension
+        self.cmd('aks extension show -c {cluster_name} -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('releaseTrain', '{release_train}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('extensionType', '{extension_type}')
+        ])
+
+        # delete the extension
+        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name} --force -y')
+
+        installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
+        found_extension = False
+        for item in installed_exts:
+            if item['extensionType'] == extension_type:
+                found_extension = True
+                break
+        self.assertFalse(found_extension)
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2",
+    )
     def test_aks_extension_type(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         extension_type = 'microsoft.flux'
@@ -15797,47 +15880,147 @@ spec:
                  '--config useKubeletIdentity=true --no-wait')
 
         # show by cluster
-        self.cmd('aks extension-type show -g {rg} -c {cluster_name} '
+        self.cmd('aks extension type show -g {rg} -c {cluster_name} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
 
         # show by location
-        self.cmd('aks extension-type show --location {location} '
+        self.cmd('aks extension type show --location {location} '
                  '--extension-type {extension_type}', checks=[
                      self.check('name', '{extension_type}')
                  ])
 
         # list extension type by cluster
-        extensionTypes_list = self.cmd('aks extension-type list -g {rg} '
+        extensionTypes_list = self.cmd('aks extension type list -g {rg} '
                                        '-c {cluster_name}').get_output_in_json()
         assert len(extensionTypes_list) > 0
 
         # list extension type by location
-        extensionTypes_locationList = self.cmd('aks extension-type list '
+        extensionTypes_locationList = self.cmd('aks extension type list '
                                                '--location {location}').get_output_in_json()
         assert len(extensionTypes_locationList) > 0
 
         # list versions by cluster
-        extensionTypes_list = self.cmd('aks extension-type list-versions -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension type list-versions -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # list versions by location
-        extensionTypes_list = self.cmd('aks extension-type list-versions --location {location} '
+        extensionTypes_list = self.cmd('aks extension type list-versions --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # show version by cluster
-        extensionTypes_list = self.cmd('aks extension-type show-version -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension type show-version -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # show version by location
-        extensionTypes_list = self.cmd('aks extension-type show-version --location {location} '
+        extensionTypes_list = self.cmd('aks extension type show-version --location {location} '
+                                       '--extension-type {extension_type} --version {version}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        # delete the extension
+        self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name}  --force -y')
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2",
+    )
+    def test_aks_extension_type_backup(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        storage_account = self.create_random_name("storageacc", 16)
+        blob = self.create_random_name('blob', 16)
+        extension_type = 'microsoft.dataprotection.kubernetes'
+        self.kwargs.update({
+            'name': 'backup',
+            'rg': resource_group,
+            'cluster_name': aks_name,
+            'extension_type': extension_type,
+            'release_train': 'stable',
+            'version': '0.0.3004-544',
+            'storageAccount': storage_account,
+            'blob': blob,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        # create storage account
+        self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
+                 '--location {location} --sku Standard_LRS '
+                 '--allow-shared-key-access false')
+
+        # create blob container in storage account 
+        self.cmd('storage container create --name {blob} --account-name {storageAccount} ' 
+                 '--auth-mode login')
+
+        # create the cluster 
+        response = self.cmd('aks create -g {rg} -n {cluster_name} '
+                 '--node-count 3  --ssh-key-value={ssh_key_value}').get_output_in_json()
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+        self.kwargs.update({
+            'subscription': subscription,
+        })
+        # create the K8s extension
+        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+                 '--extension-type {extension_type} --release-train {release_train} '
+                 '--version {version} --scope cluster --config useKubeletIdentity=true '
+                 '--no-wait --auto-upgrade false --configuration-settings '
+                 'blobContainer={blob} storageAccount={storageAccount} '
+                 'storageAccountResourceGroup={rg} '
+                 'storageAccountSubscriptionId={subscription}')
+
+        # show by cluster
+        self.cmd('aks extension type show -g {rg} -c {cluster_name} '
+                 '--extension-type {extension_type}', checks=[
+                     self.check('name', '{extension_type}')
+                 ])
+
+        # show by location
+        self.cmd('aks extension type show --location {location} '
+                 '--extension-type {extension_type}', checks=[
+                     self.check('name', '{extension_type}')
+                 ])
+
+        # list extension type by cluster
+        extensionTypes_list = self.cmd('aks extension type list -g {rg} '
+                                       '-c {cluster_name}').get_output_in_json()
+        assert len(extensionTypes_list) > 0
+
+        # list extension type by location
+        extensionTypes_locationList = self.cmd('aks extension type list '
+                                               '--location {location}').get_output_in_json()
+        assert len(extensionTypes_locationList) > 0
+
+        # list versions by cluster
+        extensionTypes_list = self.cmd('aks extension type list-versions -g {rg} -c {cluster_name} '
+                                       '--extension-type {extension_type}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        # list versions by location
+        extensionTypes_list = self.cmd('aks extension type list-versions --location {location} '
+                                       '--extension-type {extension_type}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        # show version by cluster
+        extensionTypes_list = self.cmd('aks extension type show-version -g {rg} -c {cluster_name} '
+                                       '--extension-type {extension_type} --version {version}').get_output_in_json()
+
+        assert len(extensionTypes_list) > 0
+
+        # show version by location
+        extensionTypes_list = self.cmd('aks extension type show-version --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
