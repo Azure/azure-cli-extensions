@@ -501,16 +501,6 @@ def load_command_table(self, _):
             table_transformer=aks_extension_type_show_table_format
         )
         g.custom_command(
-            'show-version',
-            'show_k8s_extension_type_version',
-            table_transformer=aks_extension_type_version_show_table_format
-        )
-        g.custom_command(
-            'list-versions',
-            'list_k8s_extension_type_versions',
-            table_transformer=aks_extension_type_versions_list_table_format
-        )
-        g.custom_command(
             'list',
             'list_k8s_extension_types',
             table_transformer=aks_extension_types_list_table_format
