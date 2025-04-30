@@ -1466,6 +1466,32 @@ def load_arguments(self, _):
                 help="The managed namespace name.",
             )
 
+    with self.argument_context("aks namespace get-credentials") as c:
+        c.argument(
+                "name",
+                options_list=["--name"],
+                validator=validate_namespace_name,
+                help="The managed namespace name.",
+            )
+        c.argument(
+            "context_name",
+            options_list=["--context"],
+            help="If specified, overwrite the default context name.",
+        )
+        c.argument(
+            "user",
+            options_list=["--user", "-u"],
+            default="clusterUser",
+            validator=validate_user,
+        )
+        c.argument(
+            "path",
+            options_list=["--file", "-f"],
+            type=file_type,
+            completer=FilesCompleter(),
+            default=os.path.join(os.path.expanduser("~"), ".kube", "config"),
+        )
+
     with self.argument_context("aks nodepool") as c:
         c.argument("cluster_name", help="The cluster name.")
         c.argument(

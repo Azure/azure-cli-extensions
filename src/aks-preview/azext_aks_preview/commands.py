@@ -247,6 +247,7 @@ def load_command_table(self, _):
         g.custom_show_command("show", "aks_namespace_show")
         g.custom_command("list", "aks_namespace_list", table_transformer=aks_namespace_list_table_format)
         g.custom_command("delete", "aks_namespace_delete", supports_no_wait=True)
+        g.custom_command("get-credentials", "aks_namespace_get_credentials")
 
     # AKS agent pool commands
     with self.command_group(

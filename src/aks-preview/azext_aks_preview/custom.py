@@ -353,6 +353,45 @@ def aks_namespace_delete(
         name,
     )
 
+def aks_namespace_get_credentials(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    cluster_name,
+    name,
+    user="clusterUser",
+    path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
+    overwrite_existing=False,
+    context_name=None,
+):
+    credentialResults = None
+    if user.lower() == 'clusteruser':
+        credentialResults = client.list_credential(resource_group_name, cluster_name, name)
+    else:
+        raise InvalidArgumentValueError("The value of option --user is invalid.")
+
+    # Check if KUBECONFIG environmental variable is set
+    # If path is different than default then that means -f/--file is passed
+    # in which case we ignore the KUBECONFIG variable
+    # KUBECONFIG can be colon separated. If we find that condition, use the first entry
+    if "KUBECONFIG" in os.environ and path == os.path.join(os.path.expanduser('~'), '.kube', 'config'):
+        kubeconfig_path = os.environ["KUBECONFIG"].split(os.pathsep)[0]
+        if kubeconfig_path:
+            logger.info("The default path '%s' is replaced by '%s' defined in KUBECONFIG.", path, kubeconfig_path)
+            path = kubeconfig_path
+        else:
+            logger.warning("Invalid path '%s' defined in KUBECONFIG.", kubeconfig_path)
+
+    if not credentialResults:
+        raise CLIError("No Kubernetes credentials found.")
+    try:
+        kubeconfig = credentialResults.kubeconfigs[0].value.decode(
+            encoding='UTF-8')
+        print_or_merge_credentials(
+            path, kubeconfig, overwrite_existing, context_name)
+    except (IndexError, ValueError) as exc:
+        raise CLIError("Fail to find kubeconfig file.") from exc
+
 def aks_maintenanceconfiguration_list(
     cmd,  # pylint: disable=unused-argument
     client,
