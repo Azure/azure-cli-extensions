@@ -8,7 +8,7 @@ from collections import OrderedDict
 from jmespath import compile as compile_jmes, Options
 # pylint: disable=import-error
 from jmespath import functions
-
+from azure.cli.core.azclierror import ValidationError
 
 def aks_addon_list_available_table_format(result):
     def parser(entry):
@@ -377,7 +377,7 @@ def _format_mesh_revision_entry(revision):
 
 def aks_extension_list_table_format(results):
     """Format a list of K8s extensions as summary results for display with "-o table". """
-    return [_get_table_row(result) for result in results]
+    return [_get_extension_table_row(result) for result in results]
 
 
 def aks_extension_show_table_format(result):

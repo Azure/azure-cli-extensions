@@ -69,7 +69,6 @@ from azext_aks_preview._helpers import (
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
     raise_validation_error_if_extension_type_not_in_allow_list,
-    allowed_extensions,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
