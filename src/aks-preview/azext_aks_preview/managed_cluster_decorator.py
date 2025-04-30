@@ -20,6 +20,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
@@ -40,6 +41,8 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_BLOCK,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -2857,6 +2860,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("disable_imds_restriction")
 
+    def get_migrate_vmas_to_vms(self) -> bool:
+        """Obtain the value of migrate_vmas_to_vms.
+
+        :return: bool
+        """
+        return self.raw_param.get("migrate_vmas_to_vms")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -5335,6 +5345,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise DecoratorEarlyExitException()
         return mc
 
+    def update_vmas_to_vms(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the agent pool profile type to be VMS and LB sku to standard
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_migrate_vmas_to_vms():
+            # Ensure we have valid vmas AP
+            if len(self.mc.agent_pool_profiles) == 1 and self.mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+                mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
+            else:
+                raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
+
+            if self.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5410,6 +5439,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
+        # update VMAS to VMS
+        mc = self.update_vmas_to_vms(mc)
 
         return mc
 
