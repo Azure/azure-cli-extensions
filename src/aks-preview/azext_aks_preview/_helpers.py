@@ -40,7 +40,7 @@ logger = get_logger(__name__)
 
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
-allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
+allowed_extensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
 
 
 def which(binary):
@@ -396,8 +396,15 @@ def get_k8s_extension_module(module_name):
 
 
 # TODO: Need to should source the set of allowed extensions from the extensions API at some point
-def check_if_extension_type_is_in_allow_list(extension_type_name):
-    return extension_type_name.lower() in allowedListOfExtensions
+def _check_if_extension_type_is_in_allow_list(extension_type_name):
+    return extension_type_name.lower() in allowed_extensions
+
+
+
+def raise_validation_error_if_extension_type_not_in_allow_list(extension_type_name);
+    if not _check_if_extension_type_is_in_allow_list(extension_type_name):
+        raise ValidationError(f"Failed to get extension type version by cluster for {extension_type_name.lower()} " +
+                              f"as it is not in allowed list of extension types {allowed_extensions}")
 
 
 def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:

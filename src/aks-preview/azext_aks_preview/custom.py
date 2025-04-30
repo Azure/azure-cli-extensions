@@ -68,8 +68,8 @@ from azext_aks_preview._helpers import (
     print_or_merge_credentials,
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
-    check_if_extension_type_is_in_allow_list,
-    allowedListOfExtensions,
+    raise_validation_error_if_extension_type_not_in_allow_list,
+    allowed_extensions,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -3730,10 +3730,7 @@ def create_k8s_extension(
     configuration_protected_settings_file=None,
     no_wait=False,
 ):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to install {extension_type.lower()} " +
-                              f"as it is not in allowed list of extension types {allowedListOfExtensions}")
-
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
@@ -3919,9 +3916,7 @@ def show_k8s_extension_type(
     resource_group_name=None,
     cluster_name=None
 ):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to get extension type {extension_type.lower()} by location " +
-                              f"as it is not in allowed list of extension types {allowedListOfExtensions}")
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
@@ -3959,9 +3954,7 @@ def list_k8s_extension_type_versions(
     major_version=None,
     show_latest=False
 ):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to list extension type versions by location for {extension_type.lower()} " +
-                              f"as it is not in allowed list of extension types {allowedListOfExtensions}")
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
@@ -4003,9 +3996,7 @@ def show_k8s_extension_type_version(
     resource_group_name=None,
     cluster_name=None
 ):
-    if not check_if_extension_type_is_in_allow_list(extension_type.lower()):
-        raise ValidationError(f"Failed to get extension type version by cluster for {extension_type.lower()} " +
-                              f"as it is not in allowed list of extension types {allowedListOfExtensions}")
+    raise_validation_error_if_extension_type_not_in_allow_list(extension_type.lower())
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
