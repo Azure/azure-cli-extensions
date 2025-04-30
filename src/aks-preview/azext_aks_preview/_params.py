@@ -130,6 +130,9 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_ADVANCED_NETWORKPOLICIES_NONE,
+    CONST_ADVANCED_NETWORKPOLICIES_FQDN,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -277,6 +280,11 @@ network_plugins = [
     CONST_NETWORK_PLUGIN_NONE,
 ]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
+advanced_networkpolicies = [
+    CONST_ADVANCED_NETWORKPOLICIES_NONE,
+    CONST_ADVANCED_NETWORKPOLICIES_FQDN,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
+]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
@@ -826,6 +834,11 @@ def load_arguments(self, _):
             action="store_true",
         )
         c.argument(
+            "acns_advanced_networkpolicies",
+            is_preview=True,
+            arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -1302,6 +1315,11 @@ def load_arguments(self, _):
         c.argument(
             "disable_acns_security",
             action="store_true",
+        )
+        c.argument(
+            "acns_advanced_networkpolicies",
+            is_preview=True,
+            arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")

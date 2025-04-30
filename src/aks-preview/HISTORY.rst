@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
 
 14.0.0b5
 ++++++++
