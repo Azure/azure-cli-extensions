@@ -5354,12 +5354,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_migrate_vmas_to_vms():
             # Ensure we have valid vmas AP
-            if len(self.mc.agent_pool_profiles) == 1 and self.mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
+            if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
                 mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
             else:
                 raise CLIError('This is not a valid VMAS cluster, we cannot proceed with the migration.')
 
-            if self.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+            if mc.network_profile.load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
                 mc.network_profile.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
 
         return mc
