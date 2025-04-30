@@ -3571,10 +3571,10 @@ helps['aks extension type version show'] = """
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
   examples:
     - name: Show properties for a K8s Extension Type version for an existing cluster
-      text: az aks extension type show-version --resource-group my-resource-group \
+      text: az aks extension type version show --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
     - name: Show properties for a K8s Extension Type version for a location
-      text: az aks extension type show-version --location eastus --extension-type <type> --version 1.0.0
+      text: az aks extension type version show --location eastus --extension-type <type> --version 1.0.0
 """
 
 helps['aks extension type list'] = """
@@ -3617,10 +3617,10 @@ helps['aks extension type version list'] = """
       short-summary: Name of the extension type
   examples:
     - name: List available K8s Extension Types for an existing cluster
-      text: az aks extension type list-versions --resource-group my-resource-group \
+      text: az aks extension type version list --resource-group my-resource-group \
 --cluster-name mycluster --extension-type <type>
     - name: List available K8s Extension Types in a region
-      text: az aks extension type list-versions --location eastus --extension-type <type>
+      text: az aks extension type version list --location eastus --extension-type <type>
 """
 
 helps['aks loadbalancer'] = """
