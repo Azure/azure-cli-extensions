@@ -228,6 +228,9 @@ helps['aks create'] = f"""
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --acns-advanced-networkpolicies
+          type: string
+          short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1214,6 +1217,9 @@ helps['aks update'] = """
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --acns-advanced-networkpolicies
+          type: string
+          short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
