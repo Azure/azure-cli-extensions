@@ -1267,6 +1267,9 @@ helps['aks update'] = """
         - name: --disable-imds-restriction
           type: bool
           short-summary: Disable IMDS restriction in the cluster. All Pods in the cluster will be able to access IMDS.
+        - name: --migrate-vmas-to-vms
+          type: bool
+          short-summary: Migrate cluster with VMAS node pool to VMS node pool.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
