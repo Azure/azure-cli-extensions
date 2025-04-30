@@ -21,7 +21,7 @@ class NeonScenario(ScenarioTest):
         self.kwargs.update({
             'name': 'Neon-Cli-Scenario-Tests',
             'location': 'centraluseuap',
-            'subscription': '68a546de-5736-48e8-a69a-5cc636794112',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'marketplace_subscription_id': 'b6ca5a0a-c4be-454f-cc46-a400799b9d49',
             'publisher_id': 'neon1722366567200',
             'offer_id': 'neon_serverless_postgres_azure_prod',
