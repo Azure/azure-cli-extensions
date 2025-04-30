@@ -3303,7 +3303,7 @@ helps['aks check-network outbound'] = """
 
 helps['aks extension'] = """
   type: group
-  short-summary: Commands to manage extensions in Kubernetes cluster
+  short-summary: Commands to manage extensions in the Kubernetes cluster
 """
 
 helps['aks extension create'] = """
