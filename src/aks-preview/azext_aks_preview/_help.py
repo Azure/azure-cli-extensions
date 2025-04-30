@@ -3568,8 +3568,7 @@ helps['aks extension type version show'] = """
       long-summary: Name of the AKS cluster. If not specified, default value is None
     - name: --version
       type: string
-      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-  examples:
+      short-summary: Specify the extension version to show to the user
     - name: Show properties for a K8s Extension Type version for an existing cluster
       text: az aks extension type version show --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
