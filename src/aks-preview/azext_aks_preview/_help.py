@@ -3545,7 +3545,13 @@ helps['aks extension type show'] = """
       text: az aks extension type show --location eastus --extension-type type
 """
 
-helps['aks extension type show-version'] = """
+helps['aks extension type version'] = """
+  type: group
+  short-summary: Manage extension types version in Azure Kubernetes Service.
+  long-summary: This command group allows you to list and query extension type versions for AKS clusters.
+"""
+
+helps['aks extension type version show'] = """
   type: command
   short-summary: Show properties associated with a K8s Extension Type version. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:
@@ -3594,7 +3600,7 @@ helps['aks extension type list'] = """
       text: az aks extension type list --location eastus
 """
 
-helps['aks extension type list-versions'] = """
+helps['aks extension type version list'] = """
   type: command
   short-summary: List available K8s Extension Type versions. The properties used for filtering include kubernetes version, location of the cluster.
   parameters:

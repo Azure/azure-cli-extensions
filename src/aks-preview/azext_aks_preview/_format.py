@@ -385,7 +385,7 @@ def aks_extension_show_table_format(result):
     return _get_table_row(result)
 
 
-def _get_table_row(result):
+def _get_extension_table_row(result):
     return OrderedDict([
         ('name', result['name']),
         ('extensionType', result.get('extensionType', '')),

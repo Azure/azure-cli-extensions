@@ -515,3 +515,17 @@ def load_command_table(self, _):
             'list_k8s_extension_types',
             table_transformer=aks_extension_types_list_table_format
         )
+
+    with self.command_group(
+        "aks extension type version", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command(
+            'show',
+            'show_k8s_extension_type_version',
+            table_transformer=aks_extension_type_version_show_table_format
+        )
+        g.custom_command(
+            'list',
+            'list_k8s_extension_type_versions',
+            table_transformer=aks_extension_type_versions_list_table_format
+        )

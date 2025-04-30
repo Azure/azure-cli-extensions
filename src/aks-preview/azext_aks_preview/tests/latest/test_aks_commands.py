@@ -15808,14 +15808,6 @@ spec:
         self.kwargs.update({
             'subscription': subscription,
         })
-        # create the K8s extension
-        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --release-train {release_train} '
-                 '--version {version} --scope cluster --config useKubeletIdentity=true '
-                 '--no-wait --auto-upgrade false --configuration-settings '
-                 'blobContainer={blob} storageAccount={storageAccount} '
-                 'storageAccountResourceGroup={rg} '
-                 'storageAccountSubscriptionId={subscription}')
 
         # Update the K8s extension 
         self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
@@ -15902,25 +15894,25 @@ spec:
         assert len(extensionTypes_locationList) > 0
 
         # list versions by cluster
-        extensionTypes_list = self.cmd('aks extension type list-versions -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # list versions by location
-        extensionTypes_list = self.cmd('aks extension type list-versions --location {location} '
+        extensionTypes_list = self.cmd('aks extension type version list --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # show version by cluster
-        extensionTypes_list = self.cmd('aks extension type show-version -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # show version by location
-        extensionTypes_list = self.cmd('aks extension type show-version --location {location} '
+        extensionTypes_list = self.cmd('aks extension type version show --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
@@ -16002,25 +15994,25 @@ spec:
         assert len(extensionTypes_locationList) > 0
 
         # list versions by cluster
-        extensionTypes_list = self.cmd('aks extension type list-versions -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # list versions by location
-        extensionTypes_list = self.cmd('aks extension type list-versions --location {location} '
+        extensionTypes_list = self.cmd('aks extension type version list --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # show version by cluster
-        extensionTypes_list = self.cmd('aks extension type show-version -g {rg} -c {cluster_name} '
+        extensionTypes_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
         # show version by location
-        extensionTypes_list = self.cmd('aks extension type show-version --location {location} '
+        extensionTypes_list = self.cmd('aks extension type version show --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
