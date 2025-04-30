@@ -8,7 +8,7 @@ from collections import OrderedDict
 from jmespath import compile as compile_jmes, Options
 # pylint: disable=import-error
 from jmespath import functions
-from azure.cli.core.azclierror import ValidationError
+
 
 def aks_addon_list_available_table_format(result):
     def parser(entry):

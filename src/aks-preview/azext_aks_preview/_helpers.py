@@ -30,6 +30,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     ResourceNotFoundError,
     UnknownError,
+    ValidationError,
 )
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
