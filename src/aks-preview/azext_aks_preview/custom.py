@@ -329,12 +329,29 @@ def aks_namespace_delete(
     client,
     resource_group_name,
     cluster_name,
-    name
+    name,
+    no_wait=False,
 ):
-    logger.warning('resource_group_name: %s, cluster_name: %s, managed_namespace_name: %s ',
-                   resource_group_name, cluster_name, name)
-    return client.begin_delete(resource_group_name, cluster_name, name)
+    namespace_exists = False
+    namespace_instances = client.list_by_managed_cluster(resource_group_name, cluster_name)
+    for instance in namespace_instances:
+        if instance.name.lower() == name.lower():
+            namespace_exists = True
+            break
 
+    if not namespace_exists:
+        raise CLIError(
+            f"Managed namespace {name} doesn't exist, "
+            "use 'aks namespace list' to get current managed namespace list"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        cluster_name,
+        name,
+    )
 
 def aks_maintenanceconfiguration_list(
     cmd,  # pylint: disable=unused-argument
