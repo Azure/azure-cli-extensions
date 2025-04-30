@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationEr
 from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
-from azext_load.vendored_sdks.loadtesting.models import NotificationEventType, Status, PFTestResult
+from azext_load.vendored_sdks.loadtesting.models import NotificationEventType, TestRunStatus, PassFailTestResult
 
 from . import utils
 from .models import (
@@ -660,20 +660,20 @@ def _validate_notification_event(event: dict):
         if "status" in event:
             statuses = event["status"].split(",")
             for status in statuses:
-                if status not in [e.value for e in Status]:  # Use Status in _enum file
+                if status not in [e.value for e in TestRunStatus]:  # Use Status in _enum file
                     raise InvalidArgumentValueError(
                         "Invalid status: {}. Allowed values: {}".format(
-                            event["status"], ", ".join(e.value for e in Status)
+                            event["status"], ", ".join(e.value for e in TestRunStatus)
                         )
                     )
             event["status"] = statuses
         if "result" in event:
             results = event["result"].split(",")
             for result in results:
-                if result not in [e.value for e in PFTestResult]:  # Use PFResult in _enum file
+                if result not in [e.value for e in PassFailTestResult]:  # Use PFResult in _enum file
                     raise InvalidArgumentValueError(
                         "Invalid result: {}. Allowed values: {}".format(
-                            event["result"], ", ".join(e.value for e in PFTestResult)
+                            event["result"], ", ".join(e.value for e in PassFailTestResult)
                         )
                     )
             event["result"] = results
