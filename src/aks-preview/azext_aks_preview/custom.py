@@ -1757,7 +1757,7 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
         raise CLIError("Cannot delete manual in a non-virtualmachines node pool.")
     _current_vm_sizes = [x.strip() for x in current_vm_sizes.split(",")]
-    if len(_current_vm_sizes)!= 1:
+    if len(_current_vm_sizes) != 1:
         raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {current_vm_sizes} is invalid.")
     manual_exists = False
     for m in instance.virtual_machines_profile.scale.manual:

@@ -980,9 +980,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         if self.context.get_vm_set_type() != CONST_VIRTUAL_MACHINES:
             return agentpool
-        
+
         sizes = self.context.get_vm_sizes()
-        if len(sizes)!= 1:
+        if len(sizes) != 1:
             raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {sizes} is invalid.")
         count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
         agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
