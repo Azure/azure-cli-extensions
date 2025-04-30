@@ -400,8 +400,7 @@ def _check_if_extension_type_is_in_allow_list(extension_type_name):
     return extension_type_name.lower() in allowed_extensions
 
 
-
-def raise_validation_error_if_extension_type_not_in_allow_list(extension_type_name);
+def raise_validation_error_if_extension_type_not_in_allow_list(extension_type_name):
     if not _check_if_extension_type_is_in_allow_list(extension_type_name):
         raise ValidationError(f"Failed to get extension type version by cluster for {extension_type_name.lower()} " +
                               f"as it is not in allowed list of extension types {allowed_extensions}")
