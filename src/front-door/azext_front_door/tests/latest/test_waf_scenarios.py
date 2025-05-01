@@ -524,7 +524,7 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         type = "DefaultRuleSet"
         version = "1.0"
