@@ -2369,18 +2369,6 @@ def load_arguments(self, _):
         c.argument('scope',
                    arg_type=get_enum_type(['cluster', 'namespace']),
                    help='Specify the extension scope.')
-        c.argument('auto_upgrade_minor_version',
-                   arg_group="Version",
-                   options_list=['--auto-upgrade-minor-version', '--auto-upgrade'],
-                   arg_type=get_three_state_flag(),
-                   help='Automatically upgrade minor version of the extension instance.')
-        c.argument('version',
-                   arg_group="Version",
-                   help='Specify the version to install for the extension instance if'
-                   ' --auto-upgrade-minor-version is not enabled.')
-        c.argument('release_train',
-                   arg_group="Version",
-                   help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
                    options_list=['--configuration-settings', '--config'],

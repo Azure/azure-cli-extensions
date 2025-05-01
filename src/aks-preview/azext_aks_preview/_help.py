@@ -3314,8 +3314,8 @@ helps['aks extension'] = """
 
 helps['aks extension create'] = """
   type: command
-  short-summary: Creates the Kubernetes extension instance on the managed cluster. Please refer to the example at the end to see how to create a k8s extension
-  long-summary: Create a Kubernetes Extension. \
+  short-summary: Creates the Cluster extension instance on the managed cluster. Please refer to the example at the end to see how to create a cluster extension
+  long-summary: Create a Cluster Extension. \
 The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
   source control. Also verify that no secrets are present in the logs of your command or script. \
   For additional information, see http://aka.ms/clisecrets.
@@ -3337,19 +3337,6 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       short-summary: Specify scope of the extension type, takes in namespace or cluster as the scope
       long-summary: Specify scope of the extension type, takes in namespace or cluster as the scope \
 If not specified, default scope set in the extension type registration will be used
-    - name: --release-train
-      type: string
-      short-summary: Specify the release train for the extension type
-      long-summary: Specify the release train for the extension type, default value is stable if not specified
-    - name: --version
-      type: string
-      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-      long-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled. \
-If not specified, will install the latest available version for the extension
-    - name: --auto-upgrade --auto-upgrade-minor-version
-      type: string
-      short-summary: Automatically upgrade minor version of the extension instance
-      long-summary: Automatically upgrade minor version of the extension instance. If not specified, default value is true
     - name: --config --configuration-settings
       type: string
       short-summary: Configuration Settings as key=value pair
@@ -3371,13 +3358,8 @@ Only the key is returned in response, the value is not. If not specified, defaul
   examples:
     - name: Install K8s extension on AKS cluster with required parameters
       text: az aks extension create --resource-group my-resource-group \
---cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh
-    - name: Install K8s extension with optional parameters scope and release train
-      text: az aks extension create --resource-group my-resource-group \
---cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
---scope cluster --release-train stable
-    - name: Install K8s extension with autoupgrade turned off and optional parameters \
-version and configuration settings
+--cluster-name mycluster --name myextension --extension-type microsoft.flux
+    - name: Install K8s extension with optional parameter configuration settings
       text: az aks extension create --resource-group abc --cluster-name test --name flux \
 --extension-type microsoft.flux --config useKubeletIdentity=true
 """
@@ -3431,19 +3413,6 @@ The output includes secrets that you must protect. Be sure that you do not inclu
     - name: --name -n
       type: string
       short-summary: Name of the extension instance
-    - name: --release-train
-      type: string
-      short-summary: Specify the release train for the extension type
-      long-summary: Specify the release train for the extension type, default value is stable if not specified
-    - name: --version
-      type: string
-      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
-      long-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled. \
-If not specified, will install the latest available version for the extension
-    - name: --auto-upgrade --auto-upgrade-minor-version
-      type: string
-      short-summary: Automatically upgrade minor version of the extension instance
-      long-summary: Automatically upgrade minor version of the extension instance. If not specified, default value is true
     - name: --config --configuration-settings
       type: string
       short-summary: Configuration Settings as key=value pair
@@ -3472,8 +3441,7 @@ Only the key is returned in response, the value is not. If not specified, defaul
 --cluster-name mycluster --name myextension
     - name: Update K8s extension on AKS cluster with optional parameters included
       text: az aks extension update --resource-group my-resource-group \
---cluster-name mycluster --name myextension --auto-upgrade-minor-version true/false \
---version extension-version --release-train stable \
+--cluster-name mycluster --name myextension \
 --configuration-settings settings-key=settings-value \
 --config-protected-settings protected-settings-key=protected-value \
 --config-settings-file=config-settings-file \

@@ -15791,12 +15791,11 @@ spec:
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --release-train {release_train} --version {version} '
-                 '--config useKubeletIdentity=true --no-wait --auto-upgrade false')
+                 '--extension-type {extension_type} --no-wait')
 
         # Update the K8s extension 
         self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
-                 '--no-wait --auto-upgrade true')
+                 '--no-wait --config useKubeletIdentity=true')
 
         # list the K8s extension on the cluster
         installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
@@ -15870,9 +15869,18 @@ spec:
             'subscription': subscription,
         })
 
+        # create the K8s extension
+        self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
+                 '--extension-type {extension_type}  --scope cluster '
+                 '--config useKubeletIdentity=true  --no-wait ' 
+                 '--configuration-settings blobContainer={blob} '
+                 'storageAccount={storageAccount} '
+                 'storageAccountResourceGroup={rg} '
+                 'storageAccountSubscriptionId={subscription}')
+
         # Update the K8s extension 
         self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
-                 '--no-wait --auto-upgrade true')
+                 '--no-wait --configuration-settings testKey=testValue')
 
         # list the K8s extension on the cluster
         installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
@@ -15929,8 +15937,7 @@ spec:
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --release-train {release_train} '
-                 '--config useKubeletIdentity=true --no-wait')
+                 '--extension-type {extension_type} --no-wait')
 
         # show by cluster
         self.cmd('aks extension type show -g {rg} -c {cluster_name} '
@@ -15947,36 +15954,36 @@ spec:
         # list extension type by cluster
         extension_types_list = self.cmd('aks extension type list -g {rg} '
                                        '-c {cluster_name}').get_output_in_json()
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list ) > 0
 
         # list extension type by location
-        extensionTypes_locationList = self.cmd('aks extension type list '
+        extension_types_list = self.cmd('aks extension type list '
                                                '--location {location}').get_output_in_json()
-        assert len(extensionTypes_locationList) > 0
+        assert len(extension_types_list) > 0
 
         # list versions by cluster
-        extensionTypes_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
+        extension_types_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # list versions by location
-        extensionTypes_list = self.cmd('aks extension type version list --location {location} '
+        extension_types_list = self.cmd('aks extension type version list --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # show version by cluster
-        extensionTypes_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
+        extension_types_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # show version by location
-        extensionTypes_list = self.cmd('aks extension type version show --location {location} '
+        extension_types_list = self.cmd('aks extension type version show --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # delete the extension
         self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name}  --force -y')
@@ -16025,10 +16032,10 @@ spec:
         })
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
-                 '--extension-type {extension_type} --release-train {release_train} '
-                 '--version {version} --scope cluster --config useKubeletIdentity=true '
-                 '--no-wait --auto-upgrade false --configuration-settings '
-                 'blobContainer={blob} storageAccount={storageAccount} '
+                 '--extension-type {extension_type}  --scope cluster '
+                 '--config useKubeletIdentity=true  --no-wait ' 
+                 '--configuration-settings blobContainer={blob} '
+                 'storageAccount={storageAccount} '
                  'storageAccountResourceGroup={rg} '
                  'storageAccountSubscriptionId={subscription}')
 
@@ -16047,36 +16054,36 @@ spec:
         # list extension type by cluster
         extension_types_list = self.cmd('aks extension type list -g {rg} '
                                        '-c {cluster_name}').get_output_in_json()
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # list extension type by location
-        extensionTypes_locationList = self.cmd('aks extension type list '
+        extension_types_list = self.cmd('aks extension type list '
                                                '--location {location}').get_output_in_json()
-        assert len(extensionTypes_locationList) > 0
+        assert len(extension_types_list) > 0
 
         # list versions by cluster
-        extensionTypes_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
+        extension_types_list = self.cmd('aks extension type version list -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # list versions by location
-        extensionTypes_list = self.cmd('aks extension type version list --location {location} '
+        extension_types_list = self.cmd('aks extension type version list --location {location} '
                                        '--extension-type {extension_type}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # show version by cluster
-        extensionTypes_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
+        extension_types_list = self.cmd('aks extension type version show -g {rg} -c {cluster_name} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # show version by location
-        extensionTypes_list = self.cmd('aks extension type version show --location {location} '
+        extension_types_list = self.cmd('aks extension type version show --location {location} '
                                        '--extension-type {extension_type} --version {version}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        assert len(extension_types_list) > 0
 
         # delete the extension
         self.cmd('aks extension delete -g {rg} -c {cluster_name} -n {name}  --force -y')
