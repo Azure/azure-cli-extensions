@@ -38,7 +38,7 @@ class WafTests(WafScenarioMixin, ScenarioTest):
         options = '--log-scrubbing \"{{scrubbing-rules:[{{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}}],state:Enabled}}\"'
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy}'.format(**locals())
         result = self.cmd(cmd + ' ' + options).get_output_in_json()
-        self.assertEqual(result['policySettings']['logScrubbing']['state'], "Enabled")
+        self.assertEqual(result['policySettings']['scrubbingRules'][0]['state'], "Enabled")
 
     @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
