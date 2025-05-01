@@ -426,3 +426,11 @@ def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
             # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
             filtered_taints.append(taint)
     return filtered_taints
+
+
+def get_all_extension_types_in_allow_list(result):
+    output = []
+    for obj in result:
+        if _check_if_extension_type_is_in_allow_list(obj.name.lower()):
+            output.append(obj)
+    return output

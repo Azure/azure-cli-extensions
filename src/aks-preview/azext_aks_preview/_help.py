@@ -3328,13 +3328,13 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       short-summary: Name of the extension instance
     - name: --scope
       type: string
-      short-summary: specify scope of the extension type, takes in namespace or cluster as the scope
-      long-summary: specify scope of the extension type, takes in namespace or cluster as the scope \
+      short-summary: Specify scope of the extension type, takes in namespace or cluster as the scope
+      long-summary: Specify scope of the extension type, takes in namespace or cluster as the scope \
 If not specified, default scope set in the extension type registration will be used
     - name: --release-train
       type: string
-      short-summary: specify the release train for the extension type
-      long-summary: specify the release train for the extension type, default value is stable if not specified
+      short-summary: Specify the release train for the extension type
+      long-summary: Specify the release train for the extension type, default value is stable if not specified
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
@@ -3427,8 +3427,8 @@ The output includes secrets that you must protect. Be sure that you do not inclu
       short-summary: Name of the extension instance
     - name: --release-train
       type: string
-      short-summary: specify the release train for the extension type
-      long-summary: specify the release train for the extension type, default value is stable if not specified
+      short-summary: Specify the release train for the extension type
+      long-summary: Specify the release train for the extension type, default value is stable if not specified
     - name: --version
       type: string
       short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
@@ -3568,7 +3568,7 @@ helps['aks extension type list'] = """
       long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
     - name: --release-train
       type: string
-      short-summary: specify the release train for the K8s extension type
+      short-summary: Specify the release train for the K8s extension type
   examples:
     - name: List available K8s Extension Types for an existing cluster
       text: az aks extension type list --resource-group my-resource-group \
