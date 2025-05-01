@@ -81,7 +81,7 @@ class Cosmosdb_previewmongoMIRbacScenarioTest(ScenarioTest):
 
 
         self.cmd(
-            'az cosmosdb create -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableMongo')
+            'az cosmosdb create -n {acc} -g {rg} --kind MongoDB')
             
         self.cmd(
             'az cosmosdb show --name {acc} --resource-group {rg}')        

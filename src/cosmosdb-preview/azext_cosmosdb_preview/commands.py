@@ -15,6 +15,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_db_accounts,
     cf_gremlin_resources,
     cf_table_resources,
+    cf_cassandra_resources,
+    cf_mongoMI_resources,
     cf_restorable_sql_containers,
     cf_restorable_mongodb_collections,
     cf_restorable_gremlin_databases,
