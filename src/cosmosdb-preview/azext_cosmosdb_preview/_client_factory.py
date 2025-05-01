@@ -44,8 +44,8 @@ def cf_cassandra_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).cassandra_resources
 
 
-def cf_mongoMI_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).mongoMI_resources
+def cf_mongo_mi_resources(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).mongo_mi_resources
 
 
 def cf_table_resources(cli_ctx, _):
