@@ -15984,7 +15984,7 @@ spec:
                  ])
 
         # list extension type by cluster
-        extensionTypes_list = self.cmd('aks extension type list -g {rg} '
+        extension_types_list = self.cmd('aks extension type list -g {rg} '
                                        '-c {cluster_name}').get_output_in_json()
         assert len(extensionTypes_list) > 0
 
