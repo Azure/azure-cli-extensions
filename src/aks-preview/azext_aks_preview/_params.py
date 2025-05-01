@@ -2376,8 +2376,8 @@ def load_arguments(self, _):
                    options_list=['--config-protected-settings', '--config-protected'],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
-                   help='Configuration Protected Settings as key=value pair.'
-                   + 'Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
+                   help='Configuration Protected Settings as key=value pair. '
+                   + 'Repeat parameter for each setting. Only the key is returned in response, the value is not.')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
                    options_list=['--config-settings-file', '--config-file'],
@@ -2418,6 +2418,7 @@ def load_arguments(self, _):
                    options_list=['--extension-type', '-t'],
                    help='Name of the extension type.')
         c.argument('location',
+                   options_list=['--location', '-l'],
                    validator=validate_location_cluster_name_resource_group_mutually_exclusive,
                    help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',

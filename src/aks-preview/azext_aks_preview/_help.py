@@ -3537,10 +3537,10 @@ helps['aks extension type show'] = """
       type: string
       short-summary: Name of the AKS cluster
       long-summary: Name of the AKS cluster. If not specified, default value is None
-    - name: --location
+    - name: --location -l
       type: string
-      short-summary: Location of where we want to retrieve the extension
-      long-summary: Location of where we want to retrieve the extension. If not specified, default value is None
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
 
   examples:
     - name: Show properties for a K8s Extension Type for an existing cluster by cluster
