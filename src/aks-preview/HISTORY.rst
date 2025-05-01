@@ -15,6 +15,14 @@ Pending
 +++++++
 * Add aks extension and aks extension-type command groups
 
+14.0.0b6
++++++++
+* Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
+
+14.0.0b5
+++++++++
+* Re-generate the SDK for API version 2025-02-02-preview with @autorest/python@6.32.3 to fix `\#31345 <https://github.com/Azure/azure-cli/issues/31345>`_.
+
 14.0.0b4
 ++++++++
 * Vendor new SDK and bump API version to 2025-02-02-preview.
