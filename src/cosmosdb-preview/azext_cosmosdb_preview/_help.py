@@ -1544,7 +1544,7 @@ examples:
 
 
 # MongoMI Role Definition and Role Assignment
-helps['cosmosdb mongoMI role'] = """
+helps['cosmosdb mongomi role'] = """
 type: group
 short-summary: Manage Azure Cosmos DB MongoMI role resources.
 """

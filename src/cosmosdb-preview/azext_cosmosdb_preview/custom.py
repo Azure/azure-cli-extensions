@@ -2761,6 +2761,7 @@ def cli_cosmosdb_table_restore(cmd,
                                             table_name,
                                             table_resource)
 
+
 def cli_cosmosdb_table_role_definition_exists(client,
                                               resource_group_name,
                                               account_name,
@@ -2772,6 +2773,7 @@ def cli_cosmosdb_table_role_definition_exists(client,
         return _handle_exists_exception(ex.response)
 
     return True
+
 
 def cli_cosmosdb_table_role_definition_create(client,
                                               resource_group_name,
@@ -2785,7 +2787,8 @@ def cli_cosmosdb_table_role_definition_create(client,
         assignable_scopes=table_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_table_role_definition(resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_create_resource)
-   
+
+
 def cli_cosmosdb_table_role_definition_update(client,
                                               resource_group_name,
                                               account_name,
@@ -2804,7 +2807,8 @@ def cli_cosmosdb_table_role_definition_update(client,
         assignable_scopes=table_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_table_role_definition( resource_group_name, account_name, table_role_definition_body['Id'], table_role_definition_update_resource)
-    
+
+
 def cli_cosmosdb_table_role_assignment_exists(client,
                                               resource_group_name,
                                               account_name,
@@ -2816,6 +2820,7 @@ def cli_cosmosdb_table_role_assignment_exists(client,
         return _handle_exists_exception(ex.response)
 
     return True
+
 
 def cli_cosmosdb_table_role_assignment_create(client,
                                             resource_group_name,
@@ -2856,10 +2861,10 @@ def cli_cosmosdb_table_role_assignment_update(client,
 
     if role_definition_id is None and role_definition_name is None:
         raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
-        
+
     if role_assignment_id is None:
         raise CLIError('Providing role_assignment_id is required.')
-    
+
     table_role_assignment = client.get_table_role_assignment(resource_group_name, account_name, role_assignment_id)
 
     if role_assignment_id != table_role_assignment.name:
@@ -2871,6 +2876,7 @@ def cli_cosmosdb_table_role_assignment_update(client,
         principal_id=principal_id)
 
     return client.begin_create_update_table_role_assignment(resource_group_name, account_name, role_assignment_id, table_role_assignment_create_update_parameters)
+
 
 def cli_cosmosdb_gremlin_role_definition_exists(client,
                                               resource_group_name,
@@ -2884,6 +2890,7 @@ def cli_cosmosdb_gremlin_role_definition_exists(client,
 
     return True
 
+
 def cli_cosmosdb_gremlin_role_definition_create(client,
                                               resource_group_name,
                                               account_name,
@@ -2896,7 +2903,8 @@ def cli_cosmosdb_gremlin_role_definition_create(client,
         assignable_scopes=gremlin_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_gremlin_role_definition(resource_group_name, account_name, gremlin_role_definition_body['Id'], gremlin_role_definition_create_resource)
-   
+
+
 def cli_cosmosdb_gremlin_role_definition_update(client,
                                               resource_group_name,
                                               account_name,
@@ -2915,7 +2923,8 @@ def cli_cosmosdb_gremlin_role_definition_update(client,
         assignable_scopes=gremlin_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_gremlin_role_definition( resource_group_name, account_name, gremlin_role_definition_body['Id'], gremlin_role_definition_update_resource)
-    
+
+
 def cli_cosmosdb_gremlin_role_assignment_exists(client,
                                               resource_group_name,
                                               account_name,
@@ -2927,6 +2936,7 @@ def cli_cosmosdb_gremlin_role_assignment_exists(client,
         return _handle_exists_exception(ex.response)
 
     return True
+
 
 def cli_cosmosdb_gremlin_role_assignment_create(client,
                                             resource_group_name,
@@ -2967,7 +2977,7 @@ def cli_cosmosdb_gremlin_role_assignment_update(client,
 
     if role_definition_id is None and role_definition_name is None:
         raise CLIError('Providing one out of role_definition_id and role_definition_name is required.')
-        
+ 
     if role_assignment_id is None:
         raise CLIError('Providing role_assignment_id is required.')
     
@@ -2983,6 +2993,7 @@ def cli_cosmosdb_gremlin_role_assignment_update(client,
 
     return client.begin_create_update_gremlin_role_assignment(resource_group_name, account_name, role_assignment_id, gremlin_role_assignment_create_update_parameters)
 
+
 def cli_cosmosdb_cassandra_role_definition_exists(client,
                                               resource_group_name,
                                               account_name,
@@ -2994,6 +3005,7 @@ def cli_cosmosdb_cassandra_role_definition_exists(client,
         return _handle_exists_exception(ex.response)
 
     return True
+
 
 def cli_cosmosdb_cassandra_role_definition_create(client,
                                               resource_group_name,
@@ -3007,7 +3019,8 @@ def cli_cosmosdb_cassandra_role_definition_create(client,
         assignable_scopes=cassandra_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_cassandra_role_definition(resource_group_name, account_name, cassandra_role_definition_body['Id'], cassandra_role_definition_create_resource)
-   
+
+
 def cli_cosmosdb_cassandra_role_definition_update(client,
                                               resource_group_name,
                                               account_name,
@@ -3026,7 +3039,8 @@ def cli_cosmosdb_cassandra_role_definition_update(client,
         assignable_scopes=cassandra_role_definition_body['AssignableScopes'])
 
     return client.begin_create_update_cassandra_role_definition( resource_group_name, account_name, cassandra_role_definition_body['Id'], cassandra_role_definition_update_resource)
-    
+
+
 def cli_cosmosdb_cassandra_role_assignment_exists(client,
                                               resource_group_name,
                                               account_name,
@@ -3038,6 +3052,7 @@ def cli_cosmosdb_cassandra_role_assignment_exists(client,
         return _handle_exists_exception(ex.response)
 
     return True
+
 
 def cli_cosmosdb_cassandra_role_assignment_create(client,
                                             resource_group_name,
@@ -3094,19 +3109,21 @@ def cli_cosmosdb_cassandra_role_assignment_update(client,
 
     return client.begin_create_update_cassandra_role_assignment(resource_group_name, account_name, role_assignment_id, cassandra_role_assignment_create_update_parameters)
 
-def cli_cosmosdb_mongoMI_role_definition_exists(client,
+
+def cli_cosmosdb_mongomi_role_definition_exists(client,
                                               resource_group_name,
                                               account_name,
                                               role_definition_id):
     """Checks if an Azure Cosmos DB MongoMI Role Definition exists"""
     try:
-        client.get_mongoMI_role_definition(resource_group_name, account_name, role_definition_id)
+        client.get_mongo_mi_role_definition(resource_group_name, account_name, role_definition_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
     return True
 
-def cli_cosmosdb_mongoMI_role_definition_create(client,
+
+def cli_cosmosdb_mongomi_role_definition_create(client,
                                               resource_group_name,
                                               account_name,
                                               mongoMI_role_definition_body):
@@ -3117,15 +3134,16 @@ def cli_cosmosdb_mongoMI_role_definition_create(client,
         permissions=mongoMI_role_definition_body['Permissions'],
         assignable_scopes=mongoMI_role_definition_body['AssignableScopes'])
 
-    return client.begin_create_update_mongoMI_role_definition(resource_group_name, account_name, mongoMI_role_definition_body['Id'], mongoMI_role_definition_create_resource)
-   
-def cli_cosmosdb_mongoMI_role_definition_update(client,
+    return client.begin_create_update_mongo_mi_role_definition(resource_group_name, account_name, mongoMI_role_definition_body['Id'], mongoMI_role_definition_create_resource)
+
+
+def cli_cosmosdb_mongomi_role_definition_update(client,
                                               resource_group_name,
                                               account_name,
                                               mongoMI_role_definition_body):
     '''Update an existing Azure Cosmos DB MongoMI Role Definition'''
     logger.debug('reading MongoMI role definition')
-    mongoMI_role_definition = client.get_mongoMI_role_definition(resource_group_name, account_name, mongoMI_role_definition_body['Id'])
+    mongoMI_role_definition = client.get_mongo_mi_role_definition(resource_group_name, account_name, mongoMI_role_definition_body['Id'])
 
     if mongoMI_role_definition_body['RoleName'] != mongoMI_role_definition.role_name:
         raise InvalidArgumentValueError('Cannot update MongoMI Role Definition Name.')
@@ -3136,21 +3154,23 @@ def cli_cosmosdb_mongoMI_role_definition_update(client,
         permissions=mongoMI_role_definition_body['Permissions'],
         assignable_scopes=mongoMI_role_definition_body['AssignableScopes'])
 
-    return client.begin_create_update_mongoMI_role_definition( resource_group_name, account_name, mongoMI_role_definition_body['Id'], mongoMI_role_definition_update_resource)
-    
-def cli_cosmosdb_mongoMI_role_assignment_exists(client,
+    return client.begin_create_update_mongo_mi_role_definition( resource_group_name, account_name, mongoMI_role_definition_body['Id'], mongoMI_role_definition_update_resource)
+
+
+def cli_cosmosdb_mongomi_role_assignment_exists(client,
                                               resource_group_name,
                                               account_name,
                                               role_assignment_id):
     """Checks if an Azure Cosmos DB MongoMI Role assignment exists"""
     try:
-        client.get_mongoMI_role_assignment(resource_group_name, account_name,role_assignment_id)
+        client.get_mongo_mi_role_assignment(resource_group_name, account_name,role_assignment_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
     return True
 
-def cli_cosmosdb_mongoMI_role_assignment_create(client,
+
+def cli_cosmosdb_mongomi_role_assignment_create(client,
                                             resource_group_name,
                                             account_name,
                                             scope,
@@ -3171,10 +3191,10 @@ def cli_cosmosdb_mongoMI_role_assignment_create(client,
         scope=scope,
         principal_id=principal_id)
 
-    return client.begin_create_update_mongoMI_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
+    return client.begin_create_update_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
 
 
-def cli_cosmosdb_mongoMI_role_assignment_update(client,
+def cli_cosmosdb_mongomi_role_assignment_update(client,
                                             resource_group_name,
                                             account_name,
                                             scope,
@@ -3193,7 +3213,7 @@ def cli_cosmosdb_mongoMI_role_assignment_update(client,
     if role_assignment_id is None:
         raise CLIError('Providing role_assignment_id is required.')
     
-    mongoMI_role_assignment = client.get_mongoMI_role_assignment(resource_group_name, account_name, role_assignment_id)
+    mongoMI_role_assignment = client.get_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id)
 
     if role_assignment_id != mongoMI_role_assignment.name:
         raise InvalidArgumentValueError('Cannot update MongoMI Role Assignment Id.')
@@ -3203,4 +3223,4 @@ def cli_cosmosdb_mongoMI_role_assignment_update(client,
         scope=scope,
         principal_id=principal_id)
 
-    return client.begin_create_update_mongoMI_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
+    return client.begin_create_update_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
