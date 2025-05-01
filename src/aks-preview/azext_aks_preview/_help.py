@@ -3550,6 +3550,33 @@ helps['aks extension type show'] = """
       text: az aks extension type show --location eastus --extension-type type
 """
 
+helps['aks extension type list'] = """
+  type: command
+  short-summary: List available K8s Extension Types. The properties used for filtering include kubernetes version, location of the cluster.
+  parameters:
+    - name: --resource-group -g
+      type: string
+      short-summary: Name of the resource group.
+      long-summary: Name of the resource group. If not specified, default value is None
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+      long-summary: Name of the AKS cluster. If not specified, default value is None
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
+    - name: --release-train
+      type: string
+      short-summary: specify the release train for the K8s extension type
+  examples:
+    - name: List available K8s Extension Types for an existing cluster
+      text: az aks extension type list --resource-group my-resource-group \
+--cluster-name mycluster
+    - name: List available K8s Extension Types in a region
+      text: az aks extension type list --location eastus
+"""
+
 helps['aks extension type version'] = """
   type: group
   short-summary: Manage extension types version in Azure Kubernetes Service.
@@ -3574,35 +3601,16 @@ helps['aks extension type version show'] = """
     - name: --version
       type: string
       short-summary: Specify the extension version to show to the user
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
   examples:
     - name: Show properties for a K8s Extension Type version for an existing cluster
       text: az aks extension type version show --resource-group my-resource-group \
 --cluster-name mycluster --extension-type type --version 1.0.0
     - name: Show properties for a K8s Extension Type version for a location
       text: az aks extension type version show --location eastus --extension-type <type> --version 1.0.0
-"""
-
-helps['aks extension type list'] = """
-  type: command
-  short-summary: List available K8s Extension Types. The properties used for filtering include kubernetes version, location of the cluster.
-  parameters:
-    - name: --resource-group -g
-      type: string
-      short-summary: Name of the resource group.
-      long-summary: Name of the resource group. If not specified, default value is None
-    - name: --cluster-name -c
-      type: string
-      short-summary: Name of the AKS cluster
-      long-summary: Name of the AKS cluster. If not specified, default value is None
-    - name: --release-train
-      type: string
-      short-summary: specify the release train for the K8s extension type
-  examples:
-    - name: List available K8s Extension Types for an existing cluster
-      text: az aks extension type list --resource-group my-resource-group \
---cluster-name mycluster
-    - name: List available K8s Extension Types in a region
-      text: az aks extension type list --location eastus
 """
 
 helps['aks extension type version list'] = """
@@ -3620,6 +3628,10 @@ helps['aks extension type version list'] = """
     - name: --extension-type -t
       type: string
       short-summary: Name of the extension type
+    - name: --location -l
+      type: string
+      short-summary: Location of where we want to retrieve the extension type
+      long-summary: Location of where we want to retrieve the extension type. If not specified, default value is None
   examples:
     - name: List available K8s Extension Types for an existing cluster
       text: az aks extension type version list --resource-group my-resource-group \

@@ -2421,6 +2421,24 @@ def load_arguments(self, _):
                    options_list=['--location', '-l'],
                    validator=validate_location_cluster_name_resource_group_mutually_exclusive,
                    help='Name of the location. Values from: `az account list-locations`')
+
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
+    with self.argument_context("aks extension type version") as c:
+        c.argument('resource_group_name',
+                   options_list=['--resource-group', '-g'],
+                   validator=validate_resource_group_parameter,
+                   help='Name of resource group.')
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   help='Name of the Kubernetes cluster')
+        c.argument('extension_type',
+                   options_list=['--extension-type', '-t'],
+                   help='Name of the extension type.')
+        c.argument('location',
+                   options_list=['--location', '-l'],
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')
         c.argument('major_version',
