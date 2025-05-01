@@ -3989,7 +3989,6 @@ def show_k8s_extension_type_version(
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_types(cmd.cli_ctx)
-    output = []
     try:
         if location:
             result = k8s_extension_custom_mod.show_extension_type_version_by_location(
