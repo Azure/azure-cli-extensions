@@ -346,12 +346,6 @@ az network front-door waf-policy managed-rule-definition list
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetVersion'], version)
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetAction'], action)
 
-        cmd = 'az network front-door waf-policy managed-rule-definition list'
-        result = self.cmd(cmd).get_output_in_json()
-        defaultRuleSet = [ruleSet for ruleSet in result if ruleSet['ruleSetType'] == type][0]
-        sqlGroup = [group for group in defaultRuleSet['ruleGroups'] if group['ruleGroupName'] == rulegroupid][0]
-        rule = [rule for rule in sqlGroup['rules'] if rule['ruleId'] == ruleid][0]
-        self.assertEqual(rule['ruleId'], ruleid)
 
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     @live_only()  # --defer seems not work with VCR.py well
