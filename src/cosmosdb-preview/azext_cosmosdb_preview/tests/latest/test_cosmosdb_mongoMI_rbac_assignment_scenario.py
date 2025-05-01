@@ -50,32 +50,32 @@ class Cosmosdb_previewmongoMIRbacAssignmentScenarioTest(ScenarioTest):
 
         # ensure the built-in role exists
         assert self.cmd(
-            'az cosmosdb mongoMI role definition exists -g {rg} -a {acc} --role-definition-id 00000000-0000-0000-0000-000000000001').get_output_in_json()
+            'az cosmosdb mongomi role definition exists -g {rg} -a {acc} --role-definition-id 00000000-0000-0000-0000-000000000001').get_output_in_json()
         
         # ensure test role assignment doesnt already exists     
         self.cmd(
-            'az cosmosdb mongoMI role assignment delete -g {rg} -a {acc} --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 --yes')
+            'az cosmosdb mongomi role assignment delete -g {rg} -a {acc} --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 --yes')
         role_assignment_list = self.cmd(
-            'az cosmosdb mongoMI role assignment list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role assignment list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_assignment_list) == 0
         
         # Create a role assignment 
-        self.cmd('az cosmosdb mongoMI role assignment create -g {rg} -a {acc} --scope {scope} --principal-id {principal_id} --role-definition-id {builtin_role_def_id_full} --role-assignment-id {role_assignment_id}', checks=[
+        self.cmd('az cosmosdb mongomi role assignment create -g {rg} -a {acc} --scope {scope} --principal-id {principal_id} --role-definition-id {builtin_role_def_id_full} --role-assignment-id {role_assignment_id}', checks=[
             self.check('scope', scope),
             self.check('principalId', principal_id)
         ])
         
         # Show/list role assignment
-        self.cmd('az cosmosdb mongoMI role assignment show -g {rg} -a {acc} --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8', checks=[
+        self.cmd('az cosmosdb mongomi role assignment show -g {rg} -a {acc} --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8', checks=[
             self.check('name', 'cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8')
         ])
         
         role_assignment_list = self.cmd(
-            'az cosmosdb mongoMI role assignment list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role assignment list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_assignment_list) == 1
         
         # Update role assignment
-        self.cmd('az cosmosdb mongoMI role assignment update -g {rg} -a {acc} --scope {scope} --principal-id {principal_id} --role-definition-id {builtin_role_def_id_full_update} --role-assignment-id {role_assignment_id}', checks=[
+        self.cmd('az cosmosdb mongomi role assignment update -g {rg} -a {acc} --scope {scope} --principal-id {principal_id} --role-definition-id {builtin_role_def_id_full_update} --role-assignment-id {role_assignment_id}', checks=[
             self.check('scope', scope),
             self.check('principalId', principal_id)
         ])
@@ -83,8 +83,8 @@ class Cosmosdb_previewmongoMIRbacAssignmentScenarioTest(ScenarioTest):
         # Delete role assignment, for cleanup
         # ensure role assignment does not exist
         self.cmd(
-            'az cosmosdb mongoMI role assignment delete -g {rg} -a {acc} --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 --yes')
+            'az cosmosdb mongomi role assignment delete -g {rg} -a {acc} --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 --yes')
         role_assignment_list = self.cmd(
-            'az cosmosdb mongoMI role assignment list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role assignment list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_assignment_list) == 0
         

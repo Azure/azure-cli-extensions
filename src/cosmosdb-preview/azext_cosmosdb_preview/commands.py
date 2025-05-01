@@ -161,20 +161,20 @@ def load_command_table(self, _):
         g.command('delete', 'begin_delete_cassandra_role_assignment', confirmation=True)
 
     with self.command_group('cosmosdb mongomi role definition', cosmosdb_rbac_mongo_mi_sdk, client_factory=cf_mongo_mi_resources) as g:
-        g.custom_command('create', 'cli_cosmosdb_mongoMI_role_definition_create')
-        g.custom_command('update', 'cli_cosmosdb_mongoMI_role_definition_update')
-        g.custom_command('exists', 'cli_cosmosdb_mongoMI_role_definition_exists')
-        g.command('list', 'list_mongoMI_role_definitions')
-        g.show_command('show', 'get_mongoMI_role_definition')
-        g.command('delete', 'begin_delete_mongoMI_role_definition', confirmation=True)        
+        g.custom_command('create', 'cli_cosmosdb_mongomi_role_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_mongomi_role_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_mongomi_role_definition_exists')
+        g.command('list', 'list_mongo_mi_role_definitions')
+        g.show_command('show', 'get_mongo_mi_role_definition')
+        g.command('delete', 'begin_delete_mongo_mi_role_definition', confirmation=True)        
     
     with self.command_group('cosmosdb mongomi role assignment', cosmosdb_rbac_mongo_mi_sdk, client_factory=cf_mongo_mi_resources) as g:
-        g.custom_command('create', 'cli_cosmosdb_mongoMI_role_assignment_create')
-        g.custom_command('update', 'cli_cosmosdb_mongoMI_role_assignment_update')
-        g.custom_command('exists', 'cli_cosmosdb_mongoMI_role_assignment_exists')
-        g.command('list', 'list_mongoMI_role_assignments')
-        g.show_command('show', 'get_mongoMI_role_assignment')
-        g.command('delete', 'begin_delete_mongoMI_role_assignment', confirmation=True)
+        g.custom_command('create', 'cli_cosmosdb_mongomi_role_assignment_create')
+        g.custom_command('update', 'cli_cosmosdb_mongomi_role_assignment_update')
+        g.custom_command('exists', 'cli_cosmosdb_mongomi_role_assignment_exists')
+        g.command('list', 'list_mongo_mi_role_assignments')
+        g.show_command('show', 'get_mongo_mi_role_assignment')
+        g.command('delete', 'begin_delete_mongo_mi_role_assignment', confirmation=True)
                 
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(

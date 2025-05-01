@@ -90,33 +90,33 @@ class Cosmosdb_previewmongoMIRbacScenarioTest(ScenarioTest):
             'az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
 
         # Contract Violation for Role Definition. Failure tests
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{empty_role_def_id_body}"', expect_failure=True)
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{inalid_id_role_def_create_body}"', expect_failure=True)
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{empty_role_name_create_body}"', expect_failure=True)
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{no_resource_role_def_body}"', expect_failure=True)
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{no_actions_role_def_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{empty_role_def_id_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{inalid_id_role_def_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{empty_role_name_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{no_resource_role_def_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{no_actions_role_def_body}"', expect_failure=True)
                 
         # Make sure same role def does not exist
         self.cmd(
-            'az cosmosdb mongoMI role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id1} --yes')
+            'az cosmosdb mongomi role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id1} --yes')
         role_definition_list = self.cmd(
-            'az cosmosdb mongoMI role definition list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 2 # 2 built in roles
             
         assert self.cmd(
-            'az cosmosdb mongoMI role definition exists -g {rg} -a {acc} --role-definition-id 00000000-0000-0000-0000-000000000001').get_output_in_json()
+            'az cosmosdb mongomi role definition exists -g {rg} -a {acc} --role-definition-id 00000000-0000-0000-0000-000000000001').get_output_in_json()
             
         # Success Tests
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{create_body}"', checks=[
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{create_body}"', checks=[
             self.check('id', fully_qualified_role_def_id1),
             self.check('roleName', user_name)
         ])
         
-        self.cmd('az cosmosdb mongoMI role definition show -g {rg} -a {acc} --role-definition-id {role_def_id1}', checks=[
+        self.cmd('az cosmosdb mongomi role definition show -g {rg} -a {acc} --role-definition-id {role_def_id1}', checks=[
             self.check('roleName', user_name)
         ])
 
-        self.cmd('az cosmosdb mongoMI role definition update -g {rg} -a {acc} -b "{update_body}"', checks=[
+        self.cmd('az cosmosdb mongomi role definition update -g {rg} -a {acc} -b "{update_body}"', checks=[
             self.check('id', fully_qualified_role_def_id1),
             self.check('length(permissions[0].dataActions)', 1),
             self.check('permissions[0].dataActions[0]', 'Microsoft.DocumentDB/databaseAccounts/readMetadata')
@@ -124,28 +124,28 @@ class Cosmosdb_previewmongoMIRbacScenarioTest(ScenarioTest):
 
         # Make sure same role def does not exist
         self.cmd(
-            'az cosmosdb mongoMI role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id2} --yes')
+            'az cosmosdb mongomi role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id2} --yes')
         role_definition_list = self.cmd(
-            'az cosmosdb mongoMI role definition list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 3
         
-        self.cmd('az cosmosdb mongoMI role definition create -g {rg} -a {acc} -b "{create_body2}"', checks=[
+        self.cmd('az cosmosdb mongomi role definition create -g {rg} -a {acc} -b "{create_body2}"', checks=[
             self.check('id', fully_qualified_role_def_id2),
             self.check('roleName', 'testUser2'),
         ])
 
         role_definition_list = self.cmd(
-            'az cosmosdb mongoMI role definition list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 4
         
         self.cmd(
-            'az cosmosdb mongoMI role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id1} --yes')
+            'az cosmosdb mongomi role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id1} --yes')
         role_definition_list = self.cmd(
-            'az cosmosdb mongoMI role definition list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 3
 
         self.cmd(
-            'az cosmosdb mongoMI role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id2} --yes')
+            'az cosmosdb mongomi role definition delete -g {rg} -a {acc} --role-definition-id {role_def_id2} --yes')
         role_definition_list = self.cmd(
-            'az cosmosdb mongoMI role definition list -g {rg} -a {acc}').get_output_in_json()
+            'az cosmosdb mongomi role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 2
