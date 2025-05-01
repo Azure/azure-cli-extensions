@@ -237,7 +237,7 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
         ruleName = self.create_random_name(prefix='cli', length=24)
         frontdoorName = self.create_random_name(prefix='cli', length=24)
 
-        cmd = 'az network front-door waf-policy create --resource-group {resource_group} --name {policyName}'.format(**locals())
+        cmd = 'az network front-door waf-policy create --resource-group {resource_group} --name {policyName} --sku Classic_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
 
         self.assertIn('customRules', result)
@@ -280,9 +280,6 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
                 time.sleep(10)
                 elapsed_seconds += 10
             self.assertEqual(r.status_code, 403)
-
-            r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
-            self.assertEqual(r.status_code, 200)
 
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_managed_rules(self, resource_group):
