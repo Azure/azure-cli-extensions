@@ -24,9 +24,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-01",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2024-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-03-01"],
         ]
     }
 
@@ -75,9 +75,6 @@ class Update(AAZCommand):
             arg_group="Parameters",
             help="Resource location.",
             nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -94,6 +91,16 @@ class Update(AAZCommand):
         # define Arg Group "PolicySettings"
 
         _args_schema = cls._args_schema
+        _args_schema.captcha_expiration_in_minutes = AAZIntArg(
+            options=["--captcha-expiration-in-minutes"],
+            arg_group="PolicySettings",
+            help="Defines the Captcha cookie validity lifetime in minutes. This setting is only applicable to Premium_AzureFrontDoor. Value must be an integer between 5 and 1440 with the default value being 30.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=1440,
+                minimum=5,
+            ),
+        )
         _args_schema.custom_block_response_body = AAZStrArg(
             options=["--custom-block-response-body"],
             arg_group="PolicySettings",
@@ -226,7 +233,7 @@ class Update(AAZCommand):
         _element.action = AAZStrArg(
             options=["action"],
             help="Describes what action to be applied when rule matches.",
-            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
+            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "CAPTCHA": "CAPTCHA", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
         )
         _element.enabled_state = AAZStrArg(
             options=["enabled-state"],
@@ -418,7 +425,7 @@ class Update(AAZCommand):
             options=["action"],
             help="Describes the override action to be applied when rule matches.",
             nullable=True,
-            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
+            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "CAPTCHA": "CAPTCHA", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
         )
         _element.enabled_state = AAZStrArg(
             options=["enabled-state"],
@@ -566,7 +573,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -665,7 +672,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -835,11 +842,12 @@ class Update(AAZCommand):
 
             policy_settings = _builder.get(".properties.policySettings")
             if policy_settings is not None:
+                policy_settings.set_prop("captchaExpirationInMinutes", AAZIntType, ".captcha_expiration_in_minutes")
                 policy_settings.set_prop("customBlockResponseBody", AAZStrType, ".custom_block_response_body")
                 policy_settings.set_prop("customBlockResponseStatusCode", AAZIntType, ".custom_block_response_status_code")
                 policy_settings.set_prop("enabledState", AAZStrType, ".enabled_state")
                 policy_settings.set_prop("javascriptChallengeExpirationInMinutes", AAZIntType, ".javascript_challenge_expiration_in_minutes")
-                policy_settings.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing")
+                policy_settings.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing", typ_kwargs={"flags": {"client_flatten": True}})
                 policy_settings.set_prop("mode", AAZStrType, ".mode")
                 policy_settings.set_prop("redirectUrl", AAZStrType, ".redirect_url")
                 policy_settings.set_prop("requestBodyCheck", AAZStrType, ".request_body_check")
@@ -1127,6 +1135,9 @@ class _UpdateHelper:
         cls._build_schema_managed_rule_exclusion_read(exclusions.Element)
 
         policy_settings = _schema_web_application_firewall_policy_read.properties.policy_settings
+        policy_settings.captcha_expiration_in_minutes = AAZIntType(
+            serialized_name="captchaExpirationInMinutes",
+        )
         policy_settings.custom_block_response_body = AAZStrType(
             serialized_name="customBlockResponseBody",
         )
@@ -1141,6 +1152,7 @@ class _UpdateHelper:
         )
         policy_settings.log_scrubbing = AAZObjectType(
             serialized_name="logScrubbing",
+            flags={"client_flatten": True},
         )
         policy_settings.mode = AAZStrType()
         policy_settings.redirect_url = AAZStrType(

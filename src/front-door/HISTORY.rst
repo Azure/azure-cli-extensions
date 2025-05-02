@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.0
+++++++
+* Add support for captcha
+
 1.2.1
 ++++++
 * Update module documentation.
