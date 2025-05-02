@@ -69,6 +69,7 @@ from azext_aks_preview._helpers import (
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
     get_all_extension_types_in_allow_list,
+    get_all_extensions_in_allow_list,
     raise_validation_error_if_extension_type_not_in_allow_list,
 )
 from azext_aks_preview._podidentity import (
@@ -3774,7 +3775,7 @@ def list_k8s_extension(
             cluster_name,
             cluster_type="managedClusters",
         )
-        return result
+        return get_all_extensions_in_allow_list(result)
     except Exception as ex:
         logger.error("Failed to list the K8s extension.\nError: %s", ex)
 

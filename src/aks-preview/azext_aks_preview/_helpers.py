@@ -434,3 +434,11 @@ def get_all_extension_types_in_allow_list(result):
         if _check_if_extension_type_is_in_allow_list(obj.name.lower()):
             output.append(obj)
     return output
+
+
+def get_all_extensions_in_allow_list(result):
+    output = []
+    for obj in result:
+        if _check_if_extension_type_is_in_allow_list(obj.extension_type.lower()):
+            output.append(obj)
+    return output
