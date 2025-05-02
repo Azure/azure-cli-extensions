@@ -2865,7 +2865,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        return self.raw_param.get("migrate_vmas_to_vms")
+        migrate_vmas_to_vms = self.raw_param.get("migrate_vmas_to_vms")
+        if migrate_vmas_to_vms:
+            msg = "This node image upgrade operation will run across every node pool in the cluster " \
+            "and might take a while. Do you wish to continue?"
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                return None
+        return migrate_vmas_to_vms
 
 
 # pylint: disable=too-many-public-methods
