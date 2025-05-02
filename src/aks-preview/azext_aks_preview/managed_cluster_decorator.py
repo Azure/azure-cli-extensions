@@ -2865,14 +2865,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        migrate_vmas_to_vms = self.raw_param.get("migrate_vmas_to_vms")
-        if migrate_vmas_to_vms:
-            msg = "This node image upgrade operation will run across every node pool in the cluster " \
-            "and might take a while. Do you wish to continue?"
-            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
-                return None
-        return migrate_vmas_to_vms
-
+        return self.raw_param.get("migrate_vmas_to_vms")
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -5359,6 +5352,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_migrate_vmas_to_vms():
+            msg = " WARNING: This operation will be disruptive to your workload while underway. " \
+            "Do you wish to continue?"
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
             # Ensure we have valid vmas AP
             if len(mc.agent_pool_profiles) == 1 and mc.agent_pool_profiles[0].type == CONST_AVAILABILITY_SET:
                 mc.agent_pool_profiles[0].type = CONST_VIRTUAL_MACHINES
