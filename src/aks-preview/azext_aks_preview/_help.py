@@ -1755,10 +1755,10 @@ helps['aks namespace update'] = """
         - name: --memory-limit
           type: string
           short-summary: Memory limit of the namespace.
-        - name: --ingress-rule
+        - name: --ingress-policy
           type: string
           short-summary: Ingress policy rule for the network.
-        - name: --egress-rule
+        - name: --egress-policy
           type: string
           short-summary: Egress policy rule for the network.
         - name: --adoption-policy
