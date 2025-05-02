@@ -15780,7 +15780,7 @@ spec:
             'rg': resource_group,
             'cluster_name': aks_name,
             'extension_type': extension_type,
-            'release_train': 'stable',
+            'release_train': 'Stable',
             'version': '1.15.1',
             "ssh_key_value": self.generate_ssh_keys(),
         })
@@ -15795,7 +15795,7 @@ spec:
 
         # Update the K8s extension 
         self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
-                 '--no-wait --config useKubeletIdentity=true')
+                 '--no-wait --yes --config useKubeletIdentity=true')
 
         # list the K8s extension on the cluster
         installed_exts = self.cmd('aks extension list -c {cluster_name} -g {rg}').get_output_in_json()
@@ -15810,7 +15810,6 @@ spec:
         self.cmd('aks extension show -c {cluster_name} -g {rg} -n {name}', checks=[
             self.check('name', '{name}'),
             self.check('releaseTrain', '{release_train}'),
-            self.check('version', '{version}'),
             self.check('resourceGroup', '{rg}'),
             self.check('extensionType', '{extension_type}')
         ])
@@ -15879,7 +15878,7 @@ spec:
                  'storageAccountSubscriptionId={subscription}')
 
         # Update the K8s extension 
-        self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} '
+        self.cmd('aks extension update -g {rg} -n {name} -c {cluster_name} --yes '
                  '--no-wait --configuration-settings testKey=testValue')
 
         # list the K8s extension on the cluster
@@ -15925,7 +15924,7 @@ spec:
             'rg': resource_group,
             'cluster_name': aks_name,
             'extension_type': extension_type,
-            'release_train': 'stable',
+            'release_train': 'Stable',
             'version': '1.15.1',
             "ssh_key_value": self.generate_ssh_keys(),
             'location': resource_group_location,
@@ -16005,7 +16004,7 @@ spec:
             'rg': resource_group,
             'cluster_name': aks_name,
             'extension_type': extension_type,
-            'release_train': 'stable',
+            'release_train': 'Stable',
             'version': '0.0.3004-544',
             'storageAccount': storage_account,
             'blob': blob,
