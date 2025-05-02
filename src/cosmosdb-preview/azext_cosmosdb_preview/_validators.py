@@ -266,11 +266,11 @@ def validate_table_role_definition_body(cmd, ns):
         if 'RoleName' not in table_role_definition or not isinstance(table_role_definition['RoleName'], str) or len(table_role_definition['RoleName']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid table role name. A valid string role name is expected.')
-                            
+
         if 'AssignableScopes' not in table_role_definition or not isinstance(table_role_definition['AssignableScopes'], list) or len(table_role_definition['AssignableScopes']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid Table role definition for AssignableScopes. A valid list of strings is expected.')        
-        
+
         if 'Permissions' not in table_role_definition or not isinstance(table_role_definition['Permissions'], list) or len(table_role_definition['Permissions']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid Table role Permissions. A valid List JSON representation is expected.')
@@ -284,7 +284,7 @@ def validate_table_role_definition_id(ns):
     """ Extracts Guid role definition Id """
     if ns.role_definition_id is not None:
         ns.role_definition_id = _parse_resource_path(ns.role_definition_id, False, "tableRoleDefinitions")
-        
+
 def validate_table_role_assignment_id(ns):
     """ Extracts Guid role assignment Id """
     if ns.role_assignment_id is not None:
