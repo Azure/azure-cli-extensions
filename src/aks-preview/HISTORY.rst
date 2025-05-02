@@ -37,6 +37,7 @@ Pending
 14.0.0b6
 +++++++
 * Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
+* Add option `--migrate-vmas-to-vms` to `az aks update`
 
 14.0.0b5
 ++++++++
