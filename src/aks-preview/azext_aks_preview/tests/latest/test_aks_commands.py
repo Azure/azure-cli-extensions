@@ -15951,7 +15951,7 @@ spec:
     #     # update -- migrate vmas to vma
     #     update_cmd = (
     #         "aks update --resource-group {resource_group} --name {name} "
-    #         "--migrate-vmas-to-vms "
+    #         "--migrate-vmas-to-vms --yes "
     #     )
     #     self.cmd(update_cmd, checks=[
     #         self.check('provisioningState', 'Succeeded'),
