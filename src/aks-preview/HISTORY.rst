@@ -19,7 +19,7 @@ Pending
 
 14.0.0b7
 ++++++++
-* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines to awalys support only a single SKU size.
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
 
 14.0.0b6
 +++++++
