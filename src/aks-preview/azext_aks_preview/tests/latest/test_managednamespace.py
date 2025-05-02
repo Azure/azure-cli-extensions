@@ -60,7 +60,7 @@ class TestAddManagedNamespace(unittest.TestCase):
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertEqual(str(cm.exception), err)
     
-    def test_add_managed_namespace_with_invalid_ingress_rule(self):
+    def test_add_managed_namespace_with_invalid_ingress_policy(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
@@ -72,14 +72,14 @@ class TestAddManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "deny",
+            "ingress_policy": "deny",
         }
-        err = "Invalid ingress_rule 'deny'"
+        err = "Invalid ingress_policy 'deny'"
         with self.assertRaises(InvalidArgumentValueError) as cm:
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertIn(err, str(cm.exception))
 
-    def test_add_managed_namespace_with_invalid_egress_rule(self):
+    def test_add_managed_namespace_with_invalid_egress_policy(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
@@ -91,10 +91,10 @@ class TestAddManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "DenyAll",
-            "egress_rule": "deny",
+            "ingress_policy": "DenyAll",
+            "egress_policy": "deny",
         }
-        err = "Invalid egress_rule 'deny'"
+        err = "Invalid egress_policy 'deny'"
         with self.assertRaises(InvalidArgumentValueError) as cm:
             ns.aks_managed_namespace_add(cmd, None, raw_parameters, None, False)
         self.assertIn(err, str(cm.exception))
@@ -111,8 +111,8 @@ class TestAddManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "DenyAll",
-            "egress_rule": "AllowAll",
+            "ingress_policy": "DenyAll",
+            "egress_policy": "AllowAll",
             "adoption_policy": "abc",
         }
         err = "Invalid adoption policy 'abc'"
@@ -132,8 +132,8 @@ class TestAddManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "DenyAll",
-            "egress_rule": "AllowAll",
+            "ingress_policy": "DenyAll",
+            "egress_policy": "AllowAll",
             "adoption_policy": "Always",
             "delete_policy": "abc",
         }
@@ -146,7 +146,7 @@ class TestAddManagedNamespace(unittest.TestCase):
     # aks_managed_namespace_update(cmd, client, raw_parameters, headers, existedNamespace, no_wait)
 
 class TestUpdateManagedNamespace(unittest.TestCase):
-    def test_update_managed_namespace_with_invalid_ingress_rule(self):
+    def test_update_managed_namespace_with_invalid_ingress_policy(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
@@ -158,14 +158,14 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "deny",
+            "ingress_policy": "deny",
         }
-        err = "Invalid ingress_rule 'deny'"
+        err = "Invalid ingress_policy 'deny'"
         with self.assertRaises(InvalidArgumentValueError) as cm:
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
 
-    def test_update_managed_namespace_with_invalid_egress_rule(self):
+    def test_update_managed_namespace_with_invalid_egress_policy(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
         cmd = MockCmd(cli_ctx)
@@ -177,10 +177,10 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "DenyAll",
-            "egress_rule": "deny",
+            "ingress_policy": "DenyAll",
+            "egress_policy": "deny",
         }
-        err = "Invalid egress_rule 'deny'"
+        err = "Invalid egress_policy 'deny'"
         with self.assertRaises(InvalidArgumentValueError) as cm:
             ns.aks_managed_namespace_update(cmd, None, raw_parameters, None, None, False)
         self.assertIn(err, str(cm.exception))
@@ -197,8 +197,8 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "DenyAll",
-            "egress_rule": "AllowAll",
+            "ingress_policy": "DenyAll",
+            "egress_policy": "AllowAll",
             "adoption_policy": "abc",
         }
         err = "Invalid adoption policy 'abc'"
@@ -218,8 +218,8 @@ class TestUpdateManagedNamespace(unittest.TestCase):
             "cpu_limit": "500m",
             "memory_request": "1Gi",
             "memory_limit": "2Gi",
-            "ingress_rule": "DenyAll",
-            "egress_rule": "AllowAll",
+            "ingress_policy": "DenyAll",
+            "egress_policy": "AllowAll",
             "adoption_policy": "Always",
             "delete_policy": "abc",
         }

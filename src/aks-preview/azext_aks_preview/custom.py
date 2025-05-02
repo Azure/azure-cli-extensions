@@ -245,8 +245,8 @@ def aks_namespace_add(
     labels=None,
     annotations=None,
     aks_custom_headers=None,
-    ingress_rule=None,
-    egress_rule=None,
+    ingress_policy=None,
+    egress_policy=None,
     adoption_policy=None,
     delete_policy=None,
     no_wait=False,
@@ -283,8 +283,8 @@ def aks_namespace_update(
     labels=None,
     annotations=None,
     aks_custom_headers=None,
-    ingress_rule=None,
-    egress_rule=None,
+    ingress_policy=None,
+    egress_policy=None,
     adoption_policy=None,
     delete_policy=None,
     no_wait=False,
@@ -361,16 +361,12 @@ def aks_namespace_get_credentials(
     resource_group_name,
     cluster_name,
     name,
-    user="clusterUser",
     path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
     overwrite_existing=False,
     context_name=None,
 ):
     credentialResults = None
-    if user.lower() == 'clusteruser':
-        credentialResults = client.list_credential(resource_group_name, cluster_name, name)
-    else:
-        raise InvalidArgumentValueError("The value of option --user is invalid.")
+    credentialResults = client.list_credential(resource_group_name, cluster_name, name)
 
     # Check if KUBECONFIG environmental variable is set
     # If path is different than default then that means -f/--file is passed

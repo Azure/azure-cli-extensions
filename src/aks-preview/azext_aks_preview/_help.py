@@ -1699,24 +1699,24 @@ helps['aks namespace add'] = """
         - name: --memory-limit
           type: string
           short-summary: Memory limit of the namespace.
-        - name: --ingress-rule
+        - name: --ingress-policy
           type: string
-          short-summary: Ingress policy rule for the network.
-        - name: --egress-rule
+          short-summary: Ingress policy for the network. The default value is AllowSameNamespace.
+        - name: --egress-policy
           type: string
-          short-summary: Egress policy rule for the network.
+          short-summary: Egress policy for the network. The default value is AllowAll.
         - name: --adoption-policy
           type: string
-          short-summary: Action if Kubernetes namespace with same name already exists.
+          short-summary: Action if Kubernetes namespace with same name already exists. The default value is Never.
         - name: --delete-policy
           type: string
-          short-summary: Delete options of a namespace
+          short-summary: Delete options of a namespace. The default value is Keep.
         - name: --aks-custom-headers
           type: string
-          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
         - name: --no-wait
           type: bool
-          short-summary: Do not wait for the long-running operation to finish
+          short-summary: Do not wait for the long-running operation to finish.
     examples:
         - name: Create a namespace in an existing AKS cluster.
           text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
@@ -1797,9 +1797,6 @@ helps['aks namespace get-credentials'] = """
 type: command
 short-summary: Get access credentials for a managed namespace.
 parameters:
-  - name: --user -u
-    type: string
-    short-summary: "Get credentials for the user. Default: cluster user credentials."
   - name: --file -f
     type: string
     short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.

@@ -317,7 +317,7 @@ nrg_lockdown_restriction_levels = [
 ]
 
 # consts for managed namespace
-network_policy_rules = [
+network_policy_rule = [
     CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
     CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL,
     CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE,
@@ -1452,8 +1452,8 @@ def load_arguments(self, _):
             c.argument("cpu_limit", type=str, options_list=["--cpu-limit"], validator=validate_resource_quota)
             c.argument("memory_request", type=str, options_list=["--memory-request"], validator=validate_resource_quota)
             c.argument("memory_limit", type=str, options_list=["--memory-limit"], validator=validate_resource_quota)
-            c.argument("ingress_rule", options_list=["--ingress-rule"], arg_type=get_enum_type(network_policy_rules))
-            c.argument("egress_rule", options_list=["--egress-rule"], arg_type=get_enum_type(network_policy_rules))
+            c.argument("ingress_policy", options_list=["--ingress-policy"], arg_type=get_enum_type(network_policy_rule))
+            c.argument("egress_policy", options_list=["--egress-policy"], arg_type=get_enum_type(network_policy_rule))
             c.argument("adoption_policy", options_list=["--adoption-policy"], arg_type=get_enum_type(adoption_policy))
             c.argument("delete_policy", options_list=["--delete-policy"], arg_type=get_enum_type(delete_policy))
             c.argument("aks_custom_headers", options_list=["--aks-custom-headers"])
@@ -1482,12 +1482,6 @@ def load_arguments(self, _):
             "context_name",
             options_list=["--context"],
             help="If specified, overwrite the default context name.",
-        )
-        c.argument(
-            "user",
-            options_list=["--user", "-u"],
-            default="clusterUser",
-            validator=validate_user,
         )
         c.argument(
             "path",

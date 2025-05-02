@@ -107,8 +107,8 @@ def setResourceQuota(cmd, raw_parameters):
 
 
 def setNetworkPolicyRule(cmd, raw_parameters):
-    ingress_rule = raw_parameters.get("ingress_rule") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE
-    egress_rule = raw_parameters.get("egress_rule") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
+    ingress_policy = raw_parameters.get("ingress_policy") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWSAMENAMESPACE
+    egress_policy = raw_parameters.get("egress_policy") or CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
 
     valid_network_policy_rules = {
         CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
@@ -116,15 +116,15 @@ def setNetworkPolicyRule(cmd, raw_parameters):
         CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
     }
 
-    if ingress_rule not in valid_network_policy_rules:
+    if ingress_policy not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
-            f"Invalid ingress_rule '{ingress_rule}'. Must be one of: "
+            f"Invalid ingress_policy '{ingress_policy}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
 
-    if egress_rule not in valid_network_policy_rules:
+    if egress_policy not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
-            f"Invalid egress_rule '{egress_rule}'. Must be one of: "
+            f"Invalid egress_policy '{egress_policy}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
 
@@ -135,8 +135,8 @@ def setNetworkPolicyRule(cmd, raw_parameters):
     )
 
     np = NetworkPolicies(
-        ingress=ingress_rule,
-        egress=egress_rule
+        ingress=ingress_policy,
+        egress=egress_policy
     )
 
     return np
@@ -276,8 +276,8 @@ def updateResourceQuota(cmd, raw_parameters, existedNamespace):
 
 
 def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
-    ingress_rule = raw_parameters.get("ingress_rule")
-    egress_rule = raw_parameters.get("egress_rule")
+    ingress_policy = raw_parameters.get("ingress_policy")
+    egress_policy = raw_parameters.get("egress_policy")
 
     valid_network_policy_rules = {
         CONST_NAMESPACE_NETWORK_POLICY_RULE_DENYALL,
@@ -285,23 +285,23 @@ def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
         CONST_NAMESPACE_NETWORK_POLICY_RULE_ALLOWALL
     }
 
-    if ingress_rule is not None and ingress_rule not in valid_network_policy_rules:
+    if ingress_policy is not None and ingress_policy not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
-            f"Invalid ingress_rule '{ingress_rule}'. Must be one of: "
+            f"Invalid ingress_policy '{ingress_policy}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
 
-    if egress_rule is not None and egress_rule not in valid_network_policy_rules:
+    if egress_policy is not None and egress_policy not in valid_network_policy_rules:
         raise InvalidArgumentValueError(
-            f"Invalid egress_rule '{egress_rule}'. Must be one of: "
+            f"Invalid egress_policy '{egress_policy}'. Must be one of: "
             f"{', '.join(valid_network_policy_rules)}"
         )
 
-    if ingress_rule is None:
-        ingress_rule = existedNamespace.properties.default_network_policy.ingress
+    if ingress_policy is None:
+        ingress_policy = existedNamespace.properties.default_network_policy.ingress
 
-    if egress_rule is None:
-        egress_rule = existedNamespace.properties.default_network_policy.egress
+    if egress_policy is None:
+        egress_policy = existedNamespace.properties.default_network_policy.egress
 
     NetworkPolicies = cmd.get_models(
         "NetworkPolicies",
@@ -310,8 +310,8 @@ def updateNetworkPolicyRule(cmd, raw_parameters, existedNamespace):
     )
 
     np = NetworkPolicies(
-        ingress=ingress_rule,
-        egress=egress_rule
+        ingress=ingress_policy,
+        egress=egress_policy
     )
 
     return np
