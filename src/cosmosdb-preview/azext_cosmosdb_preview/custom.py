@@ -87,19 +87,12 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import 
 )
 
 from azext_cosmosdb_preview._client_factory import (
-    cf_restorable_gremlin_resources,
-    cf_restorable_table_resources,
     cf_restorable_database_accounts
 )
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
 from azure.core.exceptions import ResourceNotFoundError
-
-from azure.cli.command_modules.cosmosdb._client_factory import (
-    cf_restorable_sql_resources,
-    cf_restorable_mongodb_resources
-)
 
 DEFAULT_INDEXING_POLICY = """{
   "indexingMode": "consistent",

@@ -266,7 +266,7 @@ def validate_table_role_definition_body(cmd, ns):
         if 'RoleName' not in table_role_definition or not isinstance(table_role_definition['RoleName'], str) or len(table_role_definition['RoleName']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid table role name. A valid string role name is expected.')
-               
+
         if 'AssignableScopes' not in table_role_definition or not isinstance(table_role_definition['AssignableScopes'], list) or len(table_role_definition['AssignableScopes']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid Table role definition for AssignableScopes. A valid list of strings is expected.')        
