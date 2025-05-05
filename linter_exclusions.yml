@@ -2092,12 +2092,18 @@ network front-door waf-policy create:
     custom_block_response_status_code:
       rule_exclusions:
       - option_length_too_long
+    captcha_expiration_in_minutes:
+      rule_exclusions:
+      - option_length_too_long
 network front-door waf-policy update:
   parameters:
     custom_block_response_body:
       rule_exclusions:
       - option_length_too_long
     custom_block_response_status_code:
+      rule_exclusions:
+      - option_length_too_long
+    captcha_expiration_in_minutes:
       rule_exclusions:
       - option_length_too_long
 network manager connect-config create:
