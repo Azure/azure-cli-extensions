@@ -15789,6 +15789,9 @@ spec:
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
 
+        # add K8s extension 
+        self.cmd('extension add -n k8s-extension')
+
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
                  '--extension-type {extension_type} --no-wait')
@@ -15868,6 +15871,9 @@ spec:
             'subscription': subscription,
         })
 
+        # add K8s extension 
+        self.cmd('extension add -n k8s-extension')
+
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
                  '--extension-type {extension_type}  --scope cluster '
@@ -15933,6 +15939,9 @@ spec:
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
+
+        # add K8s extension 
+        self.cmd('extension add -n k8s-extension')
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
@@ -16029,6 +16038,10 @@ spec:
         self.kwargs.update({
             'subscription': subscription,
         })
+
+        # add K8s extension 
+        self.cmd('extension add -n k8s-extension')
+
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
                  '--extension-type {extension_type}  --scope cluster '
