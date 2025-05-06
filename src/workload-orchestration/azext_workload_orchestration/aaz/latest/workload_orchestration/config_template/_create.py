@@ -9,7 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+from azure.cli.core.azclierror import ValidationError
+import yaml
 
 @register_command(
     "workload-orchestration config-template create",
@@ -45,7 +46,7 @@ class Create(AAZCommand):
         _args_schema.config_template_name = AAZStrArg(
             options=["-n", "--name", "--config-template-name"],
             help="The name of the ConfigTemplate",
-            required=True,
+            required=False,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -149,7 +150,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/configTemplates/{configTemplateName}",
                 **self.url_parameters
             )
 
@@ -163,9 +164,29 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            configTemplateName = str(self.ctx.args.config_template_name)
+            configTemplateValue = object()
+
+            try:
+                configTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(configTemplateValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if configTemplateName == "Undefined" and configTemplateValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("Schema name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
+            
+            if configTemplateName != "Undefined" and configTemplateValue.get("metadata", {}).get("name") is not None and configTemplateName != configTemplateValue['metadata']['name']:
+                raise ValidationError("Schema name passed as argument and name passed in schema yaml has different values")
+            
+            if configTemplateName == "Undefined":    
+                configTemplateName = configTemplateValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
-                    "configTemplateName", self.ctx.args.config_template_name,
+                    "configTemplateName", configTemplateName,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -331,7 +352,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}/createVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/configTemplates/{configTemplateName}/createVersion",
                 **self.url_parameters
             )
 
@@ -345,9 +366,29 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            configTemplateName = str(self.ctx.args.config_template_name)
+            configTemplateValue = object()
+
+            try:
+                configTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(configTemplateValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if configTemplateName == "Undefined" and configTemplateValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("Schema name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
+            
+            if configTemplateName != "Undefined" and configTemplateValue.get("metadata", {}).get("name") is not None and configTemplateName != configTemplateValue['metadata']['name']:
+                raise ValidationError("Schema name passed as argument and name passed in schema yaml has different values")
+            
+            if configTemplateName == "Undefined":    
+                configTemplateName = configTemplateValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
-                    "configTemplateName", self.ctx.args.config_template_name,
+                    "configTemplateName", configTemplateName,
                     required=True,
                 ),
                 **self.serialize_url_param(
