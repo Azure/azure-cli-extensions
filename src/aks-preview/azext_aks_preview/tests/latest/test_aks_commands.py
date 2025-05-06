@@ -5672,36 +5672,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         ).get_output_in_json()
 
-        # make sure a DCR was not created
-
-        cluster_resource_id = response["id"]
-        subscription = cluster_resource_id.split("/")[2]
-        workspace_resource_id = response["addonProfiles"]["omsagent"]["config"][
-            "logAnalyticsWorkspaceResourceID"
-        ]
-
-        try:
-            # check that the DCR was created
-            location = resource_group_location
-            dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
-            dataCollectionRuleName = dataCollectionRuleName[0:64]
-            dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
-            get_cmd = f"rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01"
-            self.cmd(
-                get_cmd,
-                checks=[
-                    self.check(
-                        "properties.destinations.logAnalytics[0].workspaceResourceId",
-                        f"{workspace_resource_id}",
-                    )
-                ],
-            )
-
-            assert False
-        except Exception:
-            # do nothing as this is expected
-            {}
-
         # make sure monitoring can be smoothly disabled
         self.cmd(f"aks disable-addons -a monitoring -g={resource_group} -n={aks_name}")
 
