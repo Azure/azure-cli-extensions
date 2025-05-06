@@ -231,6 +231,9 @@ helps['aks create'] = f"""
         - name: --acns-advanced-networkpolicies
           type: string
           short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --enable-retina-flow-logs
+          type: bool
+          short-summary: Enable advanced network flow log collection functionalities on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1220,6 +1223,12 @@ helps['aks update'] = """
         - name: --acns-advanced-networkpolicies
           type: string
           short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --enable-retina-flow-logs
+          type: bool
+          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+        - name: --disable-retina-flow-logs
+          type: bool
+          short-summary: Disable advanced network flow log collection functionalities on a cluster.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -2752,80 +2761,6 @@ helps['aks nodepool snapshot create'] = """
 helps['aks nodepool snapshot delete'] = """
     type: command
     short-summary: Delete a nodepool snapshot.
-"""
-
-helps['aks trustedaccess'] = """
-    type: group
-    short-summary: Commands to manage trusted access security features.
-"""
-
-helps['aks trustedaccess role'] = """
-    type: group
-    short-summary: Commands to manage trusted access roles.
-"""
-
-helps['aks trustedaccess role list'] = """
-    type: command
-    short-summary: List trusted access roles.
-"""
-
-helps['aks trustedaccess rolebinding'] = """
-    type: group
-    short-summary: Commands to manage trusted access role bindings.
-"""
-
-helps['aks trustedaccess rolebinding list'] = """
-    type: command
-    short-summary: List all the trusted access role bindings.
-"""
-
-helps['aks trustedaccess rolebinding show'] = """
-    type: command
-    short-summary: Get the specific trusted access role binding according to binding name.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-"""
-
-helps['aks trustedaccess rolebinding create'] = """
-    type: command
-    short-summary: Create a new trusted access role binding.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-        - name: --roles
-          type: string
-          short-summary: Specify the space-separated roles.
-        - name: --source-resource-id
-          type: string
-          short-summary: Specify the source resource id of the binding.
-
-    examples:
-        - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName --source-resource-id /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
-"""
-
-helps['aks trustedaccess rolebinding update'] = """
-    type: command
-    short-summary: Update a trusted access role binding.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
-        - name: --roles
-          type: string
-          short-summary: Specify the space-separated roles.
-"""
-
-helps['aks trustedaccess rolebinding delete'] = """
-    type: command
-    short-summary: Delete a trusted access role binding according to name.
-    parameters:
-        - name: --name -n
-          type: string
-          short-summary: Specify the role binding name.
 """
 
 helps['aks draft'] = """

@@ -500,6 +500,7 @@ def aks_create(
     disable_acns_observability=None,
     disable_acns_security=None,
     acns_advanced_networkpolicies=None,
+    enable_retina_flow_logs=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -732,6 +733,8 @@ def aks_update(
     disable_acns_observability=None,
     disable_acns_security=None,
     acns_advanced_networkpolicies=None,
+    enable_retina_flow_logs=None,
+    disable_retina_flow_logs=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -2967,60 +2970,6 @@ def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint
         return client.list()
 
     return client.list_by_resource_group(resource_group_name)
-
-
-def aks_trustedaccess_role_list(cmd, client, location):  # pylint: disable=unused-argument
-    return client.list(location)
-
-
-def aks_trustedaccess_role_binding_list(cmd, client, resource_group_name, cluster_name):   # pylint: disable=unused-argument
-    return client.list(resource_group_name, cluster_name)
-
-
-def aks_trustedaccess_role_binding_get(cmd, client, resource_group_name, cluster_name, role_binding_name):
-    return client.get(resource_group_name, cluster_name, role_binding_name)
-
-
-def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, cluster_name, role_binding_name,
-                                          source_resource_id, roles):
-    TrustedAccessRoleBinding = cmd.get_models(
-        "TrustedAccessRoleBinding",
-        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="trusted_access_role_bindings",
-    )
-    existedBinding = None
-    try:
-        existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
-    except ResourceNotFoundError:
-        pass
-
-    if existedBinding:
-        raise Exception(  # pylint: disable=broad-exception-raised
-            "TrustedAccess RoleBinding " +
-            role_binding_name +
-            " already existed, please use 'az aks trustedaccess rolebinding update' command to update!"
-        )
-
-    roleList = roles.split(',')
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
-    return client.begin_create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
-
-
-def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, cluster_name, role_binding_name, roles):
-    TrustedAccessRoleBinding = cmd.get_models(
-        "TrustedAccessRoleBinding",
-        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="trusted_access_role_bindings",
-    )
-    existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
-
-    roleList = roles.split(',')
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roleList)
-    return client.begin_create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
-
-
-def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
-    return client.begin_delete(resource_group_name, cluster_name, role_binding_name)
 
 
 def aks_mesh_enable(

@@ -11,9 +11,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-14.0.0b7
+14.0.0b8
 +++++++
 * Add aks extension and aks extension-type command groups
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
 
 14.0.0b6
 +++++++
