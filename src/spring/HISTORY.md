@@ -1,5 +1,9 @@
 Release History
 ===============
+1.27.2
+---
+* Fix clean up config file patterns of Application Configuration Service.
+
 1.27.1
 ---
 * Support scenario of bringing your own container image for command `az spring export`.
