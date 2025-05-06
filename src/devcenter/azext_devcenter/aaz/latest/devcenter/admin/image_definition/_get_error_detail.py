@@ -12,15 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin plan wait",
+    "devcenter admin image-definition get-error-detail",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class GetErrorDetail(AAZCommand):
+    """Gets Image Definition error details
+
+    :example: Get error details
+        az devcenter admin image-definition get-error-detail --resource-group "rg1" --dev-center-name "Contoso" --catalog-name "TeamCatalog" --image-definition-name "WebDevBox"
     """
 
     _aaz_info = {
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/imagedefinitions/{}/geterrordetails", "2025-04-01-preview"],
         ]
     }
 
@@ -40,13 +44,35 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.plan_name = AAZStrArg(
-            options=["-n", "--name", "--plan-name"],
-            help="The name of the devcenter plan.",
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the Catalog.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.dev_center_name = AAZStrArg(
+            options=["-d", "--dev-center", "--dev-center-name"],
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
+        )
+        _args_schema.image_definition_name = AAZStrArg(
+            options=["-i", "--image-definition-name"],
+            help="The name of the Image Definition.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
@@ -58,7 +84,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PlansGet(ctx=self.ctx)()
+        self.DevCenterCatalogImageDefinitionsGetErrorDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,10 +96,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PlansGet(AAZHttpOperation):
+    class DevCenterCatalogImageDefinitionsGetErrorDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,13 +113,13 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/plans/{planName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/getErrorDetails",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -103,7 +129,15 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "planName", self.ctx.args.plan_name,
+                    "catalogName", self.ctx.args.catalog_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "devCenterName", self.ctx.args.dev_center_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -121,7 +155,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -154,71 +188,22 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.sku = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200.errors = AAZListType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
+            errors = cls._schema_on_200.errors
+            errors.Element = AAZObjectType()
 
-            sku = cls._schema_on_200.sku
-            sku.capacity = AAZIntType()
-            sku.family = AAZStrType()
-            sku.name = AAZStrType(
-                flags={"required": True},
-            )
-            sku.size = AAZStrType()
-            sku.tier = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _element = cls._schema_on_200.errors.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _GetErrorDetailHelper:
+    """Helper class for GetErrorDetail"""
 
 
-__all__ = ["Wait"]
+__all__ = ["GetErrorDetail"]

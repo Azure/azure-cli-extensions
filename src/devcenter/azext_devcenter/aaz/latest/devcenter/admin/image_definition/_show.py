@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image-definition show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an Image Definition from the catalog
 
     :example: Get
-        az devcenter admin image-definition show --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "rg1" --resource-group "rg1"
+        az devcenter admin image-definition show --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/imagedefinitions/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -56,22 +55,22 @@ class Show(AAZCommand):
                 min_length=3,
             ),
         )
+        _args_schema.dev_center_name = AAZStrArg(
+            options=["-d", "--dev-center", "--dev-center-name"],
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
+        )
         _args_schema.image_definition_name = AAZStrArg(
             options=["-n", "--name", "--image-definition-name"],
             help="The name of the Image Definition.",
             required=True,
             id_part="child_name_2",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
-        _args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
-            required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -85,7 +84,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectCatalogImageDefinitionsGetByProjectCatalog(ctx=self.ctx)()
+        self.DevCenterCatalogImageDefinitionsGetByDevCenterCatalog(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -100,7 +99,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ProjectCatalogImageDefinitionsGetByProjectCatalog(AAZHttpOperation):
+    class DevCenterCatalogImageDefinitionsGetByDevCenterCatalog(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +113,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}",
                 **self.url_parameters
             )
 
@@ -134,11 +133,11 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    "devCenterName", self.ctx.args.dev_center_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,7 +155,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -209,8 +208,14 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.active_image_reference = AAZObjectType(
                 serialized_name="activeImageReference",
+                flags={"read_only": True},
             )
             _ShowHelper._build_schema_image_reference_read(properties.active_image_reference)
+            properties.auto_image_build = AAZStrType(
+                serialized_name="autoImageBuild",
+                flags={"read_only": True},
+            )
+            properties.extends = AAZObjectType()
             properties.file_url = AAZStrType(
                 serialized_name="fileUrl",
                 flags={"read_only": True},
@@ -221,16 +226,31 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_image_reference_read(properties.image_reference)
             properties.image_validation_error_details = AAZObjectType(
                 serialized_name="imageValidationErrorDetails",
+                flags={"read_only": True},
             )
             properties.image_validation_status = AAZStrType(
                 serialized_name="imageValidationStatus",
+                flags={"read_only": True},
             )
             properties.latest_build = AAZObjectType(
                 serialized_name="latestBuild",
             )
+            properties.tasks = AAZListType()
+            properties.user_tasks = AAZListType(
+                serialized_name="userTasks",
+            )
             properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
+                flags={"read_only": True},
             )
+
+            extends = cls._schema_on_200.properties.extends
+            extends.image_definition = AAZStrType(
+                serialized_name="imageDefinition",
+                flags={"required": True},
+            )
+            extends.parameters = AAZListType()
+            _ShowHelper._build_schema_definition_parameters_read(extends.parameters)
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
             image_validation_error_details.code = AAZStrType()
@@ -251,6 +271,14 @@ class Show(AAZCommand):
             latest_build.status = AAZStrType(
                 flags={"read_only": True},
             )
+
+            tasks = cls._schema_on_200.properties.tasks
+            tasks.Element = AAZObjectType()
+            _ShowHelper._build_schema_customization_task_instance_read(tasks.Element)
+
+            user_tasks = cls._schema_on_200.properties.user_tasks
+            user_tasks.Element = AAZObjectType()
+            _ShowHelper._build_schema_customization_task_instance_read(user_tasks.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -277,6 +305,63 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_customization_task_instance_read = None
+
+    @classmethod
+    def _build_schema_customization_task_instance_read(cls, _schema):
+        if cls._schema_customization_task_instance_read is not None:
+            _schema.condition = cls._schema_customization_task_instance_read.condition
+            _schema.display_name = cls._schema_customization_task_instance_read.display_name
+            _schema.name = cls._schema_customization_task_instance_read.name
+            _schema.parameters = cls._schema_customization_task_instance_read.parameters
+            _schema.timeout_in_seconds = cls._schema_customization_task_instance_read.timeout_in_seconds
+            return
+
+        cls._schema_customization_task_instance_read = _schema_customization_task_instance_read = AAZObjectType()
+
+        customization_task_instance_read = _schema_customization_task_instance_read
+        customization_task_instance_read.condition = AAZStrType()
+        customization_task_instance_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        customization_task_instance_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        customization_task_instance_read.parameters = AAZListType()
+        cls._build_schema_definition_parameters_read(customization_task_instance_read.parameters)
+        customization_task_instance_read.timeout_in_seconds = AAZIntType(
+            serialized_name="timeoutInSeconds",
+        )
+
+        _schema.condition = cls._schema_customization_task_instance_read.condition
+        _schema.display_name = cls._schema_customization_task_instance_read.display_name
+        _schema.name = cls._schema_customization_task_instance_read.name
+        _schema.parameters = cls._schema_customization_task_instance_read.parameters
+        _schema.timeout_in_seconds = cls._schema_customization_task_instance_read.timeout_in_seconds
+
+    _schema_definition_parameters_read = None
+
+    @classmethod
+    def _build_schema_definition_parameters_read(cls, _schema):
+        if cls._schema_definition_parameters_read is not None:
+            _schema.Element = cls._schema_definition_parameters_read.Element
+            return
+
+        cls._schema_definition_parameters_read = _schema_definition_parameters_read = AAZListType()
+
+        definition_parameters_read = _schema_definition_parameters_read
+        definition_parameters_read.Element = AAZObjectType()
+
+        _element = _schema_definition_parameters_read.Element
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+        _element.value = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.Element = cls._schema_definition_parameters_read.Element
 
     _schema_image_reference_read = None
 

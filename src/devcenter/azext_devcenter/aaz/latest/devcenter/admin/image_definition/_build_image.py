@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image-definition build-image",
-    is_preview=True,
 )
 class BuildImage(AAZCommand):
     """Builds an image for the specified Image Definition.
 
     :example: Build image
-        az devcenter admin image-definition build-image --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "rg1" --resource-group "rg1"
+        az devcenter admin image-definition build-image --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/buildimage", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/imagedefinitions/{}/buildimage", "2025-04-01-preview"],
         ]
     }
 
@@ -57,22 +56,22 @@ class BuildImage(AAZCommand):
                 min_length=3,
             ),
         )
+        _args_schema.dev_center_name = AAZStrArg(
+            options=["-d", "--dev-center", "--dev-center-name"],
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
+        )
         _args_schema.image_definition_name = AAZStrArg(
             options=["-i", "--image-definition-name"],
             help="The name of the Image Definition.",
             required=True,
             id_part="child_name_2",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
-        _args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
-            required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -86,7 +85,7 @@ class BuildImage(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ProjectCatalogImageDefinitionsBuildImage(ctx=self.ctx)()
+        yield self.DevCenterCatalogImageDefinitionsBuildImage(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,7 +96,7 @@ class BuildImage(AAZCommand):
     def post_operations(self):
         pass
 
-    class ProjectCatalogImageDefinitionsBuildImage(AAZHttpOperation):
+    class DevCenterCatalogImageDefinitionsBuildImage(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -127,7 +126,7 @@ class BuildImage(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/buildImage",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/buildImage",
                 **self.url_parameters
             )
 
@@ -147,11 +146,11 @@ class BuildImage(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    "devCenterName", self.ctx.args.dev_center_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -169,7 +168,7 @@ class BuildImage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }

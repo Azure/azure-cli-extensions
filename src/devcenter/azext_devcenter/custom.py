@@ -76,7 +76,6 @@ from .aaz.latest.devcenter.admin.image_version import (
 from .aaz.latest.devcenter.admin.network_connection import (
     Create as _NetworkConnectionCreate,
 )
-from .aaz.latest.devcenter.admin.plan_member import Create as _PlanMemberCreate
 from .aaz.latest.devcenter.admin.pool import (
     Create as _PoolCreate,
     Delete as _PoolDelete,
@@ -125,12 +124,25 @@ from .aaz.latest.devcenter.admin.image_definition import (
     List as _ImageDefinitionList,
     Show as _ImageDefinitionShow,
     BuildImage as _ImageDefinitionBuildImage,
+    GetErrorDetail as _ImageDefinitionGetErrorDetail,
 )
 from .aaz.latest.devcenter.admin.image_definition_build import (
     List as _ImageDefinitionBuildList,
     Show as _ImageDefinitionBuildShow,
     Cancel as _ImageDefinitionBuildCancel,
     GetBuildDetail as _ImageDefinitionBuildGetDetail,
+)
+from .aaz.latest.devcenter.admin.project_image_definition import (
+    List as _ProjectImageDefinitionList,
+    Show as _ProjectImageDefinitionShow,
+    BuildImage as _ProjectImageDefinitionBuildImage,
+    GetErrorDetail as _ProjectImageDefinitionGetErrorDetail,
+)
+from .aaz.latest.devcenter.admin.project_image_definition_build import (
+    List as _ProjectImageDefinitionBuildList,
+    Show as _ProjectImageDefinitionBuildShow,
+    Cancel as _ProjectImageDefinitionBuildCancel,
+    GetBuildDetail as _ProjectImageDefinitionBuildGetDetail,
 )
 from .aaz.latest.devcenter.admin.project_image import (
     List as _ProjectImageList,
@@ -358,6 +370,60 @@ class ImageDefinitionShow(_ImageDefinitionShow):
 
 
 class ImageDefinitionBuildImage(_ImageDefinitionBuildImage):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionGetErrorDetail(_ImageDefinitionGetErrorDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionBuildList(_ProjectImageDefinitionBuildList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionBuildShow(_ProjectImageDefinitionBuildShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionBuildCancel(_ProjectImageDefinitionBuildCancel):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionBuildGetDetail(_ProjectImageDefinitionBuildGetDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionList(_ProjectImageDefinitionList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionShow(_ProjectImageDefinitionShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionBuildImage(_ProjectImageDefinitionBuildImage):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageDefinitionGetErrorDetail(_ProjectImageDefinitionGetErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -676,15 +742,6 @@ class NetworkConnectionCreate(_NetworkConnectionCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.subnet_id._required = True
         args_schema.domain_join_type._required = True
-        return args_schema
-
-
-class PlanMemberCreate(_PlanMemberCreate):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.member_id._required = True
-        args_schema.member_type._required = True
         return args_schema
 
 

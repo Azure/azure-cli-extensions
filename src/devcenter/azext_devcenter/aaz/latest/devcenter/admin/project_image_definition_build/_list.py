@@ -12,22 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin plan-member wait",
+    "devcenter admin project-image-definition-build list",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class List(AAZCommand):
+    """List builds for a specified image definition.
+
+    :example: List
+        az devcenter admin project-image-definition-build list --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}/members/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/builds", "2025-04-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,24 +45,32 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.member_name = AAZStrArg(
-            options=["-n", "--name", "--member-name"],
-            help="The name of a devcenter plan member.",
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the Catalog.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.plan_name = AAZStrArg(
-            options=["--plan-name"],
-            help="The name of the devcenter plan.",
+        _args_schema.image_definition_name = AAZStrArg(
+            options=["-i", "--image-definition-name"],
+            help="The name of the Image Definition.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
@@ -69,7 +82,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PlanMembersGet(ctx=self.ctx)()
+        self.ProjectCatalogImageDefinitionBuildsListByImageDefinition(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,10 +94,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class PlanMembersGet(AAZHttpOperation):
+    class ProjectCatalogImageDefinitionBuildsListByImageDefinition(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,7 +112,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/plans/{planName}/members/{memberName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds",
                 **self.url_parameters
             )
 
@@ -114,11 +128,15 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "memberName", self.ctx.args.member_name,
+                    "catalogName", self.ctx.args.catalog_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "planName", self.ctx.args.plan_name,
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -136,7 +154,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -169,55 +187,68 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.member_id = AAZStrType(
-                serialized_name="memberId",
-            )
-            properties.member_type = AAZStrType(
-                serialized_name="memberType",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.end_time = AAZStrType(
+                serialized_name="endTime",
                 flags={"read_only": True},
             )
-            properties.sync_status = AAZObjectType(
-                serialized_name="syncStatus",
-            )
-            properties.tier = AAZStrType()
-
-            sync_status = cls._schema_on_200.properties.sync_status
-            sync_status.last_sync_error = AAZObjectType(
-                serialized_name="lastSyncError",
-            )
-            _WaitHelper._build_schema_error_detail_read(sync_status.last_sync_error)
-            sync_status.last_sync_time = AAZStrType(
-                serialized_name="lastSyncTime",
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
                 flags={"read_only": True},
             )
-            sync_status.sync_state = AAZStrType(
-                serialized_name="syncState",
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+                flags={"read_only": True},
+            )
+            properties.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            error_details = cls._schema_on_200.value.Element.properties.error_details
+            error_details.code = AAZStrType()
+            error_details.message = AAZStrType()
+
+            image_reference = cls._schema_on_200.value.Element.properties.image_reference
+            image_reference.exact_version = AAZStrType(
+                serialized_name="exactVersion",
+                flags={"read_only": True},
+            )
+            image_reference.id = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -237,64 +268,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
-
-    _schema_error_detail_read = None
-
-    @classmethod
-    def _build_schema_error_detail_read(cls, _schema):
-        if cls._schema_error_detail_read is not None:
-            _schema.additional_info = cls._schema_error_detail_read.additional_info
-            _schema.code = cls._schema_error_detail_read.code
-            _schema.details = cls._schema_error_detail_read.details
-            _schema.message = cls._schema_error_detail_read.message
-            _schema.target = cls._schema_error_detail_read.target
-            return
-
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
-
-        error_detail_read = _schema_error_detail_read
-        error_detail_read.additional_info = AAZListType(
-            serialized_name="additionalInfo",
-            flags={"read_only": True},
-        )
-        error_detail_read.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_detail_read.details = AAZListType(
-            flags={"read_only": True},
-        )
-        error_detail_read.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_detail_read.target = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        additional_info = _schema_error_detail_read.additional_info
-        additional_info.Element = AAZObjectType()
-
-        _element = _schema_error_detail_read.additional_info.Element
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        details = _schema_error_detail_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_error_detail_read(details.Element)
-
-        _schema.additional_info = cls._schema_error_detail_read.additional_info
-        _schema.code = cls._schema_error_detail_read.code
-        _schema.details = cls._schema_error_detail_read.details
-        _schema.message = cls._schema_error_detail_read.message
-        _schema.target = cls._schema_error_detail_read.target
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Wait"]
+__all__ = ["List"]

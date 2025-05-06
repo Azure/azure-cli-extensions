@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin plan-member show",
-    is_preview=True,
+    "devcenter admin project-image-definition-build show",
 )
 class Show(AAZCommand):
-    """Get a devcenter plan member.
+    """Get a build for a specified image definition.
 
     :example: Get
-        az devcenter admin plan-member show --name "d702f662-b3f2-4796-9e8c-13c22378ced3" --plan-name "ContosoPlan" --resource-group "rg1"
+        az devcenter admin project-image-definition-build show --build-name "0a28fc61-6f87-4611-8fe2-32df44ab93b7" --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}/members/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/builds/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -45,24 +44,46 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.member_name = AAZStrArg(
-            options=["-n", "--name", "--member-name"],
-            help="The name of a devcenter plan member.",
+        _args_schema.build_name = AAZStrArg(
+            options=["-n", "--name", "--build-name"],
+            help="The ID of the Image Definition Build.",
             required=True,
-            id_part="child_name_1",
+            id_part="child_name_3",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.plan_name = AAZStrArg(
-            options=["--plan-name"],
-            help="The name of the devcenter plan.",
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the Catalog.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.image_definition_name = AAZStrArg(
+            options=["-i", "--image-definition-name"],
+            help="The name of the Image Definition.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
@@ -74,7 +95,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PlanMembersGet(ctx=self.ctx)()
+        self.ProjectCatalogImageDefinitionBuildGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +110,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PlanMembersGet(AAZHttpOperation):
+    class ProjectCatalogImageDefinitionBuildGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +124,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/plans/{planName}/members/{memberName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds/{buildName}",
                 **self.url_parameters
             )
 
@@ -119,11 +140,19 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "memberName", self.ctx.args.member_name,
+                    "buildName", self.ctx.args.build_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "planName", self.ctx.args.plan_name,
+                    "catalogName", self.ctx.args.catalog_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -141,7 +170,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -187,40 +216,41 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.member_id = AAZStrType(
-                serialized_name="memberId",
-            )
-            properties.member_type = AAZStrType(
-                serialized_name="memberType",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties.end_time = AAZStrType(
+                serialized_name="endTime",
                 flags={"read_only": True},
             )
-            properties.sync_status = AAZObjectType(
-                serialized_name="syncStatus",
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
             )
-            properties.tier = AAZStrType()
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+                flags={"read_only": True},
+            )
+            properties.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
-            sync_status = cls._schema_on_200.properties.sync_status
-            sync_status.last_sync_error = AAZObjectType(
-                serialized_name="lastSyncError",
-            )
-            _ShowHelper._build_schema_error_detail_read(sync_status.last_sync_error)
-            sync_status.last_sync_time = AAZStrType(
-                serialized_name="lastSyncTime",
+            error_details = cls._schema_on_200.properties.error_details
+            error_details.code = AAZStrType()
+            error_details.message = AAZStrType()
+
+            image_reference = cls._schema_on_200.properties.image_reference
+            image_reference.exact_version = AAZStrType(
+                serialized_name="exactVersion",
                 flags={"read_only": True},
             )
-            sync_status.sync_state = AAZStrType(
-                serialized_name="syncState",
-                flags={"read_only": True},
-            )
+            image_reference.id = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -242,64 +272,11 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
 class _ShowHelper:
     """Helper class for Show"""
-
-    _schema_error_detail_read = None
-
-    @classmethod
-    def _build_schema_error_detail_read(cls, _schema):
-        if cls._schema_error_detail_read is not None:
-            _schema.additional_info = cls._schema_error_detail_read.additional_info
-            _schema.code = cls._schema_error_detail_read.code
-            _schema.details = cls._schema_error_detail_read.details
-            _schema.message = cls._schema_error_detail_read.message
-            _schema.target = cls._schema_error_detail_read.target
-            return
-
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
-
-        error_detail_read = _schema_error_detail_read
-        error_detail_read.additional_info = AAZListType(
-            serialized_name="additionalInfo",
-            flags={"read_only": True},
-        )
-        error_detail_read.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_detail_read.details = AAZListType(
-            flags={"read_only": True},
-        )
-        error_detail_read.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_detail_read.target = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        additional_info = _schema_error_detail_read.additional_info
-        additional_info.Element = AAZObjectType()
-
-        _element = _schema_error_detail_read.additional_info.Element
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        details = _schema_error_detail_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_error_detail_read(details.Element)
-
-        _schema.additional_info = cls._schema_error_detail_read.additional_info
-        _schema.code = cls._schema_error_detail_read.code
-        _schema.details = cls._schema_error_detail_read.details
-        _schema.message = cls._schema_error_detail_read.message
-        _schema.target = cls._schema_error_detail_read.target
 
 
 __all__ = ["Show"]

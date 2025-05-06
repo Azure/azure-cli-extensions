@@ -50,7 +50,6 @@ from .custom import (
     ImageVersionList,
     ImageVersionShow,
     NetworkConnectionCreate,
-    PlanMemberCreate,
     PoolCreate,
     PoolDelete,
     PoolList,
@@ -85,6 +84,7 @@ from .custom import (
     ImageDefinitionList,
     ImageDefinitionShow,
     ImageDefinitionBuildImage,
+    ImageDefinitionGetErrorDetail,
     ImageDefinitionBuildList,
     ImageDefinitionBuildShow,
     ImageDefinitionBuildCancel,
@@ -100,6 +100,14 @@ from .custom import (
     ProjectPolicyDelete,
     ProjectPolicyWait,
     ProjectSkuList,
+    ProjectImageDefinitionList,
+    ProjectImageDefinitionShow,
+    ProjectImageDefinitionBuildImage,
+    ProjectImageDefinitionGetErrorDetail,
+    ProjectImageDefinitionBuildList,
+    ProjectImageDefinitionBuildShow,
+    ProjectImageDefinitionBuildCancel,
+    ProjectImageDefinitionBuildGetDetail,
 )
 
 
@@ -107,6 +115,9 @@ def load_command_table(self, _):
     # Control plane
     self.command_table["devcenter admin image-definition list"] = (
         ImageDefinitionList(loader=self)
+    )
+    self.command_table["devcenter admin image-definition get-error-detail"] = (
+        ImageDefinitionGetErrorDetail(loader=self)
     )
     self.command_table["devcenter admin image-definition show"] = (
         ImageDefinitionShow(loader=self)
@@ -126,6 +137,32 @@ def load_command_table(self, _):
     )
     self.command_table["devcenter admin image-definition-build get-build-detail"] = (
         ImageDefinitionBuildGetDetail(loader=self)
+    )
+
+    self.command_table["devcenter admin project-image-definition list"] = (
+        ProjectImageDefinitionList(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition get-error-detail"] = (
+        ProjectImageDefinitionGetErrorDetail(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition show"] = (
+        ProjectImageDefinitionShow(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition build-image"] = (
+        ProjectImageDefinitionBuildImage(loader=self)
+    )
+
+    self.command_table["devcenter admin project-image-definition-build list"] = (
+        ProjectImageDefinitionBuildList(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition-build show"] = (
+        ProjectImageDefinitionBuildShow(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition-build cancel"] = (
+        ProjectImageDefinitionBuildCancel(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition-build get-build-detail"] = (
+        ProjectImageDefinitionBuildGetDetail(loader=self)
     )
 
     self.command_table["devcenter admin project-image list"] = (
@@ -274,10 +311,6 @@ def load_command_table(self, _):
 
     self.command_table["devcenter admin network-connection create"] = (
         NetworkConnectionCreate(loader=self)
-    )
-
-    self.command_table["devcenter admin plan-member create"] = PlanMemberCreate(
-        loader=self
     )
 
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)

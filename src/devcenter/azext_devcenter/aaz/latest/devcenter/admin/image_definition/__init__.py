@@ -10,5 +10,6 @@
 
 from .__cmd_group import *
 from ._build_image import *
+from ._get_error_detail import *
 from ._list import *
 from ._show import *

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-definition-build get-build-detail",
+    "devcenter admin project-image-definition-build get-build-detail",
 )
 class GetBuildDetail(AAZCommand):
     """Gets Build details
 
     :example: Get build details
-        az devcenter admin image-definition-build get-build-detail --build-name "0a28fc61-6f87-4611-8fe2-32df44ab93b7" --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin project-image-definition-build get-build-detail --build-name "0a28fc61-6f87-4611-8fe2-32df44ab93b7" --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/imagedefinitions/{}/builds/{}/getbuilddetails", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/builds/{}/getbuilddetails", "2025-04-01-preview"],
         ]
     }
 
@@ -45,7 +45,7 @@ class GetBuildDetail(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.build_name = AAZStrArg(
-            options=["--build-name"],
+            options=["-n", "--name", "--build-name"],
             help="The ID of the Image Definition Build.",
             required=True,
             id_part="child_name_3",
@@ -66,22 +66,22 @@ class GetBuildDetail(AAZCommand):
                 min_length=3,
             ),
         )
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
-                max_length=26,
-                min_length=3,
-            ),
-        )
         _args_schema.image_definition_name = AAZStrArg(
             options=["-i", "--image-definition-name"],
             help="The name of the Image Definition.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+            required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -95,7 +95,7 @@ class GetBuildDetail(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DevCenterCatalogImageDefinitionBuildGetBuildDetails(ctx=self.ctx)()
+        self.ProjectCatalogImageDefinitionBuildGetBuildDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -110,7 +110,7 @@ class GetBuildDetail(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DevCenterCatalogImageDefinitionBuildGetBuildDetails(AAZHttpOperation):
+    class ProjectCatalogImageDefinitionBuildGetBuildDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -124,7 +124,7 @@ class GetBuildDetail(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds/{buildName}/getBuildDetails",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds/{buildName}/getBuildDetails",
                 **self.url_parameters
             )
 
@@ -148,11 +148,11 @@ class GetBuildDetail(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
