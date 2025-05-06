@@ -120,18 +120,6 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from .aaz.latest.devcenter.admin.image_definition import (
-    List as _ImageDefinitionList,
-    Show as _ImageDefinitionShow,
-    BuildImage as _ImageDefinitionBuildImage,
-    GetErrorDetail as _ImageDefinitionGetErrorDetail,
-)
-from .aaz.latest.devcenter.admin.image_definition_build import (
-    List as _ImageDefinitionBuildList,
-    Show as _ImageDefinitionBuildShow,
-    Cancel as _ImageDefinitionBuildCancel,
-    GetBuildDetail as _ImageDefinitionBuildGetDetail,
-)
 from .aaz.latest.devcenter.admin.project_image_definition import (
     List as _ProjectImageDefinitionList,
     Show as _ProjectImageDefinitionShow,
@@ -328,54 +316,6 @@ class ProjectImageVersionList(_ProjectImageVersionList):
 
 
 class ProjectImageVersionShow(_ProjectImageVersionShow):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionBuildList(_ImageDefinitionBuildList):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionBuildShow(_ImageDefinitionBuildShow):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionBuildCancel(_ImageDefinitionBuildCancel):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionBuildGetDetail(_ImageDefinitionBuildGetDetail):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionList(_ImageDefinitionList):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionShow(_ImageDefinitionShow):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionBuildImage(_ImageDefinitionBuildImage):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class ImageDefinitionGetErrorDetail(_ImageDefinitionGetErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)

@@ -56,7 +56,7 @@ class GetErrorDetail(AAZCommand):
             ),
         )
         _args_schema.image_definition_name = AAZStrArg(
-            options=["-i", "--image-definition-name"],
+            options=["-n", "--name", "--image-definition-name"],
             help="The name of the Image Definition.",
             required=True,
             id_part="child_name_2",

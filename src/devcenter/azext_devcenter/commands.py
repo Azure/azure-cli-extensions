@@ -81,14 +81,6 @@ from .custom import (
     ScheduleShow,
     ScheduleUpdate,
     ScheduleWait,
-    ImageDefinitionList,
-    ImageDefinitionShow,
-    ImageDefinitionBuildImage,
-    ImageDefinitionGetErrorDetail,
-    ImageDefinitionBuildList,
-    ImageDefinitionBuildShow,
-    ImageDefinitionBuildCancel,
-    ImageDefinitionBuildGetDetail,
     ProjectImageList,
     ProjectImageShow,
     ProjectImageVersionList,
@@ -113,32 +105,6 @@ from .custom import (
 
 def load_command_table(self, _):
     # Control plane
-    self.command_table["devcenter admin image-definition list"] = (
-        ImageDefinitionList(loader=self)
-    )
-    self.command_table["devcenter admin image-definition get-error-detail"] = (
-        ImageDefinitionGetErrorDetail(loader=self)
-    )
-    self.command_table["devcenter admin image-definition show"] = (
-        ImageDefinitionShow(loader=self)
-    )
-    self.command_table["devcenter admin image-definition build-image"] = (
-        ImageDefinitionBuildImage(loader=self)
-    )
-
-    self.command_table["devcenter admin image-definition-build list"] = (
-        ImageDefinitionBuildList(loader=self)
-    )
-    self.command_table["devcenter admin image-definition-build show"] = (
-        ImageDefinitionBuildShow(loader=self)
-    )
-    self.command_table["devcenter admin image-definition-build cancel"] = (
-        ImageDefinitionBuildCancel(loader=self)
-    )
-    self.command_table["devcenter admin image-definition-build get-build-detail"] = (
-        ImageDefinitionBuildGetDetail(loader=self)
-    )
-
     self.command_table["devcenter admin project-image-definition list"] = (
         ProjectImageDefinitionList(loader=self)
     )

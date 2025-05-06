@@ -9,7 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+from azure.core.exceptions import HttpResponseError
 
 @register_command(
     "devcenter admin project-image-definition-build cancel",
@@ -113,6 +113,7 @@ class Cancel(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+ 
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -131,9 +132,11 @@ class Cancel(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
+            if session.http_response.status_code in [412]:
+                error_response = HttpResponseError(session.http_response, error_format=self.error_format)
+                raise error_response
 
             return self.on_error(session.http_response)
-
         @property
         def url(self):
             return self.client.format_url(
