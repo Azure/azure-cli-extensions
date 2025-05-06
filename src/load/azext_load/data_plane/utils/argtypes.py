@@ -395,6 +395,13 @@ autostop_error_rate_time_window = CLIArgumentType(
     help="Time window during which the error percentage should be evaluated in seconds.",
 )
 
+autostop_maximum_virtual_users_per_engine = CLIArgumentType(
+    options_list=["--autostop-engine-users"],
+    type=int,
+    validator=validators.validate_autostop_maximum_virtual_users_per_engine,
+    help="Maximum number of users per engine at which the test will stop.",
+)
+
 regionwise_engines = CLIArgumentType(
     options_list=["--regionwise-engines"],
     validator=validators.validate_regionwise_engines,

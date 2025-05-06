@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os, datetime
+import datetime
+import os
 
 TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 
@@ -11,11 +12,13 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 class LoadConstants:
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
-    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml")
-    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-true.yaml")
-    INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(
-        TEST_RESOURCES_DIR, r"invalid-config.yaml"
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml"
     )
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-disable-public-ip-true.yaml"
+    )
+    INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"invalid-config.yaml")
     INVALID_ZIP_ARTIFACT_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config-with-zip-artifacts.yaml"
     )
@@ -30,7 +33,7 @@ class LoadConstants:
     ZIP_ARTIFACT_TYPE = "ZIPPED_ARTIFACTS"
     ZIP_ARTIFACT_NAME = "sample-ZIP-artifact.zip"
     ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact.zip")
-    
+
     # Constants for UT which is commented due to large test resource
     # INVALID_ZIP_ARTIFACT_NAME = "sample-ZIP-artifact-oversize.zip"
     # INVALID_ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-oversize.zip")
@@ -39,11 +42,21 @@ class LoadConstants:
 
     # Constants for Regional Load Config Unit Tests
     REGIONAL_LOAD_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines.yaml")
-    REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-count-mismatch.yaml")
-    REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-region.yaml")
-    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_FLOAT = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-float.yaml")
-    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_STRING = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-string.yaml")
-    REGIONAL_LOAD_CONFIG_FILE_NO_PARENT_REGION = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-no-parent-region.yaml")
+    REGIONAL_LOAD_CONFIG_FILE_COUNT_MISMATCH = os.path.join(
+        TEST_RESOURCES_DIR, r"config-regionwise-engines-count-mismatch.yaml"
+    )
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_REGION = os.path.join(
+        TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-region.yaml"
+    )
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_FLOAT = os.path.join(
+        TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-float.yaml"
+    )
+    REGIONAL_LOAD_CONFIG_FILE_INVALID_TYPE_STRING = os.path.join(
+        TEST_RESOURCES_DIR, r"config-regionwise-engines-invalid-type-string.yaml"
+    )
+    REGIONAL_LOAD_CONFIG_FILE_NO_PARENT_REGION = os.path.join(
+        TEST_RESOURCES_DIR, r"config-regionwise-engines-no-parent-region.yaml"
+    )
     REGIONAL_LOAD_CONFIG_FILE_NO_TOTAL = os.path.join(TEST_RESOURCES_DIR, r"config-regionwise-engines-no-total.yaml")
     ENGINE_INSTANCES = 5
     REGIONWISE_ENGINES = "germanywestcentral=2 eastus=3"
@@ -107,22 +120,41 @@ class LoadConstants:
     INVALID_SERVER_METRIC_ID = r"/subscriptions/invalid/resource/id"
 
     LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-error-rate.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria-time-window.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-error-rate.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-time-window.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-random-string.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_ERROR_RATE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-autostop-criteria-error-rate.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_TIME_WINDOW = os.path.join(
+        TEST_RESOURCES_DIR, r"config-autostop-criteria-time-window.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP_MAX_VU_ENGINE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-autostop-criteria-max-vu-engine.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_ERROR_RATE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-error-rate.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_TIME_WINDOW = os.path.join(
+        TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-time-window.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP_MAX_VU_PER_ENGINE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-max-vu-per-engine.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_WITH_INVALID_AUTOSTOP = os.path.join(
+        TEST_RESOURCES_DIR, r"config-invalid-autostop-criteria-random-string.yaml"
+    )
     AUTOSTOP_DISABLED = "disable"
     AUTOSTOP_ERROR_RATE = 77.5
     AUTOSTOP_ERROR_RATE_INTEGER = 75
     AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
+    AUTOSTOP_MAXIMUM_VIRTUAL_USERS_PER_ENGINE = 1000
 
     FLOAT_TOLERANCE = 1e-6
 
     HIGH_SCALE_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-high-scale-load.yaml")
 
     LOCUST_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config-locust.yaml")
-    LOCUST_ENV_VARIABLES = 'LOCUST_HOST="https://www.google.com" LOCUST_SPAWN_RATE=0.3 LOCUST_RUN_TIME=120 LOCUST_USERS=4'
+    LOCUST_ENV_VARIABLES = (
+        'LOCUST_HOST="https://www.google.com" LOCUST_SPAWN_RATE=0.3 LOCUST_RUN_TIME=120 LOCUST_USERS=4'
+    )
     LOCUST_TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-locust-file.py")
     LOCUST_TEST_PLAN_FILENAME = "sample-locust-file.py"
 
@@ -172,14 +204,20 @@ class LoadTestConstants(LoadConstants):
     INVALID_ENGINE_REFERENCE_ID = r"/subscriptions/invalid/resource/id"
     LOAD_TEST_CONFIG_FILE_WITH_SAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-sami.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_UAMI_ENGINE = os.path.join(TEST_RESOURCES_DIR, r"config-engine-uami.yaml")
-    LOAD_TEST_CONFIG_FILE_WITH_METRICS_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-metrics-keyvault-ref-id.yaml")
+    LOAD_TEST_CONFIG_FILE_WITH_METRICS_KEYVAULT_REF_ID = os.path.join(
+        TEST_RESOURCES_DIR, r"config-metrics-keyvault-ref-id.yaml"
+    )
     LOAD_TEST_CONFIG_FILE_NO_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-kv-no-ref-ids.yaml")
     LOAD_TEST_CONFIG_FILE_KV_OVERRIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-kv-override-ref-ids.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI1 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi1.yaml")
     LOAD_TEST_CONFIG_FILE_WITH_INVALID_ENGINE_MI2 = os.path.join(TEST_RESOURCES_DIR, r"config-engine-invalid-mi2.yaml")
-    LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-metrics-ref-ids.yaml")
+    LOAD_TEST_CONFIG_MULTIPLE_METRICS_REF_ID = os.path.join(
+        TEST_RESOURCES_DIR, r"config-multiple-metrics-ref-ids.yaml"
+    )
     LOAD_TEST_CONFIG_MULTIPLE_KEYVAULT_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-multiple-kv-ref-ids.yaml")
-    LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id-out-side.yaml")
+    LOAD_TEST_CONFIG_INVALID_KV_OUTSIDE_REF_IDS = os.path.join(
+        TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id-out-side.yaml"
+    )
     LOAD_TEST_CONFIG_INVALID_KV_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-kv-ref-id.yaml")
     LOAD_TEST_CONFIG_INVALID_METRICS_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-invalid-metrics-ref-id.yaml")
     LOAD_TEST_CONFIG_KV_OUTSIDE_REF_ID = os.path.join(TEST_RESOURCES_DIR, r"config-kv-out-side.yaml")
@@ -188,13 +226,25 @@ class LoadTestConstants(LoadConstants):
 
     # pf-criteria files.
     LOAD_TEST_CONFIG_FILE_PF_CRITERIA = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-updated-model.yaml")
-    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_OLD_MODEL = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-old-model.yaml")
-    LOAD_TEST_CONFIG_FILE_PF_SERVER_CRITERIA = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-updated-model.yaml")
-    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_COMPLETE = os.path.join(TEST_RESOURCES_DIR, r"config-pf-criteria-complete-updated-model.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_OLD_MODEL = os.path.join(
+        TEST_RESOURCES_DIR, r"config-pf-criteria-old-model.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_PF_SERVER_CRITERIA = os.path.join(
+        TEST_RESOURCES_DIR, r"config-server-pf-criteria-updated-model.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_COMPLETE = os.path.join(
+        TEST_RESOURCES_DIR, r"config-pf-criteria-complete-updated-model.yaml"
+    )
     # invalid-cases
-    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model.yaml")
-    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID2 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model2.yaml")
-    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID3 = os.path.join(TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model3.yaml")
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID = os.path.join(
+        TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID2 = os.path.join(
+        TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model2.yaml"
+    )
+    LOAD_TEST_CONFIG_FILE_PF_CRITERIA_INVALID3 = os.path.join(
+        TEST_RESOURCES_DIR, r"config-server-pf-criteria-invalid-model3.yaml"
+    )
     LOAD_TEST_METRICS_MI = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourcegroups/cnt-integration-tests-rg/providers/microsoft.managedidentity/userassignedidentities/cnt-integration-tests-mi1-eastus"
 
     # app-components constants
@@ -202,7 +252,9 @@ class LoadTestConstants(LoadConstants):
     LOAD_TEST_CONFIG_FILE_APP_COMPONENTS2 = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-test2.yaml")
 
     # invalid cases
-    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-app-components-invalid-test.yaml")
+    LOAD_TEST_CONFIG_FILE_APP_COMPONENTS_INVALID = os.path.join(
+        TEST_RESOURCES_DIR, r"config-app-components-invalid-test.yaml"
+    )
     LOAD_TEST_SERVER_METRICS_INVALID = os.path.join(TEST_RESOURCES_DIR, r"config-server-metrics-invalid-test.yaml")
     LOAD_TEST_SERVER_METRICS_INVALID2 = os.path.join(TEST_RESOURCES_DIR, r"config-server-metrics-invalid-test2.yaml")
 
@@ -257,10 +309,7 @@ class LoadTestRunConstants(LoadConstants):
 
 
 class LoadTestFailureCriteriaKeys:
-    CONDITION_ENUM_MAP = {
-        "LessThan": "<",
-        "GreaterThan": ">"
-    }
+    CONDITION_ENUM_MAP = {"LessThan": "<", "GreaterThan": ">"}
 
 
 class LoadTestTriggerConstants(LoadConstants):
@@ -293,11 +342,11 @@ class LoadTestTriggerConstants(LoadConstants):
     UPDATE_DESCRIPTION = "Trigger schedule for update test case"
     UPDATE_DISPLAY_NAME = "Update Trigger"
     UPDATE_TEST_IDS = "test-id-update"
-    
+
     DAILY_RECURRENCE_TYPE = "Daily"
     RECURRENCE_INTERVAL_ONE = 1
-    CURRENT_DATE_TIME = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-    
+    CURRENT_DATE_TIME = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
     # Constants for cron schedule
     CRON_TRIGGER_ID = "test-trigger-id-cron"
     CRON_DESCRIPTION = "Trigger schedule for cron test case"
@@ -305,7 +354,7 @@ class LoadTestTriggerConstants(LoadConstants):
     CRON_TEST_IDS = "test-id-cron"
     CRON_RECURRENCE_TYPE = "Cron"
     CRON_RECURRENCE_CRON_EXPRESSION = "0 0 12 * *"
-    
+
     # Constants for daily schedule
     DAILY_TRIGGER_ID = "test-trigger-id-daily"
     DAILY_DESCRIPTION = "Trigger schedule for daily test case"
@@ -322,7 +371,7 @@ class LoadTestTriggerConstants(LoadConstants):
     WEEKLY_RECURRENCE_TYPE = "Weekly"
     WEEKLY_RECURRENCE_INTERVAL = 1
     WEEKLY_RECURRENCE_DAYS = "Monday"
-    
+
     # Constants for monthly by dates schedule
     MONTHLY_DATES_TRIGGER_ID = "test-trigger-id-monthly-dates"
     MONTHLY_DATES_DESCRIPTION = "Trigger schedule for monthly by dates test case"
