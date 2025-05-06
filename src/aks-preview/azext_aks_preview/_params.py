@@ -839,6 +839,10 @@ def load_arguments(self, _):
             arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -1320,6 +1324,14 @@ def load_arguments(self, _):
             "acns_advanced_networkpolicies",
             is_preview=True,
             arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
+            "disable_retina_flow_logs",
+            action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")

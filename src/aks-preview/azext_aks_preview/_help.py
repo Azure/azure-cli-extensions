@@ -231,6 +231,9 @@ helps['aks create'] = f"""
         - name: --acns-advanced-networkpolicies
           type: string
           short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --enable-retina-flow-logs
+          type: bool
+          short-summary: Enable advanced network flow log collection functionalities on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1220,6 +1223,12 @@ helps['aks update'] = """
         - name: --acns-advanced-networkpolicies
           type: string
           short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
+        - name: --enable-retina-flow-logs
+          type: bool
+          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+        - name: --disable-retina-flow-logs
+          type: bool
+          short-summary: Disable advanced network flow log collection functionalities on a cluster.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
