@@ -124,12 +124,14 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Base size of the Elastic San appliance in TiB.",
             required=True,
+            default=20,
         )
         _args_schema.extended_capacity_size_tib = AAZIntArg(
             options=["--extended-size", "--extended-capacity-size-tib"],
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
             required=True,
+            default=0,
         )
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
