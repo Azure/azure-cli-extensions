@@ -13,6 +13,10 @@ Pending
 +++++++
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
 
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
+
 14.0.0b6
 +++++++
 * Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
