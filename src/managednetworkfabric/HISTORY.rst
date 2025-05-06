@@ -3,6 +3,10 @@
 Release History
 ===============
 
+8.0.0b3
+++++++
+* Adding custom output formatting for 'device' run-ro command
+
 8.0.0b2
 ++++++
 * Making the Network Monitor resource available through the CLI.
