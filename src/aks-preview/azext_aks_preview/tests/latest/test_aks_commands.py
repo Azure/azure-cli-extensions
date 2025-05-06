@@ -38,6 +38,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         super(AzureKubernetesServiceScenarioTest, self).__init__(
             method_name, recording_processors=[KeyReplacer()]
         )
+        self.cmd('extension add -n k8s-extension')
 
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
@@ -15789,9 +15790,6 @@ spec:
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
 
-        # add K8s extension 
-        self.cmd('extension add -n k8s-extension')
-
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
                  '--extension-type {extension_type} --no-wait')
@@ -15871,9 +15869,6 @@ spec:
             'subscription': subscription,
         })
 
-        # add K8s extension 
-        self.cmd('extension add -n k8s-extension')
-
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
                  '--extension-type {extension_type}  --scope cluster '
@@ -15939,9 +15934,6 @@ spec:
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
-
-        # add K8s extension 
-        self.cmd('extension add -n k8s-extension')
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
@@ -16038,9 +16030,6 @@ spec:
         self.kwargs.update({
             'subscription': subscription,
         })
-
-        # add K8s extension 
-        self.cmd('extension add -n k8s-extension')
 
         # create the K8s extension
         self.cmd('aks extension create -g {rg} -n {name} -c {cluster_name} '
