@@ -2201,39 +2201,6 @@ def load_arguments(self, _):
                 action="store_true",
             )
 
-    with self.argument_context("aks trustedaccess rolebinding") as c:
-        c.argument("cluster_name", help="The cluster name.")
-
-    for scope in [
-        "aks trustedaccess rolebinding show",
-        "aks trustedaccess rolebinding create",
-        "aks trustedaccess rolebinding update",
-        "aks trustedaccess rolebinding delete",
-    ]:
-        with self.argument_context(scope) as c:
-            c.argument(
-                "role_binding_name",
-                options_list=["--name", "-n"],
-                required=True,
-                help="The role binding name.",
-            )
-
-    with self.argument_context("aks trustedaccess rolebinding create") as c:
-        c.argument(
-            "roles",
-            help="comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...",
-        )
-        c.argument(
-            "source_resource_id",
-            help="The source resource id of the binding",
-        )
-
-    with self.argument_context("aks trustedaccess rolebinding update") as c:
-        c.argument(
-            "roles",
-            help="comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...",
-        )
-
     with self.argument_context("aks mesh enable-ingress-gateway") as c:
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)

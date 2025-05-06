@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
 
 14.0.0b6
 +++++++
