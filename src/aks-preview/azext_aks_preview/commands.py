@@ -15,6 +15,7 @@ from azext_aks_preview._client_factory import (
     cf_trustedaccess_role_binding,
     cf_machines,
     cf_operations,
+    cf_load_balancers,
 )
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
@@ -195,6 +196,18 @@ def load_command_table(self, _):
         g.custom_command("add", "aks_maintenanceconfiguration_add")
         g.custom_command("update", "aks_maintenanceconfiguration_update")
         g.custom_command("delete", "aks_maintenanceconfiguration_delete")
+
+    # AKS loadbalancer commands
+    with self.command_group(
+        "aks loadbalancer",
+        client_factory=cf_load_balancers,
+    ) as g:
+        g.custom_command("list", "aks_loadbalancer_list")
+        g.custom_show_command("show", "aks_loadbalancer_show")
+        g.custom_command("add", "aks_loadbalancer_add")
+        g.custom_command("update", "aks_loadbalancer_update")
+        g.custom_command("delete", "aks_loadbalancer_delete")
+        g.custom_command("rebalance-nodes", "aks_loadbalancer_rebalance_nodes")
 
     # AKS addon commands
     with self.command_group(
@@ -396,8 +409,19 @@ def load_command_table(self, _):
             supports_no_wait=True,
         )
         g.custom_command(
+            "enable-egress-gateway",
+            "aks_mesh_enable_egress_gateway",
+            supports_no_wait=True,
+        )
+        g.custom_command(
             "disable-ingress-gateway",
             "aks_mesh_disable_ingress_gateway",
+            supports_no_wait=True,
+            confirmation=True,
+        )
+        g.custom_command(
+            "disable-egress-gateway",
+            "aks_mesh_disable_egress_gateway",
             supports_no_wait=True,
             confirmation=True,
         )

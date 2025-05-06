@@ -15,9 +15,9 @@ def k8s_configuration_client(cli_ctx, **kwargs):
 
 
 def k8s_configuration_fluxconfig_client(cli_ctx, *_):
-    return k8s_configuration_client(
-        cli_ctx, api_version=consts.FLUXCONFIG_API_VERSION
-    ).flux_configurations
+    from azext_k8s_configuration.vendored_sdks.v2024_11_01 import FluxConfigurationClient
+
+    return get_mgmt_service_client(cli_ctx, FluxConfigurationClient).flux_configurations
 
 
 def k8s_configuration_sourcecontrol_client(cli_ctx, *_):

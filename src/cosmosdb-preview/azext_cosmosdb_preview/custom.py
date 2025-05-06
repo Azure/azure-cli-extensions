@@ -325,7 +325,7 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   resource_group_name,
                                                   cluster_name,
                                                   location,
-                                                  delegated_management_subnet_id,
+                                                  delegated_management_subnet_id=None,
                                                   tags=None,
                                                   identity_type='None',
                                                   cluster_name_override=None,
@@ -339,7 +339,8 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   hours_between_backups=None,
                                                   repair_enabled=None,
                                                   cluster_type='Production',
-                                                  extensions=None):
+                                                  extensions=None,
+                                                  azure_connection_method=None):
 
     """Creates an Azure Managed Cassandra Cluster"""
 
@@ -362,7 +363,8 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         hours_between_backups=hours_between_backups,
         repair_enabled=repair_enabled,
         cluster_type=cluster_type,
-        extensions=extensions)
+        extensions=extensions,
+        azure_connection_method=azure_connection_method)
 
     managed_service_identity_parameter = ManagedCassandraManagedServiceIdentity(
         type=identity_type
@@ -451,8 +453,8 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         external_seed_nodes=cluster_resource.properties.external_seed_nodes,
         seed_nodes=cluster_resource.properties.seed_nodes,
         cluster_type=cluster_type,
-        extensions=extensions
-    )
+        extensions=extensions,
+        azure_connection_method=cluster_resource.properties.azure_connection_method)
 
     cluster_resource_create_update_parameters = ClusterResource(
         location=cluster_resource.location,
@@ -517,7 +519,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      service_user_password=None,
                                                      search_base_distinguished_name=None,
                                                      search_filter_template=None,
-                                                     server_certificates=None):
+                                                     server_certificates=None,
+                                                     private_endpoint_ip_address=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
 
@@ -542,7 +545,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         availability_zone=availability_zone,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
         backup_storage_customer_key_uri=backup_storage_customer_key_uri,
-        authentication_method_ldap_properties=authentication_method_ldap_properties
+        authentication_method_ldap_properties=authentication_method_ldap_properties,
+        private_endpoint_ip_address=private_endpoint_ip_address
     )
 
     data_center_resource = DataCenterResource(
@@ -1107,13 +1111,11 @@ def cli_cosmosdb_restore(cmd,
     if restore_timestamp_datetime_utc > current_dateTime:
         raise CLIError("Restore timestamp {} should be less than current timestamp {}".format(restore_timestamp_datetime_utc, current_dateTime))
 
-    is_source_restorable_account_deleted = False
     for account in restorable_database_accounts_list:
         if account.account_name == account_name:
             if account.deletion_time is not None:
                 if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
                     target_restorable_account = account
-                    is_source_restorable_account_deleted = True
                     break
             else:
                 if restore_timestamp_datetime_utc >= account.creation_time:
@@ -1122,62 +1124,6 @@ def cli_cosmosdb_restore(cmd,
 
     if target_restorable_account is None:
         raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
-
-    # Validate if source account is empty only for live account restores. For deleted account restores the api will not work
-    if not is_source_restorable_account_deleted:
-        restorable_resources = None
-        api_type = target_restorable_account.api_type.lower()
-        arm_location_normalized = target_restorable_account.location.lower().replace(" ", "")
-        source_location = location
-
-        if source_backup_location is not None:
-            source_location = source_backup_location
-
-        if api_type == "sql":
-            try:
-                restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_sql_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        elif api_type == "mongodb":
-            try:
-                restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_mongodb_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        elif "sql" in api_type and "gremlin" in api_type:
-            try:
-                restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_gremlin_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        elif "sql" in api_type and "table" in api_type:
-            try:
-                restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_table_resources_client.list(
-                    arm_location_normalized,
-                    target_restorable_account.name,
-                    source_location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
-        else:
-            raise CLIError("Provided API Type {} is not supported for account {}".format(target_restorable_account.api_type, account_name))
-
-        if restorable_resources is None or not any(restorable_resources):
-            raise CLIError("Database account {} contains no restorable resources in location {} at given restore timestamp {}".format(target_restorable_account, source_location, restore_timestamp_datetime_utc))
 
     # Trigger restore
     locations = []

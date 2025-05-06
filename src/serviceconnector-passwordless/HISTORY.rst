@@ -2,6 +2,14 @@
 
 Release History
 ===============
+3.3.2
+++++++
+* Add documentation explaining manual steps required for connecting to SQL database in Fabric.
+
+3.3.1
+++++++
+* Change Fabric SQL token endpoint for Cloud Shell compatibility.
+
 3.3.0
 ++++++
 * Fix issue with params to support interactive mode for Fabric SQL

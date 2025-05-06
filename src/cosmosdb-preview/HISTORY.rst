@@ -1,6 +1,18 @@
 .. :changelog:
 Release History
 ===============
+1.4.0
+*  Add support for private endpoint in VPN based datacenter deployments in managed cassandra.
+
++++++++
+1.3.0
+*  Add support for VPN cluster deployments in managed cassandra.
+
++++++++
+1.2.1
+* 'az cosmosdb restore': Remove restore validations which would cause timeouts for large restore
+
++++++++
 1.2.0
 * Add support for Table RBAC role definition and assignment CRUD actions.
 

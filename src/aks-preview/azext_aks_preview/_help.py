@@ -228,6 +228,9 @@ helps['aks create'] = f"""
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --acns-advanced-networkpolicies
+          type: string
+          short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -528,9 +531,9 @@ helps['aks create'] = f"""
         - name: --enable-vpa
           type: bool
           short-summary: Enable vertical pod autoscaler for cluster.
-        - name: --enable-addon-autoscaling
+        - name: --enable-optimized-addon-scaling
           type: bool
-          short-summary: Enable addon autoscaling for cluster.
+          short-summary: Enable optimized addon scaling feature for cluster.
         - name: --nodepool-allowed-host-ports
           type: string
           short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
@@ -1170,12 +1173,12 @@ helps['aks update'] = """
         - name: --disable-vpa
           type: bool
           short-summary: Disable vertical pod autoscaler for cluster.
-        - name: --enable-addon-autoscaling
+        - name: --enable-optimized-addon-scaling
           type: bool
-          short-summary: Enable addon autoscaling for cluster.
-        - name: --disable-addon-autoscaling
+          short-summary: Enable optimized addon scaling feature for cluster.
+        - name: --disable-optimized-addon-scaling
           type: bool
-          short-summary: Disable addon autoscaling for cluster.
+          short-summary: Disable optimized addon scaling feature for cluster.
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
@@ -1214,6 +1217,9 @@ helps['aks update'] = """
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --acns-advanced-networkpolicies
+          type: string
+          short-summary: Used to enable advanced network policies (None, FQDN or L7) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -3082,6 +3088,46 @@ helps['aks mesh disable-ingress-gateway'] = """
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
+helps['aks mesh enable-egress-gateway'] = """
+    type: command
+    short-summary: Enable an Azure Service Mesh egress gateway.
+    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --istio-eg-gtw-name --istio-egressgateway-name
+        type: string
+        short-summary: Specify the name of the Istio egress gateway.
+        long-summary: This required field specifies the name of the Istio egress gateway. Must be between 1 and 253 characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+      - name: --istio-eg-gtw-ns --istio-egressgateway-namespace
+        type: string
+        short-summary: Specify the namespace of the Istio egress gateway.
+        long-summary: This optional field specifies the namespace of the Istio egress gateway. Defaults to "aks-istio-egress" if unspecified.
+      - name: --gateway-configuration-name --gtw-config-name
+        type: string
+        short-summary: Specify the name of the StaticGatewayConfiguration resource.
+        long-summary: This required field specifies the name of the StaticGatewayConfiguration resource for the Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
+    examples:
+      - name: Enable an Istio egress gateway. Static egress gateway must be enabled prior to creating an Istio egress gateway. See https://aka.ms/aks-static-egress-gateway on how to create and configure a Static Egress Gateway agentpool.
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --istio-egressgateway-name my-istio-egress-1 --istio-egressgateway-namespace my-namespace-1 --gateway-configuration-name sgc-istio-egress-1
+"""
+
+helps['aks mesh disable-egress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh egress gateway.
+    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --istio-eg-gtw-name --istio-egressgateway-name
+        type: string
+        short-summary: Specify the name of the Istio egress gateway.
+        long-summary: This required field specifies the name of the Istio egress gateway. Must be between 1 and 253 characters, must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+      - name: --istio-eg-gtw-ns --istio-egressgateway-namespace
+        type: string
+        short-summary: Specify the namespace of the Istio egress gateway.
+        long-summary: This optional field specifies the namespace of the Istio egress gateway. Defaults to "aks-istio-egress" if unspecified.
+    examples:
+      - name: Disable an Istio egress gateway.
+        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --istio-egressgateway-name my-istio-egress-1 --istio-egressgateway-namespace my-namespace-1
+"""
+
 helps['aks mesh get-revisions'] = """
     type: command
     short-summary: Discover available Azure Service Mesh revisions and their compatibility.
@@ -3259,4 +3305,132 @@ helps['aks check-network outbound'] = """
       - name: --custom-endpoints
         type: string
         short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
+"""
+
+helps['aks loadbalancer'] = """
+    type: group
+    short-summary: Commands to manage load balancer configurations in a managed Kubernetes cluster.
+    long-summary: These commands enable the feature of multiple standard load balancers for Azure Kubernetes Service clusters.
+"""
+
+helps['aks loadbalancer add'] = """
+    type: command
+    short-summary: Add a load balancer configuration to a managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Name of the load balancer configuration.
+          long-summary: Load balancer name used for identification. There must be a configuration named "kubernetes" in the cluster.
+        - name: --primary-agent-pool-name -p
+          type: string
+          short-summary: Name of the primary agent pool for this load balancer.
+          long-summary: Required field. A string value that must specify the ID of an existing agent pool. All nodes in the given pool will always be added to this load balancer.
+        - name: --allow-service-placement -a
+          type: bool
+          short-summary: Whether to automatically place services on the load balancer.
+          long-summary: If not supplied, the default value is true. If set to false manually, both the external and internal load balancer will not be selected for services unless they explicitly target it.
+        - name: --service-label-selector -l
+          type: string
+          short-summary: Label selector for services that can be placed on this load balancer.
+          long-summary: Only services that match this selector can be placed on this load balancer. Format as comma-separated key=value pairs or expressions like "key In value1,value2".
+        - name: --service-namespace-selector -s
+          type: string
+          short-summary: Namespace label selector for services that can be placed on this load balancer.
+          long-summary: Services created in namespaces that match the selector can be placed on this load balancer. Format as comma-separated key=value pairs.
+        - name: --node-selector -d
+          type: string
+          short-summary: Node label selector for nodes that can be members of this load balancer.
+          long-summary: Nodes that match this selector will be possible members of this load balancer. Format as comma-separated key=value pairs.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers to the AKS API.
+          long-summary: When specified, format should be Key1=Value1,Key2=Value2.
+    examples:
+        - name: Add a load balancer configuration with a specific primary agent pool
+          text: az aks loadbalancer add -g MyResourceGroup -n secondary --cluster-name MyManagedCluster --primary-agent-pool-name nodepool1
+        - name: Add a load balancer configuration with service label selector
+          text: az aks loadbalancer add -g MyResourceGroup -n app-lb --cluster-name MyManagedCluster --primary-agent-pool-name nodepool2 --service-label-selector app=frontend
+        - name: Add a load balancer configuration that doesn't automatically place services
+          text: az aks loadbalancer add -g MyResourceGroup -n restricted-lb --cluster-name MyManagedCluster --primary-agent-pool-name nodepool3 --allow-service-placement false
+        - name: Add a load balancer configuration with custom AKS API headers
+          text: az aks loadbalancer add -g MyResourceGroup -n api-lb --cluster-name MyManagedCluster --primary-agent-pool-name nodepool1 --aks-custom-headers CustomHeader=Value
+"""
+
+helps['aks loadbalancer update'] = """
+    type: command
+    short-summary: Update a load balancer configuration in a managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Name of the load balancer configuration to update.
+        - name: --primary-agent-pool-name -p
+          type: string
+          short-summary: Name of the primary agent pool for this load balancer.
+          long-summary: A string value that must specify the ID of an existing agent pool. All nodes in the given pool will always be added to this load balancer.
+        - name: --allow-service-placement -a
+          type: bool
+          short-summary: Whether to automatically place services on the load balancer.
+          long-summary: If set to false, both the external and internal load balancer will not be selected for services unless they explicitly target it.
+        - name: --service-label-selector -l
+          type: string
+          short-summary: Label selector for services that can be placed on this load balancer.
+          long-summary: Only services that match this selector can be placed on this load balancer. Format as comma-separated key=value pairs or expressions like "key In value1,value2".
+        - name: --service-namespace-selector -s
+          type: string
+          short-summary: Namespace label selector for services that can be placed on this load balancer.
+          long-summary: Services created in namespaces that match the selector can be placed on this load balancer. Format as comma-separated key=value pairs.
+        - name: --node-selector -d
+          type: string
+          short-summary: Node label selector for nodes that can be members of this load balancer.
+          long-summary: Nodes that match this selector will be possible members of this load balancer. Format as comma-separated key=value pairs.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers to the AKS API.
+          long-summary: When specified, format should be Key1=Value1,Key2=Value2.
+    examples:
+        - name: Update a load balancer configuration's primary agent pool
+          text: az aks loadbalancer update -g MyResourceGroup -n secondary --cluster-name MyManagedCluster --primary-agent-pool-name nodepool2
+        - name: Update a load balancer configuration to disable automatic service placement
+          text: az aks loadbalancer update -g MyResourceGroup -n app-lb --cluster-name MyManagedCluster --allow-service-placement false
+        - name: Update a load balancer configuration with new service selector
+          text: az aks loadbalancer update -g MyResourceGroup -n app-lb --cluster-name MyManagedCluster --service-label-selector tier=frontend,environment=production
+        - name: Update a load balancer configuration with custom AKS API headers
+          text: az aks loadbalancer update -g MyResourceGroup -n api-lb --cluster-name MyManagedCluster --aks-custom-headers CustomHeader=Value
+"""
+
+helps['aks loadbalancer delete'] = """
+    type: command
+    short-summary: Delete a load balancer configuration from a managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Name of the load balancer configuration to delete.
+          long-summary: The "kubernetes" load balancer cannot be deleted as it's required for cluster operation.
+    examples:
+        - name: Delete a load balancer configuration
+          text: az aks loadbalancer delete -g MyResourceGroup -n secondary --cluster-name MyManagedCluster
+"""
+
+helps['aks loadbalancer list'] = """
+    type: command
+    short-summary: List all load balancer configurations in a managed Kubernetes cluster.
+    examples:
+        - name: List all load balancer configurations
+          text: az aks loadbalancer list -g MyResourceGroup --cluster-name MyManagedCluster
+        - name: List all load balancer configurations in table format
+          text: az aks loadbalancer list -g MyResourceGroup --cluster-name MyManagedCluster -o table
+"""
+
+helps['aks loadbalancer show'] = """
+    type: command
+    short-summary: Show details of a specific load balancer configuration in a managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Name of the load balancer configuration to show.
+    examples:
+        - name: Show details of a specific load balancer configuration
+          text: az aks loadbalancer show -g MyResourceGroup -n secondary --cluster-name MyManagedCluster
+        - name: Show details of a load balancer configuration in table format
+          text: az aks loadbalancer show -g MyResourceGroup -n kubernetes --cluster-name MyManagedCluster -o table
 """

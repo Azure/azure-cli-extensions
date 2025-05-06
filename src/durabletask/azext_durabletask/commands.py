@@ -12,4 +12,6 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group('durabletask retention-policy'):
+        from .custom import CreatePolicy
+        self.command_table["durabletask retention-policy create"] = CreatePolicy(loader=self)

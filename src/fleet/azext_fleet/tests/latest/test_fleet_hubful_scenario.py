@@ -41,7 +41,6 @@ class FleetHubfulScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8)
     def test_fleet_hubful(self):
-
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),

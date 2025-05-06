@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+import unittest
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -349,6 +350,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         with self.assertRaisesRegex(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
+    @unittest.skip("The operation 'action' on resource type 'components' is disallowed for cmd 'monitor app-insights component continues-export create'.")
     @AllowLargeResponse()
     @ResourceGroupPreparer(parameter_name_for_location='location')
     @StorageAccountPreparer(kind='StorageV2')

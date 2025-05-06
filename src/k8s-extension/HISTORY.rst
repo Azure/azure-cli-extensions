@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.6.4
+++++++++++++++++++
+* microsoft.azuremonitor.containers.metrics: Update default region for azure monitor metrics extension in mooncake.
+* microsoft.dataprotection.kubernetes: Strip user input, add provision for updating resource requests.
+
 1.6.3
 ++++++++++++++++++
 * Do not attempt to register Microsoft.Monitor and Microsoft.Dashboard resource providers if they are already registered.

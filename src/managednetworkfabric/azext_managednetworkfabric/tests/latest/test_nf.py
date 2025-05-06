@@ -41,7 +41,11 @@ def step_create(test, checks=None):
     test.cmd(
         "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nf_sku} --nfc-id {nfc_id}"
         " --fabric-asn {fabric_asn} --ipv4-prefix {ipv4_prefix} --ipv6-prefix {ipv6_prefix} --rack-count {rack_count} --server-count-per-rack {server_count_per_rack}"
-        " --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}",
+        " --ts-config {terminal_server_conf} --managed-network-config {managed_network_conf} --user-assigned {user_assigned_identity}"
+        " --control-plane-acls {control_plane_acls} --fabric-version {fabric_version}"
+        " --hardware-alert-threshold {hardware_alert_threshold} --storage-account-configuration {storage_account_configuration}"
+        " --storage-array-count {storage_array_count} --trusted-ip-prefixes {trusted_ip_prefixes} --unique-rd-configuration {unique_rd_configuration}"
+        " --tags {tags}",
         checks=checks,
     )
 
@@ -88,16 +92,35 @@ class GA_NFScenarioTest1(ScenarioTest):
                 "server_count_per_rack": CONFIG.get(
                     "NETWORK_FABRIC", "server_count_per_rack"
                 ),
-                "terminalServerConf": CONFIG.get(
-                    "NETWORK_FABRIC", "terminalServerConf"
+                "terminal_server_conf": CONFIG.get(
+                    "NETWORK_FABRIC", "terminal_server_conf"
                 ),
-                "deleteNFRGName": CONFIG.get(
-                    "NETWORK_FABRIC", "delete_nf_resource_group"
+                "managed_network_conf": CONFIG.get(
+                    "NETWORK_FABRIC", "managed_network_conf"
                 ),
-                "deleteNFName": CONFIG.get("NETWORK_FABRIC", "delete_nf_name"),
-                "managedNetworkConf": CONFIG.get(
-                    "NETWORK_FABRIC", "managedNetworkConf"
+                "user_assigned_identity": CONFIG.get(
+                    "NETWORK_FABRIC", "user_assigned_identity"
                 ),
+                "control_plane_acls": CONFIG.get(
+                    "NETWORK_FABRIC", "control_plane_acls"
+                ),
+                "fabric_version": CONFIG.get("NETWORK_FABRIC", "fabric_version"),
+                "hardware_alert_threshold": CONFIG.get(
+                    "NETWORK_FABRIC", "hardware_alert_threshold"
+                ),
+                "storage_account_configuration": CONFIG.get(
+                    "NETWORK_FABRIC", "storage_account_configuration"
+                ),
+                "storage_array_count": CONFIG.get(
+                    "NETWORK_FABRIC", "storage_array_count"
+                ),
+                "trusted_ip_prefixes": CONFIG.get(
+                    "NETWORK_FABRIC", "trusted_ip_prefixes"
+                ),
+                "unique_rd_configuration": CONFIG.get(
+                    "NETWORK_FABRIC", "unique_rd_configuration"
+                ),
+                "tags": CONFIG.get("NETWORK_FABRIC", "tags"),
             }
         )
 

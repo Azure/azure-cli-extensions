@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -241,7 +241,7 @@ class List(AAZCommand):
             information.Element = AAZStrType()
 
             named_outputs = cls._schema_on_200.value.Element.properties.named_outputs
-            named_outputs.Element = AAZObjectType()
+            named_outputs.Element = AAZFreeFormDictType()
 
             output = cls._schema_on_200.value.Element.properties.output
             output.Element = AAZStrType()
