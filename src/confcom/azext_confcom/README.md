@@ -181,22 +181,7 @@ Users just need to make a tar file by using the `docker save` command above, inc
 When generating security policy without using `--tar` argument, the confcom extension CLI tool attemps to fetch the image remotely if it is not locally available.
 However, the CLI tool does not attempt to fetch remotely if `--tar` argument is used.
 
-Example 11: The process used in example 10 can also be used to save multiple images into the same tar file. See the following example:
-
-```bash
-docker save ImageTag1 ImageTag2 ImageTag3 -o file.tar
-```
-
-Disconnect from network and delete the local image from the docker daemon.
-Use the following command to generate CCE policy for the image.
-
-```bash
-az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
-```
-
-Note that multiple images saved to the tar file is only available using the docker-archive format for tar files. OCI does not support multi-image tar files at this time.
-
-Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
+Example 11: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
 
 ```bash
 docker save image:tag1 -o file1.tar
@@ -221,7 +206,7 @@ Use the following command to generate CCE policy for the image.
 az confcom acipolicygen -a .\sample-template-input.json --tar .\tar_mappings.json
 ```
 
-Example 13: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
+Example 12: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
 
 Create parameters in the ARM Template for each environment variable that has an unknown or secret value such as:
 
@@ -291,6 +276,29 @@ Use the following command to generate and print a security policy for an AKS pod
 ```bash
 az confcom acipolicygen --virtual-node-yaml ./pod.yaml --print-policy
 ```
+
+To generate a security policy using a policy config file for Virtual Node, the `scenario` field must be equal to `"vn2"`. This looks like:
+
+```json
+{
+    "version": "1.0",
+    "scenario": "vn2",
+    "containers": [
+        {
+            "name": "my-image",
+            "properties": {
+                "image": "mcr.microsoft.com/acc/samples/aci/helloworld:2.8"
+            }
+        }
+    ]
+}
+```
+
+This `scenario` field adds the necessary environment variables and mount values to containers in the config file.
+
+### Workload Identity
+
+To use workload identities with VN2, the associated label [described here](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet#pod-labels) must be present. Having this will add the requisite environment variables and mounts to each container's policy.
 
 > [!NOTE]
 > The `acipolicygen` command is specific to generating policies for ACI-based containers. For generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature, use the `katapolicygen` command.

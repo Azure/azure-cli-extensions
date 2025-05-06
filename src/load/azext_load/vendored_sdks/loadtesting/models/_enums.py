@@ -10,7 +10,7 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
-class AggregationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class Aggregation(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Aggregation type."""
 
     AVERAGE = "Average"
@@ -44,32 +44,21 @@ class AggregationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class CertificateType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Types of certificates supported."""
 
-    AKV_CERT_URI = "AKV_CERT_URI"
+    KEY_VAULT_CERTIFICATE_URI = "AKV_CERT_URI"
     """If the certificate is stored in an Azure Key Vault."""
 
 
-class CreateByTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of the entity that created the test run. (E.x. User, ScheduleTrigger, etc)."""
 
     USER = "User"
     """Entity was created by a user."""
     SCHEDULED_TRIGGER = "ScheduledTrigger"
     """Entity was created by a scheduled trigger."""
-
-
-class FileStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """File status."""
-
-    NOT_VALIDATED = "NOT_VALIDATED"
-    """File is not validated."""
-    VALIDATION_SUCCESS = "VALIDATION_SUCCESS"
-    """File is validated."""
-    VALIDATION_FAILURE = "VALIDATION_FAILURE"
-    """File validation is failed."""
-    VALIDATION_INITIATED = "VALIDATION_INITIATED"
-    """File validation is in progress."""
-    VALIDATION_NOT_REQUIRED = "VALIDATION_NOT_REQUIRED"
-    """Validation is not required."""
+    AZURE_PIPELINES = "AzurePipelines"
+    """Entity was created by Azure DevOps pipelines."""
+    GIT_HUB_WORKFLOWS = "GitHubWorkflows"
+    """Entity was created by GitHub Workflows."""
 
 
 class FileType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -87,6 +76,21 @@ class FileType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """If the file is a JSON config file to define the requests for a URL test."""
     TEST_SCRIPT = "TEST_SCRIPT"
     """If the file is a test script."""
+
+
+class FileValidationStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """File status."""
+
+    NOT_VALIDATED = "NOT_VALIDATED"
+    """File is not validated."""
+    VALIDATION_SUCCESS = "VALIDATION_SUCCESS"
+    """File is validated."""
+    VALIDATION_FAILURE = "VALIDATION_FAILURE"
+    """File validation is failed."""
+    VALIDATION_INITIATED = "VALIDATION_INITIATED"
+    """File validation is in progress."""
+    VALIDATION_NOT_REQUIRED = "VALIDATION_NOT_REQUIRED"
+    """Validation is not required."""
 
 
 class Frequency(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -156,7 +160,29 @@ class NotificationScopeType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Notification rule is for Tests."""
 
 
-class PFAction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class OperationKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Kind of the long running operation."""
+
+    CLONE_TEST = "CloneTest"
+    """Operation represents a clone test operation"""
+
+
+class OperationState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Enum describing allowed operation states."""
+
+    NOT_STARTED = "NotStarted"
+    """The operation has not started."""
+    RUNNING = "Running"
+    """The operation is in progress."""
+    SUCCEEDED = "Succeeded"
+    """The operation has completed successfully."""
+    FAILED = "Failed"
+    """The operation has failed."""
+    CANCELED = "Canceled"
+    """The operation has been canceled by the user."""
+
+
+class PassFailAction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Action to take on failure of pass/fail criteria."""
 
     CONTINUE = "continue"
@@ -165,57 +191,42 @@ class PFAction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Test run will stop if pass fail criteria metric is not passed."""
 
 
-class PFAgFunc(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class PassFailAggregationFunction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Aggregation functions for pass/fail criteria."""
 
     COUNT = "count"
     """Criteria applies for count value."""
     PERCENTAGE = "percentage"
     """Criteria applies for given percentage value."""
-    AVG = "avg"
+    AVERAGE = "avg"
     """Criteria applies for avg value."""
-    P50 = "p50"
+    PERCENTILE50 = "p50"
     """Criteria applies for 50th percentile value."""
-    P75 = "p75"
+    PERCENTILE75 = "p75"
     """Criteria applies for 75th percentile value."""
-    P90 = "p90"
+    PERCENTILE90 = "p90"
     """Criteria applies for 90th percentile value."""
-    P95 = "p95"
+    PERCENTILE95 = "p95"
     """Criteria applies for 95th percentile value."""
-    P96 = "p96"
+    PERCENTILE96 = "p96"
     """Criteria applies for 96th percentile value."""
-    P97 = "p97"
+    PERCENTILE97 = "p97"
     """Criteria applies for 97th percentile value."""
-    P98 = "p98"
+    PERCENTILE98 = "p98"
     """Criteria applies for 98th percentile value."""
-    P99 = "p99"
+    PERCENTILE99 = "p99"
     """Criteria applies for 99th percentile value."""
-    P99_9 = "p99.9"
+    PERCENTILE999 = "p99.9"
     """Criteria applies for 99.9th percentile value."""
-    P99_99 = "p99.99"
+    PERCENTILE9999 = "p99.99"
     """Criteria applies for 99.99th percentile value."""
-    MIN = "min"
+    MINIMUM = "min"
     """Criteria applies for minimum value."""
-    MAX = "max"
+    MAXIMUM = "max"
     """Criteria applies for maximum value."""
 
 
-class PFMetrics(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Metrics for pass/fail criteria."""
-
-    RESPONSE_TIME_MS = "response_time_ms"
-    """Pass fail criteria for response time metric in milliseconds."""
-    LATENCY = "latency"
-    """Pass fail criteria for latency metric in milliseconds."""
-    ERROR = "error"
-    """Pass fail criteria for error metric."""
-    REQUESTS = "requests"
-    """Pass fail criteria for total requests."""
-    REQUESTS_PER_SEC = "requests_per_sec"
-    """Pass fail criteria for request per second."""
-
-
-class PFResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class PassFailResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Pass/fail criteria result."""
 
     PASSED = "passed"
@@ -226,7 +237,7 @@ class PFResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Given pass fail criteria metric has failed."""
 
 
-class PFTestResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class PassFailTestResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Test result based on pass/fail criteria."""
 
     PASSED = "PASSED"
@@ -235,6 +246,21 @@ class PFTestResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Pass/fail criteria is not applicable."""
     FAILED = "FAILED"
     """Pass/fail criteria has failed."""
+
+
+class PFMetrics(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Metrics for pass/fail criteria."""
+
+    RESPONSE_TIME_IN_MILLISECONDS = "response_time_ms"
+    """Pass fail criteria for response time metric in milliseconds."""
+    LATENCY = "latency"
+    """Pass fail criteria for latency metric in milliseconds."""
+    ERROR = "error"
+    """Pass fail criteria for error metric."""
+    REQUESTS = "requests"
+    """Pass fail criteria for total requests."""
+    REQUESTS_PER_SECOND = "requests_per_sec"
+    """Pass fail criteria for request per second."""
 
 
 class RecommendationCategory(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -266,18 +292,48 @@ class ResourceKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class SecretType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Types of secrets supported."""
 
-    AKV_SECRET_URI = "AKV_SECRET_URI"
+    KEY_VAULT_SECRET_URI = "AKV_SECRET_URI"
     """If the secret is stored in an Azure Key Vault."""
     SECRET_VALUE = "SECRET_VALUE"
     """If the secret value provided as plain text."""
 
 
-class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class TestKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Test kind."""
+
+    URL = "URL"
+    """URL Test"""
+    JMX = "JMX"
+    """JMX Test"""
+    LOCUST = "Locust"
+    """Locust Test"""
+
+
+class TestProfileRunStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Test profile run status."""
+
+    ACCEPTED = "ACCEPTED"
+    """Test profile run request is accepted."""
+    NOT_STARTED = "NOTSTARTED"
+    """Test profile run is not yet started."""
+    EXECUTING = "EXECUTING"
+    """Test profile run has started executing."""
+    DONE = "DONE"
+    """Test profile run has completed successfully."""
+    CANCELLING = "CANCELLING"
+    """Test profile run is being cancelled."""
+    CANCELLED = "CANCELLED"
+    """Test profile run is cancelled."""
+    FAILED = "FAILED"
+    """Test profile run has failed."""
+
+
+class TestRunStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Test run status."""
 
     ACCEPTED = "ACCEPTED"
     """Test run request is accepted."""
-    NOTSTARTED = "NOTSTARTED"
+    NOT_STARTED = "NOTSTARTED"
     """Test run is not yet started."""
     PROVISIONING = "PROVISIONING"
     """Test run is provisioning."""
@@ -307,36 +363,6 @@ class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Test run JMX file is validated."""
     VALIDATION_FAILURE = "VALIDATION_FAILURE"
     """Test run JMX file validation is failed."""
-
-
-class TestKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Test kind."""
-
-    URL = "URL"
-    """URL Test"""
-    JMX = "JMX"
-    """JMX Test"""
-    LOCUST = "Locust"
-    """Locust Test"""
-
-
-class TestProfileRunStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Test profile run status."""
-
-    ACCEPTED = "ACCEPTED"
-    """Test profile run request is accepted."""
-    NOTSTARTED = "NOTSTARTED"
-    """Test profile run is not yet started."""
-    EXECUTING = "EXECUTING"
-    """Test profile run has started executing."""
-    DONE = "DONE"
-    """Test profile run has completed successfully."""
-    CANCELLING = "CANCELLING"
-    """Test profile run is being cancelled."""
-    CANCELLED = "CANCELLED"
-    """Test profile run is cancelled."""
-    FAILED = "FAILED"
-    """Test profile run has failed."""
 
 
 class TimeGrain(str, Enum, metaclass=CaseInsensitiveEnumMeta):

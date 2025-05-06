@@ -13,37 +13,37 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 10 Jun 2024 13:06:37 GMT
+      - Thu, 27 Mar 2025 06:40:16 GMT
       Repeatability-Request-Id:
-      - 4570f4f1-272a-11ef-80c9-00155d7acf01
+      - 57e79ef6-0ad6-11f0-8b51-00155d7b1001
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:06:37 GMT
+      - Thu, 27 Mar 2025 06:40:16 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2024-06-10T13:06:39.9796475+00:00",
-        "validFrom": "2024-06-10T13:06:39.2306092+00:00", "validUntil": "2024-12-07T13:06:39.2306092+00:00",
+      string: '{"id": "sanitized", "createdAt": "2025-03-27T06:40:16.304667+00:00",
+        "validFrom": "2025-03-27T06:40:16.1316878+00:00", "validUntil": "2025-09-23T06:40:16.1316878+00:00",
         "pstnDialOutEnabled": false}'
     headers:
-      api-deprecated-versions:
-      - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:06:39 GMT
+      - Thu, 27 Mar 2025 06:40:16 GMT
       location:
-      - '9943172807370859'
+      - '99434310447632004'
       ms-cv:
-      - sXy+gN8b3UywtWPJzx1J5A.0
+      - 9xvaO6v2UEOGeDSxqjCqEA.0
       repeatability-result:
       - accepted
       request-context:
@@ -53,7 +53,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0XvpmZgAAAAD3c+Hk4PbUT6aVmAs/b8BESEtCRURHRTA3MTAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250327T064015Z-16c89bd967f9zhkshC1MAAnndn0000000yb0000000000bdy
       x-cache:
       - CONFIG_NOCACHE
     status:
@@ -73,30 +73,30 @@ interactions:
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AzureCli/1.9.2 azsdk-python-communication-rooms/1.1.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - GGeywqkmwEbmvIr+M7fYvPtgLYHCAoJWqoApBN7ZlcA=
       x-ms-date:
-      - Mon, 10 Jun 2024 13:06:40 GMT
+      - Thu, 27 Mar 2025 06:40:17 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: PATCH
-    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2024-04-15
+    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2025-03-13
   response:
     body:
-      string: '{"error": {"code": "BadRequest", "message": "Invalid value for the
-        Participants."}}'
+      string: '{"error": {"code": "BadRequest", "message": "Communication identifier
+        8:acs:123456c is not supported."}}'
     headers:
-      api-deprecated-versions:
-      - '2022-02-01'
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2024 13:06:41 GMT
+      - Thu, 27 Mar 2025 06:40:17 GMT
       ms-cv:
-      - JveHjdzH1EKQdF9fBDU7kg.0
+      - EZErT12EOEee6tiri3IQyQ.0
       request-context:
       - appId=
       strict-transport-security:
@@ -104,7 +104,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0YfpmZgAAAABR/nXT1bqdRbbragqCjEJxSEtCRURHRTA3MTcAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 20250327T064016Z-16c89bd967fzhg8vhC1MAAkxd40000000eg000000000pyhw
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:

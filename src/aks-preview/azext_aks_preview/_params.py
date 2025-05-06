@@ -130,6 +130,9 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_ADVANCED_NETWORKPOLICIES_NONE,
+    CONST_ADVANCED_NETWORKPOLICIES_FQDN,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -277,6 +280,11 @@ network_plugins = [
     CONST_NETWORK_PLUGIN_NONE,
 ]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
+advanced_networkpolicies = [
+    CONST_ADVANCED_NETWORKPOLICIES_NONE,
+    CONST_ADVANCED_NETWORKPOLICIES_FQDN,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
+]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
@@ -798,10 +806,10 @@ def load_arguments(self, _):
             help="enable vertical pod autoscaler for cluster",
         )
         c.argument(
-            "enable_addon_autoscaling",
+            "enable_optimized_addon_scaling",
             action="store_true",
             is_preview=True,
-            help="enable addon autoscaling for cluster",
+            help="enable optimized addon scaling for cluster",
         )
         c.argument(
             "enable_cilium_dataplane",
@@ -823,6 +831,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_acns_security",
+            action="store_true",
+        )
+        c.argument(
+            "acns_advanced_networkpolicies",
+            is_preview=True,
+            arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "enable_retina_flow_logs",
             action="store_true",
         )
         c.argument(
@@ -1257,16 +1274,16 @@ def load_arguments(self, _):
             help="disable vertical pod autoscaler for cluster",
         )
         c.argument(
-            "enable_addon_autoscaling",
+            "enable_optimized_addon_scaling",
             action="store_true",
             is_preview=True,
-            help="enable addon autoscaling for cluster",
+            help="enable optimized addon scaling for cluster",
         )
         c.argument(
-            "disable_addon_autoscaling",
+            "disable_optimized_addon_scaling",
             action="store_true",
             is_preview=True,
-            help="disable addon autoscaling for cluster",
+            help="disable optimized addon scaling for cluster",
         )
         c.argument(
             "cluster_snapshot_id",
@@ -1301,6 +1318,19 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_acns_security",
+            action="store_true",
+        )
+        c.argument(
+            "acns_advanced_networkpolicies",
+            is_preview=True,
+            arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
+            "disable_retina_flow_logs",
             action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
@@ -2183,39 +2213,6 @@ def load_arguments(self, _):
                 action="store_true",
             )
 
-    with self.argument_context("aks trustedaccess rolebinding") as c:
-        c.argument("cluster_name", help="The cluster name.")
-
-    for scope in [
-        "aks trustedaccess rolebinding show",
-        "aks trustedaccess rolebinding create",
-        "aks trustedaccess rolebinding update",
-        "aks trustedaccess rolebinding delete",
-    ]:
-        with self.argument_context(scope) as c:
-            c.argument(
-                "role_binding_name",
-                options_list=["--name", "-n"],
-                required=True,
-                help="The role binding name.",
-            )
-
-    with self.argument_context("aks trustedaccess rolebinding create") as c:
-        c.argument(
-            "roles",
-            help="comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...",
-        )
-        c.argument(
-            "source_resource_id",
-            help="The source resource id of the binding",
-        )
-
-    with self.argument_context("aks trustedaccess rolebinding update") as c:
-        c.argument(
-            "roles",
-            help="comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...",
-        )
-
     with self.argument_context("aks mesh enable-ingress-gateway") as c:
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
@@ -2324,6 +2321,149 @@ def load_arguments(self, _):
                    nargs="+",
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
+
+    # AKS loadbalancer command parameter configuration
+    with self.argument_context("aks loadbalancer add") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            help="Name of the load balancer configuration. Required.",
+        )
+        c.argument(
+            "primary_agent_pool_name",
+            options_list=["--primary-agent-pool-name", "-p"],
+            help=(
+                "Name of the primary agent pool for this load balancer. "
+                "All nodes in this pool will be added to the load balancer. Required."
+            ),
+        )
+        c.argument(
+            "allow_service_placement",
+            options_list=["--allow-service-placement", "-a"],
+            arg_type=get_three_state_flag(),
+            help="Whether to automatically place services on the load balancer. Default is true.",
+        )
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+        c.argument(
+            "service_label_selector",
+            options_list=["--service-label-selector", "-l"],
+            help=(
+                "Only services that match this selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "service_namespace_selector",
+            options_list=["--service-namespace-selector", "-s"],
+            help=(
+                "Services created in namespaces that match the selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "node_selector",
+            options_list=["--node-selector", "-d"],
+            help=(
+                "Nodes that match this selector will be possible members of this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+
+    with self.argument_context("aks loadbalancer rebalance-nodes") as c:
+        c.argument(
+            "resource_group_name",
+            options_list=["--resource-group", "-g"],
+            help="Name of resource group.",
+            id_part="resource_group",
+            configured_default="aks",
+        )
+        c.argument(
+            "cluster_name",
+            options_list=["--name", "-n"],
+            help="Name of the managed cluster.",
+        )
+        c.argument(
+            "load_balancer_names",
+            options_list=["--load-balancer-names", "--lb-names"],
+            nargs="+",
+            help=(
+                "Space-separated list of load balancer names to rebalance. "
+                "If not specified, all load balancers will be rebalanced."
+            ),
+        )
+        c.argument(
+            "no_wait", help="Do not wait for the long-running operation to finish."
+        )
+
+    with self.argument_context("aks loadbalancer update") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            help="Name of the public load balancer. Required.",
+        )
+        c.argument(
+            "primary_agent_pool_name",
+            options_list=["--primary-agent-pool-name", "-p"],
+            help=(
+                "Name of the primary agent pool for this load balancer. "
+                "All nodes in this pool will be added to the load balancer."
+            ),
+        )
+        c.argument(
+            "allow_service_placement",
+            options_list=["--allow-service-placement", "-a"],
+            arg_type=get_three_state_flag(),
+            help="Whether to automatically place services on the load balancer. Default is true.",
+        )
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+        c.argument(
+            "service_label_selector",
+            options_list=["--service-label-selector", "-l"],
+            help=(
+                "Only services that match this selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "service_namespace_selector",
+            options_list=["--service-namespace-selector", "-s"],
+            help=(
+                "Services created in namespaces that match the selector can be placed on this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+        c.argument(
+            "node_selector",
+            options_list=["--node-selector", "-d"],
+            help=(
+                "Nodes that match this selector will be possible members of this load balancer. "
+                "Format: key1=value1,key2=value2 for simple selectors, "
+                "or key1 In val1 val2,key2 Exists for advanced expressions."
+            ),
+        )
+
+    # Define parameters for show and delete commands
+    for scope in [
+        "aks loadbalancer show",
+        "aks loadbalancer delete",
+    ]:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "name",
+                options_list=["--name", "-n"],
+                help="Name of the load balancer configuration. Required.",
+            )
 
 
 def _get_default_install_location(exe_name):

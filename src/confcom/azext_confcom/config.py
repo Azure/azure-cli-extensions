@@ -11,6 +11,7 @@ ACI_FIELD_VERSION = "version"
 ACI_FIELD_RESOURCES = "resources"
 ACI_FIELD_RESOURCES_NAME = "name"
 ACI_FIELD_CONTAINERS = "containers"
+ACI_FIELD_SCENARIO = "scenario"
 ACI_FIELD_CONTAINERS_NAME = "name"
 ACI_FIELD_CONTAINERS_CONTAINERIMAGE = "containerImage"
 ACI_FIELD_CONTAINERS_ENVS = "environmentVariables"
@@ -63,6 +64,7 @@ ACI_FIELD_TEMPLATE_SECURITY_CONTEXT = "securityContext"
 ACI_FIELD_TEMPLATE_RESOURCE_LABEL = "Microsoft.ContainerInstance/containerGroups"
 ACI_FIELD_TEMPLATE_RESOURCE_PROFILE_LABEL = "Microsoft.ContainerInstance/containerGroupProfiles"
 ACI_FIELD_TEMPLATE_COMMAND = "command"
+ACI_FIELD_TEMPLATE_ENTRYPOINT = "entrypoint"
 ACI_FIELD_TEMPLATE_ENVS = "environmentVariables"
 ACI_FIELD_TEMPLATE_VOLUME_MOUNTS = "volumeMounts"
 ACI_FIELD_TEMPLATE_MOUNTS_TYPE = "mountType"
@@ -84,8 +86,12 @@ ACI_FIELD_YAML_MOUNT_TYPE = "emptyDir"
 ACI_FIELD_YAML_LIVENESS_PROBE = "livenessProbe"
 ACI_FIELD_YAML_READINESS_PROBE = "readinessProbe"
 ACI_FIELD_YAML_STARTUP_PROBE = "startupProbe"
+ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_NAME = "THIM_ENDPOINT"
+ACI_FIELD_TEMPLATE_SPECIAL_ENV_VAR_REGEX_VALUE = "^===CONFIDENTIAL.THIM.ENDPOINT===$"
+
 VIRTUAL_NODE_YAML_METADATA = "metadata"
 VIRTUAL_NODE_YAML_COMMAND = "command"
+VIRTUAL_NODE_YAML_ARGS = "args"
 VIRTUAL_NODE_YAML_NAME = "name"
 VIRTUAL_NODE_YAML_ANNOTATIONS = "annotations"
 VIRTUAL_NODE_YAML_LABELS = "labels"
@@ -158,6 +164,11 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE = "emptyDir"
 REGO_CONTAINER_START = "containers := "
 REGO_FRAGMENT_START = "fragments := "
 
+# scenario options
+VN2 = "vn2"
+ACI = "aci"
+KATA = "kata"
+
 
 CONFIG_FILE = "./data/internal_config.json"
 
@@ -191,6 +202,7 @@ DEFAULT_MOUNTS_USER = _config["mount"]["default_mounts_user"]
 DEFAULT_MOUNTS_USER_VIRTUAL_NODE = _config["mount"]["default_mounts_user_virtual_node"]
 DEFAULT_MOUNTS_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node"]
 DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node_privileged"]
+DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE = _config["mount"]["default_mounts_workload_identity_virtual_node"]
 # default mounts policy options for all containers
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers

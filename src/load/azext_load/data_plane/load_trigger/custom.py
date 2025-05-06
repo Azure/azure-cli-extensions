@@ -19,8 +19,8 @@ logger = get_logger(__name__)
 def create_trigger_schedule(
     cmd,
     load_test_resource,
+    trigger_id,
     resource_group_name=None,
-    trigger_id=None,
     description=None,
     display_name=None,
     trigger_start_date_time=None,
@@ -242,6 +242,6 @@ def list_trigger_schedules(
     if test_ids:
         test_ids = ",".join(test_ids)
     logger.info("Schedule trigger states: %s", trigger_states)
-    response_list = client.list_trigger(test_ids=test_ids, states=trigger_states)
+    response_list = client.list_triggers(test_ids=test_ids, states=trigger_states)
     logger.debug("Fetched list of schedule triggers: %s", response_list)
     return [response.as_dict() for response in response_list]

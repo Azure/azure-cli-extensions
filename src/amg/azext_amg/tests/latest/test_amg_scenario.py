@@ -12,7 +12,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .test_definitions import (test_data_source, test_notification_channel, test_dashboard)
+from .test_definitions import (test_data_source, test_dashboard)
 from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -229,32 +229,6 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{definition_name}"')
             response_delete = self.cmd('grafana data-source list -g {rg} -n {name}').get_output_in_json()
-            self.assertTrue(len(response_delete) == len(response_list) - 1)
-
-            # Test Notification Channel
-            self.kwargs.update({
-                'definition': test_notification_channel,
-                'definition_name': test_notification_channel["name"]
-            })
-
-            response_create = self.cmd('grafana notification-channel create -g {rg} -n {name} --definition "{definition}"', checks=[
-                self.check("[name]", "['{definition_name}']")]).get_output_in_json()
-
-            self.kwargs.update({
-                'notification_channel_uid': response_create["uid"]
-            })
-
-            self.cmd('grafana notification-channel show -g {rg} -n {name} --notification-channel "{notification_channel_uid}"', checks=[
-                self.check("[name]", "['{definition_name}']")])
-
-            self.cmd('grafana notification-channel update -g {rg} -n {name} --notification-channel "{notification_channel_uid}" --definition "{definition}"', checks=[
-                self.check("[name]", "['{definition_name}']")])
-
-            response_list = self.cmd('grafana notification-channel list -g {rg} -n {name}').get_output_in_json()
-            self.assertTrue(len(response_list) > 0)
-
-            self.cmd('grafana notification-channel delete -g {rg} -n {name} --notification-channel "{notification_channel_uid}"')
-            response_delete = self.cmd('grafana notification-channel list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_delete) == len(response_list) - 1)
 
             # Test Dashboard
@@ -544,7 +518,8 @@ class AmgScenarioTest(ScenarioTest):
         self.kwargs.update({
             'name': self.create_random_name(prefix='clitestamginteg', length=23),
             'location': 'westcentralus',
-            'monitor_name': self.create_random_name(prefix='clitestamwinteg', length=23)
+            'monitor_name': self.create_random_name(prefix='clitestamwinteg', length=23),
+            'sub': self.get_subscription_id()
         })
 
         owner = self._get_signed_in_user()
@@ -556,7 +531,7 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
 
-            self.cmd('grafana integrations monitor add -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+            self.cmd('grafana integrations monitor add -g {rg} -n {name} --monitor-sub-id {sub} --monitor-rg-name {rg} --monitor-name {monitor_name}')
 
             monitor_integrations = self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
                 self.check('length([])', 1)
@@ -567,7 +542,7 @@ class AmgScenarioTest(ScenarioTest):
             ])
 
             self._poll_for_amg_succeeded_state('{rg}', '{name}', timeout=500)  # Wait for workspace to complete 'Updating' provisioning state
-            self.cmd('grafana integrations monitor delete -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+            self.cmd('grafana integrations monitor delete -g {rg} -n {name} --monitor-sub-id {sub} --monitor-rg-name {rg} --monitor-name {monitor_name}')
 
             self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
                 self.check('length([])', 0)

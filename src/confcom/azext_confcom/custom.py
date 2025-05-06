@@ -144,7 +144,10 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             approve_wildcards=approve_wildcards,
-            diff_mode=diff
+            diff_mode=diff,
+            rego_imports=fragments_list,
+            exclude_default_fragments=exclude_default_fragments,
+            infrastructure_svn=infrastructure_svn,
         )
 
     exit_code = 0

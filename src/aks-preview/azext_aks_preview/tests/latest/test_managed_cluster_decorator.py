@@ -945,6 +945,84 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_enable_cilium_dataplane(), False)
 
+    def test_mc_get_acns_advanced_networkpolicies(self):
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_acns_advanced_networkpolicies(), None)
+        # Flag set to None.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_advanced_networkpolicies": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_acns_advanced_networkpolicies(), "None")
+        # Flag set to FQDN
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_advanced_networkpolicies": "FQDN",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_acns_advanced_networkpolicies(), "FQDN")
+        # Flag set to L7
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_advanced_networkpolicies": "L7",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_acns_advanced_networkpolicies(), "L7")
+        # Fail on setting advanced_networkpolicies and disable acns
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "acns_advanced_networkpolicies": "L7",
+                    "disable_acns": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_5.get_acns_advanced_networkpolicies()
+        # Fail on setting advanced_networkpolicies and disable acns security
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "acns_advanced_networkpolicies": "L7",
+                    "disable_acns_security": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_acns_advanced_networkpolicies()
+
+
     def test_mc_get_acns_enablement(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -5084,7 +5162,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_set_up_addon_autoscaling(self):
+    def test_set_up_optimized_addon_scaling(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -5093,19 +5171,19 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_addon_autoscaling(mc_1)
+        dec_mc_1 = dec_1.set_up_optimized_addon_scaling(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
-            {"enable_addon_autoscaling": True},
+            {"enable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_addon_autoscaling(mc_2)
+        dec_mc_2 = dec_2.set_up_optimized_addon_scaling(mc_2)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -8017,7 +8095,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
 
-    def test_update_addon_autoscaling(self):
+    def test_update_optimized_addon_scaling(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -8029,7 +8107,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_addon_autoscaling(mc_0)
+        dec_mc_0 = dec_0.update_optimized_addon_scaling(mc_0)
         ground_truth_mc_0 = self.models.ManagedCluster(
             location="test_location",
         )
@@ -8039,7 +8117,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_addon_autoscaling": True, "disable_addon_autoscaling": True},
+            {"enable_optimized_addon_scaling": True, "disable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(
@@ -8047,20 +8125,20 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_1.update_addon_autoscaling(mc_1)
+            dec_1.update_optimized_addon_scaling(mc_1)
 
-        # enable addon autoscaling should set addon_autoscaling to Enabled
+        # enable optimized addon scaling should set optimized_addon_scaling to Enabled
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_addon_autoscaling": True},
+            {"enable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
         )
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_addon_autoscaling(mc_2)
+        dec_mc_2 = dec_2.update_optimized_addon_scaling(mc_2)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -8076,18 +8154,18 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-        # disable addon autoscaling should set addon_autoscaling to Disabled
+        # disable optimized addon scaling should set optimized_addon_scaling to Disabled
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"disable_addon_autoscaling": True},
+            {"disable_optimized_addon_scaling": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
         )
         dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.update_addon_autoscaling(mc_3)
+        dec_mc_3 = dec_3.update_optimized_addon_scaling(mc_3)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -9000,6 +9078,251 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_enable_retina_network_flow_logs(self):
+        # Case 1: enable_acns, enable monitoring addons_profile, enable retina_network_flow_logs
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_monitoring_profile_flow_logs(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Case 2: acns is enabled, monitoring is enabled, disable retina network flow logs
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_monitoring_profile_flow_logs(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "False"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Case 3: enable_acns, enable_retina_network_flow_logs, but monitoring does not exist
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_acns": True,
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_3.update_monitoring_profile_flow_logs(mc_3)
+
+        # Case 4: enable_acns, enable monitoring addons_profile, enable retina_network_flow_logs for ClusterCreate context
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "enable_addons": "monitoring",
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_acns": True,
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+            ),
+        )
+        dec_4.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec_4.context.attach_mc(mc_4)
+        with patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            dec_mc_4 = dec_4.set_up_addon_profiles(mc_4)
+        ground_truth_mc_4 = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    "enableRetinaNetworkFlags": "True",
+                },
+            ),
+        }
+        self.assertEqual(dec_mc_4.addon_profiles["omsagent"], ground_truth_mc_4["omsagent"])
+
+        # Case 5: enable_acns and enable_retina_network_flow_logs without monitoring addon
+        dec_5 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "enable_addons": "",
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_acns": True,
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+            ),
+        )
+        dec_5.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec_5.context.attach_mc(mc_5)
+        with self.assertRaises(InvalidArgumentValueError):
+            with patch(
+                "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_container_insights_for_monitoring",
+                return_value=None,
+            ):
+                dec_5.set_up_addon_profiles(mc_5)
+
+        # Case 6: enable_monitoring addon with retina_network_flow_logs, but acns is not enabled
+        dec_6 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "enable_addons": "monitoring",
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+            ),
+        )
+        dec_6.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(InvalidArgumentValueError):
+            with patch(
+                "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_container_insights_for_monitoring",
+                return_value=None,
+            ):
+                dec_6.set_up_addon_profiles(mc_6)
 
 if __name__ == "__main__":
     unittest.main()
