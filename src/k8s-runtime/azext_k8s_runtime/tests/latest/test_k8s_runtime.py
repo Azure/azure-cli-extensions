@@ -8,7 +8,6 @@
 import os
 import subprocess
 import tempfile
-import azext_k8s_runtime.custom_commands.storage_class as sc
 import azext_k8s_runtime.custom_commands.load_balancer as lb
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
