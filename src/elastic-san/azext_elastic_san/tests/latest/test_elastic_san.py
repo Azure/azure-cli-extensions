@@ -13,7 +13,8 @@ class ElasticSanScenario(ScenarioTest):
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan')
     def test_elastic_san_scenarios(self, resource_group):
         self.kwargs.update({
-            "san_name": self.create_random_name('elastic-san', 24)
+            "san_name": self.create_random_name('elastic-san', 24),
+            "san_2_name": self.create_random_name('elastic-san', 24)
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
@@ -58,6 +59,14 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
         time.sleep(20)
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+        self.cmd('az elastic-san create -n {san_2_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
+                 '--sku {{name:Premium_LRS,tier:Premium}} --public-network-access Enabled '
+                 '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 '
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 14 --availability-zones 1',
+                 checks=[JMESPathCheck('name', self.kwargs.get('san_2_name', '')),
+                         JMESPathCheck('baseSizeTiB', 20),
+                         JMESPathCheck('extendedCapacitySizeTiB', 0)])
+        self.cmd('az elastic-san delete -g {rg} -n {san_2_name} -y')
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')
     def test_elastic_san_volume_group_and_volume_scenarios(self, resource_group):
