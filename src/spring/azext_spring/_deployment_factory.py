@@ -109,10 +109,10 @@ class DefaultDeployment:
         return apms
 
     def _get_addon_configs(self, config_file_patterns=None, custom_actuator_port=None, custom_actuator_path=None, **_):
-        if not any([config_file_patterns, custom_actuator_port, custom_actuator_path]):
+        if config_file_patterns is None and custom_actuator_port is None and custom_actuator_path is None:
             return None
         addon_configs = {}
-        if config_file_patterns:
+        if config_file_patterns is not None:
             addon_configs[APPLICATION_CONFIGURATION_SERVICE_NAME] = {
                 APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
             }
