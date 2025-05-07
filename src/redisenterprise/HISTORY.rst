@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.3.0
+1.2.1
 - Added support for listing all SKUs a cluster can scale to.
 - Added a new enum: NoCluster for Clustering policy.
 
