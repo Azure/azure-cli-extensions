@@ -94,6 +94,12 @@ class Create(AAZCommand):
             help="App components spec, use @ to load from file",
         )
 
+        _args_schema.enable_external_validation = AAZBoolArg(
+            options=["--enable-external-validation"],
+            arg_group="Properties",
+            help="Flag to enable external validation",
+        )
+
         capabilities = cls._args_schema.capabilities
         capabilities.Element = AAZStrArg()
 
@@ -238,6 +244,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("capabilities", AAZListType, ".capabilities", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("enableExternalValidation", AAZBoolType, ".enable_external_validation")
                 properties.set_prop("state", AAZStrType, ".state")
 
             capabilities = _builder.get(".properties.capabilities")
@@ -298,6 +305,9 @@ class Create(AAZCommand):
             )
             properties.description = AAZStrType(
                 flags={"required": True},
+            )
+            properties.enable_external_validation = AAZBoolType(
+                serialized_name="enableExternalValidation",
             )
             properties.latest_version = AAZStrType(
                 serialized_name="latestVersion",

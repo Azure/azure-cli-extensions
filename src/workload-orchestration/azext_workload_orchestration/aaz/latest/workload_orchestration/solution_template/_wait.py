@@ -182,6 +182,9 @@ class Wait(AAZWaitCommand):
             properties.description = AAZStrType(
                 flags={"required": True},
             )
+            properties.enable_external_validation = AAZBoolType(
+                serialized_name="enableExternalValidation",
+            )
             properties.latest_version = AAZStrType(
                 serialized_name="latestVersion",
                 flags={"read_only": True},

@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration target publish",
+    "workload-orchestration target update-external-validation-status",
 )
-class Publish(AAZCommand):
-    """Post request to publish
+class UpdateExternalValidationStatus(AAZCommand):
+    """Post request to update external validation status
     """
 
     _aaz_info = {
         "version": "2025-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/publishsolutionversion", "2025-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/updateexternalvalidationstatus", "2025-01-01-preview"],
         ]
     }
 
@@ -60,29 +60,36 @@ class Publish(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.review_id = AAZStrArg(
-            options=["--review-id"],
+        _args_schema.error_details = AAZFreeFormDictArg(
+            options=["--error-details"],
             arg_group="Body",
-            help="Review ID",
+            help="Error Details if any failure is there",
+            required=False,
+        )
+        _args_schema.external_validation_id = AAZStrArg(
+            options=["--external-validation-id"],
+            arg_group="Body",
+            help="External validation id",
             required=True,
         )
-        _args_schema.solution = AAZStrArg(
-            options=["--solution-name"],
+        _args_schema.solution_version_id = AAZStrArg(
+            options=["--solution-version-id"],
             arg_group="Body",
-            help="Solution Name",
+            help="Solution Version Id",
             required=True,
         )
-        _args_schema.solution_version = AAZStrArg(
-            options=["--solution-version"],
+        _args_schema.validation_status = AAZStrArg(
+            options=["--validation-status"],
             arg_group="Body",
-            help="Solution Version Name",
+            help="Validation Status of external validation",
             required=True,
+            enum={"Invalid": "Invalid", "Valid": "Valid"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TargetsPublishSolutionVersion(ctx=self.ctx)()
+        yield self.TargetsUpdateExternalValidationStatus(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,7 +104,7 @@ class Publish(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TargetsPublishSolutionVersion(AAZHttpOperation):
+    class TargetsUpdateExternalValidationStatus(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -127,7 +134,7 @@ class Publish(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/publishSolutionVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/updateExternalValidationStatus",
                 **self.url_parameters
             )
 
@@ -186,9 +193,14 @@ class Publish(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("reviewId", AAZStrType, ".review_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("errorDetails", AAZFreeFormDictType, ".error_details")
+            _builder.set_prop("externalValidationId", AAZStrType, ".external_validation_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("validationStatus", AAZStrType, ".validation_status", typ_kwargs={"flags": {"required": True}})
+
+            errorDetails = _builder.get(".errorDetails")
+            if errorDetails is not None:
+                errorDetails.set_anytype_elements(".")
 
             return self.serialize_content(_content_value)
 
@@ -241,24 +253,16 @@ class Publish(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.publishedSolutionVersionsForExternalValidation = AAZListType(
-                serialized_name="publishedSolutionVersionsForExternalValidation",
-                flags={"read_only": True},
-            )
-            published_solution_versions_for_external_validation = cls._schema_on_200.properties.publishedSolutionVersionsForExternalValidation
-            published_solution_versions_for_external_validation.Element = AAZObjectType()
-            published_solution_versions_for_external_validation.Element.solutionVersionId = AAZStrType(
-                serialized_name="solutionVersionId",
-                flags={"read_only": True},
-            )
-            published_solution_versions_for_external_validation.Element.externalValidationId = AAZStrType(
-                serialized_name="externalValidationId",
-                flags={"read_only": True},
-            )
             properties.configuration = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
+            _UpdateExternalValidationStatusHelper._build_schema_error_detail_read(properties.error_details)
+            properties.external_validation_id = AAZStrType(
+                serialized_name="externalValidationId",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -284,7 +288,7 @@ class Publish(AAZCommand):
                 serialized_name="solutionTemplateVersionId",
                 flags={"read_only": True},
             )
-            properties.specification = AAZFreeFormDictType(
+            properties.specification = AAZDictType(
                 flags={"required": True},
             )
             properties.state = AAZStrType(
@@ -294,10 +298,17 @@ class Publish(AAZCommand):
                 serialized_name="targetDisplayName",
                 flags={"read_only": True},
             )
+            properties.target_level_configuration = AAZStrType(
+                serialized_name="targetLevelConfiguration",
+                flags={"read_only": True},
+            )
 
             solution_dependencies = cls._schema_on_200.properties.solution_dependencies
             solution_dependencies.Element = AAZObjectType()
-            _PublishHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
+            _UpdateExternalValidationStatusHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
+
+            specification = cls._schema_on_200.properties.specification
+            specification.Element = AAZAnyType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -322,8 +333,66 @@ class Publish(AAZCommand):
             return cls._schema_on_200
 
 
-class _PublishHelper:
-    """Helper class for Publish"""
+class _UpdateExternalValidationStatusHelper:
+    """Helper class for UpdateExternalValidationStatus"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
     _schema_solution_dependency_read = None
 
@@ -331,6 +400,7 @@ class _PublishHelper:
     def _build_schema_solution_dependency_read(cls, _schema):
         if cls._schema_solution_dependency_read is not None:
             _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+            _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
             _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
             _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
             _schema.target_id = cls._schema_solution_dependency_read.target_id
@@ -340,6 +410,9 @@ class _PublishHelper:
 
         solution_dependency_read = _schema_solution_dependency_read
         solution_dependency_read.dependencies = AAZListType()
+        solution_dependency_read.solution_instance_name = AAZStrType(
+            serialized_name="solutionInstanceName",
+        )
         solution_dependency_read.solution_template_version_id = AAZStrType(
             serialized_name="solutionTemplateVersionId",
             flags={"required": True},
@@ -358,9 +431,10 @@ class _PublishHelper:
         cls._build_schema_solution_dependency_read(dependencies.Element)
 
         _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+        _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
         _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
         _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
         _schema.target_id = cls._schema_solution_dependency_read.target_id
 
 
-__all__ = ["Publish"]
+__all__ = ["UpdateExternalValidationStatus"]

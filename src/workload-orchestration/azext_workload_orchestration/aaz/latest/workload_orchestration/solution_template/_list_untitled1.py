@@ -184,6 +184,9 @@ class ListUntitled1(AAZCommand):
             properties.description = AAZStrType(
                 flags={"required": True},
             )
+            properties.enable_external_validation = AAZBoolType(
+                serialized_name="enableExternalValidation",
+            )
             properties.is_deprecated = AAZBoolType(
                 serialized_name="isDeprecated",
                 flags={"read_only": True},

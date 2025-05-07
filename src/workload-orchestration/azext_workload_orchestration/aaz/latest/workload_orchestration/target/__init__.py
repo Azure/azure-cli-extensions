@@ -18,6 +18,7 @@ from ._publish import *
 from ._remove_revision import *
 from ._resolve import *
 from ._review_solution_version import *
+from ._update_external_validation_status import *
 from ._show import *
 from ._uninstall import *
 from ._update import *
