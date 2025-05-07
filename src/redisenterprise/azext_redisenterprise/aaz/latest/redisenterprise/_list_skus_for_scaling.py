@@ -12,16 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database list-keys",
+    "redisenterprise list-skus-for-scaling",
 )
-class ListKeys(AAZCommand):
-    """Retrieves the access keys for the RedisEnterprise database.
+class ListSkusForScaling(AAZCommand):
+    """Lists the available SKUs for scaling the Redis Enterprise cluster.
+
+    :example: RedisEnterpriseListSkusForScaling
+        az redisenterprise list-skus-for-scaling --resource-group rg1 --cluster-name cache1
     """
 
     _aaz_info = {
         "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/listkeys", "2025-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/listskusforscaling", "2025-05-01-preview"],
         ]
     }
 
@@ -43,19 +46,9 @@ class ListKeys(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            help="The name of the Redis Enterprise cluster. Name must be 1-60 characters long. Allowed characters(A-Z, a-z, 0-9) and hyphen(-). There can be no leading nor trailing nor consecutive hyphens",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=True,
-            id_part="child_name_1",
-            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
@@ -67,7 +60,7 @@ class ListKeys(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DatabasesListKeys(ctx=self.ctx)()
+        self.RedisEnterpriseListSkusForScaling(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +75,7 @@ class ListKeys(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DatabasesListKeys(AAZHttpOperation):
+    class RedisEnterpriseListSkusForScaling(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +89,7 @@ class ListKeys(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/listKeys",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/listSkusForScaling",
                 **self.url_parameters
             )
 
@@ -113,10 +106,6 @@ class ListKeys(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "databaseName", self.ctx.args.database_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -167,20 +156,25 @@ class ListKeys(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.primary_key = AAZStrType(
-                serialized_name="primaryKey",
+            _schema_on_200.skus = AAZListType()
+
+            skus = cls._schema_on_200.skus
+            skus.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.skus.Element
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.secondary_key = AAZStrType(
-                serialized_name="secondaryKey",
+            _element.size_in_gb = AAZFloatType(
+                serialized_name="sizeInGB",
                 flags={"read_only": True},
             )
 
             return cls._schema_on_200
 
 
-class _ListKeysHelper:
-    """Helper class for ListKeys"""
+class _ListSkusForScalingHelper:
+    """Helper class for ListSkusForScaling"""
 
 
-__all__ = ["ListKeys"]
+__all__ = ["ListSkusForScaling"]
