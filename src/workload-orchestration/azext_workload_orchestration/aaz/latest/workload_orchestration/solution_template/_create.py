@@ -173,7 +173,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/solutionTemplates/{solutionTemplateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}",
                 **self.url_parameters
             )
 
@@ -391,7 +391,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Private.Edge/solutionTemplates/{solutionTemplateName}/createVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/createVersion",
                 **self.url_parameters
             )
 
