@@ -176,10 +176,10 @@ class Create(AAZCommand):
                 raise ValidationError("Invalid YAML passed")
             
             if configTemplateName == "Undefined" and configTemplateValue.get("metadata", {}).get("name") is None:
-                raise ValidationError("Schema name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
             
             if configTemplateName != "Undefined" and configTemplateValue.get("metadata", {}).get("name") is not None and configTemplateName != configTemplateValue['metadata']['name']:
-                raise ValidationError("Schema name passed as argument and name passed in schema yaml has different values")
+                raise ValidationError("Config Template name passed as argument and name in file under metadata have different values.")
             
             if configTemplateName == "Undefined":    
                 configTemplateName = configTemplateValue['metadata']['name']
@@ -378,10 +378,10 @@ class Create(AAZCommand):
                 raise ValidationError("Invalid YAML passed")
             
             if configTemplateName == "Undefined" and configTemplateValue.get("metadata", {}).get("name") is None:
-                raise ValidationError("Schema name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
             
             if configTemplateName != "Undefined" and configTemplateValue.get("metadata", {}).get("name") is not None and configTemplateName != configTemplateValue['metadata']['name']:
-                raise ValidationError("Schema name passed as argument and name passed in schema yaml has different values")
+                raise ValidationError("Config Template name passed as argument and name in file under metadata have different values.")
             
             if configTemplateName == "Undefined":    
                 configTemplateName = configTemplateValue['metadata']['name']

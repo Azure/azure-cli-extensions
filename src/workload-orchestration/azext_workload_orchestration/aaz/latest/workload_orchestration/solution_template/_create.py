@@ -199,10 +199,10 @@ class Create(AAZCommand):
                 raise ValidationError("Invalid YAML passed")
             
             if solutionTemplateName == "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is None:
-                raise ValidationError("Schema name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
             
             if solutionTemplateName != "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is not None and solutionTemplateName != solutionTemplateValue['metadata']['name']:
-                raise ValidationError("Schema name passed as argument and name passed in schema yaml has different values")
+                raise ValidationError("Solution template name passed as argument and name in file under metadata have different values")
             
             if solutionTemplateName == "Undefined":    
                 solutionTemplateName = solutionTemplateValue['metadata']['name']
