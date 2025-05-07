@@ -9,7 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+from azure.cli.core.azclierror import ValidationError
+import yaml
 
 @register_command(
     "workload-orchestration config-template create",
@@ -45,7 +46,7 @@ class Create(AAZCommand):
         _args_schema.config_template_name = AAZStrArg(
             options=["-n", "--name", "--config-template-name"],
             help="The name of the ConfigTemplate",
-            required=True,
+            required=False,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -163,9 +164,29 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            configTemplateName = str(self.ctx.args.config_template_name)
+            configTemplateValue = object()
+
+            try:
+                configTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(configTemplateValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if configTemplateName == "Undefined" and configTemplateValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
+            
+            if configTemplateName != "Undefined" and configTemplateValue.get("metadata", {}).get("name") is not None and configTemplateName != configTemplateValue['metadata']['name']:
+                raise ValidationError("Config Template name passed as argument and name in file under metadata have different values.")
+            
+            if configTemplateName == "Undefined":    
+                configTemplateName = configTemplateValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
-                    "configTemplateName", self.ctx.args.config_template_name,
+                    "configTemplateName", configTemplateName,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -345,9 +366,29 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            configTemplateName = str(self.ctx.args.config_template_name)
+            configTemplateValue = object()
+
+            try:
+                configTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(configTemplateValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if configTemplateName == "Undefined" and configTemplateValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
+            
+            if configTemplateName != "Undefined" and configTemplateValue.get("metadata", {}).get("name") is not None and configTemplateName != configTemplateValue['metadata']['name']:
+                raise ValidationError("Config Template name passed as argument and name in file under metadata have different values.")
+            
+            if configTemplateName == "Undefined":    
+                configTemplateName = configTemplateValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
-                    "configTemplateName", self.ctx.args.config_template_name,
+                    "configTemplateName", configTemplateName,
                     required=True,
                 ),
                 **self.serialize_url_param(

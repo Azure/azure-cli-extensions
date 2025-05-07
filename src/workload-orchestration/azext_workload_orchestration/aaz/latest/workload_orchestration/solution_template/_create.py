@@ -12,6 +12,8 @@
 from azure.cli.core.aaz import *
 import time
 from knack.log import get_logger
+from azure.cli.core.azclierror import ValidationError
+import yaml
 logger = get_logger(__name__)
 
 
@@ -53,7 +55,7 @@ class Create(AAZCommand):
         _args_schema.solution_template_name = AAZStrArg(
             options=["-n", "--name", "--solution-template-name"],
             help="The name of the SolutionTemplate",
-            required=True,
+            required=False,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -191,13 +193,33 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            solutionTemplateName = str(self.ctx.args.solution_template_name)
+            solutionTemplateValue = object()
+
+            try:
+                solutionTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(solutionTemplateValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if solutionTemplateName == "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
+            
+            if solutionTemplateName != "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is not None and solutionTemplateName != solutionTemplateValue['metadata']['name']:
+                raise ValidationError("Solution template name passed as argument and name in file under metadata have different values")
+            
+            if solutionTemplateName == "Undefined":    
+                solutionTemplateName = solutionTemplateValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionTemplateName", self.ctx.args.solution_template_name,
+                    "solutionTemplateName", solutionTemplateName,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -393,13 +415,33 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            solutionTemplateName = str(self.ctx.args.solution_template_name)
+            solutionTemplateValue = object()
+
+            try:
+                solutionTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(solutionTemplateValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if solutionTemplateName == "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("Solution Template name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
+            
+            if solutionTemplateName != "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is not None and solutionTemplateName != solutionTemplateValue['metadata']['name']:
+                raise ValidationError("Schema name passed as argument and name passed in schema yaml has different values")
+            
+            if solutionTemplateName == "Undefined":    
+                solutionTemplateName = solutionTemplateValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionTemplateName", self.ctx.args.solution_template_name,
+                    "solutionTemplateName", solutionTemplateName,
                     required=True,
                 ),
                 **self.serialize_url_param(

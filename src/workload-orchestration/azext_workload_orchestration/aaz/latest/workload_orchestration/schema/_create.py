@@ -9,7 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-
+from azure.cli.core.azclierror import ValidationError
+import yaml
 
 @register_command(
     "workload-orchestration schema create",
@@ -48,7 +49,7 @@ class Create(AAZCommand):
         _args_schema.schema_name = AAZStrArg(
             options=["-n", "--name", "--schema-name"],
             help="The name of the Schema",
-            required=True,
+            required=False,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -157,13 +158,32 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            schemaName = str(self.ctx.args.schema_name)
+            schemaValue = object()
+            try:
+                schemaValue = yaml.safe_load(str(self.ctx.args.value))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(schemaValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if schemaName == "Undefined" and schemaValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
+            
+            if schemaName != "Undefined" and schemaValue.get("metadata", {}).get("name") is not None and schemaName != schemaValue['metadata']['name']:
+                raise ValidationError("Schema name passed as argument and name in file under metadata has different values")
+            
+            if schemaName == "Undefined":    
+                schemaName = schemaValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schemaName", self.ctx.args.schema_name,
+                    "schemaName", schemaName,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -221,7 +241,7 @@ class Create(AAZCommand):
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
-
+            
             return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
@@ -343,13 +363,33 @@ class Create(AAZCommand):
 
         @property
         def url_parameters(self):
+            schemaName = str(self.ctx.args.schema_name)
+            schemaValue = object()
+            
+            try:
+                schemaValue = yaml.safe_load(str(self.ctx.args.value))
+            except Exception as e:
+                raise ValidationError("Invalid YAML passed or error in parsing yaml")
+            
+            if type(schemaValue) == "string":
+                raise ValidationError("Invalid YAML passed")
+            
+            if schemaName == "Undefined" and schemaValue.get("metadata", {}).get("name") is None:
+                raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
+            
+            if schemaName != "Undefined" and schemaValue.get("metadata", {}).get("name") is not None and schemaName != schemaValue['metadata']['name']:
+                raise ValidationError("Schema name passed as argument and name in file under metadata has different values")
+            
+            if schemaName == "Undefined":    
+                schemaName = schemaValue['metadata']['name']
+            
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "schemaName", self.ctx.args.schema_name,
+                    "schemaName", schemaName,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -399,7 +439,7 @@ class Create(AAZCommand):
             properties = _builder.get(".schemaVersion.properties")
             if properties is not None:
                 properties.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
-
+            
             return self.serialize_content(_content_value)
 
         def on_200(self, session):
