@@ -19,9 +19,9 @@ class RegenerateKey(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/regeneratekey", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/regeneratekey", "2025-05-01-preview"],
         ]
     }
 
@@ -47,6 +47,9 @@ class RegenerateKey(AAZCommand):
             help="The name of the RedisEnterprise cluster.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.database_name = AAZStrArg(
             options=["--database-name"],
@@ -54,6 +57,9 @@ class RegenerateKey(AAZCommand):
             required=True,
             id_part="child_name_1",
             default="default",
+            fmt=AAZStrArgFormat(
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -100,7 +106,7 @@ class RegenerateKey(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -109,7 +115,7 @@ class RegenerateKey(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -156,7 +162,7 @@ class RegenerateKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
