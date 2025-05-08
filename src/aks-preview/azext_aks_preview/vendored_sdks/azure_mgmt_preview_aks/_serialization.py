@@ -1413,6 +1413,11 @@ class Deserializer:
         :return: Deserialized object.
         :rtype: object
         """
+        # FIXME(hbc): wrong server side response content type header
+        if isinstance(target_obj, str) and 'IdentityBinding' in target_obj and isinstance(data, str):
+            import json
+            data = json.loads(data)
+
         # This is already a model, go recursive just in case
         if hasattr(data, "_attribute_map"):
             constants = [name for name, config in getattr(data, "_validation", {}).items() if config.get("constant")]
@@ -1470,6 +1475,7 @@ class Deserializer:
                 value = self.deserialize_data(raw_value, attr_desc["type"])
                 d_attrs[attr] = value
         except (AttributeError, TypeError, KeyError) as err:
+            print(err)
             msg = "Unable to deserialize to object: " + class_name  # type: ignore
             raise DeserializationError(msg) from err
         additional_properties = self._build_additional_properties(attributes, data)

@@ -136,6 +136,9 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2025-02-02-preview':
             from .v2025_02_02_preview import models
             return models
+        elif api_version == '2025-04-02-preview':
+            from .v2025_02_02_preview import models
+            return models
         raise ValueError("API version {} is not available".format(api_version))
 
     @property
@@ -219,6 +222,17 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
             raise ValueError("API version {} does not have operation group 'machines'".format(api_version))
         self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)), api_version)
+
+    @property
+    def identity_bindings(self):
+        api_version = '2025-04-02-preview'
+        from .v2025_02_02_preview.operations import IdentityBindingsOperations as OperationClass
+        return OperationClass(
+            self._client, self._config,
+            Serializer(self._models_dict(api_version)),
+            Deserializer(self._models_dict(api_version)),
+            api_version
+        )
 
     @property
     def maintenance_configurations(self):
