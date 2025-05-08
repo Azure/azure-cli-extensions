@@ -21,13 +21,16 @@ class Create(AAZCommand):
         az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Unmanaged" --single-sign-on-status "Enabled"
 
     :example: Create pool using managed network
-        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Managed" --managed-virtual-network-region ["westus3"] --single-sign-on-status "Enabled"
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Managed" --managed-virtual-network-region ["westus3"] --single-sign-on-status "Enabled"
 
     :example: Create a pool with stop on disconnect enabled
         az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Unmanaged" --single-sign-on-status "Enabled" --stop-on-disconnect status="Enabled" grace-period-minutes="60"
 
     :example: Create pool using image definition
         az devcenter admin pool create --location "eastus" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Unmanaged" --single-sign-on-status "Enabled" --devbox-definition-type "Value" --devbox-definition-image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.DevCenter/projects/DevProject/images/~Catalog~image2~project-sample-2" --devbox-definition-sku name=""general_i_8c32gb256ssd_v2"
+    
+    :example: Create pool with active hours configuration
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Managed" --managed-virtual-network-region ["westus3"] --active-hours-configuration auto-start-enable-status="Enabled" default-end-time-hour="17" default-start-time-hour="9" default-time-zone="America/Los_Angeles" keep-awake-enable-status="Enabled"
     """
 
     _aaz_info = {
