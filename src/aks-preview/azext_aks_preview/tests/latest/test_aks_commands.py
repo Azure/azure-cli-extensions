@@ -15742,7 +15742,6 @@ spec:
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2",
-        preserve_default_location=True,
     )
     def test_aks_extension(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -15906,6 +15905,9 @@ spec:
 
         self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
 
+        # Wait for 5 minutes for feature registration to complete
+        time.sleep(300)
+
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
                  '--node-count 3  --ssh-key-value={ssh_key_value}')
@@ -15989,6 +15991,9 @@ spec:
             'location': resource_group_location,
         })
         self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
+
+        # Wait for 5 minutes for feature registration to complete
+        time.sleep(300)
 
         # create storage account
         self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
