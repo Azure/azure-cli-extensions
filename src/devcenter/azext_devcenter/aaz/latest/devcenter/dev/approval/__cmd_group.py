@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "devcenter admin plan",
-    is_preview=True,
+    "devcenter dev approval",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage plans.
+    """Manage approvals.
     """
     pass
 

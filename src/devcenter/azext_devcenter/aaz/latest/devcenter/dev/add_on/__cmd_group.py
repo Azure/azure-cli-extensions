@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "devcenter admin image-definition",
-    is_preview=True,
+    "devcenter dev add-on",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage image definitions.
+    """Manage add ons
     """
     pass
 

@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -207,7 +207,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -308,6 +308,7 @@ class Create(AAZCommand):
             )
             properties.health_check_status = AAZStrType(
                 serialized_name="healthCheckStatus",
+                flags={"read_only": True},
             )
             properties.networking_resource_group_name = AAZStrType(
                 serialized_name="networkingResourceGroupName",
