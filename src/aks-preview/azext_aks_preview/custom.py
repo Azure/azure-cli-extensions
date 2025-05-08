@@ -91,6 +91,7 @@ from azext_aks_preview.maintenanceconfiguration import (
 )
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
+    aks_ib_cmd_delete,
     aks_ib_cmd_show,
     aks_ib_cmd_list,
 )
@@ -3829,5 +3830,6 @@ def aks_loadbalancer_rebalance_nodes(
 
 
 aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_delete = aks_ib_cmd_delete
 aks_identity_binding_show = aks_ib_cmd_show
 aks_identity_binding_list = aks_ib_cmd_list

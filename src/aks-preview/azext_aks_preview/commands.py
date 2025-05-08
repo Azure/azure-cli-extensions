@@ -437,5 +437,6 @@ def load_command_table(self, _):
         "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
     ) as g:
         g.custom_command("create", "aks_identity_binding_create")
+        g.custom_command("delete", "aks_identity_binding_delete")
         g.custom_command("show", "aks_identity_binding_show")
         g.custom_command("list", "aks_identity_binding_list")

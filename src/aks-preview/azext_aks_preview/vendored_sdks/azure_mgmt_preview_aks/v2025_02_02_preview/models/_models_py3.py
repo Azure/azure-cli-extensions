@@ -11647,19 +11647,22 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
             "pattern": r"^/subscriptions/[a-zA-Z0-9-]+/resourceGroups/[a-zA-Z0-9-]+/providers/Microsoft.ManagedIdentity/userAssignedIdentities/[a-zA-Z0-9-]+$",
         },
         "object_id": {
-            "readonly": True,
+            # FIXME: disable for client side value
+            # "readonly": True,
             "max_length": 36,
             "min_length": 36,
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
         },
         "client_id": {
-            "readonly": True,
+            # FIXME: disable for client side value
+            # "readonly": True,
             "max_length": 36,
             "min_length": 36,
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
         },
         "tenant_id": {
-            "readonly": True,
+            # FIXME: disable for client side value
+            # "readonly": True,
             "max_length": 36,
             "min_length": 36,
             "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
@@ -11680,9 +11683,13 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.resource_id = resource_id
-        self.object_id: Optional[str] = None
-        self.client_id: Optional[str] = None
-        self.tenant_id: Optional[str] = None
+        # FIXME: disable for client side value
+        self.object_id = kwargs.get('object_id', None)
+        self.client_id = kwargs.get('client_id', None)
+        self.tenant_id = kwargs.get('tenant_id', None)
+        # self.object_id: Optional[str] = None
+        # self.client_id: Optional[str] = None
+        # self.tenant_id: Optional[str] = None
 
 
 class IdentityBindingOidcIssuerProfile(_serialization.Model):
