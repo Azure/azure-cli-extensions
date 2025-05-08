@@ -25,11 +25,10 @@ class RemoveVersion(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -68,7 +67,7 @@ class RemoveVersion(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConfigTemplatesRemoveVersion(ctx=self.ctx)()
+        self.ConfigTemplatesRemoveVersion(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,21 +78,18 @@ class RemoveVersion(AAZCommand):
     def post_operations(self):
         pass
 
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
     class ConfigTemplatesRemoveVersion(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -107,11 +103,7 @@ class RemoveVersion(AAZCommand):
         @property
         def method(self):
             return "POST"
-        
-        def on_200(self, session):
-            pass
 
-        
         @property
         def error_format(self):
             return "MgmtErrorFormat"
@@ -150,6 +142,9 @@ class RemoveVersion(AAZCommand):
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
             }
             return parameters
 
@@ -164,9 +159,32 @@ class RemoveVersion(AAZCommand):
 
             return self.serialize_content(_content_value)
 
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            return cls._schema_on_200
+
 
 class _RemoveVersionHelper:
-
     """Helper class for RemoveVersion"""
 
 
