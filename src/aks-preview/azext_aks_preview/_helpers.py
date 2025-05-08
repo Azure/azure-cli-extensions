@@ -19,7 +19,8 @@ from azext_aks_preview._client_factory import (
 
 from azext_aks_preview._consts import (
     ADDONS,
-    CONST_MONITORING_ADDON_NAME
+    CONST_MONITORING_ADDON_NAME,
+    CONST_K8S_EXTENSION_NAME,
 )
 
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
@@ -28,6 +29,7 @@ from azure.cli.core.azclierror import (
     FileOperationError,
     InvalidArgumentValueError,
     ResourceNotFoundError,
+    UnknownError,
 )
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
@@ -395,3 +397,24 @@ def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
             # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
             filtered_taints.append(taint)
     return filtered_taints
+
+
+def get_k8s_extension_module(module_name):
+    try:
+        # adding the installed extension in the path
+        from azure.cli.core.extension.operations import add_extension_to_path
+        add_extension_to_path(CONST_K8S_EXTENSION_NAME)
+        # import the extension module
+        from importlib import import_module
+        azext_custom = import_module(module_name)
+        return azext_custom
+    except ImportError:
+        raise UnknownError(  # pylint: disable=raise-missing-from
+            "Please add CLI extension `k8s-extension` for performing K8s extension operations.\n"
+            "Run command `az extension add --name k8s-extension`"
+        )
+
+
+def check_if_extension_type_is_in_allow_list(extension_type_name):
+    allowedListOfExtensions = ["microsoft.dataprotection.kubernetes", "microsoft.flux"]
+    return extension_type_name.lower() in allowedListOfExtensions

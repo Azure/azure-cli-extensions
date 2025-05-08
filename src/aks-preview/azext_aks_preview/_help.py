@@ -3242,6 +3242,107 @@ helps['aks check-network outbound'] = """
         short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
 """
 
+helps['aks extension'] = """
+  type: group
+  short-summary: Commands to manage extensions in Kubernetes cluster
+"""
+
+helps['aks extension create'] = """
+  type: command
+  short-summary: Creates the Kubernetes extension instance on the managed cluster. Please refer to the example at the end to see how to create a k8s extension
+  long-summary: Create a Kubernetes Extension. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+  source control. Also verify that no secrets are present in the logs of your command or script. \
+  For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --extension-type -t
+      type: string
+      short-summary: Name of the extension type
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+    - name: --scope
+      type: string
+      short-summary: specify scope of the extension type, takes in name or cluster as the scope
+    - name: --release-train
+      type: string
+      short-summary: specify the release train for the extension type
+  examples:
+    - name: Install K8s extension on AKS cluster
+      text: az aks extension create --resource-group my-resource-group \
+--cluster-name mycluster --name myextension --extension-type microsoft.openservicemesh \
+--scope cluster --release-train stable
+"""
+
+helps['aks extension update'] = """
+  type: command
+  short-summary: Update mutable properties of a Kubernetes Extension.
+  long-summary: For update to ConfigSettings and ConfigProtectedSettings, please \
+refer to documentation of the cluster extension service to check update to these \
+properties is supported before updating these properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+ source control. Also verify that no secrets are present in the logs of your command or script. \
+ For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+    - name: --release-train
+      type: string
+      short-summary: specify the release train for the extension type
+    - name: --version
+      type: string
+      short-summary: Specify the version to install for the extension instance if --auto-upgrade-minor-version is not enabled.
+  examples:
+    - name: Update K8s extension on AKS cluster
+      text: az aks extension update --resource-group my-resource-group \
+--cluster-name mycluster --name myextension --auto-upgrade true/false \
+--version extension-version --release-train stable \
+--configuration-settings settings-key=settings-value \
+--config-protected-settings protected-settings-key=protected-value \
+--config-settings-file=config-settings-file \
+--config-protected-file=protected-settings-file
+"""
+
+helps['aks extension delete'] = """
+  type: command
+  short-summary: Delete a Kubernetes Extension.
+  parameters:
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+  examples:
+    - name: Delete an existing Kubernetes extension on AKS cluster
+      text: az aks extension delete --resource-group resource-group --cluster-name cluster --name ext
+"""
+
+helps['aks extension show'] = """
+  type: command
+  short-summary: Show a Kubernetes Extension
+  long-summary: Show a Kubernetes Extension including its properties. \
+The output includes secrets that you must protect. Be sure that you do not include these secrets in your \
+  source control. Also verify that no secrets are present in the logs of your command or script. \
+  For additional information, see http://aka.ms/clisecrets.
+  parameters:
+    - name: --cluster-name -c
+      type: string
+      short-summary: Name of the AKS cluster
+    - name: --name -n
+      type: string
+      short-summary: Name of the extension instance
+  examples:
+      - name: Show details of a Kubernetes Extension
+        text: az aks extension show --resource-group my-resource-group \
+--cluster-name mycluster --name myextension
 helps['aks loadbalancer'] = """
     type: group
     short-summary: Commands to manage load balancer configurations in a managed Kubernetes cluster.
