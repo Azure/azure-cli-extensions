@@ -14,6 +14,7 @@ from azext_aks_preview._client_factory import (
     cf_machines,
     cf_operations,
     cf_load_balancers,
+    cf_identity_bindings,
 )
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
@@ -433,7 +434,8 @@ def load_command_table(self, _):
 
     # AKS identity binding commands
     with self.command_group(
-        "aks identity-binding", managed_clusters_sdk, client_factory=cf_managed_clusters
+        "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
     ) as g:
         g.custom_command("create", "aks_identity_binding_create")
         g.custom_command("show", "aks_identity_binding_show")
+        g.custom_command("list", "aks_identity_binding_list")

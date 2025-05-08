@@ -232,6 +232,23 @@ class GuardrailsSupport(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The version is stable and can be used on critical production clusters."""
 
 
+class IdentityBindingProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The provisioning state of the last accepted operation."""
+
+    SUCCEEDED = "Succeeded"
+    """Resource has been created."""
+    FAILED = "Failed"
+    """Resource creation failed."""
+    CANCELED = "Canceled"
+    """Resource creation was canceled."""
+    CREATING = "Creating"
+    """The provisioning state of an identity binding being created."""
+    UPDATING = "Updating"
+    """The provisioning state of an identity binding being updated."""
+    DELETING = "Deleting"
+    """The provisioning state of an identity binding being deleted."""
+
+
 class IPFamily(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """To determine if address belongs IPv4 or IPv6 family."""
 

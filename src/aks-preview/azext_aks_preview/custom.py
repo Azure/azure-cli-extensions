@@ -92,6 +92,7 @@ from azext_aks_preview.maintenanceconfiguration import (
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
     aks_ib_cmd_show,
+    aks_ib_cmd_list,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -3827,16 +3828,6 @@ def aks_loadbalancer_rebalance_nodes(
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
 
-def aks_identity_binding_create(
-    identity_binding_name: str,
-):
-    aks_ib_cmd_create(
-        identity_binding_name=identity_binding_name,
-    )
-
-def aks_identity_binding_show(
-    identity_binding_name: str,
-):
-    aks_ib_cmd_show(
-        identity_binding_name=identity_binding_name,
-    )
+aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_show = aks_ib_cmd_show
+aks_identity_binding_list = aks_ib_cmd_list
