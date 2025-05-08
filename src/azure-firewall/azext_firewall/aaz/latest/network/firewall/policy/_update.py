@@ -135,18 +135,9 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        explicit_proxy.https_port = AAZIntArg(
-            options=["https-port"],
-            help="Port number for explicit proxy https protocol, cannot be greater than 64000.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=64000,
-                minimum=0,
-            ),
-        )
         explicit_proxy.pac_file = AAZStrArg(
             options=["pac-file"],
-            help="SAS URL for PAC file.",
+            help="URL for PAC file.",
             nullable=True,
         )
         explicit_proxy.pac_file_port = AAZIntArg(
@@ -691,7 +682,6 @@ class Update(AAZCommand):
                 explicit_proxy.set_prop("enableExplicitProxy", AAZBoolType, ".enable_explicit_proxy", typ_kwargs={"nullable": True})
                 explicit_proxy.set_prop("enablePacFile", AAZBoolType, ".enable_pac_file", typ_kwargs={"nullable": True})
                 explicit_proxy.set_prop("httpPort", AAZIntType, ".http_port")
-                explicit_proxy.set_prop("httpsPort", AAZIntType, ".https_port")
                 explicit_proxy.set_prop("pacFile", AAZStrType, ".pac_file")
                 explicit_proxy.set_prop("pacFilePort", AAZIntType, ".pac_file_port")
 
@@ -951,9 +941,6 @@ class _UpdateHelper:
         )
         explicit_proxy.http_port = AAZIntType(
             serialized_name="httpPort",
-        )
-        explicit_proxy.https_port = AAZIntType(
-            serialized_name="httpsPort",
         )
         explicit_proxy.pac_file = AAZStrType(
             serialized_name="pacFile",

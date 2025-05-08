@@ -147,15 +147,6 @@ class AzureFirewallCreate(_AzureFirewallCreate):
                 minimum=0,
             ),
         )
-        args_schema.https_port = AAZBoolArg(
-            options=["--https-port"],
-            arg_group="Explicit Proxy",
-            help="Port number for explicit proxy https protocol, cannot be greater than 64000.",
-            fmt=AAZIntArgFormat(
-                maximum=64000,
-                minimum=0,
-            ),
-        )
         args_schema.enable_pac_file = AAZBoolArg(
             options=["--enable-pac-file"],
             arg_group="Explicit Proxy",
@@ -282,8 +273,6 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             args.additional_properties['Network.ExplicitProxy.EnableExplicitProxy'] = args.enable_explicit_proxy
         if has_value(args.http_port):
             args.additional_properties['Network.ExplicitProxy.HttpPort'] = args.http_port
-        if has_value(args.https_port):
-            args.additional_properties['Network.ExplicitProxy.HttpsPort'] = args.https_port
         if has_value(args.enable_pac_file):
             args.additional_properties['Network.ExplicitProxy.EnablePacFile'] = args.enable_pac_file
         if has_value(args.pac_file_port):
@@ -863,20 +852,22 @@ class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
 class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity = AAZResourceIdArg(
+        args_schema.identity = AAZListArg(
             options=['--identity'],
-            help="Name or ID of the ManagedIdentity Resource.",
+            help="Space-separated list of ManagedIdentity Resource IDs."
+        )
+        args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
-                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
         args_schema.base_policy._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/firewallPolicies/{}",
         )
+        
         args_schema.identity_type._registered = False
         args_schema.user_assigned_identities._registered = False
 
@@ -885,8 +876,9 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
     def pre_operations(self):
         args = self.ctx.args
         if has_value(args.identity):
+            identities = [id.to_serialized_data() for id in args.identity]
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
+            args.user_assigned_identities = {id: {} for id in identities}
 
         if has_value(args.dns_servers):
             if not has_value(args.enable_dns_proxy):
@@ -896,14 +888,15 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity = AAZResourceIdArg(
+        args_schema.identity = AAZListArg(
             options=['--identity'],
-            help="Name or ID of the ManagedIdentity Resource.",
+            help="Space-separated list of ManagedIdentity Resource IDs."
+        )
+        args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
-                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
         args_schema.identity_type._registered = False
@@ -915,8 +908,9 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     def pre_operations(self):
         args = self.ctx.args
         if has_value(args.identity):
+            identities = [id.to_serialized_data() for id in args.identity]
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
+            args.user_assigned_identities = {id: {} for id in identities}
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None
