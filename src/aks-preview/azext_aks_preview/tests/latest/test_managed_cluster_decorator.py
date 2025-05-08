@@ -86,16 +86,14 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
-from dateutil.parser import parse
-
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     DecoratorEarlyExitException,
     DecoratorMode,
 )
+from dateutil.parser import parse
+from deepdiff import DeepDiff
 
 class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
     def setUp(self):
@@ -4389,6 +4387,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_api_server_access_profile(mc_2)
+        dec_mc_2.api_server_access_profile.additional_properties = {}
         ground_truth_api_server_access_profile_2 = (
             self.models.ManagedClusterAPIServerAccessProfile(
                 enable_vnet_integration=True,
@@ -4401,7 +4400,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=ground_truth_api_server_access_profile_2,
         )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(dec_mc_2, ground_truth_mc_2, DeepDiff(dec_mc_2, ground_truth_mc_2))
 
         dec_3 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -4415,6 +4414,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.set_up_api_server_access_profile(mc_3)
+        dec_mc_3.api_server_access_profile.additional_properties = {}
         ground_truth_api_server_access_profile_3 = (
             self.models.ManagedClusterAPIServerAccessProfile(
                 enable_vnet_integration=True,
@@ -4424,7 +4424,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=ground_truth_api_server_access_profile_3,
         )
-        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+        self.assertEqual(dec_mc_3, ground_truth_mc_3, DeepDiff(dec_mc_3, ground_truth_mc_3))
 
         dec_4 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
