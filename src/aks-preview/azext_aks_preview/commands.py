@@ -430,3 +430,10 @@ def load_command_table(self, _):
         "aks check-network", managed_clusters_sdk, client_factory=cf_managed_clusters
     ) as g:
         g.custom_command("outbound", "aks_check_network_outbound")
+
+    # AKS identity binding commands
+    with self.command_group(
+        "aks identity-binding", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("create", "aks_identity_binding_create")
+        g.custom_command("show", "aks_identity_binding_show")
