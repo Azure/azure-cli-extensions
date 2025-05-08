@@ -15742,6 +15742,7 @@ spec:
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2",
+        preserve_default_location=True,
     )
     def test_aks_extension(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -15802,6 +15803,7 @@ spec:
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2",
+        preserve_default_location=True,
     )
     def test_aks_extension_backup(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -15886,6 +15888,7 @@ spec:
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2",
+        preserve_default_location=True,
     )
     def test_aks_extension_type(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -15900,6 +15903,8 @@ spec:
             "ssh_key_value": self.generate_ssh_keys(),
             'location': resource_group_location,
         })
+
+        self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
 
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
@@ -15964,6 +15969,7 @@ spec:
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2",
+        preserve_default_location=True,
     )
     def test_aks_extension_type_backup(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -15982,6 +15988,7 @@ spec:
             'ssh_key_value': self.generate_ssh_keys(),
             'location': resource_group_location,
         })
+        self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
 
         # create storage account
         self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
