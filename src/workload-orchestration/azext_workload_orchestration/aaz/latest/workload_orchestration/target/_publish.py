@@ -210,114 +210,21 @@ class Publish(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
-            )
-            _schema_on_200.extended_location = AAZObjectType(
-                serialized_name="extendedLocation",
-            )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
+            _schema_on_200.id = AAZStrType(flags={"read_only": True})
+            _schema_on_200.name = AAZStrType(flags={"read_only": True})
+            _schema_on_200.resource_id = AAZStrType(serialized_name="resourceId", flags={"read_only": True})
+            _schema_on_200.status = AAZStrType(flags={"read_only": True})
+            _schema_on_200.start_time = AAZStrType(serialized_name="startTime", flags={"read_only": True})
+            _schema_on_200.end_time = AAZStrType(serialized_name="endTime", flags={"read_only": True})
             _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            extended_location = cls._schema_on_200.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.publishedSolutionVersionsForExternalValidation = AAZListType(
+            properties = _schema_on_200.properties
+            properties.status = AAZStrType(flags={"read_only": True})
+            properties.published_solution_versions_for_external_validation = AAZListType(
                 serialized_name="publishedSolutionVersionsForExternalValidation",
-                flags={"read_only": True},
+                flags={"read_only": True, "nullable": True}
             )
-            published_solution_versions_for_external_validation = cls._schema_on_200.properties.publishedSolutionVersionsForExternalValidation
-            published_solution_versions_for_external_validation.Element = AAZObjectType()
-            published_solution_versions_for_external_validation.Element.solutionVersionId = AAZStrType(
-                serialized_name="solutionVersionId",
-                flags={"read_only": True},
-            )
-            published_solution_versions_for_external_validation.Element.externalValidationId = AAZStrType(
-                serialized_name="externalValidationId",
-                flags={"read_only": True},
-            )
-            properties.configuration = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.review_id = AAZStrType(
-                serialized_name="reviewId",
-                flags={"read_only": True},
-            )
-            properties.revision = AAZIntType(
-                flags={"read_only": True},
-            )
-            properties.solution_dependencies = AAZListType(
-                serialized_name="solutionDependencies",
-                flags={"read_only": True},
-            )
-            properties.solution_instance_name = AAZStrType(
-                serialized_name="solutionInstanceName",
-                flags={"read_only": True},
-            )
-            properties.solution_template_version_id = AAZStrType(
-                serialized_name="solutionTemplateVersionId",
-                flags={"read_only": True},
-            )
-            properties.specification = AAZFreeFormDictType(
-                flags={"required": True},
-            )
-            properties.state = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.target_display_name = AAZStrType(
-                serialized_name="targetDisplayName",
-                flags={"read_only": True},
-            )
-
-            solution_dependencies = cls._schema_on_200.properties.solution_dependencies
-            solution_dependencies.Element = AAZObjectType()
-            _PublishHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            properties.published_solution_versions_for_external_validation.Element = AAZFreeFormDictType()
 
             return cls._schema_on_200
 

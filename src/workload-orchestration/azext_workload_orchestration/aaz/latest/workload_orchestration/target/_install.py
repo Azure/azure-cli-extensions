@@ -29,7 +29,7 @@ class Install(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -87,6 +87,10 @@ class Install(AAZCommand):
     def post_operations(self):
         pass
 
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+    
     class TargetsInstallSolution(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
@@ -181,104 +185,22 @@ class Install(AAZCommand):
 
         @classmethod
         def _build_schema_on_200(cls):
-            
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
-                serialized_name="eTag",
-                flags={"read_only": True},
-            )
-            _schema_on_200.extended_location = AAZObjectType(
-                serialized_name="extendedLocation",
-            )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
+            _schema_on_200.id = AAZStrType(flags={"read_only": True})
+            _schema_on_200.name = AAZStrType(flags={"read_only": True})
+            _schema_on_200.resource_id = AAZStrType(serialized_name="resourceId", flags={"read_only": True})
+            _schema_on_200.status = AAZStrType(flags={"read_only": True})
+            _schema_on_200.start_time = AAZStrType(serialized_name="startTime", flags={"read_only": True})
+            _schema_on_200.end_time = AAZStrType(serialized_name="endTime", flags={"read_only": True})
             _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            extended_location = cls._schema_on_200.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.configuration = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.review_id = AAZStrType(
-                serialized_name="reviewId",
-                flags={"read_only": True},
-            )
-            properties.revision = AAZIntType(
-                flags={"read_only": True},
-            )
-            properties.solution_dependencies = AAZListType(
-                serialized_name="solutionDependencies",
-                flags={"read_only": True},
-            )
-            properties.solution_instance_name = AAZStrType(
-                serialized_name="solutionInstanceName",
-                flags={"read_only": True},
-            )
-            properties.solution_template_version_id = AAZStrType(
-                serialized_name="solutionTemplateVersionId",
-                flags={"read_only": True},
-            )
-            properties.specification = AAZFreeFormDictType(
-                flags={"required": True},
-            )
-            properties.state = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.target_display_name = AAZStrType(
-                serialized_name="targetDisplayName",
-                flags={"read_only": True},
-            )
-
-            solution_dependencies = cls._schema_on_200.properties.solution_dependencies
-            solution_dependencies.Element = AAZObjectType()
-            _InstallHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            properties = _schema_on_200.properties
+            properties.status = AAZStrType(flags={"read_only": True})
 
             return cls._schema_on_200
 
