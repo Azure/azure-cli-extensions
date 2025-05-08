@@ -3025,6 +3025,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
+        if (
+            mc.api_server_access_profile is not None and
+            mc.api_server_access_profile.additional_properties is not None
+        ):
+            # remove the additional properties that are set in official azure-cli/acs
+            mc.api_server_access_profile.additional_properties = {}
         return mc
 
     def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
