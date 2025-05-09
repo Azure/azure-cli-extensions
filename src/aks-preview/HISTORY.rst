@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-14.0.0b8
+15.0.0b2
 +++++++
 * Add aks extension and aks extension-type command groups
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
