@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "k8s-runtime bgp-peer create",
+    "k8s-runtime bfd-profile create",
 )
 class Create(AAZCommand):
-    """Create a BgpPeer
+    """Create a BfdProfile
 
-    :example: Create a BGP Peer
-        az k8s-runtime bgp-peer create --bgp-peer-name bgpPeer1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --my-asn 10000 --peer-asn 20000 --peer-address 192.168.50.1
+    :example: Create a Bfd Profile
+        az k8s-runtime bfd-profile create --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --bfd-profile-name testprofile --receive-interval 300 --transmit-interval 300 --detect-multiplier 3 --echo-interval 50 --echo-mode Disabled --passive-mode Disabled --minimum-ttl 254
     """
 
     _aaz_info = {
         "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2024-08-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bfdprofiles/{}", "2024-08-01"],
         ]
     }
 
@@ -45,9 +45,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.bgp_peer_name = AAZStrArg(
-            options=["--bgp-peer-name"],
-            help="The name of the BgpPeer",
+        _args_schema.bfd_profile_name = AAZStrArg(
+            options=["--bfd-profile-name"],
+            help="The name of the BfdProfile",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -62,72 +62,48 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.bfd_profile = AAZStrArg(
-            options=["--bfd-profile"],
+        _args_schema.detect_multiplier = AAZIntArg(
+            options=["--detect-multiplier"],
             arg_group="Properties",
-            help="BFD Profile",
+            help="Detect multiplier",
         )
-        _args_schema.bgp_multi_hop = AAZStrArg(
-            options=["--bgp-multi-hop"],
+        _args_schema.echo_interval = AAZIntArg(
+            options=["--echo-interval"],
             arg_group="Properties",
-            help="eBGP multiple hop",
+            help="Echo interval in milliseconds",
+        )
+        _args_schema.echo_mode = AAZStrArg(
+            options=["--echo-mode"],
+            arg_group="Properties",
+            help="Echo mode",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.hold_time = AAZStrArg(
-            options=["--hold-time"],
+        _args_schema.minimum_ttl = AAZIntArg(
+            options=["--minimum-ttl"],
             arg_group="Properties",
-            help="Hold time, per RFC4271",
+            help="Minimum TTL",
         )
-        _args_schema.keep_alive_time = AAZStrArg(
-            options=["--keep-alive-time"],
+        _args_schema.passive_mode = AAZStrArg(
+            options=["--passive-mode"],
             arg_group="Properties",
-            help="Keepalive time, per RFC4271",
+            help="Passive mode",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.my_asn = AAZIntArg(
-            options=["--my-asn"],
+        _args_schema.receive_interval = AAZIntArg(
+            options=["--receive-interval"],
             arg_group="Properties",
-            help="My ASN",
+            help="Receive interval in milliseconds",
         )
-        _args_schema.node_selector = AAZListArg(
-            options=["--node-selector"],
+        _args_schema.transmit_interval = AAZIntArg(
+            options=["--transmit-interval"],
             arg_group="Properties",
-            help="A dynamic label mapping to select related nodes to peer with. For instance, if you want to create a BGP peer only for nodes with label \"a=b\", then please specify {\"a\": \"b\"} in the field.",
-        )
-        _args_schema.peer_address = AAZStrArg(
-            options=["--peer-address"],
-            arg_group="Properties",
-            help="Peer Address",
-        )
-        _args_schema.peer_asn = AAZIntArg(
-            options=["--peer-asn"],
-            arg_group="Properties",
-            help="Peer ASN",
-        )
-        _args_schema.peer_port = AAZIntArg(
-            options=["--peer-port"],
-            arg_group="Properties",
-            help="Peer BGP port",
-        )
-
-        node_selector = cls._args_schema.node_selector
-        node_selector.Element = AAZObjectArg()
-
-        _element = cls._args_schema.node_selector.Element
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Label name",
-            required=True,
-        )
-        _element.value = AAZStrArg(
-            options=["value"],
-            help="Label value",
-            required=True,
+            help="Transmit interval in milliseconds",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.BgpPeersCreateOrUpdate(ctx=self.ctx)()
+        yield self.BfdProfilesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -142,7 +118,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class BgpPeersCreateOrUpdate(AAZHttpOperation):
+    class BfdProfilesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -172,7 +148,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bgpPeers/{bgpPeerName}",
+                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bfdProfiles/{bfdProfileName}",
                 **self.url_parameters
             )
 
@@ -188,7 +164,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "bgpPeerName", self.ctx.args.bgp_peer_name,
+                    "bfdProfileName", self.ctx.args.bfd_profile_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -232,24 +208,13 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("bfdProfile", AAZStrType, ".bfd_profile")
-                properties.set_prop("bgpMultiHop", AAZStrType, ".bgp_multi_hop")
-                properties.set_prop("holdTime", AAZStrType, ".hold_time")
-                properties.set_prop("keepAliveTime", AAZStrType, ".keep_alive_time")
-                properties.set_prop("myAsn", AAZIntType, ".my_asn", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("nodeSelector", AAZListType, ".node_selector")
-                properties.set_prop("peerAddress", AAZStrType, ".peer_address", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("peerAsn", AAZIntType, ".peer_asn", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("peerPort", AAZIntType, ".peer_port")
-
-            node_selector = _builder.get(".properties.nodeSelector")
-            if node_selector is not None:
-                node_selector.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.nodeSelector[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("detectMultiplier", AAZIntType, ".detect_multiplier")
+                properties.set_prop("echoInterval", AAZIntType, ".echo_interval")
+                properties.set_prop("echoMode", AAZStrType, ".echo_mode")
+                properties.set_prop("minimumTtl", AAZIntType, ".minimum_ttl")
+                properties.set_prop("passiveMode", AAZStrType, ".passive_mode")
+                properties.set_prop("receiveInterval", AAZIntType, ".receive_interval")
+                properties.set_prop("transmitInterval", AAZIntType, ".transmit_interval")
 
             return self.serialize_content(_content_value)
 
@@ -287,50 +252,30 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.bfd_profile = AAZStrType(
-                serialized_name="bfdProfile",
+            properties.detect_multiplier = AAZIntType(
+                serialized_name="detectMultiplier",
             )
-            properties.bgp_multi_hop = AAZStrType(
-                serialized_name="bgpMultiHop",
+            properties.echo_interval = AAZIntType(
+                serialized_name="echoInterval",
             )
-            properties.hold_time = AAZStrType(
-                serialized_name="holdTime",
+            properties.echo_mode = AAZStrType(
+                serialized_name="echoMode",
             )
-            properties.keep_alive_time = AAZStrType(
-                serialized_name="keepAliveTime",
+            properties.minimum_ttl = AAZIntType(
+                serialized_name="minimumTtl",
             )
-            properties.my_asn = AAZIntType(
-                serialized_name="myAsn",
-                flags={"required": True},
-            )
-            properties.node_selector = AAZListType(
-                serialized_name="nodeSelector",
-            )
-            properties.peer_address = AAZStrType(
-                serialized_name="peerAddress",
-                flags={"required": True},
-            )
-            properties.peer_asn = AAZIntType(
-                serialized_name="peerAsn",
-                flags={"required": True},
-            )
-            properties.peer_port = AAZIntType(
-                serialized_name="peerPort",
+            properties.passive_mode = AAZStrType(
+                serialized_name="passiveMode",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            node_selector = cls._schema_on_200_201.properties.node_selector
-            node_selector.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.node_selector.Element
-            _element.name = AAZStrType(
-                flags={"required": True},
+            properties.receive_interval = AAZIntType(
+                serialized_name="receiveInterval",
             )
-            _element.value = AAZStrType(
-                flags={"required": True},
+            properties.transmit_interval = AAZIntType(
+                serialized_name="transmitInterval",
             )
 
             system_data = cls._schema_on_200_201.system_data

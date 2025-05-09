@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "k8s-runtime bgp-peer list",
+    "k8s-runtime bfd-profile list",
 )
 class List(AAZCommand):
-    """List BgpPeer resources by parent
+    """List BfdProfile resources by parent
 
-    :example: List all BGP peers in a cluster
-        az k8s-runtime bgp-peer list --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
+    :example: List all Bfd Profiles
+        az k8s-runtime bfd-profile list --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
     """
 
     _aaz_info = {
         "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers", "2024-08-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bfdprofiles", "2024-08-01"],
         ]
     }
 
@@ -54,7 +54,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BgpPeersListByParent(ctx=self.ctx)()
+        self.BfdProfilesListByParent(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +70,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class BgpPeersListByParent(AAZHttpOperation):
+    class BfdProfilesListByParent(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,7 +84,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bgpPeers",
+                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bfdProfiles",
                 **self.url_parameters
             )
 
@@ -171,50 +171,30 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.bfd_profile = AAZStrType(
-                serialized_name="bfdProfile",
+            properties.detect_multiplier = AAZIntType(
+                serialized_name="detectMultiplier",
             )
-            properties.bgp_multi_hop = AAZStrType(
-                serialized_name="bgpMultiHop",
+            properties.echo_interval = AAZIntType(
+                serialized_name="echoInterval",
             )
-            properties.hold_time = AAZStrType(
-                serialized_name="holdTime",
+            properties.echo_mode = AAZStrType(
+                serialized_name="echoMode",
             )
-            properties.keep_alive_time = AAZStrType(
-                serialized_name="keepAliveTime",
+            properties.minimum_ttl = AAZIntType(
+                serialized_name="minimumTtl",
             )
-            properties.my_asn = AAZIntType(
-                serialized_name="myAsn",
-                flags={"required": True},
-            )
-            properties.node_selector = AAZListType(
-                serialized_name="nodeSelector",
-            )
-            properties.peer_address = AAZStrType(
-                serialized_name="peerAddress",
-                flags={"required": True},
-            )
-            properties.peer_asn = AAZIntType(
-                serialized_name="peerAsn",
-                flags={"required": True},
-            )
-            properties.peer_port = AAZIntType(
-                serialized_name="peerPort",
+            properties.passive_mode = AAZStrType(
+                serialized_name="passiveMode",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            node_selector = cls._schema_on_200.value.Element.properties.node_selector
-            node_selector.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.node_selector.Element
-            _element.name = AAZStrType(
-                flags={"required": True},
+            properties.receive_interval = AAZIntType(
+                serialized_name="receiveInterval",
             )
-            _element.value = AAZStrType(
-                flags={"required": True},
+            properties.transmit_interval = AAZIntType(
+                serialized_name="transmitInterval",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
