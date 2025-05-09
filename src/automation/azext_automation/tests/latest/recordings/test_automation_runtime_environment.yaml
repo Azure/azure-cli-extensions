@@ -1,0 +1,692 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_automation_runtime_environment_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001","name":"cli_test_automation_runtime_environment_000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_automation_runtime_environment","date":"2024-01-16T05:24:34Z","module":"automation"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '438'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "account000002", "location": "westus2", "properties": {"sku":
+      {"name": "Basic"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2021-06-22
+  response:
+    body:
+      string: '{"name":"account000002","systemData":{"createdAt":"2024-01-16T05:24:40.5766667+00:00","lastModifiedAt":"2024-01-16T05:24:40.5766667+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://f05531ea-f027-4d26-8fd2-eafaf7fe5d68.agentsvc.wus2.azure-automation.net/accounts/f05531ea-f027-4d26-8fd2-eafaf7fe5d68","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://f05531ea-f027-4d26-8fd2-eafaf7fe5d68.jrds.wus2.azure-automation.net/automationAccounts/f05531ea-f027-4d26-8fd2-eafaf7fe5d68","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}},"powershell72":{"builtinModules":{"Az":"8.3.0"}}},"creationTime":"2024-01-16T05:24:40.5766667+00:00","lastModifiedBy":null,"lastModifiedTime":"2024-01-16T05:24:40.5766667+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1220'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2021-06-22
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "westus2", "properties": {"defaultPackages": {"Az": "7.3.2"},
+      "runtime": {"language": "PowerShell", "version": "7.1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --name --location --language --version --default-packages
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:44.1058906+00:00","lastModifiedAt":"2024-01-16T05:24:44.1058906+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003","name":"rt000003","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.1"},"defaultPackages":{"az":"7.3.2"},"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003?api-version=2023-05-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"value":[{"systemData":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/PowerShell-5.1","name":"PowerShell-5.1","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"5.1"},"defaultPackages":{"az":"8.0.0"},"description":"System-generated
+        Runtime Environment for your Automation account with Runtime language: PowerShell
+        & Runtime version: 5.1. It automatically populates Packages defined for PowerShell
+        5.1 runtime version in your Automation account. This Runtime environment is
+        non-editable. "}},{"systemData":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/PowerShell-7.1","name":"PowerShell-7.1","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.1"},"defaultPackages":{"az":"8.0.0"},"description":"System-generated
+        Runtime Environment for your Automation account with Runtime language: PowerShell
+        & Runtime version: 7.1. It automatically populates Packages defined for PowerShell
+        7.1 runtime version in your Automation account. This Runtime environment is
+        non-editable. "}},{"systemData":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/PowerShell-7.2","name":"PowerShell-7.2","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.2"},"defaultPackages":{"az":"8.3.0","azure
+        cli":"2.56.0"},"description":"System-generated Runtime Environment for your
+        Automation account with Runtime language: PowerShell & Runtime version: 7.2.
+        It automatically populates Packages defined for PowerShell 7.2 runtime version
+        in your Automation account. This Runtime environment is non-editable. "}},{"systemData":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/Python-2.7","name":"Python-2.7","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"Python","version":"2.7"},"defaultPackages":null,"description":"System-generated
+        Runtime Environment for your Automation account with Runtime language: Python
+        & Runtime version: 2.7. It automatically populates Packages defined for Python
+        2.7 runtime version in your Automation account. This Runtime environment is
+        non-editable. "}},{"systemData":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/Python-3.10","name":"Python-3.10","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"Python","version":"3.10"},"defaultPackages":null,"description":"System-generated
+        Runtime Environment for your Automation account with Runtime language: Python
+        & Runtime version: 3.10. It automatically populates Packages defined for Python
+        3.10 runtime version in your Automation account. This Runtime environment
+        is non-editable. "}},{"systemData":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/Python-3.8","name":"Python-3.8","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"Python","version":"3.8"},"defaultPackages":null,"description":"System-generated
+        Runtime Environment for your Automation account with Runtime language: Python
+        & Runtime version: 3.8. It automatically populates Packages defined for Python
+        3.8 runtime version in your Automation account. This Runtime environment is
+        non-editable. "}},{"systemData":{"createdAt":"2024-01-16T05:24:44.1058906+00:00","lastModifiedAt":"2024-01-16T05:24:44.1058906+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003","name":"rt000003","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.1"},"defaultPackages":{"az":"7.3.2"},"description":null}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:44.1058906+00:00","lastModifiedAt":"2024-01-16T05:24:44.1058906+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003","name":"rt000003","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.1"},"defaultPackages":{"az":"7.3.2"},"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --name --default-packages
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:44.1058906+00:00","lastModifiedAt":"2024-01-16T05:24:44.1058906+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003","name":"rt000003","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.1"},"defaultPackages":{"az":"7.3.2"},"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"defaultPackages": {"Az": "8.0.0"},
+      "runtime": {"language": "PowerShell", "version": "7.1"}}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '144'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --name --default-packages
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:44.1058906+00:00","lastModifiedAt":"2024-01-16T05:24:49.3487966+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003","name":"rt000003","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments","location":"westus2","tags":{},"etag":null,"properties":{"runtime":{"language":"PowerShell","version":"7.1"},"defaultPackages":{"az":"8.0.0"},"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"contentLink": {"uri": "https://teststorage.blob.core.windows.net/dsccomposite/OmsCompositeResources.zip",
+      "version": "1.0.0.0"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment package create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '146'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --runtime-environment-name --name --uri --content-version
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:51.0533333+00:00","lastModifiedAt":"2024-01-16T05:24:51.12+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004","name":"rt-package000004","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments/Packages","location":"westus2","tags":{},"etag":null,"properties":{"isDefault":false,"version":null,"sizeInBytes":0,"error":{"code":null,"message":null},"provisioningState":"Creating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '631'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004?api-version=2023-05-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment package list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --runtime-environment-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004","name":"rt-package000004","location":"westus2","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments/Packages","systemData":{"createdAt":"2024-01-16T05:24:51.0533333+00:00","lastModifiedAt":"2024-01-16T05:24:51.12+00:00"},"properties":{"isDefault":false,"version":null,"sizeInBytes":0,"provisioningState":"Creating"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '584'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment package show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --runtime-environment-name --name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:51.0533333+00:00","lastModifiedAt":"2024-01-16T05:24:51.12+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004","name":"rt-package000004","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments/Packages","location":"westus2","tags":{},"etag":null,"properties":{"isDefault":false,"version":null,"sizeInBytes":0,"error":{"code":null,"message":""},"provisioningState":"Creating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '629'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment package update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --runtime-environment-name --name --uri --content-version
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:51.0533333+00:00","lastModifiedAt":"2024-01-16T05:24:51.12+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004","name":"rt-package000004","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments/Packages","location":"westus2","tags":{},"etag":null,"properties":{"isDefault":false,"version":null,"sizeInBytes":0,"error":{"code":null,"message":""},"provisioningState":"Creating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '629'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"contentLink": {"uri": "https://teststorage.blob.core.windows.net/mycontainer/MyModule.zip",
+      "version": "1.0.0.0"}, "error": {"message": ""}, "sizeInBytes": 0}, "tags":
+      {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment package update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '211'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --runtime-environment-name --name --uri --content-version
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004?api-version=2023-05-15-preview
+  response:
+    body:
+      string: '{"systemData":{"createdAt":"2024-01-16T05:24:51.0533333+00:00","lastModifiedAt":"2024-01-16T05:24:56.4466667+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004","name":"rt-package000004","type":"Microsoft.Automation/AutomationAccounts/RuntimeEnvironments/Packages","location":"westus2","tags":{},"etag":null,"properties":{"isDefault":false,"version":null,"sizeInBytes":0,"error":{"code":null,"message":null},"provisioningState":"Creating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '636'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jan 2024 05:24:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment package delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --automation-account-name --runtime-environment-name --name -y
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003/packages/rt-package000004?api-version=2023-05-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 16 Jan 2024 05:24:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation runtime-environment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --automation-account-name --name -y
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_runtime_environment_000001/providers/Microsoft.Automation/automationAccounts/account000002/runtimeEnvironments/rt000003?api-version=2023-05-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 16 Jan 2024 05:24:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.1'
-try:
-    from azext_timeseriesinsights.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '1.0.0b1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -48,7 +44,7 @@ setup(
     description='Microsoft Azure Command-Line Tools TimeSeriesInsightsClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/timeseriesinsights',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/timeseriesinsights',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

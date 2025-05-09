@@ -7,13 +7,10 @@
 # --------------------------------------------------------------------------
 
 from ._azure_dedicated_hsm_resource_provider import AzureDedicatedHSMResourceProvider
-from ._version import VERSION
-
-__version__ = VERSION
 __all__ = ['AzureDedicatedHSMResourceProvider']
 
 try:
-    from .patch import patch_sdk
+    from ._patch import patch_sdk  # type: ignore
     patch_sdk()
 except ImportError:
     pass

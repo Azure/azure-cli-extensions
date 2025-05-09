@@ -13,7 +13,7 @@ from datetime import datetime
 from azure.cli.testsdk.exceptions import CliTestError
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
-from azure_devtools.scenario_tests import SingleValueReplacer
+from azure.cli.testsdk.scenario_tests import SingleValueReplacer
 
 
 KEY_RESOURCE_GROUP = 'rg'

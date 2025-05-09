@@ -8,21 +8,21 @@
 import os
 import re
 import json
-from subprocess import check_output
+import subprocess
 
 DEFAULT_TARGET_INDEX_URL = os.getenv('AZURE_EXTENSION_TARGET_INDEX_URL')
-STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_CONTAINER')
 COMMIT_NUM = os.getenv('AZURE_EXTENSION_COMMIT_NUM') or 1
+BLOB_PREFIX = os.getenv('AZURE_EXTENSION_BLOB_PREFIX')
 
 
 def _get_updated_extension_filenames():
     cmd = 'git --no-pager diff --diff-filter=ACMRT HEAD~{} -- src/index.json'.format(COMMIT_NUM)
-    updated_content = check_output(cmd.split()).decode('utf-8')
+    updated_content = subprocess.check_output(cmd.split()).decode('utf-8')
     FILENAME_REGEX = r'"filename":\s+"(.*?)"'
-    added_ext_filenames = [re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'filename' in line]
-    deleted_ext_filenames = [re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('-') and not line.startswith('---') and 'filename' in line]
+    added_ext_filenames = {re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'filename' in line}
+    deleted_ext_filenames = {re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('-') and not line.startswith('---') and 'filename' in line}
     return added_ext_filenames, deleted_ext_filenames
 
 
@@ -49,23 +49,40 @@ def download_file(url, file_path):
                 f.write(chunk)
 
 
-def _sync_wheel(ext, updated_indexes, failed_urls, client, overwrite, temp_dir):
+def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     download_url = ext['downloadUrl']
     whl_file = download_url.split('/')[-1]
     whl_path = os.path.join(temp_dir, whl_file)
+    blob_name = f'{BLOB_PREFIX}/{whl_file}' if BLOB_PREFIX else whl_file
     try:
         download_file(download_url, whl_path)
     except Exception:
         failed_urls.append(download_url)
         return
     if not overwrite:
-        exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=whl_file)
-        if exists:
+        cmd = ['az', 'storage', 'blob', 'exists', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+               f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--auth-mode', 'login']
+        result = subprocess.run(cmd, capture_output=True)
+        if result.stdout and json.loads(result.stdout)['exists']:
             print("Skipping '{}' as it already exists...".format(whl_file))
             return
-    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=whl_file,
-                                 file_path=os.path.abspath(whl_path))
-    url = client.make_blob_url(container_name=STORAGE_CONTAINER, blob_name=whl_file)
+
+    cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+           f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--file', f'{os.path.abspath(whl_path)}',
+           '--auth-mode', 'login', '--overwrite']
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print(f"Failed to upload '{whl_file}' to the storage account")
+        raise
+    cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+           f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
+    result = subprocess.run(cmd, capture_output=True)
+    print(result)
+    if result.stdout and result.returncode == 0:
+        url = json.loads(result.stdout)
+    else:
+        print("Failed to get the URL for '{}'".format(whl_file))
+        raise
     updated_index = ext
     updated_index['downloadUrl'] = url
     updated_indexes.append(updated_index)
@@ -102,14 +119,18 @@ def _update_target_extension_index(updated_indexes, deleted_ext_filenames, targe
 def main():
     import shutil
     import tempfile
-    from azure.storage.blob import BlockBlobService
 
-    added_ext_filenames = []
-    deleted_ext_filenames = []
+    net_added_ext_filenames = []
+    net_deleted_ext_filenames = []
     sync_all = (os.getenv('AZURE_SYNC_ALL_EXTENSIONS') and os.getenv('AZURE_SYNC_ALL_EXTENSIONS').lower() == 'true')
     if not sync_all:
         added_ext_filenames, deleted_ext_filenames = _get_updated_extension_filenames()
-        if not added_ext_filenames and not deleted_ext_filenames:
+        # when there are large amount of changes, for instance deleting a lot of old versions of extensions,
+        # git may not accurately recognize the right changes, so we need to compare added filenames and deleted filenames
+        # to get the real changed ones.
+        net_added_ext_filenames = added_ext_filenames - deleted_ext_filenames
+        net_deleted_ext_filenames = deleted_ext_filenames - added_ext_filenames
+        if not net_added_ext_filenames and not net_deleted_ext_filenames:
             print('index.json not changed. End task.')
             return
     temp_dir = tempfile.mkdtemp()
@@ -119,45 +140,64 @@ def main():
     target_index = DEFAULT_TARGET_INDEX_URL
     os.mkdir(os.path.join(temp_dir, 'target'))
     target_index_path = os.path.join(temp_dir, 'target', 'index.json')
-    download_file(target_index, target_index_path)
-
-    client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
+    try:
+        download_file(target_index, target_index_path)
+    except Exception as ex:
+        if sync_all and '404' in str(ex):
+            initial_index = {"extensions": {}, "formatVersion": "1"}
+            open(target_index_path, 'w').write(json.dumps(initial_index, indent=4, sort_keys=True))
+        else:
+            raise
     updated_indexes = []
     failed_urls = []
     if sync_all:
         print('Syncing all extensions...\n')
         # backup the old index.json
-        client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json.sav',
-                                     file_path=os.path.abspath(target_index_path))
-        inital_index = {"extensions": {}, "formatVersion": "1"}
-        open(target_index_path, 'w').write(json.dumps(inital_index, indent=4, sort_keys=True))
+        backup_index_name = f'{BLOB_PREFIX}/index.json.sav' if BLOB_PREFIX else 'index.json.sav'
+        cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+               f'{STORAGE_ACCOUNT}', '--name', f'{backup_index_name}',
+               '--file', f'{os.path.abspath(target_index_path)}', '--auth-mode', 'login', '--overwrite']
+        result = subprocess.run(cmd, capture_output=True)
+        if result.returncode != 0:
+            print(f"Failed to upload '{target_index_path}' to the storage account")
+            raise
+        # start with an empty index.json to sync all extensions
+        initial_index = {"extensions": {}, "formatVersion": "1"}
+        open(target_index_path, 'w').write(json.dumps(initial_index, indent=4, sort_keys=True))
         for extension_name in current_extensions.keys():
             for ext in current_extensions[extension_name]:
                 print('Uploading {}'.format(ext['filename']))
-                _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
+                _sync_wheel(ext, updated_indexes, failed_urls, True, temp_dir)
     else:
         NAME_REGEX = r'^(.*?)-\d+.\d+.\d+'
-        for filename in added_ext_filenames:
+        for filename in net_added_ext_filenames:
             extension_name = re.findall(NAME_REGEX, filename)[0].replace('_', '-')
             print('Uploading {}'.format(filename))
             ext = current_extensions[extension_name][-1]
             if ext['filename'] != filename:
                 ext = next((ext for ext in current_extensions[extension_name] if ext['filename'] == filename), None)
             if ext is not None:
-                _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
+                _sync_wheel(ext, updated_indexes, failed_urls, True, temp_dir)
 
     print("")
-    _update_target_extension_index(updated_indexes, deleted_ext_filenames, target_index_path)
-    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json',
-                                 file_path=os.path.abspath(target_index_path))
+    _update_target_extension_index(updated_indexes, net_deleted_ext_filenames, target_index_path)
+    index_name = f'{BLOB_PREFIX}/index.json' if BLOB_PREFIX else 'index.json'
+    cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+           f'{STORAGE_ACCOUNT}', '--name', f'{index_name}', '--file', f'{os.path.abspath(target_index_path)}',
+           '--auth-mode', 'login', '--overwrite']
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print(f"Failed to upload '{target_index_path}' to the storage account")
+        raise
+    print("\nSync finished.")
     if updated_indexes:
-        print("\nSync finished, extensions available in:")
+        print("New extensions available in:")
     for updated_index in updated_indexes:
         print(updated_index['downloadUrl'])
     shutil.rmtree(temp_dir)
 
     if failed_urls:
-        print("\nFailed to donwload and sync the following files. They are skipped:")
+        print("\nFailed to download and sync the following files. They are skipped:")
         for url in failed_urls:
             print(url)
         print("")

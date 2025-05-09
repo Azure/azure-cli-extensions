@@ -6,13 +6,14 @@ import unittest
 import copy
 from argparse import Namespace
 from azure.cli.core.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from ..._validators import (validate_vnet, validate_vnet_required_parameters, _validate_cidr_range,
-                            _set_default_cidr_range)
+                            _set_default_cidr_range, validate_sku)
 
 try:
     import unittest.mock as mock
 except ImportError:
-    import mock
+    from unittest import mock
 
 from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader
@@ -32,27 +33,27 @@ def _get_test_cmd():
 def _mock_get_vnet(cmd, vnet_id):
     def _mock_get(id):
         def _get_subnet(vnet_id, name, address_prefix=None, app_route_table_name=None, svc_route_table_name=None, ip_configurations=None, location=None):
-            subnet = mock.MagicMock()
-            subnet.id = '{0}/subnets/{1}'.format(vnet_id, name)
-            subnet.name = name
+            subnet = {
+                "id": '{0}/subnets/{1}'.format(vnet_id, name),
+                "name": name
+            }
             route_table = None
             if name == 'app' and app_route_table_name:
-                route_table = mock.MagicMock()
-                route_table.id = app_route_table_name
+                route_table = {'id': app_route_table_name}
             if name == 'svc' and svc_route_table_name:
-                route_table = mock.MagicMock()
-                route_table.id = svc_route_table_name
-            subnet.route_table = route_table
+                route_table = {"id": svc_route_table_name}
+            subnet["routeTable"] = route_table
 
-            subnet.address_prefix = address_prefix
-            subnet.ip_configurations = ip_configurations
+            subnet["addressPrefix"] = address_prefix
+            subnet["ipConfigurations"] = ip_configurations
             return subnet
 
         def _get_mock_vnet(id, location, **kwargs):
-            vnet = mock.MagicMock()
-            vnet.id = id
-            vnet.location = location
-            vnet.subnets = [_get_subnet(id, x, **kwargs) for x in ['app', 'svc']]
+            vnet = {
+                "id": id,
+                "location": location,
+                "subnets": [_get_subnet(id, x, **kwargs) for x in ['app', 'svc']]
+            }
             return vnet
 
         all_mocks = [
@@ -82,7 +83,7 @@ def _mock_get_vnet(cmd, vnet_id):
                 app_route_table_name='app', address_prefix='10.0.0.0/24'),
         ]
         for x in all_mocks:
-            if x.id == id:
+            if x["id"] == id:
                 return x
         return None
 
@@ -277,3 +278,51 @@ class TestValidateIPRanges(unittest.TestCase):
         with self.assertRaises(CLIError) as context:
             validate_vnet(_get_test_cmd(), ns)
         self.assertTrue('--vnet and Azure Spring Cloud instance should be in the same location.' in str(context.exception))
+
+
+def _mock_term_client(accepted, registered):
+    def _mock_get(offer_type, publisher_id, offer_id, plan_id):
+        term = mock.MagicMock()
+        term.accepted = accepted
+        return term
+    def _mock_provider_get(namespace):
+        provider = mock.MagicMock()
+        provider.registration_state = 'Registered' if registered else 'NotRegistered'
+        return provider
+    client = mock.MagicMock()
+    client.marketplace_agreements = mock.MagicMock()
+    client.marketplace_agreements.get = _mock_get
+    client.providers = mock.MagicMock()
+    client.providers.get = _mock_provider_get
+    return client
+
+def _mock_happy_client(cli_ctx, client_type, **kwargs):
+    return _mock_term_client(True, True)
+
+def _mock_not_accepted_term_client(cli_ctx, client_type, **kwargs):
+    return _mock_term_client(False, True)
+
+def _mock_not_registered_client(cli_ctx, client_type, **kwargs):
+    return _mock_term_client(True, False)
+
+class TestSkuValidator(unittest.TestCase):
+    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_happy_client)
+    def test_happy_path(self):
+        ns = Namespace(sku='Enterprise')
+        validate_sku(_get_test_cmd(), ns)
+        self.assertEqual('Enterprise', ns.sku.tier)
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_accepted_term_client)
+    def test_term_not_accept(self):
+        ns = Namespace(sku='Enterprise')
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            validate_sku(_get_test_cmd(), ns)
+        self.assertTrue('Terms for Azure Spring Cloud Enterprise is not accepted.' in str(context.exception))
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_registered_client)
+    def test_provider_not_registered(self):
+        ns = Namespace(sku='Enterprise')
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            validate_sku(_get_test_cmd(), ns)
+        self.assertTrue('Microsoft.SaaS resource provider is not registered.' in str(context.exception))
+

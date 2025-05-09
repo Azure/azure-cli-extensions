@@ -1,0 +1,586 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","name":"prodStabilityTest","type":"paloaltonetworks.cloudngfw/firewalls","location":"eastus","tags":{},"systemData":{"createdBy":"rhjai@microsoft.com","createdByType":"User","createdAt":"2023-07-17T13:23:42.0882273Z","lastModifiedBy":"54a2195e-8365-444c-8f50-4a5de4be1e2b","lastModifiedByType":"Application","lastModifiedAt":"2023-07-17T13:51:06.3647044Z"},"properties":{"networkProfile":{"vnetConfiguration":{"vnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet"},"trustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet1"},"unTrustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet2"},"ipOfTrustSubnetForUdr":{"address":"10.91.0.4"}},"networkType":"VNET","publicIps":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/prodStabilityTest-public-ip","address":"104.211.12.22"}],"enableEgressNat":"DISABLED","egressNatIp":[]},"associatedRulestack":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/prodStabilityTest-lrs","location":"eastus","rulestackId":"SUBSCRIPTION~2bf4a339-294d-4c25-b0b2-ef649e9f5c27~RG~rheaTerraformTest~STACK~prodStabilityTest-lrs"},"dnsSettings":{"enableDnsProxy":"DISABLED","enabledDnsType":"CUSTOM"},"isPanoramaManaged":"FALSE","provisioningState":"Succeeded","planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planId":"panw-cloud-ngfw-payg","effectiveDate":"0001-01-01T00:00:00Z"},"marketplaceDetails":{"offerId":"pan_swfw_cloud_ngfw","publisherId":"paloaltonetworks","marketplaceSubscriptionStatus":"Subscribed","marketplaceSubscriptionId":"f4f32169-d209-4da4-ca0d-e27fcbeacabd"},"panEtag":"f35bb154-24a5-11ee-9ea7-a6fe76bfa289"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2319'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:06:53 GMT
+      etag:
+      - '"7003ea25-0000-0100-0000-64b5474a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"associatedRulestack": {"location":
+      "eastus", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/prodStabilityTest-lrs",
+      "rulestackId": "SUBSCRIPTION~2bf4a339-294d-4c25-b0b2-ef649e9f5c27~RG~rheaTerraformTest~STACK~prodStabilityTest-lrs"},
+      "dnsSettings": {"enableDnsProxy": "DISABLED", "enabledDnsType": "CUSTOM"}, "isPanoramaManaged":
+      "FALSE", "marketplaceDetails": {"marketplaceSubscriptionStatus": "Subscribed",
+      "offerId": "pan_swfw_cloud_ngfw", "publisherId": "paloaltonetworks"}, "networkProfile":
+      {"egressNatIp": [], "enableEgressNat": "DISABLED", "networkType": "VNET", "publicIps":
+      [{"address": "104.211.12.22", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/prodStabilityTest-public-ip"}],
+      "vnetConfiguration": {"ipOfTrustSubnetForUdr": {"address": "10.91.0.4"}, "trustSubnet":
+      {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet1"},
+      "unTrustSubnet": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet2"},
+      "vnet": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet"}}},
+      "panEtag": "f35bb154-24a5-11ee-9ea7-a6fe76bfa289", "planData": {"billingCycle":
+      "MONTHLY", "planId": "panw-cloud-ngfw-payg", "usageType": "PAYG"}, "provisioningState":
+      "Succeeded"}, "tags": {"tagName": "value"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1808'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","name":"prodStabilityTest","type":"paloaltonetworks.cloudngfw/firewalls","location":"eastus","tags":{"tagName":"value"},"systemData":{"createdBy":"rhjai@microsoft.com","createdByType":"User","createdAt":"2023-07-17T13:23:42.0882273Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-26T07:06:54.6624971Z"},"properties":{"panEtag":"f35bb154-24a5-11ee-9ea7-a6fe76bfa289","networkProfile":{"vnetConfiguration":{"vnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet"},"trustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet1"},"unTrustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet2"},"ipOfTrustSubnetForUdr":{"address":"10.91.0.4"}},"networkType":"VNET","publicIps":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/prodStabilityTest-public-ip","address":"104.211.12.22"}],"enableEgressNat":"DISABLED","egressNatIp":[]},"associatedRulestack":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/prodStabilityTest-lrs","rulestackId":"SUBSCRIPTION~2bf4a339-294d-4c25-b0b2-ef649e9f5c27~RG~rheaTerraformTest~STACK~prodStabilityTest-lrs","location":"eastus"},"dnsSettings":{"enableDnsProxy":"DISABLED","enabledDnsType":"CUSTOM"},"isPanoramaManaged":"FALSE","provisioningState":"Accepted","planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planId":"panw-cloud-ngfw-payg","effectiveDate":"0001-01-01T00:00:00Z"},"marketplaceDetails":{"marketplaceSubscriptionId":"f4f32169-d209-4da4-ca0d-e27fcbeacabd","offerId":"pan_swfw_cloud_ngfw","publisherId":"paloaltonetworks","marketplaceSubscriptionStatus":"Subscribed"}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+      cache-control:
+      - no-cache
+      content-length:
+      - '2317'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:06:56 GMT
+      etag:
+      - '"0d00b47f-0000-0100-0000-64c0c60f0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+      mise-correlation-id:
+      - 28c323f9-7a9a-46b1-ba90-b5475c48bb09
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:06:56 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:07:26 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:07:58 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:08:28 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:08:59 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:09:30 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Accepted","startTime":"2023-07-26T07:06:54.8973301Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:10:01 GMT
+      etag:
+      - '"0b002ea7-0000-0100-0000-64c0c60e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","name":"c50f5516-e719-4842-a6b0-55db52f42a54*4BFDCC6C8030BD15623A89BEF8E6CC6F9D53C5183344AA8F80E16EAFDAA32CA9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","status":"Succeeded","startTime":"2023-07-26T07:06:54.8973301Z","endTime":"2023-07-26T07:10:13.4690317Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:10:32 GMT
+      etag:
+      - '"0b00ffc9-0000-0100-0000-64c0c6d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","name":"prodStabilityTest","type":"paloaltonetworks.cloudngfw/firewalls","location":"eastus","tags":{"tagName":"value"},"systemData":{"createdBy":"rhjai@microsoft.com","createdByType":"User","createdAt":"2023-07-17T13:23:42.0882273Z","lastModifiedBy":"54a2195e-8365-444c-8f50-4a5de4be1e2b","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T07:10:13.5375363Z"},"properties":{"panEtag":"0432c7fe-2b83-11ee-9c77-5609b716d297","networkProfile":{"vnetConfiguration":{"vnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet"},"trustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet1"},"unTrustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet2"},"ipOfTrustSubnetForUdr":{"address":"10.91.0.4"}},"networkType":"VNET","publicIps":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/prodStabilityTest-public-ip","address":"104.211.12.22"}],"enableEgressNat":"DISABLED","egressNatIp":[]},"associatedRulestack":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/prodStabilityTest-lrs","rulestackId":"SUBSCRIPTION~2bf4a339-294d-4c25-b0b2-ef649e9f5c27~RG~rheaTerraformTest~STACK~prodStabilityTest-lrs","location":"eastus"},"dnsSettings":{"enableDnsProxy":"DISABLED","enabledDnsType":"CUSTOM"},"isPanoramaManaged":"FALSE","provisioningState":"Succeeded","planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planId":"panw-cloud-ngfw-payg","effectiveDate":"0001-01-01T00:00:00Z"},"marketplaceDetails":{"marketplaceSubscriptionId":"f4f32169-d209-4da4-ca0d-e27fcbeacabd","offerId":"pan_swfw_cloud_ngfw","publisherId":"paloaltonetworks","marketplaceSubscriptionStatus":"Subscribed"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:10:32 GMT
+      etag:
+      - '"0d00f49e-0000-0100-0000-64c0c6d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw firewall show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest","name":"prodStabilityTest","type":"paloaltonetworks.cloudngfw/firewalls","location":"eastus","tags":{"tagName":"value"},"systemData":{"createdBy":"rhjai@microsoft.com","createdByType":"User","createdAt":"2023-07-17T13:23:42.0882273Z","lastModifiedBy":"54a2195e-8365-444c-8f50-4a5de4be1e2b","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T07:10:13.5375363Z"},"properties":{"panEtag":"0432c7fe-2b83-11ee-9c77-5609b716d297","networkProfile":{"vnetConfiguration":{"vnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet"},"trustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet1"},"unTrustSubnet":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/virtualNetworks/prodStabilityTest-vnet/subnets/subnet2"},"ipOfTrustSubnetForUdr":{"address":"10.91.0.4"}},"networkType":"VNET","publicIps":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/prodStabilityTest-public-ip","address":"104.211.12.22"}],"enableEgressNat":"DISABLED","egressNatIp":[]},"associatedRulestack":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/prodStabilityTest-lrs","rulestackId":"SUBSCRIPTION~2bf4a339-294d-4c25-b0b2-ef649e9f5c27~RG~rheaTerraformTest~STACK~prodStabilityTest-lrs","location":"eastus"},"dnsSettings":{"enableDnsProxy":"DISABLED","enabledDnsType":"CUSTOM"},"isPanoramaManaged":"FALSE","provisioningState":"Succeeded","planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planId":"panw-cloud-ngfw-payg","effectiveDate":"0001-01-01T00:00:00Z"},"marketplaceDetails":{"marketplaceSubscriptionId":"f4f32169-d209-4da4-ca0d-e27fcbeacabd","offerId":"pan_swfw_cloud_ngfw","publisherId":"paloaltonetworks","marketplaceSubscriptionStatus":"Subscribed"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 07:10:35 GMT
+      etag:
+      - '"0d00f49e-0000-0100-0000-64c0c6d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1

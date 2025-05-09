@@ -1,0 +1,3267 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '27'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline2?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Provisioning"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline2","name":"sqlServiceUnitTest-Pipeline2","type":"Microsoft.DataMigration/sqlMigrationServices"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlmigrationservice/operationResults/129aa1b4-dee8-4824-84a5-7def79fef836?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '338'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlmigrationservice/operationResults/129aa1b4-dee8-4824-84a5-7def79fef836?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"129aa1b4-dee8-4824-84a5-7def79fef836","status":"Succeeded","startTime":"2022-04-18T10:54:28.597Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline2?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","integrationRuntimeState":"NeedRegistration"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline2","name":"sqlServiceUnitTest-Pipeline2","type":"Microsoft.DataMigration/sqlMigrationServices"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '380'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","integrationRuntimeState":"NeedRegistration"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest","name":"dmsCliUnitTest","type":"Microsoft.DataMigration/sqlMigrationServices"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '352'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","integrationRuntimeState":""},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest","name":"dmsCliUnitTest","type":"Microsoft.DataMigration/sqlMigrationServices"},{"properties":{"provisioningState":"Succeeded","integrationRuntimeState":""},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline1","name":"sqlServiceUnitTest-Pipeline1","type":"Microsoft.DataMigration/sqlMigrationServices"},{"properties":{"provisioningState":"Succeeded","integrationRuntimeState":""},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline2","name":"sqlServiceUnitTest-Pipeline2","type":"Microsoft.DataMigration/sqlMigrationServices"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1078'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service list-migration
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest/listMigrations?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service list-auth-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest/listAuthKeys?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"authKey1":"IR@XXXXXXXXXX","authKey2":"IR@XXXXXXXXXX"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '243'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"keyName": "authKey1"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service regenerate-auth-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --key-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest/regenerateAuthKeys?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"authKey1":"IR@XXXXXXXXXX"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service list-integration-runtime-metric
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/dmsCliUnitTest/listMonitoringData?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"default-ir","nodes":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '32'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:54:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLIUnitTest/providers/Microsoft.DataMigration/sqlMigrationServices/sqlServiceUnitTest-Pipeline2?api-version=2022-03-30-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/deletesqlmigrationservice/operationResults/43e1b622-463a-4488-97fc-7c7552f40bc9?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 18 Apr 2022 10:54:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/sqlMigrationServiceOperationResults/43e1b622-463a-4488-97fc-7c7552f40bc9?api-version=2022-03-30-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/deletesqlmigrationservice/operationResults/43e1b622-463a-4488-97fc-7c7552f40bc9?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"43e1b622-463a-4488-97fc-7c7552f40bc9","status":"Succeeded","startTime":"2022-04-18T10:54:53.923Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --managed-instance-name --resource-group --target-db-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-CLI-MIOnline?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileShare":{"path":"\\\\aalab03-2k8.redmond.corp.microsoft.com\\SharedBackup\\tsuman"},"fileStorageType":"FileShare"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi","provisioningState":"Succeeded","migrationStatus":"Succeeded","startedOn":"2021-12-30T06:16:43.983Z","endedOn":"2021-12-30T07:34:46.553Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/IR1","migrationOperationId":"c20c73a6-9cf4-488e-b458-243b9eb43e24","kind":"SqlMi"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-CLI-MIOnline","name":"tsum-CLI-MIOnline","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1095'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-VM?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileShare":{"path":"\\\\aalab03-2k8.redmond.corp.microsoft.com\\SharedBackup\\tsuman"},"fileStorageType":"FileShare"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM","provisioningState":"Succeeded","migrationStatus":"Succeeded","startedOn":"2021-12-28T17:31:36.843Z","endedOn":"2021-12-28T17:45:08.573Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/IR1","migrationOperationId":"18aff4bb-892a-4c9a-bc31-49110101255d","kind":"SqlVm"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-VM","name":"tsum-Db-VM","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1105'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "SqlMi", "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi",
+      "sourceSqlConnection": {"dataSource": "AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM",
+      "authentication": "SqlAuthentication", "userName": "hijavatestuser1", "password":
+      "XXXXXXXXXXXX"}, "sourceDatabaseName": "AdventureWorks", "migrationService":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/tsuman-IR2",
+      "backupConfiguration": {"sourceLocation": {"azureBlob": {"storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tzppesignoff1211/providers/Microsoft.Storage/storageAccounts/hijavateststorage",
+      "accountKey": "XXXXXXXXXXXX/XXXXXXXXXXXX",
+      "blobContainerName": "tsum38-adventureworks"}}, "targetLocation": {"storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaskhan/providers/Microsoft.Storage/storageAccounts/aasimmigrationtest",
+      "accountKey": "XXXXXXXXXXXX/XXXXXXXXXXXX"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1254'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --managed-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi","provisioningState":"Creating","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","kind":"SqlMi"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9","name":"tsum-Db-mi-online-blob9","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlmimigration/operationResults/b6507332-c794-497d-ab75-e9ad5fff963f?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '797'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --managed-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlmimigration/operationResults/b6507332-c794-497d-ab75-e9ad5fff963f?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"b6507332-c794-497d-ab75-e9ad5fff963f","status":"Succeeded","startTime":"2022-04-18T10:55:14.117Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --managed-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T10:55:15.18Z","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"6f808196-44c7-477f-b0d3-7cc1a4255cdf","kind":"SqlMi"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9","name":"tsum-Db-mi-online-blob9","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '929'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --managed-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","blobContainerName":"tsum38-adventureworks","pendingLogBackupsCount":0},"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T10:55:15.18Z","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"6f808196-44c7-477f-b0d3-7cc1a4255cdf","kind":"SqlMi"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9","name":"tsum-Db-mi-online-blob9","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1063'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"migrationOperationId": "6f808196-44c7-477f-b0d3-7cc1a4255cdf"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9/cancel?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi","provisioningState":"Canceling","sourceDatabaseName":"AdventureWorks","kind":"SqlMi"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-mi-online-blob9","name":"tsum-Db-mi-online-blob9","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:55:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:56:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:56:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:56:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:56:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:57:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"InProgress","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:57:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-managed-instance cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --managed-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlmimigration/operationResults/994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"994ed8f7-6169-4c3f-b05e-2eb7b9f1eae6","status":"Succeeded","startTime":"2022-04-18T10:55:32.847Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:57:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "SqlVm", "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/SqlVirtualMachines/DMSCmdletTest-SqlVM",
+      "sourceSqlConnection": {"dataSource": "AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM",
+      "authentication": "SqlAuthentication", "userName": "hijavatestuser1", "password":
+      "XXXXXXXXXXXX"}, "sourceDatabaseName": "AdventureWorks", "migrationService":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/tsuman-IR2",
+      "backupConfiguration": {"sourceLocation": {"azureBlob": {"storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tzppesignoff1211/providers/Microsoft.Storage/storageAccounts/hijavateststorage",
+      "accountKey": "XXXXXXXXXXXX/XXXXXXXXXXXX",
+      "blobContainerName": "tsum38-adventureworks"}}, "targetLocation": {"storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aaskhan/providers/Microsoft.Storage/storageAccounts/aasimmigrationtest",
+      "accountKey": "XXXXXXXXXXXX/XXXXXXXXXXXX"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1266'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM","provisioningState":"Creating","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","kind":"SqlVm"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10","name":"tsum-Db-vm-online-blob10","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '823'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:57:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"5c89b1d2-954f-44c7-945d-7c9e3cfc6933","status":"InProgress","startTime":"2022-04-18T10:57:37.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:57:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"5c89b1d2-954f-44c7-945d-7c9e3cfc6933","status":"InProgress","startTime":"2022-04-18T10:57:37.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:58:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"5c89b1d2-954f-44c7-945d-7c9e3cfc6933","status":"InProgress","startTime":"2022-04-18T10:57:37.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:58:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"5c89b1d2-954f-44c7-945d-7c9e3cfc6933","status":"InProgress","startTime":"2022-04-18T10:57:37.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:58:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"5c89b1d2-954f-44c7-945d-7c9e3cfc6933","status":"InProgress","startTime":"2022-04-18T10:57:37.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:58:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqlvmmigration/operationResults/5c89b1d2-954f-44c7-945d-7c9e3cfc6933?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"5c89b1d2-954f-44c7-945d-7c9e3cfc6933","status":"Succeeded","startTime":"2022-04-18T10:57:37.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:59:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-location --target-location --migration-service --scope --source-database-name
+        --source-sql-connection --target-db-name --resource-group --sql-vm-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T10:59:09.107Z","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"2e8b78cf-f22e-4475-8f3d-3a0836b2843f","kind":"SqlVm"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10","name":"tsum-Db-vm-online-blob10","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '956'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 10:59:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sql-vm-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","blobContainerName":"tsum38-adventureworks","pendingLogBackupsCount":0},"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T10:59:09.107Z","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"2e8b78cf-f22e-4475-8f3d-3a0836b2843f","kind":"SqlVm"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10","name":"tsum-Db-vm-online-blob10","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1090'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:01:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"migrationOperationId": "2e8b78cf-f22e-4475-8f3d-3a0836b2843f"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm cancel
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10/cancel?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM","provisioningState":"Canceling","sourceDatabaseName":"AdventureWorks","kind":"SqlVm"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10","name":"tsum-Db-vm-online-blob10","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlvmmigration/operationResults/98b22b3b-659d-4464-804c-74f12ccaf749?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '588'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:01:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlvmmigration/operationResults/98b22b3b-659d-4464-804c-74f12ccaf749?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"98b22b3b-659d-4464-804c-74f12ccaf749","status":"InProgress","startTime":"2022-04-18T11:01:11.297Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:01:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlvmmigration/operationResults/98b22b3b-659d-4464-804c-74f12ccaf749?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"98b22b3b-659d-4464-804c-74f12ccaf749","status":"InProgress","startTime":"2022-04-18T11:01:11.297Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:01:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlvmmigration/operationResults/98b22b3b-659d-4464-804c-74f12ccaf749?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"98b22b3b-659d-4464-804c-74f12ccaf749","status":"InProgress","startTime":"2022-04-18T11:01:11.297Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:01:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlvmmigration/operationResults/98b22b3b-659d-4464-804c-74f12ccaf749?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"98b22b3b-659d-4464-804c-74f12ccaf749","status":"InProgress","startTime":"2022-04-18T11:01:11.297Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:02:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqlvmmigration/operationResults/98b22b3b-659d-4464-804c-74f12ccaf749?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"98b22b3b-659d-4464-804c-74f12ccaf749","status":"Succeeded","startTime":"2022-04-18T11:01:11.297Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:02:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sql-vm-name --target-db-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"backupConfiguration":{"sourceLocation":{"fileStorageType":"AzureBlob"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM","provisioningState":"Succeeded","migrationStatus":"Canceled","startedOn":"2022-04-18T10:59:09.107Z","endedOn":"2022-04-18T11:02:23.15Z","sourceDatabaseName":"AdventureWorks","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"2e8b78cf-f22e-4475-8f3d-3a0836b2843f","kind":"SqlVm"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/DMSCmdletTest-SqlVM/providers/Microsoft.DataMigration/databaseMigrations/tsum-Db-vm-online-blob10","name":"tsum-Db-vm-online-blob10","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '990'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:02:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"Canceled","startedOn":"2022-04-18T10:13:44.08Z","endedOn":"2022-04-18T10:13:52.983Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"b1f1aafa-42bc-4479-9172-5855d4fdb4f1","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '973'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:02:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "SqlDb", "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb",
+      "sourceSqlConnection": {"dataSource": "AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM",
+      "authentication": "SqlAuthentication", "userName": "hijavatestuser1", "password":
+      "XXXXXXXXXXXX"}, "sourceDatabaseName": "Brih", "migrationService": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/tsuman-IR2",
+      "targetSqlConnection": {"dataSource": "dmstestsqldb.database.windows.net", "authentication":
+      "SqlAuthentication", "userName": "demouser", "password": "XXXXXXXXXXXX"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '707'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Creating","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/45dcdf4c-3d17-4abc-9a78-24b7ec6729b4?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '806'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:02:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/45dcdf4c-3d17-4abc-9a78-24b7ec6729b4?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"45dcdf4c-3d17-4abc-9a78-24b7ec6729b4","status":"InProgress","startTime":"2022-04-18T11:02:32.077Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:02:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/45dcdf4c-3d17-4abc-9a78-24b7ec6729b4?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"45dcdf4c-3d17-4abc-9a78-24b7ec6729b4","status":"Succeeded","startTime":"2022-04-18T11:02:32.077Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:02:50.483Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"54dd90ce-149f-4221-a74b-e85b37e18b46","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '939'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --force -y
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?force=true&api-version=2022-03-30-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/dropsqldbmigration/operationResults/f6f64497-897a-4832-b758-284c837af112?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 18 Apr 2022 11:03:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --force -y
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/dropsqldbmigration/operationResults/f6f64497-897a-4832-b758-284c837af112?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"f6f64497-897a-4832-b758-284c837af112","status":"Succeeded","startTime":"2022-04-18T11:03:05.953Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "SqlDb", "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb",
+      "sourceSqlConnection": {"dataSource": "AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM",
+      "authentication": "SqlAuthentication", "userName": "hijavatestuser1", "password":
+      "XXXXXXXXXXXX"}, "sourceDatabaseName": "Brih", "migrationService": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/tsuman-IR2",
+      "targetSqlConnection": {"dataSource": "dmstestsqldb.database.windows.net", "authentication":
+      "SqlAuthentication", "userName": "demouser", "password": "XXXXXXXXXXXX"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '707'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Creating","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/f9c6e635-000e-4e50-8d99-c147010b83c5?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '806'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/f9c6e635-000e-4e50-8d99-c147010b83c5?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"f9c6e635-000e-4e50-8d99-c147010b83c5","status":"Succeeded","startTime":"2022-04-18T11:03:23.073Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:03:34.51Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"cbe6ae9c-f5eb-4500-9247-cd5f4a03c9b4","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '938'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"StartSqlDataCopy","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:03:34.51Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"cbe6ae9c-f5eb-4500-9247-cd5f4a03c9b4","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"migrationOperationId": "cbe6ae9c-f5eb-4500-9247-cd5f4a03c9b4"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db cancel
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --sqldb-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb/cancel?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Canceling","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqldbmigration/operationResults/b0d5fb4c-4a23-403d-bb2a-0e3b056c829b?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db cancel
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --sqldb-instance-name --target-db-name --migration-operation-id
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/cancelsqldbmigration/operationResults/b0d5fb4c-4a23-403d-bb2a-0e3b056c829b?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"b0d5fb4c-4a23-403d-bb2a-0e3b056c829b","status":"Succeeded","startTime":"2022-04-18T11:03:41.953Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:03:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "SqlDb", "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb",
+      "sourceSqlConnection": {"dataSource": "AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM",
+      "authentication": "SqlAuthentication", "userName": "hijavatestuser1", "password":
+      "XXXXXXXXXXXX"}, "sourceDatabaseName": "Brih", "migrationService": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/tsuman-IR2",
+      "targetSqlConnection": {"dataSource": "dmstestsqldb.database.windows.net", "authentication":
+      "SqlAuthentication", "userName": "demouser", "password": "XXXXXXXXXXXX"}, "tableList":
+      ["[dbo].[Table_1]"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '741'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --table-list --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Creating","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/9c5bd682-81a8-41c5-87c7-65b4b4123e32?api-version=2022-03-30-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '838'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:04:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --table-list --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/eastus2euap/operationTypes/createsqldbmigration/operationResults/9c5bd682-81a8-41c5-87c7-65b4b4123e32?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"name":"9c5bd682-81a8-41c5-87c7-65b4b4123e32","status":"Succeeded","startTime":"2022-04-18T11:04:00.653Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:04:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --migration-service --scope --source-database-name --source-sql-connection
+        --target-sql-connection --table-list --target-db-name --resource-group --sqldb-instance-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '971'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:04:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:04:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:04:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:05:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:05:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:06:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:06:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[{"tableName":"dbo.Table_1","status":"Succeeded","parallelCopyType":"None","usedParallelCopies":1,"dataRead":400,"dataWritten":400,"rowsRead":20,"rowsCopied":20,"copyStart":"2022-04-18T11:06:50.003Z","copyThroughput":0.014000000432133675,"copyDuration":27}]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1320'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:07:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"MonitorMigration","listOfCopyProgressDetails":[{"tableName":"dbo.Table_1","status":"Succeeded","parallelCopyType":"None","usedParallelCopies":1,"dataRead":400,"dataWritten":400,"rowsRead":20,"rowsCopied":20,"copyStart":"2022-04-18T11:06:50.003Z","copyThroughput":0.014000000432133675,"copyDuration":27}]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"InProgress","startedOn":"2022-04-18T11:04:10.497Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1320'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:07:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name --expand
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?$expand=MigrationStatusDetails&api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"migrationStatusDetails":{"migrationState":"Succeeded","listOfCopyProgressDetails":[{"tableName":"dbo.Table_1","status":"Succeeded","parallelCopyType":"None","usedParallelCopies":1,"dataRead":400,"dataWritten":400,"rowsRead":20,"rowsCopied":20,"copyStart":"2022-04-18T11:06:50.003Z","copyThroughput":0.014000000432133675,"copyDuration":27}]},"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"Succeeded","startedOn":"2022-04-18T11:04:10.497Z","endedOn":"2022-04-18T11:08:19.237Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1349'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:08:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datamigration sql-db show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sqldb-instance-name --resource-group --target-db-name
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-datamigration/1.0.0b1 Python/3.10.0 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb?api-version=2022-03-30-preview
+  response:
+    body:
+      string: '{"properties":{"offlineConfiguration":{"offline":true},"backupConfiguration":{"sourceLocation":{"fileStorageType":"None"}},"tableList":["[dbo].[Table_1]"],"scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb","provisioningState":"Succeeded","migrationStatus":"Succeeded","startedOn":"2022-04-18T11:04:10.497Z","endedOn":"2022-04-18T11:08:19.237Z","sourceServerName":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM","sourceDatabaseName":"Brih","migrationService":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/sqlMigrationServices/tsuman-IR2","migrationOperationId":"ea36f793-8bd1-4ceb-a82a-e0faf0d0dfcb","kind":"SqlDb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb/providers/Microsoft.DataMigration/databaseMigrations/NewDb","name":"NewDb","type":"Microsoft.DataMigration/databaseMigrations"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1007'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Apr 2022 11:08:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

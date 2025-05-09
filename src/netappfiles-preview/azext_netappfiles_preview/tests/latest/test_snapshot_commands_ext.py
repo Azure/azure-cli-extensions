@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import unittest
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
@@ -34,6 +34,7 @@ class AzureNetAppFilesExtSnapshotServiceScenarioTest(ScenarioTest):
 
         return volume1
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer()
     def test_ext_create_delete_snapshots(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
@@ -53,6 +54,7 @@ class AzureNetAppFilesExtSnapshotServiceScenarioTest(ScenarioTest):
         snapshot_list = self.cmd("az netappfiles snapshot list --resource-group %s --account-name %s --pool-name %s --volume-name %s" % (rg, account_name, pool_name, volume_name)).get_output_in_json()
         assert len(snapshot_list) == 0
 
+    @unittest.skip('This command is available from main module now')    
     @ResourceGroupPreparer()
     def test_ext_list_snapshots(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
@@ -67,6 +69,7 @@ class AzureNetAppFilesExtSnapshotServiceScenarioTest(ScenarioTest):
         snapshot_list = self.cmd("az netappfiles snapshot list -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
         assert len(snapshot_list) == 2
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer()
     def test_ext_get_snapshot(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)

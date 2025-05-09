@@ -12,16 +12,17 @@ from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 
-from .telemetry import _track_command_telemetry, _track_run_command_telemetry
+from .telemetry import _track_command_telemetry, _track_run_command_telemetry, _track_command_telemetry_repair_and_restore
 
 from .repair_utils import _get_function_param_dict
 
 STATUS_SUCCESS = 'SUCCESS'
 STATUS_ERROR = 'ERROR'
 VM_REPAIR_RUN_COMMAND = 'vm repair run'
+VM_REPAIR_AND_RESTORE_COMMAND = 'vm repair repair-and-restore'
 
 
-class command_helper(object):
+class command_helper:
     """
     The command helper stores command state data and helper functions for vm-repair commands.
     It will also execute needed functions at the start and end of commands such as sending telemetry data
@@ -88,6 +89,8 @@ class command_helper(object):
         elapsed_time = timeit.default_timer() - self.start_time
         if self.command_name == VM_REPAIR_RUN_COMMAND:
             _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time)
+        if self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
+            _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx))
         else:
             _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict)
 
@@ -117,7 +120,7 @@ class command_helper(object):
         return self.return_dict
 
 
-class script_data(object):
+class script_data:
     """ Stores repair script data. """
     def __init__(self):
         # Unique run-id

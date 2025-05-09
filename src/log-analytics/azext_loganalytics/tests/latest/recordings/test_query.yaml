@@ -1,7 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "eastus", "properties": {"sku": {"name": "CapacityReservation",
-      "capacityReservationLevel": 100}, "retentionInDays": 30, "workspaceCapping":
+    body: '{"location": "eastus", "properties": {"publicNetworkAccessForIngestion":
+      "Enabled", "publicNetworkAccessForQuery": "Enabled", "retentionInDays": 30,
+      "sku": {"capacityReservationLevel": 100, "name": "CapacityReservation"}, "workspaceCapping":
       {"dailyQuotaGb": 1.0}}}'
     headers:
       Accept:
@@ -13,55 +14,51 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '177'
+      - '265'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --location --quota --level --sku
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-loganalytics/8.0.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2020-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2023-09-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"514eb233-d846-49be-8715-84e2a9244560\",\r\n    \"provisioningState\": \"Creating\",\r\n
-        \   \"sku\": {\r\n      \"name\": \"capacityreservation\",\r\n      \"capacityReservationLevel\":
-        100,\r\n      \"maxCapacityReservationLevel\": 3000,\r\n      \"lastSkuUpdate\":
-        \"Tue, 23 Feb 2021 07:07:52 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
-        \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
-        \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
-        \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
-        \"Wed, 24 Feb 2021 06:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
-        \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Tue, 23 Feb 2021 07:07:52 GMT\",\r\n
-        \   \"modifiedDate\": \"Tue, 23 Feb 2021 07:07:52 GMT\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/microsoft.operationalinsights/workspaces/clitest000002\",\r\n
-        \ \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+      string: '{"properties":{"customerId":"062c153f-f7b2-4a8b-b57d-05b9f5cadfdc","provisioningState":"Creating","sku":{"name":"CapacityReservation","capacityReservationLevel":100,"lastSkuUpdate":"2024-09-14T04:50:29.9279239Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":1.0,"quotaNextResetTime":"2024-09-14T20:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2024-09-14T04:50:29.9279239Z","modifiedDate":"2024-09-14T04:50:29.9279239Z"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002","name":"clitest000002","type":"Microsoft.OperationalInsights/workspaces","etag":"\"18004b51-0000-0100-0000-66e516150000\""}'
     headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2015-03-20, 2020-08-01, 2020-10-01, 2021-06-01, 2022-10-01, 2023-09-01
       cache-control:
       - no-cache
       content-length:
-      - '1227'
+      - '935'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Tue, 23 Feb 2021 07:07:53 GMT
+      - Sat, 14 Sep 2024 04:50:29 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2023-09-01
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      - Microsoft-IIS/10.0
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '5999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-      - ASP.NET
+      - '399'
+      x-msedge-ref:
+      - 'Ref A: 969F1114F8B045CE99F05F0392FCBD71 Ref B: MAA201060513039 Ref C: 2024-09-14T04:50:26Z'
     status:
       code: 201
       message: Created
@@ -79,51 +76,41 @@ interactions:
       ParameterSetName:
       - -g -n --location --quota --level --sku
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-loganalytics/8.0.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2020-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2023-09-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"514eb233-d846-49be-8715-84e2a9244560\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"sku\": {\r\n      \"name\": \"capacityreservation\",\r\n      \"capacityReservationLevel\":
-        100,\r\n      \"maxCapacityReservationLevel\": 3000,\r\n      \"lastSkuUpdate\":
-        \"Tue, 23 Feb 2021 07:07:52 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
-        \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
-        \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
-        \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": 1.0,\r\n      \"quotaNextResetTime\":
-        \"Wed, 24 Feb 2021 06:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
-        \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Tue, 23 Feb 2021 07:07:52 GMT\",\r\n
-        \   \"modifiedDate\": \"Tue, 23 Feb 2021 07:07:53 GMT\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/microsoft.operationalinsights/workspaces/clitest000002\",\r\n
-        \ \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+      string: '{"properties":{"customerId":"062c153f-f7b2-4a8b-b57d-05b9f5cadfdc","provisioningState":"Succeeded","sku":{"name":"CapacityReservation","capacityReservationLevel":100,"lastSkuUpdate":"2024-09-14T04:50:29.9279239Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":1.0,"quotaNextResetTime":"2024-09-14T20:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2024-09-14T04:50:29.9279239Z","modifiedDate":"2024-09-14T04:50:30.9494306Z"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002","name":"clitest000002","type":"Microsoft.OperationalInsights/workspaces","etag":"\"18004c51-0000-0100-0000-66e516160000\""}'
     headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2015-03-20, 2020-08-01, 2020-10-01, 2021-06-01, 2022-10-01, 2023-09-01
       cache-control:
       - no-cache
       content-length:
-      - '1227'
+      - '936'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Tue, 23 Feb 2021 07:08:24 GMT
+      - Sat, 14 Sep 2024 04:50:30 GMT
+      expires:
+      - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      - Microsoft-IIS/10.0
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
-      - ASP.NET
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '7499'
+      x-msedge-ref:
+      - 'Ref A: 7BFCFDBF1A6F44838E333CA298740C12 Ref B: MAA201060513039 Ref C: 2024-09-14T04:50:30Z'
     status:
       code: 200
       message: OK
@@ -134,19 +121,23 @@ interactions:
       - application/json
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - monitor log-analytics query
       Connection:
       - keep-alive
       Content-Length:
       - '34'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
+      ParameterSetName:
+      - -w --analytics-query
       User-Agent:
-      - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 azure-loganalytics/0.1.0
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
     method: POST
-    uri: https://api.loganalytics.io/v1/workspaces/514eb233-d846-49be-8715-84e2a9244560/query
+    uri: https://api.loganalytics.io/v1/workspaces/062c153f-f7b2-4a8b-b57d-05b9f5cadfdc/query
   response:
     body:
-      string: '{"tables":[{"name":"getschema","columns":[{"name":"ColumnName","type":"string"},{"name":"ColumnOrdinal","type":"int"},{"name":"DataType","type":"string"},{"name":"ColumnType","type":"string"}],"rows":[["TenantId",0,"System.String","string"],["SourceSystem",1,"System.String","string"],["TimeGenerated",2,"System.DateTime","datetime"],["MG",3,"System.String","string"],["ManagementGroupName",4,"System.String","string"],["SourceComputerId",5,"System.String","string"],["ComputerIP",6,"System.String","string"],["Computer",7,"System.String","string"],["Category",8,"System.String","string"],["OSType",9,"System.String","string"],["OSName",10,"System.String","string"],["OSMajorVersion",11,"System.String","string"],["OSMinorVersion",12,"System.String","string"],["Version",13,"System.String","string"],["SCAgentChannel",14,"System.String","string"],["IsGatewayInstalled",15,"System.SByte","bool"],["RemoteIPLongitude",16,"System.Double","real"],["RemoteIPLatitude",17,"System.Double","real"],["RemoteIPCountry",18,"System.String","string"],["SubscriptionId",19,"System.String","string"],["ResourceGroup",20,"System.String","string"],["ResourceProvider",21,"System.String","string"],["Resource",22,"System.String","string"],["ResourceId",23,"System.String","string"],["ResourceType",24,"System.String","string"],["ComputerEnvironment",25,"System.String","string"],["Solutions",26,"System.String","string"],["VMUUID",27,"System.String","string"],["Type",28,"System.String","string"],["_ResourceId",29,"System.String","string"]]}]}'
+      string: '{"tables":[{"name":"getschema","columns":[{"name":"ColumnName","type":"string"},{"name":"ColumnOrdinal","type":"int"},{"name":"DataType","type":"string"},{"name":"ColumnType","type":"string"}],"rows":[["TenantId",0,"System.String","string"],["SourceSystem",1,"System.String","string"],["TimeGenerated",2,"System.DateTime","datetime"],["MG",3,"System.String","string"],["ManagementGroupName",4,"System.String","string"],["SourceComputerId",5,"System.String","string"],["ComputerIP",6,"System.String","string"],["Computer",7,"System.String","string"],["Category",8,"System.String","string"],["OSType",9,"System.String","string"],["OSName",10,"System.String","string"],["OSMajorVersion",11,"System.String","string"],["OSMinorVersion",12,"System.String","string"],["Version",13,"System.String","string"],["SCAgentChannel",14,"System.String","string"],["IsGatewayInstalled",15,"System.SByte","bool"],["RemoteIPLongitude",16,"System.Double","real"],["RemoteIPLatitude",17,"System.Double","real"],["RemoteIPCountry",18,"System.String","string"],["SubscriptionId",19,"System.String","string"],["ResourceGroup",20,"System.String","string"],["ResourceProvider",21,"System.String","string"],["Resource",22,"System.String","string"],["ResourceId",23,"System.String","string"],["ResourceType",24,"System.String","string"],["ComputerEnvironment",25,"System.String","string"],["Solutions",26,"System.String","string"],["VMUUID",27,"System.String","string"],["ComputerPrivateIPs",28,"System.Object","dynamic"],["Type",29,"System.String","string"],["_ResourceId",30,"System.String","string"]]}]}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -155,11 +146,11 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '1526'
+      - '1578'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Feb 2021 07:08:29 GMT
+      - Sat, 14 Sep 2024 04:50:36 GMT
       strict-transport-security:
       - max-age=15724800; includeSubDomains
       transfer-encoding:
@@ -167,7 +158,7 @@ interactions:
       vary:
       - Accept-Encoding
       via:
-      - 1.1 draft-oms-c6dfd9d4c-h6h7p
+      - 1.1 draft-oms-86df546b6d-xt6w7
       x-content-type-options:
       - nosniff
     status:

@@ -41,22 +41,6 @@ def load_arguments(self, _):
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
 
-    with self.argument_context('maintenance applyupdate update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('provider_name', type=str, help='Resource provider name')
-        c.argument('resource_type', type=str, help='Resource type')
-        c.argument('resource_name', type=str, help='Resource identifier')
-
-    with self.argument_context('maintenance applyupdate get-parent') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_parent_type', type=str, help='Resource parent type')
-        c.argument('resource_parent_name', type=str, help='Resource parent identifier')
-        c.argument('provider_name', type=str, help='Resource provider name')
-        c.argument('resource_type', type=str, help='Resource type')
-        c.argument('resource_name', type=str, help='Resource identifier')
-        c.argument('apply_update_name', options_list=['--name', '-n', '--apply-update-name'], type=str, help=''
-                   'applyUpdate Id')
-
     with self.argument_context('maintenance assignment list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', type=str, help='Resource provider name')

@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 from ._monitor_client import MonitorClient
+from ._version import VERSION
+
+__version__ = VERSION
 __all__ = ['MonitorClient']
 
 try:

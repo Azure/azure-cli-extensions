@@ -1,0 +1,119 @@
+interactions:
+- request:
+    body: '{"properties": {"apiSourceType": "AzureApiManagement", "azureApiManagementSource":
+      {"msiResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test",
+      "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiManagement/service/clitest000004"},
+      "importSpecification": "always"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic integration create apim
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '467'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --azure-apim -i --msi-resource-id
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003?api-version=2024-06-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apiSources","properties":{"apiSourceType":"AzureApiManagement","apimSource":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiManagement/service/clitest000004","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test"},"azureApiManagementSource":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiManagement/service/clitest000004","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test"},"sourceLifecycleStage":"design","targetEnvironmentId":"/workspaces/default/environments/azure-api-management","targetLifecycleStage":"design","importSpecification":"always","linkState":{"state":"initializing","lastUpdatedOn":"2024-12-24T07:30:53.3997958Z"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003","name":"cli000003","systemData":{"createdAt":"2024-12-24T07:30:53.3997938Z","lastModifiedAt":"2024-12-24T07:30:53.3997919Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1408'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Dec 2024 07:30:53 GMT
+      etag:
+      - 0a00e783-0000-3300-0000-676a632d0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8A292E25303F4B6F8FE86A99C399FA6B Ref B: MAA201060513045 Ref C: 2024-12-24T07:30:50Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic integration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -i
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003?api-version=2024-06-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apiSources","properties":{"apiSourceType":"AzureApiManagement","apimSource":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiManagement/service/clitest000004","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test"},"azureApiManagementSource":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiManagement/service/clitest000004","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apic-extension-cli-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/apic-extension-cli-test"},"sourceLifecycleStage":"design","targetEnvironmentId":"/workspaces/default/environments/azure-api-management","targetLifecycleStage":"design","importSpecification":"always","linkState":{"state":"initializing","lastUpdatedOn":"2024-12-24T07:30:53.3997958Z"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apiSources/cli000003","name":"cli000003","systemData":{"createdAt":"2024-12-24T07:30:53.3997938Z","lastModifiedAt":"2024-12-24T07:30:53.3997919Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1408'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Dec 2024 07:30:55 GMT
+      etag:
+      - 0a00e783-0000-3300-0000-676a632d0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EC6649C72E924E18B01BEBABEE4C3426 Ref B: MAA201060516027 Ref C: 2024-12-24T07:30:54Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

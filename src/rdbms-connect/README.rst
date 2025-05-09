@@ -15,10 +15,28 @@ To install the extension separately can run:
 Then can run connect commands:
 
 ::
-    az postgres flexible-server connect -n testServer -u username -p password --postgres-query "select * from pg_user;" --output table
+    az postgres flexible-server connect -n testServer -u username -p password
 
 ::
-    az mysql flexible-server connect -n testServer -u username -p password --mysql-query "select host, user from mysql.user;" --output table
+    az mysql flexible-server connect -n testServer -u username -p password
+
+::
+    az postgres flexible-server connect -n testServer -u username --interactive
+
+::
+    az mysql flexible-server connect -n testServer -u username --interactive
+
+::
+    az postgres flexible-server execute -n testServer -u username -p password --querytext "select * from pg_user;" --output table
+
+::
+    az mysql flexible-server execute -n testServer -u username -p password --querytext "select host, user from mysql.user;" --output table
+
+::
+    az postgres flexible-server execute -n testServer -u username -p password --file-path "./test.sql"
+
+::
+    az mysql flexible-server execute -n testServer -u username -p password --file-path "./test.sql"
 
 --------
 Switches
@@ -38,5 +56,8 @@ The login password of the administrator.
 **--database-name -d**
 (Optional) The name of the database.  Uses default database if no value provided. 
 
-**--postgres-query / --mysql-query -c**
-(Optional) A query to run against the flexible server. 
+**--querytext -q**
+A query to run against the flexible server. 
+
+**--file-path -f**
+A sql file to run against the flexible server. 

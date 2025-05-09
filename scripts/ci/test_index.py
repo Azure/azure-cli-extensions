@@ -9,17 +9,27 @@
 
 from __future__ import print_function
 
-import os
+import glob
+import hashlib
 import json
+import logging
+import os
+import shutil
 import tempfile
 import unittest
-import hashlib
-import shutil
 
 from packaging import version
+from util import SRC_PATH
 from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 
 def get_sha256sum(a_file):
@@ -27,6 +37,19 @@ def get_sha256sum(a_file):
     with open(a_file, 'rb') as f:
         sha256.update(f.read())
     return sha256.hexdigest()
+
+
+def check_min_version(extension_name, metadata):
+    if 'azext.minCliCoreVersion' not in metadata:
+        try:
+            azext_metadata = glob.glob(os.path.join(SRC_PATH, extension_name, 'azext_*', 'azext_metadata.json'))[0]
+            with open(azext_metadata, 'r') as f:
+                metadata = json.load(f)
+                if not metadata.get('azext.minCliCoreVersion'):
+                    raise AssertionError(f'{extension_name} can not get azext.minCliCoreVersion')
+        except Exception as e:
+            logger.error(f'{extension_name} can not get azext.minCliCoreVersion: {e}')
+            raise e
 
 
 class TestIndex(unittest.TestCase):
@@ -62,6 +85,8 @@ class TestIndex(unittest.TestCase):
                                  "Extension name mismatch in extensions['{}']. "
                                  "Found an extension in the list with name "
                                  "{}".format(ext_name, item['metadata']['name']))
+                # Due to https://github.com/pypa/wheel/issues/235 we prevent whls built with 0.31.0 or greater.
+                # 0.29.0, 0.30.0 are the two previous versions before that release.
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
                 self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))
@@ -158,7 +183,8 @@ class TestIndex(unittest.TestCase):
                     raise ex
 
             try:
-                self.assertIn('azext.minCliCoreVersion', metadata)  # check key properties exists
+                # check key properties exists
+                check_min_version(ext_name, metadata)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]

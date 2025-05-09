@@ -1,0 +1,2240 @@
+interactions:
+- request:
+    body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
+      "P1M", "billingScopeId": "/subscriptions/00000000-0000-0000-0000-000000000000",
+      "displayName": "TestNameRo", "quantity": 1, "renew": false, "reservedResourceType":
+      "VirtualMachines", "term": "P1Y"}, "sku": {"name": "Standard_B1ls"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '315'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/reservationOrderAliases/TestNameRo?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.BillingBenefits/reservationOrderAliases/TestNameRo","name":"TestNameRo","type":"Microsoft.BillingBenefits/reservationOrderAliases","location":"westus","sku":{"name":"Standard_B1ls"},"properties":{"reservationOrderId":"/providers/Microsoft.Capacity/reservationOrders/e7a365b2-c155-44df-8286-90dca1d5dca7","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","appliedScopeProperties":null,"quantity":1,"renew":false,"billingPlan":"P1M","reservedResourceProperties":null,"reservedResourceType":"VirtualMachines","reviewDateTime":null,"appliedScopeType":"Shared","displayName":"TestNameRo","provisioningState":"Created","term":"P1Y"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '676'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:07:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:07:44
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:00
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:06
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:11
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:17
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:22
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:27
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:33
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:38
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Pending"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:44
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:49
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:08:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:08:55
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:00
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:06
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:11
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:17
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:22
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:28
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:33
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:39
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:44
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:49
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:09:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:09:55
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:00
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:06
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:11
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:17 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:17
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:22
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:28
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:33 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:33
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:39
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:44
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:50
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:10:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:10:55
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:11:01
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:11:06
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:11:12
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"PendingPurchases"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:11:17
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/operationResults/2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","name":"2b7d148a-e3f8-40b7-b32f-0e26ad6ea277","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '159'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-test:
+      - '{"contact":"chchen3","scenarios":"recpur","retention":"3/16/2023 3:11:23
+        AM"}'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name --location --applied-scope-type --billing-plan
+        --billing-scope-id --display-name --quantity --renew --reserved-resource-type
+        --sku --term
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/reservationOrderAliases/TestNameRo?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.BillingBenefits/reservationOrderAliases/TestNameRo","name":"TestNameRo","type":"Microsoft.BillingBenefits/reservationOrderAliases","location":"westus","sku":{"name":"Standard_B1ls"},"properties":{"reservationOrderId":"/providers/Microsoft.Capacity/reservationOrders/e7a365b2-c155-44df-8286-90dca1d5dca7","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","appliedScopeProperties":null,"quantity":1,"renew":false,"billingPlan":"P1M","reservedResourceProperties":null,"reservedResourceType":"VirtualMachines","reviewDateTime":null,"appliedScopeType":"Shared","displayName":"TestNameRo","provisioningState":"Created","term":"P1Y"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '676'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits reservation-order-aliases show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-alias-name
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/reservationOrderAliases/TestNameRo?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.BillingBenefits/reservationOrderAliases/TestNameRo","name":"TestNameRo","type":"Microsoft.BillingBenefits/reservationOrderAliases","location":"westus","sku":{"name":"Standard_B1ls"},"properties":{"reservationOrderId":"/providers/Microsoft.Capacity/reservationOrders/e7a365b2-c155-44df-8286-90dca1d5dca7","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","appliedScopeProperties":null,"quantity":1,"renew":false,"billingPlan":"P1M","reservedResourceProperties":null,"reservedResourceType":"VirtualMachines","reviewDateTime":null,"appliedScopeType":"Shared","displayName":"TestNameRo","provisioningState":"Created","term":"P1Y"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '676'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:11:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,402 @@
+interactions:
+- request:
+    body: '{"location": "westus2", "properties": {"companyDetails": {"companyName":
+      "Microsoft", "country": "India", "domain": "", "numberOfEmployees": 0, "officeAddress":
+      "sbttzwyajgdbsvipuiclbzvkcvwyil"}, "informaticaProperties": {"informaticaRegion":
+      "US West1", "organizationId": "wtdmhlwhkvgqdumaehgfgiqcxgnqpx", "organizationName":
+      "InformaticaDemo"}, "linkOrganization": {"token": ""}, "marketplaceDetails":
+      {"marketplaceSubscriptionId": "c948d31a-c011-4b16-ce29-688c1565fc06", "offerDetails":
+      {"offerId": "azurenativeinfaservces", "planId": "privatepreview-plan-cdi-free_00",
+      "planName": "CDI Free - Private Preview", "publisherId": "informatica", "termId":
+      "o73usof6rkyy", "termUnit": "P1Y"}}, "userDetails": {"emailAddress": "Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com",
+      "firstName": "Test", "lastName": "Infa", "phoneNumber": "9876543210", "upn":
+      "Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '914'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --org-name --subscription --location --company-details --marketplace-details
+        --user-details --informatica-properties --link-organization
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3?api-version=2024-05-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3","name":"InformaticaResourceCLIExtTest3","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:56:54.8912429Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T10:56:54.8912429Z"},"properties":{"provisioningState":"Accepted","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1","singleSignOnUrl":null},"marketplaceDetails":{"marketplaceSubscriptionId":"c948d31a-c011-4b16-ce29-688c1565fc06","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","business":null,"numberOfEmployees":0},"linkOrganization":{"token":""}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Informatica.DataManagement/locations/WESTUS2/operationStatuses/5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C?api-version=2024-05-08&t=638562922201413149&c=MIIHpTCCBo2gAwIBAgITOgM-Xr7vUGLrtCNEEQAEAz5evjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI5MDUzNDMyWhcNMjUwNjI0MDUzNDMyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmDoZNRarD69yF7-FrTNqhZMrg_LtUXsSarZYbS1Nts5viCi1bbwjnwbLtaN5fKJ0WI64RS_9tOrW30Y-WtNPOwCGypFKWhfM4EjuZp9xvp5dDOHTXdxZwRoaE6a3NsVOlpVVuMQtK-BxcKwLk6NJELyySTm1RZSeFU-DAPvCOiRGY5HLjLoBHC9moCVdkYhGsTzH_r0NG9YpbldMLt78e9N_WYKM98OjK_BGlIuDfNJUfb14bZTzq6shDUMuMgW25CS2h9Ze9ZGwhmTtjrnQ0btB2r3HNvbEI7sT7KD9Ur2XZ5qmZCR2CerEmuUMOnyWURI2wycwOtCa3_xSZOC_UCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRKguACWM5eVpynE6DYpRKTxtghuTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAIZ-x5pS_A-GyLPIlScNWKEUUDfNVKsguZfLLcTBAoyCsxJvuF5DJFqwOkoncLBa45thVWDfMx1stkq2jVI3CG5y5hg88wErOBVf0JhGhmjncxSs2glRn6ru0PtWX9D-vfGDlC1_Mhq5n9OxRWTD-bF7TKXm8kHHfbLaz4_sXF8lgk6Sz3GzL2Kg8fnMSdK7sR0kdX2ljxCU-cicNpWIukfPmDCInte1RVgX8OrcIrA4hQYwuPzIAXw4pds6mWqkmWNmb2F72ux_iLG1hLiDCpRKW5DQRkn6DPDwfSipvJnlXXH7ywgzUcWY9qWTQvmTw_e4ZH-39ZufVm3rQHsJhj8&s=IjWvCTu8-n5EKQ_oun44N98gPu-k42agZ5EQWLdTN7vEmnG0SNjT_yeYkRenRMya-nt0cyLQuT_2eVkIuX5samKSvidh1Nc7rRg3l_0jKz9ZfSzLAr8dCd6HP5ynjIa4szwUQiw_KUPehK5xMp5legPJEMKUcZ43VKmCPEbQU8ly__dBIP86beqF-zFtdmIRLdHCpBhOqltFQbIFfnXaOHDNy1wAZfrvg7TcE_3xp5EWIZU0brFzrPjFaA2MkjbyLmEAEXKbcmoQNatO2d3SrjKAoo13EqrRG53Tsiu9oerhOMeGNXtIWpVGyZBas_T9990jiLtXI8xkH85rzTLiNg&h=SnjgzuESeksyQ6U4LIb0EvHkIaJF-_joLCiwUCAnZnU
+      cache-control:
+      - no-cache
+      content-length:
+      - '1492'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2024 10:56:59 GMT
+      etag:
+      - '"7800ee5e-0000-0800-0000-668fba7b0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Informatica.DataManagement/locations/WESTUS2/operationStatuses/5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C?api-version=2024-05-08&t=638562922201413149&c=MIIHpTCCBo2gAwIBAgITOgM-Xr7vUGLrtCNEEQAEAz5evjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI5MDUzNDMyWhcNMjUwNjI0MDUzNDMyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmDoZNRarD69yF7-FrTNqhZMrg_LtUXsSarZYbS1Nts5viCi1bbwjnwbLtaN5fKJ0WI64RS_9tOrW30Y-WtNPOwCGypFKWhfM4EjuZp9xvp5dDOHTXdxZwRoaE6a3NsVOlpVVuMQtK-BxcKwLk6NJELyySTm1RZSeFU-DAPvCOiRGY5HLjLoBHC9moCVdkYhGsTzH_r0NG9YpbldMLt78e9N_WYKM98OjK_BGlIuDfNJUfb14bZTzq6shDUMuMgW25CS2h9Ze9ZGwhmTtjrnQ0btB2r3HNvbEI7sT7KD9Ur2XZ5qmZCR2CerEmuUMOnyWURI2wycwOtCa3_xSZOC_UCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRKguACWM5eVpynE6DYpRKTxtghuTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAIZ-x5pS_A-GyLPIlScNWKEUUDfNVKsguZfLLcTBAoyCsxJvuF5DJFqwOkoncLBa45thVWDfMx1stkq2jVI3CG5y5hg88wErOBVf0JhGhmjncxSs2glRn6ru0PtWX9D-vfGDlC1_Mhq5n9OxRWTD-bF7TKXm8kHHfbLaz4_sXF8lgk6Sz3GzL2Kg8fnMSdK7sR0kdX2ljxCU-cicNpWIukfPmDCInte1RVgX8OrcIrA4hQYwuPzIAXw4pds6mWqkmWNmb2F72ux_iLG1hLiDCpRKW5DQRkn6DPDwfSipvJnlXXH7ywgzUcWY9qWTQvmTw_e4ZH-39ZufVm3rQHsJhj8&s=IjWvCTu8-n5EKQ_oun44N98gPu-k42agZ5EQWLdTN7vEmnG0SNjT_yeYkRenRMya-nt0cyLQuT_2eVkIuX5samKSvidh1Nc7rRg3l_0jKz9ZfSzLAr8dCd6HP5ynjIa4szwUQiw_KUPehK5xMp5legPJEMKUcZ43VKmCPEbQU8ly__dBIP86beqF-zFtdmIRLdHCpBhOqltFQbIFfnXaOHDNy1wAZfrvg7TcE_3xp5EWIZU0brFzrPjFaA2MkjbyLmEAEXKbcmoQNatO2d3SrjKAoo13EqrRG53Tsiu9oerhOMeGNXtIWpVGyZBas_T9990jiLtXI8xkH85rzTLiNg&h=SnjgzuESeksyQ6U4LIb0EvHkIaJF-_joLCiwUCAnZnU
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:cef024ed-c0c6-4fad-8089-827e300b1364
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 4999C1B73E69405789E9F09BF5CDE61B Ref B: MAA201060513033 Ref C: 2024-07-11T10:56:52Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --org-name --subscription --location --company-details --marketplace-details
+        --user-details --informatica-properties --link-organization
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Informatica.DataManagement/locations/WESTUS2/operationStatuses/5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C?api-version=2024-05-08&t=638562922201413149&c=MIIHpTCCBo2gAwIBAgITOgM-Xr7vUGLrtCNEEQAEAz5evjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI5MDUzNDMyWhcNMjUwNjI0MDUzNDMyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmDoZNRarD69yF7-FrTNqhZMrg_LtUXsSarZYbS1Nts5viCi1bbwjnwbLtaN5fKJ0WI64RS_9tOrW30Y-WtNPOwCGypFKWhfM4EjuZp9xvp5dDOHTXdxZwRoaE6a3NsVOlpVVuMQtK-BxcKwLk6NJELyySTm1RZSeFU-DAPvCOiRGY5HLjLoBHC9moCVdkYhGsTzH_r0NG9YpbldMLt78e9N_WYKM98OjK_BGlIuDfNJUfb14bZTzq6shDUMuMgW25CS2h9Ze9ZGwhmTtjrnQ0btB2r3HNvbEI7sT7KD9Ur2XZ5qmZCR2CerEmuUMOnyWURI2wycwOtCa3_xSZOC_UCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRKguACWM5eVpynE6DYpRKTxtghuTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAIZ-x5pS_A-GyLPIlScNWKEUUDfNVKsguZfLLcTBAoyCsxJvuF5DJFqwOkoncLBa45thVWDfMx1stkq2jVI3CG5y5hg88wErOBVf0JhGhmjncxSs2glRn6ru0PtWX9D-vfGDlC1_Mhq5n9OxRWTD-bF7TKXm8kHHfbLaz4_sXF8lgk6Sz3GzL2Kg8fnMSdK7sR0kdX2ljxCU-cicNpWIukfPmDCInte1RVgX8OrcIrA4hQYwuPzIAXw4pds6mWqkmWNmb2F72ux_iLG1hLiDCpRKW5DQRkn6DPDwfSipvJnlXXH7ywgzUcWY9qWTQvmTw_e4ZH-39ZufVm3rQHsJhj8&s=IjWvCTu8-n5EKQ_oun44N98gPu-k42agZ5EQWLdTN7vEmnG0SNjT_yeYkRenRMya-nt0cyLQuT_2eVkIuX5samKSvidh1Nc7rRg3l_0jKz9ZfSzLAr8dCd6HP5ynjIa4szwUQiw_KUPehK5xMp5legPJEMKUcZ43VKmCPEbQU8ly__dBIP86beqF-zFtdmIRLdHCpBhOqltFQbIFfnXaOHDNy1wAZfrvg7TcE_3xp5EWIZU0brFzrPjFaA2MkjbyLmEAEXKbcmoQNatO2d3SrjKAoo13EqrRG53Tsiu9oerhOMeGNXtIWpVGyZBas_T9990jiLtXI8xkH85rzTLiNg&h=SnjgzuESeksyQ6U4LIb0EvHkIaJF-_joLCiwUCAnZnU
+  response:
+    body:
+      string: '{"id":"/providers/Informatica.DataManagement/locations/WESTUS2/operationStatuses/5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C","name":"5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3","status":"Accepted","startTime":"2024-07-11T10:56:59.4369022Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '538'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2024 10:56:59 GMT
+      etag:
+      - '"f508c1a7-0000-0800-0000-668fba7b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1FA191308C5C4502841D9570AF5B4680 Ref B: MAA201060513033 Ref C: 2024-07-11T10:57:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --org-name --subscription --location --company-details --marketplace-details
+        --user-details --informatica-properties --link-organization
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Informatica.DataManagement/locations/WESTUS2/operationStatuses/5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C?api-version=2024-05-08&t=638562922201413149&c=MIIHpTCCBo2gAwIBAgITOgM-Xr7vUGLrtCNEEQAEAz5evjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNjI5MDUzNDMyWhcNMjUwNjI0MDUzNDMyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmDoZNRarD69yF7-FrTNqhZMrg_LtUXsSarZYbS1Nts5viCi1bbwjnwbLtaN5fKJ0WI64RS_9tOrW30Y-WtNPOwCGypFKWhfM4EjuZp9xvp5dDOHTXdxZwRoaE6a3NsVOlpVVuMQtK-BxcKwLk6NJELyySTm1RZSeFU-DAPvCOiRGY5HLjLoBHC9moCVdkYhGsTzH_r0NG9YpbldMLt78e9N_WYKM98OjK_BGlIuDfNJUfb14bZTzq6shDUMuMgW25CS2h9Ze9ZGwhmTtjrnQ0btB2r3HNvbEI7sT7KD9Ur2XZ5qmZCR2CerEmuUMOnyWURI2wycwOtCa3_xSZOC_UCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRKguACWM5eVpynE6DYpRKTxtghuTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAIZ-x5pS_A-GyLPIlScNWKEUUDfNVKsguZfLLcTBAoyCsxJvuF5DJFqwOkoncLBa45thVWDfMx1stkq2jVI3CG5y5hg88wErOBVf0JhGhmjncxSs2glRn6ru0PtWX9D-vfGDlC1_Mhq5n9OxRWTD-bF7TKXm8kHHfbLaz4_sXF8lgk6Sz3GzL2Kg8fnMSdK7sR0kdX2ljxCU-cicNpWIukfPmDCInte1RVgX8OrcIrA4hQYwuPzIAXw4pds6mWqkmWNmb2F72ux_iLG1hLiDCpRKW5DQRkn6DPDwfSipvJnlXXH7ywgzUcWY9qWTQvmTw_e4ZH-39ZufVm3rQHsJhj8&s=IjWvCTu8-n5EKQ_oun44N98gPu-k42agZ5EQWLdTN7vEmnG0SNjT_yeYkRenRMya-nt0cyLQuT_2eVkIuX5samKSvidh1Nc7rRg3l_0jKz9ZfSzLAr8dCd6HP5ynjIa4szwUQiw_KUPehK5xMp5legPJEMKUcZ43VKmCPEbQU8ly__dBIP86beqF-zFtdmIRLdHCpBhOqltFQbIFfnXaOHDNy1wAZfrvg7TcE_3xp5EWIZU0brFzrPjFaA2MkjbyLmEAEXKbcmoQNatO2d3SrjKAoo13EqrRG53Tsiu9oerhOMeGNXtIWpVGyZBas_T9990jiLtXI8xkH85rzTLiNg&h=SnjgzuESeksyQ6U4LIb0EvHkIaJF-_joLCiwUCAnZnU
+  response:
+    body:
+      string: '{"id":"/providers/Informatica.DataManagement/locations/WESTUS2/operationStatuses/5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C","name":"5f3615c6-eca3-4d65-a3b3-cb16cca17bce*2EDE38D77C950DCA6384A319172D2DED365E40B0E009D33D4117DEE04656DC6C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3","status":"Succeeded","startTime":"2024-07-11T10:56:59.4369022Z","endTime":"2024-07-11T10:57:27.3684744Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '609'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2024 10:57:30 GMT
+      etag:
+      - '"f508f1ab-0000-0800-0000-668fba970000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 25492AFF702646F88FEC065B76315707 Ref B: MAA201060513033 Ref C: 2024-07-11T10:57:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --org-name --subscription --location --company-details --marketplace-details
+        --user-details --informatica-properties --link-organization
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3?api-version=2024-05-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3","name":"InformaticaResourceCLIExtTest3","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:56:54.8912429Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T10:57:27.46317Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"504df80f-358e-4e71-8955-aa5928f05c94","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2024 10:57:30 GMT
+      etag:
+      - '"7800b161-0000-0800-0000-668fba970000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:cef024ed-c0c6-4fad-8089-827e300b1364
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 58665F892B7B412E81CBF4AD5D1A1749 Ref B: MAA201060513033 Ref C: 2024-07-11T10:57:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations?api-version=2024-05-08
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI","name":"InformaticaTestResourceCLI","type":"informatica.datamanagement/organizations","location":"westus2","tags":{},"systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T06:38:18.3934633Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T06:39:03.0205732Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"bc79d954-8e54-42a8-827b-ea6f1fe62c8c","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","country":"India","domain":"","business":"","numberOfEmployees":0},"linkOrganization":{}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI2","name":"InformaticaTestResourceCLI2","type":"informatica.datamanagement/organizations","location":"westus2","tags":{"key8430":"cagshqtjlxtqqhdwtchokvxszybp"},"systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T06:43:39.3760222Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T06:43:39.3760222Z"},"properties":{"provisioningState":"Accepted","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"zfqodqpbeflhedypiijdkc"},"marketplaceDetails":{"marketplaceSubscriptionId":"8dd32b02-e77a-44a1-bcc5-169f6758458a","offerDetails":{"publisherId":"informatica","offerId":"prod-idmc_as_azure_native_isv_service","planId":"prod-private_priview_plan_cdi_free","planName":"Pay
+        as you go","termUnit":"P1Y","termId":"zwuaefo5ywwo"}},"userDetails":{"firstName":"Test","lastName":"Test","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Test","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":"jjfouhoqpumjvrdsfbimgcy"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI3","name":"InformaticaTestResourceCLI3","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T06:50:42.1532692Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T06:50:42.1532692Z"},"properties":{"provisioningState":"Accepted","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"zfqodqpbeflhedypiijdkc"},"marketplaceDetails":{"marketplaceSubscriptionId":"ee5aee76-8385-4918-92fa-34bd0addca28","offerDetails":{"publisherId":"informatica","offerId":"prod-idmc_as_azure_native_isv_service","planId":"prod-private_priview_plan_cdi_free","planName":"Pay
+        as you go","termUnit":"P1Y","termId":"zwuaefo5ywwo"}},"userDetails":{"firstName":"Test","lastName":"Test","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Test","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":"jjfouhoqpumjvrdsfbimgcy"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI4","name":"InformaticaTestResourceCLI4","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T06:59:04.9103319Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T06:59:04.9103319Z"},"properties":{"provisioningState":"Accepted","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"5147a5e2-79d3-41bf-8f69-7d04bd2f1ae6","offerDetails":{"publisherId":"informatica","offerId":"prod-idmc_as_azure_native_isv_service","planId":"prod-private_priview_plan_cdi_free","planName":"Pay
+        as you go","termUnit":"P1Y","termId":"zwuaefo5ywwo"}},"userDetails":{"firstName":"Test","lastName":"Test","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Test","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":"jjfouhoqpumjvrdsfbimgcy"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI5","name":"InformaticaTestResourceCLI5","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T07:09:09.2063235Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T07:09:09.2063235Z"},"properties":{"provisioningState":"Accepted","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"cafaee66-4358-493a-a16e-0808b7916bb7","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":"jjfouhoqpumjvrdsfbimgcy"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI6","name":"InformaticaTestResourceCLI6","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T07:12:00.4257415Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T07:12:00.4257415Z"},"properties":{"provisioningState":"Accepted","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"5850afda-cd88-4849-98fc-d3e784be82a2","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":"jjfouhoqpumjvrdsfbimgcy"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI7","name":"InformaticaTestResourceCLI7","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T08:14:40.0119336Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T08:15:38.8577597Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"fda33919-ebc5-442e-b2ac-7ca35e0bf79d","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI8","name":"InformaticaTestResourceCLI8","type":"informatica.datamanagement/organizations","location":"westus2","tags":{"abc":"abc"},"systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T08:16:38.5268057Z","lastModifiedBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-11T09:42:01.2221859Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"2580f3b0-3beb-430b-9499-ea73a87e9a97","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI9","name":"InformaticaTestResourceCLI9","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T08:18:46.6162862Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T08:19:10.4756403Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"dc38acd2-7469-46ed-a170-9c8a102ee952","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI10","name":"InformaticaTestResourceCLI10","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T08:59:43.3211077Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T09:00:11.6827471Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"8d7eceab-1e83-4be1-9bc7-7771e5f19b13","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLI11","name":"InformaticaTestResourceCLI11","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T09:15:25.6434683Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T09:15:53.0294636Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"95f721bf-1b8e-47ff-8358-e2d0a319429b","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaTestResourceCLIExt","name":"InformaticaTestResourceCLIExt","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:08:34.8098346Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T10:09:09.0592449Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"d881fc62-924c-4533-ae99-5c107afc60ad","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest","name":"InformaticaResourceCLIExtTest","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:10:42.6565059Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T10:11:13.4870209Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"5ca7fea3-f9b0-4502-8622-178a07ab2a55","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest1","name":"InformaticaResourceCLIExtTest1","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:52:23.1315129Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T10:52:56.5170864Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"947d2444-7da1-4de4-ad4c-f8bd1982184c","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3","name":"InformaticaResourceCLIExtTest3","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:56:54.8912429Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T10:57:27.46317Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"504df80f-358e-4e71-8955-aa5928f05c94","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21772'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2024 10:57:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 5BE45A380B1349EFBB39B63958312EC7 Ref B: MAA201060513053 Ref C: 2024-07-11T10:57:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subscription
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3?api-version=2024-05-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaResourceCLIExtTest3","name":"InformaticaResourceCLIExtTest3","type":"informatica.datamanagement/organizations","location":"westus2","systemData":{"createdBy":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","createdByType":"User","createdAt":"2024-07-11T10:56:54.8912429Z","lastModifiedBy":"1907c93c-5795-4a9c-8ad3-7798b1d72580","lastModifiedByType":"Application","lastModifiedAt":"2024-07-11T10:57:27.46317Z"},"properties":{"provisioningState":"Succeeded","informaticaProperties":{"organizationId":"wtdmhlwhkvgqdumaehgfgiqcxgnqpx","organizationName":"InformaticaDemo","informaticaRegion":"US
+        West1"},"marketplaceDetails":{"marketplaceSubscriptionId":"504df80f-358e-4e71-8955-aa5928f05c94","offerDetails":{"publisherId":"informatica","offerId":"azurenativeinfaservces","planId":"privatepreview-plan-cdi-free_00","planName":"CDI
+        Free - Private Preview","termUnit":"P1Y","termId":"o73usof6rkyy"}},"userDetails":{"firstName":"Test","lastName":"Infa","emailAddress":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","upn":"Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com","phoneNumber":"9876543210"},"companyDetails":{"companyName":"Microsoft","officeAddress":"sbttzwyajgdbsvipuiclbzvkcvwyil","country":"India","domain":"","numberOfEmployees":0},"linkOrganization":{"token":""}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2024 10:57:33 GMT
+      etag:
+      - '"7800b161-0000-0800-0000-668fba970000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:cef024ed-c0c6-4fad-8089-827e300b1364
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9930C6C67E36485C86261ECF9F489EEC Ref B: MAA201060514019 Ref C: 2024-07-11T10:57:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - informatica data-management organization delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --subscription --yes
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/InformaticaDemo/providers/Informatica.DataManagement/organizations/InformaticaDemo?api-version=2024-05-08
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Thu, 11 Jul 2024 10:57:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 44951334A8884B58A6441A697612259B Ref B: MAA201060513049 Ref C: 2024-07-11T10:57:34Z'
+    status:
+      code: 204
+      message: No Content
+version: 1

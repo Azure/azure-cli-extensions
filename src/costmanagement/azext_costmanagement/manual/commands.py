@@ -8,14 +8,6 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_costmanagement.generated._client_factory import cf_query
-    costmanagement_query = CliCommandType(
-        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations.'
-                        '_query_operations#QueryOperations.{}',
-        client_factory=cf_query)
-    with self.command_group('costmanagement', costmanagement_query, client_factory=cf_query) as g:
-        g.custom_command('query', 'costmanagement_query')
-
     from azext_costmanagement.generated._client_factory import cf_export
     costmanagement_export = CliCommandType(
         operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._export_operations#ExportOperatio'

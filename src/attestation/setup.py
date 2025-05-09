@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
-try:
-    from azext_attestation.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '1.0.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,7 +27,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'pyjwt==1.7.1'
+    'pyjwt~=2.4.0'
 ]
 
 try:
@@ -50,7 +46,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AttestationManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/attestation',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/attestation',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

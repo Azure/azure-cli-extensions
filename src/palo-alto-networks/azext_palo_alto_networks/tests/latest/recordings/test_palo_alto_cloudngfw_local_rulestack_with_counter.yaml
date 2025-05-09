@@ -1,0 +1,158 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule show-counter
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --priority
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/getCounters?api-version=2022-08-29
+  response:
+    body:
+      string: '{"priority":"1000000","ruleStackName":"fw0718-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule","hitCount":0,"timestamp":"2023-07-28T02:49:24.038509+00:00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '175'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 28 Jul 2023 02:49:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 802be47b-3fe6-41d1-9b32-877e1c468f26
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule refresh-counter
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --priority
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/refreshCounters?api-version=2022-08-29
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 28 Jul 2023 02:49:36 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fef25fc4-3623-45e6-b744-18e61839f1f9
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule reset-counter
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --priority
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/resetCounters?api-version=2022-08-29
+  response:
+    body:
+      string: '{"priority":"1000000","ruleStackName":"fw0718-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '115'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 28 Jul 2023 02:49:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c4bae129-d11b-4888-8dcf-64f61bfa4e45
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+version: 1

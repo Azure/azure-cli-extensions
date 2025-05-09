@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance update-msi-permissions
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance --datasource-type --permissions-scope --operation
+        --yes
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete?api-version=2024-04-01
+  response:
+    body:
+      string: '{"location":"eastus2euap","tags":{"Purpose":"CLI Testing","Owner":"zubairabid"},"identity":{"type":"SystemAssigned","principalId":"b5446d17-52af-4d16-956d-9b1156eaf2f9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"OFF","retentionDurationInDays":14.0},"immutabilitySettings":{"state":"Disabled"}},"featureSettings":{"crossSubscriptionRestoreSettings":{"state":"Enabled"}},"secureScore":"None","bcdrSecurityLevel":"Poor","replicatedRegions":[]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-ecy-donotdelete","name":"clitest-bkp-vault-ecy-donotdelete","type":"Microsoft.DataProtection/backupVaults"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '928'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Mar 2025 09:22:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-msedge-ref:
+      - 'Ref A: 9CB852BD68114E8492EDD6A7178F21E3 Ref B: MAA201060516029 Ref C: 2025-03-11T09:22:50Z'
+    status:
+      code: 200
+      message: OK
+version: 1

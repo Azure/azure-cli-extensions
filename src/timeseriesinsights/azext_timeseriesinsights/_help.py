@@ -7,20 +7,9 @@
 
 from knack.help_files import helps
 
-helps['tsi'] = """
-    type: group
-    short-summary: Manage Azure Time Series Insights.
-"""
-
-helps['tsi environment'] = """
-    type: group
-    short-summary: Manage environment with Azure Time Series Insights.
-"""
-
 helps['tsi environment list'] = """
     type: command
-    short-summary: "List all the available environments associated with the subscription and within the specified \
-    resource group."
+    short-summary: "List all the available environments associated with the subscription and within the specified resource group."
     examples:
       - name: EnvironmentsByResourceGroup
         text: |-
@@ -28,15 +17,6 @@ helps['tsi environment list'] = """
       - name: EnvironmentsBySubscription
         text: |-
                az tsi environment list
-"""
-
-helps['tsi environment show'] = """
-    type: command
-    short-summary: "Show the environment with the specified name in the specified subscription and resource group."
-    examples:
-      - name: EnvironmentsGet
-        text: |-
-               az tsi environment show --name "env1" --resource-group "rg1"
 """
 
 helps['tsi environment gen1'] = """
@@ -173,29 +153,6 @@ available for query from the warm store.
                --storage-configuration account-name=your-account-name management-key=your-account-key
 """
 
-helps['tsi environment delete'] = """
-    type: command
-    short-summary: "Delete the environment with the specified name in the specified subscription and resource group."
-    examples:
-      - name: EnvironmentsDelete
-        text: |-
-               az tsi environment delete --name "env1" --resource-group "rg1"
-"""
-
-helps['tsi environment wait'] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the timeseriesinsights environment is met.
-    examples:
-      - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
-created.
-        text: |-
-               az tsi environment wait --name "env1" --resource-group "rg1" --created
-      - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
-updated.
-        text: |-
-               az tsi environment wait --name "env1" --resource-group "rg1" --updated
-"""
-
 helps['tsi event-source'] = """
     type: group
     short-summary: Manage event source with timeseriesinsights
@@ -283,11 +240,6 @@ and environment."
                az tsi event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
 """
 
-helps['tsi reference-data-set'] = """
-    type: group
-    short-summary: Manage reference data set with timeseriesinsights
-"""
-
 helps['tsi reference-data-set list'] = """
     type: command
     short-summary: "List all the available reference data sets associated with the subscription and within the \
@@ -296,16 +248,6 @@ specified resource group and environment."
       - name: ReferenceDataSetsListByEnvironment
         text: |-
                az tsi reference-data-set list --environment-name "env1" --resource-group "rg1"
-"""
-
-helps['tsi reference-data-set show'] = """
-    type: command
-    short-summary: "Show the reference data set with the specified name in the specified environment."
-    examples:
-      - name: ReferenceDataSetsGet
-        text: |-
-               az tsi reference-data-set show --environment-name "env1" --name "rds1" --resource-group \
-"rg1"
 """
 
 helps['tsi reference-data-set create'] = """
@@ -327,82 +269,4 @@ helps['tsi reference-data-set create'] = """
                az tsi reference-data-set create --environment-name "env1" --location westus \
 --key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
 --resource-group "rg1"
-"""
-
-helps['tsi reference-data-set update'] = """
-    type: command
-    short-summary: "Update the reference data set."
-    examples:
-      - name: ReferenceDataSetsUpdate
-        text: |-
-               az tsi reference-data-set update --environment-name "env1" --name "rds1" --tags \
-someKey="someValue" --resource-group "rg1"
-"""
-
-helps['tsi reference-data-set delete'] = """
-    type: command
-    short-summary: "Delete the reference data set."
-    examples:
-      - name: ReferenceDataSetsDelete
-        text: |-
-               az tsi reference-data-set delete --environment-name "env1" --name "rds1" \
---resource-group "rg1"
-"""
-
-helps['tsi access-policy'] = """
-    type: group
-    short-summary: Manage access policy with timeseriesinsights
-"""
-
-helps['tsi access-policy list'] = """
-    type: command
-    short-summary: "List all the available access policies associated with the environment."
-    examples:
-      - name: AccessPoliciesByEnvironment
-        text: |-
-               az tsi access-policy list --environment-name "env1" --resource-group "rg1"
-"""
-
-helps['tsi access-policy show'] = """
-    type: command
-    short-summary: "Show the access policy with the specified name in the specified environment."
-    examples:
-      - name: AccessPoliciesGet
-        text: |-
-               az tsi access-policy show --name "ap1" --environment-name "env1" --resource-group "rg1"
-"""
-
-helps['tsi access-policy create'] = """
-    type: command
-    short-summary: "Create an access policy in the specified environment."
-    parameters:
-      - name: --principal-object-id
-        populator-commands:
-          - az ad user
-          - az ad sp
-    examples:
-      - name: AccessPoliciesCreate
-        text: |-
-               az tsi access-policy create --name "ap1" --environment-name "env1" --description "some \
-description" --principal-object-id "aGuid" --roles Reader Contributor --resource-group "rg1"
-"""
-
-helps['tsi access-policy update'] = """
-    type: command
-    short-summary: "Update the access policy."
-    examples:
-      - name: AccessPoliciesUpdate
-        text: |-
-               az tsi access-policy update --name "ap1" --roles "Reader" --roles "Contributor" \
---environment-name "env1" --resource-group "rg1"
-"""
-
-helps['tsi access-policy delete'] = """
-    type: command
-    short-summary: "Delete the access policy."
-    examples:
-      - name: AccessPoliciesDelete
-        text: |-
-               az tsi access-policy delete --name "ap1" --environment-name "env1" --resource-group \
-"rg1"
 """

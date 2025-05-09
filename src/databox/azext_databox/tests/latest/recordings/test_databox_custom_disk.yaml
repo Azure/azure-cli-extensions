@@ -1,0 +1,2230 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku --contact-name --phone --email-list --street-address1
+        --city --state-or-province --country --postal-code --company-name --storage-account
+        --resource-group-for-managed-disk --transfer-type --data-box-customer-disk
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001","name":"cli_test_databox000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_databox_custom_disk","date":"2023-05-19T08:55:11Z","module":"databox"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 08:55:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"details": {"contactDetails": {"contactName":
+      "Public SDK Test", "emailList": ["testing@microsoft.com"], "phone": "14258828080"},
+      "dataImportDetails": [{"accountDetails": {"dataAccountType": "StorageAccount",
+      "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}}],
+      "jobDetailsType": "DataBoxCustomerDisk", "keyEncryptionKey": {"kekType": "MicrosoftManaged"},
+      "shippingAddress": {"city": "Redmond", "companyName": "Microsoft", "country":
+      "US", "postalCode": "98052", "stateOrProvince": "WA", "streetAddress1": "1 MICROSOFT
+      WAY"}, "importDiskDetailsCollection": {"CLISERIAL789": {"bitLockerKey": "xxx",
+      "manifestFile": "SampleManifest.xml", "manifestHash": "xxxx"}}, "returnToCustomerPackageDetails":
+      {"carrierAccountNumber": "0000", "carrierName": "carrier1"}}, "transferType":
+      "ImportToAzure"}, "sku": {"name": "DataBoxCustomerDisk"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '990'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --sku --contact-name --phone --email-list --street-address1
+        --city --state-or-province --country --postal-code --company-name --storage-account
+        --resource-group-for-managed-disk --transfer-type --data-box-customer-disk
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000003?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:55:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku --contact-name --phone --email-list --street-address1
+        --city --state-or-province --country --postal-code --company-name --storage-account
+        --resource-group-for-managed-disk --transfer-type --data-box-customer-disk
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:55:46 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku --contact-name --phone --email-list --street-address1
+        --city --state-or-province --country --postal-code --company-name --storage-account
+        --resource-group-for-managed-disk --transfer-type --data-box-customer-disk
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:55:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000003?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku --contact-name --phone --email-list --street-address1
+        --city --state-or-province --country --postal-code --company-name --storage-account
+        --resource-group-for-managed-disk --transfer-type --data-box-customer-disk
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000003?api-version=2022-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"transferType\": \"ImportToAzure\"\
+        ,\r\n    \"isCancellable\": true,\r\n    \"isDeletable\": false,\r\n    \"\
+        isShippingAddressEditable\": true,\r\n    \"reverseShippingDetailsUpdate\"\
+        : \"NotSupported\",\r\n    \"reverseTransportPreferenceUpdate\": \"NotSupported\"\
+        ,\r\n    \"isPrepareToShipEnabled\": false,\r\n    \"status\": \"Created\"\
+        ,\r\n    \"startTime\": \"2023-05-19T08:55:46.2221278+00:00\",\r\n    \"details\"\
+        : {\r\n      \"importDiskDetailsCollection\": {\r\n        \"CLISERIAL789\"\
+        : {\r\n          \"manifestFile\": \"SampleManifest.xml\",\r\n          \"\
+        manifestHash\": \"xxxx\"\r\n        }\r\n      },\r\n      \"returnToCustomerPackageDetails\"\
+        : {\r\n        \"carrierName\": \"carrier1\"\r\n      },\r\n      \"enableManifestBackup\"\
+        : false,\r\n      \"contactDetails\": {\r\n        \"emailList\": [\r\n  \
+        \        \"testing@microsoft.com\"\r\n        ],\r\n        \"notificationPreference\"\
+        : [\r\n          {\r\n            \"stageName\": \"AtAzureDC\",\r\n      \
+        \      \"sendNotification\": true\r\n          },\r\n          {\r\n     \
+        \       \"stageName\": \"DataCopy\",\r\n            \"sendNotification\":\
+        \ true\r\n          },\r\n          {\r\n            \"stageName\": \"Created\"\
+        ,\r\n            \"sendNotification\": true\r\n          },\r\n          {\r\
+        \n            \"stageName\": \"ShippedToCustomer\",\r\n            \"sendNotification\"\
+        : true\r\n          }\r\n        ],\r\n        \"contactName\": \"Public SDK\
+        \ Test\",\r\n        \"phone\": \"14258828080\"\r\n      },\r\n      \"shippingAddress\"\
+        : {\r\n        \"streetAddress1\": \"1 MICROSOFT WAY\",\r\n        \"city\"\
+        : \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n        \"country\"\
+        : \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\"\
+        : \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n    \
+        \  \"dataImportDetails\": [\r\n        {\r\n          \"logCollectionLevel\"\
+        : \"Error\",\r\n          \"accountDetails\": {\r\n            \"storageAccountId\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\
+        ,\r\n            \"dataAccountType\": \"StorageAccount\"\r\n          }\r\n\
+        \        }\r\n      ],\r\n      \"dataExportDetails\": [],\r\n      \"jobDetailsType\"\
+        : \"DataBoxCustomerDisk\",\r\n      \"preferences\": {\r\n        \"encryptionPreferences\"\
+        : {\r\n          \"doubleEncryption\": \"Disabled\"\r\n        }\r\n     \
+        \ },\r\n      \"reverseShippingDetails\": {},\r\n      \"keyEncryptionKey\"\
+        : {\r\n        \"kekType\": \"MicrosoftManaged\"\r\n      }\r\n    },\r\n\
+        \    \"deliveryType\": \"NonScheduled\",\r\n    \"deliveryInfo\": {\r\n  \
+        \    \"scheduledDateTime\": \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n  \
+        \  \"isCancellableWithoutFee\": true\r\n  },\r\n  \"systemData\": {\r\n  \
+        \  \"createdBy\": \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\"\
+        : \"User\",\r\n    \"createdAt\": \"2023-05-19T08:55:46.1196951+00:00\",\r\
+        \n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n    \"lastModifiedByType\"\
+        : \"User\",\r\n    \"lastModifiedAt\": \"2023-05-19T08:55:46.1196951+00:00\"\
+        \r\n  },\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"sku\": {\r\
+        \n    \"name\": \"DataBoxCustomerDisk\"\r\n  },\r\n  \"identity\": {\r\n \
+        \   \"type\": \"None\"\r\n  },\r\n  \"name\": \"job000003\",\r\n  \"id\":\
+        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000003\"\
+        ,\r\n  \"type\": \"Microsoft.DataBox/jobs\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3143'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 08:56:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"reason": "CancelTest"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job cancel
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '24'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --reason -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000003/cancel?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Fri, 19 May 2023 08:56:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000003?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:56:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:56:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:56:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:56:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:56:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:56:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:57:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:57:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:57:26 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:57:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:57:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:57:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:58:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:58:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:58:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:58:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:58:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:58:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:59:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:59:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:59:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:59:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 08:59:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:00:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:00:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:00:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:00:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:00:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:00:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:01:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:01:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:01:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:01:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:01:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:01:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:02:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:02:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:02:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:02:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:02:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:03:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:03:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/c6522cd7-141b-4b57-90ae-eb8130322926-deleteorder?api-version=2022-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Fri, 19 May 2023 09:03:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - lock delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --resource-name --resource-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/locks?api-version=2016-09-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bez-rg/providers/Microsoft.Authorization/locks/del","type":"Microsoft.Authorization/locks","name":"del"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cloud-shell-storage-southeastasia/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":"contact
+        zhwen"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctestRG-sentinel-221011134813007315/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fypurview/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yantest/providers/Microsoft.Authorization/locks/templock","type":"Microsoft.Authorization/locks","name":"templock"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lightning/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fybot/providers/Microsoft.Authorization/locks/delete-lock","type":"Microsoft.Authorization/locks","name":"delete-lock"},{"properties":{"level":"CanNotDelete","notes":"for
+        Asir"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/emerald-city-bookstore/providers/Microsoft.Authorization/locks/No-DELETE","type":"Microsoft.Authorization/locks","name":"No-DELETE"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/galleryappaccount/providers/Microsoft.Authorization/locks/DoNotDelete","type":"Microsoft.Authorization/locks","name":"DoNotDelete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/queuetest/providers/Microsoft.Storage/storageAccounts/qteststac/providers/Microsoft.Authorization/locks/l","type":"Microsoft.Authorization/locks","name":"l"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.Authorization/locks/test-databricks","type":"Microsoft.Authorization/locks","name":"test-databricks"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hang-rg/providers/Microsoft.Authorization/locks/1","type":"Microsoft.Authorization/locks","name":"1"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hang-rg/providers/Microsoft.Storage/storageAccounts/hangstorage/providers/Microsoft.Authorization/locks/2","type":"Microsoft.Authorization/locks","name":"2"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/IT_acctestRG-ibt-24_acctest-IBT-0710-2_4ebedb5a-e3b1-4675-aa4c-3c160fe70907/providers/Microsoft.Authorization/locks/DoNotDelete","type":"Microsoft.Authorization/locks","name":"DoNotDelete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shiying-rg/providers/Microsoft.Storage/storageAccounts/shiyingsa/providers/Microsoft.Authorization/locks/DoNotDelete","type":"Microsoft.Authorization/locks","name":"DoNotDelete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/shiying-rg/providers/Microsoft.Compute/virtualMachines/shiying-action-test/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jlrgtest1/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testkvv2rg/providers/Microsoft.Authorization/locks/nodelete","type":"Microsoft.Authorization/locks","name":"nodelete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-live-test/providers/Microsoft.Authorization/locks/can
+        not delete","type":"Microsoft.Authorization/locks","name":"can not delete"},{"properties":{"level":"ReadOnly","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Authorization/locks/rg2","type":"Microsoft.Authorization/locks","name":"rg2"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhiyihuang-rg/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/jiasli-azsecpack-testrg/providers/Microsoft.Compute/virtualMachines/jiasli-azsecpack-test/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_shiying-rg_GitHubActionsRunnersK8sCluster_westus/providers/Microsoft.Authorization/locks/DoNotDelete","type":"Microsoft.Authorization/locks","name":"DoNotDelete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-file-handle-rg/providers/Microsoft.Authorization/locks/nodelete","type":"Microsoft.Authorization/locks","name":"nodelete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhiyihuang-rg-euap-east/providers/Microsoft.Authorization/locks/nodelete","type":"Microsoft.Authorization/locks","name":"nodelete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testsanmulticonnect2rg/providers/Microsoft.Compute/virtualMachines/testsanmulticonnect2/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhwen-domain/providers/Microsoft.Authorization/locks/zhwen","type":"Microsoft.Authorization/locks","name":"zhwen"},{"properties":{"level":"CanNotDelete","notes":"Prevent
+        the resources for live test from being deleted."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzurePowerShellLiveTest/providers/Microsoft.Authorization/locks/CannotDelete","type":"Microsoft.Authorization/locks","name":"CannotDelete"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_cli_loadbalance/providers/Microsoft.Authorization/locks/DoNotDelete","type":"Microsoft.Authorization/locks","name":"DoNotDelete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/portal2cli/providers/Microsoft.Web/sites/webp2c/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/portal2cli/providers/Microsoft.Storage/storageAccounts/portal2clistorage/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/feng-cli-rg/providers/Microsoft.Storage/storageAccounts/fengtestsa/providers/Microsoft.Authorization/locks/salock","type":"Microsoft.Authorization/locks","name":"salock"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/new-experiences/providers/Microsoft.Authorization/locks/NO-DELETE","type":"Microsoft.Authorization/locks","name":"NO-DELETE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testsanmulticonnectRHELrg/providers/Microsoft.Compute/virtualMachines/testsanmulticonnectRHEL/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-edge/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-edge/providers/Microsoft.Storage/storageAccounts/azurecliedge/providers/Microsoft.Authorization/locks/azurecliedge-dl","type":"Microsoft.Authorization/locks","name":"azurecliedge-dl"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ethan-rg/providers/Microsoft.Authorization/locks/daily-work","type":"Microsoft.Authorization/locks","name":"daily-work"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Storage/storageAccounts/privatepackage/providers/Microsoft.Authorization/locks/private
+        package","type":"Microsoft.Authorization/locks","name":"private package"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nori-rg/providers/Microsoft.Authorization/locks/nori-lock","type":"Microsoft.Authorization/locks","name":"nori-lock"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/xz3-test/providers/Microsoft.Authorization/locks/del","type":"Microsoft.Authorization/locks","name":"del"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testsanmulticonnectCentOSrg/providers/Microsoft.Compute/virtualMachines/testsanmulticonnectCentOS/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kairu-persist/providers/Microsoft.Authorization/locks/antidelete","type":"Microsoft.Authorization/locks","name":"antidelete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testsanmulticonnectSUSErg/providers/Microsoft.Compute/virtualMachines/testsanmulticonnectSUSE/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":"Data
+        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jiaslivmmirg/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":"for
+        customer issue repro  (snowflake)"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/storage-v2rt-repro/providers/Microsoft.Authorization/locks/DontDelete","type":"Microsoft.Authorization/locks","name":"DontDelete"},{"properties":{"level":"ReadOnly","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qinkai-test/providers/Microsoft.Storage/storageAccounts/qinkaiwu/providers/Microsoft.Authorization/locks/privatepackage","type":"Microsoft.Authorization/locks","name":"privatepackage"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yishitest/providers/Microsoft.Authorization/locks/Do
+        Not Delete","type":"Microsoft.Authorization/locks","name":"Do Not Delete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/t-yakou2/providers/Microsoft.Web/sites/WebAppPortal2CLI20200827092707/providers/Microsoft.Authorization/locks/dont_delete_me","type":"Microsoft.Authorization/locks","name":"dont_delete_me"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-elasticsan-rg/providers/Microsoft.Authorization/locks/nodelete","type":"Microsoft.Authorization/locks","name":"nodelete"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 09:03:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - lock delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g --resource-name --resource-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002/providers/Microsoft.Authorization/locks/DATABOX_SERVICE?api-version=2016-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 19 May 2023 09:03:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

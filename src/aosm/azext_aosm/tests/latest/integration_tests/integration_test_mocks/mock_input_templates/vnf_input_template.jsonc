@@ -1,0 +1,33 @@
+{
+  // Azure location to use when creating resources.
+  "location": "uksouth",
+  // Name of the Publisher resource you want your definition published to.
+  // Will be created if it does not exist.
+  "publisher_name": "automated-cli-test-ubuntu-publisher",
+  // Optional. Resource group for the Publisher resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+  // Optional. Name of the ACR Artifact Store resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "acr_artifact_store_name": "ubuntu-acr",
+  // Name of NF definition.
+  "nf_name": "ubuntu-vm",
+  // Version of the NF definition in A.B.C format.
+  "version": "1.0.0",
+  // Optional. Name of the storage account Artifact Store resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "blob_artifact_store_name": "ubuntu-blob-store",
+  // ARM template configuration.
+  "arm_templates": [
+    {
+      "artifact_name": "automated-cli-tests-artifact",
+      "file_path": "{{arm_template_path}}",
+      "version": "1.0.0"
+    }
+  ],
+  "vhd": {
+    "artifact_name": "automated-cli-tests-vhd",
+    "file_path": "{{vhd_path}}",
+    "version": "1-0-0"
+  }
+}

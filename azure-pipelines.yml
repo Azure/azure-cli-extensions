@@ -12,84 +12,74 @@ pr:
     include:
       - '*'
 
+variables:
+- template: ${{ variables.Pipeline.Workspace }}/.azure-pipelines/templates/variables.yml
+
 jobs:
 - job: CredScan
   displayName: "Credential Scan"
   pool:
-    vmImage: "windows-2019"
+    name: ${{ variables.windows_pool }}
   steps:
-  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-credscan.CredScan@2
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@3
     displayName: 'Run Credential Scanner'
     inputs:
-      toolMajorVersion: V2
+      toolVersion: latest
       suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
-  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
+      
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
     displayName: 'Post Analysis'
     inputs:
-      AllTools: false
-      BinSkim: false
-      CredScan: true
-      RoslynAnalyzers: false
-      TSLint: false
-      ToolLogsNotFoundAction: 'Standard'
+      GdnBreakAllTools: false
+      GdnBreakGdnToolCredScan: true
+      GdnBreakGdnToolCredScanSeverity: Error
+
+- job: PolicyCheck
+  displayName: "Policy Check"
+  pool:
+    name: ${{ variables.windows_pool }}
+  steps:
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+    displayName: 'Run Policy Check'
+    inputs:
+      targetType: F
+      result: PoliCheckResult.xml
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
+    displayName: 'Post Analysis'
+    inputs:
+      GdnBreakAllTools: false
+      GdnBreakGdnToolPoliCheck: true
+      GdnBreakGdnToolPoliCheckSeverity: Error
 
 - job: CheckLicenseHeader
   displayName: "Check License"
   pool:
-    vmImage: 'ubuntu-16.04'
+    name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.6'
+    displayName: 'Use Python 3.12'
     inputs:
-      versionSpec: 3.6
+      versionSpec: 3.12
+  - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
+      #!/usr/bin/env bash
       set -ev
-
-      # prepare and activate virtualenv
-      python -m venv env/
-
-      chmod +x ./env/bin/activate
       source ./env/bin/activate
-
-      # clone azure-cli
-      git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-      pip install -q azdev
-
-      azdev setup -c ../azure-cli -r ./
-
-      azdev --version
-      az --version
-
       azdev verify license
-
-- job: StaticAnalysis
-  displayName: "Static Analysis"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
-      inputs:
-        versionSpec: 3.6
-    - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8==3.5.0 requests
-      displayName: 'Install wheel, pylint, flake8, requests'
-    - bash: python scripts/ci/source_code_static_analysis.py
-      displayName: "Static Analysis"
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
-    vmImage: 'ubuntu-16.04'
+    name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.7'
+    displayName: 'Use Python 3.12'
     inputs:
-      versionSpec: 3.7
+      versionSpec: 3.12
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel==0.30.0 requests packaging
+      pip install wheel==0.30.0 requests packaging setuptools
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
@@ -97,75 +87,172 @@ jobs:
 - job: SourceTests
   displayName: "Integration Tests, Build Tests"
   pool:
-    vmImage: 'ubuntu-16.04'
+    name: ${{ variables.ubuntu_pool }}
   strategy:
     matrix:
-      Python36:
-        python.version: '3.6'
-      Python38:
-        python.version: '3.8'
+      Python39:
+        python.version: '3.9'
+      Python310:
+        python.version: '3.10'
+      Python311:
+        python.version: '3.11'
+      Python312:
+        python.version: '3.12'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python $(python.version)'
       inputs:
         versionSpec: '$(python.version)'
+    - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
-    - bash: ./scripts/ci/test_source.sh
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        az --version
+        python scripts/ci/test_source.py -v
       displayName: 'Run integration test and build test'
       env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: LintModifiedExtensions
-  displayName: "CLI Linter on Modified Extensions"
+- job: AzdevStyleModifiedExtensions
+  displayName: "azdev style on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  continueOnError: true
   pool:
-    vmImage: 'ubuntu-16.04'
+    name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
+      displayName: 'Use Python 3.12'
       inputs:
-        versionSpec: 3.6
+        versionSpec: 3.12
+    - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
+        #!/usr/bin/env bash
         set -ev
-
-        # prepare and activate virtualenv
-        pip install virtualenv
-        python -m virtualenv venv/
-        source ./venv/bin/activate
-
-        # clone azure-cli
-        git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-        pip install azdev
-
-        azdev --version
-
-        azdev setup -c ../azure-cli -r ./
-
+        source ./env/bin/activate
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
-        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/verify_linter.py
-      displayName: "CLI Linter on Modified Extension"
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type style
+      displayName: "azdev style on Modified Extensions"
       env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: IndexRefDocVerify
-  displayName: "Verify Ref Docs"
+- job: AzdevLinterModifiedExtensions
+  displayName: "azdev linter on Modified Extensions"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
-    vmImage: 'ubuntu-16.04'
+    name: ${{ variables.ubuntu_pool }}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.12'
+      inputs:
+        versionSpec: 3.12
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        # overwrite the default AZURE_EXTENSION_DIR set by ADO
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
+        
+        # TODO: remove --type linter once all extensions are fixed
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type linter
+      displayName: "azdev linter on Modified Extensions"
+      env:
+        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
+- job: AzdevScanModifiedExtensionsHigh
+  displayName: "azdev scan ( High Confidence ) on Modified Extensions"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  pool:
+    name: ${{ variables.ubuntu_pool }}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.11'
+      inputs:
+        versionSpec: 3.11
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
+        declare -A secret_files
+        for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
+          detected=$(azdev scan -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          if [ $detected == 'True' ]; then
+            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix.\033[0m\n" "$FILE"
+            secret_files+=$FILE
+          fi
+        done
+        if [ "${#secret_files[@]}" -gt 0 ]; then
+          exit 1
+        fi
+      displayName: "azdev scan ( High Confidence ) on Modified Extensions"
+
+- job: AzdevScanProModifiedExtensionsMedium
+  displayName: "azdev scan ( Medium Confidence ) on Modified Extensions"
+  dependsOn: AzdevScanModifiedExtensionsHigh
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  continueOnError: true
+  pool:
+    name: ${{ variables.ubuntu_pool }}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.11'
+      inputs:
+        versionSpec: 3.11
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
+        declare -A secret_files
+        for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
+          detected=$(azdev scan --confidence-level MEDIUM -f $FILE --continue-on-failure| python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          if [ $detected == 'True' ]; then
+            printf "\033[0;31mSecrets detected from %s, Please remove or replace it. You can run 'azdev scan --confidence-level MEDIUM'/'azdev mask --confidence-level MEDIUM' locally to fix.\033[0m\n" "$FILE"
+            secret_files+=$FILE
+          fi
+        done
+        if [ "${#secret_files[@]}" -gt 0 ]; then
+          exit 1
+        fi
+      displayName: "azdev scan ( Medium Confidence ) on Modified Extensions"
+
+#- job: IndexRefDocVerify
+#  displayName: "Verify Ref Docs"
+#  continueOnError: true
+#  pool:
+#    name: ${{ variables.ubuntu_pool }}
+#  steps:
+#  - task: UsePythonVersion@0
+#    displayName: 'Use Python 3.12'
+#    inputs:
+#      versionSpec: 3.12
+#  - bash: pip install wheel==0.30.0
+#    displayName: 'Install wheel==0.30.0'
+#  - task: Bash@3
+#    displayName: "Verify Extension Ref Docs"
+#    inputs:
+#      targetType: 'filePath'
+#      filePath: scripts/ci/test_index_ref_doc.sh
+
+- job: CheckInit
+  displayName: "Check Init Files"
+  pool:
+    name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.7'
+    displayName: 'Use Python 3.x'
     inputs:
-      versionSpec: 3.7
-  - bash: pip install wheel==0.30.0
-    displayName: 'Install wheel==0.30.0'
-  - task: Bash@3
-    displayName: "Verify Extension Ref Docs"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_index_ref_doc.sh
+      versionSpec: 3.x
+  - bash: |
+      python scripts/ci/test_init.py -v

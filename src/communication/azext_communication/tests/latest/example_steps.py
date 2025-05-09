@@ -25,8 +25,7 @@ def step_create(test, rg_2, rg, checks=None):
              checks=checks)
     test.cmd('az communication wait --created '
              '--name "{myCommunicationService}" '
-             '--resource-group "{rg}"',
-             checks=[])
+             '--resource-group "{rg}"')
 
 
 # EXAMPLE: /CommunicationService/get/Get resource
@@ -50,13 +49,13 @@ def step_list(test, rg_2, rg, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /CommunicationService/get/List by subscription
+# EXAMPLE: /CommunicationService/get/List by resource group alternative command
 @try_manual
 def step_list2(test, rg_2, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az communication list '
-             '-g ""',
+             '-g "{rg}"',
              checks=checks)
 
 
@@ -117,15 +116,4 @@ def step_delete(test, rg_2, rg, checks=None):
     test.cmd('az communication delete -y '
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /OperationStatuses/get/Get OperationStatus
-@try_manual
-def step_show_status(test, rg_2, rg, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az communication show-status '
-             '--operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" '
-             '--location "westus2"',
              checks=checks)

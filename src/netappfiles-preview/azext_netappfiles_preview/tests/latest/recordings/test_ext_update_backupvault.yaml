@@ -1,0 +1,501 @@
+interactions:
+- request:
+    body: '{"location": "westus2", "properties": {"encryption": {"keySource": "Microsoft.NetApp"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '88'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -l
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002","name":"cli-acc-000002","type":"Microsoft.NetApp/netAppAccounts","etag":"W/\"datetime''2024-09-04T15%3A38%3A53.8002592Z''\"","location":"westus2","tags":{"CreatedOnDate":"2024-09-04T15:38:51.5871874Z"},"properties":{"activeDirectories":[{"activeDirectoryId":"f9c6a7c3-bc91-b5ba-254a-0963dd95ffc3","username":"sdkuser","password":"****************","domain":"sdkdomain","dns":"192.0.2.2","status":"Created","smbServerName":"PSSMBSName","organizationalUnit":"CN=Computers","adName":"ps317","aesEncryption":false,"ldapSigning":false,"ldapOverTLS":false,"allowLocalNfsUsersWithLdap":false,"encryptDCConnections":false,"ldapSearchScope":{}}],"encryption":{"keySource":"Microsoft.NetApp"},"provisioningState":"Creating"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:38:53.1693036Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:38:53.1693036Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/3595f8c7-48ad-4dcc-8665-984512d41b20?api-version=2024-03-01-preview&t=638610611355130439&c=MIIHhzCCBm-gAwIBAgITfAURLZ3typdTL74CVwAABREtnTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNjI3MTU1MDE3WhcNMjUwNjIyMTU1MDE3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMGK1sMrkFPAwkeC135aVYgBOminI2clU22nEPqNMj5d9onVyIqqdZ3sdaNcAfZLwJ-w3ZqCxbKSip9dKHJ_ZKVZLyDurXVAtAs0PHSBOdp4q6o-3W1YbGg83K77kWn3aK9X9DdYP73XBUclbu6dFCjxS_KZDwYjBzGCKKlRP6kF4hT_ewACz7FjuYMo09p2ucD1twBpu61GTI8SNp_y_Y_amCBxFWv1RoKr83dzxz6NEiVlwNvZGQzUq9lO8SvUW7phQHP6JNXJNHbggTAlO7HsSBWNW92XPZ7eGcJo1cZbN-JRWbbp5EbfInAVR1RBYNjHD9hod6HahKsWzRwM-8ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSPH37CDr9NLGv8Rh1CuGf0Vl_KczAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHlNYPhSgOA8WRnXs6bZieYwfdjdNZesX_4e598QYrmnWO5PqUzf1UURaa_mp5NUutiIyrGZyJn0C4dJfBST9hdubuFPbbpp6wXnpccKYyWf4oZJKjuJdWTPpUOl_M-k4rGe_OH5513097rrlR55hws_BMLDX5euzCcKJ9n-jyVEuRMMAy-ba-UQ-hhI9pPpolKYcUc5ecwWqg3kDJ2YOX0cep6UqH2O7_WBBxE3zIF2paBprBsR98C0-WKhHjdAcNTfKVPoAXfSODEvoW96GT-3E62rCjsWzHzskau_4zHM72kw40DZGoTruiQ17-IA3g5Ya0QQW4ct74d8qCWlozE&s=HQIwmRV0AEmE8VvFnYjWTRzgyyYCORZXrg_MBllTvWMl2xDES7D4XoyaOvrxKSTECcr-K7GI7lB3TqVRBD5syB1R2NuzLgkTE22i804uc9K2w8f4eNufRjr002tOtjiCVK5fMukCr-2qdGl6_x8Tc4X85gmsim-xsDxii86kdbyt781CaaZY3N2G0SuMyyIFhG_UfLoJ-0IHhtgu2bM_V0J6cZ5fjKwGE7_ft3m_V6jLLmJX08ervd4pvYy677PBEaDkI9xRQBB2wzNQcyoFqYfq6fCUw81dBUe8vvF8nm7pf8Y_mWulqlRhYop-mYSgn0CfYawgYjmhagHNMcGMBQ&h=NsrGLJJmLoBZ_C-sakN8TfPhhefVjh0KWgrHg-erA7Y
+      cache-control:
+      - no-cache
+      content-length:
+      - '1100'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:38:55 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A38%3A53.8002592Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 8A079230E4854895B52014FEF7F31B37 Ref B: AMS231020615051 Ref C: 2024-09-04T15:38:50Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -l
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/3595f8c7-48ad-4dcc-8665-984512d41b20?api-version=2024-03-01-preview&t=638610611355130439&c=MIIHhzCCBm-gAwIBAgITfAURLZ3typdTL74CVwAABREtnTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNjI3MTU1MDE3WhcNMjUwNjIyMTU1MDE3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMGK1sMrkFPAwkeC135aVYgBOminI2clU22nEPqNMj5d9onVyIqqdZ3sdaNcAfZLwJ-w3ZqCxbKSip9dKHJ_ZKVZLyDurXVAtAs0PHSBOdp4q6o-3W1YbGg83K77kWn3aK9X9DdYP73XBUclbu6dFCjxS_KZDwYjBzGCKKlRP6kF4hT_ewACz7FjuYMo09p2ucD1twBpu61GTI8SNp_y_Y_amCBxFWv1RoKr83dzxz6NEiVlwNvZGQzUq9lO8SvUW7phQHP6JNXJNHbggTAlO7HsSBWNW92XPZ7eGcJo1cZbN-JRWbbp5EbfInAVR1RBYNjHD9hod6HahKsWzRwM-8ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSPH37CDr9NLGv8Rh1CuGf0Vl_KczAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHlNYPhSgOA8WRnXs6bZieYwfdjdNZesX_4e598QYrmnWO5PqUzf1UURaa_mp5NUutiIyrGZyJn0C4dJfBST9hdubuFPbbpp6wXnpccKYyWf4oZJKjuJdWTPpUOl_M-k4rGe_OH5513097rrlR55hws_BMLDX5euzCcKJ9n-jyVEuRMMAy-ba-UQ-hhI9pPpolKYcUc5ecwWqg3kDJ2YOX0cep6UqH2O7_WBBxE3zIF2paBprBsR98C0-WKhHjdAcNTfKVPoAXfSODEvoW96GT-3E62rCjsWzHzskau_4zHM72kw40DZGoTruiQ17-IA3g5Ya0QQW4ct74d8qCWlozE&s=HQIwmRV0AEmE8VvFnYjWTRzgyyYCORZXrg_MBllTvWMl2xDES7D4XoyaOvrxKSTECcr-K7GI7lB3TqVRBD5syB1R2NuzLgkTE22i804uc9K2w8f4eNufRjr002tOtjiCVK5fMukCr-2qdGl6_x8Tc4X85gmsim-xsDxii86kdbyt781CaaZY3N2G0SuMyyIFhG_UfLoJ-0IHhtgu2bM_V0J6cZ5fjKwGE7_ft3m_V6jLLmJX08ervd4pvYy677PBEaDkI9xRQBB2wzNQcyoFqYfq6fCUw81dBUe8vvF8nm7pf8Y_mWulqlRhYop-mYSgn0CfYawgYjmhagHNMcGMBQ&h=NsrGLJJmLoBZ_C-sakN8TfPhhefVjh0KWgrHg-erA7Y
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/3595f8c7-48ad-4dcc-8665-984512d41b20","name":"3595f8c7-48ad-4dcc-8665-984512d41b20","status":"Succeeded","startTime":"2024-09-04T15:38:53.8132035Z","endTime":"2024-09-04T15:38:53.8639616Z","percentComplete":100.0,"properties":{"resourceName":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002","action":"CREATE"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:38:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 50C08FF82EAF4C1992FABBD5EF811DA8 Ref B: AMS231020615051 Ref C: 2024-09-04T15:38:55Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -l
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002","name":"cli-acc-000002","type":"Microsoft.NetApp/netAppAccounts","etag":"W/\"datetime''2024-09-04T15%3A38%3A53.8502306Z''\"","location":"westus2","tags":{"CreatedOnDate":"2024-09-04T15:38:51.5871874Z"},"properties":{"activeDirectories":[{"activeDirectoryId":"f9c6a7c3-bc91-b5ba-254a-0963dd95ffc3","username":"sdkuser","password":"****************","domain":"sdkdomain","dns":"192.0.2.2","status":"Created","smbServerName":"PSSMBSName","organizationalUnit":"CN=Computers","adName":"ps317","aesEncryption":false,"ldapSigning":false,"ldapOverTLS":false,"allowLocalNfsUsersWithLdap":false,"encryptDCConnections":false,"ldapSearchScope":{}}],"encryption":{"keySource":"Microsoft.NetApp"},"provisioningState":"Succeeded"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:38:53.1693036Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:38:53.1693036Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1101'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:38:57 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A38%3A53.8502306Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0C91E5DA4D744E92816C05DDEA4D1EAF Ref B: AMS231020615051 Ref C: 2024-09-04T15:38:56Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {"Tag1": "Value1", "Tag2": "Value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -n -l --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2024-09-04T15%3A39%3A03.1084936Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2024-09-04T15:39:00.6410327Z"},"properties":{"provisioningState":"Creating"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:39:02.4946838Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:39:02.4946838Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/88593cc2-2676-4de3-9893-20346e4b670a?api-version=2024-03-01-preview&t=638610611447915687&c=MIIHhzCCBm-gAwIBAgITfAURLZ3typdTL74CVwAABREtnTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNjI3MTU1MDE3WhcNMjUwNjIyMTU1MDE3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMGK1sMrkFPAwkeC135aVYgBOminI2clU22nEPqNMj5d9onVyIqqdZ3sdaNcAfZLwJ-w3ZqCxbKSip9dKHJ_ZKVZLyDurXVAtAs0PHSBOdp4q6o-3W1YbGg83K77kWn3aK9X9DdYP73XBUclbu6dFCjxS_KZDwYjBzGCKKlRP6kF4hT_ewACz7FjuYMo09p2ucD1twBpu61GTI8SNp_y_Y_amCBxFWv1RoKr83dzxz6NEiVlwNvZGQzUq9lO8SvUW7phQHP6JNXJNHbggTAlO7HsSBWNW92XPZ7eGcJo1cZbN-JRWbbp5EbfInAVR1RBYNjHD9hod6HahKsWzRwM-8ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSPH37CDr9NLGv8Rh1CuGf0Vl_KczAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHlNYPhSgOA8WRnXs6bZieYwfdjdNZesX_4e598QYrmnWO5PqUzf1UURaa_mp5NUutiIyrGZyJn0C4dJfBST9hdubuFPbbpp6wXnpccKYyWf4oZJKjuJdWTPpUOl_M-k4rGe_OH5513097rrlR55hws_BMLDX5euzCcKJ9n-jyVEuRMMAy-ba-UQ-hhI9pPpolKYcUc5ecwWqg3kDJ2YOX0cep6UqH2O7_WBBxE3zIF2paBprBsR98C0-WKhHjdAcNTfKVPoAXfSODEvoW96GT-3E62rCjsWzHzskau_4zHM72kw40DZGoTruiQ17-IA3g5Ya0QQW4ct74d8qCWlozE&s=V-3VSDhoPRb_-z8PxZBXufb5MyFVDQNJRmLNaRoPUkAeYBkKLwnCQzPgjRus-E1lp6lRlpt0aWhm3_8Vjkld1hceoQvxW4D762fA8qmAUvsJOExugAq_l5HVNMnom9kxOdKz5c35RqjDrGYh5Bc4cPVELvw95kycBVuEmaETSGgL_Sqxh1Ry2zgARNoCAYUGBzAkbNkavQY_0j-AAqBceeaew3Zpyq3QWbrc1plEZL0m29mVaLT5J5eBocjHugMgpjpt-v1-lHn0860HCloCXJpv6NLMANjtMkcB0nj3OKhbOLS0XqfwfeDWhKuLRsVSKTGBHgVMN0VdvXK_Y4SknQ&h=geZxJIkwl7aT_Bb5wPRXPLoMgNZ_TrT8-d8sVjZiakI
+      cache-control:
+      - no-cache
+      content-length:
+      - '737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:04 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A39%3A03.1084936Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 0743A2F45F314CD7B143E7620504C693 Ref B: AMS231022012007 Ref C: 2024-09-04T15:38:58Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n -l --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/88593cc2-2676-4de3-9893-20346e4b670a?api-version=2024-03-01-preview&t=638610611447915687&c=MIIHhzCCBm-gAwIBAgITfAURLZ3typdTL74CVwAABREtnTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNjI3MTU1MDE3WhcNMjUwNjIyMTU1MDE3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMGK1sMrkFPAwkeC135aVYgBOminI2clU22nEPqNMj5d9onVyIqqdZ3sdaNcAfZLwJ-w3ZqCxbKSip9dKHJ_ZKVZLyDurXVAtAs0PHSBOdp4q6o-3W1YbGg83K77kWn3aK9X9DdYP73XBUclbu6dFCjxS_KZDwYjBzGCKKlRP6kF4hT_ewACz7FjuYMo09p2ucD1twBpu61GTI8SNp_y_Y_amCBxFWv1RoKr83dzxz6NEiVlwNvZGQzUq9lO8SvUW7phQHP6JNXJNHbggTAlO7HsSBWNW92XPZ7eGcJo1cZbN-JRWbbp5EbfInAVR1RBYNjHD9hod6HahKsWzRwM-8ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSPH37CDr9NLGv8Rh1CuGf0Vl_KczAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHlNYPhSgOA8WRnXs6bZieYwfdjdNZesX_4e598QYrmnWO5PqUzf1UURaa_mp5NUutiIyrGZyJn0C4dJfBST9hdubuFPbbpp6wXnpccKYyWf4oZJKjuJdWTPpUOl_M-k4rGe_OH5513097rrlR55hws_BMLDX5euzCcKJ9n-jyVEuRMMAy-ba-UQ-hhI9pPpolKYcUc5ecwWqg3kDJ2YOX0cep6UqH2O7_WBBxE3zIF2paBprBsR98C0-WKhHjdAcNTfKVPoAXfSODEvoW96GT-3E62rCjsWzHzskau_4zHM72kw40DZGoTruiQ17-IA3g5Ya0QQW4ct74d8qCWlozE&s=V-3VSDhoPRb_-z8PxZBXufb5MyFVDQNJRmLNaRoPUkAeYBkKLwnCQzPgjRus-E1lp6lRlpt0aWhm3_8Vjkld1hceoQvxW4D762fA8qmAUvsJOExugAq_l5HVNMnom9kxOdKz5c35RqjDrGYh5Bc4cPVELvw95kycBVuEmaETSGgL_Sqxh1Ry2zgARNoCAYUGBzAkbNkavQY_0j-AAqBceeaew3Zpyq3QWbrc1plEZL0m29mVaLT5J5eBocjHugMgpjpt-v1-lHn0860HCloCXJpv6NLMANjtMkcB0nj3OKhbOLS0XqfwfeDWhKuLRsVSKTGBHgVMN0VdvXK_Y4SknQ&h=geZxJIkwl7aT_Bb5wPRXPLoMgNZ_TrT8-d8sVjZiakI
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/88593cc2-2676-4de3-9893-20346e4b670a","name":"88593cc2-2676-4de3-9893-20346e4b670a","status":"Succeeded","startTime":"2024-09-04T15:39:03.1123968Z","endTime":"2024-09-04T15:39:03.2161756Z","percentComplete":100.0,"properties":{"resourceName":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","action":"CREATE"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '563'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FDBC1C556FB2418080EA446A1493F418 Ref B: AMS231022012007 Ref C: 2024-09-04T15:39:04Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n -l --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2024-09-04T15%3A39%3A03.2110732Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2024-09-04T15:39:00.6410327Z"},"properties":{"provisioningState":"Succeeded"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:39:02.4946838Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:39:02.4946838Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:06 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A39%3A03.2110732Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: DD39B97DDFDA4A40BA47D83362D42A13 Ref B: AMS231022012007 Ref C: 2024-09-04T15:39:05Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2024-09-04T15%3A39%3A03.2110732Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2024-09-04T15:39:00.6410327Z"},"properties":{"provisioningState":"Succeeded"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:39:02.4946838Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:39:02.4946838Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:08 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A39%3A03.2110732Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4523E7564B714BE790ED6800709510C1 Ref B: AMS231032608039 Ref C: 2024-09-04T15:39:07Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {}, "tags": {"Tag1": "Value1", "Tag2":
+      "Value2Updated", "CreatedOnDate": "2024-09-04T15:39:00.6410327Z"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '143'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -n --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2024-09-04T15%3A39%3A13.7377907Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2024-09-04T15:39:00.6410327Z"},"properties":{"provisioningState":"Updating"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:39:02.4946838Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:39:02.4946838Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/10949508-f45f-402b-b4bc-5cb80516c59e?api-version=2024-03-01-preview&t=638610611554770564&c=MIIHhzCCBm-gAwIBAgITfAURLZ3typdTL74CVwAABREtnTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNjI3MTU1MDE3WhcNMjUwNjIyMTU1MDE3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMGK1sMrkFPAwkeC135aVYgBOminI2clU22nEPqNMj5d9onVyIqqdZ3sdaNcAfZLwJ-w3ZqCxbKSip9dKHJ_ZKVZLyDurXVAtAs0PHSBOdp4q6o-3W1YbGg83K77kWn3aK9X9DdYP73XBUclbu6dFCjxS_KZDwYjBzGCKKlRP6kF4hT_ewACz7FjuYMo09p2ucD1twBpu61GTI8SNp_y_Y_amCBxFWv1RoKr83dzxz6NEiVlwNvZGQzUq9lO8SvUW7phQHP6JNXJNHbggTAlO7HsSBWNW92XPZ7eGcJo1cZbN-JRWbbp5EbfInAVR1RBYNjHD9hod6HahKsWzRwM-8ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSPH37CDr9NLGv8Rh1CuGf0Vl_KczAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHlNYPhSgOA8WRnXs6bZieYwfdjdNZesX_4e598QYrmnWO5PqUzf1UURaa_mp5NUutiIyrGZyJn0C4dJfBST9hdubuFPbbpp6wXnpccKYyWf4oZJKjuJdWTPpUOl_M-k4rGe_OH5513097rrlR55hws_BMLDX5euzCcKJ9n-jyVEuRMMAy-ba-UQ-hhI9pPpolKYcUc5ecwWqg3kDJ2YOX0cep6UqH2O7_WBBxE3zIF2paBprBsR98C0-WKhHjdAcNTfKVPoAXfSODEvoW96GT-3E62rCjsWzHzskau_4zHM72kw40DZGoTruiQ17-IA3g5Ya0QQW4ct74d8qCWlozE&s=rev3rFLQ-Ke7OTnNX0XKCdHIMWDKVyYYcNUTDGMrB0GhEXPJuwJgmEz3P2eOzTnJdFvqpSbvuiolVFauxJ9VvKCXUMUxdEeRcVPgcfJtN7ZDyXwajsLl8NsHCUTX9ihUt0P_fQm8cLP4O9c6RjoqR8AKwXoE9i0AYfCjNgz6QO0HeUbEuWDfu9IcYM5TxjiRhhX_TPxWHtNcDnFunnefUBSCxoUbrPEhAXq0S454Fwf3pFp0DJPr7UI6vv5ojvQAZxoypJCkYFiaVv_j7HLk9rPp4F_r8nE4F1U7_26OdLPCxFfqtMFCO_hJhHZNLLKV-XlZ9wFGOhcthCuX5n3lbQ&h=hQhyoNOJZkG_vTgmX3pmqmGUjXnr8Jri4d8MN6B6Nvg
+      cache-control:
+      - no-cache
+      content-length:
+      - '737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:14 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A39%3A13.7377907Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: C84848A068894EEA96A451BDC11D4383 Ref B: AMS231032608039 Ref C: 2024-09-04T15:39:09Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/10949508-f45f-402b-b4bc-5cb80516c59e?api-version=2024-03-01-preview&t=638610611554770564&c=MIIHhzCCBm-gAwIBAgITfAURLZ3typdTL74CVwAABREtnTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwNjI3MTU1MDE3WhcNMjUwNjIyMTU1MDE3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMGK1sMrkFPAwkeC135aVYgBOminI2clU22nEPqNMj5d9onVyIqqdZ3sdaNcAfZLwJ-w3ZqCxbKSip9dKHJ_ZKVZLyDurXVAtAs0PHSBOdp4q6o-3W1YbGg83K77kWn3aK9X9DdYP73XBUclbu6dFCjxS_KZDwYjBzGCKKlRP6kF4hT_ewACz7FjuYMo09p2ucD1twBpu61GTI8SNp_y_Y_amCBxFWv1RoKr83dzxz6NEiVlwNvZGQzUq9lO8SvUW7phQHP6JNXJNHbggTAlO7HsSBWNW92XPZ7eGcJo1cZbN-JRWbbp5EbfInAVR1RBYNjHD9hod6HahKsWzRwM-8ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSPH37CDr9NLGv8Rh1CuGf0Vl_KczAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHlNYPhSgOA8WRnXs6bZieYwfdjdNZesX_4e598QYrmnWO5PqUzf1UURaa_mp5NUutiIyrGZyJn0C4dJfBST9hdubuFPbbpp6wXnpccKYyWf4oZJKjuJdWTPpUOl_M-k4rGe_OH5513097rrlR55hws_BMLDX5euzCcKJ9n-jyVEuRMMAy-ba-UQ-hhI9pPpolKYcUc5ecwWqg3kDJ2YOX0cep6UqH2O7_WBBxE3zIF2paBprBsR98C0-WKhHjdAcNTfKVPoAXfSODEvoW96GT-3E62rCjsWzHzskau_4zHM72kw40DZGoTruiQ17-IA3g5Ya0QQW4ct74d8qCWlozE&s=rev3rFLQ-Ke7OTnNX0XKCdHIMWDKVyYYcNUTDGMrB0GhEXPJuwJgmEz3P2eOzTnJdFvqpSbvuiolVFauxJ9VvKCXUMUxdEeRcVPgcfJtN7ZDyXwajsLl8NsHCUTX9ihUt0P_fQm8cLP4O9c6RjoqR8AKwXoE9i0AYfCjNgz6QO0HeUbEuWDfu9IcYM5TxjiRhhX_TPxWHtNcDnFunnefUBSCxoUbrPEhAXq0S454Fwf3pFp0DJPr7UI6vv5ojvQAZxoypJCkYFiaVv_j7HLk9rPp4F_r8nE4F1U7_26OdLPCxFfqtMFCO_hJhHZNLLKV-XlZ9wFGOhcthCuX5n3lbQ&h=hQhyoNOJZkG_vTgmX3pmqmGUjXnr8Jri4d8MN6B6Nvg
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/10949508-f45f-402b-b4bc-5cb80516c59e","name":"10949508-f45f-402b-b4bc-5cb80516c59e","status":"Succeeded","startTime":"2024-09-04T15:39:13.7378349Z","endTime":"2024-09-04T15:39:13.7976683Z","percentComplete":100.0,"properties":{"resourceName":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","action":"UPDATE"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '563'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2EBC0B7E4C964CE185C36FCE2B3E3B9D Ref B: AMS231032608039 Ref C: 2024-09-04T15:39:15Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n --tags
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2024-09-04T15%3A39%3A13.7975294Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2Updated","CreatedOnDate":"2024-09-04T15:39:00.6410327Z"},"properties":{"provisioningState":"Succeeded"},"systemData":{"createdBy":"b-aubald@microsoft.com","createdByType":"User","createdAt":"2024-09-04T15:39:02.4946838Z","lastModifiedBy":"b-aubald@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-04T15:39:13.16446Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '743'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Sep 2024 15:39:16 GMT
+      etag:
+      - W/"datetime'2024-09-04T15%3A39%3A13.7975294Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 04F3B0EE6DCA4B268E75A7DF48861AE6 Ref B: AMS231032608039 Ref C: 2024-09-04T15:39:16Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

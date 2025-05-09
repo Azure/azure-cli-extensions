@@ -6,16 +6,55 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class JsonWebKeyType(str, Enum):
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
+class JsonWebKeyType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Provisioning state.
     """
 
-    succeeded = "Succeeded"  #: The dedicated HSM has been full provisioned.
-    provisioning = "Provisioning"  #: The dedicated HSM is currently being provisioned.
-    allocating = "Allocating"  #: A device is currently being allocated for the dedicated HSM resource.
-    connecting = "Connecting"  #: The dedicated HSM is being connected to the virtual network.
-    failed = "Failed"  #: Provisioning of the dedicated HSM has failed.
-    checking_quota = "CheckingQuota"  #: Validating the subscription has sufficient quota to allocate a dedicated HSM device.
-    deleting = "Deleting"  #: The dedicated HSM is currently being deleted.
+    SUCCEEDED = "Succeeded"  #: The dedicated HSM has been full provisioned.
+    PROVISIONING = "Provisioning"  #: The dedicated HSM is currently being provisioned.
+    ALLOCATING = "Allocating"  #: A device is currently being allocated for the dedicated HSM resource.
+    CONNECTING = "Connecting"  #: The dedicated HSM is being connected to the virtual network.
+    FAILED = "Failed"  #: Provisioning of the dedicated HSM has failed.
+    CHECKING_QUOTA = "CheckingQuota"  #: Validating the subscription has sufficient quota to allocate a dedicated HSM device.
+    DELETING = "Deleting"  #: The dedicated HSM is currently being deleted.
+
+class SkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """SKU of the dedicated HSM
+    """
+
+    SAFE_NET_LUNA_NETWORK_HSM_A790 = "SafeNet Luna Network HSM A790"  #: The dedicated HSM is a Safenet Luna Network HSM A790 device.
+    PAY_SHIELD10_K_LMK1_CPS60 = "payShield10K_LMK1_CPS60"  #: The dedicated HSM is a payShield 10K, model PS10-D, 10Gb Ethernet Hardware Platform device with 1 local master key which supports up to 60 calls per second.
+    PAY_SHIELD10_K_LMK1_CPS250 = "payShield10K_LMK1_CPS250"  #: The dedicated HSM is a payShield 10K, model PS10-D, 10Gb Ethernet Hardware Platform device with 1 local master key which supports up to 250 calls per second.
+    PAY_SHIELD10_K_LMK1_CPS2500 = "payShield10K_LMK1_CPS2500"  #: The dedicated HSM is a payShield 10K, model PS10-D, 10Gb Ethernet Hardware Platform device with 1 local master key which supports up to 2500 calls per second.
+    PAY_SHIELD10_K_LMK2_CPS60 = "payShield10K_LMK2_CPS60"  #: The dedicated HSM is a payShield 10K, model PS10-D, 10Gb Ethernet Hardware Platform device with 2 local master keys which supports up to 60 calls per second.
+    PAY_SHIELD10_K_LMK2_CPS250 = "payShield10K_LMK2_CPS250"  #: The dedicated HSM is a payShield 10K, model PS10-D, 10Gb Ethernet Hardware Platform device with 2 local master keys which supports up to 250 calls per second.
+    PAY_SHIELD10_K_LMK2_CPS2500 = "payShield10K_LMK2_CPS2500"  #: The dedicated HSM is a payShield 10K, model PS10-D, 10Gb Ethernet Hardware Platform device with 2 local master keys which supports up to 2500 calls per second.
