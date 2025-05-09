@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "k8s-runtime load-balancer update",
+    "k8s-runtime bfd-profile update",
 )
 class Update(AAZCommand):
-    """Update a LoadBalancer
+    """Update a BfdProfile
 
-    :example: Update a load balancer
-        az k8s-runtime load-balancer update --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --advertise-mode ARP
+    :example: Update a Bfd Profile
+        az k8s-runtime bfd-profile update --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --bfd-profile-name testprofile --receive-interval 300 --transmit-interval 300 --detect-multiplier 3 --echo-interval 50 --echo-mode Disabled --passive-mode Disabled --minimum-ttl 254
     """
 
     _aaz_info = {
         "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-08-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bfdprofiles/{}", "2024-08-01"],
         ]
     }
 
@@ -47,9 +47,9 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.load_balancer_name = AAZStrArg(
-            options=["--load-balancer-name"],
-            help="The name of the LoadBalancer",
+        _args_schema.bfd_profile_name = AAZStrArg(
+            options=["--bfd-profile-name"],
+            help="The name of the BfdProfile",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -64,65 +64,60 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.addresses = AAZListArg(
-            options=["--addresses"],
+        _args_schema.detect_multiplier = AAZIntArg(
+            options=["--detect-multiplier"],
             arg_group="Properties",
-            help="IP Range",
+            help="Detect multiplier",
+            nullable=True,
         )
-        _args_schema.advertise_mode = AAZStrArg(
-            options=["--advertise-mode"],
+        _args_schema.echo_interval = AAZIntArg(
+            options=["--echo-interval"],
             arg_group="Properties",
-            help="Advertise Mode",
-            enum={"ARP": "ARP", "BGP": "BGP", "Both": "Both"},
+            help="Echo interval in milliseconds",
+            nullable=True,
         )
-        _args_schema.bgp_peers = AAZListArg(
-            options=["--bgp-peers"],
+        _args_schema.echo_mode = AAZStrArg(
+            options=["--echo-mode"],
             arg_group="Properties",
-            help="The list of BGP peers it should advertise to. Null or empty means to advertise to all peers.",
+            help="Echo mode",
             nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.communities = AAZListArg(
-            options=["--communities"],
+        _args_schema.minimum_ttl = AAZIntArg(
+            options=["--minimum-ttl"],
             arg_group="Properties",
-            help="BGP Communities",
+            help="Minimum TTL",
             nullable=True,
         )
-        _args_schema.service_selector = AAZDictArg(
-            options=["--service-selector"],
+        _args_schema.passive_mode = AAZStrArg(
+            options=["--passive-mode"],
             arg_group="Properties",
-            help="A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label \"a=b\", then please specify {\"a\": \"b\"} in the field.",
+            help="Passive mode",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.receive_interval = AAZIntArg(
+            options=["--receive-interval"],
+            arg_group="Properties",
+            help="Receive interval in milliseconds",
             nullable=True,
         )
-
-        addresses = cls._args_schema.addresses
-        addresses.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        bgp_peers = cls._args_schema.bgp_peers
-        bgp_peers.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        communities = cls._args_schema.communities
-        communities.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        service_selector = cls._args_schema.service_selector
-        service_selector.Element = AAZStrArg(
+        _args_schema.transmit_interval = AAZIntArg(
+            options=["--transmit-interval"],
+            arg_group="Properties",
+            help="Transmit interval in milliseconds",
             nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LoadBalancersGet(ctx=self.ctx)()
+        self.BfdProfilesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.LoadBalancersCreateOrUpdate(ctx=self.ctx)()
+        yield self.BfdProfilesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -145,7 +140,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LoadBalancersGet(AAZHttpOperation):
+    class BfdProfilesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -159,7 +154,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/loadBalancers/{loadBalancerName}",
+                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bfdProfiles/{bfdProfileName}",
                 **self.url_parameters
             )
 
@@ -175,7 +170,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadBalancerName", self.ctx.args.load_balancer_name,
+                    "bfdProfileName", self.ctx.args.bfd_profile_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -221,11 +216,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_load_balancer_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_bfd_profile_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class LoadBalancersCreateOrUpdate(AAZHttpOperation):
+    class BfdProfilesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -255,7 +250,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/loadBalancers/{loadBalancerName}",
+                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/bfdProfiles/{bfdProfileName}",
                 **self.url_parameters
             )
 
@@ -271,7 +266,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadBalancerName", self.ctx.args.load_balancer_name,
+                    "bfdProfileName", self.ctx.args.bfd_profile_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -329,7 +324,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_load_balancer_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_bfd_profile_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -348,27 +343,13 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("addresses", AAZListType, ".addresses", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("advertiseMode", AAZStrType, ".advertise_mode", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("bgpPeers", AAZListType, ".bgp_peers")
-                properties.set_prop("communities", AAZListType, ".communities")
-                properties.set_prop("serviceSelector", AAZDictType, ".service_selector")
-
-            addresses = _builder.get(".properties.addresses")
-            if addresses is not None:
-                addresses.set_elements(AAZStrType, ".")
-
-            bgp_peers = _builder.get(".properties.bgpPeers")
-            if bgp_peers is not None:
-                bgp_peers.set_elements(AAZStrType, ".")
-
-            communities = _builder.get(".properties.communities")
-            if communities is not None:
-                communities.set_elements(AAZStrType, ".")
-
-            service_selector = _builder.get(".properties.serviceSelector")
-            if service_selector is not None:
-                service_selector.set_elements(AAZStrType, ".")
+                properties.set_prop("detectMultiplier", AAZIntType, ".detect_multiplier")
+                properties.set_prop("echoInterval", AAZIntType, ".echo_interval")
+                properties.set_prop("echoMode", AAZStrType, ".echo_mode")
+                properties.set_prop("minimumTtl", AAZIntType, ".minimum_ttl")
+                properties.set_prop("passiveMode", AAZStrType, ".passive_mode")
+                properties.set_prop("receiveInterval", AAZIntType, ".receive_interval")
+                properties.set_prop("transmitInterval", AAZIntType, ".transmit_interval")
 
             return _instance_value
 
@@ -384,69 +365,64 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_load_balancer_read = None
+    _schema_bfd_profile_read = None
 
     @classmethod
-    def _build_schema_load_balancer_read(cls, _schema):
-        if cls._schema_load_balancer_read is not None:
-            _schema.id = cls._schema_load_balancer_read.id
-            _schema.name = cls._schema_load_balancer_read.name
-            _schema.properties = cls._schema_load_balancer_read.properties
-            _schema.system_data = cls._schema_load_balancer_read.system_data
-            _schema.type = cls._schema_load_balancer_read.type
+    def _build_schema_bfd_profile_read(cls, _schema):
+        if cls._schema_bfd_profile_read is not None:
+            _schema.id = cls._schema_bfd_profile_read.id
+            _schema.name = cls._schema_bfd_profile_read.name
+            _schema.properties = cls._schema_bfd_profile_read.properties
+            _schema.system_data = cls._schema_bfd_profile_read.system_data
+            _schema.type = cls._schema_bfd_profile_read.type
             return
 
-        cls._schema_load_balancer_read = _schema_load_balancer_read = AAZObjectType()
+        cls._schema_bfd_profile_read = _schema_bfd_profile_read = AAZObjectType()
 
-        load_balancer_read = _schema_load_balancer_read
-        load_balancer_read.id = AAZStrType(
+        bfd_profile_read = _schema_bfd_profile_read
+        bfd_profile_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        load_balancer_read.name = AAZStrType(
+        bfd_profile_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        load_balancer_read.properties = AAZObjectType()
-        load_balancer_read.system_data = AAZObjectType(
+        bfd_profile_read.properties = AAZObjectType()
+        bfd_profile_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        load_balancer_read.type = AAZStrType(
+        bfd_profile_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_load_balancer_read.properties
-        properties.addresses = AAZListType(
-            flags={"required": True},
+        properties = _schema_bfd_profile_read.properties
+        properties.detect_multiplier = AAZIntType(
+            serialized_name="detectMultiplier",
         )
-        properties.advertise_mode = AAZStrType(
-            serialized_name="advertiseMode",
-            flags={"required": True},
+        properties.echo_interval = AAZIntType(
+            serialized_name="echoInterval",
         )
-        properties.bgp_peers = AAZListType(
-            serialized_name="bgpPeers",
+        properties.echo_mode = AAZStrType(
+            serialized_name="echoMode",
         )
-        properties.communities = AAZListType()
+        properties.minimum_ttl = AAZIntType(
+            serialized_name="minimumTtl",
+        )
+        properties.passive_mode = AAZStrType(
+            serialized_name="passiveMode",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.service_selector = AAZDictType(
-            serialized_name="serviceSelector",
+        properties.receive_interval = AAZIntType(
+            serialized_name="receiveInterval",
+        )
+        properties.transmit_interval = AAZIntType(
+            serialized_name="transmitInterval",
         )
 
-        addresses = _schema_load_balancer_read.properties.addresses
-        addresses.Element = AAZStrType()
-
-        bgp_peers = _schema_load_balancer_read.properties.bgp_peers
-        bgp_peers.Element = AAZStrType()
-
-        communities = _schema_load_balancer_read.properties.communities
-        communities.Element = AAZStrType()
-
-        service_selector = _schema_load_balancer_read.properties.service_selector
-        service_selector.Element = AAZStrType()
-
-        system_data = _schema_load_balancer_read.system_data
+        system_data = _schema_bfd_profile_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -466,11 +442,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_load_balancer_read.id
-        _schema.name = cls._schema_load_balancer_read.name
-        _schema.properties = cls._schema_load_balancer_read.properties
-        _schema.system_data = cls._schema_load_balancer_read.system_data
-        _schema.type = cls._schema_load_balancer_read.type
+        _schema.id = cls._schema_bfd_profile_read.id
+        _schema.name = cls._schema_bfd_profile_read.name
+        _schema.properties = cls._schema_bfd_profile_read.properties
+        _schema.system_data = cls._schema_bfd_profile_read.system_data
+        _schema.type = cls._schema_bfd_profile_read.type
 
 
 __all__ = ["Update"]

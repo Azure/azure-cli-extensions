@@ -10,15 +10,10 @@
 
 from azext_k8s_runtime import K8sRuntimeCommandsLoader
 
-from .custom import (enable_storage_class_cmd, disable_storage_class_cmd,
-                     enable_load_balancer_cmd, disable_load_balancer_cmd)
+from .custom import enable_load_balancer_cmd, disable_load_balancer_cmd
 
 
 def load_command_table(self: K8sRuntimeCommandsLoader, _):  # pylint: disable=unused-argument
-    with self.command_group("k8s-runtime storage-class", is_preview=True) as g:
-        g.custom_command("enable", enable_storage_class_cmd.__name__)
-        g.custom_command("disable", disable_storage_class_cmd.__name__)
-
     with self.command_group("k8s-runtime load-balancer") as g:
         g.custom_command("enable", enable_load_balancer_cmd.__name__)
         g.custom_command("disable", disable_load_balancer_cmd.__name__)
