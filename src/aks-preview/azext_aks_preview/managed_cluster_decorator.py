@@ -83,6 +83,7 @@ from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_LOAD_BALANCER_SKU_STANDARD,
     DecoratorEarlyExitException,
     DecoratorMode,
 )
@@ -343,6 +344,47 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
         return enable_msi_auth_for_monitoring
+
+    def _get_load_balancer_sku(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of load_balancer_sku, default value is
+        CONST_LOAD_BALANCER_SKU_STANDARD.
+
+        Note: When returning a string, it will always be lowercase.
+
+        This function supports the option of enable_validation. When enabled, it will check if load_balancer_sku equals
+        to CONST_LOAD_BALANCER_SKU_BASIC, if so, when api_server_authorized_ip_ranges is assigned or
+        enable_private_cluster is specified, raise an InvalidArgumentValueError.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        load_balancer_sku = safe_lower(self.raw_param.get("load_balancer_sku"))
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            load_balancer_sku is None and
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_sku is not None
+        ):
+            load_balancer_sku = safe_lower(
+                self.mc.network_profile.load_balancer_sku
+            )
+        if self.decorator_mode == DecoratorMode.CREATE and load_balancer_sku is None:
+            load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        # validation
+        if enable_validation:
+            if load_balancer_sku == CONST_LOAD_BALANCER_SKU_BASIC:
+                if self._get_api_server_authorized_ip_ranges(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "--api-server-authorized-ip-ranges can only be used with standard load balancer"
+                    )
+                if self._get_enable_private_cluster(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "Please use standard load balancer for private cluster"
+                    )
+
+        return load_balancer_sku
 
     def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_local_accounts.
@@ -4044,6 +4086,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         self.update_network_plugin_settings(mc)
 
+        loadbalancer_sku = self.context.get_load_balancer_sku()
+        if loadbalancer_sku:
+            mc.network_profile.load_balancer_sku = loadbalancer_sku
         return mc
 
     def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
