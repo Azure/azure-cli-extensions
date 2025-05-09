@@ -15904,9 +15904,18 @@ spec:
         })
 
         self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
+        
+        is_extension_types_feature_registered = False
 
-        # Wait for 5 minutes for feature registration to complete
-        time.sleep(300)
+        # Wait until extension types feature is registered
+        while not is_extension_types_feature_registered:
+            result = self.cmd('feature show --namespace Microsoft.KubernetesConfiguration '
+                              '--name ExtensionTypes').get_output_in_json()
+            if (result["properties"]["state"] == "Registered"):
+                is_extension_types_feature_registered = True
+            else:
+                # sleep for 30 seconds if feature is not registered
+                time.sleep(30)
 
         # create the cluster 
         self.cmd('aks create -g {rg} -n {cluster_name} '
@@ -15992,8 +16001,17 @@ spec:
         })
         self.cmd('feature register --namespace Microsoft.KubernetesConfiguration --name ExtensionTypes')
 
-        # Wait for 5 minutes for feature registration to complete
-        time.sleep(300)
+        is_extension_types_feature_registered = False
+
+        # Wait until extension types feature is registered
+        while not is_extension_types_feature_registered:
+            result = self.cmd('feature show --namespace Microsoft.KubernetesConfiguration '
+                              '--name ExtensionTypes').get_output_in_json()
+            if (result["properties"]["state"] == "Registered"):
+                is_extension_types_feature_registered = True
+            else:
+                # sleep for 30 seconds if feature is not registered
+                time.sleep(30)
 
         # create storage account
         self.cmd('storage account create --name {storageAccount} --resource-group {rg} '
