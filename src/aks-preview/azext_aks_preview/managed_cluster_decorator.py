@@ -5353,7 +5353,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_migrate_vmas_to_vms():
             msg = (
-                "\nWARNING: This operation will be disruptive to your workload while underway. " 
+                "\nWARNING: This operation will be disruptive to your workload while underway. "
                 "Do you wish to continue?"
             )
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
