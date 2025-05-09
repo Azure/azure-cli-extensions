@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-definition-build cancel",
-    is_preview=True,
+    "devcenter dev dev-box approve",
 )
-class Cancel(AAZCommand):
-    """Cancels the specified build for an image definition.
+class Approve(AAZCommand):
+    """Approves the creation of a Dev Box.
 
-    :example: Cancel
-        az devcenter admin image-definition-build cancel --build-name "0a28fc61-6f87-4611-8fe2-32df44ab93b7" --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "rg1" --resource-group "rg1"
+    :example: Approve creation
+        az devcenter dev dev-box approve --project-name "myProject" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  --user-id "me" --dev-box-name "MyDevBox"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/builds/{}/cancel", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:approve", "2025-04-01-preview"],
         ]
     }
 
@@ -43,36 +42,23 @@ class Cancel(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # define Arg Group "Client"
+
+        _args_schema = cls._args_schema
+        _args_schema.endpoint = AAZStrArg(
+            options=["--endpoint"],
+            arg_group="Client",
+            help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+            required=True,
+        )
+
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.build_name = AAZStrArg(
-            options=["-n", "--name", "--build-name"],
-            help="The ID of the Image Definition Build.",
+        _args_schema.dev_box_name = AAZStrArg(
+            options=["-n", "--name", "--dev-box", "--dev-box-name"],
+            help="The name of the dev box.",
             required=True,
-            id_part="child_name_3",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
-        _args_schema.catalog_name = AAZStrArg(
-            options=["--catalog-name"],
-            help="The name of the Catalog.",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
-        _args_schema.image_definition_name = AAZStrArg(
-            options=["-i", "--image-definition-name"],
-            help="The name of the Image Definition.",
-            required=True,
-            id_part="child_name_2",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -81,23 +67,30 @@ class Cancel(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.user_id = AAZStrArg(
+            options=["--user-id"],
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.",
             required=True,
+            default="me",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
+                max_length=36,
+                min_length=2,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ProjectCatalogImageDefinitionBuildCancel(ctx=self.ctx)()
+        yield self.DevBoxesApproveDevBox(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -108,8 +101,9 @@ class Cancel(AAZCommand):
     def post_operations(self):
         pass
 
-    class ProjectCatalogImageDefinitionBuildCancel(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
+
+    class DevBoxesApproveDevBox(AAZHttpOperation):
+        CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
@@ -138,7 +132,7 @@ class Cancel(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds/{buildName}/cancel",
+                "/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:approve",
                 **self.url_parameters
             )
 
@@ -148,21 +142,18 @@ class Cancel(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "buildName", self.ctx.args.build_name,
+                    "endpoint", self.ctx.args.endpoint,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "catalogName", self.ctx.args.catalog_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    "devBoxName", self.ctx.args.dev_box_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -170,11 +161,7 @@ class Cancel(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "userId", self.ctx.args.user_id,
                     required=True,
                 ),
             }
@@ -184,18 +171,18 @@ class Cancel(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
             return parameters
-
+        
         def on_200(self, session):
             pass
 
 
-class _CancelHelper:
-    """Helper class for Cancel"""
+class _ApproveHelper:
+    """Helper class for Approve"""
 
 
-__all__ = ["Cancel"]
+__all__ = ["Approve"]

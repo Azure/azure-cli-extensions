@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-definition show",
-    is_preview=True,
+    "devcenter admin project-image-definition-build get-build-detail",
 )
-class Show(AAZCommand):
-    """Get an Image Definition from the catalog
+class GetBuildDetail(AAZCommand):
+    """Gets Build details
 
-    :example: Get
-        az devcenter admin image-definition show --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "rg1" --resource-group "rg1"
+    :example: Get build details
+        az devcenter admin project-image-definition-build get-build-detail --build-name "0a28fc61-6f87-4611-8fe2-32df44ab93b7" --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/builds/{}/getbuilddetails", "2025-04-01-preview"],
         ]
     }
 
@@ -45,6 +44,17 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.build_name = AAZStrArg(
+            options=["-n", "--name", "--build-name"],
+            help="The ID of the Image Definition Build.",
+            required=True,
+            id_part="child_name_3",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
         _args_schema.catalog_name = AAZStrArg(
             options=["--catalog-name"],
             help="The name of the Catalog.",
@@ -57,7 +67,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.image_definition_name = AAZStrArg(
-            options=["-n", "--name", "--image-definition-name"],
+            options=["-i", "--image-definition-name"],
             help="The name of the Image Definition.",
             required=True,
             id_part="child_name_2",
@@ -85,7 +95,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectCatalogImageDefinitionsGetByProjectCatalog(ctx=self.ctx)()
+        self.ProjectCatalogImageDefinitionBuildGetBuildDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -100,7 +110,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ProjectCatalogImageDefinitionsGetByProjectCatalog(AAZHttpOperation):
+    class ProjectCatalogImageDefinitionBuildGetBuildDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,13 +124,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds/{buildName}/getBuildDetails",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -129,6 +139,10 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "buildName", self.ctx.args.build_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "catalogName", self.ctx.args.catalog_name,
                     required=True,
@@ -156,7 +170,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -189,68 +203,53 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
             _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.image_reference = AAZObjectType(
+                serialized_name="imageReference",
                 flags={"read_only": True},
             )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"read_only": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.task_groups = AAZListType(
+                serialized_name="taskGroups",
                 flags={"read_only": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.active_image_reference = AAZObjectType(
-                serialized_name="activeImageReference",
-            )
-            _ShowHelper._build_schema_image_reference_read(properties.active_image_reference)
-            properties.file_url = AAZStrType(
-                serialized_name="fileUrl",
-                flags={"read_only": True},
-            )
-            properties.image_reference = AAZObjectType(
-                serialized_name="imageReference",
-            )
-            _ShowHelper._build_schema_image_reference_read(properties.image_reference)
-            properties.image_validation_error_details = AAZObjectType(
-                serialized_name="imageValidationErrorDetails",
-            )
-            properties.image_validation_status = AAZStrType(
-                serialized_name="imageValidationStatus",
-            )
-            properties.latest_build = AAZObjectType(
-                serialized_name="latestBuild",
-            )
-            properties.validation_status = AAZStrType(
-                serialized_name="validationStatus",
-            )
+            error_details = cls._schema_on_200.error_details
+            error_details.code = AAZStrType()
+            error_details.message = AAZStrType()
 
-            image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
-            image_validation_error_details.code = AAZStrType()
-            image_validation_error_details.message = AAZStrType()
-
-            latest_build = cls._schema_on_200.properties.latest_build
-            latest_build.end_time = AAZStrType(
-                serialized_name="endTime",
+            image_reference = cls._schema_on_200.image_reference
+            image_reference.exact_version = AAZStrType(
+                serialized_name="exactVersion",
                 flags={"read_only": True},
             )
-            latest_build.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            latest_build.start_time = AAZStrType(
-                serialized_name="startTime",
-                flags={"read_only": True},
-            )
-            latest_build.status = AAZStrType(
-                flags={"read_only": True},
-            )
+            image_reference.id = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -272,32 +271,72 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            task_groups = cls._schema_on_200.task_groups
+            task_groups.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.task_groups.Element
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.tasks = AAZListType(
+                flags={"read_only": True},
+            )
+
+            tasks = cls._schema_on_200.task_groups.Element.tasks
+            tasks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.task_groups.Element.tasks.Element
+            _element.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.log_uri = AAZStrType(
+                serialized_name="logUri",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType()
+            _element.parameters = AAZListType()
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            parameters = cls._schema_on_200.task_groups.Element.tasks.Element.parameters
+            parameters.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.task_groups.Element.tasks.Element.parameters.Element
+            _element.key = AAZStrType(
+                flags={"required": True},
+            )
+            _element.value = AAZStrType(
+                flags={"required": True},
+            )
+
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
-
-    _schema_image_reference_read = None
-
-    @classmethod
-    def _build_schema_image_reference_read(cls, _schema):
-        if cls._schema_image_reference_read is not None:
-            _schema.exact_version = cls._schema_image_reference_read.exact_version
-            _schema.id = cls._schema_image_reference_read.id
-            return
-
-        cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
-
-        image_reference_read = _schema_image_reference_read
-        image_reference_read.exact_version = AAZStrType(
-            serialized_name="exactVersion",
-            flags={"read_only": True},
-        )
-        image_reference_read.id = AAZStrType()
-
-        _schema.exact_version = cls._schema_image_reference_read.exact_version
-        _schema.id = cls._schema_image_reference_read.id
+class _GetBuildDetailHelper:
+    """Helper class for GetBuildDetail"""
 
 
-__all__ = ["Show"]
+__all__ = ["GetBuildDetail"]

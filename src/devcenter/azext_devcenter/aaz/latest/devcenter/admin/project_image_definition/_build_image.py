@@ -12,21 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin plan-member delete",
-    is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
+    "devcenter admin project-image-definition build-image",
 )
-class Delete(AAZCommand):
-    """Delete a dev center plan member
+class BuildImage(AAZCommand):
+    """Builds an image for the specified Image Definition.
 
-    :example: Delete
-        az devcenter admin plan-member delete --name "d702f662-b3f2-4796-9e8c-13c22378ced3" --plan-name "ContosoPlan" --resource-group "rg1"
+    :example: Build image
+        az devcenter admin project-image-definition build-image --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}/members/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/buildimage", "2025-04-01-preview"],
         ]
     }
 
@@ -47,24 +45,35 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.member_name = AAZStrArg(
-            options=["-n", "--name", "--member-name"],
-            help="The name of a devcenter plan member.",
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the Catalog.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.plan_name = AAZStrArg(
-            options=["--plan-name"],
-            help="The name of the devcenter plan.",
+        _args_schema.image_definition_name = AAZStrArg(
+            options=["-n", "--name", "--image-definition-name"],
+            help="The name of the Image Definition.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
@@ -76,7 +85,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.PlanMembersDelete(ctx=self.ctx)()
+        yield self.ProjectCatalogImageDefinitionsBuildImage(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,7 +96,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class PlanMembersDelete(AAZHttpOperation):
+    class ProjectCatalogImageDefinitionsBuildImage(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,14 +118,6 @@ class Delete(AAZCommand):
                     self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -125,13 +126,13 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/plans/{planName}/members/{memberName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/buildImage",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -141,11 +142,15 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "memberName", self.ctx.args.member_name,
+                    "catalogName", self.ctx.args.catalog_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "planName", self.ctx.args.plan_name,
+                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,7 +168,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -172,12 +177,9 @@ class Delete(AAZCommand):
         def on_200(self, session):
             pass
 
-        def on_204(self, session):
-            pass
+
+class _BuildImageHelper:
+    """Helper class for BuildImage"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["BuildImage"]
