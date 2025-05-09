@@ -5345,15 +5345,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         return mc
 
     def update_vmas_to_vms(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update the agent pool profile type to be VMS and LB sku to standard
+        """Update the agent pool profile type from VMAS to VMS and LB sku to standard
 
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
         if self.context.get_migrate_vmas_to_vms():
-            msg = " WARNING: This operation will be disruptive to your workload while underway. " \
-            "Do you wish to continue?"
+            msg = (
+                "\nWARNING: This operation will be disruptive to your workload while underway. " 
+                "Do you wish to continue?"
+            )
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             # Ensure we have valid vmas AP
