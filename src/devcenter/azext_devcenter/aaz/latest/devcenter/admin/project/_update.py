@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -118,10 +118,28 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.azure_ai_services_settings = AAZObjectArg(
+            options=["-a", "--azure-ai-services-settings"],
+            arg_group="Properties",
+            help="Indicates whether Azure AI services are enabled for a project.",
+            nullable=True,
+        )
+        _args_schema.customization_settings = AAZObjectArg(
+            options=["--customization-settings"],
+            arg_group="Properties",
+            help="Settings to be used for customizations.",
+            nullable=True,
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="Description of the project.",
+            nullable=True,
+        )
+        _args_schema.dev_box_auto_delete_settings = AAZObjectArg(
+            options=["-d", "--dev-box-auto-delete-settings"],
+            arg_group="Properties",
+            help="Dev Box Auto Delete settings.",
             nullable=True,
         )
         _args_schema.display_name = AAZStrArg(
@@ -138,6 +156,99 @@ class Update(AAZCommand):
             fmt=AAZIntArgFormat(
                 minimum=0,
             ),
+        )
+        _args_schema.serverless_gpu_sessions_settings = AAZObjectArg(
+            options=["-s", "--serverless-gpu-sessions-settings"],
+            arg_group="Properties",
+            help="Settings to be used for serverless GPU.",
+            nullable=True,
+        )
+        _args_schema.workspace_storage_settings = AAZObjectArg(
+            options=["-w", "--workspace-storage-settings"],
+            arg_group="Properties",
+            help="Settings to be used for workspace storage.",
+            nullable=True,
+        )
+
+        azure_ai_services_settings = cls._args_schema.azure_ai_services_settings
+        azure_ai_services_settings.azure_ai_services_mode = AAZStrArg(
+            options=["azure-ai-services-mode"],
+            help="The property indicates whether Azure AI services is enabled.",
+            nullable=True,
+            enum={"AutoDeploy": "AutoDeploy", "Disabled": "Disabled"},
+        )
+
+        customization_settings = cls._args_schema.customization_settings
+        customization_settings.identities = AAZListArg(
+            options=["identities"],
+            help="The identities that can to be used in customization scenarios; e.g., to clone a repository.",
+            nullable=True,
+        )
+        customization_settings.user_customizations_enable_status = AAZStrArg(
+            options=["user-customizations-enable-status"],
+            help="Indicates whether user customizations are enabled.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        identities = cls._args_schema.customization_settings.identities
+        identities.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.customization_settings.identities.Element
+        _element.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity.",
+            nullable=True,
+        )
+        _element.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="Values can be systemAssignedIdentity or userAssignedIdentity",
+            nullable=True,
+            enum={"systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
+        )
+
+        dev_box_auto_delete_settings = cls._args_schema.dev_box_auto_delete_settings
+        dev_box_auto_delete_settings.delete_mode = AAZStrArg(
+            options=["delete-mode"],
+            help="Indicates the delete mode for Dev Boxes within this project.",
+            nullable=True,
+            enum={"Auto": "Auto", "Manual": "Manual"},
+        )
+        dev_box_auto_delete_settings.grace_period = AAZStrArg(
+            options=["grace-period"],
+            help="ISO8601 duration required for the dev box to be marked for deletion prior to it being deleted. ISO8601 format PT[n]H[n]M[n]S.",
+            nullable=True,
+        )
+        dev_box_auto_delete_settings.inactive_threshold = AAZStrArg(
+            options=["inactive-threshold"],
+            help="ISO8601 duration required for the dev box to not be inactive prior to it being scheduled for deletion.  ISO8601 format PT[n]H[n]M[n]S.",
+            nullable=True,
+        )
+
+        serverless_gpu_sessions_settings = cls._args_schema.serverless_gpu_sessions_settings
+        serverless_gpu_sessions_settings.max_concurrent_sessions_per_project = AAZIntArg(
+            options=["max-concurrent-sessions-per-project"],
+            help="When specified, limits the maximum number of concurrent sessions across all pools in the project.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        serverless_gpu_sessions_settings.serverless_gpu_sessions_mode = AAZStrArg(
+            options=["serverless-gpu-sessions-mode"],
+            help="The property indicates whether serverless GPU access is enabled on the project.",
+            nullable=True,
+            enum={"AutoDeploy": "AutoDeploy", "Disabled": "Disabled"},
+        )
+
+        workspace_storage_settings = cls._args_schema.workspace_storage_settings
+        workspace_storage_settings.workspace_storage_mode = AAZStrArg(
+            options=["workspace-storage-mode"],
+            help="Indicates whether workspace storage is enabled.",
+            nullable=True,
+            enum={"AutoDeploy": "AutoDeploy", "Disabled": "Disabled"},
         )
         return cls._args_schema
 
@@ -219,7 +330,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -318,7 +429,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -376,7 +487,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -391,10 +502,19 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("azureAiServicesSettings", AAZObjectType, ".azure_ai_services_settings")
                 properties.set_prop("catalogSettings", AAZObjectType)
+                properties.set_prop("customizationSettings", AAZObjectType, ".customization_settings")
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("devBoxAutoDeleteSettings", AAZObjectType, ".dev_box_auto_delete_settings")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
+                properties.set_prop("serverlessGpuSessionsSettings", AAZObjectType, ".serverless_gpu_sessions_settings")
+                properties.set_prop("workspaceStorageSettings", AAZObjectType, ".workspace_storage_settings")
+
+            azure_ai_services_settings = _builder.get(".properties.azureAiServicesSettings")
+            if azure_ai_services_settings is not None:
+                azure_ai_services_settings.set_prop("azureAiServicesMode", AAZStrType, ".azure_ai_services_mode")
 
             catalog_settings = _builder.get(".properties.catalogSettings")
             if catalog_settings is not None:
@@ -403,6 +523,35 @@ class Update(AAZCommand):
             catalog_item_sync_types = _builder.get(".properties.catalogSettings.catalogItemSyncTypes")
             if catalog_item_sync_types is not None:
                 catalog_item_sync_types.set_elements(AAZStrType, ".")
+
+            customization_settings = _builder.get(".properties.customizationSettings")
+            if customization_settings is not None:
+                customization_settings.set_prop("identities", AAZListType, ".identities")
+                customization_settings.set_prop("userCustomizationsEnableStatus", AAZStrType, ".user_customizations_enable_status")
+
+            identities = _builder.get(".properties.customizationSettings.identities")
+            if identities is not None:
+                identities.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.customizationSettings.identities[]")
+            if _elements is not None:
+                _elements.set_prop("identityResourceId", AAZStrType, ".identity_resource_id")
+                _elements.set_prop("identityType", AAZStrType, ".identity_type")
+
+            dev_box_auto_delete_settings = _builder.get(".properties.devBoxAutoDeleteSettings")
+            if dev_box_auto_delete_settings is not None:
+                dev_box_auto_delete_settings.set_prop("deleteMode", AAZStrType, ".delete_mode")
+                dev_box_auto_delete_settings.set_prop("gracePeriod", AAZStrType, ".grace_period")
+                dev_box_auto_delete_settings.set_prop("inactiveThreshold", AAZStrType, ".inactive_threshold")
+
+            serverless_gpu_sessions_settings = _builder.get(".properties.serverlessGpuSessionsSettings")
+            if serverless_gpu_sessions_settings is not None:
+                serverless_gpu_sessions_settings.set_prop("maxConcurrentSessionsPerProject", AAZIntType, ".max_concurrent_sessions_per_project")
+                serverless_gpu_sessions_settings.set_prop("serverlessGpuSessionsMode", AAZStrType, ".serverless_gpu_sessions_mode")
+
+            workspace_storage_settings = _builder.get(".properties.workspaceStorageSettings")
+            if workspace_storage_settings is not None:
+                workspace_storage_settings.set_prop("workspaceStorageMode", AAZStrType, ".workspace_storage_mode")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -443,7 +592,7 @@ class _UpdateHelper:
         project_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        project_read.identity = AAZObjectType()
+        project_read.identity = AAZIdentityObjectType()
         project_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -492,10 +641,19 @@ class _UpdateHelper:
         )
 
         properties = _schema_project_read.properties
+        properties.azure_ai_services_settings = AAZObjectType(
+            serialized_name="azureAiServicesSettings",
+        )
         properties.catalog_settings = AAZObjectType(
             serialized_name="catalogSettings",
         )
+        properties.customization_settings = AAZObjectType(
+            serialized_name="customizationSettings",
+        )
         properties.description = AAZStrType()
+        properties.dev_box_auto_delete_settings = AAZObjectType(
+            serialized_name="devBoxAutoDeleteSettings",
+        )
         properties.dev_center_id = AAZStrType(
             serialized_name="devCenterId",
         )
@@ -513,6 +671,17 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.serverless_gpu_sessions_settings = AAZObjectType(
+            serialized_name="serverlessGpuSessionsSettings",
+        )
+        properties.workspace_storage_settings = AAZObjectType(
+            serialized_name="workspaceStorageSettings",
+        )
+
+        azure_ai_services_settings = _schema_project_read.properties.azure_ai_services_settings
+        azure_ai_services_settings.azure_ai_services_mode = AAZStrType(
+            serialized_name="azureAiServicesMode",
+        )
 
         catalog_settings = _schema_project_read.properties.catalog_settings
         catalog_settings.catalog_item_sync_types = AAZListType(
@@ -521,6 +690,47 @@ class _UpdateHelper:
 
         catalog_item_sync_types = _schema_project_read.properties.catalog_settings.catalog_item_sync_types
         catalog_item_sync_types.Element = AAZStrType()
+
+        customization_settings = _schema_project_read.properties.customization_settings
+        customization_settings.identities = AAZListType()
+        customization_settings.user_customizations_enable_status = AAZStrType(
+            serialized_name="userCustomizationsEnableStatus",
+        )
+
+        identities = _schema_project_read.properties.customization_settings.identities
+        identities.Element = AAZObjectType()
+
+        _element = _schema_project_read.properties.customization_settings.identities.Element
+        _element.identity_resource_id = AAZStrType(
+            serialized_name="identityResourceId",
+        )
+        _element.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+
+        dev_box_auto_delete_settings = _schema_project_read.properties.dev_box_auto_delete_settings
+        dev_box_auto_delete_settings.delete_mode = AAZStrType(
+            serialized_name="deleteMode",
+        )
+        dev_box_auto_delete_settings.grace_period = AAZStrType(
+            serialized_name="gracePeriod",
+        )
+        dev_box_auto_delete_settings.inactive_threshold = AAZStrType(
+            serialized_name="inactiveThreshold",
+        )
+
+        serverless_gpu_sessions_settings = _schema_project_read.properties.serverless_gpu_sessions_settings
+        serverless_gpu_sessions_settings.max_concurrent_sessions_per_project = AAZIntType(
+            serialized_name="maxConcurrentSessionsPerProject",
+        )
+        serverless_gpu_sessions_settings.serverless_gpu_sessions_mode = AAZStrType(
+            serialized_name="serverlessGpuSessionsMode",
+        )
+
+        workspace_storage_settings = _schema_project_read.properties.workspace_storage_settings
+        workspace_storage_settings.workspace_storage_mode = AAZStrType(
+            serialized_name="workspaceStorageMode",
+        )
 
         system_data = _schema_project_read.system_data
         system_data.created_at = AAZStrType(

@@ -8,17 +8,12 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "devcenter admin plan-member",
-    is_preview=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage plan members.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._disable import *
+from ._enable import *
+from ._list import *
+from ._show import *
+from ._update import *
+from ._wait import *

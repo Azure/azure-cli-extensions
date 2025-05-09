@@ -12,21 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin plan delete",
-    is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
+    "devcenter dev add-on disable",
 )
-class Delete(AAZCommand):
-    """Delete a dev center plan
+class Disable(AAZCommand):
+    """Disable a Dev Box addon.
 
-    :example: Delete
-        az devcenter admin plan delete--name "ContosoPlan" --resource-group "myResourceGroup"
+    :example: Disable
+        az devcenter dev add-on disable --project-name "myProject" --user-id "me" --dev-box-name "myDevBox" --add-on-name "devboxtunnel-sys-default"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/plans/{}", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}/addons/{}:disable", "2025-04-01-preview"],
         ]
     }
 
@@ -44,28 +42,65 @@ class Delete(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # define Arg Group "Client"
+
+        _args_schema = cls._args_schema
+        _args_schema.endpoint = AAZStrArg(
+            options=["--endpoint"],
+            arg_group="Client",
+            help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+            required=True,
+        )
+
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.plan_name = AAZStrArg(
-            options=["-n", "--name", "--plan-name"],
-            help="The name of the devcenter plan.",
+        _args_schema.add_on_name = AAZStrArg(
+            options=["-n", "--name", "--add-on-name"],
+            help="The name of the Dev Box addon.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.dev_box_name = AAZStrArg(
+            options=["--dev-box", "--dev-box-name"],
+            help="The name of a Dev Box.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.user_id = AAZStrArg(
+            options=["--user-id"],
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.",
+            required=True,
+            default="me",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
+                max_length=36,
+                min_length=2,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.PlansDelete(ctx=self.ctx)()
+        yield self.DevBoxesDisableDevBoxAddOn(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,8 +111,9 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class PlansDelete(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
+
+    class DevBoxesDisableDevBoxAddOn(AAZHttpOperation):
+        CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
@@ -100,46 +136,46 @@ class Delete(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/plans/{planName}",
+                "/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/addons/{addOnName}:disable",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "planName", self.ctx.args.plan_name,
+                    "endpoint", self.ctx.args.endpoint,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "addOnName", self.ctx.args.add_on_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "devBoxName", self.ctx.args.dev_box_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "userId", self.ctx.args.user_id,
                     required=True,
                 ),
             }
@@ -149,7 +185,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -158,12 +194,9 @@ class Delete(AAZCommand):
         def on_200(self, session):
             pass
 
-        def on_204(self, session):
-            pass
+
+class _DisableHelper:
+    """Helper class for Disable"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["Disable"]

@@ -8,17 +8,8 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "devcenter admin image-definition-build",
-    is_preview=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage image definition builds.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._build_image import *
+from ._get_error_detail import *
+from ._list import *
+from ._show import *

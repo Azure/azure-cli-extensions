@@ -22,9 +22,9 @@ class GetSyncErrorDetail(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/getsyncerrordetails", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/getsyncerrordetails", "2025-04-01-preview"],
         ]
     }
 
@@ -140,7 +140,7 @@ class GetSyncErrorDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -181,6 +181,7 @@ class GetSyncErrorDetail(AAZCommand):
             )
             _schema_on_200.operation_error = AAZObjectType(
                 serialized_name="operationError",
+                flags={"read_only": True},
             )
             _GetSyncErrorDetailHelper._build_schema_catalog_error_details_read(_schema_on_200.operation_error)
 
@@ -226,7 +227,9 @@ class _GetSyncErrorDetailHelper:
             _schema.message = cls._schema_catalog_error_details_read.message
             return
 
-        cls._schema_catalog_error_details_read = _schema_catalog_error_details_read = AAZObjectType()
+        cls._schema_catalog_error_details_read = _schema_catalog_error_details_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         catalog_error_details_read = _schema_catalog_error_details_read
         catalog_error_details_read.code = AAZStrType()

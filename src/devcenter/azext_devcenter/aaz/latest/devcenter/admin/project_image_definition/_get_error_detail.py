@@ -12,28 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-definition-build list",
-    is_preview=True,
+    "devcenter admin project-image-definition get-error-detail",
 )
-class List(AAZCommand):
-    """List builds for a specified image definition.
+class GetErrorDetail(AAZCommand):
+    """Gets Image Definition error details
 
-    :example: List
-        az devcenter admin image-definition-build list --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "rg1" --resource-group "rg1"
+    :example: Get error details
+        az devcenter admin project-image-definition get-error-detail --resource-group "rg1" --project-name "DevProject" --catalog-name "TeamCatalog" --image-definition-name "WebDevBox"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/builds", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/geterrordetails", "2025-04-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -50,6 +48,7 @@ class List(AAZCommand):
             options=["--catalog-name"],
             help="The name of the Catalog.",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -57,9 +56,10 @@ class List(AAZCommand):
             ),
         )
         _args_schema.image_definition_name = AAZStrArg(
-            options=["-i", "--image-definition-name"],
+            options=["-n", "--name", "--image-definition-name"],
             help="The name of the Image Definition.",
             required=True,
+            id_part="child_name_2",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -67,9 +67,10 @@ class List(AAZCommand):
             ),
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+            options=["--project-name"],
+            help="The name of the project.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -83,7 +84,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectCatalogImageDefinitionBuildsListByImageDefinition(ctx=self.ctx)()
+        self.ProjectCatalogImageDefinitionsGetErrorDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -95,11 +96,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ProjectCatalogImageDefinitionBuildsListByImageDefinition(AAZHttpOperation):
+    class ProjectCatalogImageDefinitionsGetErrorDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -113,13 +113,13 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/builds",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/getErrorDetails",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -155,7 +155,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -188,90 +188,22 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
-            _schema_on_200.value = AAZListType(
+            _schema_on_200.errors = AAZListType(
                 flags={"read_only": True},
             )
 
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
+            errors = cls._schema_on_200.errors
+            errors.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.end_time = AAZStrType(
-                serialized_name="endTime",
-                flags={"read_only": True},
-            )
-            properties.error_details = AAZObjectType(
-                serialized_name="errorDetails",
-            )
-            properties.image_reference = AAZObjectType(
-                serialized_name="imageReference",
-            )
-            properties.start_time = AAZStrType(
-                serialized_name="startTime",
-                flags={"read_only": True},
-            )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            error_details = cls._schema_on_200.value.Element.properties.error_details
-            error_details.code = AAZStrType()
-            error_details.message = AAZStrType()
-
-            image_reference = cls._schema_on_200.value.Element.properties.image_reference
-            image_reference.exact_version = AAZStrType(
-                serialized_name="exactVersion",
-                flags={"read_only": True},
-            )
-            image_reference.id = AAZStrType()
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _element = cls._schema_on_200.errors.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _GetErrorDetailHelper:
+    """Helper class for GetErrorDetail"""
 
 
-__all__ = ["List"]
+__all__ = ["GetErrorDetail"]

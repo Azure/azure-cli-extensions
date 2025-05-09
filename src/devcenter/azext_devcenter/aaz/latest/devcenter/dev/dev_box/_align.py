@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-definition build-image",
-    is_preview=True,
+    "devcenter dev dev-box align",
 )
-class BuildImage(AAZCommand):
-    """Builds an image for the specified Image Definition.
+class Align(AAZCommand):
+    """Aligns a Dev Box to the pools current pool configuration.
 
-    :example: Build image
-        az devcenter admin image-definition build-image --catalog-name "CentralCatalog" --image-definition-name "DefaultDevImage" --project-name "rg1" --resource-group "rg1"
+    :example: Aligns dev box
+        az devcenter dev dev-box align --project-name "myProject" --user-id me --dev-box-name "MyDevBox" --targets ["NetworkProperties"] --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/imagedefinitions/{}/buildimage", "2024-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:align", "2025-04-01-preview"],
         ]
     }
 
@@ -43,25 +42,23 @@ class BuildImage(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # define Arg Group "Client"
+
+        _args_schema = cls._args_schema
+        _args_schema.endpoint = AAZStrArg(
+            options=["--endpoint"],
+            arg_group="Client",
+            help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+            required=True,
+        )
+
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.catalog_name = AAZStrArg(
-            options=["--catalog-name"],
-            help="The name of the Catalog.",
+        _args_schema.dev_box_name = AAZStrArg(
+            options=["-n", "--name", "--dev-box", "--dev-box-name"],
+            help="The name of the dev box.",
             required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
-        _args_schema.image_definition_name = AAZStrArg(
-            options=["-i", "--image-definition-name"],
-            help="The name of the Image Definition.",
-            required=True,
-            id_part="child_name_2",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -70,23 +67,45 @@ class BuildImage(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.user_id = AAZStrArg(
+            options=["--user-id"],
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.",
             required=True,
+            default="me",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
+                max_length=36,
+                min_length=2,
+            ),
+        )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.targets = AAZListArg(
+            options=["--targets"],
+            arg_group="Body",
+            help="The targets to align on.",
+            required=True,
+        )
+
+        targets = cls._args_schema.targets
+        targets.Element = AAZStrArg(
+            enum={"NetworkProperties": "NetworkProperties"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ProjectCatalogImageDefinitionsBuildImage(ctx=self.ctx)()
+        yield self.DevBoxesAlignDevBox(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,8 +116,9 @@ class BuildImage(AAZCommand):
     def post_operations(self):
         pass
 
-    class ProjectCatalogImageDefinitionsBuildImage(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
+
+    class DevBoxesAlignDevBox(AAZHttpOperation):
+        CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
@@ -127,7 +147,7 @@ class BuildImage(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/catalogs/{catalogName}/imageDefinitions/{imageDefinitionName}/buildImage",
+                "/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:align",
                 **self.url_parameters
             )
 
@@ -137,17 +157,18 @@ class BuildImage(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "catalogName", self.ctx.args.catalog_name,
+                    "endpoint", self.ctx.args.endpoint,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "imageDefinitionName", self.ctx.args.image_definition_name,
+                    "devBoxName", self.ctx.args.dev_box_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -155,11 +176,7 @@ class BuildImage(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "userId", self.ctx.args.user_id,
                     required=True,
                 ),
             }
@@ -169,18 +186,42 @@ class BuildImage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
             return parameters
-
+        
         def on_200(self, session):
             pass
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
 
-class _BuildImageHelper:
-    """Helper class for BuildImage"""
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("targets", AAZListType, ".targets", typ_kwargs={"flags": {"required": True}})
+
+            targets = _builder.get(".targets")
+            if targets is not None:
+                targets.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
 
-__all__ = ["BuildImage"]
+class _AlignHelper:
+    """Helper class for Align"""
+
+
+__all__ = ["Align"]

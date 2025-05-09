@@ -22,9 +22,9 @@ class GetInheritedSetting(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/getinheritedsettings", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/getinheritedsettings", "2025-04-01-preview"],
         ]
     }
 
@@ -125,7 +125,7 @@ class GetInheritedSetting(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -160,14 +160,17 @@ class GetInheritedSetting(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.network_settings = AAZObjectType(
                 serialized_name="networkSettings",
+                flags={"read_only": True},
             )
             _schema_on_200.project_catalog_settings = AAZObjectType(
                 serialized_name="projectCatalogSettings",
+                flags={"read_only": True},
             )
 
             network_settings = cls._schema_on_200.network_settings
             network_settings.microsoft_hosted_network_enable_status = AAZStrType(
                 serialized_name="microsoftHostedNetworkEnableStatus",
+                flags={"read_only": True},
             )
 
             project_catalog_settings = cls._schema_on_200.project_catalog_settings
