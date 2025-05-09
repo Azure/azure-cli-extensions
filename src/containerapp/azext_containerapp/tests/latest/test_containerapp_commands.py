@@ -651,7 +651,7 @@ class ContainerappIngressTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
-    def test_containerapp_env_ingress_commands(self, resource_group):
+    def test_containerapp_env_premium_ingress_commands(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -666,11 +666,11 @@ class ContainerappIngressTests(ScenarioTest):
 
         self.cmd(f'az containerapp env workload-profile add -g {resource_group} -n {env_name} -w wp-ingress --min-nodes 2 --max-nodes 5 --workload-profile-type D4'.format(env_name, resource_group))
 
-        self.cmd(f'containerapp env ingress show -g {resource_group} -n {env_name}', checks=[
-            JMESPathCheck('message', 'No ingress configuration found for this environment, using default values.'),
+        self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),
         ])
 
-        self.cmd(f'containerapp env ingress set -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 3 --max-replicas 5', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 3 --max-replicas 5', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
             JMESPathCheck('scale.minReplicas', 3),
             JMESPathCheck('scale.maxReplicas', 5),
@@ -679,7 +679,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('headerCountLimit', None),
         ])
         
-        self.cmd(f'containerapp env ingress show -g {resource_group} -n {env_name}', checks=[
+        self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
             JMESPathCheck('scale.minReplicas', 3),
             JMESPathCheck('scale.maxReplicas', 5),
@@ -688,7 +688,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('headerCountLimit', None),
         ])
         
-        self.cmd(f'containerapp env ingress update -g {resource_group} -n {env_name} --min-replicas 4 --max-replicas 20 --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
+        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --min-replicas 4 --max-replicas 20 --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
             JMESPathCheck('scale.minReplicas', 4),
             JMESPathCheck('scale.maxReplicas', 20),
@@ -698,7 +698,7 @@ class ContainerappIngressTests(ScenarioTest):
         ])
 
         # set removes unspecified optional parameters
-        self.cmd(f'containerapp env ingress set -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 2 --max-replicas 3 --request-idle-timeout 90', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 2 --max-replicas 3 --request-idle-timeout 90', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
             JMESPathCheck('scale.minReplicas', 2),
             JMESPathCheck('scale.maxReplicas', 3),
@@ -707,10 +707,10 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('headerCountLimit', None),
         ])
 
-        self.cmd(f'containerapp env ingress reset -g {resource_group} -n {env_name}')
+        self.cmd(f'containerapp env premium-ingress remove -g {resource_group} -n {env_name}')
     
-        self.cmd(f'containerapp env ingress show -g {resource_group} -n {env_name}', checks=[
-            JMESPathCheck('message', 'No ingress configuration found for this environment, using default values.'),
+        self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
+            JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),
         ])
 
         # Clean up

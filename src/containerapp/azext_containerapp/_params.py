@@ -506,12 +506,12 @@ def load_arguments(self, _):
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
         c.argument('target_label', help="The label to apply to new revisions. Required for revision mode 'labels'.", is_preview=True)
 
-    with self.argument_context('containerapp env ingress') as c:
+    with self.argument_context('containerapp env premium-ingress') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
         c.argument('min_replicas', options_list=['--min-replicas'], type=int, help="Minimum number of replicas to run. Default 2, minimum 2.")
         c.argument('max_replicas', options_list=['--max-replicas'], type=int, help="Maximum number of replicas to run. Default 10. The upper limit is the maximum cores avalable in the workload profile.")
-        c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests durring ingress shutdown. Default 500, minimum 0, maximum 3600.")
+        c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")

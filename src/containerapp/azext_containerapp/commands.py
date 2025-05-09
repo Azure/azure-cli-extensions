@@ -292,8 +292,8 @@ def load_command_table(self, args):
         g.custom_command('add', 'add_revision_label')
         g.custom_command('remove', 'remove_revision_label')
 
-    with self.command_group('containerapp env ingress', is_preview=True) as g:
-        g.custom_show_command('show', 'show_environment_ingress')
-        g.custom_command('set', 'set_environment_ingress')
-        g.custom_command('update', 'update_environment_ingress')
-        g.custom_command('reset', 'reset_environment_ingress_to_defaults')
+    with self.command_group('containerapp env premium-ingress', is_preview=True) as g:
+        g.custom_show_command('show', 'show_environment_premium_ingress')
+        g.custom_command('add', 'add_environment_premium_ingress')
+        g.custom_command('update', 'update_environment_premium_ingress')
+        g.custom_command('remove', 'remove_environment_premium_ingress')

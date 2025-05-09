@@ -2364,51 +2364,51 @@ helps['containerapp env http-route-config delete'] = """
           az containerapp env http-route-config delete -g MyResourceGroup -n MyEnvironment -r configname
 """
 
-helps['containerapp env ingress show'] = """
+helps['containerapp env premium-ingress show'] = """
     type: command
-    short-summary: Show the ingress settings for the environment.
+    short-summary: Show the premium ingress settings for the environment.
     examples:
-    - name: Show the ingress settings for the environment.
+    - name: Show the premium ingress settings for the environment.
       text: |
-          az containerapp env ingress show -g MyResourceGroup -n MyEnvironment
+          az containerapp env premium-ingress show -g MyResourceGroup -n MyEnvironment
 """
 
-helps['containerapp env ingress'] = """
+helps['containerapp env premium-ingress'] = """
     type: group
     short-summary: Configures premium ingress settings for the environment.
     long-summary: |
         Premium ingress settings apply to all applications in the environment. They allow moving the ingress instances to a workload profile and scaling them beyond the system defaults to enable high traffic workloads. Other settings include request idle timeouts, header count limits, and the termination grace period.
     examples:
-    - name: Set the ingress settings for the environment.
+    - name: Enable premium ingress for the environment.
       text: |
-          az containerapp env ingress set -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
 """
 
-helps['containerapp env ingress set'] = """
+helps['containerapp env premium-ingress add'] = """
     type: command
-    short-summary: Set the ingress settings for the environment.
+    short-summary: Enable the premium ingress settings for the environment.
     long-summary: |
         Unspecified optional parameters will be cleared from any existing configuration.
     examples:
-    - name: Set the ingress settings for the environment.
+    - name: Add the premium ingress settings for the environment.
       text: |
-          az containerapp env ingress set -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
 """
 
-helps['containerapp env ingress update'] = """
+helps['containerapp env premium-ingress update'] = """
     type: command
-    short-summary: Update the ingress settings for the environment.
+    short-summary: Update the premium ingress settings for the environment.
     examples:
-    - name: Update the workload profile used for ingress.
+    - name: Update the workload profile used for premium ingress.
       text: |
-          az containerapp env ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
+          az containerapp env premium-ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
 
-helps['containerapp env ingress reset'] = """
+helps['containerapp env premium-ingress remove'] = """
     type: command
-    short-summary: Removes the ingress settings and resets the system to default values.
+    short-summary: Removes the ingress settings and restores the system to default values.
     examples:
     - name: Reset the ingress settings for the environment to its default values
       text: |
-          az containerapp env ingress reset -g MyResourceGroup -n MyEnvironment
+          az containerapp env premium-ingress remove -g MyResourceGroup -n MyEnvironment
 """

@@ -3712,7 +3712,7 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         handle_raw_exception(e)
 
 
-def show_environment_ingress(cmd, name, resource_group_name):
+def show_environment_premium_ingress(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
@@ -3722,14 +3722,14 @@ def show_environment_ingress(cmd, name, resource_group_name):
 
         ingress_config = safe_get(env, "properties", "ingressConfiguration")
         if not ingress_config:
-            return {"message": "No ingress configuration found for this environment, using default values."}
+            return {"message": "No premium ingress configuration found for this environment, using default values."}
 
         return ingress_config
     except Exception as e:
         handle_raw_exception(e)
 
 
-def set_environment_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas, max_replicas, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
@@ -3766,7 +3766,7 @@ def set_environment_ingress(cmd, name, resource_group_name, workload_profile_nam
         handle_raw_exception(e)
 
 
-def update_environment_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
+def update_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
@@ -3797,7 +3797,7 @@ def update_environment_ingress(cmd, name, resource_group_name, workload_profile_
         if ingress_config:
             safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
         else:
-            return {"message": "No changes specified for ingress configuration"}
+            return {"message": "No changes specified for premium ingress configuration"}
 
         # Update the environment with the patched ingress configuration
         result = ManagedEnvironmentPreviewClient.update(
@@ -3814,7 +3814,7 @@ def update_environment_ingress(cmd, name, resource_group_name, workload_profile_
         handle_raw_exception(e)
 
 
-def reset_environment_ingress_to_defaults(cmd, name, resource_group_name, no_wait=False):
+def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
