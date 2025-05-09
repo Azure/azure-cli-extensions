@@ -13,6 +13,10 @@ Pending
 +++++++
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
 
+15.0.0b1
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
+
 14.0.0b7
 ++++++++
 * Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
