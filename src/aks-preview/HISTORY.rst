@@ -13,6 +13,10 @@ Pending
 +++++++
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
 
+15.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
 15.0.0b1
 ++++++++
 * [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
