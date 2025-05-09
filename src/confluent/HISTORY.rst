@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.0
++++++
+* Added more commands referencing swagger version 2024-07-01-stable
+
 0.6.0
 +++++
 * Added more commands for user access management
