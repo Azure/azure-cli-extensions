@@ -20,7 +20,6 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
     CONST_LOAD_BALANCER_SKU_BASIC,
-    CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
@@ -373,6 +372,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc.network_profile.load_balancer_sku
             )
         if self.decorator_mode == DecoratorMode.CREATE and load_balancer_sku is None:
+            # default value
             load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
 
         # validation

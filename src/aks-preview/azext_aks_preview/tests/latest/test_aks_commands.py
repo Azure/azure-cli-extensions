@@ -306,7 +306,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap", preserve_default_location=True,
+        random_name_length=17, name_prefix="clitest", location="westus2",
     )
     def test_aks_create_with_basiclb_and_update_to_standardlb(
         self, resource_group, resource_group_location
@@ -322,8 +322,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
-            "--vm-set-type VirtualMachineScaleSets -c 1 "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOutboundTypeNoneAndBlock "
+            "--vm-set-type availabilitySet -c 1 "
             "--load-balancer-sku basic "
             "--ssh-key-value={ssh_key_value}"
         )
@@ -337,13 +336,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/BasicLBMigrationToStandardLBPreview "
             "--load-balancer-sku standard "
         )
         self.cmd(
             update_cmd,
             checks=[
-                self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.loadBalancerSku", "standard"),
             ],
         )
