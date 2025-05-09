@@ -9107,7 +9107,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "migrate_vmas_to_vms": True,
-            },
+                 "yes": True,
+           },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(
@@ -9128,6 +9129,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "migrate_vmas_to_vms": True,
+                "yes": True,                
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -9153,6 +9155,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "migrate_vmas_to_vms": True,
+                "yes": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
