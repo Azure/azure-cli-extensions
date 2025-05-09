@@ -12185,141 +12185,136 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    # @AllowLargeResponse()
-    # @AKSCustomResourceGroupPreparer(
-    #     random_name_length=17, name_prefix="clitest", location="westus2"
-    # )
-    # def test_vms_agentpool_type(self, resource_group, resource_group_location):
-    #     aks_name = self.create_random_name("cliakstest", 16)
-    #     nodepool_name = self.create_random_name("n", 6)
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_vms_agentpool_type(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("n", 6)
 
-    #     self.kwargs.update(
-    #         {
-    #             "resource_group": resource_group,
-    #             "name": aks_name,
-    #             "location": resource_group_location,
-    #             "ssh_key_value": self.generate_ssh_keys(),
-    #             "node_pool_name": nodepool_name,
-    #         }
-    #     )
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_pool_name": nodepool_name,
+            }
+        )
 
-    #     self.cmd(
-    #         "aks create "
-    #         "--resource-group={resource_group} "
-    #         "--name={name} "
-    #         "--location={location} "
-    #         "--ssh-key-value={ssh_key_value} "
-    #         "--vm-set-type=VirtualMachines "
-    #         "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
-    #         "--node-count=2 "
-    #         "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
-    #         checks=[
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-    #             self.check("agentPoolProfiles[0].vmSize", ""),
-    #             self.check("agentPoolProfiles[0].count", None),
-    #             self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[0]", "Standard_D4s_v3"),
-    #             self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
-    #             self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
-    #         ],
-    #     )
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--vm-set-type=VirtualMachines "
+            "--vm-sizes=Standard_D4s_v3 "
+            "--node-count=2 "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+                self.check("agentPoolProfiles[0].vmSize", None),
+                self.check("agentPoolProfiles[0].count", None),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].size", "Standard_D4s_v3"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "aks scale "
-    #         "--resource-group={resource_group} "
-    #         "--name={name} "
-    #         "--node-count 3",
-    #         checks=[
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "3"),
-    #         ],
-    #     )
+        self.cmd(
+            "aks scale "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--node-count 3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "3"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "aks nodepool add "
-    #         "--resource-group={resource_group} "
-    #         "--cluster-name={name} "
-    #         "--name={node_pool_name} "
-    #         "--vm-set-type=VirtualMachines "
-    #         "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
-    #         "--node-count=2 "
-    #         "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
-    #         checks=[
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("typePropertiesType", "VirtualMachines"),
-    #             self.check("vmSize", ""),
-    #             self.check("count", None),
-    #             self.check("virtualMachinesProfile.scale.manual[0].sizes[0]", "Standard_D4s_v3"),
-    #             self.check("virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
-    #             self.check("virtualMachinesProfile.scale.manual[0].count", "2"),
-    #         ],
-    #     )
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--vm-set-type=VirtualMachines "
+            "--vm-sizes=Standard_D2s_v3 "
+            "--node-count=2 "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("typePropertiesType", "VirtualMachines"),
+                self.check("vmSize", None),
+                self.check("count", None),
+                self.check("virtualMachinesProfile.scale.manual[0].size", "Standard_D2s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[0].count", "2"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "aks nodepool scale "
-    #         "--resource-group {resource_group} "
-    #         "--cluster-name {name} "
-    #         "--name {node_pool_name} "
-    #         "--node-count 3",
-    #         checks=[
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("virtualMachinesProfile.scale.manual[0].count", "3"),
-    #         ],
-    #     )
+        self.cmd(
+            "aks nodepool scale "
+            "--resource-group {resource_group} "
+            "--cluster-name {name} "
+            "--name {node_pool_name} "
+            "--node-count 3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("virtualMachinesProfile.scale.manual[0].count", "3"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "aks nodepool manual-scale add "
-    #         "--resource-group={resource_group} "
-    #         "--cluster-name={name} "
-    #         "--name {node_pool_name} "
-    #         "--vm-sizes=Standard_D2s_v3,Standard_DS2_v2 "
-    #         "--node-count=2",
-    #         checks=[
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("typePropertiesType", "VirtualMachines"),
-    #             self.check("vmSize", ""),
-    #             self.check("count", None),
-    #             self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
-    #             self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
-    #             self.check("virtualMachinesProfile.scale.manual[1].count", "2"),
-    #         ],
-    #     )
+        self.cmd(
+            "aks nodepool manual-scale add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name {node_pool_name} "
+            "--vm-sizes=Standard_DS2_v2 "
+            "--node-count=2",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("typePropertiesType", "VirtualMachines"),
+                self.check("vmSize", None),
+                self.check("count", None),
+                self.check("virtualMachinesProfile.scale.manual[1].size", "Standard_DS2_v2"),
+                self.check("virtualMachinesProfile.scale.manual[1].count", "2"),
+            ],
+        )
 
-    #     self.cmd(
-    #         "aks nodepool manual-scale update "
-    #         "--resource-group={resource_group} "
-    #         "--cluster-name={name} "
-    #         "--name={node_pool_name} "
-    #         "--current-vm-sizes=Standard_D2s_v3,Standard_DS2_v2 "
-    #         "--vm-sizes=Standard_D2s_v3,Standard_DS2_v2,Standard_DC2s_v3 "
-    #         "--node-count=5",
-    #         checks=[
-    #             self.check("provisioningState", "Succeeded"),
-    #             self.check("typePropertiesType", "VirtualMachines"),
-    #             self.check("vmSize", ""),
-    #             self.check("count", None),
-    #             self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
-    #             self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
-    #             self.check("virtualMachinesProfile.scale.manual[1].sizes[2]", "Standard_DC2s_v3"),
-    #             self.check("virtualMachinesProfile.scale.manual[1].count", "5"),
-    #         ],
-    #     )
+        self.cmd(
+            "aks nodepool manual-scale update "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--current-vm-sizes=Standard_DS2_v2 "
+            "--vm-sizes=Standard_D8s_v3 "
+            "--node-count=5",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("typePropertiesType", "VirtualMachines"),
+                self.check("vmSize", None),
+                self.check("count", None),
+                self.check("virtualMachinesProfile.scale.manual[1].size", "Standard_D8s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[1].count", "5"),
+            ],
+        )
 
-    #     np = self.cmd(
-    #         "aks nodepool manual-scale delete "
-    #         "--resource-group={resource_group} "
-    #         "--cluster-name={name} "
-    #         "--name={node_pool_name} "
-    #         "--current-vm-sizes=Standard_D2s_v3,Standard_DS2_v2,Standard_DC2s_v3",
-    #     ).get_output_in_json()
-    #     assert len(np["virtualMachinesProfile"]["scale"]["manual"]) == 1
+        np = self.cmd(
+            "aks nodepool manual-scale delete "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--current-vm-sizes=Standard_D8s_v3",
+        ).get_output_in_json()
+        assert len(np["virtualMachinesProfile"]["scale"]["manual"]) == 1
 
-    #     self.cmd(
-    #         "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
-    #         checks=[
-    #             self.is_empty(),
-    #         ],
-    #     )
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[
+                self.is_empty(),
+            ],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
