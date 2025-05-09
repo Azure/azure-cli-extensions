@@ -337,3 +337,11 @@ CONST_IMDS_RESTRICTION_DISABLED = "IMDS"
 # GPU Driver Type Consts
 CONST_GPU_DRIVER_TYPE_CUDA = "CUDA"
 CONST_GPU_DRIVER_TYPE_GRID = "GRID"
+
+# k8s extension constants
+CONST_K8S_EXTENSION_CUSTOM_MOD_NAME = "azext_k8s_extension.custom"
+CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension._client_factory"
+CONST_K8S_EXTENSION_TYPE_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension_types._client_factory"
+CONST_K8S_EXTENSION_NAME = "k8s-extension"
+CONST_K8S_EXTENSION_ACTION_MOD_NAME = "azext_k8s_extension.action"
+CONST_K8S_EXTENSION_FORMAT_MOD_NAME = "azext_k8s_extension._format"
