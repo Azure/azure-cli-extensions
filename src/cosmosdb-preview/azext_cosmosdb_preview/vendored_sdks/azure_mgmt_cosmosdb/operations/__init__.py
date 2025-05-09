@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
     from ._patch import *  # pylint: disable=unused-wildcard-import
 
 from ._chaos_fault_operations import ChaosFaultOperations  # type: ignore
+from ._copy_jobs_operations import CopyJobsOperations  # type: ignore
 from ._database_accounts_operations import DatabaseAccountsOperations  # type: ignore
 from ._operations import Operations  # type: ignore
 from ._database_operations import DatabaseOperations  # type: ignore
@@ -57,6 +59,11 @@ from ._throughput_pools_operations import ThroughputPoolsOperations  # type: ign
 from ._throughput_pool_operations import ThroughputPoolOperations  # type: ignore
 from ._throughput_pool_accounts_operations import ThroughputPoolAccountsOperations  # type: ignore
 from ._throughput_pool_account_operations import ThroughputPoolAccountOperations  # type: ignore
+from ._mongo_mi_resources_operations import MongoMIResourcesOperations  # type: ignore
+from ._fleet_operations import FleetOperations  # type: ignore
+from ._fleet_analytics_operations import FleetAnalyticsOperations  # type: ignore
+from ._fleetspace_operations import FleetspaceOperations  # type: ignore
+from ._fleetspace_account_operations import FleetspaceAccountOperations  # type: ignore
 
 from ._patch import __all__ as _patch_all
 from ._patch import *
@@ -64,6 +71,7 @@ from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
     "ChaosFaultOperations",
+    "CopyJobsOperations",
     "DatabaseAccountsOperations",
     "Operations",
     "DatabaseOperations",
@@ -108,6 +116,11 @@ __all__ = [
     "ThroughputPoolOperations",
     "ThroughputPoolAccountsOperations",
     "ThroughputPoolAccountOperations",
+    "MongoMIResourcesOperations",
+    "FleetOperations",
+    "FleetAnalyticsOperations",
+    "FleetspaceOperations",
+    "FleetspaceAccountOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])  # pyright: ignore
 _patch_sdk()
