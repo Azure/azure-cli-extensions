@@ -304,10 +304,6 @@ helps['aks create'] = f"""
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
-        - name: --enable-pod-security-policy
-          type: bool
-          short-summary: Enable pod security policy.
-          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
@@ -864,10 +860,6 @@ helps['aks update'] = """
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
           long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
-        - name: --enable-pod-security-policy
-          type: bool
-          short-summary: Enable pod security policy.
-          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --disable-pod-security-policy
           type: bool
           short-summary: Disable pod security policy

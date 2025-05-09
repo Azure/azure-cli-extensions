@@ -700,38 +700,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx.get_load_balancer_backend_pool_type(), "nodeIP")
 
-    def test_get_enable_pod_security_policy(self):
-        # default
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"enable_pod_security_policy": False}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_pod_security_policy(), False)
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_enable_pod_security_policy(), True)
-
-        # custom value
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_pod_security_policy": True,
-                    "disable_pod_security_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_enable_pod_security_policy()
-
     def test_get_disable_pod_security_policy(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -747,22 +715,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
-
-        # custom value
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_pod_security_policy": True,
-                    "disable_pod_security_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_disable_pod_security_policy()
 
     def test_get_network_plugin(self):
         # default
@@ -4638,43 +4590,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-    def test_set_up_pod_security_policy(self):
-        # default value in `aks_create`
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_pod_security_policy": False,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(location="test_location")
-        dec_1.context.attach_mc(mc_1)
-        # fail on passing the wrong mc object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_pod_security_policy(None)
-        dec_mc_1 = dec_1.set_up_pod_security_policy(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location", enable_pod_security_policy=False
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        # custom value
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_pod_security_policy": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_pod_security_policy(mc_2)
-        ground_truth_mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            enable_pod_security_policy=True,
-        )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_pod_identity_profile(self):
         # default value in `aks_create`

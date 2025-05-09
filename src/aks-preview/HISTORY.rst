@@ -15,6 +15,7 @@ Pending
 +++++++
 * Add aks extension and aks extension-type command groups
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+* Remove "--enable-pod-security-policy" as it's deprecated.
 
 15.0.0b1
 ++++++++
