@@ -41,3 +41,15 @@ def delete_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         cluster_resource_group_name,
         f"NodeAndKubernetesRecordingRulesRuleGroup-Win-{cluster_name}",
     )
+    delete_rule(
+        cmd,
+        cluster_subscription,
+        cluster_resource_group_name,
+        truncate_rule_group_name("UXRecordingRulesRuleGroup - {0}".format(cluster_name))
+    )
+    delete_rule(
+        cmd,
+        cluster_subscription,
+        cluster_resource_group_name,
+        truncate_rule_group_name("UXRecordingRulesRuleGroup-Win - {0}".format(cluster_name))
+    )

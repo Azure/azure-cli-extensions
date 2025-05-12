@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+14.0.0b7
++++++++
+* fix: simplify logic and enable correct recording rule groups for managed prom
+
 14.0.0b6
 +++++++
 * Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
