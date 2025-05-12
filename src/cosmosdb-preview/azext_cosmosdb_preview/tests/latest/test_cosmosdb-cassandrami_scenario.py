@@ -83,6 +83,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         except Exception as e:
             print(e)
 
+    @live_only() # Will be updated after service changes are updated.
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
     @AllowLargeResponse()
     def test_managed_cassandra_cluster_create_with_azure_connection_method(self, resource_group):
