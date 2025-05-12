@@ -40,7 +40,7 @@ helps['aks create'] = f"""
                          `--service-principal` is specified.
         - name: --node-vm-size -s
           type: string
-          short-summary: Size of Virtual Machines to create as Kubernetes nodes.
+          short-summary: Size of Virtual Machines to create as Kubernetes nodes. If the user does not specify one, server will select a default VM size for her/him.
         - name: --dns-name-prefix -p
           type: string
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
@@ -1698,7 +1698,7 @@ helps['aks nodepool add'] = """
     parameters:
         - name: --node-vm-size -s
           type: string
-          short-summary: Size of Virtual Machines to create as Kubernetes nodes.
+          short-summary: Size of Virtual Machines to create as Kubernetes nodes. If the user does not specify one, server will select a default VM size for her/him.
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes agent pool. After creating a cluster, you can change the
