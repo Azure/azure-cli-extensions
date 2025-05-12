@@ -42,7 +42,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 
 setup(
     name='zones',
-    version=0.1,
+    version=VERSION,
     description='Microsoft Azure Command-Line Tools Zones Extension',
     author='Niels Buit',
     author_email='nielsb@microsoft.com',
