@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+17.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
+
 17.0.0b1
 +++++++
 * [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
@@ -25,10 +30,6 @@ Pending
 +++++++
 * Add aks extension and aks extension-type command groups
 * Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
-
-15.0.0b2
-++++++++
-* Add option `--migrate-vmas-to-vms` to `az aks update`
 
 15.0.0b1
 ++++++++
