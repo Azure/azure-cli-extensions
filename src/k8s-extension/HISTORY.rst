@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.6.5
+++++++++++++++++++
+* microsoft.azuremonitor.containers.metrics: fix: simplify logic and enable correct recording rule groups for managed prom
 
 1.6.4
 ++++++++++++++++++
