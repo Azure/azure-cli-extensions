@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-15.0.0b3
+16.0.0b1
 +++++++
 * [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
 
