@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.4
+++++++
+* rolling back genpolicy version for Azure Linux V2 support instead of V3
+
 1.2.3
 ++++++
 * adding fragment support for VN2
