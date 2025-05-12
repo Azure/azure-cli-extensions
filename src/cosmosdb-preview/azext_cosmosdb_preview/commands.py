@@ -118,7 +118,7 @@ def load_command_table(self, _):
         g.custom_command('exists', 'cli_cosmosdb_table_role_definition_exists')
         g.command('list', 'list_table_role_definitions')
         g.show_command('show', 'get_table_role_definition')
-        g.command('delete', 'begin_delete_table_role_definition', confirmation=True) 
+        g.command('delete', 'begin_delete_table_role_definition', confirmation=True)
 
     with self.command_group('cosmosdb table role assignment', cosmosdb_rbac_table_sdk, client_factory=cf_table_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_table_role_assignment_create')
@@ -142,7 +142,7 @@ def load_command_table(self, _):
         g.custom_command('exists', 'cli_cosmosdb_gremlin_role_assignment_exists')
         g.command('list', 'list_gremlin_role_assignments')
         g.show_command('show', 'get_gremlin_role_assignment')
-        g.command('delete', 'begin_delete_gremlin_role_assignment', confirmation=True)        
+        g.command('delete', 'begin_delete_gremlin_role_assignment', confirmation=True)
 
     with self.command_group('cosmosdb cassandra role definition', cosmosdb_rbac_cassandra_sdk, client_factory=cf_cassandra_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_cassandra_role_definition_create')
@@ -150,7 +150,7 @@ def load_command_table(self, _):
         g.custom_command('exists', 'cli_cosmosdb_cassandra_role_definition_exists')
         g.command('list', 'list_cassandra_role_definitions')
         g.show_command('show', 'get_cassandra_role_definition')
-        g.command('delete', 'begin_delete_cassandra_role_definition', confirmation=True)  
+        g.command('delete', 'begin_delete_cassandra_role_definition', confirmation=True)
 
     with self.command_group('cosmosdb cassandra role assignment', cosmosdb_rbac_cassandra_sdk, client_factory=cf_cassandra_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_cassandra_role_assignment_create')
@@ -166,7 +166,7 @@ def load_command_table(self, _):
         g.custom_command('exists', 'cli_cosmosdb_mongomi_role_definition_exists')
         g.command('list', 'list_mongo_mi_role_definitions')
         g.show_command('show', 'get_mongo_mi_role_definition')
-        g.command('delete', 'begin_delete_mongo_mi_role_definition', confirmation=True)     
+        g.command('delete', 'begin_delete_mongo_mi_role_definition', confirmation=True)
 
     with self.command_group('cosmosdb mongomi role assignment', cosmosdb_rbac_mongo_mi_sdk, client_factory=cf_mongo_mi_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_mongomi_role_assignment_create')
@@ -175,7 +175,7 @@ def load_command_table(self, _):
         g.command('list', 'list_mongo_mi_role_assignments')
         g.show_command('show', 'get_mongo_mi_role_assignment')
         g.command('delete', 'begin_delete_mongo_mi_role_assignment', confirmation=True)
-         
+
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',
@@ -363,6 +363,10 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_table_restore', is_preview=True)
 
+    setup_mongocluster_commands(self)
+
+
+def setup_mongocluster_commands(self):
     # Mongo cluster operations
     cosmosdb_mongocluster_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.operations.#MongoClustersOperations.{}',

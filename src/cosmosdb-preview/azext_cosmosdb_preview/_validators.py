@@ -269,7 +269,7 @@ def validate_table_role_definition_body(cmd, ns):
 
         if 'AssignableScopes' not in table_role_definition or not isinstance(table_role_definition['AssignableScopes'], list) or len(table_role_definition['AssignableScopes']) == 0:
             raise InvalidArgumentValueError(
-                'Role creation failed. Invalid Table role definition for AssignableScopes. A valid list of strings is expected.')        
+                'Role creation failed. Invalid Table role definition for AssignableScopes. A valid list of strings is expected.')
 
         if 'Permissions' not in table_role_definition or not isinstance(table_role_definition['Permissions'], list) or len(table_role_definition['Permissions']) == 0:
             raise InvalidArgumentValueError(
@@ -312,11 +312,11 @@ def validate_gremlin_role_definition_body(cmd, ns):
         if 'RoleName' not in gremlin_role_definition or not isinstance(gremlin_role_definition['RoleName'], str) or len(gremlin_role_definition['RoleName']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid gremlin role name. A valid string role name is expected.')
-                            
+
         if 'AssignableScopes' not in gremlin_role_definition or not isinstance(gremlin_role_definition['AssignableScopes'], list) or len(gremlin_role_definition['AssignableScopes']) == 0:
             raise InvalidArgumentValueError(
-                'Role creation failed. Invalid Gremlin role definition for AssignableScopes. A valid list of strings is expected.')        
-        
+                'Role creation failed. Invalid Gremlin role definition for AssignableScopes. A valid list of strings is expected.')
+
         if 'Permissions' not in gremlin_role_definition or not isinstance(gremlin_role_definition['Permissions'], list) or len(gremlin_role_definition['Permissions']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid Gremlin role Permissions. A valid List JSON representation is expected.')
@@ -358,11 +358,11 @@ def validate_cassandra_role_definition_body(cmd, ns):
         if 'RoleName' not in cassandra_role_definition or not isinstance(cassandra_role_definition['RoleName'], str) or len(cassandra_role_definition['RoleName']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid cassandra role name. A valid string role name is expected.')
-                            
+
         if 'AssignableScopes' not in cassandra_role_definition or not isinstance(cassandra_role_definition['AssignableScopes'], list) or len(cassandra_role_definition['AssignableScopes']) == 0:
             raise InvalidArgumentValueError(
-                'Role creation failed. Invalid Cassandra role definition for AssignableScopes. A valid list of strings is expected.')        
-        
+                'Role creation failed. Invalid Cassandra role definition for AssignableScopes. A valid list of strings is expected.')
+
         if 'Permissions' not in cassandra_role_definition or not isinstance(cassandra_role_definition['Permissions'], list) or len(cassandra_role_definition['Permissions']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid Cassandra role Permissions. A valid List JSON representation is expected.')
@@ -404,11 +404,11 @@ def validate_mongoMI_role_definition_body(cmd, ns):
         if 'RoleName' not in mongoMI_role_definition or not isinstance(mongoMI_role_definition['RoleName'], str) or len(mongoMI_role_definition['RoleName']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid mongoMI role name. A valid string role name is expected.')
-                            
+
         if 'AssignableScopes' not in mongoMI_role_definition or not isinstance(mongoMI_role_definition['AssignableScopes'], list) or len(mongoMI_role_definition['AssignableScopes']) == 0:
             raise InvalidArgumentValueError(
-                'Role creation failed. Invalid MongoMI role definition for AssignableScopes. A valid list of strings is expected.')        
-        
+                'Role creation failed. Invalid MongoMI role definition for AssignableScopes. A valid list of strings is expected.')
+
         if 'Permissions' not in mongoMI_role_definition or not isinstance(mongoMI_role_definition['Permissions'], list) or len(mongoMI_role_definition['Permissions']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid MongoMI role Permissions. A valid List JSON representation is expected.')
@@ -424,7 +424,7 @@ def validate_mongoMI_role_definition_id(ns):
     if ns.role_definition_id is not None:
         ns.role_definition_id = _parse_resource_path(ns.role_definition_id, False, "mongoMIRoleDefinitions")
 
-       
+
 def validate_mongoMI_role_assignment_id(ns):
     """ Extracts Guid role assignment Id """
     if ns.role_assignment_id is not None:

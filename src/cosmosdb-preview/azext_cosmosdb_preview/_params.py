@@ -26,7 +26,7 @@ from azext_cosmosdb_preview._validators import (
     validate_gremlin_role_assignment_id,
     validate_cassandra_role_definition_body,
     validate_cassandra_role_definition_id,
-    validate_cassandra_role_assignment_id, 
+    validate_cassandra_role_assignment_id,
     validate_mongoMI_role_definition_body,
     validate_mongoMI_role_definition_id,
     validate_mongoMI_role_assignment_id)
@@ -794,4 +794,3 @@ def load_arguments(self, _):
         c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
         c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
- 
