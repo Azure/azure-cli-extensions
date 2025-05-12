@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+16.0.0b1
++++++++
+* [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
+
 15.0.0b2
 +++++++
 * Add aks extension and aks extension-type command groups
