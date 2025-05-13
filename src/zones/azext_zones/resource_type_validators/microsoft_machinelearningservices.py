@@ -3,25 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from .._resourceTypeValidation import ZoneRedundancyValidationResult, register_resource_type
+from .._resourceTypeValidation import (
+    ZoneRedundancyValidationResult,
+    register_resource_type,
+)
 from knack.log import get_logger
 
 
-@register_resource_type('microsoft.machinelearningservices')
+@register_resource_type("microsoft.machinelearningservices")
 class microsoft_machinelearningservices:
-
     @staticmethod
     def validate(resource):
-        resourceType = resource['type']
-        resourceSubType = resourceType[resourceType.index('/') + 1:]
+        resourceType = resource["type"]
+        resourceSubType = resourceType[resourceType.index("/") + 1:]
 
         _logger = get_logger("microsoft_machinelearningservices")
         _logger.debug(
             "Validating Microsoft.machinelearningservices resource type: %s",
-            resourceSubType)
+            resourceSubType,
+        )
 
-        match resourceSubType:
-            case 'workspaces':
-                return ZoneRedundancyValidationResult.Never
+        # Azure Machine Learning
+        if resourceSubType == "workspaces":
+            return ZoneRedundancyValidationResult.Never
 
         return ZoneRedundancyValidationResult.Unknown
