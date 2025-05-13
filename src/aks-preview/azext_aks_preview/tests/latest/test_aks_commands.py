@@ -16079,3 +16079,59 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+
+    # Comment out below tests as we only allow this in certain regions.
+    # @AllowLargeResponse()
+    # @AKSCustomResourceGroupPreparer(
+    #     random_name_length=17,
+    #     name_prefix="clitest",
+    #     location="centraluseuap",
+    # )
+    # def test_aks_migrate_vmas_to_vms(
+    #     self, resource_group, resource_group_location
+    # ):
+    #     _, create_version = self._get_versions(resource_group_location)
+    #     aks_name = self.create_random_name("cliakstest", 16)
+    #     self.kwargs.update(
+    #         {
+    #             "resource_group": resource_group,
+    #             "name": aks_name,
+    #             "location": resource_group_location,
+    #             "k8s_version": create_version,
+    #             "ssh_key_value": self.generate_ssh_keys(),
+    #         }
+    #     )
+
+    #     # create
+    #     create_cmd = (
+    #         "aks create --resource-group={resource_group} --name={name} --location={location} "
+    #         "--ssh-key-value={ssh_key_value} "
+    #         "--vm-set-type AvailabilitySet " 
+    #         "--load-balancer-sku Basic "
+    #     )
+    #     self.cmd(
+    #         create_cmd,
+    #         checks=[
+    #             self.check('provisioningState', 'Succeeded'),
+    #             self.check("agentPoolProfiles[0].type", "AvailabilitySet"),
+    #             self.check("networkProfile.loadBalancerSku", "basic"),
+    #         ],
+    #     )
+
+    #     # update -- migrate vmas to vma
+    #     update_cmd = (
+    #         "aks update --resource-group {resource_group} --name {name} "
+    #         "--migrate-vmas-to-vms --yes "
+    #     )
+    #     self.cmd(update_cmd, checks=[
+    #         self.check('provisioningState', 'Succeeded'),
+    #         self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+    #         self.check("networkProfile.loadBalancerSku", "standard"),
+    #     ])
+
+    #     # delete
+    #     self.cmd(
+    #         "aks delete -g {resource_group} -n {name} --yes --no-wait",
+    #         checks=[self.is_empty()],
+    #     )

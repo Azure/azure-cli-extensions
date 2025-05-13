@@ -1409,6 +1409,8 @@ def load_arguments(self, _):
             arg_type=get_enum_type(health_probe_modes),
         )
 
+        c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
+
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
         c.argument(
