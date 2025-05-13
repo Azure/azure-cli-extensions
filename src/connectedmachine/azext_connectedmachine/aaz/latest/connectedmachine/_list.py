@@ -16,13 +16,16 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the hybrid machines in the specified subscription or resource group.
+
+    :example: sample command of list
+        az connectedmachine list
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2024-11-10-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/machines", "2024-07-31-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/machines", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines", "2024-11-10-preview"],
         ]
     }
 
@@ -120,7 +123,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2024-11-10-preview",
                     required=True,
                 ),
             }
@@ -856,7 +859,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2024-11-10-preview",
                     required=True,
                 ),
             }
