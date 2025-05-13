@@ -6,7 +6,6 @@
 import os
 import unittest
 import json
-import errno
 import subprocess
 from knack.util import CLIError
 
@@ -22,6 +21,7 @@ import azext_confcom.config as config
 from azext_confcom.template_util import (
     case_insensitive_dict_get,
     extract_containers_and_fragments_from_text,
+    decompose_confidential_properties,
 )
 from azext_confcom.os_util import (
     write_str_to_file,
@@ -29,6 +29,9 @@ from azext_confcom.os_util import (
     load_str_from_file,
     load_json_from_str,
     delete_silently,
+    write_str_to_file,
+    force_delete_silently,
+    str_to_base64,
 )
 from azext_confcom.custom import acifragmentgen_confcom
 from azure.cli.testsdk import ScenarioTest
@@ -68,6 +71,48 @@ class FragmentMountEnforcement(unittest.TestCase):
             }
         ]
     }
+    """
+    custom_json2 = """
+{
+  "version": "1.0",
+  "fragments": [],
+  "scenario": "vn2",
+  "containers": [
+    {
+      "name": "simple-container",
+      "properties": {
+        "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
+        "environmentVariables": [
+          {
+            "name": "PATH",
+            "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          }
+        ],
+        "command": [
+          "python3"
+        ],
+        "securityContext": {
+            "allowPrivilegeEscalation": true,
+            "privileged": true
+        },
+        "volumeMounts": [
+          {
+            "name": "logs",
+            "mountType": "emptyDir",
+            "mountPath": "/aci/logs",
+            "readonly": false
+          },
+          {
+            "name": "secret",
+            "mountType": "emptyDir",
+            "mountPath": "/aci/secret",
+            "readonly": true
+          }
+        ]
+      }
+    }
+  ]
+}
     """
     aci_policy = None
 
@@ -158,6 +203,36 @@ class FragmentMountEnforcement(unittest.TestCase):
         self.assertEqual(
             mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS][2], "rw"
         )
+
+    def test_virtual_node_policy_fragment_generation(self):
+        try:
+            fragment_filename = "policy_fragment_file.json"
+            write_str_to_file(fragment_filename, self.custom_json2)
+            rego_filename = "example_fragment_file"
+            acifragmentgen_confcom(None, fragment_filename, None, rego_filename, "1", "test_feed_file", None, None, None)
+
+            containers, _ = decompose_confidential_properties(str_to_base64(load_str_from_file(f"{rego_filename}.rego")))
+
+            custom_container = containers[0]
+            vn2_privileged_mounts = [x.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH) for x in config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE]
+            vn2_mounts = [x.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH) for x in config.DEFAULT_MOUNTS_VIRTUAL_NODE]
+
+            vn2_mount_count = 0
+            priv_mount_count = 0
+            for mount in custom_container.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS):
+                mount_name = mount.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION)
+
+                if mount_name in vn2_privileged_mounts:
+                    priv_mount_count += 1
+                if mount_name in vn2_mounts:
+                    vn2_mount_count += 1
+            if priv_mount_count != len(vn2_privileged_mounts):
+                self.fail("policy does not contain privileged vn2 mounts")
+            if vn2_mount_count != len(vn2_mounts):
+                self.fail("policy does not contain default vn2 mounts")
+        finally:
+            force_delete_silently(fragment_filename)
+            force_delete_silently(f"{rego_filename}.rego")
 
 
 class FragmentGenerating(unittest.TestCase):
@@ -647,27 +722,28 @@ class FragmentPolicySigning(unittest.TestCase):
     """
     @classmethod
     def setUpClass(cls):
-    #     cls.key_dir_parent = os.path.join(TEST_DIR, '..', '..', '..', 'samples', 'certs')
-    #     cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
-    #     cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
-    #     if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
-    #         script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
+        cls.key_dir_parent = os.path.join(TEST_DIR, '..', '..', '..', 'samples', 'certs')
+        cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
+        cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
+        if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
+            script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
 
-    #         arg_list = [
-    #             script_path,
-    #         ]
-    #         os.chmod(script_path, 0o755)
+            arg_list = [
+                script_path,
+            ]
+            os.chmod(script_path, 0o755)
 
-    #         # NOTE: this will raise an exception if it's run on windows and the key/cert files don't exist
-    #         item = subprocess.run(
-    #             arg_list,
-    #             check=False,
-    #             shell=True,
-    #             cwd=cls.key_dir_parent,
-    #             env=os.environ.copy(),
-    #         )
-    #         if item.returncode != 0:
-    #             raise Exception("Error creating certificate chain")
+            # NOTE: this will raise an exception if it's run on windows and the key/cert files don't exist
+            item = subprocess.run(
+                arg_list,
+                check=False,
+                shell=True,
+                cwd=cls.key_dir_parent,
+                env=os.environ.copy(),
+            )
+
+            if item.returncode != 0:
+                raise Exception("Error creating certificate chain")
 
         with load_policy_from_config_str(cls.custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
@@ -676,115 +752,115 @@ class FragmentPolicySigning(unittest.TestCase):
             aci_policy2.populate_policy_content_for_all_images()
             cls.aci_policy2 = aci_policy2
 
-    # def test_signing(self):
-    #     filename = "payload.rego"
-    #     feed = "test_feed"
-    #     algo = "ES384"
-    #     out_path = filename + ".cose"
+    def test_signing(self):
+        filename = "payload.rego"
+        feed = "test_feed"
+        algo = "ES384"
+        out_path = filename + ".cose"
 
-    #     fragment_text = self.aci_policy.generate_fragment("payload", 1, OutputType.RAW)
-    #     try:
-    #         write_str_to_file(filename, fragment_text)
+        fragment_text = self.aci_policy.generate_fragment("payload", 1, OutputType.RAW)
+        try:
+            write_str_to_file(filename, fragment_text)
 
-    #         cose_proxy = CoseSignToolProxy()
-    #         iss = cose_proxy.create_issuer(self.chain)
+            cose_proxy = CoseSignToolProxy()
+            iss = cose_proxy.create_issuer(self.chain)
 
-    #         cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
-    #         self.assertTrue(os.path.exists(filename))
-    #         self.assertTrue(os.path.exists(out_path))
-    #     except Exception as e:
-    #         raise e
-    #     finally:
-    #         delete_silently(filename)
-    #         delete_silently(out_path)
+            cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
+            self.assertTrue(os.path.exists(filename))
+            self.assertTrue(os.path.exists(out_path))
+        except Exception as e:
+            raise e
+        finally:
+            delete_silently(filename)
+            delete_silently(out_path)
 
-    # def test_generate_import(self):
-    #     filename = "payload4.rego"
-    #     feed = "test_feed"
-    #     algo = "ES384"
-    #     out_path = filename + ".cose"
+    def test_generate_import(self):
+        filename = "payload4.rego"
+        feed = "test_feed"
+        algo = "ES384"
+        out_path = filename + ".cose"
 
-    #     fragment_text = self.aci_policy.generate_fragment("payload4", 1, OutputType.RAW)
-    #     try:
-    #         write_str_to_file(filename, fragment_text)
+        fragment_text = self.aci_policy.generate_fragment("payload4", 1, OutputType.RAW)
+        try:
+            write_str_to_file(filename, fragment_text)
 
-    #         cose_proxy = CoseSignToolProxy()
-    #         iss = cose_proxy.create_issuer(self.chain)
-    #         cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
+            cose_proxy = CoseSignToolProxy()
+            iss = cose_proxy.create_issuer(self.chain)
+            cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
 
-    #         import_statement = cose_proxy.generate_import_from_path(out_path, 1)
-    #         self.assertTrue(import_statement)
-    #         self.assertEquals(
-    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,""),iss
-    #         )
-    #         self.assertEquals(
-    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,""),feed
-    #         )
-    #         self.assertEquals(
-    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,""),1
-    #         )
-    #         self.assertEquals(
-    #             import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES,[]),[config.POLICY_FIELD_CONTAINERS, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS]
-    #         )
+            import_statement = cose_proxy.generate_import_from_path(out_path, 1)
+            self.assertTrue(import_statement)
+            self.assertEqual(
+                import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,""),iss
+            )
+            self.assertEqual(
+                import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,""),feed
+            )
+            self.assertEqual(
+                import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,""),1
+            )
+            self.assertEqual(
+                import_statement.get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES,[]),[config.POLICY_FIELD_CONTAINERS, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS]
+            )
 
-    #     except Exception as e:
-    #         raise e
-    #     finally:
-    #         delete_silently(filename)
-    #         delete_silently(out_path)
+        except Exception as e:
+            raise e
+        finally:
+            delete_silently(filename)
+            delete_silently(out_path)
 
-    # def test_local_fragment_references(self):
-    #     filename = "payload2.rego"
-    #     filename2 = "payload3.rego"
-    #     fragment_json = "fragment.json"
-    #     feed = "test_feed"
-    #     feed2 = "test_feed2"
-    #     algo = "ES384"
-    #     out_path = filename + ".cose"
-    #     out_path2 = filename2 + ".cose"
+    def test_local_fragment_references(self):
+        filename = "payload2.rego"
+        filename2 = "payload3.rego"
+        fragment_json = "fragment.json"
+        feed = "test_feed"
+        feed2 = "test_feed2"
+        algo = "ES384"
+        out_path = filename + ".cose"
+        out_path2 = filename2 + ".cose"
 
-    #     fragment_text = self.aci_policy.generate_fragment("payload2", 1, OutputType.RAW)
+        fragment_text = self.aci_policy.generate_fragment("payload2", 1, OutputType.RAW)
 
-    #     try:
-    #         write_str_to_file(filename, fragment_text)
-    #         write_str_to_file(fragment_json, self.custom_json2)
+        try:
+            write_str_to_file(filename, fragment_text)
+            write_str_to_file(fragment_json, self.custom_json2)
 
-    #         cose_proxy = CoseSignToolProxy()
-    #         iss = cose_proxy.create_issuer(self.chain)
-    #         cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
+            cose_proxy = CoseSignToolProxy()
+            iss = cose_proxy.create_issuer(self.chain)
+            cose_proxy.cose_sign(filename, self.key, self.chain, feed, iss, algo, out_path)
 
-    #         # this will insert the import statement from the first fragment into the second one
-    #         acifragmentgen_confcom(
-    #             None, None, None, None, None, None, None, None, generate_import=True, minimum_svn=1, fragments_json=fragment_json, fragment_path=out_path
-    #         )
-    #         # put the "path" field into the import statement
-    #         temp_json = load_json_from_file(fragment_json)
-    #         temp_json["fragments"][0]["path"] = out_path
+            # this will insert the import statement from the first fragment into the second one
+            acifragmentgen_confcom(
+                None, None, None, None, None, None, None, None, generate_import=True, minimum_svn=1, fragments_json=fragment_json, fragment_path=out_path
+            )
+            # put the "path" field into the import statement
+            temp_json = load_json_from_file(fragment_json)
+            temp_json["fragments"][0]["path"] = out_path
 
-    #         write_str_to_file(fragment_json, json.dumps(temp_json))
+            write_str_to_file(fragment_json, json.dumps(temp_json))
 
-    #         acifragmentgen_confcom(
-    #             None, fragment_json, None, "payload3", 1, feed2, self.key, self.chain, None, output_filename=filename2
-    #         )
+            acifragmentgen_confcom(
+                None, fragment_json, None, "payload3", 1, feed2, self.key, self.chain, None, output_filename=filename2
+            )
 
-    #         # make sure all of our output files exist
-    #         self.assertTrue(os.path.exists(filename2))
-    #         self.assertTrue(os.path.exists(out_path2))
-    #         self.assertTrue(os.path.exists(fragment_json))
-    #         # check the contents of the unsigned rego file
-    #         rego_str = load_str_from_file(filename2)
-    #         # see if the import statement is in the rego file
-    #         self.assertTrue("test_feed" in rego_str)
-    #         # make sure the image covered by the first fragment isn't in the second fragment
-    #         self.assertFalse("mcr.microsoft.com/acc/samples/aci/helloworld:2.8" in rego_str)
-    #     except Exception as e:
-        #     raise e
-        # finally:
-        #     delete_silently(filename)
-        #     delete_silently(out_path)
-        #     delete_silently(filename2)
-        #     delete_silently(out_path2)
-        #     delete_silently(fragment_json)
+            # make sure all of our output files exist
+            self.assertTrue(os.path.exists(filename2))
+            self.assertTrue(os.path.exists(out_path2))
+            self.assertTrue(os.path.exists(fragment_json))
+            # check the contents of the unsigned rego file
+            rego_str = load_str_from_file(filename2)
+            # see if the import statement is in the rego file
+            self.assertTrue("test_feed" in rego_str)
+            # make sure the image covered by the first fragment isn't in the second fragment
+            self.assertFalse("mcr.microsoft.com/acc/samples/aci/helloworld:2.8" in rego_str)
+        except Exception as e:
+            raise e
+        finally:
+            delete_silently(filename)
+            delete_silently(out_path)
+            delete_silently(filename2)
+            delete_silently(out_path2)
+            delete_silently(fragment_json)
 
 class InitialFragmentErrors(ScenarioTest):
     def test_invalid_input(self):

@@ -34,7 +34,7 @@ examples:
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.Network/virtualNetworks/SampleVMVNET/subnets/SampleVMSubnet" --split-csv true
     - name: Create a test with custom defined autostop criteria or enable / disable autostop for a test.
       text: |
-        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop-error-rate 80.5 --autostop-time-window 120
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop-error-rate 80.5 --autostop-time-window 120 --autostop-engine-users 1000
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop disable
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop enable
     - name: Create a test with a multi-region load configuration using region names in the format accepted by Azure Resource Manager (ARM). Ensure the specified regions are supported by Azure Load Testing. Multi-region load tests are restricted to public endpoints only.

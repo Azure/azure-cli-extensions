@@ -115,3 +115,15 @@ Release History
 1.4.0
 ++++++
 * Set autoupgradeprofile commands to preview mode
+
+1.5.0
+++++++
+* Upgrade SDK version to 2025-03-01
+
+1.5.1
+++++++
+* create_fleet now creates a role assignment when fleet type is private
+
+1.5.2
+++++++
+* Bug fix for `az fleet create --enable-hub --enable-private-cluster` argument

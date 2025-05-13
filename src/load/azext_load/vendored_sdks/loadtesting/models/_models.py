@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=line-too-long,useless-suppression,too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -11,20 +11,19 @@
 import datetime
 from typing import Any, Dict, List, Literal, Mapping, Optional, TYPE_CHECKING, Union, overload
 
-from .. import _model_base
-from .._model_base import rest_discriminator, rest_field
+from azure.core.exceptions import ODataV4Format
+
+from .._utils.model_base import Model as _Model, rest_discriminator, rest_field
 from ._enums import Frequency, NotificationEventType, NotificationScopeType, ResourceKind, TriggerType
 
 if TYPE_CHECKING:
     from .. import models as _models
 
 
-class AppComponent(_model_base.Model):
+class AppComponent(_Model):
     """An Azure resource object (Refer azure generic resource model
-    :https://learn.microsoft.com/en-us/rest/api/resources/resources/get-by-id#genericresource).
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
+    :`https://learn.microsoft.com/en-us/rest/api/resources/resources/get-by-id#genericresource
+    <https://learn.microsoft.com/en-us/rest/api/resources/resources/get-by-id#genericresource>`_).
 
     :ivar resource_id: fully qualified resource Id e.g
      subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName}.
@@ -48,17 +47,19 @@ class AppComponent(_model_base.Model):
     """fully qualified resource Id e.g
      subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName}.
      Required."""
-    resource_name: str = rest_field(name="resourceName")
+    resource_name: str = rest_field(name="resourceName", visibility=["read", "create", "update", "delete", "query"])
     """Azure resource name, required while creating the app component. Required."""
-    resource_type: str = rest_field(name="resourceType")
+    resource_type: str = rest_field(name="resourceType", visibility=["read", "create", "update", "delete", "query"])
     """Azure resource type, required while creating the app component. Required."""
-    display_name: Optional[str] = rest_field(name="displayName")
+    display_name: Optional[str] = rest_field(
+        name="displayName", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Azure resource display name."""
     resource_group: Optional[str] = rest_field(name="resourceGroup", visibility=["read"])
     """Resource group name of the Azure resource."""
     subscription_id: Optional[str] = rest_field(name="subscriptionId", visibility=["read"])
     """Subscription Id of the Azure resource."""
-    kind: Optional[str] = rest_field()
+    kind: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Kind of Azure resource type."""
 
     @overload
@@ -82,7 +83,7 @@ class AppComponent(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class ArtifactsContainerInfo(_model_base.Model):
+class ArtifactsContainerInfo(_Model):
     """Artifacts container info.
 
     :ivar url: This is a SAS URI to an Azure Storage Container that contains the test run
@@ -92,9 +93,11 @@ class ArtifactsContainerInfo(_model_base.Model):
     :vartype expire_date_time: ~datetime.datetime
     """
 
-    url: Optional[str] = rest_field()
+    url: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """This is a SAS URI to an Azure Storage Container that contains the test run artifacts."""
-    expire_date_time: Optional[datetime.datetime] = rest_field(name="expireDateTime", format="rfc3339")
+    expire_date_time: Optional[datetime.datetime] = rest_field(
+        name="expireDateTime", visibility=["read", "create", "update", "delete", "query"], format="rfc3339"
+    )
     """Expiry time of the container (RFC 3339 literal format)."""
 
     @overload
@@ -116,7 +119,7 @@ class ArtifactsContainerInfo(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class AutoStopCriteria(_model_base.Model):
+class AutoStopCriteria(_Model):
     """Auto stop criteria for a test. This will automatically stop a load test if the error percentage
     is high for a certain time window.
 
@@ -128,15 +131,29 @@ class AutoStopCriteria(_model_base.Model):
     :ivar error_rate_time_window_in_seconds: Time window during which the error percentage should
      be evaluated in seconds.
     :vartype error_rate_time_window_in_seconds: int
+    :ivar maximum_virtual_users_per_engine: Maximum number of virtual users per load testing
+     engine, at which the test run should be automatically stopped.
+    :vartype maximum_virtual_users_per_engine: int
     """
 
-    auto_stop_disabled: Optional[bool] = rest_field(name="autoStopDisabled")
+    auto_stop_disabled: Optional[bool] = rest_field(
+        name="autoStopDisabled", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Whether auto-stop should be disabled. The default value is false."""
-    error_rate: Optional[float] = rest_field(name="errorRate")
+    error_rate: Optional[float] = rest_field(
+        name="errorRate", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Threshold percentage of errors on which test run should be automatically stopped. Allowed
      values are in range of 0.0-100.0."""
-    error_rate_time_window_in_seconds: Optional[int] = rest_field(name="errorRateTimeWindowInSeconds")
+    error_rate_time_window_in_seconds: Optional[int] = rest_field(
+        name="errorRateTimeWindowInSeconds", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Time window during which the error percentage should be evaluated in seconds."""
+    maximum_virtual_users_per_engine: Optional[int] = rest_field(
+        name="maximumVirtualUsersPerEngine", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """Maximum number of virtual users per load testing engine, at which the test run should be
+     automatically stopped."""
 
     @overload
     def __init__(
@@ -145,6 +162,7 @@ class AutoStopCriteria(_model_base.Model):
         auto_stop_disabled: Optional[bool] = None,
         error_rate: Optional[float] = None,
         error_rate_time_window_in_seconds: Optional[int] = None,
+        maximum_virtual_users_per_engine: Optional[int] = None,
     ) -> None: ...
 
     @overload
@@ -158,7 +176,7 @@ class AutoStopCriteria(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class CertificateMetadata(_model_base.Model):
+class CertificateMetadata(_Model):
     """Certificates metadata.
 
     :ivar value: The value of the certificate for respective type.
@@ -169,11 +187,13 @@ class CertificateMetadata(_model_base.Model):
     :vartype name: str
     """
 
-    value: Optional[str] = rest_field()
+    value: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The value of the certificate for respective type."""
-    type: Optional[Union[str, "_models.CertificateType"]] = rest_field()
+    type: Optional[Union[str, "_models.CertificateType"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Type of certificate. \"AKV_CERT_URI\""""
-    name: Optional[str] = rest_field()
+    name: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Name of the certificate."""
 
     @overload
@@ -196,13 +216,12 @@ class CertificateMetadata(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class Recurrence(_model_base.Model):
+class Recurrence(_Model):
     """Recurrence model.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
     RecurrenceWithCron, DailyRecurrence, HourlyRecurrence, MonthlyRecurrenceByDates,
     MonthlyRecurrenceByWeekDays, WeeklyRecurrence
-
 
     :ivar frequency: Frequency of the recurrence. Required. Known values are: "Cron", "Hourly",
      "Daily", "Weekly", "MonthlyByDays", and "MonthlyByDates".
@@ -215,11 +234,13 @@ class Recurrence(_model_base.Model):
     :vartype recurrence_end: ~azure.developer.loadtesting.models.RecurrenceEnd
     """
 
-    __mapping__: Dict[str, _model_base.Model] = {}
-    frequency: str = rest_discriminator(name="frequency")
+    __mapping__: Dict[str, _Model] = {}
+    frequency: str = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])
     """Frequency of the recurrence. Required. Known values are: \"Cron\", \"Hourly\", \"Daily\",
      \"Weekly\", \"MonthlyByDays\", and \"MonthlyByDates\"."""
-    recurrence_end: Optional["_models.RecurrenceEnd"] = rest_field(name="recurrenceEnd")
+    recurrence_end: Optional["_models.RecurrenceEnd"] = rest_field(
+        name="recurrenceEnd", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Recurrence end model. You can specify the end either by providing a numberOfOccurrences (which
      will end the recurrence after the specified number of occurrences) or by providing an
      endDateTime (which will end the recurrence after the specified date). If neither value is
@@ -248,7 +269,6 @@ class Recurrence(_model_base.Model):
 class DailyRecurrence(Recurrence, discriminator="Daily"):
     """Recurrence model when frequency is set as Daily.
 
-
     :ivar recurrence_end: Recurrence end model. You can specify the end either by providing a
      numberOfOccurrences (which will end the recurrence after the specified number of occurrences)
      or by providing an endDateTime (which will end the recurrence after the specified date). If
@@ -263,10 +283,10 @@ class DailyRecurrence(Recurrence, discriminator="Daily"):
     :vartype interval: int
     """
 
-    frequency: Literal[Frequency.DAILY] = rest_discriminator(name="frequency")  # type: ignore
+    frequency: Literal[Frequency.DAILY] = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Frequency of the day recurrence. Required. Recurrence defined on a daily basis, as specified by
      DailyRecurrence."""
-    interval: int = rest_field()
+    interval: int = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The interval at which the recurrence should repeat. It signifies the number of days between
      each recurrence. Required."""
 
@@ -289,7 +309,7 @@ class DailyRecurrence(Recurrence, discriminator="Daily"):
         super().__init__(*args, frequency=Frequency.DAILY, **kwargs)
 
 
-class DimensionFilter(_model_base.Model):
+class DimensionFilter(_Model):
     """Dimension name and values to filter.
 
     :ivar name: The dimension name.
@@ -298,9 +318,11 @@ class DimensionFilter(_model_base.Model):
     :vartype values_property: list[str]
     """
 
-    name: Optional[str] = rest_field()
+    name: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The dimension name."""
-    values_property: Optional[List[str]] = rest_field(name="values")
+    values_property: Optional[List[str]] = rest_field(
+        name="values", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The dimension values. Maximum values can be 20."""
 
     @overload
@@ -322,7 +344,7 @@ class DimensionFilter(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class DimensionValue(_model_base.Model):
+class DimensionValue(_Model):
     """Represents a metric dimension value.
 
     :ivar name: The name of the dimension.
@@ -331,9 +353,9 @@ class DimensionValue(_model_base.Model):
     :vartype value: str
     """
 
-    name: Optional[str] = rest_field()
+    name: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The name of the dimension."""
-    value: Optional[str] = rest_field()
+    value: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The value of the dimension."""
 
     @overload
@@ -355,10 +377,8 @@ class DimensionValue(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class ErrorDetails(_model_base.Model):
+class ErrorDetails(_Model):
     """Error details if there is any failure in load test run.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar message: Error details in case test run was not successfully run.
     :vartype message: str
@@ -368,28 +388,31 @@ class ErrorDetails(_model_base.Model):
     """Error details in case test run was not successfully run."""
 
 
-class FunctionFlexConsumptionResourceConfiguration(_model_base.Model):  # pylint: disable=name-too-long
+class FunctionFlexConsumptionResourceConfiguration(_Model):  # pylint: disable=name-too-long
     """Resource configuration instance for a Flex Consumption based Azure Function App.
-
 
     :ivar instance_memory_mb: Memory size of the instance. Supported values are 2048, 4096.
      Required.
     :vartype instance_memory_mb: int
-    :ivar http_concurrency: HTTP Concurrency for the function app. Required.
+    :ivar http_concurrency: HTTP Concurrency for the function app.
     :vartype http_concurrency: int
     """
 
-    instance_memory_mb: int = rest_field(name="instanceMemoryMB")
+    instance_memory_mb: int = rest_field(
+        name="instanceMemoryMB", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Memory size of the instance. Supported values are 2048, 4096. Required."""
-    http_concurrency: int = rest_field(name="httpConcurrency")
-    """HTTP Concurrency for the function app. Required."""
+    http_concurrency: Optional[int] = rest_field(
+        name="httpConcurrency", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """HTTP Concurrency for the function app."""
 
     @overload
     def __init__(
         self,
         *,
         instance_memory_mb: int,
-        http_concurrency: int,
+        http_concurrency: Optional[int] = None,
     ) -> None: ...
 
     @overload
@@ -403,19 +426,18 @@ class FunctionFlexConsumptionResourceConfiguration(_model_base.Model):  # pylint
         super().__init__(*args, **kwargs)
 
 
-class TargetResourceConfigurations(_model_base.Model):
+class TargetResourceConfigurations(_Model):
     """Configurations of a target resource. This varies with the kind of resource.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
     FunctionFlexConsumptionTargetResourceConfigurations
-
 
     :ivar kind: Kind of the resource for which the configurations apply. Required.
      "FunctionsFlexConsumption"
     :vartype kind: str or ~azure.developer.loadtesting.models.ResourceKind
     """
 
-    __mapping__: Dict[str, _model_base.Model] = {}
+    __mapping__: Dict[str, _Model] = {}
     kind: str = rest_discriminator(name="kind", visibility=["read", "create"])
     """Kind of the resource for which the configurations apply. Required. \"FunctionsFlexConsumption\""""
 
@@ -442,7 +464,6 @@ class FunctionFlexConsumptionTargetResourceConfigurations(
 ):  # pylint: disable=name-too-long
     """Configurations for a Function App using Flex Consumption Plan.
 
-
     :ivar kind: The kind value to use when providing configuration.
      This should typically be not changed from its value. Required. Resource is a Azure FunctionApp
      on Flex Consumption Plan.
@@ -452,11 +473,13 @@ class FunctionFlexConsumptionTargetResourceConfigurations(
      ~azure.developer.loadtesting.models.FunctionFlexConsumptionResourceConfiguration]
     """
 
-    kind: Literal[ResourceKind.FUNCTIONS_FLEX_CONSUMPTION] = rest_discriminator(name="kind")  # type: ignore
+    kind: Literal[ResourceKind.FUNCTIONS_FLEX_CONSUMPTION] = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """The kind value to use when providing configuration.
      This should typically be not changed from its value. Required. Resource is a Azure FunctionApp
      on Flex Consumption Plan."""
-    configurations: Optional[Dict[str, "_models.FunctionFlexConsumptionResourceConfiguration"]] = rest_field()
+    configurations: Optional[Dict[str, "_models.FunctionFlexConsumptionResourceConfiguration"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """A map of configurations for a Function app using Flex Consumption Plan."""
 
     @overload
@@ -480,7 +503,6 @@ class FunctionFlexConsumptionTargetResourceConfigurations(
 class HourlyRecurrence(Recurrence, discriminator="Hourly"):
     """Recurrence model when frequency is set as Hourly.
 
-
     :ivar recurrence_end: Recurrence end model. You can specify the end either by providing a
      numberOfOccurrences (which will end the recurrence after the specified number of occurrences)
      or by providing an endDateTime (which will end the recurrence after the specified date). If
@@ -495,10 +517,10 @@ class HourlyRecurrence(Recurrence, discriminator="Hourly"):
     :vartype interval: int
     """
 
-    frequency: Literal[Frequency.HOURLY] = rest_discriminator(name="frequency")  # type: ignore
+    frequency: Literal[Frequency.HOURLY] = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Frequency of the hour recurrence. Required. Recurrence defined on an hourly basis, as specified
      by HourlyRecurrence."""
-    interval: int = rest_field()
+    interval: int = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The interval at which the recurrence should repeat. It signifies the number of hours between
      each recurrence. Required."""
 
@@ -521,44 +543,53 @@ class HourlyRecurrence(Recurrence, discriminator="Hourly"):
         super().__init__(*args, frequency=Frequency.HOURLY, **kwargs)
 
 
-class LoadTestConfiguration(_model_base.Model):
+class LoadTestConfiguration(_Model):
     """Configurations for the load test.
 
     :ivar engine_instances: The number of engine instances to execute load test. Supported values
      are in range of 1-400. Required for creating a new test.
     :vartype engine_instances: int
-    :ivar split_all_cs_vs: If false, Azure Load Testing copies and processes your input files
+    :ivar split_all_csvs: If false, Azure Load Testing copies and processes your input files
      unmodified
      across all test engine instances. If true, Azure Load Testing splits the CSV
      input data evenly across all engine instances. If you provide multiple CSV
      files, each file will be split evenly.
-    :vartype split_all_cs_vs: bool
+    :vartype split_all_csvs: bool
     :ivar quick_start_test: If true, optionalLoadTestConfig is required and JMX script for the load
      test is
      not required to upload.
     :vartype quick_start_test: bool
     :ivar optional_load_test_config: Configuration for quick load test.
-    :vartype optional_load_test_config: ~azure.developer.loadtesting.models.OptionalLoadTestConfig
+    :vartype optional_load_test_config:
+     ~azure.developer.loadtesting.models.OptionalLoadTestConfiguration
     :ivar regional_load_test_config: Region distribution configuration for the load test.
     :vartype regional_load_test_config:
      list[~azure.developer.loadtesting.models.RegionalConfiguration]
     """
 
-    engine_instances: Optional[int] = rest_field(name="engineInstances")
+    engine_instances: Optional[int] = rest_field(
+        name="engineInstances", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The number of engine instances to execute load test. Supported values are in range of 1-400.
      Required for creating a new test."""
-    split_all_cs_vs: Optional[bool] = rest_field(name="splitAllCSVs")
+    split_all_csvs: Optional[bool] = rest_field(
+        name="splitAllCSVs", visibility=["read", "create", "update", "delete", "query"]
+    )
     """If false, Azure Load Testing copies and processes your input files unmodified
      across all test engine instances. If true, Azure Load Testing splits the CSV
      input data evenly across all engine instances. If you provide multiple CSV
      files, each file will be split evenly."""
-    quick_start_test: Optional[bool] = rest_field(name="quickStartTest")
+    quick_start_test: Optional[bool] = rest_field(
+        name="quickStartTest", visibility=["read", "create", "update", "delete", "query"]
+    )
     """If true, optionalLoadTestConfig is required and JMX script for the load test is
      not required to upload."""
-    optional_load_test_config: Optional["_models.OptionalLoadTestConfig"] = rest_field(name="optionalLoadTestConfig")
+    optional_load_test_config: Optional["_models.OptionalLoadTestConfiguration"] = rest_field(
+        name="optionalLoadTestConfig", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Configuration for quick load test."""
     regional_load_test_config: Optional[List["_models.RegionalConfiguration"]] = rest_field(
-        name="regionalLoadTestConfig"
+        name="regionalLoadTestConfig", visibility=["read", "create", "update", "delete", "query"]
     )
     """Region distribution configuration for the load test."""
 
@@ -567,9 +598,9 @@ class LoadTestConfiguration(_model_base.Model):
         self,
         *,
         engine_instances: Optional[int] = None,
-        split_all_cs_vs: Optional[bool] = None,
+        split_all_csvs: Optional[bool] = None,
         quick_start_test: Optional[bool] = None,
-        optional_load_test_config: Optional["_models.OptionalLoadTestConfig"] = None,
+        optional_load_test_config: Optional["_models.OptionalLoadTestConfiguration"] = None,
         regional_load_test_config: Optional[List["_models.RegionalConfiguration"]] = None,
     ) -> None: ...
 
@@ -584,7 +615,7 @@ class LoadTestConfiguration(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricAvailability(_model_base.Model):
+class MetricAvailability(_Model):
     """Metric availability specifies the time grain (aggregation interval or frequency).
 
     :ivar time_grain: The time grain specifies the aggregation interval for the metric. Expressed
@@ -593,7 +624,9 @@ class MetricAvailability(_model_base.Model):
     :vartype time_grain: str or ~azure.developer.loadtesting.models.TimeGrain
     """
 
-    time_grain: Optional[Union[str, "_models.TimeGrain"]] = rest_field(name="timeGrain")
+    time_grain: Optional[Union[str, "_models.TimeGrain"]] = rest_field(
+        name="timeGrain", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The time grain specifies the aggregation interval for the metric. Expressed as
      a duration 'PT1M', 'PT1H', etc. Known values are: \"PT5S\", \"PT10S\", \"PT1M\", \"PT5M\", and
      \"PT1H\"."""
@@ -616,11 +649,11 @@ class MetricAvailability(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricDefinition(_model_base.Model):
+class MetricDefinition(_Model):
     """Metric definition.
 
     :ivar dimensions: List of dimensions.
-    :vartype dimensions: list[~azure.developer.loadtesting.models.NameAndDesc]
+    :vartype dimensions: list[~azure.developer.loadtesting.models.NameAndDescription]
     :ivar description: The metric description.
     :vartype description: str
     :ivar name: The metric name.
@@ -631,7 +664,7 @@ class MetricDefinition(_model_base.Model):
      values for display. Known values are: "Average", "Count", "None", "Total", "Percentile75",
      "Percentile90", "Percentile95", "Percentile96", "Percentile97", "Percentile98", "Percentile99",
      "Percentile999", and "Percentile9999".
-    :vartype primary_aggregation_type: str or ~azure.developer.loadtesting.models.AggregationType
+    :vartype primary_aggregation_type: str or ~azure.developer.loadtesting.models.Aggregation
     :ivar supported_aggregation_types: The collection of what all aggregation types are supported.
     :vartype supported_aggregation_types: list[str]
     :ivar unit: The unit of the metric. Known values are: "NotSpecified", "Percent", "Count",
@@ -643,27 +676,35 @@ class MetricDefinition(_model_base.Model):
     :vartype metric_availabilities: list[~azure.developer.loadtesting.models.MetricAvailability]
     """
 
-    dimensions: Optional[List["_models.NameAndDesc"]] = rest_field()
+    dimensions: Optional[List["_models.NameAndDescription"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """List of dimensions."""
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The metric description."""
-    name: Optional[str] = rest_field()
+    name: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The metric name."""
-    namespace: Optional[str] = rest_field()
+    namespace: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The namespace the metric belongs to."""
-    primary_aggregation_type: Optional[Union[str, "_models.AggregationType"]] = rest_field(
-        name="primaryAggregationType"
+    primary_aggregation_type: Optional[Union[str, "_models.Aggregation"]] = rest_field(
+        name="primaryAggregationType", visibility=["read", "create", "update", "delete", "query"]
     )
     """The primary aggregation type value defining how to use the values for display. Known values
      are: \"Average\", \"Count\", \"None\", \"Total\", \"Percentile75\", \"Percentile90\",
      \"Percentile95\", \"Percentile96\", \"Percentile97\", \"Percentile98\", \"Percentile99\",
      \"Percentile999\", and \"Percentile9999\"."""
-    supported_aggregation_types: Optional[List[str]] = rest_field(name="supportedAggregationTypes")
+    supported_aggregation_types: Optional[List[str]] = rest_field(
+        name="supportedAggregationTypes", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The collection of what all aggregation types are supported."""
-    unit: Optional[Union[str, "_models.MetricUnit"]] = rest_field()
+    unit: Optional[Union[str, "_models.MetricUnit"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """The unit of the metric. Known values are: \"NotSpecified\", \"Percent\", \"Count\",
      \"Seconds\", \"Milliseconds\", \"Bytes\", \"BytesPerSecond\", and \"CountPerSecond\"."""
-    metric_availabilities: Optional[List["_models.MetricAvailability"]] = rest_field(name="metricAvailabilities")
+    metric_availabilities: Optional[List["_models.MetricAvailability"]] = rest_field(
+        name="metricAvailabilities", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Metric availability specifies the time grain (aggregation interval or
      frequency)."""
 
@@ -671,11 +712,11 @@ class MetricDefinition(_model_base.Model):
     def __init__(
         self,
         *,
-        dimensions: Optional[List["_models.NameAndDesc"]] = None,
+        dimensions: Optional[List["_models.NameAndDescription"]] = None,
         description: Optional[str] = None,
         name: Optional[str] = None,
         namespace: Optional[str] = None,
-        primary_aggregation_type: Optional[Union[str, "_models.AggregationType"]] = None,
+        primary_aggregation_type: Optional[Union[str, "_models.Aggregation"]] = None,
         supported_aggregation_types: Optional[List[str]] = None,
         unit: Optional[Union[str, "_models.MetricUnit"]] = None,
         metric_availabilities: Optional[List["_models.MetricAvailability"]] = None,
@@ -692,15 +733,14 @@ class MetricDefinition(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricDefinitionCollection(_model_base.Model):
+class MetricDefinitionCollection(_Model):
     """Represents collection of metric definitions.
-
 
     :ivar value: the values for the metric definitions. Required.
     :vartype value: list[~azure.developer.loadtesting.models.MetricDefinition]
     """
 
-    value: List["_models.MetricDefinition"] = rest_field()
+    value: List["_models.MetricDefinition"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """the values for the metric definitions. Required."""
 
     @overload
@@ -721,7 +761,7 @@ class MetricDefinitionCollection(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricNamespace(_model_base.Model):
+class MetricNamespace(_Model):
     """Metric namespace class specifies the metadata for a metric namespace.
 
     :ivar description: The namespace description.
@@ -730,9 +770,9 @@ class MetricNamespace(_model_base.Model):
     :vartype name: str
     """
 
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The namespace description."""
-    name: Optional[str] = rest_field()
+    name: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The metric namespace name."""
 
     @overload
@@ -754,15 +794,14 @@ class MetricNamespace(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricNamespaceCollection(_model_base.Model):
+class MetricNamespaceCollection(_Model):
     """Represents collection of metric namespaces.
-
 
     :ivar value: The values for the metric namespaces. Required.
     :vartype value: list[~azure.developer.loadtesting.models.MetricNamespace]
     """
 
-    value: List["_models.MetricNamespace"] = rest_field()
+    value: List["_models.MetricNamespace"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The values for the metric namespaces. Required."""
 
     @overload
@@ -783,7 +822,7 @@ class MetricNamespaceCollection(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricRequestPayload(_model_base.Model):
+class MetricRequestPayload(_Model):
     """Filters to fetch the set of metric.
 
     :ivar filters: Get metrics for specific dimension values. Example: Metric contains dimension
@@ -793,7 +832,9 @@ class MetricRequestPayload(_model_base.Model):
     :vartype filters: list[~azure.developer.loadtesting.models.DimensionFilter]
     """
 
-    filters: Optional[List["_models.DimensionFilter"]] = rest_field()
+    filters: Optional[List["_models.DimensionFilter"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Get metrics for specific dimension values. Example: Metric contains dimension
      like SamplerName, Error. To retrieve all the time series data where SamplerName
      is equals to HTTPRequest1 or HTTPRequest2, the DimensionFilter value will be
@@ -817,7 +858,7 @@ class MetricRequestPayload(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class MetricValue(_model_base.Model):
+class MetricValue(_Model):
     """Represents a metric value.
 
     :ivar timestamp: The timestamp for the metric value in RFC 3339 format.
@@ -826,9 +867,11 @@ class MetricValue(_model_base.Model):
     :vartype value: float
     """
 
-    timestamp: Optional[datetime.datetime] = rest_field(format="rfc3339")
+    timestamp: Optional[datetime.datetime] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"], format="rfc3339"
+    )
     """The timestamp for the metric value in RFC 3339 format."""
-    value: Optional[float] = rest_field()
+    value: Optional[float] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The metric value."""
 
     @overload
@@ -853,7 +896,6 @@ class MetricValue(_model_base.Model):
 class MonthlyRecurrenceByDates(Recurrence, discriminator="MonthlyByDates"):
     """Recurrence model when frequency is set as MonthlyByDates.
 
-
     :ivar recurrence_end: Recurrence end model. You can specify the end either by providing a
      numberOfOccurrences (which will end the recurrence after the specified number of occurrences)
      or by providing an endDateTime (which will end the recurrence after the specified date). If
@@ -871,13 +913,15 @@ class MonthlyRecurrenceByDates(Recurrence, discriminator="MonthlyByDates"):
     :vartype interval: int
     """
 
-    frequency: Literal[Frequency.MONTHLY_BY_DATES] = rest_discriminator(name="frequency")  # type: ignore
+    frequency: Literal[Frequency.MONTHLY_BY_DATES] = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Frequency of the month recurrence. Required. Recurrence defined monthly on specific dates, as
      specified by MonthlyRecurrenceByDates."""
-    dates_in_month: Optional[List[int]] = rest_field(name="datesInMonth")
+    dates_in_month: Optional[List[int]] = rest_field(
+        name="datesInMonth", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Recurrence set to repeat on the specified dates of the month. Value of dates can be 1 to 31 and
      -1. -1 represents the last day of the month."""
-    interval: Optional[int] = rest_field()
+    interval: Optional[int] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The interval at which the recurrence should repeat. It signifies the number of months between
      each recurrence."""
 
@@ -904,7 +948,6 @@ class MonthlyRecurrenceByDates(Recurrence, discriminator="MonthlyByDates"):
 class MonthlyRecurrenceByWeekDays(Recurrence, discriminator="MonthlyByDays"):
     """Recurrence model when frequency is set as MonthlyByDays .
 
-
     :ivar recurrence_end: Recurrence end model. You can specify the end either by providing a
      numberOfOccurrences (which will end the recurrence after the specified number of occurrences)
      or by providing an endDateTime (which will end the recurrence after the specified date). If
@@ -926,17 +969,19 @@ class MonthlyRecurrenceByWeekDays(Recurrence, discriminator="MonthlyByDays"):
     :vartype interval: int
     """
 
-    frequency: Literal[Frequency.MONTHLY_BY_DAYS] = rest_discriminator(name="frequency")  # type: ignore
+    frequency: Literal[Frequency.MONTHLY_BY_DAYS] = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Frequency of the month recurrence. Required. Recurrence defined monthly on specific days, as
      specified by MonthlyRecurrenceByWeekDays."""
-    week_days_in_month: Optional[List[Union[str, "_models.WeekDays"]]] = rest_field(name="weekDaysInMonth")
+    week_days_in_month: Optional[List[Union[str, "_models.WeekDays"]]] = rest_field(
+        name="weekDaysInMonth", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Specific days of the week when the recurrence should repeat."""
-    index: int = rest_field()
+    index: int = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Index of the week in a month at which the recurrence should repeat. For example, if the index
      is '2', weekDay is 'Monday', interval is 3 and frequency is 'Month', the recurrence will run
      every second Monday of the month and repeat every 3 months. Value of index can be 1 to 5.
      Required."""
-    interval: int = rest_field()
+    interval: int = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The interval at which the recurrence should repeat. It signifies the number of months between
      each recurrence. Required."""
 
@@ -961,7 +1006,7 @@ class MonthlyRecurrenceByWeekDays(Recurrence, discriminator="MonthlyByDays"):
         super().__init__(*args, frequency=Frequency.MONTHLY_BY_DAYS, **kwargs)
 
 
-class NameAndDesc(_model_base.Model):
+class NameAndDescription(_Model):
     """The name and description.
 
     :ivar description: The description.
@@ -970,9 +1015,9 @@ class NameAndDesc(_model_base.Model):
     :vartype name: str
     """
 
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The description."""
-    name: Optional[str] = rest_field()
+    name: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The name."""
 
     @overload
@@ -994,14 +1039,11 @@ class NameAndDesc(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class NotificationRule(_model_base.Model):
+class NotificationRule(_Model):
     """Notification rule model.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
     TestsNotificationRule
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar notification_rule_id: The unique identifier of the notification rule. Required.
     :vartype notification_rule_id: str
@@ -1021,14 +1063,16 @@ class NotificationRule(_model_base.Model):
     :vartype last_modified_by: str
     """
 
-    __mapping__: Dict[str, _model_base.Model] = {}
+    __mapping__: Dict[str, _Model] = {}
     notification_rule_id: str = rest_field(name="notificationRuleId", visibility=["read"])
     """The unique identifier of the notification rule. Required."""
-    display_name: str = rest_field(name="displayName")
+    display_name: str = rest_field(name="displayName", visibility=["read", "create", "update", "delete", "query"])
     """The name of the notification rule. Required."""
-    action_group_ids: List[str] = rest_field(name="actionGroupIds")
+    action_group_ids: List[str] = rest_field(
+        name="actionGroupIds", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The action groups to notify. Required."""
-    scope: str = rest_discriminator(name="scope")
+    scope: str = rest_discriminator(name="scope", visibility=["read", "create", "update", "delete", "query"])
     """The scope of the notification rule. Required. \"Tests\""""
     created_date_time: Optional[datetime.datetime] = rest_field(
         name="createdDateTime", visibility=["read"], format="rfc3339"
@@ -1063,11 +1107,57 @@ class NotificationRule(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class OptionalLoadTestConfig(_model_base.Model):
+class OperationStatus(_Model):
+    """Status of a long running operation.
+
+    :ivar status: The state of the operation. Required. Known values are: "NotStarted", "Running",
+     "Succeeded", "Failed", and "Canceled".
+    :vartype status: str or ~azure.developer.loadtesting.models.OperationState
+    :ivar kind: The kind of the operation. Required. "CloneTest"
+    :vartype kind: str or ~azure.developer.loadtesting.models.OperationKind
+    :ivar error: Error object that describes the error when status is "Failed".
+    :vartype error: ~azure.core.ODataV4Format
+    :ivar id: The unique ID of the operation. Required.
+    :vartype id: str
+    """
+
+    status: Union[str, "_models.OperationState"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The state of the operation. Required. Known values are: \"NotStarted\", \"Running\",
+     \"Succeeded\", \"Failed\", and \"Canceled\"."""
+    kind: Union[str, "_models.OperationKind"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """The kind of the operation. Required. \"CloneTest\""""
+    error: Optional[ODataV4Format] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """Error object that describes the error when status is \"Failed\"."""
+    id: str = rest_field(visibility=["read"])
+    """The unique ID of the operation. Required."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        status: Union[str, "_models.OperationState"],
+        kind: Union[str, "_models.OperationKind"],
+        error: Optional[ODataV4Format] = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class OptionalLoadTestConfiguration(_Model):
     """Configuration for quick load test.
 
     :ivar endpoint_url: Test URL. Provide the complete HTTP URL. For example,
-     https://contoso-app.azurewebsites.net/login.
+     `https://contoso-app.azurewebsites.net/login <https://contoso-app.azurewebsites.net/login>`_.
     :vartype endpoint_url: str
     :ivar requests_per_second: Target throughput (requests per second). This may not be necessarily
      achieved. The actual throughput will be lower if the application is not capable of handling it.
@@ -1082,19 +1172,29 @@ class OptionalLoadTestConfig(_model_base.Model):
     :vartype duration: int
     """
 
-    endpoint_url: Optional[str] = rest_field(name="endpointUrl")
+    endpoint_url: Optional[str] = rest_field(
+        name="endpointUrl", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Test URL. Provide the complete HTTP URL. For example,
-     https://contoso-app.azurewebsites.net/login."""
-    requests_per_second: Optional[int] = rest_field(name="requestsPerSecond")
+     `https://contoso-app.azurewebsites.net/login <https://contoso-app.azurewebsites.net/login>`_."""
+    requests_per_second: Optional[int] = rest_field(
+        name="requestsPerSecond", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Target throughput (requests per second). This may not be necessarily achieved. The actual
      throughput will be lower if the application is not capable of handling it."""
-    max_response_time_in_ms: Optional[int] = rest_field(name="maxResponseTimeInMs")
+    max_response_time_in_ms: Optional[int] = rest_field(
+        name="maxResponseTimeInMs", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Maximum response time in milliseconds of the API/endpoint."""
-    virtual_users: Optional[int] = rest_field(name="virtualUsers")
+    virtual_users: Optional[int] = rest_field(
+        name="virtualUsers", visibility=["read", "create", "update", "delete", "query"]
+    )
     """No of concurrent virtual users."""
-    ramp_up_time: Optional[int] = rest_field(name="rampUpTime")
+    ramp_up_time: Optional[int] = rest_field(
+        name="rampUpTime", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Ramp up time in seconds."""
-    duration: Optional[int] = rest_field()
+    duration: Optional[int] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Test run duration in seconds."""
 
     @overload
@@ -1120,7 +1220,7 @@ class OptionalLoadTestConfig(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class PassFailCriteria(_model_base.Model):
+class PassFailCriteria(_Model):
     """Pass fail criteria for a test.
 
     :ivar pass_fail_metrics: Map of id and pass fail metrics { id  : pass fail metrics }.
@@ -1131,10 +1231,12 @@ class PassFailCriteria(_model_base.Model):
      ~azure.developer.loadtesting.models.PassFailServerMetric]
     """
 
-    pass_fail_metrics: Optional[Dict[str, "_models.PassFailMetric"]] = rest_field(name="passFailMetrics")
+    pass_fail_metrics: Optional[Dict[str, "_models.PassFailMetric"]] = rest_field(
+        name="passFailMetrics", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Map of id and pass fail metrics { id  : pass fail metrics }."""
     pass_fail_server_metrics: Optional[Dict[str, "_models.PassFailServerMetric"]] = rest_field(
-        name="passFailServerMetrics"
+        name="passFailServerMetrics", visibility=["read", "create", "update", "delete", "query"]
     )
     """Map of id and pass fail server metrics { id  : pass fail metrics }."""
 
@@ -1157,22 +1259,19 @@ class PassFailCriteria(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class PassFailMetric(_model_base.Model):
+class PassFailMetric(_Model):
     """Pass fail metric.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar client_metric: The client metric on which the criteria should be applied. Known values
      are: "response_time_ms", "latency", "error", "requests", and "requests_per_sec".
     :vartype client_metric: str or ~azure.developer.loadtesting.models.PFMetrics
     :ivar aggregate: The aggregation function to be applied on the client metric. Allowed functions
 
-
      * ‘percentage’ - for error metric , ‘avg’, percentiles like ‘p50’, ‘p90’, & so on, ‘min’,
-       ‘max’ - for response_time_ms and latency metric, ‘avg’ - for requests_per_sec,
-       ‘count’ - for requests. Known values are: "count", "percentage", "avg", "p50", "p75", "p90",
+     ‘max’ - for response_time_ms and latency metric, ‘avg’ - for requests_per_sec,
+     ‘count’ - for requests. Known values are: "count", "percentage", "avg", "p50", "p75", "p90",
      "p95", "p96", "p97", "p98", "p99", "p99.9", "p99.99", "min", and "max".
-    :vartype aggregate: str or ~azure.developer.loadtesting.models.PFAgFunc
+    :vartype aggregate: str or ~azure.developer.loadtesting.models.PassFailAggregationFunction
     :ivar condition: The comparison operator. Supported types ‘>’, ‘<’.
     :vartype condition: str
     :ivar request_name: Request name for which the Pass fail criteria has to be applied.
@@ -1182,39 +1281,46 @@ class PassFailMetric(_model_base.Model):
     :vartype value: float
     :ivar action: Action taken after the threshold is met. Default is ‘continue’. Known values are:
      "continue" and "stop".
-    :vartype action: str or ~azure.developer.loadtesting.models.PFAction
+    :vartype action: str or ~azure.developer.loadtesting.models.PassFailAction
     :ivar actual_value: The actual value of the client metric for the test run.
     :vartype actual_value: float
     :ivar result: Outcome of the test run. Known values are: "passed", "undetermined", and
      "failed".
-    :vartype result: str or ~azure.developer.loadtesting.models.PFResult
+    :vartype result: str or ~azure.developer.loadtesting.models.PassFailResult
     """
 
-    client_metric: Optional[Union[str, "_models.PFMetrics"]] = rest_field(name="clientMetric")
+    client_metric: Optional[Union[str, "_models.PFMetrics"]] = rest_field(
+        name="clientMetric", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The client metric on which the criteria should be applied. Known values are:
      \"response_time_ms\", \"latency\", \"error\", \"requests\", and \"requests_per_sec\"."""
-    aggregate: Optional[Union[str, "_models.PFAgFunc"]] = rest_field()
+    aggregate: Optional[Union[str, "_models.PassFailAggregationFunction"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """The aggregation function to be applied on the client metric. Allowed functions
      
-     
      * ‘percentage’ - for error metric , ‘avg’, percentiles like ‘p50’, ‘p90’, & so on, ‘min’,
-       ‘max’ - for response_time_ms and latency metric, ‘avg’ - for requests_per_sec,
-       ‘count’ - for requests. Known values are: \"count\", \"percentage\", \"avg\", \"p50\",
-     \"p75\", \"p90\", \"p95\", \"p96\", \"p97\", \"p98\", \"p99\", \"p99.9\", \"p99.99\", \"min\",
-     and \"max\"."""
-    condition: Optional[str] = rest_field()
+     ‘max’ - for response_time_ms and latency metric, ‘avg’ - for requests_per_sec,
+     ‘count’ - for requests. Known values are: \"count\", \"percentage\", \"avg\", \"p50\", \"p75\",
+     \"p90\", \"p95\", \"p96\", \"p97\", \"p98\", \"p99\", \"p99.9\", \"p99.99\", \"min\", and
+     \"max\"."""
+    condition: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The comparison operator. Supported types ‘>’, ‘<’."""
-    request_name: Optional[str] = rest_field(name="requestName")
+    request_name: Optional[str] = rest_field(
+        name="requestName", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Request name for which the Pass fail criteria has to be applied."""
-    value: Optional[float] = rest_field()
+    value: Optional[float] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The value to compare with the client metric. Allowed values - ‘error : [0.0 ,
      100.0] unit- % ’, response_time_ms and latency : any integer value unit- ms."""
-    action: Optional[Union[str, "_models.PFAction"]] = rest_field()
+    action: Optional[Union[str, "_models.PassFailAction"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Action taken after the threshold is met. Default is ‘continue’. Known values are: \"continue\"
      and \"stop\"."""
     actual_value: Optional[float] = rest_field(name="actualValue", visibility=["read"])
     """The actual value of the client metric for the test run."""
-    result: Optional[Union[str, "_models.PFResult"]] = rest_field(visibility=["read"])
+    result: Optional[Union[str, "_models.PassFailResult"]] = rest_field(visibility=["read"])
     """Outcome of the test run. Known values are: \"passed\", \"undetermined\", and \"failed\"."""
 
     @overload
@@ -1222,11 +1328,11 @@ class PassFailMetric(_model_base.Model):
         self,
         *,
         client_metric: Optional[Union[str, "_models.PFMetrics"]] = None,
-        aggregate: Optional[Union[str, "_models.PFAgFunc"]] = None,
+        aggregate: Optional[Union[str, "_models.PassFailAggregationFunction"]] = None,
         condition: Optional[str] = None,
         request_name: Optional[str] = None,
         value: Optional[float] = None,
-        action: Optional[Union[str, "_models.PFAction"]] = None,
+        action: Optional[Union[str, "_models.PassFailAction"]] = None,
     ) -> None: ...
 
     @overload
@@ -1240,11 +1346,8 @@ class PassFailMetric(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class PassFailServerMetric(_model_base.Model):
+class PassFailServerMetric(_Model):
     """Pass fail server metric.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar resource_id: The resource id of the resource emitting the metric. Required.
     :vartype resource_id: str
@@ -1260,32 +1363,36 @@ class PassFailServerMetric(_model_base.Model):
     :vartype value: float
     :ivar action: Action taken after the threshold is met. Default is ‘continue’. Known values are:
      "continue" and "stop".
-    :vartype action: str or ~azure.developer.loadtesting.models.PFAction
+    :vartype action: str or ~azure.developer.loadtesting.models.PassFailAction
     :ivar actual_value: The actual value of the server metric.
     :vartype actual_value: float
     :ivar result: Outcome of the test run. Known values are: "passed", "undetermined", and
      "failed".
-    :vartype result: str or ~azure.developer.loadtesting.models.PFResult
+    :vartype result: str or ~azure.developer.loadtesting.models.PassFailResult
     """
 
-    resource_id: str = rest_field(name="resourceId")
+    resource_id: str = rest_field(name="resourceId", visibility=["read", "create", "update", "delete", "query"])
     """The resource id of the resource emitting the metric. Required."""
-    metric_namespace: str = rest_field(name="metricNamespace")
+    metric_namespace: str = rest_field(
+        name="metricNamespace", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The server metric namespace. Required."""
-    metric_name: str = rest_field(name="metricName")
+    metric_name: str = rest_field(name="metricName", visibility=["read", "create", "update", "delete", "query"])
     """The server metric name. Required."""
-    aggregation: str = rest_field()
+    aggregation: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Aggregation Type. Required."""
-    condition: str = rest_field()
+    condition: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The comparison operator. Supported types ‘>’, ‘<’. Required."""
-    value: float = rest_field()
+    value: float = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The value to compare with the server metric. Required."""
-    action: Optional[Union[str, "_models.PFAction"]] = rest_field()
+    action: Optional[Union[str, "_models.PassFailAction"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Action taken after the threshold is met. Default is ‘continue’. Known values are: \"continue\"
      and \"stop\"."""
     actual_value: Optional[float] = rest_field(name="actualValue", visibility=["read"])
     """The actual value of the server metric."""
-    result: Optional[Union[str, "_models.PFResult"]] = rest_field(visibility=["read"])
+    result: Optional[Union[str, "_models.PassFailResult"]] = rest_field(visibility=["read"])
     """Outcome of the test run. Known values are: \"passed\", \"undetermined\", and \"failed\"."""
 
     @overload
@@ -1298,7 +1405,7 @@ class PassFailServerMetric(_model_base.Model):
         aggregation: str,
         condition: str,
         value: float,
-        action: Optional[Union[str, "_models.PFAction"]] = None,
+        action: Optional[Union[str, "_models.PassFailAction"]] = None,
     ) -> None: ...
 
     @overload
@@ -1312,7 +1419,7 @@ class PassFailServerMetric(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class RecurrenceEnd(_model_base.Model):
+class RecurrenceEnd(_Model):
     """Recurrence end model. Either provide numberOfOccurrences if you want recurrence to end after a
     specified number of occurrences or provide endDate if you want recurrence to end after a
     specified end date. If both values are provided, a validation error will be thrown indicating
@@ -1325,9 +1432,13 @@ class RecurrenceEnd(_model_base.Model):
     :vartype end_date_time: ~datetime.datetime
     """
 
-    number_of_occurrences: Optional[int] = rest_field(name="numberOfOccurrences")
+    number_of_occurrences: Optional[int] = rest_field(
+        name="numberOfOccurrences", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Number of occurrences after which the recurrence will end."""
-    end_date_time: Optional[datetime.datetime] = rest_field(name="endDateTime", format="rfc3339")
+    end_date_time: Optional[datetime.datetime] = rest_field(
+        name="endDateTime", visibility=["read", "create", "update", "delete", "query"], format="rfc3339"
+    )
     """The date after which the recurrence will end. (RFC 3339 literal format)."""
 
     @overload
@@ -1349,7 +1460,7 @@ class RecurrenceEnd(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class RecurrenceStatus(_model_base.Model):
+class RecurrenceStatus(_Model):
     """Actual state of the recurrence for the trigger.
 
     :ivar remaining_occurrences: The number of occurrences remaining for the trigger. Null if
@@ -1360,11 +1471,13 @@ class RecurrenceStatus(_model_base.Model):
     :vartype next_scheduled_date_times: list[~datetime.datetime]
     """
 
-    remaining_occurrences: Optional[int] = rest_field(name="remainingOccurrences")
+    remaining_occurrences: Optional[int] = rest_field(
+        name="remainingOccurrences", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The number of occurrences remaining for the trigger. Null if recurrence end has end date
      instead of number of occurrences."""
     next_scheduled_date_times: Optional[List[datetime.datetime]] = rest_field(
-        name="nextScheduledDateTimes", format="rfc3339"
+        name="nextScheduledDateTimes", visibility=["read", "create", "update", "delete", "query"], format="rfc3339"
     )
     """The next three execution times of the trigger. (RFC 3339 literal format)."""
 
@@ -1390,7 +1503,6 @@ class RecurrenceStatus(_model_base.Model):
 class RecurrenceWithCron(Recurrence, discriminator="Cron"):
     """Recurrence is set based on cron expression.
 
-
     :ivar recurrence_end: Recurrence end model. You can specify the end either by providing a
      numberOfOccurrences (which will end the recurrence after the specified number of occurrences)
      or by providing an endDateTime (which will end the recurrence after the specified date). If
@@ -1404,9 +1516,9 @@ class RecurrenceWithCron(Recurrence, discriminator="Cron"):
     :vartype cron_expression: str
     """
 
-    frequency: Literal[Frequency.CRON] = rest_discriminator(name="frequency")  # type: ignore
+    frequency: Literal[Frequency.CRON] = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Specify frequency using a cron expression. Required. Recurrence defined by a cron expression."""
-    cron_expression: str = rest_field(name="cronExpression")
+    cron_expression: str = rest_field(name="cronExpression", visibility=["read", "create", "update", "delete", "query"])
     """Cron expression for the recurrence. Required."""
 
     @overload
@@ -1428,11 +1540,10 @@ class RecurrenceWithCron(Recurrence, discriminator="Cron"):
         super().__init__(*args, frequency=Frequency.CRON, **kwargs)
 
 
-class RegionalConfiguration(_model_base.Model):
+class RegionalConfiguration(_Model):
     """Region distribution configuration for the load test.
 
-
-    :ivar engine_instances: The number of engine instances to execute load test in specified
+    :ivar engine_instances:   The number of engine instances to execute load test in specified
      region. Supported values are in range of 1-400. Required.
     :vartype engine_instances: int
     :ivar region: Azure region name.
@@ -1443,10 +1554,12 @@ class RegionalConfiguration(_model_base.Model):
     :vartype region: str
     """
 
-    engine_instances: int = rest_field(name="engineInstances")
-    """The number of engine instances to execute load test in specified region. Supported values are
+    engine_instances: int = rest_field(
+        name="engineInstances", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """  The number of engine instances to execute load test in specified region. Supported values are
      in range of 1-400. Required."""
-    region: str = rest_field()
+    region: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Azure region name.
      The region name should of format accepted by ARM, and should be a region supported by Azure
      Load Testing. For example, East US should be passed as \"eastus\".
@@ -1472,13 +1585,11 @@ class RegionalConfiguration(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class ResourceMetric(_model_base.Model):
+class ResourceMetric(_Model):
     """Associated metric definition for particular metrics of the azure resource (
     Refer :
-    https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition).
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
+    `https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+    <https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition>`_).
 
     :ivar id: Unique name for metric.
     :vartype id: str
@@ -1500,19 +1611,23 @@ class ResourceMetric(_model_base.Model):
 
     id: Optional[str] = rest_field(visibility=["read"])
     """Unique name for metric."""
-    resource_id: str = rest_field(name="resourceId")
+    resource_id: str = rest_field(name="resourceId", visibility=["read", "create", "update", "delete", "query"])
     """Azure resource id. Required."""
-    metric_namespace: str = rest_field(name="metricNamespace")
+    metric_namespace: str = rest_field(
+        name="metricNamespace", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Metric name space. Required."""
-    display_description: Optional[str] = rest_field(name="displayDescription")
+    display_description: Optional[str] = rest_field(
+        name="displayDescription", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Metric description."""
-    name: str = rest_field()
+    name: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The invariant value of metric name. Required."""
-    aggregation: str = rest_field()
+    aggregation: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Metric aggregation. Required."""
-    unit: Optional[str] = rest_field()
+    unit: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Metric unit."""
-    resource_type: str = rest_field(name="resourceType")
+    resource_type: str = rest_field(name="resourceType", visibility=["read", "create", "update", "delete", "query"])
     """Azure resource type. Required."""
 
     @overload
@@ -1539,14 +1654,11 @@ class ResourceMetric(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class Trigger(_model_base.Model):
+class Trigger(_Model):
     """Trigger model.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
     ScheduleTestsTrigger
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar trigger_id: The unique identifier of the trigger. Required.
     :vartype trigger_id: str
@@ -1571,16 +1683,18 @@ class Trigger(_model_base.Model):
     :vartype last_modified_by: str
     """
 
-    __mapping__: Dict[str, _model_base.Model] = {}
+    __mapping__: Dict[str, _Model] = {}
     trigger_id: str = rest_field(name="triggerId", visibility=["read"])
     """The unique identifier of the trigger. Required."""
-    display_name: str = rest_field(name="displayName")
+    display_name: str = rest_field(name="displayName", visibility=["read", "create", "update", "delete", "query"])
     """The name of the trigger. Required."""
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The description of the trigger."""
-    kind: str = rest_discriminator(name="kind")
+    kind: str = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])
     """The type of the trigger. Required. \"ScheduleTestsTrigger\""""
-    state: Optional[Union[str, "_models.TriggerState"]] = rest_field()
+    state: Optional[Union[str, "_models.TriggerState"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """The current state of the trigger. Known values are: \"Active\", \"Paused\", \"Completed\", and
      \"Disabled\"."""
     state_details: Optional["_models.StateDetails"] = rest_field(name="stateDetails", visibility=["read"])
@@ -1622,9 +1736,6 @@ class Trigger(_model_base.Model):
 class ScheduleTestsTrigger(Trigger, discriminator="ScheduleTestsTrigger"):
     """ScheduleTestsTrigger model.
 
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
-
     :ivar trigger_id: The unique identifier of the trigger. Required.
     :vartype trigger_id: str
     :ivar display_name: The name of the trigger. Required.
@@ -1659,16 +1770,18 @@ class ScheduleTestsTrigger(Trigger, discriminator="ScheduleTestsTrigger"):
     :vartype recurrence: ~azure.developer.loadtesting.models.Recurrence
     """
 
-    kind: Literal[TriggerType.SCHEDULE_TESTS_TRIGGER] = rest_discriminator(name="kind")  # type: ignore
+    kind: Literal[TriggerType.SCHEDULE_TESTS_TRIGGER] = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """The type of the trigger is ScheduleTestsTrigger. Required. Trigger is a Scheduled Trigger on a
      Test."""
-    test_ids: List[str] = rest_field(name="testIds")
+    test_ids: List[str] = rest_field(name="testIds", visibility=["read", "create", "update", "delete", "query"])
     """The test id of test to be triggered by this schedule trigger. Currently only one test is
      supported for a trigger. Required."""
-    start_date_time: Optional[datetime.datetime] = rest_field(name="startDateTime", format="rfc3339")
+    start_date_time: Optional[datetime.datetime] = rest_field(
+        name="startDateTime", visibility=["read", "create", "update", "delete", "query"], format="rfc3339"
+    )
     """Start date time of the trigger in UTC timezone. (RFC 3339 literal format)."""
     recurrence_status: Optional["_models.RecurrenceStatus"] = rest_field(name="recurrenceStatus", visibility=["read"])
-    recurrence: Optional["_models.Recurrence"] = rest_field()
+    recurrence: Optional["_models.Recurrence"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Recurrence details of the trigger. Null if schedule is not recurring."""
 
     @overload
@@ -1694,7 +1807,7 @@ class ScheduleTestsTrigger(Trigger, discriminator="ScheduleTestsTrigger"):
         super().__init__(*args, kind=TriggerType.SCHEDULE_TESTS_TRIGGER, **kwargs)
 
 
-class Secret(_model_base.Model):
+class Secret(_Model):
     """Secret.
 
     :ivar value: The value of the secret for the respective type.
@@ -1703,9 +1816,11 @@ class Secret(_model_base.Model):
     :vartype type: str or ~azure.developer.loadtesting.models.SecretType
     """
 
-    value: Optional[str] = rest_field()
+    value: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The value of the secret for the respective type."""
-    type: Optional[Union[str, "_models.SecretType"]] = rest_field()
+    type: Optional[Union[str, "_models.SecretType"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Type of secret. Known values are: \"AKV_SECRET_URI\" and \"SECRET_VALUE\"."""
 
     @overload
@@ -1727,14 +1842,14 @@ class Secret(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class StateDetails(_model_base.Model):
+class StateDetails(_Model):
     """State details of the trigger.
 
     :ivar message: The error message if the trigger is in disabled state.
     :vartype message: str
     """
 
-    message: Optional[str] = rest_field()
+    message: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The error message if the trigger is in disabled state."""
 
     @overload
@@ -1755,11 +1870,8 @@ class StateDetails(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class Test(_model_base.Model):
+class Test(_Model):
     """Load test model.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar pass_fail_criteria: Pass fail criteria for a test.
     :vartype pass_fail_criteria: ~azure.developer.loadtesting.models.PassFailCriteria
@@ -1827,24 +1939,38 @@ class Test(_model_base.Model):
     :vartype last_modified_by: str
     """
 
-    pass_fail_criteria: Optional["_models.PassFailCriteria"] = rest_field(name="passFailCriteria")
+    pass_fail_criteria: Optional["_models.PassFailCriteria"] = rest_field(
+        name="passFailCriteria", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Pass fail criteria for a test."""
-    auto_stop_criteria: Optional["_models.AutoStopCriteria"] = rest_field(name="autoStopCriteria")
+    auto_stop_criteria: Optional["_models.AutoStopCriteria"] = rest_field(
+        name="autoStopCriteria", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Auto stop criteria for a test. This will automatically stop a load test if the error percentage
      is high for a certain time window."""
-    secrets: Optional[Dict[str, "_models.Secret"]] = rest_field()
+    secrets: Optional[Dict[str, "_models.Secret"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Secrets can be stored in an Azure Key Vault or any other secret store. If the
      secret is stored in an Azure Key Vault, the value should be the secret
      identifier and the type should be AKV_SECRET_URI. If the secret is stored
      elsewhere, the secret value should be provided directly and the type should be
      SECRET_VALUE."""
-    certificate: Optional["_models.CertificateMetadata"] = rest_field()
+    certificate: Optional["_models.CertificateMetadata"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Certificates metadata."""
-    environment_variables: Optional[Dict[str, str]] = rest_field(name="environmentVariables")
+    environment_variables: Optional[Dict[str, str]] = rest_field(
+        name="environmentVariables", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Environment variables which are defined as a set of <name,value> pairs."""
-    load_test_configuration: Optional["_models.LoadTestConfiguration"] = rest_field(name="loadTestConfiguration")
+    load_test_configuration: Optional["_models.LoadTestConfiguration"] = rest_field(
+        name="loadTestConfiguration", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The load test configuration."""
-    baseline_test_run_id: Optional[str] = rest_field(name="baselineTestRunId")
+    baseline_test_run_id: Optional[str] = rest_field(
+        name="baselineTestRunId", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Id of the test run to be marked as baseline to view trends of client-side metrics from recent
      test runs."""
     input_artifacts: Optional["_models.TestInputArtifacts"] = rest_field(name="inputArtifacts", visibility=["read"])
@@ -1852,33 +1978,47 @@ class Test(_model_base.Model):
     test_id: str = rest_field(name="testId", visibility=["read"])
     """Unique test identifier for the load test, must contain only lower-case alphabetic, numeric,
      underscore or hyphen characters. Required."""
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The test description."""
-    display_name: Optional[str] = rest_field(name="displayName")
+    display_name: Optional[str] = rest_field(
+        name="displayName", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Display name of a test."""
-    subnet_id: Optional[str] = rest_field(name="subnetId")
+    subnet_id: Optional[str] = rest_field(name="subnetId", visibility=["read", "create", "update", "delete", "query"])
     """Subnet ID on which the load test instances should run."""
-    kind: Optional[Union[str, "_models.TestKind"]] = rest_field()
+    kind: Optional[Union[str, "_models.TestKind"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Kind of test. Known values are: \"URL\", \"JMX\", and \"Locust\"."""
-    public_ip_disabled: Optional[bool] = rest_field(name="publicIPDisabled")
+    public_ip_disabled: Optional[bool] = rest_field(
+        name="publicIPDisabled", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Inject load test engines without deploying public IP for outbound access."""
-    keyvault_reference_identity_type: Optional[str] = rest_field(name="keyvaultReferenceIdentityType")
+    keyvault_reference_identity_type: Optional[str] = rest_field(
+        name="keyvaultReferenceIdentityType", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Type of the managed identity referencing the Key vault."""
-    keyvault_reference_identity_id: Optional[str] = rest_field(name="keyvaultReferenceIdentityId")
+    keyvault_reference_identity_id: Optional[str] = rest_field(
+        name="keyvaultReferenceIdentityId", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Resource Id of the managed identity referencing the Key vault."""
     metrics_reference_identity_type: Optional[Union[str, "_models.ManagedIdentityType"]] = rest_field(
-        name="metricsReferenceIdentityType"
+        name="metricsReferenceIdentityType", visibility=["read", "create", "update", "delete", "query"]
     )
     """Type of the managed identity referencing the metrics. Known values are: \"SystemAssigned\" and
      \"UserAssigned\"."""
-    metrics_reference_identity_id: Optional[str] = rest_field(name="metricsReferenceIdentityId")
+    metrics_reference_identity_id: Optional[str] = rest_field(
+        name="metricsReferenceIdentityId", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Resource Id of the managed identity referencing the metrics."""
     engine_built_in_identity_type: Optional[Union[str, "_models.ManagedIdentityType"]] = rest_field(
-        name="engineBuiltInIdentityType"
+        name="engineBuiltInIdentityType", visibility=["read", "create", "update", "delete", "query"]
     )
     """Type of the managed identity built in load test engines. Known values are: \"SystemAssigned\"
      and \"UserAssigned\"."""
-    engine_built_in_identity_ids: Optional[List[str]] = rest_field(name="engineBuiltInIdentityIds")
+    engine_built_in_identity_ids: Optional[List[str]] = rest_field(
+        name="engineBuiltInIdentityIds", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Resource Ids of the managed identity built in to load test engines. Required if
      engineBuiltInIdentityType is UserAssigned."""
     created_date_time: Optional[datetime.datetime] = rest_field(
@@ -1929,11 +2069,8 @@ class Test(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestAppComponents(_model_base.Model):
+class TestAppComponents(_Model):
     """Test app components.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar components: Azure resource collection { resource id (fully qualified resource Id e.g
      subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName})
@@ -1951,7 +2088,9 @@ class TestAppComponents(_model_base.Model):
     :vartype last_modified_by: str
     """
 
-    components: Dict[str, "_models.AppComponent"] = rest_field()
+    components: Dict[str, "_models.AppComponent"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Azure resource collection { resource id (fully qualified resource Id e.g
      subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName})
      : resource object }. Required."""
@@ -1988,11 +2127,8 @@ class TestAppComponents(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestFileInfo(_model_base.Model):
+class TestFileInfo(_Model):
     """Test file info.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar file_name: Name of the file. Required.
     :vartype file_name: str
@@ -2006,12 +2142,12 @@ class TestFileInfo(_model_base.Model):
     :ivar validation_status: Validation status of the file. Known values are: "NOT_VALIDATED",
      "VALIDATION_SUCCESS", "VALIDATION_FAILURE", "VALIDATION_INITIATED", and
      "VALIDATION_NOT_REQUIRED".
-    :vartype validation_status: str or ~azure.developer.loadtesting.models.FileStatus
+    :vartype validation_status: str or ~azure.developer.loadtesting.models.FileValidationStatus
     :ivar validation_failure_details: Validation failure error details.
     :vartype validation_failure_details: str
     """
 
-    file_name: str = rest_field(name="fileName")
+    file_name: str = rest_field(name="fileName", visibility=["read", "create", "update", "delete", "query"])
     """Name of the file. Required."""
     url: Optional[str] = rest_field(visibility=["read"])
     """File URL."""
@@ -2022,7 +2158,7 @@ class TestFileInfo(_model_base.Model):
         name="expireDateTime", visibility=["read"], format="rfc3339"
     )
     """Expiry time of the file (RFC 3339 literal format)."""
-    validation_status: Optional[Union[str, "_models.FileStatus"]] = rest_field(
+    validation_status: Optional[Union[str, "_models.FileValidationStatus"]] = rest_field(
         name="validationStatus", visibility=["read"]
     )
     """Validation status of the file. Known values are: \"NOT_VALIDATED\", \"VALIDATION_SUCCESS\",
@@ -2048,18 +2184,16 @@ class TestFileInfo(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestInputArtifacts(_model_base.Model):
+class TestInputArtifacts(_Model):
     """The input artifacts for the test.
 
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar config_file_info: File info.
+    :ivar config_file_info: The load test YAML file that contains the the test configuration.
     :vartype config_file_info: ~azure.developer.loadtesting.models.TestFileInfo
-    :ivar test_script_file_info: File info.
+    :ivar test_script_file_info: The test script file for the test run.
     :vartype test_script_file_info: ~azure.developer.loadtesting.models.TestFileInfo
-    :ivar user_prop_file_info: File info.
+    :ivar user_prop_file_info: The user properties file.
     :vartype user_prop_file_info: ~azure.developer.loadtesting.models.TestFileInfo
-    :ivar input_artifacts_zip_file_info: File info.
+    :ivar input_artifacts_zip_file_info: The zip file with all input artifacts.
     :vartype input_artifacts_zip_file_info: ~azure.developer.loadtesting.models.TestFileInfo
     :ivar url_test_config_file_info: The config json file for url based test.
     :vartype url_test_config_file_info: ~azure.developer.loadtesting.models.TestFileInfo
@@ -2067,15 +2201,25 @@ class TestInputArtifacts(_model_base.Model):
     :vartype additional_file_info: list[~azure.developer.loadtesting.models.TestFileInfo]
     """
 
-    config_file_info: Optional["_models.TestFileInfo"] = rest_field(name="configFileInfo")
-    """File info."""
-    test_script_file_info: Optional["_models.TestFileInfo"] = rest_field(name="testScriptFileInfo")
-    """File info."""
-    user_prop_file_info: Optional["_models.TestFileInfo"] = rest_field(name="userPropFileInfo")
-    """File info."""
-    input_artifacts_zip_file_info: Optional["_models.TestFileInfo"] = rest_field(name="inputArtifactsZipFileInfo")
-    """File info."""
-    url_test_config_file_info: Optional["_models.TestFileInfo"] = rest_field(name="urlTestConfigFileInfo")
+    config_file_info: Optional["_models.TestFileInfo"] = rest_field(
+        name="configFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The load test YAML file that contains the the test configuration."""
+    test_script_file_info: Optional["_models.TestFileInfo"] = rest_field(
+        name="testScriptFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The test script file for the test run."""
+    user_prop_file_info: Optional["_models.TestFileInfo"] = rest_field(
+        name="userPropFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The user properties file."""
+    input_artifacts_zip_file_info: Optional["_models.TestFileInfo"] = rest_field(
+        name="inputArtifactsZipFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The zip file with all input artifacts."""
+    url_test_config_file_info: Optional["_models.TestFileInfo"] = rest_field(
+        name="urlTestConfigFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The config json file for url based test."""
     additional_file_info: Optional[List["_models.TestFileInfo"]] = rest_field(
         name="additionalFileInfo", visibility=["read"]
@@ -2104,11 +2248,8 @@ class TestInputArtifacts(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestProfile(_model_base.Model):
+class TestProfile(_Model):
     """Test Profile Model.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar test_profile_id: Unique identifier for the test profile, must contain only lower-case
      alphabetic, numeric, underscore or hyphen characters. Required.
@@ -2140,9 +2281,11 @@ class TestProfile(_model_base.Model):
     test_profile_id: str = rest_field(name="testProfileId", visibility=["read"])
     """Unique identifier for the test profile, must contain only lower-case alphabetic, numeric,
      underscore or hyphen characters. Required."""
-    display_name: Optional[str] = rest_field(name="displayName")
+    display_name: Optional[str] = rest_field(
+        name="displayName", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Display name of the test profile."""
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Description for the test profile."""
     test_id: Optional[str] = rest_field(name="testId", visibility=["read", "create"])
     """Associated test ID for the test profile. This property is required for creating a Test Profile
@@ -2151,7 +2294,7 @@ class TestProfile(_model_base.Model):
     """Target resource ID on which the test profile is created. This property is required for creating
      a Test Profile and it's not allowed to be updated."""
     target_resource_configurations: Optional["_models.TargetResourceConfigurations"] = rest_field(
-        name="targetResourceConfigurations"
+        name="targetResourceConfigurations", visibility=["read", "create", "update", "delete", "query"]
     )
     """Configurations of the target resource on which testing would be done."""
     created_date_time: Optional[datetime.datetime] = rest_field(
@@ -2189,11 +2332,8 @@ class TestProfile(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestProfileRun(_model_base.Model):
+class TestProfileRun(_Model):
     """Test Profile Run model.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar test_profile_run_id: Unique identifier for the test profile run, must contain only
      lower-case alphabetic, numeric, underscore or hyphen characters. Required.
@@ -2242,9 +2382,11 @@ class TestProfileRun(_model_base.Model):
     test_profile_run_id: str = rest_field(name="testProfileRunId", visibility=["read"])
     """Unique identifier for the test profile run, must contain only lower-case alphabetic, numeric,
      underscore or hyphen characters. Required."""
-    display_name: Optional[str] = rest_field(name="displayName")
+    display_name: Optional[str] = rest_field(
+        name="displayName", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Display name for the test profile run."""
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The test profile run description."""
     test_profile_id: Optional[str] = rest_field(name="testProfileId", visibility=["read", "create"])
     """Associated test profile ID for the test profile run. This is required to create a test profile
@@ -2309,9 +2451,8 @@ class TestProfileRun(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestProfileRunRecommendation(_model_base.Model):
+class TestProfileRunRecommendation(_Model):
     """A recommendation object that provides a list of configuration that optimizes its category.
-
 
     :ivar category: Category of the recommendation. Required. Known values are:
      "ThroughputOptimized" and "CostOptimized".
@@ -2321,10 +2462,12 @@ class TestProfileRunRecommendation(_model_base.Model):
     :vartype configurations: list[str]
     """
 
-    category: Union[str, "_models.RecommendationCategory"] = rest_field()
+    category: Union[str, "_models.RecommendationCategory"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Category of the recommendation. Required. Known values are: \"ThroughputOptimized\" and
      \"CostOptimized\"."""
-    configurations: Optional[List[str]] = rest_field()
+    configurations: Optional[List[str]] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """List of configurations IDs for which the recommendation is applicable. These are a subset of
      the provided target resource configurations."""
 
@@ -2347,11 +2490,8 @@ class TestProfileRunRecommendation(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRun(_model_base.Model):
+class TestRun(_Model):
     """Load test run model.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar test_run_id: Unique test run identifier for the load test run, must contain only
      lower-case alphabetic, numeric, underscore or hyphen characters. Required.
@@ -2392,7 +2532,7 @@ class TestRun(_model_base.Model):
     :vartype test_artifacts: ~azure.developer.loadtesting.models.TestRunArtifacts
     :ivar test_result: Test result for pass/Fail criteria used during the test run. Known values
      are: "PASSED", "NOT_APPLICABLE", and "FAILED".
-    :vartype test_result: str or ~azure.developer.loadtesting.models.PFTestResult
+    :vartype test_result: str or ~azure.developer.loadtesting.models.PassFailTestResult
     :ivar virtual_users: Number of virtual users, for which test has been run.
     :vartype virtual_users: int
     :ivar display_name: Display name of a testRun.
@@ -2405,7 +2545,7 @@ class TestRun(_model_base.Model):
      "PROVISIONED", "CONFIGURING", "CONFIGURED", "EXECUTING", "EXECUTED", "DEPROVISIONING",
      "DEPROVISIONED", "DONE", "CANCELLING", "CANCELLED", "FAILED", "VALIDATION_SUCCESS", and
      "VALIDATION_FAILURE".
-    :vartype status: str or ~azure.developer.loadtesting.models.Status
+    :vartype status: str or ~azure.developer.loadtesting.models.TestRunStatus
     :ivar start_date_time: The test run start DateTime(RFC 3339 literal format).
     :vartype start_date_time: ~datetime.datetime
     :ivar end_date_time: The test run end DateTime(RFC 3339 literal format).
@@ -2432,8 +2572,11 @@ class TestRun(_model_base.Model):
      access.
     :vartype public_ip_disabled: bool
     :ivar created_by_type: The type of the entity that created the test run. (E.x. User,
-     ScheduleTrigger, etc). Known values are: "User" and "ScheduledTrigger".
-    :vartype created_by_type: str or ~azure.developer.loadtesting.models.CreateByTypes
+     ScheduleTrigger, etc). Known values are: "User", "ScheduledTrigger", "AzurePipelines", and
+     "GitHubWorkflows".
+    :vartype created_by_type: str or ~azure.developer.loadtesting.models.CreatedByType
+    :ivar created_by_uri: The URI pointing to the entity that created the test run.
+    :vartype created_by_uri: str
     :ivar created_date_time: The creation datetime(RFC 3339 literal format).
     :vartype created_date_time: ~datetime.datetime
     :ivar created_by: The user that created.
@@ -2447,20 +2590,30 @@ class TestRun(_model_base.Model):
     test_run_id: str = rest_field(name="testRunId", visibility=["read"])
     """Unique test run identifier for the load test run, must contain only lower-case alphabetic,
      numeric, underscore or hyphen characters. Required."""
-    pass_fail_criteria: Optional["_models.PassFailCriteria"] = rest_field(name="passFailCriteria")
+    pass_fail_criteria: Optional["_models.PassFailCriteria"] = rest_field(
+        name="passFailCriteria", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Pass fail criteria for a test."""
-    auto_stop_criteria: Optional["_models.AutoStopCriteria"] = rest_field(name="autoStopCriteria")
+    auto_stop_criteria: Optional["_models.AutoStopCriteria"] = rest_field(
+        name="autoStopCriteria", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Auto stop criteria for a test. This will automatically stop a load test if the error percentage
      is high for a certain time window."""
-    secrets: Optional[Dict[str, "_models.Secret"]] = rest_field()
+    secrets: Optional[Dict[str, "_models.Secret"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Secrets can be stored in an Azure Key Vault or any other secret store. If the
      secret is stored in an Azure Key Vault, the value should be the secret
      identifier and the type should be AKV_SECRET_URI. If the secret is stored
      elsewhere, the secret value should be provided directly and the type should be
      SECRET_VALUE."""
-    certificate: Optional["_models.CertificateMetadata"] = rest_field()
+    certificate: Optional["_models.CertificateMetadata"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Certificates metadata."""
-    environment_variables: Optional[Dict[str, str]] = rest_field(name="environmentVariables")
+    environment_variables: Optional[Dict[str, str]] = rest_field(
+        name="environmentVariables", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Environment variables which are defined as a set of <name,value> pairs."""
     error_details: Optional[List["_models.ErrorDetails"]] = rest_field(name="errorDetails", visibility=["read"])
     """Error details if there is any failure in load test run."""
@@ -2479,22 +2632,26 @@ class TestRun(_model_base.Model):
      Load Testing. For example, East US should be passed as \"eastus\".
      The region name must match one of the strings in the \"Name\" column returned from running the
      \"az account list-locations -o table\" Azure CLI command."""
-    load_test_configuration: Optional["_models.LoadTestConfiguration"] = rest_field(name="loadTestConfiguration")
+    load_test_configuration: Optional["_models.LoadTestConfiguration"] = rest_field(
+        name="loadTestConfiguration", visibility=["read"]
+    )
     """The load test configuration."""
     test_artifacts: Optional["_models.TestRunArtifacts"] = rest_field(name="testArtifacts", visibility=["read"])
     """Collection of test run artifacts."""
-    test_result: Optional[Union[str, "_models.PFTestResult"]] = rest_field(name="testResult", visibility=["read"])
+    test_result: Optional[Union[str, "_models.PassFailTestResult"]] = rest_field(name="testResult", visibility=["read"])
     """Test result for pass/Fail criteria used during the test run. Known values are: \"PASSED\",
      \"NOT_APPLICABLE\", and \"FAILED\"."""
     virtual_users: Optional[int] = rest_field(name="virtualUsers", visibility=["read"])
     """Number of virtual users, for which test has been run."""
-    display_name: Optional[str] = rest_field(name="displayName")
+    display_name: Optional[str] = rest_field(
+        name="displayName", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Display name of a testRun."""
-    test_id: Optional[str] = rest_field(name="testId")
+    test_id: Optional[str] = rest_field(name="testId", visibility=["read", "create", "update", "delete", "query"])
     """Associated test Id."""
-    description: Optional[str] = rest_field()
+    description: Optional[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The test run description."""
-    status: Optional[Union[str, "_models.Status"]] = rest_field(visibility=["read"])
+    status: Optional[Union[str, "_models.TestRunStatus"]] = rest_field(visibility=["read"])
     """The test run status. Known values are: \"ACCEPTED\", \"NOTSTARTED\", \"PROVISIONING\",
      \"PROVISIONED\", \"CONFIGURING\", \"CONFIGURED\", \"EXECUTING\", \"EXECUTED\",
      \"DEPROVISIONING\", \"DEPROVISIONED\", \"DONE\", \"CANCELLING\", \"CANCELLED\", \"FAILED\",
@@ -2519,16 +2676,24 @@ class TestRun(_model_base.Model):
     """Subnet ID on which the load test instances should run."""
     kind: Optional[Union[str, "_models.TestKind"]] = rest_field(visibility=["read"])
     """Type of test. Known values are: \"URL\", \"JMX\", and \"Locust\"."""
-    request_data_level: Optional[Union[str, "_models.RequestDataLevel"]] = rest_field(name="requestDataLevel")
+    request_data_level: Optional[Union[str, "_models.RequestDataLevel"]] = rest_field(
+        name="requestDataLevel", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Request data collection level for test run. Known values are: \"NONE\" and \"ERRORS\"."""
-    debug_logs_enabled: Optional[bool] = rest_field(name="debugLogsEnabled")
+    debug_logs_enabled: Optional[bool] = rest_field(
+        name="debugLogsEnabled", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Enable or disable debug level logging. True if debug logs are enabled for the test run. False
      otherwise."""
     public_ip_disabled: Optional[bool] = rest_field(name="publicIPDisabled", visibility=["read"])
     """Inject load test engines without deploying public IP for outbound access."""
-    created_by_type: Optional[Union[str, "_models.CreateByTypes"]] = rest_field(name="createdByType")
+    created_by_type: Optional[Union[str, "_models.CreatedByType"]] = rest_field(
+        name="createdByType", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The type of the entity that created the test run. (E.x. User, ScheduleTrigger, etc). Known
-     values are: \"User\" and \"ScheduledTrigger\"."""
+     values are: \"User\", \"ScheduledTrigger\", \"AzurePipelines\", and \"GitHubWorkflows\"."""
+    created_by_uri: Optional[str] = rest_field(name="createdByUri", visibility=["read"])
+    """The URI pointing to the entity that created the test run."""
     created_date_time: Optional[datetime.datetime] = rest_field(
         name="createdDateTime", visibility=["read"], format="rfc3339"
     )
@@ -2551,13 +2716,12 @@ class TestRun(_model_base.Model):
         secrets: Optional[Dict[str, "_models.Secret"]] = None,
         certificate: Optional["_models.CertificateMetadata"] = None,
         environment_variables: Optional[Dict[str, str]] = None,
-        load_test_configuration: Optional["_models.LoadTestConfiguration"] = None,
         display_name: Optional[str] = None,
         test_id: Optional[str] = None,
         description: Optional[str] = None,
         request_data_level: Optional[Union[str, "_models.RequestDataLevel"]] = None,
         debug_logs_enabled: Optional[bool] = None,
-        created_by_type: Optional[Union[str, "_models.CreateByTypes"]] = None,
+        created_by_type: Optional[Union[str, "_models.CreatedByType"]] = None,
     ) -> None: ...
 
     @overload
@@ -2571,11 +2735,8 @@ class TestRun(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunAppComponents(_model_base.Model):
+class TestRunAppComponents(_Model):
     """Test run app component.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar components: Azure resource collection { resource id (fully qualified resource Id e.g
      subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName})
@@ -2593,7 +2754,9 @@ class TestRunAppComponents(_model_base.Model):
     :vartype last_modified_by: str
     """
 
-    components: Dict[str, "_models.AppComponent"] = rest_field()
+    components: Dict[str, "_models.AppComponent"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Azure resource collection { resource id (fully qualified resource Id e.g
      subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName})
      : resource object }. Required."""
@@ -2630,10 +2793,8 @@ class TestRunAppComponents(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunArtifacts(_model_base.Model):
+class TestRunArtifacts(_Model):
     """Collection of test run artifacts.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar input_artifacts: The input artifacts for the test run.
     :vartype input_artifacts: ~azure.developer.loadtesting.models.TestRunInputArtifacts
@@ -2643,7 +2804,9 @@ class TestRunArtifacts(_model_base.Model):
 
     input_artifacts: Optional["_models.TestRunInputArtifacts"] = rest_field(name="inputArtifacts", visibility=["read"])
     """The input artifacts for the test run."""
-    output_artifacts: Optional["_models.TestRunOutputArtifacts"] = rest_field(name="outputArtifacts")
+    output_artifacts: Optional["_models.TestRunOutputArtifacts"] = rest_field(
+        name="outputArtifacts", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The output artifacts for the test run."""
 
     @overload
@@ -2664,36 +2827,37 @@ class TestRunArtifacts(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunDetail(_model_base.Model):
+class TestRunDetail(_Model):
     """Details of a particular test run for a test profile run.
-
 
     :ivar status: Status of the test run. Required. Known values are: "ACCEPTED", "NOTSTARTED",
      "PROVISIONING", "PROVISIONED", "CONFIGURING", "CONFIGURED", "EXECUTING", "EXECUTED",
      "DEPROVISIONING", "DEPROVISIONED", "DONE", "CANCELLING", "CANCELLED", "FAILED",
      "VALIDATION_SUCCESS", and "VALIDATION_FAILURE".
-    :vartype status: str or ~azure.developer.loadtesting.models.Status
+    :vartype status: str or ~azure.developer.loadtesting.models.TestRunStatus
     :ivar configuration_id: ID of the configuration on which the test ran. Required.
     :vartype configuration_id: str
     :ivar properties: Key value pair of extra properties associated with the test run. Required.
     :vartype properties: dict[str, str]
     """
 
-    status: Union[str, "_models.Status"] = rest_field()
+    status: Union[str, "_models.TestRunStatus"] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Status of the test run. Required. Known values are: \"ACCEPTED\", \"NOTSTARTED\",
      \"PROVISIONING\", \"PROVISIONED\", \"CONFIGURING\", \"CONFIGURED\", \"EXECUTING\",
      \"EXECUTED\", \"DEPROVISIONING\", \"DEPROVISIONED\", \"DONE\", \"CANCELLING\", \"CANCELLED\",
      \"FAILED\", \"VALIDATION_SUCCESS\", and \"VALIDATION_FAILURE\"."""
-    configuration_id: str = rest_field(name="configurationId")
+    configuration_id: str = rest_field(
+        name="configurationId", visibility=["read", "create", "update", "delete", "query"]
+    )
     """ID of the configuration on which the test ran. Required."""
-    properties: Dict[str, str] = rest_field()
+    properties: Dict[str, str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """Key value pair of extra properties associated with the test run. Required."""
 
     @overload
     def __init__(
         self,
         *,
-        status: Union[str, "_models.Status"],
+        status: Union[str, "_models.TestRunStatus"],
         configuration_id: str,
         properties: Dict[str, str],
     ) -> None: ...
@@ -2709,26 +2873,30 @@ class TestRunDetail(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunEndedEventCondition(_model_base.Model):
+class TestRunEndedEventCondition(_Model):
     """TestRunEnded Event condition.
 
     :ivar test_run_statuses: The test run statuses to send notification for.
-    :vartype test_run_statuses: list[str or ~azure.developer.loadtesting.models.Status]
+    :vartype test_run_statuses: list[str or ~azure.developer.loadtesting.models.TestRunStatus]
     :ivar test_run_results: The test run results to send notification for.
-    :vartype test_run_results: list[str or ~azure.developer.loadtesting.models.PFTestResult]
+    :vartype test_run_results: list[str or ~azure.developer.loadtesting.models.PassFailTestResult]
     """
 
-    test_run_statuses: Optional[List[Union[str, "_models.Status"]]] = rest_field(name="testRunStatuses")
+    test_run_statuses: Optional[List[Union[str, "_models.TestRunStatus"]]] = rest_field(
+        name="testRunStatuses", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The test run statuses to send notification for."""
-    test_run_results: Optional[List[Union[str, "_models.PFTestResult"]]] = rest_field(name="testRunResults")
+    test_run_results: Optional[List[Union[str, "_models.PassFailTestResult"]]] = rest_field(
+        name="testRunResults", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The test run results to send notification for."""
 
     @overload
     def __init__(
         self,
         *,
-        test_run_statuses: Optional[List[Union[str, "_models.Status"]]] = None,
-        test_run_results: Optional[List[Union[str, "_models.PFTestResult"]]] = None,
+        test_run_statuses: Optional[List[Union[str, "_models.TestRunStatus"]]] = None,
+        test_run_results: Optional[List[Union[str, "_models.PassFailTestResult"]]] = None,
     ) -> None: ...
 
     @overload
@@ -2742,21 +2910,20 @@ class TestRunEndedEventCondition(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestsNotificationEventFilter(_model_base.Model):
+class TestsNotificationEventFilter(_Model):
     """The notification event filter for Tests scope.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
     TestRunEndedNotificationEventFilter, TestRunStartedNotificationEventFilter,
     TriggerCompletedNotificationEventFilter, TriggerDisabledNotificationEventFilter
 
-
     :ivar kind: The event type. Required. Known values are: "TestRunEnded", "TestRunStarted",
      "TriggerCompleted", and "TriggerDisabled".
     :vartype kind: str or ~azure.developer.loadtesting.models.NotificationEventType
     """
 
-    __mapping__: Dict[str, _model_base.Model] = {}
-    kind: str = rest_discriminator(name="kind")
+    __mapping__: Dict[str, _Model] = {}
+    kind: str = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])
     """The event type. Required. Known values are: \"TestRunEnded\", \"TestRunStarted\",
      \"TriggerCompleted\", and \"TriggerDisabled\"."""
 
@@ -2781,7 +2948,6 @@ class TestsNotificationEventFilter(_model_base.Model):
 class TestRunEndedNotificationEventFilter(TestsNotificationEventFilter, discriminator="TestRunEnded"):
     """The notification event filter when the event type is TestRunEnded and scope is Tests.
 
-
     :ivar kind: Event type for test run ended event. Required. Test run ended event. This event
      would occur when a test run reaches terminal state.
     :vartype kind: str or ~azure.developer.loadtesting.models.TEST_RUN_ENDED
@@ -2789,10 +2955,12 @@ class TestRunEndedNotificationEventFilter(TestsNotificationEventFilter, discrimi
     :vartype condition: ~azure.developer.loadtesting.models.TestRunEndedEventCondition
     """
 
-    kind: Literal[NotificationEventType.TEST_RUN_ENDED] = rest_discriminator(name="kind")  # type: ignore
+    kind: Literal[NotificationEventType.TEST_RUN_ENDED] = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Event type for test run ended event. Required. Test run ended event. This event would occur
      when a test run reaches terminal state."""
-    condition: Optional["_models.TestRunEndedEventCondition"] = rest_field()
+    condition: Optional["_models.TestRunEndedEventCondition"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Event filtering condition."""
 
     @overload
@@ -2813,11 +2981,8 @@ class TestRunEndedNotificationEventFilter(TestsNotificationEventFilter, discrimi
         super().__init__(*args, kind=NotificationEventType.TEST_RUN_ENDED, **kwargs)
 
 
-class TestRunFileInfo(_model_base.Model):
+class TestRunFileInfo(_Model):
     """Test run file info.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar file_name: Name of the file. Required.
     :vartype file_name: str
@@ -2831,12 +2996,12 @@ class TestRunFileInfo(_model_base.Model):
     :ivar validation_status: Validation status of the file. Known values are: "NOT_VALIDATED",
      "VALIDATION_SUCCESS", "VALIDATION_FAILURE", "VALIDATION_INITIATED", and
      "VALIDATION_NOT_REQUIRED".
-    :vartype validation_status: str or ~azure.developer.loadtesting.models.FileStatus
+    :vartype validation_status: str or ~azure.developer.loadtesting.models.FileValidationStatus
     :ivar validation_failure_details: Validation failure error details.
     :vartype validation_failure_details: str
     """
 
-    file_name: str = rest_field(name="fileName")
+    file_name: str = rest_field(name="fileName", visibility=["read", "create", "update", "delete", "query"])
     """Name of the file. Required."""
     url: Optional[str] = rest_field(visibility=["read"])
     """File URL."""
@@ -2847,7 +3012,7 @@ class TestRunFileInfo(_model_base.Model):
         name="expireDateTime", visibility=["read"], format="rfc3339"
     )
     """Expiry time of the file (RFC 3339 literal format)."""
-    validation_status: Optional[Union[str, "_models.FileStatus"]] = rest_field(
+    validation_status: Optional[Union[str, "_models.FileValidationStatus"]] = rest_field(
         name="validationStatus", visibility=["read"]
     )
     """Validation status of the file. Known values are: \"NOT_VALIDATED\", \"VALIDATION_SUCCESS\",
@@ -2873,18 +3038,16 @@ class TestRunFileInfo(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunInputArtifacts(_model_base.Model):
+class TestRunInputArtifacts(_Model):
     """The input artifacts for the test run.
 
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar config_file_info: File info.
+    :ivar config_file_info: The load test YAML file that contains the the test configuration.
     :vartype config_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
-    :ivar test_script_file_info: File info.
+    :ivar test_script_file_info: The test script file for the test run.
     :vartype test_script_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
-    :ivar user_prop_file_info: File info.
+    :ivar user_prop_file_info: The user properties file.
     :vartype user_prop_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
-    :ivar input_artifacts_zip_file_info: File info.
+    :ivar input_artifacts_zip_file_info: The zip file for all input artifacts.
     :vartype input_artifacts_zip_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
     :ivar url_test_config_file_info: The config json file for url based test.
     :vartype url_test_config_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
@@ -2892,15 +3055,25 @@ class TestRunInputArtifacts(_model_base.Model):
     :vartype additional_file_info: list[~azure.developer.loadtesting.models.TestRunFileInfo]
     """
 
-    config_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="configFileInfo")
-    """File info."""
-    test_script_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="testScriptFileInfo")
-    """File info."""
-    user_prop_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="userPropFileInfo")
-    """File info."""
-    input_artifacts_zip_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="inputArtifactsZipFileInfo")
-    """File info."""
-    url_test_config_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="urlTestConfigFileInfo")
+    config_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="configFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The load test YAML file that contains the the test configuration."""
+    test_script_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="testScriptFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The test script file for the test run."""
+    user_prop_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="userPropFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The user properties file."""
+    input_artifacts_zip_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="inputArtifactsZipFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The zip file for all input artifacts."""
+    url_test_config_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="urlTestConfigFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The config json file for url based test."""
     additional_file_info: Optional[List["_models.TestRunFileInfo"]] = rest_field(
         name="additionalFileInfo", visibility=["read"]
@@ -2929,12 +3102,12 @@ class TestRunInputArtifacts(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunOutputArtifacts(_model_base.Model):
+class TestRunOutputArtifacts(_Model):
     """The output artifacts for the test run.
 
-    :ivar result_file_info: File info.
+    :ivar result_file_info: The test run results file.
     :vartype result_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
-    :ivar logs_file_info: File info.
+    :ivar logs_file_info: The test run report with metrics.
     :vartype logs_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
     :ivar artifacts_container_info: The container for test run artifacts.
     :vartype artifacts_container_info: ~azure.developer.loadtesting.models.ArtifactsContainerInfo
@@ -2942,13 +3115,21 @@ class TestRunOutputArtifacts(_model_base.Model):
     :vartype report_file_info: ~azure.developer.loadtesting.models.TestRunFileInfo
     """
 
-    result_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="resultFileInfo")
-    """File info."""
-    logs_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="logsFileInfo")
-    """File info."""
-    artifacts_container_info: Optional["_models.ArtifactsContainerInfo"] = rest_field(name="artifactsContainerInfo")
+    result_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="resultFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The test run results file."""
+    logs_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="logsFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """The test run report with metrics."""
+    artifacts_container_info: Optional["_models.ArtifactsContainerInfo"] = rest_field(
+        name="artifactsContainerInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The container for test run artifacts."""
-    report_file_info: Optional["_models.TestRunFileInfo"] = rest_field(name="reportFileInfo")
+    report_file_info: Optional["_models.TestRunFileInfo"] = rest_field(
+        name="reportFileInfo", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The report file for the test run."""
 
     @overload
@@ -2972,15 +3153,14 @@ class TestRunOutputArtifacts(_model_base.Model):
         super().__init__(*args, **kwargs)
 
 
-class TestRunServerMetricConfig(_model_base.Model):
+class TestRunServerMetricsConfiguration(_Model):
     """Test run server metrics configuration.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar test_run_id: Test run identifier.
     :vartype test_run_id: str
     :ivar metrics: Azure resource metrics collection {metric id : metrics object} (Refer :
-     https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     `https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     <https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition>`_
      for metric id).
     :vartype metrics: dict[str, ~azure.developer.loadtesting.models.ResourceMetric]
     :ivar created_date_time: The creation datetime(RFC 3339 literal format).
@@ -2995,9 +3175,12 @@ class TestRunServerMetricConfig(_model_base.Model):
 
     test_run_id: Optional[str] = rest_field(name="testRunId", visibility=["read"])
     """Test run identifier."""
-    metrics: Optional[Dict[str, "_models.ResourceMetric"]] = rest_field()
+    metrics: Optional[Dict[str, "_models.ResourceMetric"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Azure resource metrics collection {metric id : metrics object} (Refer :
-     https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     `https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     <https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition>`_
      for metric id)."""
     created_date_time: Optional[datetime.datetime] = rest_field(
         name="createdDateTime", visibility=["read"], format="rfc3339"
@@ -3033,13 +3216,12 @@ class TestRunServerMetricConfig(_model_base.Model):
 class TestRunStartedNotificationEventFilter(TestsNotificationEventFilter, discriminator="TestRunStarted"):
     """The notification event filter when the event type is TestRunStarted and scope is Tests.
 
-
     :ivar kind: Event type for test run started event. Required. Test run started event. This event
      would occur when a new test run is triggered.
     :vartype kind: str or ~azure.developer.loadtesting.models.TEST_RUN_STARTED
     """
 
-    kind: Literal[NotificationEventType.TEST_RUN_STARTED] = rest_discriminator(name="kind")  # type: ignore
+    kind: Literal[NotificationEventType.TEST_RUN_STARTED] = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Event type for test run started event. Required. Test run started event. This event would occur
      when a new test run is triggered."""
 
@@ -3059,10 +3241,8 @@ class TestRunStartedNotificationEventFilter(TestsNotificationEventFilter, discri
         super().__init__(*args, kind=NotificationEventType.TEST_RUN_STARTED, **kwargs)
 
 
-class TestRunStatistics(_model_base.Model):
+class TestRunStatistics(_Model):
     """Test run statistics.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar transaction: Transaction name.
     :vartype transaction: str
@@ -3148,16 +3328,14 @@ class TestRunStatistics(_model_base.Model):
     """Send network bytes."""
 
 
-class TestServerMetricConfig(_model_base.Model):
+class TestServerMetricsConfiguration(_Model):
     """Test server metrics configuration.
-
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
 
     :ivar test_id: Test identifier.
     :vartype test_id: str
     :ivar metrics: Azure resource metrics collection {metric id : metrics object} (Refer :
-     https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     `https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     <https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition>`_
      for metric id). Required.
     :vartype metrics: dict[str, ~azure.developer.loadtesting.models.ResourceMetric]
     :ivar created_date_time: The creation datetime(RFC 3339 literal format).
@@ -3172,9 +3350,12 @@ class TestServerMetricConfig(_model_base.Model):
 
     test_id: Optional[str] = rest_field(name="testId", visibility=["read"])
     """Test identifier."""
-    metrics: Dict[str, "_models.ResourceMetric"] = rest_field()
+    metrics: Dict[str, "_models.ResourceMetric"] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
     """Azure resource metrics collection {metric id : metrics object} (Refer :
-     https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     `https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition
+     <https://learn.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition>`_
      for metric id). Required."""
     created_date_time: Optional[datetime.datetime] = rest_field(
         name="createdDateTime", visibility=["read"], format="rfc3339"
@@ -3210,9 +3391,6 @@ class TestServerMetricConfig(_model_base.Model):
 class TestsNotificationRule(NotificationRule, discriminator="Tests"):
     """Tests Notification rule model.
 
-    Readonly variables are only populated by the server, and will be ignored when sending a request.
-
-
     :ivar notification_rule_id: The unique identifier of the notification rule. Required.
     :vartype notification_rule_id: str
     :ivar display_name: The name of the notification rule. Required.
@@ -3238,11 +3416,15 @@ class TestsNotificationRule(NotificationRule, discriminator="Tests"):
      ~azure.developer.loadtesting.models.TestsNotificationEventFilter]
     """
 
-    scope: Literal[NotificationScopeType.TESTS] = rest_discriminator(name="scope")  # type: ignore
+    scope: Literal[NotificationScopeType.TESTS] = rest_discriminator(name="scope", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Scope of type Tests. Required. Notification rule is for Tests."""
-    test_ids: Optional[List[str]] = rest_field(name="testIds")
+    test_ids: Optional[List[str]] = rest_field(
+        name="testIds", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The test ids to include. If not provided, notification will be sent for all testIds."""
-    event_filters: Dict[str, "_models.TestsNotificationEventFilter"] = rest_field(name="eventFilters")
+    event_filters: Dict[str, "_models.TestsNotificationEventFilter"] = rest_field(
+        name="eventFilters", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The event to receive notifications for along with filtering conditions.
      Key is a user-assigned identifier for the event filter. Required."""
 
@@ -3267,7 +3449,7 @@ class TestsNotificationRule(NotificationRule, discriminator="Tests"):
         super().__init__(*args, scope=NotificationScopeType.TESTS, **kwargs)
 
 
-class TimeSeriesElement(_model_base.Model):
+class TimeSeriesElement(_Model):
     """The time series returned when a data query is performed.
 
     :ivar data: An array of data points representing the metric values.
@@ -3276,9 +3458,11 @@ class TimeSeriesElement(_model_base.Model):
     :vartype dimension_values: list[~azure.developer.loadtesting.models.DimensionValue]
     """
 
-    data: Optional[List["_models.MetricValue"]] = rest_field()
+    data: Optional[List["_models.MetricValue"]] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """An array of data points representing the metric values."""
-    dimension_values: Optional[List["_models.DimensionValue"]] = rest_field(name="dimensionValues")
+    dimension_values: Optional[List["_models.DimensionValue"]] = rest_field(
+        name="dimensionValues", visibility=["read", "create", "update", "delete", "query"]
+    )
     """The dimension values."""
 
     @overload
@@ -3303,13 +3487,12 @@ class TimeSeriesElement(_model_base.Model):
 class TriggerCompletedNotificationEventFilter(TestsNotificationEventFilter, discriminator="TriggerCompleted"):
     """The notification event filter when the event type is TriggerCompleted.
 
-
     :ivar kind: Event type for trigger ended event. Required. Trigger completed event. This event
      would occur when a trigger completes.
     :vartype kind: str or ~azure.developer.loadtesting.models.TRIGGER_COMPLETED
     """
 
-    kind: Literal[NotificationEventType.TRIGGER_COMPLETED] = rest_discriminator(name="kind")  # type: ignore
+    kind: Literal[NotificationEventType.TRIGGER_COMPLETED] = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Event type for trigger ended event. Required. Trigger completed event. This event would occur
      when a trigger completes."""
 
@@ -3332,13 +3515,12 @@ class TriggerCompletedNotificationEventFilter(TestsNotificationEventFilter, disc
 class TriggerDisabledNotificationEventFilter(TestsNotificationEventFilter, discriminator="TriggerDisabled"):
     """The notification event filter when the event type is TriggerDisabled.
 
-
     :ivar kind: Event type for trigger disabled event. Required. Trigger disabled event. This event
      would occur when a trigger is disabled.
     :vartype kind: str or ~azure.developer.loadtesting.models.TRIGGER_DISABLED
     """
 
-    kind: Literal[NotificationEventType.TRIGGER_DISABLED] = rest_discriminator(name="kind")  # type: ignore
+    kind: Literal[NotificationEventType.TRIGGER_DISABLED] = rest_discriminator(name="kind", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Event type for trigger disabled event. Required. Trigger disabled event. This event would occur
      when a trigger is disabled."""
 
@@ -3361,7 +3543,6 @@ class TriggerDisabledNotificationEventFilter(TestsNotificationEventFilter, discr
 class WeeklyRecurrence(Recurrence, discriminator="Weekly"):
     """Recurrence model when frequency is set as weekly.
 
-
     :ivar recurrence_end: Recurrence end model. You can specify the end either by providing a
      numberOfOccurrences (which will end the recurrence after the specified number of occurrences)
      or by providing an endDateTime (which will end the recurrence after the specified date). If
@@ -3378,12 +3559,14 @@ class WeeklyRecurrence(Recurrence, discriminator="Weekly"):
     :vartype interval: int
     """
 
-    frequency: Literal[Frequency.WEEKLY] = rest_discriminator(name="frequency")  # type: ignore
+    frequency: Literal[Frequency.WEEKLY] = rest_discriminator(name="frequency", visibility=["read", "create", "update", "delete", "query"])  # type: ignore
     """Frequency of the week recurrence. Required. Recurrence defined on a weekly basis, as specified
      by WeeklyRecurrence."""
-    days_of_week: Optional[List[Union[str, "_models.WeekDays"]]] = rest_field(name="daysOfWeek")
+    days_of_week: Optional[List[Union[str, "_models.WeekDays"]]] = rest_field(
+        name="daysOfWeek", visibility=["read", "create", "update", "delete", "query"]
+    )
     """Recurrence set to repeat on the specified days of the week."""
-    interval: Optional[int] = rest_field()
+    interval: Optional[int] = rest_field(visibility=["read", "create", "update", "delete", "query"])
     """The interval at which the recurrence should repeat. It signifies the number of weeks between
      each recurrence."""
 

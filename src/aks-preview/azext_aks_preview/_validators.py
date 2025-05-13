@@ -34,6 +34,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODEPOOL_MODE_GATEWAY,
+    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -855,6 +856,20 @@ def validate_azure_service_mesh_revision(namespace):
         raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
 
 
+def validate_asm_egress_name(namespace):
+    if namespace.istio_egressgateway_name is None:
+        return
+    name = namespace.istio_egressgateway_name
+    asm_egress_name_regex = re.compile(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?(.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')
+    match = asm_egress_name_regex.match(name)
+    if not match or len(name) > CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH:
+        raise InvalidArgumentValueError(
+            f"Istio egress name {name} is invalid. Name must be between 1 and "
+            f"{CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH} characters, must consist of lower case alphanumeric "
+            "characters, '-' or '.', and must start and end with an alphanumeric character."
+        )
+
+
 def validate_artifact_streaming(namespace):
     """Validates that artifact streaming enablement can only be used on Linux."""
     if namespace.enable_artifact_streaming:
@@ -880,3 +895,21 @@ def validate_gateway_prefix_size(namespace):
             raise ArgumentUsageError("--gateway-prefix-size can only be set for Gateway-mode nodepools")
         if namespace.gateway_prefix_size < 28 or namespace.gateway_prefix_size > 31:
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
+
+
+def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
+    """Validates that location, cluster name, and resource group name are not specified at the same time"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )
+
+
+def validate_resource_group_parameter(namespace):
+    if namespace.resource_group_name and not namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --cluster")
+    if not namespace.resource_group_name and namespace.cluster_name:
+        raise RequiredArgumentMissingError("Please specify --resource-group")

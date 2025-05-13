@@ -1,5 +1,17 @@
 Release History
 ===============
+1.28.1
+---
+* Fix clean up config file patterns of Application Configuration Service.
+
+1.28.0
+---
+* Add Azure Spring Apps retirement information. See https://aka.ms/asaretirement. 
+
+1.27.1
+---
+* Support scenario of bringing your own container image for command `az spring export`.
+
 1.27.0
 ---
 * Add command `az spring export` which is used to generate target resources definitions to help customer migrating from Azure Spring Apps to other Azure services, such as Azure Container Apps.
