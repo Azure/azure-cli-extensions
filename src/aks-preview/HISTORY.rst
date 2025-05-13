@@ -16,7 +16,6 @@ Pending
 ++++++++
 * Add option `--migrate-vmas-to-vms` to `az aks update`
 
-
 17.0.0b1
 +++++++
 * [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
