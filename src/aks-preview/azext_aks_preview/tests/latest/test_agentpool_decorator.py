@@ -42,6 +42,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
+from deepdiff import DeepDiff
 
 
 class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
@@ -815,7 +816,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         agentpool_2 = self.create_initialized_agentpool_instance(os_type="linux")
         ctx_2.attach_agentpool(agentpool_2)
-        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE])
+        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE], DeepDiff(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE]))
 
         # custom
         ctx_3 = AKSPreviewAgentPoolContext(
