@@ -50,20 +50,12 @@ class VmeInstallUninstallScenarioTest(ScenarioTest):
             }
         )
 
-        self.cmd("aks create -g {rg} -n {managed_cluster_name} --location {location}  --generate-ssh-keys")
-        self.cmd("aks wait -g {rg} -n {managed_cluster_name} --created")
-        self.cmd(
-            "aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin"
-        )
+        self.cmd("aks create -g {rg} -n {managed_cluster_name} --location {location}")
+        self.cmd("aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin")
+        self.cmd("connectedk8s connect -g {rg} -n {cluster_name} -l {location} --kube-config {kubeconfig} --kube-context {kubecontext}")
 
-        try:
-            self.cmd(
-                "connectedk8s connect -g {rg} -n {cluster_name} -l {location} --kube-config {kubeconfig} \
-                    --kube-context {kubecontext}")
-        except Exception as e:
-            self.cmd(
-                "connectedk8s connect -g {rg} -n {cluster_name} -l {location} --kube-config {kubeconfig} \
-                    --kube-context {kubecontext}")
+        self.cmd("connectedk8s update -g {rg} -n {cluster_name} --auto-upgrade false --config \
+                 extensionSets.versionManagedExtensions=Disabled --kube-config {kubeconfig} --kube-context {kubecontext}")
 
         self.cmd("k8s-extension create --cluster-name {cluster_name} --cluster-type connectedClusters --extension-type \
                  microsoft.iotoperations.platform --resource-group {rg} --name azure-iot-operations-platform \

@@ -11,23 +11,16 @@ from .action import AddIncludedExtensionTypes
 
 def load_arguments(self, _):
 
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-    with self.argument_context('vme') as c:
-        c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
-
     with self.argument_context('vme upgrade') as c:
-        c.argument(
-            'cluster_name',
-            options_list=['--cluster-name', '-c'],
-            help='Name of the Kubernetes cluster'
-        )
         c.argument(
             'resource_group',
             options_list=['--resource-group', '-g'],
             help='Name of the resource group'
+        )
+        c.argument(
+            'cluster_name',
+            options_list=['--cluster-name', '-c'],
+            help='Name of the Kubernetes cluster'
         )
         c.argument(
             "kube_config",
@@ -37,7 +30,7 @@ def load_arguments(self, _):
         c.argument(
             "kube_context",
             options_list=["--kube-context"],
-            help="Kubconfig context from current machine.",
+            help="Kube context from current machine.",
         )
         c.argument(
             "wait",
@@ -52,14 +45,14 @@ def load_arguments(self, _):
 
     with self.argument_context('vme install') as c:
         c.argument(
-            'cluster_name',
-            options_list=['--cluster-name', '-c'],
-            help='Name of the Kubernetes cluster'
-        )
-        c.argument(
             'resource_group',
             options_list=['--resource-group', '-g'],
             help='Name of the resource group'
+        )
+        c.argument(
+            'cluster_name',
+            options_list=['--cluster-name', '-c'],
+            help='Name of the Kubernetes cluster'
         )
         c.argument(
             'include_extension_types',
@@ -72,24 +65,24 @@ def load_arguments(self, _):
         c.argument(
             "kube_config",
             options_list=["--kube-config"],
-            help="Path to the kube config file.",
+            help="Path to the kube config file. If the cluster has the feature flag enabled or the current Kubernetes config or context is set to this cluster, this parameter is unnecessary.",
         )
         c.argument(
             "kube_context",
             options_list=["--kube-context"],
-            help="Kubconfig context from current machine.",
+            help="Kube context from current machine. If the cluster has the feature flag enabled or the current Kubernetes config or context is set to this cluster, this parameter is unnecessary.",
         )
 
     with self.argument_context('vme uninstall') as c:
         c.argument(
-            'cluster_name',
-            options_list=['--cluster-name', '-c'],
-            help='Name of the Kubernetes cluster'
-        )
-        c.argument(
             'resource_group',
             options_list=['--resource-group', '-g'],
             help='Name of the resource group'
+        )
+        c.argument(
+            'cluster_name',
+            options_list=['--cluster-name', '-c'],
+            help='Name of the Kubernetes cluster'
         )
         c.argument(
             'include_extension_types',

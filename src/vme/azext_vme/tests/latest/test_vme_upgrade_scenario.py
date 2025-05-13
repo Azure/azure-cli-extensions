@@ -26,7 +26,7 @@ def _get_test_data_file(filename):
     temp_dir = os.path.join(root, "temp")
     return os.path.join(temp_dir, filename).replace("\\", "\\\\")
 
-class VmeScenarioTest(ScenarioTest):
+class VmeUpgradeScenarioTest(ScenarioTest):
     # os.environ["AZURE_CLI_TEST_DEV_RESOURCE_GROUP_NAME"] = "vmetestrg"
     # os.environ["AZURE_LOCAL_DISCONNECTED"] = "true"
 
@@ -51,30 +51,13 @@ class VmeScenarioTest(ScenarioTest):
             }
         )
 
-        self.cmd("aks create -g {rg} -n {managed_cluster_name} --location {location}  --generate-ssh-keys")
-        self.cmd("aks wait -g {rg} -n {managed_cluster_name} --created")
-        self.cmd(
-            "aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin"
-        )
+        self.cmd("aks create -g {rg} -n {managed_cluster_name} --location {location}")
+        self.cmd("aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin")
+        self.cmd("connectedk8s connect -g {rg} -n {cluster_name} -l {location} --kube-config {kubeconfig} --kube-context {kubecontext}")
 
-        try:
-            self.cmd(
-                "connectedk8s connect -g {rg} -n {cluster_name} -l {location} --kube-config {kubeconfig} \
-                    --kube-context {kubecontext}")
-        except Exception as e:
-            self.cmd(
-                "connectedk8s connect -g {rg} -n {cluster_name} -l {location} --kube-config {kubeconfig} \
-                    --kube-context {kubecontext}")
-
-        helm_client_location = utils.install_helm_client()
-        self.assertIsNotNone(helm_client_location, "Helm client installation failed")
-        # Check Release Existence
-        release_namespace = utils.get_release_namespace(
-            kubeconfig, kubecontext, helm_client_location
-        )
-        self.assertEqual(release_namespace, "azure-arc-release")
-        agent_version = utils.get_agent_version(helm_client_location, release_namespace, kubeconfig, kubecontext)
-        self.assertIsNotNone(agent_version, "Agent version retrieval failed")
+        cluster = self.cmd("connectedk8s show -g {rg} -n {cluster_name} --output json").get_output_in_json()
+        agent_version = cluster["agentVersion"]
+        self.assertIsNotNone(agent_version, "Agent version should not be None")
 
         with self.assertRaisesRegex(ResourceNotFoundError, "ResourceNotFound"):
             self.cmd("vme upgrade -g {rg} -c notexistcluster")

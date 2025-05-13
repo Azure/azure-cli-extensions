@@ -126,13 +126,17 @@ def upgrade_vme(
     cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
         subscription_id, resource_group_name, consts.CONNECTEDCLUSTER_RP, consts.CONNECTEDCLUSTER_TYPE, cluster_name)
     cluster = resources.get_by_id(cluster_resource_id, '2024-12-01-preview')
+    agent_version = cluster.properties.get('agentVersion', None)
+
+    if not agent_version:
+        raise CLIError("Agent version not found in the cluster properties.")
 
     utils.check_and_add_cli_extension("connectedk8s")
-    agent_version = utils.check_and_enable_bundle_feature_flag(
+    utils.check_and_enable_bundle_feature_flag(
         cluster, resource_group_name, cluster_name, kube_config, kube_context)
     deployment_name = (consts.ARC_UPDATE_PREFIX + cluster_name).lower()
-    print(f"Checking arm template deployment '{deployment_name}' for agent version '{agent_version}' "
-          f"under resource group '{resource_group_name}' of subscription '{subscription_id}'")
+    print(f"Checking arm template deployment '{deployment_name}' for '{cluster_resource_id}' "
+          f"which has agent version '{agent_version}'")
 
     client = cf_deployments(cmd.cli_ctx, subscription_id)
 
