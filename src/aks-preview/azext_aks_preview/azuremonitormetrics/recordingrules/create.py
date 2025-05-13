@@ -38,6 +38,7 @@ def put_rules(
     default_rule_group_id,
     default_rule_group_name,
     mac_region,
+    cluster_resource_id,
     azure_monitor_workspace_resource_id,
     cluster_name,
     default_rules_template,
@@ -53,7 +54,8 @@ def put_rules(
         "location": mac_region,
         "properties": {
             "scopes": [
-                azure_monitor_workspace_resource_id
+                azure_monitor_workspace_resource_id,
+                cluster_resource_id
             ],
             "enabled": enable_rules,
             "clusterName": cluster_name,
