@@ -12,6 +12,44 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+17.0.0b3
+++++++++
+* Add default value of option `--vm-sizes` for `az aks create` and `az aks nodepool add`.
+
+17.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
+17.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
+* [BREAKING CHANGE]: `az aks nodepool add`: Change default value of option `--node-vm-size` to ""
+
+16.0.0b1
++++++++
+* [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
+
+15.0.0b2
++++++++
+* Add aks extension and aks extension-type command groups
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+
+15.0.0b1
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
+
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
+
+14.0.0b6
++++++++
+* Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
+
+14.0.0b5
+++++++++
+* Re-generate the SDK for API version 2025-02-02-preview with @autorest/python@6.32.3 to fix `\#31345 <https://github.com/Azure/azure-cli/issues/31345>`_.
+
 14.0.0b4
 ++++++++
 * Vendor new SDK and bump API version to 2025-02-02-preview.

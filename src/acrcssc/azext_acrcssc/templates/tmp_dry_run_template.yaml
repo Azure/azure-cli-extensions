@@ -1,0 +1,17 @@
+version: v1.1.0
+alias:
+  values:
+    cssc : mcr.microsoft.com/acr/cssc:cbcf692
+    maxLimit: 100
+steps:
+  - id: acr-cli-filter
+    cmd: cssc acr cssc patch --dry-run --filter-policy-file {{.Values.CONFIGPATH}}> filterRepos.txt; 
+    env:
+      - ACR_EXPERIMENTAL_CSSC=true
+  - cmd: |
+      bash -c '
+      echo "$(cat filterRepos.txt)"
+      totalImages=$(sed -n "s/^Matches found://p" filterRepos.txt | tr -d "[:space:]")
+      if [ $totalImages -gt $maxLimit ]; then
+        echo "You have exceeded the maximum limit of $maxLimit images that can be scheduled for continuous patching. Adjust the JSON filter to limit the number of images."
+      fi'

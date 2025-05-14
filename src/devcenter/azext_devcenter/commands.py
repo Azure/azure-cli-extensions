@@ -50,7 +50,6 @@ from .custom import (
     ImageVersionList,
     ImageVersionShow,
     NetworkConnectionCreate,
-    PlanMemberCreate,
     PoolCreate,
     PoolDelete,
     PoolList,
@@ -82,13 +81,6 @@ from .custom import (
     ScheduleShow,
     ScheduleUpdate,
     ScheduleWait,
-    ImageDefinitionList,
-    ImageDefinitionShow,
-    ImageDefinitionBuildImage,
-    ImageDefinitionBuildList,
-    ImageDefinitionBuildShow,
-    ImageDefinitionBuildCancel,
-    ImageDefinitionBuildGetDetail,
     ProjectImageList,
     ProjectImageShow,
     ProjectImageVersionList,
@@ -100,32 +92,43 @@ from .custom import (
     ProjectPolicyDelete,
     ProjectPolicyWait,
     ProjectSkuList,
+    ProjectImageDefinitionList,
+    ProjectImageDefinitionShow,
+    ProjectImageDefinitionBuildImage,
+    ProjectImageDefinitionGetErrorDetail,
+    ProjectImageDefinitionBuildList,
+    ProjectImageDefinitionBuildShow,
+    ProjectImageDefinitionBuildCancel,
+    ProjectImageDefinitionBuildGetDetail,
 )
 
 
 def load_command_table(self, _):
     # Control plane
-    self.command_table["devcenter admin image-definition list"] = (
-        ImageDefinitionList(loader=self)
+    self.command_table["devcenter admin project-image-definition list"] = (
+        ProjectImageDefinitionList(loader=self)
     )
-    self.command_table["devcenter admin image-definition show"] = (
-        ImageDefinitionShow(loader=self)
+    self.command_table["devcenter admin project-image-definition get-error-detail"] = (
+        ProjectImageDefinitionGetErrorDetail(loader=self)
     )
-    self.command_table["devcenter admin image-definition build-image"] = (
-        ImageDefinitionBuildImage(loader=self)
+    self.command_table["devcenter admin project-image-definition show"] = (
+        ProjectImageDefinitionShow(loader=self)
+    )
+    self.command_table["devcenter admin project-image-definition build-image"] = (
+        ProjectImageDefinitionBuildImage(loader=self)
     )
 
-    self.command_table["devcenter admin image-definition-build list"] = (
-        ImageDefinitionBuildList(loader=self)
+    self.command_table["devcenter admin project-image-definition-build list"] = (
+        ProjectImageDefinitionBuildList(loader=self)
     )
-    self.command_table["devcenter admin image-definition-build show"] = (
-        ImageDefinitionBuildShow(loader=self)
+    self.command_table["devcenter admin project-image-definition-build show"] = (
+        ProjectImageDefinitionBuildShow(loader=self)
     )
-    self.command_table["devcenter admin image-definition-build cancel"] = (
-        ImageDefinitionBuildCancel(loader=self)
+    self.command_table["devcenter admin project-image-definition-build cancel"] = (
+        ProjectImageDefinitionBuildCancel(loader=self)
     )
-    self.command_table["devcenter admin image-definition-build get-build-detail"] = (
-        ImageDefinitionBuildGetDetail(loader=self)
+    self.command_table["devcenter admin project-image-definition-build get-build-detail"] = (
+        ProjectImageDefinitionBuildGetDetail(loader=self)
     )
 
     self.command_table["devcenter admin project-image list"] = (
@@ -276,10 +279,6 @@ def load_command_table(self, _):
         NetworkConnectionCreate(loader=self)
     )
 
-    self.command_table["devcenter admin plan-member create"] = PlanMemberCreate(
-        loader=self
-    )
-
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
@@ -364,6 +363,9 @@ def load_command_table(self, _):
         g.custom_command("list-abilities", "devcenter_project_list_abilities")
         g.custom_command("show-operation", "devcenter_project_show_operation")
 
+    with self.command_group("devcenter dev approval") as g:
+        g.custom_command("list", "devcenter_approval_list")
+
     with self.command_group("devcenter dev pool") as g:
         g.custom_command("list", "devcenter_pool_list")
         g.custom_show_command("show", "devcenter_pool_show")
@@ -400,6 +402,9 @@ def load_command_table(self, _):
         g.custom_command("restore-snapshot", "devcenter_dev_box_restore_snapshot", supports_no_wait=True)
         g.custom_command("show-snapshot", "devcenter_dev_box_show_snapshot")
         g.custom_command("list-snapshot", "devcenter_dev_box_list_snapshot")
+        g.custom_command("align", "devcenter_dev_box_align", supports_no_wait=True)
+        g.custom_command("approve", "devcenter_dev_box_approve", supports_no_wait=True)
+        g.custom_command("set-active-hours", "devcenter_dev_box_set_active_hours")
 
     with self.command_group("devcenter dev environment") as g:
         g.custom_command("list", "devcenter_environment_list")
@@ -463,3 +468,11 @@ def load_command_table(self, _):
         g.custom_show_command("show", "devcenter_customization_task_show")
         g.custom_command("validate", "devcenter_customization_task_validate", supports_no_wait=True)
         g.custom_command("show-logs", "devcenter_customization_task_log_show")
+
+    with self.command_group("devcenter dev add-on") as g:
+        g.custom_command("create", "devcenter_add_on_create", supports_no_wait=True)
+        g.custom_command("delete", "devcenter_add_on_delete", supports_no_wait=True)
+        g.custom_command("disable", "devcenter_add_on_disable", supports_no_wait=True)
+        g.custom_command("enable", "devcenter_add_on_enable", supports_no_wait=True)
+        g.custom_command("list", "devcenter_add_on_list")
+        g.custom_show_command("show", "devcenter_add_on_show")

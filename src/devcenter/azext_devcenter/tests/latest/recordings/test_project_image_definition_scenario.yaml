@@ -1,0 +1,346 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-image-definition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --project --catalog-name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions?api-version=2025-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-3","name":"project-sample-3","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.402499Z","lastModifiedBy":"2dc3760b-4713-48b1-a383-1dfe3e449ec2","lastModifiedByType":"Application","lastModifiedAt":"2025-04-02T23:25:29.9799Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2","exactVersion":"1.0.0"},"latestBuild":{"name":"ed5ca693-6d1f-4e59-a381-c12929e77596","startTime":"2025-05-06T06:20:29.508653Z","endTime":"2025-05-06T08:10:08.529280Z","status":"Succeeded"},"imageValidationStatus":"Succeeded","validationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2","exactVersion":"1.0.0"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-debug","name":"project-sample-debug","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.409937Z","lastModifiedBy":"2dc3760b-4713-48b1-a383-1dfe3e449ec2","lastModifiedByType":"Application","lastModifiedAt":"2025-04-02T23:25:31.901623Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os","exactVersion":"1.0.0"},"latestBuild":{"name":"e6c271b3-b00c-425b-8049-a5aad3496ed6","startTime":"2025-05-06T06:20:29.498796Z","endTime":"2025-05-06T07:43:26.722855Z","status":"Failed"},"imageValidationStatus":"Succeeded","validationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os","exactVersion":"1.0.0"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/ImageDefinitionB","name":"ImageDefinitionB","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.450042Z","lastModifiedBy":"afae6340-0477-417e-b571-9e7a8a752387","lastModifiedByType":"Application","lastModifiedAt":"2025-05-06T15:24:22.419094Z"},"properties":{"validationStatus":"Failed"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1","name":"project-sample-1","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.401572Z","lastModifiedBy":"2dc3760b-4713-48b1-a383-1dfe3e449ec2","lastModifiedByType":"Application","lastModifiedAt":"2025-04-02T23:25:30.359533Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"latestBuild":{"name":"15353e2a-d051-410c-904d-67b6b9ec8994","startTime":"2025-05-06T15:36:38.493823Z","endTime":"2025-05-06T15:37:53.901881Z","status":"Failed"},"imageValidationStatus":"Succeeded","validationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-project-task","name":"project-sample-project-task","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.502563Z","lastModifiedBy":"afae6340-0477-417e-b571-9e7a8a752387","lastModifiedByType":"Application","lastModifiedAt":"2025-05-06T15:24:22.36183Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365"},"validationStatus":"Failed"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/ImageDefinitionA","name":"ImageDefinitionA","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.380957Z","lastModifiedBy":"afae6340-0477-417e-b571-9e7a8a752387","lastModifiedByType":"Application","lastModifiedAt":"2025-05-06T15:24:22.36183Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2"},"validationStatus":"Failed"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/wngjian-sysprep2","name":"wngjian-sysprep2","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.373347Z","lastModifiedBy":"afae6340-0477-417e-b571-9e7a8a752387","lastModifiedByType":"Application","lastModifiedAt":"2025-05-06T15:24:22.375182Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/wngjian_test_canary/images/test-canada-sysprep2/versions/1.0.0"},"validationStatus":"Failed"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7224'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 May 2025 15:40:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=17755109-de29-4032-8853-f390afd630a2/eastus2euap/9d7013f4-92d6-4006-bceb-c92e1b48468d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D3EB5B107D74461EB3A629575DA6AB6B Ref B: SJC211051204021 Ref C: 2025-05-06T15:40:29Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2025-05-06T15:41:29.5579645Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-image-definition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --project --catalog-name --name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-3?api-version=2025-04-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-3","name":"project-sample-3","type":"microsoft.devcenter/projects/catalogs/imagedefinitions","systemData":{"createdBy":"afae6340-0477-417e-b571-9e7a8a752387","createdByType":"Application","createdAt":"2025-04-02T23:25:25.402499Z","lastModifiedBy":"2dc3760b-4713-48b1-a383-1dfe3e449ec2","lastModifiedByType":"Application","lastModifiedAt":"2025-04-02T23:25:29.9799Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2","exactVersion":"1.0.0"},"latestBuild":{"name":"ed5ca693-6d1f-4e59-a381-c12929e77596","startTime":"2025-05-06T06:20:29.508653Z","endTime":"2025-05-06T08:10:08.529280Z","status":"Succeeded"},"imageValidationStatus":"Succeeded","validationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2","exactVersion":"1.0.0"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1341'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 May 2025 15:40:30 GMT
+      etag:
+      - '"2a018d7b-0000-0a00-0000-67edc76a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=17755109-de29-4032-8853-f390afd630a2/eastus2euap/d4732b9a-b71f-4aae-afc0-1edc0315163e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B444A12179A54B4EBF814D63B903E9B8 Ref B: SJC211051201047 Ref C: 2025-05-06T15:40:30Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2025-05-06T15:41:30.6775757Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-image-definition get-error-detail
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --project --catalog-name --name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/ImageDefinitionB/getErrorDetails?api-version=2025-04-01-preview
+  response:
+    body:
+      string: '{"errors":[{"code":"CatalogItemNotExist","message":"Image Definition
+        nonexisting doesn''t exist in the dev center."},{"code":"CatalogItemNotExist","message":"Task
+        echo doesn''t exist in the dev center."}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '203'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 May 2025 15:40:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=17755109-de29-4032-8853-f390afd630a2/eastus2euap/edd876da-7c1c-4704-b9b9-6b54241b157f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '19998'
+      x-msedge-ref:
+      - 'Ref A: 962F39CED92C490AA1DB91B72D0DDDF8 Ref B: SJC211051203021 Ref C: 2025-05-06T15:40:31Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2025-05-06T15:41:30.6775757Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-image-definition-build list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --project --catalog-name --image-definition-name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds?api-version=2025-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a","name":"4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T06:20:29.554538Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T06:21:07.501335Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T06:20:29.554539Z","endTime":"2025-05-06T06:21:07.501293Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/27002867-9ce2-4cac-b0e5-23fd79faeee7","name":"27002867-9ce2-4cac-b0e5-23fd79faeee7","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T07:14:41.21239Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T07:15:41.141646Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T07:14:41.212392Z","endTime":"2025-05-06T07:15:41.141599Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/7c6f58a0-19cd-491e-82c3-d3d8444ae866","name":"7c6f58a0-19cd-491e-82c3-d3d8444ae866","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T15:29:49.888781Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T15:30:59.804374Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T15:29:49.888783Z","endTime":"2025-05-06T15:30:59.804374Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/15353e2a-d051-410c-904d-67b6b9ec8994","name":"15353e2a-d051-410c-904d-67b6b9ec8994","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T15:36:38.493821Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T15:37:53.901881Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T15:36:38.493823Z","endTime":"2025-05-06T15:37:53.901881Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 May 2025 15:40:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=17755109-de29-4032-8853-f390afd630a2/eastus2euap/61a631e3-1197-47a2-98c0-64d96daa3cac
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5B7FFE63B00648199EAACCC64D5107CF Ref B: SJC211051205039 Ref C: 2025-05-06T15:40:32Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '298'
+      x-rate-limit-reset:
+      - '2025-05-06T15:41:29.5579645Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-image-definition-build list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --project --catalog-name --image-definition-name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds?api-version=2025-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a","name":"4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T06:20:29.554538Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T06:21:07.501335Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T06:20:29.554539Z","endTime":"2025-05-06T06:21:07.501293Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/27002867-9ce2-4cac-b0e5-23fd79faeee7","name":"27002867-9ce2-4cac-b0e5-23fd79faeee7","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T07:14:41.21239Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T07:15:41.141646Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T07:14:41.212392Z","endTime":"2025-05-06T07:15:41.141599Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/7c6f58a0-19cd-491e-82c3-d3d8444ae866","name":"7c6f58a0-19cd-491e-82c3-d3d8444ae866","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T15:29:49.888781Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T15:30:59.804374Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T15:29:49.888783Z","endTime":"2025-05-06T15:30:59.804374Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/15353e2a-d051-410c-904d-67b6b9ec8994","name":"15353e2a-d051-410c-904d-67b6b9ec8994","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T15:36:38.493821Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T15:37:53.901881Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T15:36:38.493823Z","endTime":"2025-05-06T15:37:53.901881Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 May 2025 15:40:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=17755109-de29-4032-8853-f390afd630a2/eastus2euap/5f42ccba-3532-4329-9ed1-d53b0476decf
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A7DA55684D364161899273608ECC6CCB Ref B: SJC211051205017 Ref C: 2025-05-06T15:40:33Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '297'
+      x-rate-limit-reset:
+      - '2025-05-06T15:41:29.5579645Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin project-image-definition-build show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --project --catalog-name --image-definition-name --build-name
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.10.7 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a?api-version=2025-04-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/projects/cli-project/catalogs/image-catalog/imageDefinitions/project-sample-1/builds/4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a","name":"4c6c32a3-2b36-41bf-a5fd-4c89ea7c871a","type":"Microsoft.DevCenter/projects/catalogs/imageDefinitions/builds","systemData":{"createdBy":"17755109-de29-4032-8853-f390afd630a2","createdByType":"User","createdAt":"2025-05-06T06:20:29.554538Z","lastModifiedBy":"17755109-de29-4032-8853-f390afd630a2","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T06:21:07.501335Z"},"properties":{"imageReference":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-rg/providers/Microsoft.DevCenter/devcenters/cli-dev-center/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"status":"Failed","startTime":"2025-05-06T06:20:29.554539Z","endTime":"2025-05-06T06:21:07.501293Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1003'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 06 May 2025 15:40:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=17755109-de29-4032-8853-f390afd630a2/eastus2euap/6e4d2965-67ef-4760-b8cb-05347f8ed049
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: 46E261E5D1D54C48B8366080A83BC480 Ref B: SJC211051203039 Ref C: 2025-05-06T15:40:34Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '297'
+      x-rate-limit-reset:
+      - '2025-05-06T15:40:38.9690870Z'
+    status:
+      code: 200
+      message: OK
+version: 1

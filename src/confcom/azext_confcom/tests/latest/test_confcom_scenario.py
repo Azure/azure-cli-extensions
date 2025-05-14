@@ -577,8 +577,8 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
-                "6ee0f2697647b69975229db7445260a1c9ae5b039f9a52a911e72b6c3302d391",
-                "3ba5dd39bf58f28b7e57a52d10edf1813fe3b1fd1d0ef57573b1b912d6b9d1f6"
+                "81f4183d118e68e8bb3c8845da3b0fe3cc331a63184b534ea0307d4d01c52418",
+                "3a1edaedd7e7e0072846d74219577c05b25498c233196d38ae0fe6cde8c2c92a"
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):

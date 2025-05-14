@@ -130,7 +130,11 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_ADVANCED_NETWORKPOLICIES_NONE,
+    CONST_ADVANCED_NETWORKPOLICIES_FQDN,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
+
 from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
@@ -197,6 +201,8 @@ from azext_aks_preview._validators import (
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
     validate_max_unavailable,
+    validate_location_cluster_name_resource_group_mutually_exclusive,
+    validate_resource_group_parameter,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -218,6 +224,12 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
 )
+
+from .action import (
+    AddConfigurationSettings,
+    AddConfigurationProtectedSettings,
+)
+
 from knack.arguments import CLIArgumentType
 
 # candidates for enumeration
@@ -277,6 +289,11 @@ network_plugins = [
     CONST_NETWORK_PLUGIN_NONE,
 ]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
+advanced_networkpolicies = [
+    CONST_ADVANCED_NETWORKPOLICIES_NONE,
+    CONST_ADVANCED_NETWORKPOLICIES_FQDN,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
+]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
@@ -826,6 +843,15 @@ def load_arguments(self, _):
             action="store_true",
         )
         c.argument(
+            "acns_advanced_networkpolicies",
+            is_preview=True,
+            arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -1303,6 +1329,19 @@ def load_arguments(self, _):
             "disable_acns_security",
             action="store_true",
         )
+        c.argument(
+            "acns_advanced_networkpolicies",
+            is_preview=True,
+            arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "enable_retina_flow_logs",
+            action="store_true",
+        )
+        c.argument(
+            "disable_retina_flow_logs",
+            action="store_true",
+        )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
@@ -1369,6 +1408,8 @@ def load_arguments(self, _):
             is_preview=True,
             arg_type=get_enum_type(health_probe_modes),
         )
+
+        c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2183,39 +2224,6 @@ def load_arguments(self, _):
                 action="store_true",
             )
 
-    with self.argument_context("aks trustedaccess rolebinding") as c:
-        c.argument("cluster_name", help="The cluster name.")
-
-    for scope in [
-        "aks trustedaccess rolebinding show",
-        "aks trustedaccess rolebinding create",
-        "aks trustedaccess rolebinding update",
-        "aks trustedaccess rolebinding delete",
-    ]:
-        with self.argument_context(scope) as c:
-            c.argument(
-                "role_binding_name",
-                options_list=["--name", "-n"],
-                required=True,
-                help="The role binding name.",
-            )
-
-    with self.argument_context("aks trustedaccess rolebinding create") as c:
-        c.argument(
-            "roles",
-            help="comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...",
-        )
-        c.argument(
-            "source_resource_id",
-            help="The source resource id of the binding",
-        )
-
-    with self.argument_context("aks trustedaccess rolebinding update") as c:
-        c.argument(
-            "roles",
-            help="comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...",
-        )
-
     with self.argument_context("aks mesh enable-ingress-gateway") as c:
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
@@ -2324,6 +2332,113 @@ def load_arguments(self, _):
                    nargs="+",
                    help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
+
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest
+    with self.argument_context('aks extension') as c:
+        c.argument('resource_group_name',
+                   options_list=['--resource-group', '-g'],
+                   help='Name of resource group.')
+        c.argument('name',
+                   options_list=['--name', '-n'],
+                   help='Name of the extension instance')
+        c.argument('extension_type',
+                   options_list=['--extension-type', '-t'],
+                   help='Name of the extension type.')
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   help='Name of the Kubernetes cluster')
+        c.argument('scope',
+                   arg_type=get_enum_type(['cluster', 'namespace']),
+                   help='Specify the extension scope.')
+        c.argument('configuration_settings',
+                   arg_group="Configuration",
+                   options_list=['--configuration-settings', '--config'],
+                   action=AddConfigurationSettings,
+                   nargs='+',
+                   help='Configuration Settings as key=value pair.'
+                   + 'Repeat parameter for each setting.'
+                   + 'Do not use this for secrets, as this value is returned in response.')
+        c.argument('configuration_protected_settings',
+                   arg_group="Configuration",
+                   options_list=['--config-protected-settings', '--config-protected'],
+                   action=AddConfigurationProtectedSettings,
+                   nargs='+',
+                   help='Configuration Protected Settings as key=value pair. '
+                   + 'Repeat parameter for each setting. Only the key is returned in response, the value is not.')
+        c.argument('configuration_settings_file',
+                   arg_group="Configuration",
+                   options_list=['--config-settings-file', '--config-file'],
+                   help='JSON file path for configuration-settings')
+        c.argument('configuration_protected_settings_file',
+                   arg_group="Configuration",
+                   options_list=['--config-protected-settings-file', '--config-protected-file'],
+                   help='JSON file path for configuration-protected-settings')
+        c.argument('release_namespace',
+                   help='Specify the namespace to install the extension release.')
+        c.argument('target_namespace',
+                   help='Specify the target namespace to install to for the extension instance. This'
+                   ' parameter is required if extension scope is set to \'namespace\'')
+
+    with self.argument_context("aks extension update") as c:
+        c.argument('yes',
+                   options_list=['--yes', '-y'],
+                   help='Ignore confirmation prompts')
+
+    with self.argument_context("aks extension delete") as c:
+        c.argument('yes',
+                   options_list=['--yes', '-y'],
+                   help='Ignore confirmation prompts')
+        c.argument('force',
+                   help='Specify whether to force delete the extension from the cluster.')
+
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
+    with self.argument_context("aks extension type") as c:
+        c.argument('resource_group_name',
+                   options_list=['--resource-group', '-g'],
+                   validator=validate_resource_group_parameter,
+                   help='Name of resource group.')
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   help='Name of the Kubernetes cluster')
+        c.argument('extension_type',
+                   options_list=['--extension-type', '-t'],
+                   help='Name of the extension type.')
+        c.argument('location',
+                   options_list=['--location', '-l'],
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   help='Name of the location. Values from: `az account list-locations`')
+
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/k8s-extension/extension-types?view=azure-cli-latest
+    with self.argument_context("aks extension type version") as c:
+        c.argument('resource_group_name',
+                   options_list=['--resource-group', '-g'],
+                   validator=validate_resource_group_parameter,
+                   help='Name of resource group.')
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   help='Name of the Kubernetes cluster')
+        c.argument('extension_type',
+                   options_list=['--extension-type', '-t'],
+                   help='Name of the extension type.')
+        c.argument('location',
+                   options_list=['--location', '-l'],
+                   validator=validate_location_cluster_name_resource_group_mutually_exclusive,
+                   help='Name of the location. Values from: `az account list-locations`')
+        c.argument('version',
+                   help='Version for the extension type.')
+        c.argument('major_version',
+                   help='Filter results by only the major version of an extension type.'
+                   + 'For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown.'
+                   + 'The default value is None')
+        c.argument('release_train',
+                   arg_group="Version",
+                   help='Specify the release train for the extension type.')
+        c.argument('show_latest',
+                   arg_type=get_three_state_flag(),
+                   help='Filter results by only the latest version.'
+                   + 'For example, if this flag is used the latest version of the extensionType will be shown.')
 
     # AKS loadbalancer command parameter configuration
     with self.argument_context("aks loadbalancer add") as c:

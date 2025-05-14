@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "devcenter admin network-connection update",
 )
 class Update(AAZCommand):
-    """Update a network connection.
+    """Update a Network Connection
 
     :example: Update
         az devcenter admin network-connection update --domain-password "New Password value for user" --name "networkConnection" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -84,9 +84,6 @@ class Update(AAZCommand):
             options=["--domain-password"],
             arg_group="Properties",
             help="The password for the account used to join domain",
-            blank=AAZPromptInput(
-                msg="Domain password:",
-            ),
         )
         _args_schema.domain_username = AAZStrArg(
             options=["--domain-username"],
@@ -186,7 +183,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -284,6 +281,7 @@ class Update(AAZCommand):
             )
             properties.health_check_status = AAZStrType(
                 serialized_name="healthCheckStatus",
+                flags={"read_only": True},
             )
             properties.networking_resource_group_name = AAZStrType(
                 serialized_name="networkingResourceGroupName",

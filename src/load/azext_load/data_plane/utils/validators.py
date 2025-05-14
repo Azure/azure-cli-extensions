@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationEr
 from azure.cli.core.commands.parameters import get_subscription_locations
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
-from azext_load.vendored_sdks.loadtesting.models import NotificationEventType, Status, PFTestResult
+from azext_load.vendored_sdks.loadtesting.models import NotificationEventType, TestRunStatus, PassFailTestResult
 
 from . import utils
 from .models import (
@@ -470,14 +470,28 @@ def validate_autostop_error_rate(namespace):
         )
 
 
-def _validate_autostop_disable_configfile(autostop):
-    if autostop.casefold() not in ["disable"]:
+def validate_autostop_maximum_virtual_users_per_engine(namespace):
+    if namespace.autostop_maximum_virtual_users_per_engine is None:
+        return
+    if not isinstance(namespace.autostop_maximum_virtual_users_per_engine, int):
         raise InvalidArgumentValueError(
-            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage and timeWindow"
+            f"Invalid autostop-engine-users type: {type(namespace.autostop_maximum_virtual_users_per_engine)}"
+        )
+    if namespace.autostop_maximum_virtual_users_per_engine <= 0:
+        raise InvalidArgumentValueError(
+            "Autostop maximum users per engine should be greater than 0"
         )
 
 
-def _validate_autostop_criteria_configfile(error_rate, time_window):
+def _validate_autostop_disable_configfile(autostop):
+    if autostop.casefold() not in ["disable"]:
+        raise InvalidArgumentValueError(
+            "Invalid value for autoStop. Valid values are 'disable' or an object with errorPercentage, timeWindow "
+            "and/or maximumVirtualUsersPerEngine"
+        )
+
+
+def _validate_autostop_criteria_configfile(error_rate, time_window, max_vu_per_engine):
     if error_rate is not None:
         if isinstance(error_rate, float) and (error_rate < 0.0 or error_rate > 100.0):
             raise InvalidArgumentValueError(
@@ -490,6 +504,10 @@ def _validate_autostop_criteria_configfile(error_rate, time_window):
     if time_window is not None and (not isinstance(time_window, int) or time_window < 0):
         raise InvalidArgumentValueError(
             "Invalid value for timeWindow. Value should be an integer greater than or equal to 0"
+        )
+    if max_vu_per_engine is not None and (not isinstance(max_vu_per_engine, int) or max_vu_per_engine <= 0):
+        raise InvalidArgumentValueError(
+            "Invalid value for maximumVirtualUsersPerEngine. Value should be an integer greater than 0"
         )
 
 
@@ -642,20 +660,20 @@ def _validate_notification_event(event: dict):
         if "status" in event:
             statuses = event["status"].split(",")
             for status in statuses:
-                if status not in [e.value for e in Status]:  # Use Status in _enum file
+                if status not in [e.value for e in TestRunStatus]:  # Use Status in _enum file
                     raise InvalidArgumentValueError(
                         "Invalid status: {}. Allowed values: {}".format(
-                            event["status"], ", ".join(e.value for e in Status)
+                            event["status"], ", ".join(e.value for e in TestRunStatus)
                         )
                     )
             event["status"] = statuses
         if "result" in event:
             results = event["result"].split(",")
             for result in results:
-                if result not in [e.value for e in PFTestResult]:  # Use PFResult in _enum file
+                if result not in [e.value for e in PassFailTestResult]:  # Use PFResult in _enum file
                     raise InvalidArgumentValueError(
                         "Invalid result: {}. Allowed values: {}".format(
-                            event["result"], ", ".join(e.value for e in PFTestResult)
+                            event["result"], ", ".join(e.value for e in PassFailTestResult)
                         )
                     )
             event["result"] = results

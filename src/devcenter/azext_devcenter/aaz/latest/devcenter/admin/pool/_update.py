@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2025-04-01-preview"],
         ]
     }
 
@@ -95,14 +95,12 @@ class Update(AAZCommand):
             options=["-i", "--devbox-definition-image-reference"],
             arg_group="DevBoxDefinition",
             help="Image reference information for a definition of the machines that are created from this pool. Will be ignored if the parameter devbox-definition-type is Reference or not provided.",
-            is_preview=True,
             nullable=True,
         )
         _args_schema.devbox_definition_sku = AAZObjectArg(
             options=["-s", "--devbox-definition-sku"],
             arg_group="DevBoxDefinition",
             help="The SKU for Dev Boxes created from the Pool. Will be ignored if the parameter devbox-definition-type is Reference or not provided.",
-            is_preview=True,
             nullable=True,
         )
 
@@ -143,6 +141,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.active_hours_configuration = AAZObjectArg(
+            options=["-a", "--active-hours-configuration"],
+            arg_group="Properties",
+            help="Active hours configuration settings for Dev Boxes created in this pool.",
+            nullable=True,
+        )
         _args_schema.devbox_definition_name = AAZStrArg(
             options=["-d", "--devbox-definition-name"],
             arg_group="Properties",
@@ -154,6 +158,13 @@ class Update(AAZCommand):
             help="Indicates if the pool is created from an existing Dev Box Definition or if one is provided directly.",
             nullable=True,
             enum={"Reference": "Reference", "Value": "Value"},
+        )
+        _args_schema.dev_box_tunnel_enable_status = AAZStrArg(
+            options=["-u", "--dev-box-tunnel-enable-status"],
+            arg_group="Properties",
+            help="Indicates whether Dev Box Tunnel is enabled for a the pool.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
@@ -195,7 +206,6 @@ class Update(AAZCommand):
             options=["--stop-on-no-connect"],
             arg_group="Properties",
             help="Stop on no connect configuration settings for Dev Boxes created in this pool.",
-            is_preview=True,
             nullable=True,
         )
         _args_schema.virtual_network_type = AAZStrArg(
@@ -204,6 +214,35 @@ class Update(AAZCommand):
             help="Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network.",
             nullable=True,
             enum={"Managed": "Managed", "Unmanaged": "Unmanaged"},
+        )
+
+        active_hours_configuration = cls._args_schema.active_hours_configuration
+        active_hours_configuration.auto_start_enable_status = AAZStrArg(
+            options=["auto-start-enable-status"],
+            help="Enables or disables whether the Dev Box should be automatically started at commencement of active hours.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        active_hours_configuration.default_end_time_hour = AAZIntArg(
+            options=["default-end-time-hour"],
+            help="The default end time of the active hours",
+            nullable=True,
+        )
+        active_hours_configuration.default_start_time_hour = AAZIntArg(
+            options=["default-start-time-hour"],
+            help="The default start time of the active hours.",
+            nullable=True,
+        )
+        active_hours_configuration.default_time_zone = AAZStrArg(
+            options=["default-time-zone"],
+            help="The default IANA timezone id of the active hours.",
+            nullable=True,
+        )
+        active_hours_configuration.keep_awake_enable_status = AAZStrArg(
+            options=["keep-awake-enable-status"],
+            help="Enables or disables whether the Dev Box should be kept awake during active hours.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         managed_virtual_network_regions = cls._args_schema.managed_virtual_network_regions
@@ -320,7 +359,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -423,7 +462,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-04-01-preview",
                     required=True,
                 ),
             }
@@ -486,9 +525,11 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("activeHoursConfiguration", AAZObjectType, ".active_hours_configuration")
                 properties.set_prop("devBoxDefinition", AAZObjectType)
                 properties.set_prop("devBoxDefinitionName", AAZStrType, ".devbox_definition_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("devBoxDefinitionType", AAZStrType, ".devbox_definition_type")
+                properties.set_prop("devBoxTunnelEnableStatus", AAZStrType, ".dev_box_tunnel_enable_status")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("localAdministrator", AAZStrType, ".local_administrator", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("managedVirtualNetworkRegions", AAZListType, ".managed_virtual_network_regions")
@@ -497,6 +538,14 @@ class Update(AAZCommand):
                 properties.set_prop("stopOnDisconnect", AAZObjectType, ".stop_on_disconnect")
                 properties.set_prop("stopOnNoConnect", AAZObjectType, ".stop_on_no_connect")
                 properties.set_prop("virtualNetworkType", AAZStrType, ".virtual_network_type")
+
+            active_hours_configuration = _builder.get(".properties.activeHoursConfiguration")
+            if active_hours_configuration is not None:
+                active_hours_configuration.set_prop("autoStartEnableStatus", AAZStrType, ".auto_start_enable_status")
+                active_hours_configuration.set_prop("defaultEndTimeHour", AAZIntType, ".default_end_time_hour")
+                active_hours_configuration.set_prop("defaultStartTimeHour", AAZIntType, ".default_start_time_hour")
+                active_hours_configuration.set_prop("defaultTimeZone", AAZStrType, ".default_time_zone")
+                active_hours_configuration.set_prop("keepAwakeEnableStatus", AAZStrType, ".keep_awake_enable_status")
 
             dev_box_definition = _builder.get(".properties.devBoxDefinition")
             if dev_box_definition is not None:
@@ -607,6 +656,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_pool_read.properties
+        properties.active_hours_configuration = AAZObjectType(
+            serialized_name="activeHoursConfiguration",
+        )
         properties.dev_box_count = AAZIntType(
             serialized_name="devBoxCount",
             flags={"read_only": True},
@@ -621,11 +673,15 @@ class _UpdateHelper:
         properties.dev_box_definition_type = AAZStrType(
             serialized_name="devBoxDefinitionType",
         )
+        properties.dev_box_tunnel_enable_status = AAZStrType(
+            serialized_name="devBoxTunnelEnableStatus",
+        )
         properties.display_name = AAZStrType(
             serialized_name="displayName",
         )
         properties.health_status = AAZStrType(
             serialized_name="healthStatus",
+            flags={"read_only": True},
         )
         properties.health_status_details = AAZListType(
             serialized_name="healthStatusDetails",
@@ -663,9 +719,27 @@ class _UpdateHelper:
             serialized_name="virtualNetworkType",
         )
 
+        active_hours_configuration = _schema_pool_read.properties.active_hours_configuration
+        active_hours_configuration.auto_start_enable_status = AAZStrType(
+            serialized_name="autoStartEnableStatus",
+        )
+        active_hours_configuration.default_end_time_hour = AAZIntType(
+            serialized_name="defaultEndTimeHour",
+        )
+        active_hours_configuration.default_start_time_hour = AAZIntType(
+            serialized_name="defaultStartTimeHour",
+        )
+        active_hours_configuration.default_time_zone = AAZStrType(
+            serialized_name="defaultTimeZone",
+        )
+        active_hours_configuration.keep_awake_enable_status = AAZStrType(
+            serialized_name="keepAwakeEnableStatus",
+        )
+
         dev_box_definition = _schema_pool_read.properties.dev_box_definition
         dev_box_definition.active_image_reference = AAZObjectType(
             serialized_name="activeImageReference",
+            flags={"read_only": True},
         )
         cls._build_schema_image_reference_read(dev_box_definition.active_image_reference)
         dev_box_definition.image_reference = AAZObjectType(

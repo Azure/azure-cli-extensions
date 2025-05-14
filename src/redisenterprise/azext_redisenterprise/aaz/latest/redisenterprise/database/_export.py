@@ -19,9 +19,9 @@ class Export(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2025-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/export", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/export", "2025-05-01-preview"],
         ]
     }
 
@@ -47,6 +47,9 @@ class Export(AAZCommand):
             help="The name of the RedisEnterprise cluster.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.database_name = AAZStrArg(
             options=["--database-name"],
@@ -54,6 +57,9 @@ class Export(AAZCommand):
             required=True,
             id_part="child_name_1",
             default="default",
+            fmt=AAZStrArgFormat(
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -151,7 +157,7 @@ class Export(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2025-05-01-preview",
                     required=True,
                 ),
             }
@@ -173,7 +179,7 @@ class Export(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("sasUri", AAZStrType, ".sas_uri", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sasUri", AAZStrType, ".sas_uri", typ_kwargs={"flags": {"secret": True}})
 
             return self.serialize_content(_content_value)
 
