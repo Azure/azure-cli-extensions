@@ -40,7 +40,7 @@ class ESULicenseScenarioTest(ScenarioTest):
             'machineSA': 'WIN-A3C7NS0B144',
             'machinePaygo': 'WIN-IAH3TLSP7A8',
             'rg': 'ytongtest',
-            'location': 'eastus',
+            'location': 'westus2',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
             'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PayGo_cmdlet/providers/Microsoft.HybridCompute/machines/WIN-IAH3TLSP7A8/licenseProfiles/default', 
