@@ -277,9 +277,9 @@ def load_arguments(self, _):
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
 
     with self.argument_context('containerapp up', arg_group='Deploy a Foundry Model', is_preview=True) as c:
-        c.argument('model_registry', options_list=['--model-registry'], help="The name of the Foundry model registry.")
-        c.argument('model_name', options_list=['--model-name'], help="The name of the Foundry model.")
-        c.argument('model_version', options_list=['--model-version'], help="The version of the Foundry model.")
+        c.argument('model_registry', help="The name of the Foundry model registry.", is_preview=True)
+        c.argument('model_name', help="The name of the Foundry model.", is_preview=True)
+        c.argument('model_version', help="The version of the Foundry model.", is_preview=True)
 
     with self.argument_context('containerapp auth') as c:
         c.argument('blob_container_uri', help='The URI of the blob storage containing the tokens. Should not be used along with sas_url_secret and sas_url_secret_name.', is_preview=True)

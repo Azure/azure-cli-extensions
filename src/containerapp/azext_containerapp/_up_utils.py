@@ -76,7 +76,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
 
 from .custom import (
-    create_managed_environment,
+    create_managed_environment_logic,
     create_containerappsjob,
     containerapp_up_logic,
     list_containerapp,
@@ -271,8 +271,7 @@ class ContainerAppEnvironment(Resource):
 
         if self.location:
             self.location = validate_environment_location(self.cmd, self.location)
-
-            env = create_managed_environment(
+            env = create_managed_environment_logic(
                 self.cmd,
                 self.name,
                 location=self.location,
@@ -292,7 +291,7 @@ class ContainerAppEnvironment(Resource):
             res_locations = list_environment_locations(self.cmd)
             for loc in res_locations:
                 try:
-                    env = create_managed_environment(
+                    env = create_managed_environment_logic(
                         self.cmd,
                         self.name,
                         location=loc,
@@ -1139,9 +1138,9 @@ def _validate_azml_model_existence(cmd, model_registry, model_name, model_versio
             config_class_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "hf_config_class")
             if config_class_name is not None and config_class_name != "":
                 model_load_class.append(f"AZURE_ML_CONFIG_CLASS_NAME={config_class_name}")
-            # task_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "task_type")
-            # if task_name is not None and task_name != "":
-            #     model_load_class.append(f"AZURE_ML_PIPELINE_TASK_NAME={task_name}")
+            task_name = safe_get(model_detail_data, "flavors", "hftransformersv2", "task_type")
+            if task_name is not None and task_name != "":
+                model_load_class.append(f"AZURE_ML_PIPELINE_TASK_NAME={task_name}")
         elif safe_get(model_detail_data, "flavors", "transformers"):
             pipeline_tokenizer_type = safe_get(model_detail_data, "flavors", "transformers", "tokenizer_type")
             pipeline_instance_type = safe_get(model_detail_data, "flavors", "transformers", "instance_type")
@@ -1156,11 +1155,17 @@ def _validate_azml_model_existence(cmd, model_registry, model_name, model_versio
                 model_load_class = []
     elif model_format.lower() == "custom":
         logger.warning("Custom model format detected. Will attempt to set up as ONNX model.")
+        model_load_class = []
     return model_asset_id, model_reference_endpoint, model_format, model_load_class
 
 
 def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_name, model_version):
-    ACA_AZML_BLESSED_MODEL = ["azureml:phi-4", "azureml:mistralai-mistral-7b-v01", "azureml:phi-3.5-mini-instruct", "azureml:gpt2-medium", "azureml:phi-4-mini-reasoning", "azureml:phi-4-reasoning"]
+    ACA_AZML_BLESSED_MODEL = ["azureml:phi-4",
+                              "azureml:mistralai-mistral-7b-v01",
+                              "azureml:phi-3.5-mini-instruct",
+                              "azureml:gpt2-medium",
+                              "azureml:phi-4-mini-reasoning",
+                              "azureml:phi-4-reasoning"] + ["azureml:deepseek-r1-distill-llama-8b-generic-gpu"]
     if model_registry is None and model_name is None and model_version is None:
         return
     if model_registry is None:
@@ -1196,7 +1201,7 @@ def _set_azml_env_vars(cmd, cli_passed_env_vars, model_asset_id, model_reference
     # We will automatically manage the required env vars for cx if the azml app is using mcr image.
     # If the user is using a custom image, we will only manage the essential ones.
     essential_env_vars = [f"AZURE_ML_MODEL_TYPE={model_format.lower()}", f"AZURE_ML_MODEL_ID={model_asset_id}", f"AZURE_ML_MODEL_PATH={model_reference_endpoint}"]
-    if is_azml_mcr_app and model_load_classes is None or model_load_classes == []:
+    if is_azml_mcr_app and model_format.lower() != "custom" and (model_load_classes is None or model_load_classes == []):
         raise ValidationError("""Model is currently not fully supported by our MCR image.
 Please visit https://github.com/microsoft/azure-container-apps/tree/main/templates to download and modify the container template to get best experience.
 You can then build and deploy the modified template from local path using --local-path option or use your own docker image.
@@ -1211,7 +1216,7 @@ Currently supported model list: https://aka.ms/something""")
     return new_env_vars
 
 
-def _validate_azml_env(cmd, app, env, cli_input_environment_name, resource_group, cli_input_resource_group_name, workload_profile_name):
+def _validate_azml_env_and_create_if_needed(cmd, app, env, cli_input_environment_name, resource_group, cli_input_resource_group_name, workload_profile_name):
     cpu = None
     memory = None
     if app.check_exists():

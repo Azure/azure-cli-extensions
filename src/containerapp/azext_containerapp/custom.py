@@ -749,10 +749,7 @@ def create_managed_environment(cmd,
                                logs_dynamic_json_columns=False,
                                system_assigned=False,
                                user_assigned=None,
-                               public_network_access=None,
-                               workload_profile_type=None,
-                               workload_profile_name=None,
-                               is_env_for_azml_app=None):
+                               public_network_access=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -768,6 +765,68 @@ def create_managed_environment(cmd,
     r = containerapp_env_create_decorator.post_process(r)
 
     return r
+
+
+def create_managed_environment_logic(cmd,
+                                     name,
+                                     resource_group_name,
+                                     logs_destination="log-analytics",
+                                     storage_account=None,
+                                     logs_customer_id=None,
+                                     logs_key=None,
+                                     location=None,
+                                     instrumentation_key=None,
+                                     dapr_connection_string=None,
+                                     infrastructure_subnet_resource_id=None,
+                                     infrastructure_resource_group=None,
+                                     docker_bridge_cidr=None,
+                                     platform_reserved_cidr=None,
+                                     platform_reserved_dns_ip=None,
+                                     internal_only=False,
+                                     tags=None,
+                                     disable_warnings=False,
+                                     zone_redundant=False,
+                                     hostname=None,
+                                     certificate_file=None,
+                                     certificate_password=None,
+                                     certificate_identity=None,
+                                     certificate_key_vault_url=None,
+                                     enable_workload_profiles=True,
+                                     mtls_enabled=None,
+                                     p2p_encryption_enabled=None,
+                                     enable_dedicated_gpu=False,
+                                     no_wait=False,
+                                     logs_dynamic_json_columns=False,
+                                     system_assigned=False,
+                                     user_assigned=None,
+                                     public_network_access=None,
+                                     workload_profile_type=None,
+                                     workload_profile_name=None,
+                                     is_env_for_azml_app=False):
+    if not is_env_for_azml_app:
+        return create_managed_environment(cmd, name, resource_group_name, logs_destination="log-analytics", storage_account=None, logs_customer_id=None, logs_key=None,
+                                          location=None, instrumentation_key=None, dapr_connection_string=None, infrastructure_subnet_resource_id=None,
+                                          infrastructure_resource_group=None, docker_bridge_cidr=None, platform_reserved_cidr=None, platform_reserved_dns_ip=None,
+                                          internal_only=False, tags=None, disable_warnings=False, zone_redundant=False, hostname=None, certificate_file=None,
+                                          certificate_password=None, certificate_identity=None, certificate_key_vault_url=None, enable_workload_profiles=True,
+                                          mtls_enabled=None, p2p_encryption_enabled=None, enable_dedicated_gpu=False, no_wait=False, logs_dynamic_json_columns=False, 
+                                          system_assigned=False, user_assigned=None, public_network_access=None)
+    raw_parameters = locals()
+    containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_create_decorator.validate_arguments()
+    containerapp_env_create_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_create_decorator.construct_payload()
+    r = containerapp_env_create_decorator.create()
+    r = containerapp_env_create_decorator.post_process(r)
+
+    return r
+    
 
 
 def update_managed_environment(cmd,
@@ -1254,7 +1313,7 @@ def containerapp_up(cmd,
     from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _get_registry_details_without_get_creds, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env, _set_azml_env_vars)
+                            check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env_and_create_if_needed, _set_azml_env_vars)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
@@ -1324,7 +1383,7 @@ def containerapp_up(cmd,
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
     if is_azureml_app:
-        env, workload_profile_name, app_cpu_limit, app_memory_limit = _validate_azml_env(cmd, app, env, environment, resource_group, resource_group_name, workload_profile_name)
+        env, workload_profile_name, app_cpu_limit, app_memory_limit = _validate_azml_env_and_create_if_needed(cmd, app, env, environment, resource_group, resource_group_name, workload_profile_name)
         app.workload_profile_name = workload_profile_name
         app.cpu = app_cpu_limit
         app.memory = app_memory_limit
