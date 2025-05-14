@@ -1154,8 +1154,7 @@ def _validate_azml_model_existence(cmd, model_registry, model_name, model_versio
                 logger.warning("Model loading class names cannot be automatically detected.")
                 model_load_class = []
     elif model_format.lower() == "custom":
-        logger.warning("Custom model format detected. Will attempt to set up as ONNX model.")
-        model_load_class = []
+        ValidationError("Custom model format is not supported yet.")
     return model_asset_id, model_reference_endpoint, model_format, model_load_class
 
 
