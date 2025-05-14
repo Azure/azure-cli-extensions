@@ -1159,7 +1159,7 @@ def _validate_azml_model_existence(cmd, model_registry, model_name, model_versio
     return model_asset_id, model_reference_endpoint, model_format, model_load_class
 
 
-def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_name, model_version, local_path):
+def _validate_azml_args(cmd, default_mcr_img, image_name, model_registry, model_name, model_version):
     ACA_AZML_BLESSED_MODEL = ["azureml:phi-4", "azureml:mistralai-mistral-7b-v01", "azureml:phi-3.5-mini-instruct", "azureml:gpt2-medium", "azureml:phi-4-mini-reasoning", "azureml:phi-4-reasoning"]
     if model_registry is None and model_name is None and model_version is None:
         return

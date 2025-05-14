@@ -1261,7 +1261,7 @@ def containerapp_up(cmd,
     ACA_AZML_MCR = "harrlistreamingcr.azurecr.io/azml:aca-general-img"
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    is_azureml_app = _is_azml_app(model_registry, model_name, model_version, local_path, show_azml_image_build_log)
+    is_azureml_app = _is_azml_app(model_registry, model_name, model_version)
     model_asset_id = None
     model_reference_endpoint = None
     if is_azureml_app:
